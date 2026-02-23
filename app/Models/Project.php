@@ -21,6 +21,11 @@ class Project extends Model
         'id_mahasiswa'
     ];
 
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_akhir' => 'date',
+    ];
+
     // Relasi ke User
     public function mahasiswa()
     {

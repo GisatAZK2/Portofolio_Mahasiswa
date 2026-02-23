@@ -4,11 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
+Use App\Http\Controllers\v1\DashboardController;
 
 // Halaman yang boleh diakses tanpa login (guest)
-Route::get('/', function () {
-    return view('views_dashboard');
-})->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/hasil-search', function () {
     return view('views_result_search');

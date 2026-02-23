@@ -6,15 +6,64 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 Use App\Models\Portofolio;
 use App\Models\User;
-use App\Models\LeraningCorner;
+use App\Models\LearningCorner;
 use App\Models\Project;
 
 class DashboardController extends Controller
 {
     public function index()
-{
-    $data = User::with(['projects', 'portofolio', 'learning_corners'])->get();
+    {
+       
+        $totalMahasiswa = User::count();
+        $totalPortofolio = Portofolio::count();
+        $totalLearning = LearningCorner::count();
+        $totalProject = Project::count();
 
-    return view('dashboard.index', compact('data'));
-}
+        // =========================
+        // AMBIL POSTING RANDOM
+        // =========================
+
+        $randomPortofolio = Portofolio::with('mahasiswa')
+            ->inRandomOrder()
+            ->take(3)
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'portofolio';
+                return $item;
+            });
+
+        $randomLearning = LearningCorner::with('mahasiswa')
+            ->inRandomOrder()
+            ->take(3)
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'learning';
+                return $item;
+            });
+
+        $randomProject = Project::with('mahasiswa')
+            ->inRandomOrder()
+            ->take(3)
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'project';
+                return $item;
+            });
+
+        // Gabungkan & acak lagi
+        $randomPosts = $randomPortofolio
+            ->concat($randomLearning)
+            ->concat($randomProject)
+            ->shuffle()
+            ->take(6);
+
+        return view('views_dashboard', compact(
+            'totalMahasiswa',
+            'totalPortofolio',
+            'totalLearning',
+            'totalProject',
+            'randomPosts'
+        ));
+    }
+
 }

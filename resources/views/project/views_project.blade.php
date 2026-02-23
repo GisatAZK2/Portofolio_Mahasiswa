@@ -1,4 +1,4 @@
-@extends('layouts.app') <!-- atau layout yang kamu pakai -->
+@extends('Layout.Layout') <!-- atau layout yang kamu pakai -->
 
 @section('content')
 <div class="p-6 lg:p-8">
