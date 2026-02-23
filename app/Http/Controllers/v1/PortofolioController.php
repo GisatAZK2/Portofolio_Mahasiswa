@@ -4,159 +4,149 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-Use App\Models\Portofolio;
+use App\Models\Portofolio;
 use App\Models\User;
+use Carbon\Carbon;
 
-    
 class PortofolioController extends Controller
 {
-    
     public function index()
     {
-        $data = Portofolio::all();
+        
+        $data = User::with(['projects', 'portofolio', 'learning_corners'])->get();
+        return view('portofolio.views_portofolio', compact('data'));
        
     }
 
 
- 
     public function create()
     {
-        
-        
+        $mahasiswa = User::orderBy('nama_mahasiswa')->get(['id', 'nama_mahasiswa']);
+        return view('portofolio.create', compact('mahasiswa'));
     }
-
 
     public function store(Request $request)
-{
-    $request->validate([
-        'id_mahasiswa' => 'required|exists:users,id',
-        'judul' => 'nullable|string|max:255',
-        'deskripsi' => 'nullable|string',
-        'link_video' => 'nullable|url',
-        'link_github' => 'nullable|url',
-        'link_project' => 'nullable|url'
-    ]);
-
-    if (
-        !$request->judul &&
-        !$request->deskripsi &&
-        !$request->link_video &&
-        !$request->link_github &&
-        !$request->link_project
-    ) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Minimal isi salah satu field portfolio'
-        ], 422);
-    }
-
-    $content = array_filter([
-        'judul' => $request->judul,
-        'deskripsi' => $request->deskripsi,
-        'link_video' => $request->link_video,
-        'link_github' => $request->link_github,
-        'link_project' => $request->link_project
-    ]);
-
-    $portfolio = Portofolio::create([
-        'id_mahasiswa' => $request->id_mahasiswa,
-        'tanggal' => now(),
-        'isi_content' => $content
-    ]);
-
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Portfolio berhasil ditambahkan',
-        'data' => $portfolio
-    ], 201);
-}
-
-    public function show(string $id)
     {
-        //
-    }
+        $validated = $request->validate([
+            'id_mahasiswa'   => 'required|exists:users,id',
+            'judul'          => 'nullable|string|max:255',
+            'deskripsi'      => 'nullable|string',
+            'link_project'   => 'nullable|url|max:500',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $portfolio = Portofolio::find($id);
-
-        if (!$portfolio) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Portfolio tidak ditemukan'
-            ], 404);
-        }
-
-        $content = $portfolio->isi_content ?? [];
-
-        // ===============================
-        // HAPUS FIELD
-        // ===============================
-        if ($request->has('remove_fields')) {
-            foreach ($request->remove_fields as $field) {
-                unset($content[$field]);
-            }
-        }
-
-        // ===============================
-        // UPDATE / TAMBAH FIELD
-        // ===============================
-        $newFields = collect($request->except(['remove_fields']))
-                        ->filter()
-                        ->toArray();
-
-        foreach ($newFields as $key => $value) {
-            $content[$key] = $value;
-        }
+        $content = array_filter($request->only([
+            'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
+        ]), fn($value) => !is_null($value) && $value !== '');
 
         if (empty($content)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Portfolio tidak boleh kosong'
-            ], 422);
+            return back()->withInput()->withErrors(['portfolio' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
         }
 
-        $portfolio->update([
-            'isi_content' => $content,
-            'updated_at' => now()
+        Portofolio::create([
+            'id_mahasiswa' => $request->id_mahasiswa,
+            'tanggal'      => now(),
+            'isi_content'  => $content,
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Portfolio berhasil diupdate',
-            'data' => $portfolio
+        return redirect()->route('portofolio.index')
+            ->with('success', 'Portofolio berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $portfolio = Portofolio::with('mahasiswa')->findOrFail($id);
+        $mahasiswa = User::orderBy('nama_mahasiswa')->get(['id', 'nama_mahasiswa']);
+
+        return view('portofolio.edit', compact('portfolio', 'mahasiswa'));
+    }
+
+   public function update(Request $request, $id)
+{
+    $portfolio = Portofolio::findOrFail($id);
+
+    $validated = $request->validate([
+        'judul'          => 'nullable|string|max:255',
+        'deskripsi'      => 'nullable|string',
+        'link_project'   => 'nullable|url|max:500',
+        'link_github'    => 'nullable|url|max:500',
+        'link_video'     => 'nullable|url|max:500',
+        'remove_links'   => 'array'
+    ]);
+
+    $content = $portfolio->isi_content ?? [];
+
+    // Ambil link yang ingin dihapus
+    $removeLinks = $request->remove_links ?? [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ Hapus LINK yang dicentang
+    |--------------------------------------------------------------------------
+    */
+    foreach ($removeLinks as $linkField) {
+        if (in_array($linkField, ['link_project', 'link_github', 'link_video'])) {
+            unset($content[$linkField]);
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ Update judul & deskripsi
+    |--------------------------------------------------------------------------
+    */
+    if ($request->filled('judul')) {
+        $content['judul'] = $request->judul;
+    }
+
+    if ($request->filled('deskripsi')) {
+        $content['deskripsi'] = $request->deskripsi;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ Update link HANYA jika tidak dicentang untuk dihapus
+    |--------------------------------------------------------------------------
+    */
+    foreach (['link_project', 'link_github', 'link_video'] as $link) {
+
+        // Kalau link dicentang untuk dihapus → skip
+        if (in_array($link, $removeLinks)) {
+            continue;
+        }
+
+        // Kalau ada value baru → update
+        if ($request->filled($link)) {
+            $content[$link] = $request->$link;
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ Minimal harus ada judul atau deskripsi
+    |--------------------------------------------------------------------------
+    */
+    if (empty($content['judul']) && empty($content['deskripsi'])) {
+        return back()->withInput()->withErrors([
+            'portfolio' => 'Judul atau Deskripsi minimal harus ada.'
         ]);
     }
-    /**
-     * Remove the specified resource from storage.
-     */
-     public function destroy($id)
+
+    $portfolio->update([
+        'isi_content' => $content,
+        'tanggal'     => now(),
+    ]);
+
+    return redirect()->route('portofolio.index')
+        ->with('success', 'Portofolio berhasil diperbarui!');
+}
+    public function destroy($id)
     {
-        $portfolio = Portofolio::find($id);
-
-        if (!$portfolio) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Portfolio tidak ditemukan'
-            ], 404);
-        }
-
+        $portfolio = Portofolio::findOrFail($id);
         $portfolio->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Portfolio berhasil dihapus'
-        ]);
+        return redirect()->route('portofolio.index')
+            ->with('success', 'Portofolio berhasil dihapus!');
     }
 }

@@ -23,7 +23,7 @@ class Portofolio extends Model
     ];
 
     public function mahasiswa()
-    {
-        return $this->belongsTo(User::class, 'id_mahasiswa');
-    }
+{
+    return $this->belongsTo(User::class, 'id_mahasiswa', 'id');
+}
 }
