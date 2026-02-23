@@ -2,5 +2,5 @@
 <x-sidebar></x-sidebar>
 
 
-<x-portofolio></x-portofolio>
+<x-portofolio-mahasiswa></x-portofolio-mahasiswa>
 <x-learning-corner></x-learning-corner>
