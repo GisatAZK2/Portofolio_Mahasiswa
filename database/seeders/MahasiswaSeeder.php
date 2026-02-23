@@ -20,6 +20,7 @@ public function run(): void
         [
             'nama_mahasiswa' => 'Dimas Erlansyah',
             'username' => 'dim',
+            'email' => 'dimas@example.com',
             'password' => Hash::make('password123'),
             'id_jurusan' => 1,
             'id_keahlian' => 1,
@@ -28,6 +29,7 @@ public function run(): void
         [
             'nama_mahasiswa' => 'Fauzan',
             'username' => 'OjanCoeg',
+            'email' => 'Ojan@example.com',
             'password' => Hash::make('password123'),
             'id_jurusan' => 2,
             'id_keahlian' => 2,
@@ -36,6 +38,7 @@ public function run(): void
         [
             'nama_mahasiswa' => 'Atan',
             'username' => 'atan',
+            'email' => 'Atan@example.com',
             'password' => Hash::make('password123'),
             'id_jurusan' => 3,
             'id_keahlian' => 3,

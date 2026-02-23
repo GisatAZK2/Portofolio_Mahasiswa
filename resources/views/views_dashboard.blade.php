@@ -1,20 +1,13 @@
-<body class="bg-gray-50">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        @include('components.sidebar')
+@extends('Layout.Layout')
 
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col">
-            <!-- Header -->
-            @include('components.header')
+@section('title', 'Portfolio')
 
-            <!-- Main Content Area -->
-            <main class="flex-1 overflow-auto p-6">
-               
-
-            <!-- Footer -->
-            @include('components.footer')
+@section('content')
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Add your portfolio content here -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-800">Portfolio Projects</h2>
+            <p class="text-gray-600 mt-2">Your portfolio content goes here</p>
         </div>
     </div>
-</body>
-</html>
+@endsection

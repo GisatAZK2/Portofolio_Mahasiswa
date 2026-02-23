@@ -1,23 +1,51 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\DashboardController;
 
+// Halaman yang boleh diakses tanpa login (guest)
 Route::get('/', function () {
     return view('views_dashboard');
-});
+})->name('dashboard');
 
 Route::get('/hasil-search', function () {
     return view('views_result_search');
 })->name('hasil-search');
 
-Route::get('/profile-page', function () {
-    return view('views_profile_page');
-})->name('profile-page');
+// Halaman yang butuh login
+Route::middleware('auth')->group(function () {
 
+    Route::get('/profile-page', function () {
+        return view('views_profile_page');
+    })->name('profile-page');
 
-//Route::get('/portofolio', [PortofolioController::class, 'index'])->name('portofolio.index');
+    Route::get('/Settings', function () {
+        return view('views_settings');
+    })->name('settings');
 
-Route::get('/coba-coba', [DashboardController::class, 'index']);
-      
+    // CRUD Portfolio – hanya user yang sudah login
+    Route::prefix('portofolio')->name('portofolio.')->group(function () {         // boleh guest juga (lihat daftar)
+        Route::get('/create', [PortofolioController::class, 'create'])->name('create');
+        Route::post('/', [PortofolioController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [PortofolioController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [PortofolioController::class, 'update'])->name('update');
+        Route::delete('/{id}', [PortofolioController::class, 'destroy'])->name('destroy');
+    });
+
+    // Tambahan: route profile user (contoh)
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+});
+
+// Route auth
+Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+
+Route::get('/Portofolio', [PortofolioController::class, 'index'])->name('portofolio.index');
+
+Route::post('/register', [UserController::class, 'register']);
+
+Route::get('/login', [UserController::class, 'showLogin'])->name('login');
+Route::post('/login', [UserController::class, 'login']);
+
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
