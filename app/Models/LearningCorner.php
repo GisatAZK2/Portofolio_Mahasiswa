@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class LearningCorner extends Model
 {
-    //
+    protected $table = 'learning_corner';
 }

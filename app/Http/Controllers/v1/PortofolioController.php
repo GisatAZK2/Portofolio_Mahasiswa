@@ -5,15 +5,18 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 Use App\Models\Portofolio;
+use App\Models\User;
 
     
 class PortofolioController extends Controller
 {
+    
     public function index()
     {
-        $portofolios = Portofolio::all();
-        return view('views_portofolio', compact('portofolios'));
+        $data = Portofolio::all();
+       
     }
+
 
  
     public function create()
@@ -21,6 +24,7 @@ class PortofolioController extends Controller
         
         
     }
+
 
     public function store(Request $request)
 {
@@ -54,7 +58,7 @@ class PortofolioController extends Controller
         'link_project' => $request->link_project
     ]);
 
-    $portfolio = Portfolio::create([
+    $portfolio = Portofolio::create([
         'id_mahasiswa' => $request->id_mahasiswa,
         'tanggal' => now(),
         'isi_content' => $content
@@ -85,65 +89,61 @@ class PortofolioController extends Controller
      */
     public function update(Request $request, $id)
     {
-            $portfolio = Portfolio::find($id);
+        $portfolio = Portofolio::find($id);
 
-            if (!$portfolio) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Portfolio tidak ditemukan'
-                ], 404);
-            }
-
-            $request->validate([
-                'judul' => 'nullable|string|max:255',
-                'deskripsi' => 'nullable|string',
-                'link_video' => 'nullable|url',
-                'link_github' => 'nullable|url',
-                'link_project' => 'nullable|url'
-            ]);
-
-            // Ambil isi lama (kalau null jadikan array kosong)
-            $content = $portfolio->isi_content ?? [];
-
-            // Field yang boleh diupdate / ditambah
-            $fields = [
-                'judul',
-                'deskripsi',
-                'link_video',
-                'link_github',
-                'link_project'
-            ];
-
-            foreach ($fields as $field) {
-                if ($request->has($field)) {
-                    $content[$field] = $request->$field;
-                }
-            }
-
-            // Hapus yang null agar bersih
-            $content = array_filter($content, function ($value) {
-                return !is_null($value);
-            });
-
-            $portfolio->update([
-                'isi_content' => $content
-            ]);
-
+        if (!$portfolio) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'Portfolio berhasil diupdate',
-                'data' => $portfolio
-            ]);
+                'status' => 'error',
+                'message' => 'Portfolio tidak ditemukan'
+            ], 404);
+        }
+
+        $content = $portfolio->isi_content ?? [];
+
+        // ===============================
+        // HAPUS FIELD
+        // ===============================
+        if ($request->has('remove_fields')) {
+            foreach ($request->remove_fields as $field) {
+                unset($content[$field]);
+            }
+        }
+
+        // ===============================
+        // UPDATE / TAMBAH FIELD
+        // ===============================
+        $newFields = collect($request->except(['remove_fields']))
+                        ->filter()
+                        ->toArray();
+
+        foreach ($newFields as $key => $value) {
+            $content[$key] = $value;
+        }
+
+        if (empty($content)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Portfolio tidak boleh kosong'
+            ], 422);
+        }
+
+        $portfolio->update([
+            'isi_content' => $content,
+            'updated_at' => now()
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Portfolio berhasil diupdate',
+            'data' => $portfolio
+        ]);
     }
-
-
-
     /**
      * Remove the specified resource from storage.
      */
      public function destroy($id)
     {
-        $portfolio = Portfolio::find($id);
+        $portfolio = Portofolio::find($id);
 
         if (!$portfolio) {
             return response()->json([

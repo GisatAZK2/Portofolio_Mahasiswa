@@ -21,6 +21,7 @@ return new class extends Migration
 
             // Custom Mahasiswa Fields
             $table->string('nama_mahasiswa', 100);
+            $table->string('photo_profile', 100)->nullable();
             $table->string('username', 100)->unique()->nullable();
             $table->string('password', 255)->nullable();
             $table->unsignedBigInteger('id_jurusan');
