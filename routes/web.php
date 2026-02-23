@@ -5,13 +5,11 @@ use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
 Use App\Http\Controllers\v1\DashboardController;
+use App\Http\Controllers\v1\LearningCornerController;
 
 // Halaman yang boleh diakses tanpa login (guest)
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
-Route::get('/hasil-search', function () {
-    return view('views_result_search');
-})->name('hasil-search');
+Route::get('/search', [DashboardController::class, 'search'])->name('search');
 
 // Halaman yang butuh login
 Route::middleware('auth')->group(function () {
@@ -25,6 +23,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('project', ProjekController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
+
+    Route::resource('learning-corner', LearningCornerController::class)
+        ->names([
+            'index'   => 'learning-corner.index',
+            'create'  => 'learning-corner.create',
+            'store'   => 'learning-corner.store',
+            'edit'    => 'learning-corner.edit',
+            'update'  => 'learning-corner.update',
+            'destroy' => 'learning-corner.destroy',
+        ]);
 });
 
 

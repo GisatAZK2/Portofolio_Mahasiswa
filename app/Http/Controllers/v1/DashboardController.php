@@ -8,6 +8,8 @@ Use App\Models\Portofolio;
 use App\Models\User;
 use App\Models\LearningCorner;
 use App\Models\Project;
+use App\Models\Jurusan;
+use App\Models\Keahlian;
 
 class DashboardController extends Controller
 {
@@ -63,6 +65,109 @@ class DashboardController extends Controller
             'totalLearning',
             'totalProject',
             'randomPosts'
+        ));
+    }
+
+    public function search(Request $request)
+    {
+        $keyword   = $request->q;
+        $jurusan   = $request->jurusan;
+        $keahlian  = $request->keahlian;
+        $type      = $request->type;
+
+        $results = collect();
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH USER
+        |--------------------------------------------------------------------------
+        */
+        if (!$type || $type == 'mahasiswa') {
+            $users = User::with(['jurusan', 'keahlian'])
+                ->when($keyword, function ($query) use ($keyword) {
+                    $query->where('nama_mahasiswa', 'like', "%$keyword%");
+                })
+                ->when($jurusan, function ($query) use ($jurusan) {
+                    $query->where('id_jurusan', $jurusan);
+                })
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->where('id_keahlian', $keahlian);
+                })
+                ->get()
+                ->map(function ($item) {
+                    $item->type = 'mahasiswa';
+                    return $item;
+                });
+
+            $results = $results->concat($users);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH PROJECT
+        |--------------------------------------------------------------------------
+        */
+        if (!$type || $type == 'project') {
+            $projects = Project::with(['mahasiswa.jurusan', 'mahasiswa.keahlian'])
+                ->when($keyword, function ($query) use ($keyword) {
+                    $query->where('nama_project', 'like', "%$keyword%");
+                })
+                ->when($jurusan, function ($query) use ($jurusan) {
+                    $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
+                        $q->where('id_jurusan', $jurusan);
+                    });
+                })
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
+                        $q->where('id_keahlian', $keahlian);
+                    });
+                })
+                ->get()
+                ->map(function ($item) {
+                    $item->type = 'project';
+                    return $item;
+                });
+
+            $results = $results->concat($projects);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH PORTOFOLIO
+        |--------------------------------------------------------------------------
+        */
+        if (!$type || $type == 'portofolio') {
+            $portofolios = Portofolio::with(['mahasiswa.jurusan', 'mahasiswa.keahlian'])
+                ->when($keyword, function ($query) use ($keyword) {
+                    $query->where('isi_content', 'like', "%$keyword%");
+                })
+                ->when($jurusan, function ($query) use ($jurusan) {
+                    $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
+                        $q->where('id_jurusan', $jurusan);
+                    });
+                })
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
+                        $q->where('id_keahlian', $keahlian);
+                    });
+                })
+                ->get()
+                ->map(function ($item) {
+                    $item->type = 'portofolio';
+                    return $item;
+                });
+
+            $results = $results->concat($portofolios);
+        }
+
+        $jurusanList  = Jurusan::all();
+        $keahlianList = Keahlian::all();
+
+        return view('views_result_search', compact(
+            'results',
+            'keyword',
+            'jurusanList',
+            'keahlianList'
         ));
     }
 
