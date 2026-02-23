@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
-class Portfolio extends Model
+class Portofolio extends Model
 {
     protected $table = 'portfolio';
     protected $primaryKey = 'id_portfolio';
@@ -17,7 +18,8 @@ class Portfolio extends Model
     ];
 
     protected $casts = [
-        'isi_content' => 'array'
+        'isi_content' => 'array',
+        'tanggal' => 'datetime'
     ];
 
     public function mahasiswa()

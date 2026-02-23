@@ -21,6 +21,8 @@ return new class extends Migration
               ->references('id')
               ->on('users')
               ->onDelete('cascade');
+
+         $table->timestamp('updated_at')->nullable();
     });
 }
 
