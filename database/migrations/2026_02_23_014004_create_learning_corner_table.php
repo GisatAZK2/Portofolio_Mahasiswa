@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_learning_corner');
             $table->unsignedBigInteger('id_mahasiswa');
             $table->json('content');
-            $table->date('tanggal');
+            $table->timestamp('tanggal');
             $table->timestamps();
 
             $table->foreign('id_mahasiswa')
