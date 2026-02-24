@@ -12,13 +12,14 @@ use Carbon\Carbon;
 class PortofolioController extends Controller
 {
     public function index()
-    {
-        
-        $data = User::with(['projects', 'portofolio', 'learning_corners'])->get();
-        return view('portofolio.views_portofolio', compact('data'));
-       
-    }
+{
+    $portofolio = auth()->user()
+        ->portofolio()
+        ->latest('tanggal')
+        ->get();
 
+    return view('portofolio.views_portofolio', compact('portofolio'));
+}
     public function indexuser()
 {
     $data = Portofolio::with('mahasiswa.jurusan')->latest('tanggal')->get();
@@ -35,10 +36,9 @@ class PortofolioController extends Controller
             'keahlian'
         ]);
 
-        // Kalau user yang login melihat profil sendiri → bisa tambah tombol edit nanti
         $isOwner = Auth::check() && Auth::id() === $user->id;
 
-        return view('portofolio.views_show', compact('user', 'isOwner'));
+        return view('portofolio.views_show_user', compact('user', 'isOwner'));
     }
 
 

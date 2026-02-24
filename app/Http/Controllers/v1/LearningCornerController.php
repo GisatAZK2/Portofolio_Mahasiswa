@@ -76,33 +76,39 @@ class LearningCornerController extends Controller
     }
 
     public function update(Request $request, LearningCorner $learningCorner)
-    {
-        $this->authorizeEntry($learningCorner);
+{
+    $this->authorizeEntry($learningCorner);
 
-        $validated = $request->validate([
-            'judul'          => 'required|string|max:255',
-            // 'tanggal'        => 'required|date',
-            'items'          => 'nullable|array',
-            'items.*.type'   => 'required|in:text,image,link',
-            'items.*.content'=> 'required|string',
-        ]);
+    $validated = $request->validate([
+        'judul'               => 'required|string|max:255',
+        'items'               => 'nullable|array',
+        'items.*.type'        => 'required|in:text,image,link',
+        'items.*.content'     => 'nullable|string',               // lama / link / text
+        'items.*.image_file'  => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB
+    ]);
 
-        $content = [
-            ['type' => 'title', 'content' => $validated['judul']],
-        ];
+    $content = [
+        ['type' => 'title', 'content' => $validated['judul']],
+    ];
 
-        if (!empty($validated['items'])) {
-            $content = array_merge($content, $validated['items']);
+    if (!empty($validated['items'])) {
+        foreach ($validated['items'] as $idx => $item) {
+            if ($item['type'] === 'image' && $request->hasFile("items.$idx.image_file")) {
+                $path = $request->file("items.$idx.image_file")->store('learning-corner', 'public');
+                $item['content'] = $path; // simpan path baru
+            }
+            // jika tidak upload gambar baru → content lama tetap dipakai (dari hidden input)
+            $content[] = $item;
         }
-
-        $learningCorner->update([
-            'content' => $content,
-            // 'tanggal' => $validated['tanggal'],
-        ]);
-
-        return redirect()->route('learning-corner.index')
-            ->with('success', 'Learning Corner berhasil diperbarui!');
     }
+
+    $learningCorner->update([
+        'content' => $content,
+    ]);
+
+    return redirect()->route('learning-corner.index')
+        ->with('success', 'Learning Corner berhasil diperbarui!');
+}
 
     public function destroy(LearningCorner $learningCorner)
     {

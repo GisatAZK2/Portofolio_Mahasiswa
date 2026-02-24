@@ -28,67 +28,80 @@
             @foreach($results as $item)
                 <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full">
 
-                    @if($item->type == 'mahasiswa')
-                        <div class="p-6 flex flex-col flex-1">
-                            <!-- Foto + Nama + Badge -->
-                            <div class="flex items-start gap-4 mb-4">
-                                <div class="flex-shrink-0">
-                                    @if($item->photo_profile)
-                                        <img src="{{ asset('storage/' . $item->photo_profile) }}"
-                                             class="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm"
-                                             alt="{{ $item->nama_mahasiswa ?? 'Profil' }}">
-                                    @else
-                                        <div class="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xl shadow-sm">
-                                            {{ strtoupper(substr($item->nama_mahasiswa ?? 'U', 0, 1)) }}
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start">
-                                        <h3 class="text-lg font-semibold text-gray-900">
-                                            {{ $item->nama_mahasiswa ?? 'Nama tidak tersedia' }}
-                                        </h3>
-                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            Mahasiswa
-                                        </span>
-                                    </div>
-                                    <p class="mt-1 text-sm text-gray-600 flex items-center gap-1">
-                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                        </svg>
-                                        {{ $item->email ?? 'Email tidak tersedia' }}
-                                    </p>
-                                </div>
+                   @if($item->type == 'mahasiswa')
+    <a href="{{ route('portfolio.show', $item) }}" 
+       class="block h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
+            <div class="p-6 flex flex-col flex-1">
+                <!-- Foto + Nama + Badge -->
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="flex-shrink-0">
+                        @if($item->photo_profile)
+                            <img src="{{ asset('storage/' . $item->photo_profile) }}"
+                                 class="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm transition-transform group-hover:scale-105"
+                                 alt="{{ $item->nama_mahasiswa ?? 'Profil' }}">
+                        @else
+                            <div class="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xl shadow-sm transition-transform group-hover:scale-105">
+                                {{ strtoupper(substr($item->nama_mahasiswa ?? 'U', 0, 1)) }}
                             </div>
-
-                            <!-- Jurusan & Keahlian (seperti contoh: Teknik Informatika Web Development) -->
-                            <div class="flex flex-wrap gap-2 mb-5">
-                                @if($item->jurusan)
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5"/>
-                                        </svg>
-                                        {{ $item->jurusan->nama_jurusan }}
-                                    </span>
-                                @endif
-
-                                @if($item->keahlian)
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                                        </svg>
-                                        {{ $item->keahlian->nama_keahlian }}
-                                    </span>
-                                @endif
-                            </div>
-
-                            <!-- Statistik -->
-                            <div class="mt-auto text-sm text-gray-600 flex justify-between border-t pt-4">
-                                <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
-                                <span><strong class="text-gray-900">{{ $item->portofolios_count ?? 0 }}</strong> Portofolio</span>
-                                <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
-                            </div>
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">
+                                {{ $item->nama_mahasiswa ?? 'Nama tidak tersedia' }}
+                            </h3>
+                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                Mahasiswa
+                            </span>
                         </div>
+                        <p class="mt-1 text-sm text-gray-600 flex items-center gap-1">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            {{ $item->email ?? 'Email tidak tersedia' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Jurusan & Keahlian -->
+                <div class="flex flex-wrap gap-2 mb-5">
+                    @if($item->jurusan)
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5"/>
+                            </svg>
+                            {{ $item->jurusan->nama_jurusan }}
+                        </span>
+                    @endif
+                    @if($item->keahlian)
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">
+                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                            {{ $item->keahlian->nama_keahlian }}
+                        </span>
+                    @endif
+                </div>
+
+                <div class="mt-auto">
+                    <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
+                        <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
+                        <span><strong class="text-gray-900">{{ $item->portofolios_count ?? 0 }}</strong> Portofolio</span>
+                        <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
+                    </div>
+                    <div class="mt-3 text-right">
+                        <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center justify-end gap-1">
+                            Lihat portfolio lengkap →
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
 
                     @elseif($item->type == 'project')
                         <div class="p-6 flex flex-col flex-1 border-t-4 border-green-500">

@@ -9,7 +9,7 @@
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Edit Portfolio</h1>
                 <p class="text-gray-600 mb-8">Mengedit karya dari {{ $portfolio->mahasiswa->nama_mahasiswa ?? 'Mahasiswa' }}</p>
 
-                <form action="{{ route('portofolio.update', $portfolio->id) }}" method="POST" class="space-y-7">
+                <form action="{{ route('portofolio.update', $portfolio->id_portfolio) }}" method="POST" class="space-y-7">
                     @csrf
                     @method('PUT')
 

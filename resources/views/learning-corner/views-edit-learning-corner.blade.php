@@ -5,6 +5,7 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        
         <!-- Header -->
         <div class="mb-10 text-center md:text-left">
             <h1 class="text-3xl font-bold text-gray-800">Edit Catatan</h1>
@@ -23,7 +24,9 @@
         @endif
 
         <!-- Form -->
-        <form method="POST" action="{{ route('learning-corner.update', $learningCorner) }}" class="space-y-8">
+        <form method="POST" action="{{ route('learning-corner.update', $learningCorner) }}" 
+              class="space-y-8" enctype="multipart/form-data">
+            
             @csrf
             @method('PUT')
 
@@ -32,7 +35,7 @@
                 <label for="judul" class="block text-sm font-medium text-gray-700 mb-2">
                     Judul Catatan <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="judul" id="judul" 
+                <input type="text" name="judul" id="judul"
                        value="{{ old('judul', $learningCorner->judul) }}" required
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                 @error('judul')
@@ -56,6 +59,7 @@
                 <div id="items-container" class="space-y-6">
                     @foreach ($items as $idx => $item)
                         <div class="item bg-gray-50 border border-gray-200 rounded-xl p-6 relative" data-index="{{ $idx }}">
+                            
                             <div class="flex justify-between items-start mb-4">
                                 <select name="items[{{ $idx }}][type]" class="type-select border border-gray-300 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
                                     <option value="text"   {{ $item['type'] === 'text'   ? 'selected' : '' }}>Teks tambahan</option>
@@ -67,11 +71,29 @@
                                 </button>
                             </div>
 
-                            <div class="content-area">
-                                <input type="text" name="items[{{ $idx }}][content]" 
-                                       value="{{ old("items.$idx.content", $item['content'] ?? '') }}"
-                                       class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                                       placeholder="Masukkan teks di sini...">
+                            <div class="content-area mt-3">
+                                @if ($item['type'] === 'image')
+                                    <div class="mb-4">
+                                        @if ($item['content'] && Storage::disk('public')->exists($item['content']))
+                                            <img src="{{ Storage::url($item['content']) }}" 
+                                                 alt="Preview gambar lama" 
+                                                 class="max-h-64 object-contain rounded border border-gray-300 bg-white">
+                                            <p class="text-xs text-gray-500 mt-1">Gambar saat ini</p>
+                                        @else
+                                            <p class="text-sm text-gray-500 italic">Gambar tidak ditemukan</p>
+                                        @endif
+                                    </div>
+                                    <label class="block text-sm text-gray-600 mb-1">Ganti gambar (opsional):</label>
+                                    <input type="file" name="items[{{ $idx }}][image_file]" accept="image/*"
+                                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <!-- Kirim content lama agar bisa dipertahankan jika tidak upload baru -->
+                                    <input type="hidden" name="items[{{ $idx }}][content]" value="{{ $item['content'] ?? '' }}">
+                                @else
+                                    <input type="text" name="items[{{ $idx }}][content]"
+                                           value="{{ old("items.$idx.content", $item['content'] ?? '') }}"
+                                           class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition @error("items.$idx.content") border-red-500 @enderror"
+                                           placeholder="{{ $item['type'] === 'link' ? 'https://...' : 'Masukkan teks di sini...' }}">
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -114,21 +136,49 @@
                     Hapus
                 </button>
             </div>
-            <div class="content-area">
-                <input type="text" name="items[${itemIndex}][content]" class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+            <div class="content-area mt-3">
+                <input type="text" name="items[${itemIndex}][content]" 
+                       class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
                        placeholder="Masukkan teks di sini...">
             </div>
         `;
 
         container.appendChild(newItem);
         itemIndex++;
+
+        // Optional: auto fokus ke input baru
+        newItem.querySelector('input').focus();
     }
 
     document.getElementById('add-item').addEventListener('click', addItem);
 
+    // Remove item
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-item')) {
             e.target.closest('.item').remove();
+        }
+    });
+
+    // Optional: ketika pilih tipe image → ganti input jadi file
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('type-select')) {
+            const itemDiv = e.target.closest('.item');
+            const contentArea = itemDiv.querySelector('.content-area');
+            const currentType = e.target.value;
+            
+            if (currentType === 'image') {
+                contentArea.innerHTML = `
+                    <label class="block text-sm text-gray-600 mb-1">Upload gambar:</label>
+                    <input type="file" name="items[${itemDiv.dataset.index}][image_file]" accept="image/*"
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                `;
+            } else {
+                contentArea.innerHTML = `
+                    <input type="text" name="items[${itemDiv.dataset.index}][content]" 
+                           class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                           placeholder="${currentType === 'link' ? 'https://...' : 'Masukkan teks di sini...'}">
+                `;
+            }
         }
     });
 </script>

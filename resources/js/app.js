@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
             logoImg.style.transform = 'scale(1)';
         } else {
             logoImg.classList.add('zoomed');
-            logoImg.style.transform = 'scale(2)';
+            logoImg.style.transform = 'scale(1.5)';
         }
     });
 

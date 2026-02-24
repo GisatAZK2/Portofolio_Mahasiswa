@@ -5,7 +5,9 @@
 @section('content')
     <div class="p-6 lg:p-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-8">Tambah Project Baru</h1>
-
+        <p class="text-gray-600">
+            Tambah Projek Yang Pernah Kamu Buat.
+        </p>
         @if ($errors->any())
             <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-xl">
                 <ul class="list-disc pl-5">

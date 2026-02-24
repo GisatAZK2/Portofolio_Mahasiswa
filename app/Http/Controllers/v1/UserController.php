@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     // Tampilkan form registrasi
     public function showRegister()
     {
-        $jurusans  = \App\Models\Jurusan::all();
-        $keahlians = \App\Models\Keahlian::all();
-
+        $jurusans  = Jurusan::all();
+        $keahlians = Keahlian::all();
         return view('auth.register', compact('jurusans', 'keahlians'));
     }
 
@@ -33,7 +33,7 @@ class UserController extends Controller
             'password'       => ['required', 'confirmed', Password::min(8)->mixedCase()],
             'id_jurusan'     => ['required', 'exists:jurusan,id_jurusan'],
             'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
-            'photo_profile'  => ['nullable', 'image', 'max:2048'], // max 2MB
+            'photo_profile'  => ['nullable', 'image', 'max:2048'],
         ]);
 
         if ($request->hasFile('photo_profile')) {
@@ -41,7 +41,7 @@ class UserController extends Controller
             $validated['photo_profile'] = $path;
         }
 
-        $validated['password'] = Hash::make($validated['password']);
+        $validated['password']  = Hash::make($validated['password']);
         $validated['is_active'] = true;
 
         User::create($validated);
@@ -67,14 +67,13 @@ class UserController extends Controller
         $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $credentials = [
-            $fieldType => $request->login,
-            'password' => $request->password,
+            $fieldType  => $request->login,
+            'password'  => $request->password,
             'is_active' => true,
         ];
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-
             return redirect()->intended(route('dashboard'))
                 ->with('success', 'Login berhasil!');
         }
@@ -88,19 +87,75 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect()->route('login')
+        return redirect()->route('dashboard')
             ->with('success', 'Anda telah logout.');
     }
 
-    // Halaman profile (contoh sederhana)
+    // Halaman profile + form edit inline
     public function profile()
     {
         $user = Auth::user()->load(['jurusan', 'keahlian']);
+        $jurusans  = Jurusan::all();
+        $keahlians = Keahlian::all();
 
-        return view('auth.profile', compact('user'));
+        return view('auth.profile', compact('user', 'jurusans', 'keahlians'));
     }
+
+    // Proses update profile
+    public function updateProfile(Request $request)
+{
+    $user = Auth::user();
+
+    // ===== CEK JIKA HANYA UPDATE FOTO =====
+    if ($request->hasFile('photo_profile') && $request->keys() == ['_token','_method','photo_profile']) {
+
+        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+            Storage::disk('public')->delete($user->photo_profile);
+        }
+
+        $path = $request->file('photo_profile')->store('photos', 'public');
+
+        $user->update([
+            'photo_profile' => $path
+        ]);
+
+        return back()->with('success','Foto berhasil diperbarui!');
+    }
+
+    // ===== VALIDASI NORMAL PROFILE =====
+    $rules = [
+        'nama_mahasiswa' => ['required','string','max:100'],
+        'email' => ['nullable','email','max:100','unique:users,email,' . $user->id],
+        'username' => ['required','string','max:100','regex:/^[a-zA-Z0-9_]+$/','unique:users,username,' . $user->id],
+        'id_jurusan' => ['nullable','exists:jurusan,id_jurusan'],
+        'id_keahlian' => ['nullable','exists:keahlian,id_keahlian'],
+        'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
+    ];
+
+    if ($request->filled('password')) {
+        $rules['password'] = ['required','confirmed',Password::min(8)->mixedCase()];
+    }
+
+    $validated = $request->validate($rules);
+
+    if ($request->hasFile('photo_profile')) {
+        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+            Storage::disk('public')->delete($user->photo_profile);
+        }
+
+        $validated['photo_profile'] = $request->file('photo_profile')->store('photos','public');
+    }
+
+    if ($request->filled('password')) {
+        $validated['password'] = Hash::make($request->password);
+    } else {
+        unset($validated['password']);
+    }
+
+    $user->update($validated);
+
+    return redirect()->route('profile')->with('success','Profil berhasil diperbarui!');
+}
 }

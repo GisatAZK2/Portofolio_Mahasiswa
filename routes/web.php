@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
 // Auth routes (bisa di luar middleware auth)
