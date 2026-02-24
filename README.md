@@ -1,6 +1,3 @@
-Berikut adalah versi **README.md yang lebih profesional**, siap dipakai di GitHub (termasuk badge shields, tampilan lebih clean, struktur rapi, dan cocok untuk portfolio/project showcase). Saya buat versi ini dengan pendekatan production-ready + eye-catching.
-
-```markdown
 # 🎓 Student Portfolio Management System  
 **Laravel 12 • MySQL • Modern Web Application**
 

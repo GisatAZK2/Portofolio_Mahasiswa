@@ -6,16 +6,39 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Portofolio;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class PortofolioController extends Controller
 {
     public function index()
+{
+    $portofolio = auth()->user()
+        ->portofolio()
+        ->latest('tanggal')
+        ->get();
+
+    return view('portofolio.views_portofolio', compact('portofolio'));
+}
+    public function indexuser()
+{
+    $data = Portofolio::with('mahasiswa.jurusan')->latest('tanggal')->get();
+    return view('portofolio.views_portofolio_user', compact('data'));
+}
+
+    public function show(User $user)
     {
-        
-        $data = User::with(['projects', 'portofolio', 'learning_corners'])->get();
-        return view('portofolio.views_portofolio', compact('data'));
-       
+        $user->load([
+            'projects',
+            'portofolio',
+            'learning_corners',
+            'jurusan',
+            'keahlian'
+        ]);
+
+        $isOwner = Auth::check() && Auth::id() === $user->id;
+
+        return view('portofolio.views_show_user', compact('user', 'isOwner'));
     }
 
 
@@ -25,10 +48,9 @@ class PortofolioController extends Controller
         return view('portofolio.views_create_porto', compact('mahasiswa'));
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_mahasiswa'   => 'required|exists:users,id',
             'judul'          => 'nullable|string|max:255',
             'deskripsi'      => 'nullable|string',
             'link_project'   => 'nullable|url|max:500',
@@ -45,7 +67,7 @@ class PortofolioController extends Controller
         }
 
         Portofolio::create([
-            'id_mahasiswa' => $request->id_mahasiswa,
+            'id_mahasiswa' => Auth::id(), //mengambil id_mahasiswa lewat Auth
             'tanggal'      => now(),
             'isi_content'  => $content,
         ]);
@@ -53,7 +75,6 @@ class PortofolioController extends Controller
         return redirect()->route('portofolio.index')
             ->with('success', 'Portofolio berhasil ditambahkan!');
     }
-
     public function edit($id)
     {
         $portfolio = Portofolio::with('mahasiswa')->findOrFail($id);

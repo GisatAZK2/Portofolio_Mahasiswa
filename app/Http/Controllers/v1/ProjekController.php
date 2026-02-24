@@ -1,16 +1,18 @@
 <?php
 
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ProjekController extends Controller
 {
     // HALAMAN LIST (Blade)
-    public function indexView()
+    public function index()
     {
         $projects = Project::with('mahasiswa')
             ->where('id_mahasiswa', Auth::id())
@@ -18,6 +20,12 @@ class ProjekController extends Controller
             ->get();
 
         return view('project.views_project', compact('projects'));
+    }
+
+    public function indexuser()
+    {
+        $projects = Project::with('mahasiswa')->latest()->get();
+        return view('project.views_project_user', compact('projects'));
     }
 
     // FORM TAMBAH
