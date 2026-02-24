@@ -47,7 +47,6 @@
                     <input type="checkbox" name="remember" id="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                     <label for="remember" class="ml-2 text-sm text-gray-700">Ingat saya</label>
                 </div>
-                <a href="#" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">Lupa kata sandi?</a>
             </div>
 
             <div class="mt-8 flex justify-center sm:justify-end">

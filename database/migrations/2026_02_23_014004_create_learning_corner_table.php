@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('learning_corner', function (Blueprint $table) {
             $table->id('id_learning_corner');
             $table->unsignedBigInteger('id_mahasiswa');
-            $table->text('isi_learning_corner');
-            $table->date('tanggal');
+            $table->json('content');
+            $table->timestamp('tanggal');
             $table->timestamps();
 
             $table->foreign('id_mahasiswa')

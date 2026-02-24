@@ -26,7 +26,7 @@ class PortofolioController extends Controller
         return view('portofolio.views_create_porto', compact('mahasiswa'));
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'judul'          => 'nullable|string|max:255',
@@ -53,7 +53,6 @@ class PortofolioController extends Controller
         return redirect()->route('portofolio.index')
             ->with('success', 'Portofolio berhasil ditambahkan!');
     }
-
     public function edit($id)
     {
         $portfolio = Portofolio::with('mahasiswa')->findOrFail($id);

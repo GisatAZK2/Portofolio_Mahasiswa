@@ -1,4 +1,3 @@
-// resources/js/alert.js
 import Swal from 'sweetalert2';
 
 export function showSuccessAlert(message) {
