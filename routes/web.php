@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\PortofolioController;
+use App\Http\Controllers\Api\ProjekController;
 use App\Http\Controllers\v1\DashboardController;
 
 // Halaman yang boleh diakses tanpa login (guest)
@@ -19,9 +20,13 @@ Route::middleware('auth')->group(function () {
         return view('views_profile_page');
     })->name('profile-page');
 
-    Route::get('/Settings', function () {
-        return view('views_settings');
-    })->name('settings');
+    // CRUD Project – hanya user yang sudah login
+ Route::middleware('auth')->group(function () {
+    Route::resource('project', ProjekController::class)->only([
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
+    ]);
+});
+
 
     // CRUD Portfolio – hanya user yang sudah login
     Route::prefix('portofolio')->name('portofolio.')->group(function () {         // boleh guest juga (lihat daftar)

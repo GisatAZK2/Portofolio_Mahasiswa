@@ -1,8 +1,9 @@
 
 import './bootstrap';
-import { initTheme } from './utils/theme';
+import { showSuccessAlert, showErrorAlert } from './alert.js';
 
-initTheme();
+window.showSuccessAlert = showSuccessAlert;
+window.showErrorAlert = showErrorAlert;
 
 
 
@@ -19,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
             logoImg.style.transform = 'scale(1)';
         } else {
             logoImg.classList.add('zoomed');
-            logoImg.style.transform = 'scale(2)';
+            logoImg.style.transform = 'scale(1.5)';
         }
     });
 
@@ -77,7 +78,15 @@ function togglePortfolioMenu() {
                 menu.classList.toggle('hidden');
                 arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
-    window.togglePortfolioMenu = togglePortfolioMenu;
+window.togglePortfolioMenu = togglePortfolioMenu;
+// Toggle Project
+function toggleProjectMenu() {
+        const menu = document.getElementById('projectMenu');
+        const arrow = document.getElementById('projectArrow');
+        menu.classList.toggle('hidden');
+        arrow.classList.toggle('rotate-180');
+    }
+window.toggleProjectMenu = toggleProjectMenu;
     
     if (document.querySelector('[href="{{ route("portofolio.index") }}"]')) {
         const isPortfolioActive = '{{ request()->routeIs("portofolio.*") }}' === '1';
@@ -85,6 +94,12 @@ function togglePortfolioMenu() {
             document.getElementById('portfolioMenu').classList.remove('hidden');
             document.getElementById('portfolioArrow').style.transform = 'rotate(180deg)';
         }
+    if (document.querySelector('[href="{{ route("project.index") }}"]')) {
+        const isProjectActive = '{{ request()->routeIs("project.*") }}' === '1';
+        if (isProjectActive) {
+            document.getElementById('projectMenu').classList.remove('hidden');
+            document.getElementById('projectArrow').classList.add('rotate-180');
+        }
     }
-
+}
 

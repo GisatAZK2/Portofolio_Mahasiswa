@@ -23,7 +23,7 @@ class PortofolioController extends Controller
     public function create()
     {
         $mahasiswa = User::orderBy('nama_mahasiswa')->get(['id', 'nama_mahasiswa']);
-        return view('portofolio.create', compact('mahasiswa'));
+        return view('portofolio.views_create_porto', compact('mahasiswa'));
     }
 
     public function store(Request $request)
@@ -59,7 +59,7 @@ class PortofolioController extends Controller
         $portfolio = Portofolio::with('mahasiswa')->findOrFail($id);
         $mahasiswa = User::orderBy('nama_mahasiswa')->get(['id', 'nama_mahasiswa']);
 
-        return view('portofolio.edit', compact('portfolio', 'mahasiswa'));
+        return view('portofolio.views_edit_porto', compact('portfolio', 'mahasiswa'));
     }
 
    public function update(Request $request, $id)
