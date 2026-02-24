@@ -29,25 +29,59 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($entries as $entry)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                            {{ $entry->judul }}
-                        </h3>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
+                    <div class="p-6 flex-1 flex flex-col">
+                        <!-- Render dynamic content -->
+                        @if (!empty($entry->content) && is_array($entry->content))
+                            @foreach ($entry->content as $item)
+                                @if ($item['type'] === 'title')
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                                        {{ $item['content'] }}
+                                    </h3>
+                                @elseif ($item['type'] === 'text')
+                                    <p class="text-gray-700 mb-3 line-clamp-4">
+                                        {{ $item['content'] }}
+                                    </p>
+                                @elseif ($item['type'] === 'image')
+                                    <div class="mb-4">
+                                        <img 
+                                            src="{{ $item['content'] }}" 
+                                            alt="Gambar konten" 
+                                            class="w-full h-48 object-cover rounded-lg border border-gray-200"
+                                            onerror="this.src='https://via.placeholder.com/400x200?text=Image+Not+Found';this.onerror=null;"
+                                        >
+                                    </div>
+                                @elseif ($item['type'] === 'link')
+                                    <a 
+                                        href="{{ $item['content'] }}" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        class="text-indigo-600 hover:text-indigo-800 hover:underline mb-3 block line-clamp-1"
+                                    >
+                                        {{ Str::limit($item['content'], 60) }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @else
+                            <p class="text-gray-500 italic">Konten tidak tersedia</p>
+                        @endif
 
-                        <p class="text-sm text-gray-500 mb-4">
-                            {{ $entry->tanggal->format('d M Y') }}
+                        <!-- Tanggal -->
+                        <p class="text-sm text-gray-500 mt-auto pt-4">
+                            {{ $entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia' }}
                         </p>
 
-                        <div class="flex space-x-3 mt-4">
-                           <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}" 
-                               class="flex-1 text-center py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition">
+                        <!-- Tombol action -->
+                        <div class="flex space-x-3 mt-5">
+                            <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
+                               class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium">
                                 Edit
                             </a>
                             <form action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" method="POST" class="flex-1">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="w-full py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition"
+                                <button type="submit" 
+                                        class="w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium"
                                         onclick="return confirm('Yakin ingin menghapus entri ini?')">
                                     Hapus
                                 </button>

@@ -72,34 +72,41 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // Show Dropdown Menu Porto on click
-function togglePortfolioMenu() {
-                const menu = document.getElementById('portfolioMenu');
-                const arrow = document.getElementById('portfolioArrow');
-                menu.classList.toggle('hidden');
-                arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-        }
-window.togglePortfolioMenu = togglePortfolioMenu;
-// Toggle Project
-function toggleProjectMenu() {
-        const menu = document.getElementById('projectMenu');
-        const arrow = document.getElementById('projectArrow');
-        menu.classList.toggle('hidden');
-        arrow.classList.toggle('rotate-180');
+function toggleDropdown(section) {
+    const menuId  = section + 'Menu';
+    const arrowId = section + 'Arrow';
+
+    const menu  = document.getElementById(menuId);
+    const arrow = document.getElementById(arrowId);
+
+    if (!menu || !arrow) {
+        console.warn(`Dropdown section "${section}" not found`);
+        return;
     }
-window.toggleProjectMenu = toggleProjectMenu;
-    
-    if (document.querySelector('[href="{{ route("portofolio.index") }}"]')) {
-        const isPortfolioActive = '{{ request()->routeIs("portofolio.*") }}' === '1';
-        if (isPortfolioActive) {
-            document.getElementById('portfolioMenu').classList.remove('hidden');
-            document.getElementById('portfolioArrow').style.transform = 'rotate(180deg)';
-        }
-    if (document.querySelector('[href="{{ route("project.index") }}"]')) {
-        const isProjectActive = '{{ request()->routeIs("project.*") }}' === '1';
-        if (isProjectActive) {
-            document.getElementById('projectMenu').classList.remove('hidden');
-            document.getElementById('projectArrow').classList.add('rotate-180');
-        }
-    }
+
+    menu.classList.toggle('hidden');
+    arrow.classList.toggle('rotate-180');
 }
+
+// Ekspor ke window supaya bisa dipanggil dari onclick
+window.toggleDropdown = toggleDropdown;
+
+// Optional: Tutup sidebar mobile setelah klik link (UX lebih baik)
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+
+    document.querySelectorAll('#sidebar a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth < 1024) { // lg breakpoint
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+    });
+
+    // Close button mobile
+    document.getElementById('close-sidebar')?.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+    });
+});
 
