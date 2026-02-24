@@ -17,12 +17,10 @@ class LearningCorner extends Model
     protected $fillable = [
         'id_mahasiswa',
         'content',     // json
-        'tanggal',
     ];
 
     protected $casts = [
         'content' => 'array',   
-        'tanggal' => 'date',
     ];
 
     public function mahasiswa()

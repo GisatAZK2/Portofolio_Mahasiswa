@@ -24,32 +24,44 @@ class LearningCornerController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'judul'          => 'required|string|max:255',
-            'tanggal'        => 'required|date',
-            'items'          => 'nullable|array',
-            'items.*.type'   => 'required|in:text,image,link',
-            'items.*.content'=> 'required|string',
-        ]);
+{
+    $validated = $request->validate([
+        'judul'           => 'required|string|max:255',
+        'items'           => 'nullable|array',
+        'items.*.type'    => 'required|in:text,image,link',
+        'items.*.content' => 'required_if:items.*.type,text,link|string|nullable',
+        'items.*.file'    => 'required_if:items.*.type,image|image|mimes:jpg,jpeg,png,gif|max:5120', // 5MB
+    ]);
 
-        $content = [
-            ['type' => 'title', 'content' => $validated['judul']],
-        ];
+    $content = [
+        ['type' => 'title', 'content' => $validated['judul']],
+    ];
 
-        if (!empty($validated['items'])) {
-            $content = array_merge($content, $validated['items']);
+    if (!empty($validated['items'])) {
+        foreach ($validated['items'] as $index => $item) {
+            $processedItem = [
+                'type'    => $item['type'],
+                'content' => $item['content'] ?? null,
+            ];
+
+            if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
+                $file = $request->file("items.$index.file");
+                $path = $file->store('learning-corner/images', 'public');
+                $processedItem['content'] = $path; // simpan path, bukan URL langsung
+            }
+
+            $content[] = $processedItem;
         }
-
-        LearningCorner::create([
-            'id_mahasiswa' => Auth::id(),
-            'content' => $content,
-            'tanggal' => $validated['tanggal'],
-        ]);
-
-        return redirect()->route('learning-corner.index')
-            ->with('success', 'Learning Corner berhasil ditambahkan!');
     }
+
+    LearningCorner::create([
+        'id_mahasiswa' => Auth::id(),
+        'content'      => $content,
+    ]);
+
+    return redirect()->route('learning-corner.index')
+        ->with('success', 'Learning Corner berhasil ditambahkan!');
+}
 
     public function edit(LearningCorner $learningCorner)
     {
@@ -69,7 +81,7 @@ class LearningCornerController extends Controller
 
         $validated = $request->validate([
             'judul'          => 'required|string|max:255',
-            'tanggal'        => 'required|date',
+            // 'tanggal'        => 'required|date',
             'items'          => 'nullable|array',
             'items.*.type'   => 'required|in:text,image,link',
             'items.*.content'=> 'required|string',
@@ -85,7 +97,7 @@ class LearningCornerController extends Controller
 
         $learningCorner->update([
             'content' => $content,
-            'tanggal' => $validated['tanggal'],
+            // 'tanggal' => $validated['tanggal'],
         ]);
 
         return redirect()->route('learning-corner.index')

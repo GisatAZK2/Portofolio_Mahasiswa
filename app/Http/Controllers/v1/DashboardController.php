@@ -20,6 +20,9 @@ class DashboardController extends Controller
         $totalPortofolio = Portofolio::count();
         $totalLearning = LearningCorner::count();
         $totalProject = Project::count();
+        $jurusanList  = Jurusan::all();
+        $keahlianList = Keahlian::all();
+
 
         // =========================
         // AMBIL POSTING RANDOM
@@ -64,7 +67,9 @@ class DashboardController extends Controller
             'totalPortofolio',
             'totalLearning',
             'totalProject',
-            'randomPosts'
+            'randomPosts',
+            'jurusanList',
+            'keahlianList'
         ));
     }
 
@@ -84,6 +89,11 @@ class DashboardController extends Controller
         */
         if (!$type || $type == 'mahasiswa') {
             $users = User::with(['jurusan', 'keahlian'])
+            ->withCount([
+        'projects',
+        'portofolio as portofolios_count',
+        'learning_corners as learning_count'
+    ])
                 ->when($keyword, function ($query) use ($keyword) {
                     $query->where('nama_mahasiswa', 'like', "%$keyword%");
                 })
@@ -101,6 +111,8 @@ class DashboardController extends Controller
 
             $results = $results->concat($users);
         }
+
+        
 
         /*
         |--------------------------------------------------------------------------
@@ -162,12 +174,19 @@ class DashboardController extends Controller
 
         $jurusanList  = Jurusan::all();
         $keahlianList = Keahlian::all();
+        $totalMahasiswa = User::count();
+        $totalPortofolio = Portofolio::count();
+        $totalLearning = LearningCorner::count();
+        
 
         return view('views_result_search', compact(
             'results',
             'keyword',
             'jurusanList',
-            'keahlianList'
+            'keahlianList',
+            'totalMahasiswa',
+            'totalPortofolio',
+            'totalLearning' 
         ));
     }
 
