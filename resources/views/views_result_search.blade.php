@@ -15,9 +15,6 @@
                 <span class="inline-flex items-center px-4 py-2 rounded-full bg-indigo-100 text-indigo-800 font-medium text-sm">
                     Portofolio: {{ $results->where('type', 'portofolio')->count() }}
                 </span>
-                <span class="inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 font-medium text-sm">
-                    Learning: {{ $results->where('type', 'learning')->count() ?? 0 }}
-                </span>
             </div>
             <span class="text-gray-700 font-medium">
                 Total: {{ $results->count() }} hasil ditemukan
@@ -131,31 +128,91 @@
                             @endif
                         </div>
 
-                    @elseif(in_array($item->type, ['portofolio', 'learning']))
-                        <!-- Portofolio & Learning tetap seperti sebelumnya -->
-                        <div class="p-6 flex flex-col flex-1 border-t-4 border-{{ $item->type == 'portofolio' ? 'indigo' : 'yellow' }}-500">
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-{{ $item->type == 'portofolio' ? 'indigo' : 'yellow' }}-100 text-{{ $item->type == 'portofolio' ? 'indigo' : 'yellow' }}-800 mb-3">
-                                {{ ucfirst($item->type) }}
-                            </span>
+                   @elseif(in_array($item->type, ['portofolio', 'learning']))
+    <div class="p-6 flex flex-col flex-1 border-t-4 border-{{ $item->type == 'portofolio' ? 'indigo' : 'yellow' }}-500">
+        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-{{ $item->type == 'portofolio' ? 'indigo' : 'yellow' }}-100 text-{{ $item->type == 'portofolio' ? 'indigo' : 'yellow' }}-800 mb-3">
+            {{ ucfirst($item->type) }}
+        </span>
 
-                            @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-3">
-                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
-                                </p>
-                            @endif
+        <!-- Parse JSON isi_content -->
+        @php
+            $content = is_string($item->isi_content) ? json_decode($item->isi_content, true) : (array) $item->isi_content;
+            $judul         = $content['judul']         ?? ($item->type == 'portofolio' ? 'Portofolio Tanpa Judul' : 'Learning Tanpa Judul');
+            $deskripsi     = $content['deskripsi']     ?? 'Tidak ada deskripsi tersedia';
+            $link_project  = $content['link_project']  ?? null;
+            $link_github   = $content['link_github']   ?? null;  // fallback/support lama
+            $link_video    = $content['link_video']    ?? null;
+        @endphp
 
-                            <p class="text-gray-700 line-clamp-4 mb-4 text-sm">
-                                {{ Str::limit(strip_tags($item->isi_content ?? $item->content ?? $item->isi_learning_corner ?? 'Tidak ada deskripsi'), 150) }}
-                            </p>
+        <!-- Judul -->
+        <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+            {{ $judul }}
+        </h3>
 
-                            <p class="text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100">
-                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {{ \Carbon\Carbon::parse($item->tanggal ?? $item->created_at)->diffForHumans() }}
-                            </p>
-                        </div>
-                    @endif
+        <!-- Deskripsi singkat -->
+        <p class="text-sm text-gray-600 mb-4 line-clamp-3">
+            {{ Str::limit($deskripsi, 130) }}
+        </p>
+
+        <!-- Info mahasiswa -->
+        @if($item->mahasiswa)
+            <p class="text-sm text-gray-600 mb-4">
+                Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+            </p>
+        @endif
+
+        <!-- Tombol Link Project / GitHub / Video -->
+        <div class="flex flex-wrap gap-3 mb-5">
+            @if($link_project)
+                <a href="{{ $link_project }}" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-900 transition">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                    </svg>
+                    Lihat Project
+                </a>
+            @elseif($link_github)
+                <a href="{{ $link_github }}" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-900 transition">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    </svg>
+                    GitHub
+                </a>
+            @endif
+
+            @if($link_video)
+                <a href="{{ $link_video }}" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M21.5 6.5c-.3-.3-.8-.5-1.3-.5H4.8c-.5 0-1 .2-1.3.5-.3.3-.8.5-1.3.5v8.4c0 .5.2 1 .5 1.3.3.3.8.5 1.3.5h15.4c.5 0 1-.2 1.3-.5.3-.3.5-.8.5-1.3V7.8c0-.5-.2-1-.5-1.3zM10 16.5v-9l6 4.5-6 4.5z"/>
+                                                </svg>
+                    Video Demo
+                </a>
+            @endif
+        </div>
+
+        <!-- Tanggal + Tombol Detail (jika tidak ada link_project) -->
+        <div class="mt-auto flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Diperbarui {{ \Carbon\Carbon::parse($item->updated_at ?? $item->tanggal ?? now())->diffForHumans() }}
+            </div>
+
+            <!-- Tombol detail hanya jika tidak ada link_project utama -->
+            @if(!$link_project && !$link_github && !$link_video)
+                <a href="{{ route('portofolio.show', $item->id_portfolio) }}" 
+                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+                    Lihat Detail →
+                </a>
+            @endif
+        </div>
+    </div>
+@endif
+
+
+
 
                 </div>
             @endforeach

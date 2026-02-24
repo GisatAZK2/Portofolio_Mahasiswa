@@ -1,5 +1,6 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 <body class="bg-gray-50 antialiased">
 
     <!-- Overlay backdrop untuk mobile -->

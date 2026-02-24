@@ -19,6 +19,28 @@ class PortofolioController extends Controller
        
     }
 
+    public function indexuser()
+{
+    $data = Portofolio::with('mahasiswa.jurusan')->latest('tanggal')->get();
+    return view('portofolio.views_portofolio_user', compact('data'));
+}
+
+    public function show(User $user)
+    {
+        $user->load([
+            'projects',
+            'portofolio',
+            'learning_corners',
+            'jurusan',
+            'keahlian'
+        ]);
+
+        // Kalau user yang login melihat profil sendiri → bisa tambah tombol edit nanti
+        $isOwner = Auth::check() && Auth::id() === $user->id;
+
+        return view('portofolio.views_show', compact('user', 'isOwner'));
+    }
+
 
     public function create()
     {

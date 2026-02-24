@@ -22,6 +22,12 @@ class ProjekController extends Controller
         return view('project.views_project', compact('projects'));
     }
 
+    public function indexuser()
+    {
+        $projects = Project::with('mahasiswa')->latest()->get();
+        return view('project.views_project_user', compact('projects'));
+    }
+
     // FORM TAMBAH
     public function create()
     {

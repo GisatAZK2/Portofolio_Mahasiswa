@@ -1,10 +1,11 @@
 
 import './bootstrap';
-import { showSuccessAlert, showErrorAlert } from './alert.js';
+import { showSuccessAlert, showErrorAlert, showLoading, closeLoading } from './alert.js';
 
 window.showSuccessAlert = showSuccessAlert;
-window.showErrorAlert = showErrorAlert;
-
+window.showErrorAlert   = showErrorAlert;
+window.showLoading      = showLoading;
+window.closeLoading     = closeLoading;
 
 
 // Zoom logo image on click
@@ -110,3 +111,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('toggle-search-mobile');
+    const dropdown = document.getElementById('mobile-search-dropdown');
+
+    if (toggleBtn && dropdown) {
+        toggleBtn.addEventListener('click', () => {
+            dropdown.classList.toggle('hidden');
+            
+            // Animasi slide (max-height)
+            if (!dropdown.classList.contains('hidden')) {
+                dropdown.style.maxHeight = dropdown.scrollHeight + 'px';
+            } else {
+                dropdown.style.maxHeight = '0px';
+            }
+        });
+    }
+});
