@@ -2,7 +2,7 @@
 
     <!-- Logo -->
     <div class="px-6 py-6 border-b border-gray-200 flex items-center justify-center">
-        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-md">
+        <div class="w-20 h-20 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-md">
             <img src="{{ asset('assets/profile.jpg') }}" alt="Logo" class="w-20 h-20 rounded-full logo-zoom" style="cursor:pointer;">
         </div>
     </div>

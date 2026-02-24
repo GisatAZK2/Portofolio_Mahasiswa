@@ -99,7 +99,8 @@ class UserController extends Controller
     // Halaman profile (contoh sederhana)
     public function profile()
     {
-        $user = Auth::user()->load(['jurusan', 'keahlian']);
+        $user = Auth::user();
+        $user->load(['jurusan', 'keahlian']);
 
         return view('auth.profile', compact('user'));
     }

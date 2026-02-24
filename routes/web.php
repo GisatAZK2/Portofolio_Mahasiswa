@@ -6,9 +6,7 @@ use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\DashboardController;
 
 // Halaman yang boleh diakses tanpa login (guest)
-Route::get('/', function () {
-    return view('views_dashboard');
-})->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/hasil-search', function () {
     return view('views_result_search');
@@ -41,7 +39,7 @@ Route::middleware('auth')->group(function () {
 // Route auth
 Route::get('/register', [UserController::class, 'showRegister'])->name('register');
 
-Route::get('/Portofolio', [PortofolioController::class, 'index'])->name('portofolio.index');
+Route::get('/portofolio', [PortofolioController::class, 'index'])->name('portofolio.index');
 
 Route::post('/register', [UserController::class, 'register']);
 

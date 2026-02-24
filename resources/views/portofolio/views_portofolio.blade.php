@@ -15,9 +15,9 @@
             <section class="mb-12 lg:mb-16">
                 <div class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
                     <!-- Header -->
-                    <div class="px-6 py-8 md:px-8 md:py-10 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-100">
+                    <div class="px-6 py-8 md:px-8 md:py-10 bg-linear-to-r from-indigo-50 to-purple-50 border-b border-gray-100">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-5">
-                            <div class="w-20 h-20 rounded-full  flex items-center justify-center text-black bg-blue-500 font-bold text-3xl shadow-lg flex-shrink-0">
+                            <div class="w-20 h-20 rounded-full  flex items-center justify-center text-black bg-blue-500 font-bold text-3xl shadow-lg shrink-0">
                                 {{ $inisial }}
                             </div>
                             <div>

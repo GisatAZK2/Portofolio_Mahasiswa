@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Portofolio;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class PortofolioController extends Controller
@@ -28,7 +29,6 @@ class PortofolioController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_mahasiswa'   => 'required|exists:users,id',
             'judul'          => 'nullable|string|max:255',
             'deskripsi'      => 'nullable|string',
             'link_project'   => 'nullable|url|max:500',
@@ -45,7 +45,7 @@ class PortofolioController extends Controller
         }
 
         Portofolio::create([
-            'id_mahasiswa' => $request->id_mahasiswa,
+            'id_mahasiswa' => Auth::id(), //mengambil id_mahasiswa lewat Auth
             'tanggal'      => now(),
             'isi_content'  => $content,
         ]);
