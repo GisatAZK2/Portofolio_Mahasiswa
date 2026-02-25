@@ -32,8 +32,8 @@
                 @yield('content')
             </main>
 
-            <!-- Footer (jika ada) -->
-            <!--@include('components.footer')-->
+            <!-- Footer -->
+            <!-- @include('components.footer') -->
         </div>
     </div>
 

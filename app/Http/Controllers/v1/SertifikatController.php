@@ -32,14 +32,11 @@ class SertifikatController extends Controller
         'tanggal_terbit'    => 'required|date',
         'link_sertifikat'   => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
     ]);
-
+    
     if ($request->hasFile('link_sertifikat')) {
-
         $path = $request->file('link_sertifikat')
                         ->store('sertifikat', 'public');
-
-        $validated['link_sertifikat'] = asset('storage/' . $path);
-
+        $validated['link_sertifikat'] = $path;
     }
 
     Sertifikat::create([
@@ -57,12 +54,12 @@ class SertifikatController extends Controller
     {
         $this->authorizeEntry($sertifikat);
 
-        $judul = $sertifikat->nama_sertifikat;
-        $items = array_values(   
-            array_filter($sertifikat->content, fn($item) => ($item['type'] ?? '') !== 'title')
-        );
+        $sertifikat = Sertifikat::where('id', $sertifikat->id)
+            ->where('id_mahasiswa', Auth::id())
+            ->firstOrFail();
 
-        return view('sertifikat.views-edit-sertifikat', compact('sertifikat', 'judul', 'items'));
+
+        return view('sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
    
 public function update(Request $request, Sertifikat $sertifikat)

@@ -2,16 +2,11 @@
 @section('title', 'Tambah Sertifikat Baru')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+<div class="min-h-screen">
+    <div class=" p-8">
         <!-- Header -->
         <div class="mb-8 text-center md:text-left">
             <div class="flex items-center gap-3 mb-2">
-                <a href="{{ route('sertifikat.index') }}" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                </a>
                 <h1 class="text-3xl font-bold text-gray-800">Tambah Sertifikat Baru</h1>
             </div>
             <p class="mt-2 text-gray-600">Tambahkan sertifikat yang kamu peroleh untuk melengkapi portofoliomu.</p>

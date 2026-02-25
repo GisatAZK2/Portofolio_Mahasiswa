@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
   
-    // Universal Toggle Password (Works Everywhere)
+    // Show/hide Toggle Password
     document.addEventListener('click', function (e) {
 
         const toggleBtn = e.target.closest('[data-toggle-password]');
@@ -90,7 +90,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Show Dropdown Menu Porto on click
+// Show Dropdown Menu on click
 function toggleDropdown(section) {
     const menuId  = section + 'Menu';
     const arrowId = section + 'Arrow';
