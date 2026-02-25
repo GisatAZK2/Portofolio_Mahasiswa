@@ -1,10 +1,19 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.90, maximum-scale=0.80, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
 <body class="bg-gray-50 antialiased">
 
     <!-- Overlay backdrop untuk mobile -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
+    <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
 
     
     <div class="flex h-screen">
@@ -28,48 +37,69 @@
         </div>
     </div>
 
-    <!-- JavaScript toggle sidebar -->
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('toggle-sidebar');
-        const closeBtn = document.getElementById('close-sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
+document.addEventListener('DOMContentLoaded', () => {
+    // Sidebar toggle
+    const toggleBtn       = document.getElementById('toggle-sidebar');
+    const hamburger       = document.getElementById('sidebar-hamburger');
+    const closeIcon       = document.getElementById('sidebar-close');
+    const sidebar         = document.getElementById('sidebar');
+    const overlay         = document.getElementById('sidebar-overlay');
+    const closeSidebarBtn = document.getElementById('close-sidebar');
 
-        function openSidebar() {
-            sidebar.classList.remove('-translate-x-full');
+    function openSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.remove('-translate-x-full');
+        if (overlay) {
             overlay.classList.remove('hidden');
             overlay.classList.add('block');
         }
+        document.body.style.overflow = 'hidden';
 
-        function closeSidebar() {
-            sidebar.classList.add('-translate-x-full');
+        // Ganti icon ke X
+        if (hamburger) hamburger.classList.add('hidden');
+        if (closeIcon) closeIcon.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.add('-translate-x-full');
+        if (overlay) {
             overlay.classList.remove('block');
             overlay.classList.add('hidden');
         }
+        document.body.style.overflow = '';
 
-        if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
-        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-        if (overlay) overlay.addEventListener('click', closeSidebar);
-
-        // Contoh toggle dropdown portfolio
-        function togglePortfolioMenu() {
-            const menu = document.getElementById('portfolioMenu');
-            const arrow = document.getElementById('portfolioArrow');
-            if (menu && arrow) {
-                menu.classList.toggle('hidden');
-                arrow.classList.toggle('rotate-180');
-            }
-        }
-
-        function toggleProjectMenu() {
-    const menu = document.getElementById('projectMenu');
-    const arrow = document.getElementById('projectArrow');
-    if (menu && arrow) {
-        menu.classList.toggle('hidden');
-        arrow.classList.toggle('rotate-180');
+        // Kembali ke hamburger
+        if (hamburger) hamburger.classList.remove('hidden');
+        if (closeIcon) closeIcon.classList.add('hidden');
     }
-}
-    </script>
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            if (sidebar?.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        });
+    }
+
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    // FIX: Definisi fungsi toggleDropdown() yang hilang
+    window.toggleDropdown = function(menuId) {
+        const menu = document.getElementById(menuId + 'Menu');
+        const arrow = document.getElementById(menuId + 'Arrow');
+
+        if (menu && arrow) {
+            menu.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+    };
+});
+</script>
 
     @stack('scripts')
 </body>

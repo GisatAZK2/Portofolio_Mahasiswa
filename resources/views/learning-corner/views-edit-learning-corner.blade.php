@@ -1,7 +1,5 @@
 @extends('Layout.Layout')
-
 @section('title', 'Edit Catatan Learning Corner')
-
 @section('content')
 <div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
@@ -24,7 +22,7 @@
         @endif
 
         <!-- Form -->
-        <form method="POST" action="{{ route('learning-corner.update', $learningCorner) }}" 
+        <form method="POST" action="{{ route('learning-corner.update', $learningCorner) }}"
               class="space-y-8" enctype="multipart/form-data">
             
             @csrf
@@ -75,8 +73,8 @@
                                 @if ($item['type'] === 'image')
                                     <div class="mb-4">
                                         @if ($item['content'] && Storage::disk('public')->exists($item['content']))
-                                            <img src="{{ Storage::url($item['content']) }}" 
-                                                 alt="Preview gambar lama" 
+                                            <img src="{{ Storage::url($item['content']) }}"
+                                                 alt="Preview gambar lama"
                                                  class="max-h-64 object-contain rounded border border-gray-300 bg-white">
                                             <p class="text-xs text-gray-500 mt-1">Gambar saat ini</p>
                                         @else
@@ -86,7 +84,7 @@
                                     <label class="block text-sm text-gray-600 mb-1">Ganti gambar (opsional):</label>
                                     <input type="file" name="items[{{ $idx }}][image_file]" accept="image/*"
                                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                                    <!-- Kirim content lama agar bisa dipertahankan jika tidak upload baru -->
+                                    <!-- Hidden untuk mempertahankan gambar lama jika tidak upload baru -->
                                     <input type="hidden" name="items[{{ $idx }}][content]" value="{{ $item['content'] ?? '' }}">
                                 @else
                                     <input type="text" name="items[{{ $idx }}][content]"
@@ -115,7 +113,6 @@
     </div>
 </div>
 
-<!-- JavaScript Dynamic Items -->
 <script>
     let itemIndex = {{ count($items) }};
 
@@ -137,7 +134,7 @@
                 </button>
             </div>
             <div class="content-area mt-3">
-                <input type="text" name="items[${itemIndex}][content]" 
+                <input type="text" name="items[${itemIndex}][content]"
                        class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
                        placeholder="Masukkan teks di sini...">
             </div>
@@ -146,40 +143,58 @@
         container.appendChild(newItem);
         itemIndex++;
 
-        // Optional: auto fokus ke input baru
+        // Attach listener untuk type select pada item baru
+        attachTypeChangeListener(newItem);
         newItem.querySelector('input').focus();
     }
 
+    // Fungsi untuk handle perubahan type (baik existing maupun new item)
+    function attachTypeChangeListener(itemElement) {
+        const select = itemElement.querySelector('.type-select');
+        if (!select) return;
+
+        select.addEventListener('change', function() {
+            const currentType = this.value;
+            const contentArea = itemElement.querySelector('.content-area');
+            const index = itemElement.dataset.index;
+
+            if (currentType === 'image') {
+                contentArea.innerHTML = `
+                    <label class="block text-sm text-gray-600 mb-1">Upload gambar baru (opsional):</label>
+                    <input type="file" name="items[${index}][image_file]" accept="image/*"
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <input type="hidden" name="items[${index}][content]" value="">
+                `;
+            } else {
+                contentArea.innerHTML = `
+                    <input type="text" name="items[${index}][content]"
+                           class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                           placeholder="${currentType === 'link' ? 'https://...' : 'Masukkan teks di sini...'}">
+                `;
+            }
+        });
+    }
+
+    document.querySelectorAll('.item').forEach(item => {
+        attachTypeChangeListener(item);
+    });
+
     document.getElementById('add-item').addEventListener('click', addItem);
 
-    // Remove item
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-item')) {
             e.target.closest('.item').remove();
         }
     });
 
-    // Optional: ketika pilih tipe image → ganti input jadi file
-    document.addEventListener('change', (e) => {
-        if (e.target.classList.contains('type-select')) {
-            const itemDiv = e.target.closest('.item');
-            const contentArea = itemDiv.querySelector('.content-area');
-            const currentType = e.target.value;
-            
-            if (currentType === 'image') {
-                contentArea.innerHTML = `
-                    <label class="block text-sm text-gray-600 mb-1">Upload gambar:</label>
-                    <input type="file" name="items[${itemDiv.dataset.index}][image_file]" accept="image/*"
-                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                `;
-            } else {
-                contentArea.innerHTML = `
-                    <input type="text" name="items[${itemDiv.dataset.index}][content]" 
-                           class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                           placeholder="${currentType === 'link' ? 'https://...' : 'Masukkan teks di sini...'}">
-                `;
-            }
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        @if (session('success'))
+            showSuccessAlert('{{ session('success') }}');
+        @endif
+
+        @if ($errors->any())
+            showErrorAlert('{{ $errors->first() }}');
+        @endif
     });
 </script>
 @endsection

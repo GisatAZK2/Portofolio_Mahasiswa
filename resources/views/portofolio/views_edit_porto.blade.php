@@ -1,13 +1,17 @@
 @extends('Layout.Layout')
-
 @section('title', 'Edit Portfolio')
-
 @section('content')
     <div class="min-h-screen bg-gray-100 py-10">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Edit Portfolio</h1>
                 <p class="text-gray-600 mb-8">Mengedit karya dari {{ $portfolio->mahasiswa->nama_mahasiswa ?? 'Mahasiswa' }}</p>
+
+                @if (session('success'))
+                    <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-xl">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
                 <form action="{{ route('portofolio.update', $portfolio->id_portfolio) }}" method="POST" class="space-y-7">
                     @csrf
@@ -81,4 +85,17 @@
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        @if (session('success'))
+            showSuccessAlert('{{ session('success') }}');
+        @endif
+
+        @if ($errors->any())
+            showErrorAlert('{{ $errors->first() }}'); 
+             {{ implode('\n', $errors->all()) }}
+        @endif
+    });
+    </script>
 @endsection

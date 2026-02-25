@@ -1,11 +1,12 @@
 
 import './bootstrap';
-import { showSuccessAlert, showErrorAlert, showLoading, closeLoading } from './alert.js';
+import { showSuccessAlert, showErrorAlert, showLoading, closeLoading,showConfirmAlert  } from './alert.js';
 
 window.showSuccessAlert = showSuccessAlert;
 window.showErrorAlert   = showErrorAlert;
 window.showLoading      = showLoading;
 window.closeLoading     = closeLoading;
+window.showConfirmAlert = showConfirmAlert;
 
 
 // Zoom logo image on click
@@ -25,7 +26,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Optional: click outside to reset zoom
     document.addEventListener('click', (e) => {
         if (!logoImg.contains(e.target) && logoImg.classList.contains('zoomed')) {
             logoImg.classList.remove('zoomed');
@@ -89,10 +89,8 @@ function toggleDropdown(section) {
     arrow.classList.toggle('rotate-180');
 }
 
-// Ekspor ke window supaya bisa dipanggil dari onclick
 window.toggleDropdown = toggleDropdown;
 
-// Optional: Tutup sidebar mobile setelah klik link (UX lebih baik)
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
@@ -129,3 +127,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
