@@ -68,8 +68,6 @@ class DashboardController extends Controller
             'totalLearning',
             'totalProject',
             'randomPosts',
-            'jurusanList',
-            'keahlianList'
         ));
     }
 
@@ -172,8 +170,6 @@ class DashboardController extends Controller
             $results = $results->concat($portofolios);
         }
 
-        $jurusanList  = Jurusan::all();
-        $keahlianList = Keahlian::all();
         $totalMahasiswa = User::count();
         $totalPortofolio = Portofolio::count();
         $totalLearning = LearningCorner::count();
@@ -182,8 +178,6 @@ class DashboardController extends Controller
         return view('views_result_search', compact(
             'results',
             'keyword',
-            'jurusanList',
-            'keahlianList',
             'totalMahasiswa',
             'totalPortofolio',
             'totalLearning' 

@@ -1,14 +1,14 @@
 @extends('Layout.Layout')
-
+@section('title', 'Learning Corner Saya')
 @section('content')
 <div class="p-6 lg:p-8">
-    <div class="flex justify-between items-center mb-8">
-        <diV>        <h1 class="text-3xl font-bold text-gray-900">Learning Corner Saya</h1>
-        <p class="text-gray-600">
-            Kelola semua postingan Learning Corner kamu di sini.
-        </p>
-        </diV>
-
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Learning Corner Saya</h1>
+            <p class="text-gray-600">
+                Kelola semua postingan Learning Corner kamu di sini.
+            </p>
+        </div>
         <a href="{{ route('learning-corner.create') }}"
            class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -18,12 +18,7 @@
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-xl">
-            {{ session('success') }}
-        </div>
-    @endif
-
+    {{-- Data --}}
     @if ($entries->isEmpty())
         <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
             <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -43,15 +38,12 @@
                                     <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
                                         {{ $item['content'] ?? '(Tanpa Judul)' }}
                                     </h3>
-
                                 @elseif ($item['type'] === 'text')
                                     <p class="text-gray-700 mb-4 line-clamp-4">
                                         {{ $item['content'] }}
                                     </p>
-
                                 @elseif ($item['type'] === 'image')
                                     @php
-                                        // Normalisasi path: ganti backslash jadi slash
                                         $imagePath = str_replace(['\\', '/'], '/', $item['content'] ?? '');
                                     @endphp
                                     <div class="mb-5">
@@ -63,7 +55,6 @@
                                             onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;"
                                         >
                                     </div>
-
                                 @elseif ($item['type'] === 'link')
                                     <a
                                         href="{{ $item['content'] }}"
@@ -90,12 +81,14 @@
                                class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200">
                                 Edit
                             </a>
-                            <form action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" method="POST" class="flex-1">
+
+                            <form class="delete-form flex-1" 
+                                  action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" 
+                                  method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                        class="w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium border border-red-200"
-                                        onclick="return confirm('Yakin ingin menghapus entri ini?\nData tidak bisa dikembalikan.')">
+                                <button type="button"
+                                        class="delete-btn w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium border border-red-200">
                                     Hapus
                                 </button>
                             </form>
@@ -104,7 +97,35 @@
                 </div>
             @endforeach
         </div>
-
     @endif
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            const confirmed = await showConfirmAlert({
+                title: 'Hapus Entri Learning Corner?',
+                text: 'Catatan ini akan dihapus permanen dan tidak bisa dikembalikan.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+            });
+
+            if (confirmed) {
+                showLoading('Menghapus catatan...');
+                this.closest('form').submit();
+            }
+        });
+    });
+
+    @if (session('success'))
+        showSuccessAlert('{{ session('success') }}');
+    @endif
+});
+</script>
 @endsection

@@ -1,22 +1,16 @@
 <aside id="sidebar"
-      class="fixed inset-y-0 left-0 w-72 z-50 bg-white border-r border-gray-200 shadow-xl
+      class="fixed inset-y-0 left-0 w-62 z-50 bg-white border-r border-gray-200 shadow-xl
              transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out
              lg:static lg:inset-auto lg:shadow-sm
              flex flex-col overflow-hidden">
     
-    <div class="px-6 py-6 border-b border-gray-200 flex items-center justify-between shrink-0">
+    <div class="px-6 py-6 mt-10 border-b border-gray-200 flex items-center justify-between shrink-0">
         <div class="flex-1 flex justify-center lg:justify-center">
             <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center shadow-md">
                 <img id="logo-zoom" src="{{ asset('assets/Logo.svg') }}" alt="Logo"
                      class="w-20 h-20 rounded-full object-cover">
             </div>
         </div>
-        <!-- Close button hanya di mobile -->
-        <button id="close-sidebar" class="lg:hidden text-gray-600 hover:text-gray-900 focus:outline-none">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-        </button>
     </div>
 
     <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
@@ -161,13 +155,13 @@
         @auth
             <a href="{{ route('profile') ?? '/profile' }}" class="block hover:bg-gray-100 rounded-lg transition p-2 -mx-2">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0">
                         @if (Auth::user()->photo_profile)
                             <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
                                  alt="{{ Auth::user()->nama_mahasiswa }}"
                                  class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                            <div class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                                 {{ substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1) }}
                             </div>
                         @endif

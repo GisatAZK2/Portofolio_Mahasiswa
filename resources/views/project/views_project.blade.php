@@ -1,29 +1,24 @@
-@extends('Layout.Layout') <!-- atau layout yang kamu pakai -->
-
+@extends('Layout.Layout')
+@section('title', 'Project Saya')
 @section('content')
 <div class="p-6 lg:p-8">
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
-        <h1 class="text-3xl font-bold text-gray-900">Project Saya</h1>
-          <p class="text-gray-600 mt-1">
-                    Kelola semua postingan project kamu di sini.
-                </p>
+            <h1 class="text-3xl font-bold text-gray-900">Project Saya</h1>
+            <p class="text-gray-600 mt-1">
+                Kelola semua postingan project kamu di sini.
+            </p>
         </div>
-        <a href="{{ route('project.create') }}" class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
+        <a href="{{ route('project.create') }}" 
+           class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
             Tambah Project Baru
         </a>
-        
     </div>
 
-    @if (session('success'))
-        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-xl">
-            {{ session('success') }}
-        </div>
-    @endif
-
+    {{-- Data --}}
     @if ($projects->isEmpty())
         <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
             <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,13 +51,18 @@
                         </div>
 
                         <div class="flex space-x-3">
-                            <a href="{{ route('project.edit', $project->id) }}" class="flex-1 text-center py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition">
+                            <a href="{{ route('project.edit', $project->id) }}" 
+                               class="flex-1 text-center py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition">
                                 Edit
                             </a>
-                            <form action="{{ route('project.destroy', $project->id) }}" method="POST" class="flex-1">
+
+                            <form class="delete-form flex-1" 
+                                  action="{{ route('project.destroy', $project->id) }}" 
+                                  method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="w-full py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition" onclick="return confirm('Yakin hapus project ini?')">
+                                <button type="button"
+                                        class="delete-btn w-full py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition">
                                     Hapus
                                 </button>
                             </form>
@@ -73,4 +73,33 @@
         </div>
     @endif
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            const confirmed = await showConfirmAlert({
+                title: 'Hapus Project?',
+                text: 'Project ini akan dihapus permanen dan tidak bisa dikembalikan.',
+                icon: 'warning',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+            });
+
+            if (confirmed) {
+                showLoading('Menghapus project...');
+                this.closest('form').submit();
+            }
+        });
+    });
+
+    @if (session('success'))
+        showSuccessAlert('{{ session('success') }}');
+    @endif
+});
+</script>
 @endsection

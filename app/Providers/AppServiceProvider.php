@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Jurusan;
+use App\Models\Keahlian;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('components.header', function ($view) {   // <-- ganti 'layouts.header' dengan nama view header kamu
+            $jurusanList = Jurusan::select('id_jurusan', 'nama_jurusan')
+                ->orderBy('nama_jurusan')
+                ->get();
+
+            $keahlianList = Keahlian::select('id_keahlian', 'nama_keahlian')
+                ->orderBy('nama_keahlian')
+                ->get();
+
+            $view->with([
+                'jurusanList'  => $jurusanList,
+                'keahlianList' => $keahlianList,
+            ]);
+        });
     }
 }
