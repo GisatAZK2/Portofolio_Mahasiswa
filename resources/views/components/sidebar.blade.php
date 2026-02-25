@@ -5,7 +5,7 @@
              flex flex-col overflow-hidden">
     <div class="px-6 py-6 border-b border-gray-200 flex items-center justify-between shrink-0">
         <div class="flex-1 flex justify-center lg:justify-center">
-            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center shadow-md">
+            <div class="w-20 h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center shadow-md">
                 <img src="{{ asset('assets/profile.jpg') }}" alt="Logo"
                      class="w-20 h-20 rounded-full object-cover">
             </div>
@@ -146,13 +146,13 @@
             <!-- Klik area ini akan ke halaman profile -->
             <a href="{{ route('profile') ?? '/profile' }}" class="block hover:bg-gray-100 rounded-lg transition p-2 -mx-2">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0">
                         @if (Auth::user()->photo_profile)
                             <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
                                  alt="{{ Auth::user()->nama_mahasiswa }}"
                                  class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                            <div class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                                 {{ substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1) }}
                             </div>
                         @endif

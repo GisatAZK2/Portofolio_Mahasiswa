@@ -23,6 +23,24 @@ window.addEventListener('DOMContentLoaded', () => {
             logoImg.style.transform = 'scale(1.5)';
         }
     });
+  
+    // Universal Toggle Password (Works Everywhere)
+    document.addEventListener('click', function (e) {
+
+        const toggleBtn = e.target.closest('[data-toggle-password]');
+        if (!toggleBtn) return;
+
+        const input = toggleBtn.closest('div').querySelector('input[type="password"], input[type="text"]');
+        if (!input) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggleBtn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            toggleBtn.textContent = '👁';
+        }
+    });
 
     // Optional: click outside to reset zoom
     document.addEventListener('click', (e) => {

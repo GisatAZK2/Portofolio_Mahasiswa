@@ -9,7 +9,7 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 
             <!-- Cover + Avatar -->
-            <div class="relative h-48 bg-gradient-to-br from-indigo-500 via-indigo-600 to-blue-600">
+            <div class="relative h-48 bg-linear-to-br from-indigo-500 via-indigo-600 to-blue-600">
                 <div class="absolute -bottom-16 left-1/2 -translate-x-1/2">
                     <div class="w-32 h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden ring-1 ring-gray-200/50">
                         @if (Auth::user()->photo_profile)
