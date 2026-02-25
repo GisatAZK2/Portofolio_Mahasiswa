@@ -8,7 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
-use App\Models\Portofolio;
 use App\Models\LearningCorner;
 use App\Models\Angkatan;
 use App\Models\Project;
@@ -50,10 +49,6 @@ public function angkatan() {
     return $this->belongsTo(Angkatan::class, 'id_angkatan');
 }
 
-public function portofolio()
-{
-    return $this->hasMany(Portofolio::class, 'id_mahasiswa');
-}
 
 public function learning_corners()
 {
