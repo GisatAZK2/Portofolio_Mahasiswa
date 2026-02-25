@@ -99,10 +99,14 @@
                                 class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('password') border-red-400 @enderror">
                             @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                         </div>
-                        <div>
+                        <div class="relative w-full">
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password</label>
                             <input type="password" name="password_confirmation" required
                                 class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition">
+                                <button 
+                                type="button"
+                                data-toggle-password
+                                class="absolute top-1/2 right-4 -translate-y-1/2 text-gray-500 hover:text-gray-700 z-10">
                         </div>
                     </div>
                 </div>

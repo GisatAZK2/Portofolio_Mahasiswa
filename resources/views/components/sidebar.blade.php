@@ -155,13 +155,13 @@
         @auth
             <a href="{{ route('profile') ?? '/profile' }}" class="block hover:bg-gray-100 rounded-lg transition p-2 -mx-2">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0">
                         @if (Auth::user()->photo_profile)
                             <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
                                  alt="{{ Auth::user()->nama_mahasiswa }}"
                                  class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                            <div class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                                 {{ substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1) }}
                             </div>
                         @endif
