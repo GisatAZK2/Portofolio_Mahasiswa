@@ -31,13 +31,28 @@
             @foreach ($projects as $project)
                 <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{{ $project->nama_project }}</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{{ $project->isi_content['nama_project'] ?? '-' }}</h3>
                         
                         <div class="space-y-2 text-sm text-gray-600 mb-4">
                             <p><span class="font-medium">Mulai:</span> {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}</p>
                             @if ($project->tanggal_akhir)
                                 <p><span class="font-medium">Selesai:</span> {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y') }}</p>
                             @endif
+                           
+                            @if($project->link_project || $project->link_github || $project->link_video)
+                                <div class="flex flex-wrap gap-3 text-sm mb-4">
+                                    @if($project->link_project)
+                                        <a href="{{ $project->link_project }}" target="_blank" class="text-indigo-600 hover:underline">Project</a>
+                                    @endif
+                                    @if($project->link_github)
+                                        <a href="{{ $project->link_github }}" target="_blank" class="text-indigo-600 hover:underline">GitHub</a>
+                                    @endif
+                                    @if($project->link_video)
+                                        <a href="{{ $project->link_video }}" target="_blank" class="text-indigo-600 hover:underline">Video</a>
+                                    @endif
+                                </div>
+                            @endif 
+                            <!--
                             @if ($project->link_project)
                                 <p>
                                     <a href="{{ $project->link_project }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
@@ -48,7 +63,7 @@
                                     </a>
                                 </p>
                             @endif
-                        </div>
+                        </div> -->
 
                         <div class="flex space-x-3">
                             <a href="{{ route('project.edit', $project->id) }}" 
