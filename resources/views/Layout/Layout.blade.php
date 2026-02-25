@@ -33,7 +33,7 @@
             </main>
 
             <!-- Footer (jika ada) -->
-            @include('components.footer')
+            <!--@include('components.footer')-->
         </div>
     </div>
 

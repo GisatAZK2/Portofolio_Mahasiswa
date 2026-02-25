@@ -41,7 +41,7 @@
                         <option value="">Semua Jurusan</option>
                         @foreach($jurusanList ?? [] as $jurusan)
                             <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
-                                {{ Str::limit($jurusan->nama_jurusan, 28) }}
+                                {{ Str::limit($jurusan->nama_jurusan, 20) }}
                             </option>
                         @endforeach
                     </select>
@@ -50,7 +50,16 @@
                         <option value="">Semua Keahlian</option>
                         @foreach($keahlianList ?? [] as $keahlian)
                             <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
-                                {{ Str::limit($keahlian->nama_keahlian, 28) }}
+                                {{ Str::limit($keahlian->nama_keahlian, 20) }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <select name="angkatan" class="block border border-gray-300 rounded-xl py-3.5 px-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 text-base bg-white min-w-[180px]">
+                        <option value="">Semua Angkatan</option>
+                        @foreach($angkatanList ?? [] as $angkatan)
+                            <option value="{{ $angkatan->id_kangkatan }}" {{ request('angkatan') == $angkatan->id_angkatan ? 'selected' : '' }}>
+                                {{ Str::limit($angkatan->nama_angkatan, 20) }}
                             </option>
                         @endforeach
                     </select>

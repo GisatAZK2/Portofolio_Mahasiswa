@@ -9,7 +9,9 @@ use App\Models\User;
 use App\Models\LearningCorner;
 use App\Models\Project;
 use App\Models\Jurusan;
+use App\Models\Angkatan;
 use App\Models\Keahlian;
+use App\Models\Sertifikat;
 
 class DashboardController extends Controller
 {
@@ -22,6 +24,8 @@ class DashboardController extends Controller
         $totalProject = Project::count();
         $jurusanList  = Jurusan::all();
         $keahlianList = Keahlian::all();
+        $angkatanList = Angkatan::all();
+        $totalSertifikat= Sertifikat::count();
 
 
         // =========================
@@ -55,10 +59,21 @@ class DashboardController extends Controller
                 return $item;
             });
 
+         $randomSertifikat = Sertifikat::with('mahasiswa')
+            ->inRandomOrder()
+            ->take(3)
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'sertifikat';
+                return $item;
+            });
+
+
         // Gabungkan & acak lagi
         $randomPosts = $randomPortofolio
             ->concat($randomLearning)
             ->concat($randomProject)
+            ->concat($randomSertifikat)
             ->shuffle()
             ->take(6);
 
@@ -67,6 +82,7 @@ class DashboardController extends Controller
             'totalPortofolio',
             'totalLearning',
             'totalProject',
+            'totalSertifikat',
             'randomPosts',
         ));
     }
@@ -76,6 +92,7 @@ class DashboardController extends Controller
         $keyword   = $request->q;
         $jurusan   = $request->jurusan;
         $keahlian  = $request->keahlian;
+        $angkatan  = $request->angkatan;
         $type      = $request->type;
 
         $results = collect();
@@ -86,7 +103,7 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
         if (!$type || $type == 'mahasiswa') {
-            $users = User::with(['jurusan', 'keahlian'])
+            $users = User::with(['jurusan', 'keahlian', 'angkatan'])
             ->withCount([
         'projects',
         'portofolio as portofolios_count',
@@ -100,6 +117,9 @@ class DashboardController extends Controller
                 })
                 ->when($keahlian, function ($query) use ($keahlian) {
                     $query->where('id_keahlian', $keahlian);
+                })
+                ->when($angkatan, function ($query) use ($angkatan) {
+                    $query->where('id_angkatan', $angkatan);
                 })
                 ->get()
                 ->map(function ($item) {
@@ -132,6 +152,11 @@ class DashboardController extends Controller
                         $q->where('id_keahlian', $keahlian);
                     });
                 })
+                ->when($angkatan, function ($query) use ($angkatan) {
+                    $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
+                        $q->where('id_angkatan', $angkatan);
+                    });
+                })
                 ->get()
                 ->map(function ($item) {
                     $item->type = 'project';
@@ -159,6 +184,11 @@ class DashboardController extends Controller
                 ->when($keahlian, function ($query) use ($keahlian) {
                     $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
                         $q->where('id_keahlian', $keahlian);
+                    });
+                })
+                ->when($angkatan, function ($query) use ($angkatan) {
+                    $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
+                        $q->where('id_angkatan', $angkatan);
                     });
                 })
                 ->get()

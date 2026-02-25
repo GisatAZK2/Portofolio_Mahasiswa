@@ -24,6 +24,7 @@ public function run(): void
             'password' => Hash::make('password123'),
             'id_jurusan' => 1,
             'id_keahlian' => 1,
+            'id_angkatan' => 1,
             'is_active' => true
         ],
         [
@@ -33,6 +34,7 @@ public function run(): void
             'password' => Hash::make('password123'),
             'id_jurusan' => 2,
             'id_keahlian' => 2,
+            'id_angkatan' => 1,
             'is_active' => true
         ],
         [
@@ -42,6 +44,7 @@ public function run(): void
             'password' => Hash::make('password123'),
             'id_jurusan' => 3,
             'id_keahlian' => 3,
+            'id_angkatan' => 2,
             'is_active' => true
         ]
     ]);

@@ -6,6 +6,7 @@ use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
 Use App\Http\Controllers\v1\DashboardController;
 use App\Http\Controllers\v1\LearningCornerController;
+use App\Http\Controllers\v1\SertifikatController;
 
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -20,6 +21,10 @@ Route::middleware('auth')->group(function () {
 
     // CRUD Project
     Route::resource('project', ProjekController::class)->only([
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
+    ]);
+
+    Route::resource('sertifikat', SertifikatController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
 

@@ -27,11 +27,10 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->unsignedBigInteger('id_jurusan');
             $table->unsignedBigInteger('id_keahlian');
+            $table->unsignedBigInteger('id_angkatan');
             
             $table->boolean('is_active')->default(true);
-
-            // Laravel Auth Features
-            $table->rememberToken(); // untuk remember me
+            $table->rememberToken(); 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
 
@@ -39,6 +38,11 @@ return new class extends Migration
             $table->foreign('id_jurusan')
                 ->references('id_jurusan')
                 ->on('jurusan')
+                ->onDelete('cascade');
+
+            $table->foreign('id_angkatan')
+                ->references('id')
+                ->on('angkatan')
                 ->onDelete('cascade');
         });
 

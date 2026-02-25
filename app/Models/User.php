@@ -10,6 +10,7 @@ use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\Portofolio;
 use App\Models\LearningCorner;
+use App\Models\Angkatan;
 use App\Models\Project;
 
 class User extends Authenticatable
@@ -31,6 +32,7 @@ class User extends Authenticatable
     'password',
     'id_jurusan',
     'id_keahlian',
+    'id_angkatan',
     'is_active'
     ];
 
@@ -42,6 +44,10 @@ class User extends Authenticatable
    public function keahlian()
 {
     return $this->belongsTo(Keahlian::class, 'id_keahlian');
+}
+
+public function angkatan() {
+    return $this->belongsTo(Angkatan::class, 'id_angkatan');
 }
 
 public function portofolio()

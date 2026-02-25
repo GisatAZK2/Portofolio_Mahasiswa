@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
+use App\Models\Angkatan;
 use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,9 +32,14 @@ class AppServiceProvider extends ServiceProvider
                 ->orderBy('nama_keahlian')
                 ->get();
 
+            $angkatanlist = Angkatan::select('id_angkatan', 'nama_angkatan')
+                ->orderBy('nama_angkatan')
+                ->get();
+
             $view->with([
                 'jurusanList'  => $jurusanList,
                 'keahlianList' => $keahlianList,
+                'angkatanList' => $angkatanlist
             ]);
         });
     }

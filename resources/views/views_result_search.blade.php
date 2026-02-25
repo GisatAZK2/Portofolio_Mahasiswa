@@ -4,13 +4,90 @@
 @section('content')
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
+    <!-- Filter Info -->
+    @if($keyword || request()->jurusan || request()->keahlian || request()->angkatan)
+    <div class="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div class="flex flex-wrap items-center gap-3">
+            <span class="text-sm font-medium text-gray-700">Filter aktif:</span>
+            
+            @if($keyword)
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Pencarian: "{{ $keyword }}"
+            </span>
+            @endif
+
+            @if(request()->jurusan && $results->isNotEmpty())
+                @php
+                    $jurusanItem = $results->first(function($item) {
+                        return isset($item->jurusan) && $item->jurusan->id_jurusan == request()->jurusan;
+                    });
+                @endphp
+                @if($jurusanItem)
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5" />
+                    </svg>
+                    Jurusan: {{ $jurusanItem->jurusan->nama_jurusan }}
+                </span>
+                @endif
+            @endif
+
+            @if(request()->keahlian && $results->isNotEmpty())
+                @php
+                    $keahlianItem = $results->first(function($item) {
+                        return isset($item->keahlian) && $item->keahlian->id_keahlian == request()->keahlian;
+                    });
+                @endphp
+                @if($keahlianItem)
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    Keahlian: {{ $keahlianItem->keahlian->nama_keahlian }}
+                </span>
+                @endif
+            @endif
+
+            @if(request()->angkatan)
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-amber-100 text-amber-800">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Angkatan {{ request()->angkatan }}
+            </span>
+            @endif
+
+            @if(request()->type)
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-100 text-emerald-800">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                Tipe: {{ ucfirst(request()->type) }}
+            </span>
+            @endif
+
+            <a href="{{ route('search') }}" class="ml-auto inline-flex items-center px-3 py-1 text-sm text-gray-600 hover:text-gray-900">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Hapus semua filter
+            </a>
+        </div>
+    </div>
+    @endif
+
     <!-- Ringkasan Hasil Total -->
     @if($results->count() > 0)
         <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
             <h2 class="text-2xl font-bold text-gray-900">Hasil Pencarian</h2>
-            <span class="text-gray-700 font-medium text-lg">
-                Total: {{ $results->count() }} entri ditemukan
-            </span>
+            <div class="flex items-center gap-3">
+                <span class="text-gray-700 font-medium text-lg">
+                    Total: {{ $results->count() }} entri ditemukan
+                </span>
+            </div>
         </div>
     @endif
 
@@ -64,8 +141,16 @@
                                         </p>
                                     </div>
                                 </div>
-                                <!-- Jurusan & Keahlian -->
+                                <!-- Jurusan, Keahlian & Angkatan -->
                                 <div class="flex flex-wrap gap-2 mb-5">
+                                    @if($item->angkatan)
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Angkatan {{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}
+                                        </span>
+                                    @endif
                                     @if($item->jurusan)
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
                                             <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +191,6 @@
                 @foreach($mahasiswa->skip(3) as $item)
                     <a href="{{ route('portfolio.show', $item) }}"
                        class="block h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl mahasiswa-item hidden">
-                        <!-- Isi card sama persis seperti di atas -->
                         <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
                             <div class="p-6 flex flex-col flex-1">
                                 <div class="flex items-start gap-4 mb-4">
@@ -139,6 +223,14 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap gap-2 mb-5">
+                                    @if($item->angkatan)
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Angkatan {{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}
+                                        </span>
+                                    @endif
                                     @if($item->jurusan)
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
                                             <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,6 +325,11 @@
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-4">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    @if($item->mahasiswa->angkatan)
+                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                        </span>
+                                    @endif
                                 </p>
                             @endif
                             <div class="flex flex-wrap gap-3 mb-5">
@@ -276,7 +373,6 @@
                         $link_video = $content['link_video'] ?? null;
                     @endphp
                     <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-indigo-500 portofolio-item hidden">
-                      
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mb-3 w-fit">
                                 Portofolio
@@ -290,6 +386,11 @@
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-4">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    @if($item->mahasiswa->angkatan)
+                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                        </span>
+                                    @endif
                                 </p>
                             @endif
                             <div class="flex flex-wrap gap-3 mb-5">
@@ -369,6 +470,11 @@
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    @if($item->mahasiswa->angkatan)
+                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                        </span>
+                                    @endif
                                 </p>
                             @endif
                             <p class="text-sm text-gray-500 mb-4 flex items-center gap-2">
@@ -396,7 +502,6 @@
 
                 @foreach($projects->skip(3) as $item)
                     <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item hidden">
-                        <!-- Isi card project sama seperti di atas -->
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
                                 Project
@@ -407,6 +512,11 @@
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    @if($item->mahasiswa->angkatan)
+                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                        </span>
+                                    @endif
                                 </p>
                             @endif
                             <p class="text-sm text-gray-500 mb-4 flex items-center gap-2">
@@ -456,8 +566,16 @@
             </svg>
             <h3 class="mt-6 text-2xl font-medium text-gray-900">Tidak ada hasil ditemukan</h3>
             <p class="mt-3 text-gray-600 max-w-md mx-auto">
-                Coba ubah kata kunci, pilih jurusan/keahlian lain, atau hapus filter di search bar atas.
+                Coba ubah kata kunci, pilih jurusan/keahlian/angkatan lain, atau hapus filter di atas.
             </p>
+            <div class="mt-6 flex justify-center gap-3">
+                <a href="{{ route('search') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Reset Filter
+                </a>
+            </div>
         </div>
     @endif
 
@@ -486,6 +604,7 @@ function toggleSeeMore(gridClass, button, totalCount) {
             </svg>
         `;
     } else {
+        // Sembunyikan kembali ke 3 item
         items.forEach((item, index) => {
             if (index >= 3) item.classList.add('hidden');
         });
@@ -497,6 +616,20 @@ function toggleSeeMore(gridClass, button, totalCount) {
         `;
     }
 }
+
+// Animasi smooth scroll saat klik lihat semua
+document.querySelectorAll('[onclick^="toggleSeeMore"]').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const gridClass = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+        setTimeout(() => {
+            document.querySelector(`.${gridClass}`).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }, 100);
+    });
+});
 </script>
 @endpush
 
