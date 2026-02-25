@@ -4,7 +4,6 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-Use App\Models\Portofolio;
 use App\Models\User;
 use App\Models\LearningCorner;
 use App\Models\Project;
@@ -19,7 +18,6 @@ class DashboardController extends Controller
     {
        
         $totalMahasiswa = User::count();
-        $totalPortofolio = Portofolio::count();
         $totalLearning = LearningCorner::count();
         $totalProject = Project::count();
         $jurusanList  = Jurusan::all();
@@ -32,14 +30,6 @@ class DashboardController extends Controller
         // AMBIL POSTING RANDOM
         // =========================
 
-        $randomPortofolio = Portofolio::with('mahasiswa')
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'portofolio';
-                return $item;
-            });
 
         $randomLearning = LearningCorner::with('mahasiswa')
             ->inRandomOrder()
@@ -69,17 +59,14 @@ class DashboardController extends Controller
             });
 
 
-        // Gabungkan & acak lagi
-        $randomPosts = $randomPortofolio
+        $randomPosts = $randomProject
             ->concat($randomLearning)
-            ->concat($randomProject)
             ->concat($randomSertifikat)
             ->shuffle()
             ->take(6);
 
         return view('views_dashboard', compact(
             'totalMahasiswa',
-            'totalPortofolio',
             'totalLearning',
             'totalProject',
             'totalSertifikat',
@@ -106,7 +93,6 @@ class DashboardController extends Controller
             $users = User::with(['jurusan', 'keahlian', 'angkatan'])
             ->withCount([
         'projects',
-        'portofolio as portofolios_count',
         'learning_corners as learning_count'
     ])
                 ->when($keyword, function ($query) use ($keyword) {
@@ -166,50 +152,17 @@ class DashboardController extends Controller
             $results = $results->concat($projects);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH PORTOFOLIO
-        |--------------------------------------------------------------------------
-        */
-        if (!$type || $type == 'portofolio') {
-            $portofolios = Portofolio::with(['mahasiswa.jurusan', 'mahasiswa.keahlian'])
-                ->when($keyword, function ($query) use ($keyword) {
-                    $query->where('isi_content', 'like', "%$keyword%");
-                })
-                ->when($jurusan, function ($query) use ($jurusan) {
-                    $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
-                        $q->where('id_jurusan', $jurusan);
-                    });
-                })
-                ->when($keahlian, function ($query) use ($keahlian) {
-                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
-                        $q->where('id_keahlian', $keahlian);
-                    });
-                })
-                ->when($angkatan, function ($query) use ($angkatan) {
-                    $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
-                        $q->where('id_angkatan', $angkatan);
-                    });
-                })
-                ->get()
-                ->map(function ($item) {
-                    $item->type = 'portofolio';
-                    return $item;
-                });
-
-            $results = $results->concat($portofolios);
-        }
-
+       
         $totalMahasiswa = User::count();
-        $totalPortofolio = Portofolio::count();
+
         $totalLearning = LearningCorner::count();
+        $totalSertifikat = Sertifikat::count();
         
 
         return view('views_result_search', compact(
             'results',
             'keyword',
             'totalMahasiswa',
-            'totalPortofolio',
             'totalLearning' 
         ));
     }

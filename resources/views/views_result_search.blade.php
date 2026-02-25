@@ -3,8 +3,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-    <!-- Filter Info -->
+    
     @if($keyword || request()->jurusan || request()->keahlian || request()->angkatan)
     <div class="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div class="flex flex-wrap items-center gap-3">
@@ -171,7 +170,6 @@
                                 <div class="mt-auto">
                                     <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
                                         <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
-                                        <span><strong class="text-gray-900">{{ $item->portofolios_count ?? 0 }}</strong> Portofolio</span>
                                         <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
@@ -251,7 +249,6 @@
                                 <div class="mt-auto">
                                     <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
                                         <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
-                                        <span><strong class="text-gray-900">{{ $item->portofolios_count ?? 0 }}</strong> Portofolio</span>
                                         <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
@@ -284,162 +281,7 @@
         </div>
         @endif
 
-        <!-- Separator -->
-        @if($results->where('type', 'portofolio')->count() > 0 || $results->where('type', 'project')->count() > 0)
-            <hr class="my-12 border-gray-200">
-        @endif
-
-        <!-- 2. Bagian Portofolio -->
-        @php $portofolios = $results->where('type', 'portofolio'); @endphp
-        @if($portofolios->count() > 0)
-        <div class="mb-12" id="portofolio-section">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
-                    <span class="inline-flex px-4 py-2 rounded-full bg-indigo-100 text-indigo-800 font-medium text-base">
-                        Portofolio ({{ $portofolios->count() }})
-                    </span>
-                </h3>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 portofolio-grid">
-                @foreach($portofolios->take(3) as $item)
-                    @php
-                        $content = is_string($item->isi_content) ? json_decode($item->isi_content, true) : (array) $item->isi_content;
-                        $judul = $content['judul'] ?? 'Portofolio Tanpa Judul';
-                        $deskripsi = $content['deskripsi'] ?? 'Tidak ada deskripsi tersedia';
-                        $link_project = $content['link_project'] ?? null;
-                        $link_github = $content['link_github'] ?? null;
-                        $link_video = $content['link_video'] ?? null;
-                    @endphp
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-indigo-500 portofolio-item">
-                        <div class="p-6 flex flex-col flex-1">
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mb-3 w-fit">
-                                Portofolio
-                            </span>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                                {{ $judul }}
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4 line-clamp-3">
-                                {{ Str::limit($deskripsi, 130) }}
-                            </p>
-                            @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-4">
-                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
-                                    @if($item->mahasiswa->angkatan)
-                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
-                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
-                                        </span>
-                                    @endif
-                                </p>
-                            @endif
-                            <div class="flex flex-wrap gap-3 mb-5">
-                                @if($link_project)
-                                    <a href="{{ $link_project }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-900 transition">
-                                        Lihat Project →
-                                    </a>
-                                @elseif($link_github)
-                                    <a href="{{ $link_github }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-900 transition">
-                                        GitHub →
-                                    </a>
-                                @endif
-                                @if($link_video)
-                                    <a href="{{ $link_video }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition">
-                                        Video Demo →
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="mt-auto flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    Diperbarui {{ \Carbon\Carbon::parse($item->updated_at ?? $item->tanggal ?? now())->diffForHumans() }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-                @foreach($portofolios->skip(3) as $item)
-                    @php
-                        $content = is_string($item->isi_content) ? json_decode($item->isi_content, true) : (array) $item->isi_content;
-                        $judul = $content['judul'] ?? 'Portofolio Tanpa Judul';
-                        $deskripsi = $content['deskripsi'] ?? 'Tidak ada deskripsi tersedia';
-                        $link_project = $content['link_project'] ?? null;
-                        $link_github = $content['link_github'] ?? null;
-                        $link_video = $content['link_video'] ?? null;
-                    @endphp
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-indigo-500 portofolio-item hidden">
-                        <div class="p-6 flex flex-col flex-1">
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mb-3 w-fit">
-                                Portofolio
-                            </span>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                                {{ $judul }}
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-4 line-clamp-3">
-                                {{ Str::limit($deskripsi, 130) }}
-                            </p>
-                            @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-4">
-                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
-                                    @if($item->mahasiswa->angkatan)
-                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
-                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
-                                        </span>
-                                    @endif
-                                </p>
-                            @endif
-                            <div class="flex flex-wrap gap-3 mb-5">
-                                @if($link_project)
-                                    <a href="{{ $link_project }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-900 transition">
-                                        Lihat Project →
-                                    </a>
-                                @elseif($link_github)
-                                    <a href="{{ $link_github }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-900 transition">
-                                        GitHub →
-                                    </a>
-                                @endif
-                                @if($link_video)
-                                    <a href="{{ $link_video }}" target="_blank" rel="noopener noreferrer"
-                                       class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition">
-                                        Video Demo →
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="mt-auto flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    Diperbarui {{ \Carbon\Carbon::parse($item->updated_at ?? $item->tanggal ?? now())->diffForHumans() }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            @if($portofolios->count() > 3)
-                <div class="mt-8 text-center">
-                    <button 
-                        onclick="toggleSeeMore('portofolio-grid', this, {{ $portofolios->count() }})"
-                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition shadow-md">
-                        Lihat semua {{ $portofolios->count() }} portofolio
-                        <svg class="w-5 h-5 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                </div>
-            @endif
-        </div>
-        @endif
-
+    
         <!-- Separator -->
         @if($results->where('type', 'project')->count() > 0)
             <hr class="my-12 border-gray-200">

@@ -39,15 +39,6 @@ Route::middleware('auth')->group(function () {
             'destroy' => 'learning-corner.destroy',
         ]);
 
-    // CRUD Portofolio (manual, bukan resource)
-    Route::prefix('portofolio')->name('portofolio.')->group(function () {
-        Route::get('/create', [PortofolioController::class, 'create'])->name('create');
-        Route::post('/', [PortofolioController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [PortofolioController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [PortofolioController::class, 'update'])->name('update');
-        Route::delete('/{id}', [PortofolioController::class, 'destroy'])->name('destroy');
-    });
-
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
