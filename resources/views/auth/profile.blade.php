@@ -285,11 +285,12 @@
                                                 </div>
                                             </div>
                                         @endforeach
-                                    </div>
-                                @else
+                                    @else
                                     <p class="text-center text-gray-500 py-10">Belum ada catatan learning corner.</p>
-                                @endif
+                                    @endif
+                                    </div>
                             </section>
+                                
         @endif
 
         <!-- Footer kecil -->
