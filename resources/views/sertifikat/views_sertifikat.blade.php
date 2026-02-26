@@ -63,7 +63,7 @@
                             <span class="text-sm">{{ \Carbon\Carbon::parse($entry->tanggal_terbit)->format('d F Y') }}</span>
                         </div>
 
-<!-- Link Sertifikat (jika ada) -->
+<!-- Link Sertifikat  -->
 @if($entry->link_sertifikat)
     <div class="mb-4">
         <a href="{{ asset('storage/' . $entry->link_sertifikat) }}" 
@@ -131,17 +131,9 @@
             @endforeach
         </div>
         
-        <!-- Pagination (jika ada) -->
-        @if(method_exists($sertifikat, 'links'))
-            <div class="mt-8">
-                {{ $sertifikat->links() }}
-            </div>
-        @endif
     @endif
 </div>
 
-<!-- SweetAlert2 Script -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // Handle delete confirmation

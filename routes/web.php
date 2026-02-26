@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
 use App\Http\Controllers\v1\UserController;
 use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
@@ -57,3 +59,8 @@ Route::get('/portfolio/{user}', [PortofolioController::class, 'show'])->name('po
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
 
 Route::get('/portfolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
+
+Route::post('/toggle-sidebar', function (Request $request) {
+    Session::put('sidebar_collapsed', $request->collapsed);
+    return response()->json(['success' => true]);
+})->middleware('web');

@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.90, maximum-scale=0.80, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
-    
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
 
+    @PwaHead
+
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50 antialiased">
 
     <!-- Overlay backdrop untuk mobile -->
-    <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
+    <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
+    </div>
 
-    
-    <div class="flex min-h-screen">
+
+    <div class="flex h-screen">
 
         <!-- Sidebar -->
         @include('components.sidebar')
@@ -24,7 +31,7 @@
         <!-- Main content area -->
         <div class="flex-1 flex flex-col">
 
-            <!-- Header / Navbar atas -->
+            <!-- Header Search Filter -->
             @include('components.header')
 
             <!-- Page content -->
@@ -37,158 +44,145 @@
             @include('components.footer')
         </div>
     </div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Elemen-elemen penting
-    const sidebar         = document.getElementById('sidebar');
-    const toggleBtn       = document.getElementById('toggle-sidebar');
-    const hamburger       = document.getElementById('sidebar-hamburger');
-    const closeIcon       = document.getElementById('sidebar-close');
-    const overlay         = document.getElementById('sidebar-overlay');
 
-    const searchToggle    = document.getElementById('toggle-search-mobile');
-    const searchDropdown  = document.getElementById('mobile-search-dropdown');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-    // ====================
-    // Fungsi Sidebar
-    // ====================
-    function openSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.remove('-translate-x-full');
-        if (overlay) {
-            overlay.classList.remove('hidden');
-            overlay.classList.add('opacity-100');
-            overlay.classList.remove('opacity-0');
-        }
-        document.body.style.overflow = 'hidden'; // cegah scroll body
+            const toggleBtn = document.getElementById('toggle-sidebar');
+            const hamburger = document.getElementById('sidebar-hamburger');
+            const closeIcon = document.getElementById('sidebar-close');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const closeSidebarBtn = document.getElementById('close-sidebar');
+            const toggleSearch = document.getElementById('toggle-search-mobile');
+            const searchDrop = document.getElementById('mobile-search-dropdown');
 
-        hamburger?.classList.add('hidden');
-        closeIcon?.classList.remove('hidden');
-    }
+            // Toggle collapse untuk desktop
+            const toggleDesktopBtn = document.getElementById('toggle-desktop-sidebar');
+            const toggleIcon = document.getElementById('toggleCollapseIcon');
 
-    function closeSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.add('-translate-x-full');
-        if (overlay) {
-            overlay.classList.remove('opacity-100');
-            overlay.classList.add('opacity-0');
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-            }, 300); // sesuai duration-300
-        }
-        document.body.style.overflow = '';
+            if (toggleDesktopBtn) {
+                toggleDesktopBtn.addEventListener('click', () => {
+                    const isCollapsed = sidebar.classList.contains('lg:w-20');
 
-        hamburger?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
-    }
+                    // Toggle class
+                    if (isCollapsed) {
+                        sidebar.classList.remove('lg:w-20');
+                        sidebar.classList.add('lg:w-62');
+                        toggleIcon.classList.remove('rotate-180');
 
-    // Toggle sidebar via tombol
-    toggleBtn?.addEventListener('click', () => {
-        if (sidebar?.classList.contains('-translate-x-full')) {
-            openSidebar();
-        } else {
-            closeSidebar();
-        }
-    });
+                        fetch('/toggle-sidebar', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                            },
+                            body: JSON.stringify({ collapsed: false })
+                        });
+                    } else {
+                        sidebar.classList.remove('lg:w-62');
+                        sidebar.classList.add('lg:w-20');
+                        toggleIcon.classList.add('rotate-180');
 
-    // Tutup via overlay (klik di luar sidebar)
-    overlay?.addEventListener('click', closeSidebar);
+                        document.querySelectorAll('[x-data]').forEach(el => {
+                            if (el.__x) {
+                                el.__x.$data.open = false;
+                            }
+                        });
 
-    // Jika ada tombol close di dalam sidebar (opsional)
-    document.getElementById('close-sidebar')?.addEventListener('click', closeSidebar);
-
-    // ====================
-    // Fungsi Mobile Search
-    // ====================
-    function openSearch() {
-        if (!searchDropdown) return;
-        searchDropdown.classList.remove('hidden');
-        searchDropdown.classList.remove('max-h-0');
-        // trigger reflow agar transisi jalan
-        searchDropdown.offsetHeight;
-    }
-
-    function closeSearch() {
-        if (!searchDropdown) return;
-        searchDropdown.classList.add('max-h-0');
-        setTimeout(() => {
-            searchDropdown.classList.add('hidden');
-        }, 300); // sesuai duration di CSS
-    }
-
-    // Toggle search via tombol
-    searchToggle?.addEventListener('click', () => {
-        if (searchDropdown?.classList.contains('hidden') || 
-            searchDropdown?.classList.contains('max-h-0')) {
-            openSearch();
-        } else {
-            closeSearch();
-        }
-    });
-
-    // ====================
-    // Klik di luar → tutup keduanya (sidebar & search mobile)
-    // ====================
-    document.addEventListener('click', function(e) {
-        // --- Sidebar ---
-        const sidebarIsOpen = sidebar && 
-                             !sidebar.classList.contains('-translate-x-full') &&
-                             window.innerWidth < 1024; // hanya mobile
-
-        if (sidebarIsOpen) {
-            const clickedInsideSidebar = sidebar.contains(e.target);
-            const clickedToggleBtn     = toggleBtn?.contains(e.target);
-
-            if (!clickedInsideSidebar && !clickedToggleBtn) {
-                closeSidebar();
+                        fetch('/toggle-sidebar', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                            },
+                            body: JSON.stringify({ collapsed: true })
+                        });
+                    }
+                });
             }
-        }
 
-        // --- Mobile Search ---
-        const searchIsOpen = searchDropdown && 
-                            !searchDropdown.classList.contains('hidden') &&
-                            !searchDropdown.classList.contains('max-h-0');
+            if (toggleSearch && searchDrop) {
+                toggleSearch.addEventListener('click', () => {
+                    const isClosed = searchDrop.classList.contains('max-h-0');
 
-        if (searchIsOpen) {
-            const clickedInsideSearch = searchDropdown.contains(e.target);
-            const clickedSearchBtn    = searchToggle?.contains(e.target);
+                    if (isClosed) {
+                        searchDrop.style.maxHeight = '0px';
+                        searchDrop.classList.remove('max-h-0', 'opacity-0', '-translate-y-2', 'scale-y-95');
+                        searchDrop.classList.add('opacity-100', 'translate-y-0', 'scale-y-100');
 
-            if (!clickedInsideSearch && !clickedSearchBtn) {
-                closeSearch();
+                        requestAnimationFrame(() => {
+                            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
+                        });
+                    } else {
+                        searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
+                        requestAnimationFrame(() => {
+                            searchDrop.style.maxHeight = '0px';
+                        });
+                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95');
+                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
+
+                        setTimeout(() => {
+                            if (searchDrop.style.maxHeight === '0px') {
+                            }
+                        }, 350);
+                    }
+                });
             }
-        }
-    });
 
-    // ====================
-    // Handle resize → pastikan sidebar terbuka di desktop
-    // ====================
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 1024) { // lg breakpoint
-            // Force buka sidebar di desktop
-            sidebar?.classList.remove('-translate-x-full');
-            hamburger?.classList.remove('hidden');
-            closeIcon?.classList.add('hidden');
-            overlay?.classList.add('hidden', 'opacity-0');
+            function openSidebar() {
+                if (!sidebar) return;
+                sidebar.classList.remove('-translate-x-full');
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('block');
+                }
+                document.body.style.overflow = 'hidden';
 
-            // Tutup search mobile
-            closeSearch();
-        }
-    });
+                if (hamburger) hamburger.classList.add('hidden');
+                if (closeIcon) closeIcon.classList.remove('hidden');
+            }
 
-    // ====================
-    // Dropdown submenu (Project, Learning Corner, Sertifikat, dll)
-    // ====================
-    window.toggleDropdown = function(menuId) {
-        const menu  = document.getElementById(menuId + 'Menu');
-        const arrow = document.getElementById(menuId + 'Arrow');
-        if (menu && arrow) {
-            menu.classList.toggle('hidden');
-            arrow.classList.toggle('rotate-180');
-        }
-    };
-});
-</script>
+            function closeSidebar() {
+                if (!sidebar) return;
+                sidebar.classList.add('-translate-x-full');
+                if (overlay) {
+                    overlay.classList.remove('block');
+                    overlay.classList.add('hidden');
+                }
+                document.body.style.overflow = '';
+
+                if (hamburger) hamburger.classList.remove('hidden');
+                if (closeIcon) closeIcon.classList.add('hidden');
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    if (sidebar?.classList.contains('-translate-x-full')) {
+                        openSidebar();
+                    } else {
+                        closeSidebar();
+                    }
+                });
+            }
+
+            if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            // Fungsi toggle dropdown (fallback)
+            window.toggleDropdown = function (menuId) {
+                const menu = document.getElementById(menuId + 'Menu');
+                const arrow = document.getElementById(menuId + 'Arrow');
+
+                if (menu && arrow) {
+                    menu.classList.toggle('hidden');
+                    arrow.classList.toggle('rotate-180');
+                }
+            };
+        });
+    </script>
 
     @stack('scripts')
 </body>
+
 </html>
