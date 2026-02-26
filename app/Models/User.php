@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -34,10 +33,15 @@ class User extends Authenticatable
     'banner_url',
     'deskripsi',
     'id_jurusan',
+    'keahlian_tambahan',
     'id_keahlian',
     'id_angkatan',
     'is_active'
     ];
+
+            protected $casts = [
+            'keahlian_tambahan' => 'array',
+        ];
 
     public function jurusan()
 {

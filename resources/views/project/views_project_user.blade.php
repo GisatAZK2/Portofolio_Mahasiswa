@@ -15,7 +15,7 @@
             <!-- Header -->
         <div class="mb-10 text-center md:text-left">
             <h1 class="text-3xl font-bold text-gray-800">Project Mahasiswa</h1>
-            <p class="mt-2 text-gray-600">Beberapa </p>
+            <p class="mt-2 text-gray-600">Beberapa Pameran Project Mahasiswa </p>
         </div>
 
 
@@ -178,7 +178,7 @@
                 <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600">Belum ada proyek yang ditambahkan.</p>
+                <p class="mt-4 text-gray-600">Belum ada proyek.</p>
             </div>
         @endif
 

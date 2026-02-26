@@ -4,7 +4,7 @@
 <div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto space-y-10">
         <!-- Statistic Cards with Mini Charts -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             
             <!-- Learning Corner -->
             <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">

@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -22,6 +21,8 @@ public function run(): void
             'username' => 'dim',
             'email' => 'dimas@example.com',
             'password' => Hash::make('password123'),
+            'jenis_kelamin' => 'Laki-Laki',
+            'deskripsi' => 'saya adalah seorang dosen',
             'id_jurusan' => 1,
             'id_keahlian' => 1,
             'id_angkatan' => 1,
@@ -32,6 +33,8 @@ public function run(): void
             'username' => 'OjanCoeg',
             'email' => 'Ojan@example.com',
             'password' => Hash::make('password123'),
+            'jenis_kelamin' => 'Laki-Laki',
+            'deskripsi' => 'saya adalah seorang Mahasiswa Teladan',
             'id_jurusan' => 2,
             'id_keahlian' => 2,
             'id_angkatan' => 1,
@@ -42,6 +45,8 @@ public function run(): void
             'username' => 'atan',
             'email' => 'Atan@example.com',
             'password' => Hash::make('password123'),
+            'jenis_kelamin' => 'Laki-Laki',
+            'deskripsi' => 'saya adalah seorang Ambatunat',
             'id_jurusan' => 3,
             'id_keahlian' => 3,
             'id_angkatan' => 2,
