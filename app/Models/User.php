@@ -33,6 +33,7 @@ class User extends Authenticatable
     'id_jurusan',
     'id_keahlian',
     'id_angkatan',
+    'deskripsi',
     'is_active'
     ];
 
