@@ -16,7 +16,7 @@
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
 
     
-    <div class="flex h-screen">
+    <div class="flex min-h-screen">
 
         <!-- Sidebar -->
         @include('components.sidebar')

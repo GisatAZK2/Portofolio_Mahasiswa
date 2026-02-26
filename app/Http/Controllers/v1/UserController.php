@@ -38,6 +38,7 @@ class UserController extends Controller
             'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
             'id_angkatan'    => ['required', 'exists:angkatan,id'],
             'photo_profile'  => ['nullable', 'image', 'max:2048'],
+            'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
         ]);
 
         if ($request->hasFile('photo_profile')) {
@@ -137,6 +138,7 @@ class UserController extends Controller
         'id_jurusan' => ['nullable','exists:jurusan,id_jurusan'],
         'id_keahlian' => ['nullable','exists:keahlian,id_keahlian'],
         'id_angkatan' => ['nullable','exists:angkatan,id'],
+        'deskripsi' => ['nullable','string','max:1000'],
         'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
     
     ];

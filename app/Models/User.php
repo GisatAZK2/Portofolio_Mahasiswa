@@ -36,6 +36,7 @@ class User extends Authenticatable
     'keahlian_tambahan',
     'id_keahlian',
     'id_angkatan',
+    'deskripsi',
     'is_active'
     ];
 
