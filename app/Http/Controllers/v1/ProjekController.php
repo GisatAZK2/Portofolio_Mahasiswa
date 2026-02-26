@@ -42,13 +42,21 @@ class ProjekController extends Controller
             'tanggal_mulai'  => 'required|date',
             'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
             'link_project'   => 'nullable|url|max:255',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
         ]);
+        $content = array_filter($request->only([
+            'nama_project', 'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
+        ]), fn($value) => !is_null($value) && $value !== '');
 
-        $project = Project::create([
-            'nama_project'   => $request->nama_project,
+        if (empty($content)) {
+            return back()->withInput()->withErrors(['portfolio' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
+        }
+
+        Project::create([
             'tanggal_mulai'  => $request->tanggal_mulai,
             'tanggal_akhir'  => $request->tanggal_akhir,
-            'link_project'   => $request->link_project,
+            'isi_content'    => $content,
             'id_mahasiswa'   => Auth::id(),
         ]);
 
@@ -78,14 +86,47 @@ class ProjekController extends Controller
             'tanggal_mulai'  => 'required|date',
             'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
             'link_project'   => 'nullable|url|max:255',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
         ]);
 
-        $project->update($request->only([
-            'nama_project', 'tanggal_mulai', 'tanggal_akhir', 'link_project'
-        ]));
+        $content = $project->isi_content ?? [];
 
+        $content['nama_project'] = $request->nama_project;
+        $content['link_project'] = $request->link_project;
+        $content['link_github']  = $request->link_github;
+        $content['link_video']   = $request->link_video;
+
+        $project->update([
+            'isi_content'   => $content,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_akhir' => $request->tanggal_akhir,
+        ]);
+
+        $removeLinks = $request->remove_links ?? [];
+        
+        foreach ($removeLinks as $linkField) {
+        if (in_array($linkField, ['link_project', 'link_github', 'link_video'])) {
+            unset($content[$linkField]);
+        }
+    }
+
+        //Penghapusan Link yang terpilih ?
+        foreach (['link_project', 'link_github', 'link_video'] as $link) {
+
+        // Kalau link dicentang untuk dihapus → skip
+        if (in_array($link, $removeLinks)) {
+            continue;
+        }
+
+        // Kalau ada value baru → update
+        if ($request->filled($link)) {
+            $content[$link] = $request->$link;
+        }
+    }
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil diperbarui!');
+
     }
 
     // HAPUS

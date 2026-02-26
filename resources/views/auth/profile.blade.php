@@ -91,6 +91,14 @@
                             </select>
                         </div>
 
+                        <div class="bg-gray-50/70 p-5 rounded-lg border border-gray-100">
+                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Angkatan</p>
+                            <p id="angkatan-display" class="text-base font-medium text-gray-800">
+                                {{ Auth::user()->angkatan->nama_angkatan ?? '-' }}
+                            </p>
+                        </div>
+
+
                         <div class="bg-gray-50/70 p-5 rounded-lg border border-gray-100 hover:border-indigo-200 transition relative group cursor-pointer" onclick="toggleEdit('keahlian')">
                             <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Keahlian / Program Studi</p>
                             <p id="keahlian-display" class="text-base font-medium text-gray-800">

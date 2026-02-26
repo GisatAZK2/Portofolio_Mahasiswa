@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
                 ->orderBy('nama_keahlian')
                 ->get();
 
-            $angkatanlist = Angkatan::select('id_angkatan', 'nama_angkatan')
+            $angkatanlist = Angkatan::select('id', 'nama_angkatan')
                 ->orderBy('nama_angkatan')
                 ->get();
 

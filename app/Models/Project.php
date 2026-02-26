@@ -14,14 +14,14 @@ class Project extends Model
     public $timestamps = false; // karena tidak pakai created_at
 
     protected $fillable = [
-        'nama_project',
+        'isi_content',
         'tanggal_mulai',
         'tanggal_akhir',
-        'link_project',
         'id_mahasiswa'
     ];
 
     protected $casts = [
+        'isi_content' => 'array',
         'tanggal_mulai' => 'date',
         'tanggal_akhir' => 'date',
     ];

@@ -47,7 +47,7 @@ class User extends Authenticatable
 }
 
 public function angkatan() {
-    return $this->belongsTo(Angkatan::class, 'id_angkatan');
+    return $this->belongsTo(Angkatan::class, 'id_angkatan', 'id');
 }
 
 

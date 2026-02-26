@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
+use App\Models\Angkatan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,9 @@ class UserController extends Controller
     {
         $jurusans  = Jurusan::all();
         $keahlians = Keahlian::all();
-        return view('auth.register', compact('jurusans', 'keahlians'));
+        $angkatans = Angkatan::all();
+        
+        return view('auth.register', compact('jurusans', 'keahlians', 'angkatans'));
     }
 
     // Proses registrasi
@@ -33,6 +36,7 @@ class UserController extends Controller
             'password'       => ['required', 'confirmed', Password::min(8)->mixedCase()],
             'id_jurusan'     => ['required', 'exists:jurusan,id_jurusan'],
             'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
+            'id_angkatan'    => ['required', 'exists:angkatan,id'],
             'photo_profile'  => ['nullable', 'image', 'max:2048'],
         ]);
 
@@ -99,8 +103,9 @@ class UserController extends Controller
         $user = Auth::user()->load(['jurusan', 'keahlian']);
         $jurusans  = Jurusan::all();
         $keahlians = Keahlian::all();
+        $angkatan   = Angkatan::all();
 
-        return view('auth.profile', compact('user', 'jurusans', 'keahlians'));
+        return view('auth.profile', compact('user', 'jurusans', 'keahlians', 'angkatan'));
     }
 
     // Proses update profile
@@ -131,7 +136,9 @@ class UserController extends Controller
         'username' => ['required','string','max:100','regex:/^[a-zA-Z0-9_]+$/','unique:users,username,' . $user->id],
         'id_jurusan' => ['nullable','exists:jurusan,id_jurusan'],
         'id_keahlian' => ['nullable','exists:keahlian,id_keahlian'],
+        'id_angkatan' => ['nullable','exists:angkatan,id'],
         'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
+    
     ];
 
     if ($request->filled('password')) {

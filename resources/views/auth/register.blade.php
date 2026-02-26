@@ -135,6 +135,20 @@
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Angkatan</label>
+                        <select name="id_angkatan" required
+                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition appearance-none @error('id_jurusan') border-red-400 @enderror">
+                            <option value="">Pilih Angkatan</option>
+                            @foreach($angkatans as $k)
+                                <option value="{{ $k->id }}" {{ old('id_angkatan') == $k->id ? 'selected' : '' }}>
+                                    {{ $k->nama_angkatan ?? $k->id }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_angkatan') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Keahlian Utama</label>
                         <select name="id_keahlian" required
                             class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition appearance-none @error('id_keahlian') border-red-400 @enderror">

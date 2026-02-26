@@ -65,6 +65,28 @@
                 @enderror
             </div>
 
+            <!-- Link GitHub -->
+            <div>
+                <label for="link_github" class="block text-sm font-medium text-gray-700 mb-2">Link GitHub (opsional)</label>
+                <input type="url" name="link_github" id="link_github" maxlength="500"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
+                       placeholder="https://github.com/username/repo" value="{{ old('link_github') }}">
+                @error('link_github')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Link Video -->
+            <div>
+                <label for="link_video" class="block text-sm font-medium text-gray-700 mb-2">Link Video (YouTube, opsional)</label>
+                <input type="url" name="link_video" id="link_video" maxlength="500"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
+                       placeholder="https://www.youtube.com/watch?v=..." value="{{ old('link_video') }}">
+                @error('link_video')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div class="flex justify-end pt-4">
                 <button type="submit" class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition shadow-md">
                     Simpan Project
