@@ -2,234 +2,289 @@
 @section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 pb-16">
-
-    <!-- Hero + Avatar -->
-    <div class="relative mb-12">
-        <div class="h-48 md:h-64 lg:h-80 bg-indigo-600 rounded-b-3xl overflow-hidden">
-            <div class="absolute inset-0 bg-black/5"></div>
-        </div>
-        <div class="absolute -bottom-12 left-6 md:left-10 lg:left-12 z-10">
-            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white bg-white shadow-md overflow-hidden">
-                @if($user->photo_profile)
-                    <img src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
-                         alt="{{ $user->nama_mahasiswa ?? 'Mahasiswa' }}"
-                         class="w-full h-full object-cover"
-                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama_mahasiswa ?? 'M') }}&background=random';">
-                @else
-                    <div class="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-5xl font-bold">
-                        {{ strtoupper(mb_substr(trim($user->nama_mahasiswa ?? 'M'), 0, 1)) }}
+<div class="min-h-screen bg-gray-100 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Grid 2 Kolom ala LinkedIn -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            
+            <!-- ========== KOLOM KANAN (SIDEBAR) ========== -->
+            <div class="lg:col-span-1 space-y-4">
+                
+                <!-- Kartu Profil Ringkas -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <!-- Background Banner -->
+                    <div class="h-16 bg-gradient-to-r from-indigo-500 to-indigo-600"></div>
+                    
+                    <!-- Avatar dan Info Utama -->
+                    <div class="px-4 pb-4 relative">
+                        <div class="flex justify-between">
+                            <div class="-mt-8 mb-2">
+                                <div class="w-20 h-20 rounded-full border-4 border-white bg-white shadow-md overflow-hidden">
+                                    @if($user->photo_profile)
+                                        <img src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
+                                             alt="{{ $user->nama_mahasiswa ?? 'Mahasiswa' }}"
+                                             class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
+                                            {{ strtoupper(mb_substr(trim($user->nama_mahasiswa ?? 'M'), 0, 1)) }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    He/Him
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <h1 class="text-xl font-bold text-gray-900">{{ trim($user->nama_mahasiswa ?? 'Mahasiswa') }}</h1>
+                        <p class="text-sm text-gray-600">{{ $user->jurusan?->nama_jurusan ?? 'Mahasiswa' }}</p>
+                        <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Kota Bekasi, Jawa Barat, Indonesia
+                        </p>
+                        
+                        <p class="text-xs text-blue-600 font-medium mt-2 cursor-pointer hover:underline">
+                            Informasi kontak
+                        </p>
+                        
+                        <!-- Koneksi -->
+                        <div class="flex items-center gap-2 mt-3 text-xs">
+                            <div class="flex -space-x-2">
+                                <div class="w-6 h-6 rounded-full bg-gray-300 border-2 border-white"></div>
+                                <div class="w-6 h-6 rounded-full bg-gray-400 border-2 border-white"></div>
+                                <div class="w-6 h-6 rounded-full bg-gray-500 border-2 border-white"></div>
+                            </div>
+                            <span class="text-gray-600">362 koneksi</span>
+                        </div>
+                        
+                        <!-- Open to Work -->
+                        <div class="mt-3 p-2 bg-green-50 border border-green-200 rounded-lg">
+                            <p class="text-xs text-green-800 font-medium flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                #OpenToWork
+                            </p>
+                            <p class="text-xs text-gray-600 mt-1">Frontend Developer Intern</p>
+                        </div>
+                        
+                        <!-- Analytics -->
+                        <div class="mt-3 text-xs border-t border-gray-100 pt-3">
+                            <div class="flex justify-between text-gray-600">
+                                <span>Profil viewers</span>
+                                <span class="font-bold text-gray-900">47</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600 mt-1">
+                                <span>Post impressions</span>
+                                <span class="font-bold text-gray-900">1,234</span>
+                            </div>
+                        </div>
                     </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <!-- Header Info -->
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-10">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                {{ trim($user->nama_mahasiswa ?? 'Mahasiswa') }}
-            </h1>
-            <p class="text-xl text-gray-700 mb-4">
-                {{ trim($user->nama_mahasiswa ?? 'Mahasiswa') }} | {{ $user->jurusan?->nama_jurusan ?? 'Jurusan Tidak Diketahui' }}
-            </p>
-
-            <div class="flex flex-wrap gap-6 mt-4">
-                <div>
-                    <span class="text-sm font-medium text-gray-500 block mb-1">Jurusan</span>
-                    <span class="inline-flex items-center px-4 py-1.5 bg-blue-50 text-blue-800 rounded-full text-sm font-medium">
-                        {{ $user->jurusan?->nama_jurusan ?? 'Belum ditentukan' }}
-                    </span>
                 </div>
-                <div>
-                    <span class="text-sm font-medium text-gray-500 block mb-1">Keahlian Utama</span>
+                
+                <!-- Kartu Keahlian -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <h3 class="text-base font-bold text-gray-900 mb-3">Keahlian</h3>
+                    
                     @if($user->keahlian)
-                        <span class="inline-flex items-center px-4 py-1.5 bg-purple-50 text-purple-800 rounded-full text-sm font-medium">
-                            {{ $user->keahlian->nama_keahlian }}
-                        </span>
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-gray-700">Utama</p>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-sm text-gray-600">{{ $user->keahlian->nama_keahlian }}</span>
+                            <span class="text-xs text-gray-400">• 12 endorsements</span>
+                        </div>
+                    </div>
+                    @endif
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 mb-1">PHP Frameworks</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">Laravel</span>
+                                <span class="text-xs text-gray-400">• 8</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">SMK CIBITUNG 1</p>
+                        </div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">React.js</span>
+                                <span class="text-xs text-gray-400">• 5</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">Vue.js</span>
+                                <span class="text-xs text-gray-400">• 3</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">Node.js</span>
+                                <span class="text-xs text-gray-400">• 4</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="text-sm text-gray-600 hover:text-gray-900 mt-3 flex items-center gap-1">
+                        Tampilkan semua 5 keahlian
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Minat -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <h3 class="text-base font-bold text-gray-900 mb-3">Minat</h3>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-indigo-100 rounded flex items-center justify-center text-indigo-600 text-xs font-bold">
+                                LK
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Lowongan Kerja</p>
+                                <p class="text-xs text-gray-500">441.484 pengikut</p>
+                            </div>
+                        </div>
+                        <button class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium hover:bg-blue-100">
+                            ✔ Mengikuti
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ========== KOLOM KIRI (KONTEN UTAMA) ========== -->
+            <div class="lg:col-span-2 space-y-4">
+                
+                <!-- Tentang -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <h3 class="text-base font-bold text-gray-900 mb-2">Tentang</h3>
+                    <p class="text-sm text-gray-700">
+                        Frontend Developer Intern dengan pengalaman dalam membangun aplikasi web modern menggunakan Laravel, React.js, dan Vue.js. Memiliki ketertarikan kuat dalam UI/UX design dan pengembangan website responsif.
+                    </p>
+                </div>
+                
+                <!-- Projects -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-base font-bold text-gray-900">Projects</h3>
+                        <span class="text-xs text-gray-500">{{ $user->projects->count() }} proyek</span>
+                    </div>
+                    
+                    @if($user->projects->isNotEmpty())
+                        <div class="space-y-4">
+                            @foreach($user->projects as $project)
+                                @php
+                                    $content = $project->isi_content ?? [];
+                                    $nama = $content['nama_project'] ?? 'Tanpa Nama';
+                                    $deskripsi = $content['deskripsi'] ?? null;
+                                    $linkProject = $content['link_project'] ?? null;
+                                    $linkGithub = $content['link_github'] ?? null;
+                                @endphp
+                                
+                                <div class="border border-gray-100 rounded-xl p-3 hover:shadow-sm transition">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-bold text-gray-900">{{ $nama }}</h4>
+                                            <p class="text-xs text-gray-500 mt-1">{{ $deskripsi ?? 'Tidak ada deskripsi' }}</p>
+                                            <div class="flex gap-3 mt-2">
+                                                @if($linkProject)
+                                                    <a href="{{ $linkProject }}" class="text-xs text-blue-600 hover:underline">Website</a>
+                                                @endif
+                                                @if($linkGithub)
+                                                    <a href="{{ $linkGithub }}" class="text-xs text-gray-600 hover:underline">GitHub</a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @else
-                        <span class="text-sm text-gray-500 italic">Belum ada keahlian yang ditambahkan</span>
+                        <p class="text-sm text-gray-500 text-center py-4">Belum ada proyek</p>
+                    @endif
+                </div>
+                
+                <!-- Sertifikat -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-base font-bold text-gray-900">Sertifikat</h3>
+                        <span class="text-xs text-gray-500">{{ $user->sertifikats->count() }} sertifikat</span>
+                    </div>
+                    
+                    @if($user->sertifikats->isNotEmpty())
+                        <div class="space-y-3">
+                            @foreach($user->sertifikats as $sertifikat)
+                                <div class="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg">
+                                    <div class="w-10 h-10 bg-amber-100 rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-900">{{ $sertifikat->nama_sertifikat ?? 'Sertifikat' }}</h4>
+                                        <p class="text-xs text-gray-600">{{ $sertifikat->lembaga_penerbit ?? '' }}</p>
+                                        <p class="text-xs text-gray-400 mt-1">
+                                            Diterbitkan {{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('M Y') : '' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-500 text-center py-4">Belum ada sertifikat</p>
+                    @endif
+                </div>
+                
+                <!-- Learning Corners -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <h3 class="text-base font-bold text-gray-900 mb-4">Learning Corners</h3>
+                    
+                    @if($user->learning_corners->isNotEmpty())
+                        <div class="space-y-4">
+                            @foreach($user->learning_corners as $entry)
+                                <div class="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
+                                    @if(!empty($entry->content) && is_array($entry->content))
+                                        @foreach($entry->content as $item)
+                                            @if($item['type'] === 'title')
+                                                <h4 class="text-sm font-bold text-gray-900 mb-1">{{ $item['content'] }}</h4>
+                                            @elseif($item['type'] === 'text')
+                                                <p class="text-xs text-gray-700 line-clamp-3">{{ $item['content'] }}</p>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <p class="text-xs text-gray-700 line-clamp-3">{{ Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150) }}</p>
+                                    @endif
+                                    <p class="text-xs text-gray-400 mt-2">
+                                        {{ $entry->created_at?->format('d M Y') }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-500 text-center py-4">Belum ada catatan learning corner</p>
                     @endif
                 </div>
             </div>
-
-            <p class="text-sm text-gray-600 mt-6">
-                Bergabung sejak {{ \Carbon\Carbon::parse($user->created_at)->format('F Y') }}
-            </p>
         </div>
-
-        <!-- Projects -->
-        <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-10">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Projects</h2>
-                <span class="text-sm text-gray-600">{{ $user->projects->count() }} proyek</span>
-            </div>
-            @if($user->projects->isNotEmpty())
-                <div class="space-y-8">
-                    @foreach($user->projects as $project)
-                        <div class="border-b border-gray-100 pb-6 last:border-none last:pb-0">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ $project->nama_project }}</h3>
-                            <div class="text-sm text-gray-600 mb-3 flex items-center gap-3 flex-wrap">
-                                <span>{{ $project->tanggal_mulai ? \Carbon\Carbon::parse($project->tanggal_mulai)->format('M Y') : '—' }}</span>
-                                <span class="text-gray-400">→</span>
-                                <span>{{ $project->tanggal_akhir ? \Carbon\Carbon::parse($project->tanggal_akhir)->format('M Y') : 'Sekarang' }}</span>
-                            </div>
-                            @if($project->deskripsi)
-                                <p class="text-gray-700 leading-relaxed">{{ $project->deskripsi }}</p>
-                            @endif
-                            @if($project->link_project)
-                                @php
-                                    $isGithub = str_contains(strtolower($project->link_project), 'github.com') || str_contains(strtolower($project->link_project), 'githubusercontent.com');
-                                @endphp
-                                <a href="{{ $project->link_project }}" target="_blank" rel="noopener noreferrer"
-                                   class="mt-4 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium">
-                                    @if($isGithub) Lihat di GitHub @else Buka Project @endif
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                    </svg>
-                                </a>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-center text-gray-500 py-10">Belum ada proyek yang ditambahkan.</p>
-            @endif
-        </section>
-
-<!-- Sertifikat -->
-<section class="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-900">Sertifikat</h2>
-        <span class="text-sm text-gray-600">{{ $user->sertifikats->count() }} sertifikat</span>
-    </div>
-
-    @if($user->sertifikats->isNotEmpty())
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($user->sertifikats as $sertifikat)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
-                    <div class="p-6 flex flex-col flex-1">
-                        <!-- Badge -->
-                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
-                            Sertifikat
-                        </span>
-
-                        <!-- Nama Sertifikat -->
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
-                            {{ $sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
-                        </h3>
-
-                        <!-- Penerbit -->
-                        @if($sertifikat->lembaga_penerbit)
-                            <div class="flex items-center text-sm text-gray-600 mb-2">
-                                <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-                                </svg>
-                                {{ $sertifikat->lembaga_penerbit }}
-                            </div>
-                        @endif
-
-                        <!-- Tanggal Terbit -->
-                        <div class="flex items-center text-sm text-gray-600 mb-4">
-                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('d M Y') : 'Tanggal tidak tersedia' }}
-                        </div>
-
-                        <!-- Link -->
-                        @if($sertifikat->link_sertifikat)
-                            <a href="{{ $sertifikat->link_sertifikat }}" target="_blank" rel="noopener noreferrer"
-                               class="mt-auto inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
-                                Lihat Sertifikat
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                </svg>
-                            </a>
-                        @else
-                            <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
-                        @endif
-
-                        <!-- Tanggal -->
-                        <p class="text-xs text-gray-500 mt-5 pt-4 border-t border-gray-100">
-                            Ditambahkan: {{ $sertifikat->created_at?->format('d M Y') ?? '—' }}
-                        </p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    @else
-        <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
-            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p class="mt-4 text-gray-600">Belum ada sertifikat yang ditambahkan.</p>
-        </div>
-    @endif
-</section>
-
-        <!-- Learning Corners -->
-        <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mb-16">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Learning Corners</h2>
-                <span class="text-sm text-gray-600">{{ $user->learning_corners->count() }} catatan</span>
-            </div>
-            @if($user->learning_corners->isNotEmpty())
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($user->learning_corners as $entry)
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
-                            <div class="p-6 flex-1 flex flex-col">
-                                @if (!empty($entry->content) && is_array($entry->content))
-                                    @foreach ($entry->content as $item)
-                                        @if ($item['type'] === 'title')
-                                            <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
-                                                {{ $item['content'] ?? '(Tanpa Judul)' }}
-                                            </h3>
-                                        @elseif ($item['type'] === 'text')
-                                            <p class="text-gray-700 mb-4 line-clamp-4">
-                                                {{ $item['content'] }}
-                                            </p>
-                                        @elseif ($item['type'] === 'image')
-                                            @php
-                                                $imagePath = str_replace(['\\', '/'], '/', $item['content'] ?? '');
-                                            @endphp
-                                            <div class="mb-5">
-                                                <img
-                                                    src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-                                                    alt="{{ $item['alt'] ?? 'Gambar konten' }}"
-                                                    class="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
-                                                    loading="lazy"
-                                                    onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;"
-                                                >
-                                            </div>
-                                        @elseif ($item['type'] === 'link')
-                                            <a
-                                                href="{{ $item['content'] }}"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                class="text-indigo-600 hover:text-indigo-800 hover:underline mb-4 block line-clamp-1 break-all"
-                                            >
-                                                {{ Str::limit($item['content'], 70) }}
-                                            </a>
-                                        @endif
-                                    @endforeach
-                                @else
-                                    <p class="text-gray-700 mb-4 line-clamp-4">
-                                        {{ Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150) }}
-                                    </p>
-                                @endif
-                                <p class="text-sm text-gray-500 mt-auto pt-5 border-t border-gray-100">
-                                    Diposting pada: {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
-                                </p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-center text-gray-500 py-10">Belum ada catatan learning corner.</p>
-            @endif
-        </section>
     </div>
 </div>
 @endsection

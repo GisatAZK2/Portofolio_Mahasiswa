@@ -136,48 +136,180 @@
                 </div>
             </div>
         </form>
-
-        <!-- Portfolio Sendiri (Projects, Learning, Sertifikat) -->
-        @if(Auth::check())
+            @if(Auth::check())
             <!-- Projects -->
-            <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 mt-6 mb-10">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Projects</h2>
-                    <span class="text-sm text-gray-600">{{ $user->projects->count() }} proyek</span>
-                </div>
-                @if($user->projects->isNotEmpty())
-                    <div class="space-y-8">
-                        @foreach($user->projects as $project)
-                            <div class="border-b border-gray-100 pb-6 last:border-none last:pb-0">
-                                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ $project->nama_project }}</h3>
-                                <div class="text-sm text-gray-600 mb-3 flex items-center gap-3 flex-wrap">
-                                    <span>{{ $project->tanggal_mulai ? \Carbon\Carbon::parse($project->tanggal_mulai)->format('M Y') : '—' }}</span>
-                                    <span class="text-gray-400">→</span>
-                                    <span>{{ $project->tanggal_akhir ? \Carbon\Carbon::parse($project->tanggal_akhir)->format('M Y') : 'Sekarang' }}</span>
-                                </div>
-                                @if($project->deskripsi)
-                                    <p class="text-gray-700 leading-relaxed">{{ $project->deskripsi }}</p>
-                                @endif
-                                @if($project->link_project)
-                                    @php
-                                        $isGithub = str_contains(strtolower($project->link_project), 'github.com') || str_contains(strtolower($project->link_project), 'githubusercontent.com');
-                                    @endphp
-                                    <a href="{{ $project->link_project }}" target="_blank" rel="noopener noreferrer"
-                                       class="mt-4 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium">
-                                        @if($isGithub) Lihat di GitHub @else Buka Project @endif
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                        </svg>
-                                    </a>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-center text-gray-500 py-10">Belum ada proyek yang ditambahkan.</p>
-                @endif
-            </section>
+<section class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 md:p-8 mt-6 mb-10">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Projects</h2>
+        <span class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+            {{ $user->projects->count() }} proyek
+        </span>
+    </div>
 
+    @if($user->projects->isNotEmpty())
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($user->projects as $project)
+                @php
+                    $content       = $project->isi_content ?? [];
+                    $nama          = $content['nama_project']     ?? 'Tanpa Nama Project';
+                    $deskripsi     = $content['deskripsi']        ?? null;
+                    $linkProject   = $content['link_project']     ?? null;
+                    $linkGithub    = $content['link_github']      ?? null;
+                    $linkVideo     = $content['link_video']       ?? null;
+
+                    // Tanggal dari field model (bukan dari JSON isi_content)
+                    $mulaiRaw = $project->tanggal_mulai ?? null;
+                    $akhirRaw = $project->tanggal_akhir ?? null;
+
+                    // Parse Carbon
+                    $mulai = $mulaiRaw ? \Carbon\Carbon::parse($mulaiRaw) : null;
+                    $akhir = $akhirRaw ? \Carbon\Carbon::parse($akhirRaw) : null;
+                    $today = \Carbon\Carbon::today();
+
+                    // Format tanggal untuk tampilan (contoh: Jan 2025)
+                    $mulaiFormatted = $mulai ? $mulai->translatedFormat('M Y') : '—';
+                    $akhirFormatted = $akhir ? $akhir->translatedFormat('M Y') : 'Sekarang';
+
+                    // Status logic (sama seperti sebelumnya)
+                    $status = '—';
+                    $statusClass = 'bg-gray-100 text-gray-700';
+                    $statusText = 'Tidak diketahui';
+
+                    if ($mulai && $akhir) {
+                        if ($akhir < $today) {
+                            $status = 'Past';
+                            $statusClass = 'bg-red-100 text-red-800';
+                            $statusText = 'Selesai';
+                        } elseif ($mulai <= $today && $today <= $akhir) {
+                            $status = 'Now';
+                            $statusClass = 'bg-green-100 text-green-800';
+                            $statusText = 'Sedang Berjalan';
+                        } elseif ($mulai > $today) {
+                            $status = 'Coming';
+                            $statusClass = 'bg-blue-100 text-blue-800';
+                            $statusText = 'Akan Datang';
+                        }
+                    } elseif ($mulai && !$akhir) {
+                        if ($mulai <= $today) {
+                            $status = 'Now';
+                            $statusClass = 'bg-green-100 text-green-800';
+                            $statusText = 'Sedang Berjalan';
+                        } else {
+                            $status = 'Coming';
+                            $statusClass = 'bg-blue-100 text-blue-800';
+                            $statusText = 'Akan Datang';
+                        }
+                    } elseif (!$mulai && $akhir) {
+                        if ($akhir < $today) {
+                            $status = 'Past';
+                            $statusClass = 'bg-red-100 text-red-800';
+                            $statusText = 'Selesai';
+                        }
+                    }
+
+                    // Embed YouTube
+                    $embedVideo = null;
+                    if ($linkVideo) {
+                        preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^"&?\/\s]{11})/i', $linkVideo, $matches);
+                        if (!empty($matches[1])) {
+                            $embedVideo = "https://www.youtube.com/embed/" . $matches[1];
+                        }
+                    }
+                @endphp
+
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full">
+                    <!-- Media Header -->
+                    @if($embedVideo)
+                        <div class="relative w-full pb-[56.25%] bg-black">
+                            <iframe class="absolute inset-0 w-full h-full" src="{{ $embedVideo }}" title="Video: {{ $nama }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    @elseif($linkProject)
+                        <div class="w-full h-48 bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                    @else
+                        <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                    @endif
+
+                    <!-- Content -->
+                    <div class="p-5 flex flex-col flex-1">
+                        <!-- Status + Nama -->
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="text-xl font-semibold text-gray-900 line-clamp-2 flex-1 pr-3">
+                                {{ $nama }}
+                            </h3>
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $statusClass }} whitespace-nowrap">
+                                {{ $statusText }}
+                            </span>
+                        </div>
+
+                        <!-- Tanggal Mulai - Akhir -->
+                        <div class="text-sm text-gray-600 mb-3 flex items-center gap-2 flex-wrap">
+                            <span>Mulai: {{ $mulaiFormatted }}</span>
+                            <span class="text-gray-400">→</span>
+                            <span>Selesai: {{ $akhirFormatted }}</span>
+                        </div>
+
+                        @if($deskripsi)
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+                                {{ $deskripsi }}
+                            </p>
+                        @else
+                            <p class="text-gray-500 text-sm mb-4 italic flex-1">Tidak ada deskripsi</p>
+                        @endif
+
+                        <!-- Links -->
+                        <div class="flex flex-wrap gap-3 mt-auto pt-4 border-t border-gray-100">
+                            @if($linkProject)
+                                <a href="{{ $linkProject }}" target="_blank" rel="noopener noreferrer"
+                                   class="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                    Website
+                                </a>
+                            @endif
+
+                            @if($linkGithub)
+                                <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
+                                   class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 hover:text-black">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                                    </svg>
+                                    GitHub
+                                </a>
+                            @endif
+
+                            @if($linkVideo && !$embedVideo)
+                                <a href="{{ $linkVideo }}" target="_blank" rel="noopener noreferrer"
+                                   class="inline-flex items-center gap-1.5 text-sm font-medium text-red-600 hover:text-red-800">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Video
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="mt-4 text-gray-600">Belum ada proyek yang ditambahkan.</p>
+        </div>
+    @endif
+</section>
              <!-- Sertifikat -->
             <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
                 <div class="flex justify-between items-center mb-6">

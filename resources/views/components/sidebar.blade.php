@@ -16,6 +16,16 @@
     <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         
     <!-- Dashboard -->
+      @auth 
+        <a href="{{ route('dashboard.me') }}"
+           class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
+                  {{ request()->routeIs('dashboard.me') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4"/>
+            </svg>
+            <span class="font-medium">My Dashboard</span>
+        
+        @endauth
         <a href="{{ route('dashboard') }}"
            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
                   {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
@@ -23,14 +33,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4"/>
             </svg>
             <span class="font-medium">Dashboard</span>
-        </a>
+            </a>
 
         <!-- ================== PROJECT ================== -->
         @guest
-            <a href="{{ route('project.project_user') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
-                      {{ request()->routeIs('project.indexuser') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <a href="{{ route('project.project_user') }}"
+       class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
+                  {{ request()->routeIs('project.project_user') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}"> <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span class="font-medium">Project Mahasiswa</span>

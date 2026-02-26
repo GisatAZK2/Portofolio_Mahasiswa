@@ -127,22 +127,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('toggle-search-mobile');
-    const dropdown = document.getElementById('mobile-search-dropdown');
-
-    if (toggleBtn && dropdown) {
-        toggleBtn.addEventListener('click', () => {
-            dropdown.classList.toggle('hidden');
-            
-            // Animasi slide (max-height)
-            if (!dropdown.classList.contains('hidden')) {
-                dropdown.style.maxHeight = dropdown.scrollHeight + 'px';
-            } else {
-                dropdown.style.maxHeight = '0px';
-            }
-        });
-    }
-});
-

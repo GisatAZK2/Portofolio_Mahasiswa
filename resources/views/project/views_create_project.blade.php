@@ -36,6 +36,17 @@
                 @enderror
             </div>
 
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi (opsional)</label>
+                <textarea name="deskripsi" rows="4"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
+                          placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
+                @error('deskripsi')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai <span class="text-red-500">*</span></label>

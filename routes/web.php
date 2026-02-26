@@ -15,6 +15,8 @@ Route::get('/search', [DashboardController::class, 'search'])->name('search');
 // Semua route yang butuh login
 Route::middleware('auth')->group(function () {
 
+    Route::get('/MyDashboard', [DashboardController::class, 'myDashboard'])->name('dashboard.me');
+
     Route::get('/profile-page', function () {
         return view('views_profile_page');
     })->name('profile-page');

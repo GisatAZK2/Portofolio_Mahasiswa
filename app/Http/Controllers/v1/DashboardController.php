@@ -76,6 +76,62 @@ class DashboardController extends Controller
         ));
     }
 
+    public function myDashboard()
+{
+    $userId = auth()->id();
+
+    $totalLearning = LearningCorner::where('id_mahasiswa', $userId)->count();
+    $totalProject = Project::where('id_mahasiswa', $userId)->count();
+    $totalSertifikat = Sertifikat::where('id_mahasiswa', $userId)->count();
+
+    // =========================
+    // AMBIL POSTING RANDOM USER
+    // =========================
+
+    $randomLearning = LearningCorner::with('mahasiswa')
+        ->where('id_mahasiswa', $userId)
+        ->inRandomOrder()
+        ->take(3)
+        ->get()
+        ->map(function ($item) {
+            $item->type = 'learning';
+            return $item;
+        });
+
+    $randomProject = Project::with('mahasiswa')
+        ->where('id_mahasiswa', $userId)
+        ->inRandomOrder()
+        ->take(3)
+        ->get()
+        ->map(function ($item) {
+            $item->type = 'project';
+            return $item;
+        });
+
+    $randomSertifikat = Sertifikat::with('mahasiswa')
+        ->where('id_mahasiswa', $userId)
+        ->inRandomOrder()
+        ->take(3)
+        ->get()
+        ->map(function ($item) {
+            $item->type = 'sertifikat';
+            return $item;
+        });
+
+    $randomPosts = $randomProject
+        ->concat($randomLearning)
+        ->concat($randomSertifikat)
+        ->shuffle()
+        ->take(6);
+
+    return view('views_dashboard_me', compact(
+        'totalLearning',
+        'totalProject',
+        'totalSertifikat',
+        'randomPosts'
+    ));
+}
+
     public function show(User $user)
     {
         $user->load([
@@ -135,42 +191,37 @@ class DashboardController extends Controller
             $results = $results->concat($users);
         }
 
-        
+        if ($type === null || $type === 'project') {
+    $projects = Project::with(['mahasiswa.jurusan', 'mahasiswa.keahlian', 'mahasiswa.angkatan'])
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('isi_content->nama_project', 'like', "%{$keyword}%");
+            });
+        })
+        ->when($jurusan, function ($query) use ($jurusan) {
+            $query->whereHas('mahasiswa', fn($q) => $q->where('id_jurusan', $jurusan));
+        })
+        ->when($keahlian, function ($query) use ($keahlian) {
+            $query->whereHas('mahasiswa', fn($q) => $q->where('id_keahlian', $keahlian));
+        })
+        ->when($angkatan, function ($query) use ($angkatan) {
+            $query->whereHas('mahasiswa', fn($q) => $q->where('id_angkatan', $angkatan));
+        })
+        ->get()
+        ->map(function ($project) {
+            $content = $project->isi_content ?? [];
 
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH PROJECT
-        |--------------------------------------------------------------------------
-        */
-        if (!$type || $type == 'project') {
-            $projects = Project::with(['mahasiswa.jurusan', 'mahasiswa.keahlian'])
-                ->when($keyword, function ($query) use ($keyword) {
-                    $query->where('nama_project', 'like', "%$keyword%");
-                })
-                ->when($jurusan, function ($query) use ($jurusan) {
-                    $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
-                        $q->where('id_jurusan', $jurusan);
-                    });
-                })
-                ->when($keahlian, function ($query) use ($keahlian) {
-                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
-                        $q->where('id_keahlian', $keahlian);
-                    });
-                })
-                ->when($angkatan, function ($query) use ($angkatan) {
-                    $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
-                        $q->where('id_angkatan', $angkatan);
-                    });
-                })
-                ->get()
-                ->map(function ($item) {
-                    $item->type = 'project';
-                    return $item;
-                });
+            $project->nama_project  = $content['nama_project'] ?? null;
+            $project->link_project  = $content['link_project'] ?? null;
+            $project->link_github   = $content['link_github'] ?? null;
+            $project->link_video    = $content['link_video'] ?? null;
+            $project->type = 'project';
 
-            $results = $results->concat($projects);
-        }
+            return $project;
+        });
 
+    $results = $results->concat($projects);
+}
         /*
         |--------------------------------------------------------------------------
         | SEARCH SERTIFIKAT
@@ -206,7 +257,9 @@ class DashboardController extends Controller
 
             $results = $results->concat($sertifikats);
         }
-        
+
+        /* SEARCH ANGKATAN */
+                
 
        
         $totalMahasiswa = User::count();

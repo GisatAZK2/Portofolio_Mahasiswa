@@ -30,6 +30,9 @@ class User extends Authenticatable
     'photo_profile',
     'username',
     'password',
+    'jenis_kelamin',
+    'banner_url',
+    'deskripsi',
     'id_jurusan',
     'id_keahlian',
     'id_angkatan',
@@ -47,7 +50,7 @@ class User extends Authenticatable
 }
 
 public function angkatan() {
-    return $this->belongsTo(Angkatan::class, 'id_angkatan', 'id');
+    return $this->belongsTo(Angkatan::class, 'id');
 }
 
 

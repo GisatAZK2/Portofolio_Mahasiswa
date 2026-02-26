@@ -69,14 +69,20 @@
                         @endforeach
                     </select>
 
-                    <select name="angkatan" class="block border border-gray-300/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[120px] lg:min-w-[140px]">
-                        <option value="">Semua Angkatan</option>
-                        @foreach($angkatanList ?? [] as $angkatan)
-                            <option value="{{ $angkatan->id_angkatan }}" {{ request('angkatan') == $angkatan->id_angkatan ? 'selected' : '' }}>
-                                {{ $angkatan->nama_angkatan }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <select 
+    name="angkatan" 
+    class="block border border-gray-300/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[120px] lg:min-w-[140px]"
+>
+    <option value="">Semua Angkatan</option>
+    @foreach($angkatanList ?? [] as $angkatan)
+        <option 
+            value="{{ $angkatan->id }}" 
+            @selected( (string) request('angkatan') === (string) $angkatan->id )
+        >
+            {{ $angkatan->nama_angkatan }}
+        </option>
+    @endforeach
+</select>
 
                     <!-- Buttons -->
                     <div class="flex gap-2 shrink-0">
@@ -124,19 +130,10 @@
                         @endforeach
                     </select>
 
-                    <select name="keahlian" class="block w-full border border-gray-300/80 rounded-lg py-3 px-3.5 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400">
-                        <option value="">Semua Keahlian</option>
-                        @foreach($keahlianList ?? [] as $keahlian)
-                            <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
-                                {{ $keahlian->nama_keahlian }}
-                            </option>
-                        @endforeach
-                    </select>
-
                     <select name="angkatan" class="block w-full border border-gray-300/80 rounded-lg py-3 px-3.5 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 sm:col-span-2">
                         <option value="">Semua Angkatan</option>
                         @foreach($angkatanList ?? [] as $angkatan)
-                            <option value="{{ $angkatan->id_angkatan }}" {{ request('angkatan') == $angkatan->id_angkatan ? 'selected' : '' }}>
+                            <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
                                 {{ $angkatan->nama_angkatan }}
                             </option>
                         @endforeach
