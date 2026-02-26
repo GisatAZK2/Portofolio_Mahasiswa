@@ -16,7 +16,7 @@
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
 
     
-    <div class="flex min-h-screen">
+    <div class="flex h-screen">
 
         <!-- Sidebar -->
         @include('components.sidebar')
@@ -37,150 +37,94 @@
             @include('components.footer')
         </div>
     </div>
-<script>
+
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Elemen-elemen penting
-    const sidebar         = document.getElementById('sidebar');
+    // Sidebar toggle
     const toggleBtn       = document.getElementById('toggle-sidebar');
     const hamburger       = document.getElementById('sidebar-hamburger');
     const closeIcon       = document.getElementById('sidebar-close');
+    const sidebar         = document.getElementById('sidebar');
     const overlay         = document.getElementById('sidebar-overlay');
+    const closeSidebarBtn = document.getElementById('close-sidebar');
+    const toggleSearch = document.getElementById('toggle-search-mobile');
+    const searchDrop   = document.getElementById('mobile-search-dropdown');
 
-    const searchToggle    = document.getElementById('toggle-search-mobile');
-    const searchDropdown  = document.getElementById('mobile-search-dropdown');
+if (toggleSearch && searchDrop) {
+    toggleSearch.addEventListener('click', () => {
+        const isClosed = searchDrop.classList.contains('max-h-0');
 
-    // ====================
-    // Fungsi Sidebar
-    // ====================
+        if (isClosed) {
+            searchDrop.style.maxHeight = '0px'; 
+            searchDrop.classList.remove('max-h-0', 'opacity-0', '-translate-y-2', 'scale-y-95');
+            searchDrop.classList.add('opacity-100', 'translate-y-0', 'scale-y-100');
+
+            requestAnimationFrame(() => {
+                searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
+            });
+        } else {
+            // Tutup
+            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px'; 
+            requestAnimationFrame(() => {
+                searchDrop.style.maxHeight = '0px';
+            });
+            searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95');
+            searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
+
+            setTimeout(() => {
+                if (searchDrop.style.maxHeight === '0px') {
+                }
+            }, 350);
+        }
+    });
+}
+
     function openSidebar() {
         if (!sidebar) return;
         sidebar.classList.remove('-translate-x-full');
         if (overlay) {
             overlay.classList.remove('hidden');
-            overlay.classList.add('opacity-100');
-            overlay.classList.remove('opacity-0');
+            overlay.classList.add('block');
         }
-        document.body.style.overflow = 'hidden'; // cegah scroll body
+        document.body.style.overflow = 'hidden';
 
-        hamburger?.classList.add('hidden');
-        closeIcon?.classList.remove('hidden');
+        // Ganti icon ke X
+        if (hamburger) hamburger.classList.add('hidden');
+        if (closeIcon) closeIcon.classList.remove('hidden');
     }
 
     function closeSidebar() {
         if (!sidebar) return;
         sidebar.classList.add('-translate-x-full');
         if (overlay) {
-            overlay.classList.remove('opacity-100');
-            overlay.classList.add('opacity-0');
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-            }, 300); // sesuai duration-300
+            overlay.classList.remove('block');
+            overlay.classList.add('hidden');
         }
         document.body.style.overflow = '';
 
-        hamburger?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
+        // Kembali ke hamburger
+        if (hamburger) hamburger.classList.remove('hidden');
+        if (closeIcon) closeIcon.classList.add('hidden');
     }
 
-    // Toggle sidebar via tombol
-    toggleBtn?.addEventListener('click', () => {
-        if (sidebar?.classList.contains('-translate-x-full')) {
-            openSidebar();
-        } else {
-            closeSidebar();
-        }
-    });
-
-    // Tutup via overlay (klik di luar sidebar)
-    overlay?.addEventListener('click', closeSidebar);
-
-    // Jika ada tombol close di dalam sidebar (opsional)
-    document.getElementById('close-sidebar')?.addEventListener('click', closeSidebar);
-
-    // ====================
-    // Fungsi Mobile Search
-    // ====================
-    function openSearch() {
-        if (!searchDropdown) return;
-        searchDropdown.classList.remove('hidden');
-        searchDropdown.classList.remove('max-h-0');
-        // trigger reflow agar transisi jalan
-        searchDropdown.offsetHeight;
-    }
-
-    function closeSearch() {
-        if (!searchDropdown) return;
-        searchDropdown.classList.add('max-h-0');
-        setTimeout(() => {
-            searchDropdown.classList.add('hidden');
-        }, 300); // sesuai duration di CSS
-    }
-
-    // Toggle search via tombol
-    searchToggle?.addEventListener('click', () => {
-        if (searchDropdown?.classList.contains('hidden') || 
-            searchDropdown?.classList.contains('max-h-0')) {
-            openSearch();
-        } else {
-            closeSearch();
-        }
-    });
-
-    // ====================
-    // Klik di luar → tutup keduanya (sidebar & search mobile)
-    // ====================
-    document.addEventListener('click', function(e) {
-        // --- Sidebar ---
-        const sidebarIsOpen = sidebar && 
-                             !sidebar.classList.contains('-translate-x-full') &&
-                             window.innerWidth < 1024; // hanya mobile
-
-        if (sidebarIsOpen) {
-            const clickedInsideSidebar = sidebar.contains(e.target);
-            const clickedToggleBtn     = toggleBtn?.contains(e.target);
-
-            if (!clickedInsideSidebar && !clickedToggleBtn) {
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            if (sidebar?.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
                 closeSidebar();
             }
-        }
+        });
+    }
 
-        // --- Mobile Search ---
-        const searchIsOpen = searchDropdown && 
-                            !searchDropdown.classList.contains('hidden') &&
-                            !searchDropdown.classList.contains('max-h-0');
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
 
-        if (searchIsOpen) {
-            const clickedInsideSearch = searchDropdown.contains(e.target);
-            const clickedSearchBtn    = searchToggle?.contains(e.target);
-
-            if (!clickedInsideSearch && !clickedSearchBtn) {
-                closeSearch();
-            }
-        }
-    });
-
-    // ====================
-    // Handle resize → pastikan sidebar terbuka di desktop
-    // ====================
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 1024) { // lg breakpoint
-            // Force buka sidebar di desktop
-            sidebar?.classList.remove('-translate-x-full');
-            hamburger?.classList.remove('hidden');
-            closeIcon?.classList.add('hidden');
-            overlay?.classList.add('hidden', 'opacity-0');
-
-            // Tutup search mobile
-            closeSearch();
-        }
-    });
-
-    // ====================
-    // Dropdown submenu (Project, Learning Corner, Sertifikat, dll)
-    // ====================
+    // FIX: Definisi fungsi toggleDropdown() yang hilang
     window.toggleDropdown = function(menuId) {
-        const menu  = document.getElementById(menuId + 'Menu');
+        const menu = document.getElementById(menuId + 'Menu');
         const arrow = document.getElementById(menuId + 'Arrow');
+
         if (menu && arrow) {
             menu.classList.toggle('hidden');
             arrow.classList.toggle('rotate-180');
