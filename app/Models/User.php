@@ -31,7 +31,7 @@ class User extends Authenticatable
     'username',
     'password',
     'jenis_kelamin',
-    'banner_url',
+    'background_url',
     'deskripsi',
     'id_jurusan',
     'id_keahlian',

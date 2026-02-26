@@ -140,8 +140,19 @@ class UserController extends Controller
         'id_angkatan' => ['nullable','exists:angkatan,id'],
         'deskripsi' => ['nullable','string','max:1000'],
         'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
+        'url_background' => ['nullable','image','mimes:jpeg,png,jpg','max:4098'],
     
     ];
+    
+    if ($request->hasFile('url_background')) {
+
+        if ($user->url_background && Storage::disk('public')->exists($user->url_background)) {
+            Storage::disk('public')->delete($user->url_background);
+        }
+
+        $validated['url_background'] = $request->file('url_background')
+                                               ->store('covers','public');
+    }
 
     if ($request->filled('password')) {
         $rules['password'] = ['required','confirmed',Password::min(8)->mixedCase()];

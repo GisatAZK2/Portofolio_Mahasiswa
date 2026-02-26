@@ -7,9 +7,28 @@
         <form id="form-profile" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <!-- Header dengan gradient & avatar -->
-                <div class="relative h-48 bg-gradient-to-br from-indigo-500 via-indigo-600 to-blue-600">
+            <div class="relative h-48 
+            @if(Auth::user()->url_background)
+                bg-cover bg-center
+            @else
+                bg-gradient-to-br from-indigo-500 via-indigo-600 to-blue-600
+            @endif
+            "
+            @if(Auth::user()->url_background)
+            style="background-image: url('{{ asset('storage/' . Auth::user()->url_background) }}');"
+            @endif
+            >
+            <label for="background_input" 
+            class="absolute top-4 right-4 bg-white/30 backdrop-blur px-3 py-1 rounded-lg text-sm cursor-pointer hover:bg-white/50 transition">
+            Ganti Cover
+            </label>
+
+            <input type="file" 
+                   name="url_background" 
+                   id="background_input" 
+                   class="hidden" 
+                   accept="image/*" />
+                 <!-- Header dengan gradient & avatar -->
                     <div class="absolute -bottom-16 left-1/2 -translate-x-1/2 group">
                         <div class="relative w-32 h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden ring-1 ring-gray-200/50">
                             @if (Auth::user()->photo_profile)
@@ -66,7 +85,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
-                        
+
                     <div class="bg-gray-50/70 p-5 rounded-lg border border-gray-100 hover:border-indigo-200 transition relative group cursor-pointer" onclick="toggleEdit('deskripsi')">
                         <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Deskripsi</p>
 
