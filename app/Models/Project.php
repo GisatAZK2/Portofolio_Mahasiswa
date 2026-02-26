@@ -11,7 +11,7 @@ class Project extends Model
     use HasFactory;
 
     protected $table = 'projects';
-    public $timestamps = false; // karena tidak pakai created_at
+    
 
     protected $fillable = [
         'isi_content',
