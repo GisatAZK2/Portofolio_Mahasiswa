@@ -39,16 +39,20 @@
                                 <p><span class="font-medium">Selesai:</span> {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y') }}</p>
                             @endif
                            
-                            @if($project->link_project || $project->link_github || $project->link_video)
+                            @if(
+                                isset($project->isi_content['link_project']) || 
+                                isset($project->isi_content['link_github']) || 
+                                isset($project->isi_content['link_video'])
+                                )
                                 <div class="flex flex-wrap gap-3 text-sm mb-4">
-                                    @if($project->link_project)
-                                        <a href="{{ $project->link_project }}" target="_blank" class="text-indigo-600 hover:underline">Project</a>
+                                    @if(isset($project->isi_content['link_project']))
+                                        <a href="{{ $project->isi_content['link_project'] }}" target="_blank" class="text-indigo-600 hover:underline">Project</a>
                                     @endif
-                                    @if($project->link_github)
-                                        <a href="{{ $project->link_github }}" target="_blank" class="text-indigo-600 hover:underline">GitHub</a>
+                                    @if(isset($project->isi_content['link_github']))
+                                        <a href="{{ $project->isi_content['link_github'] }}" target="_blank" class="text-indigo-600 hover:underline">GitHub</a>
                                     @endif
-                                    @if($project->link_video)
-                                        <a href="{{ $project->link_video }}" target="_blank" class="text-indigo-600 hover:underline">Video</a>
+                                    @if(isset($project->isi_content['link_video']))
+                                        <a href="{{ $project->isi_content['link_video'] }}" target="_blank" class="text-indigo-600 hover:underline">Video</a>
                                     @endif
                                 </div>
                             @endif 

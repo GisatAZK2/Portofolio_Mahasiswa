@@ -50,7 +50,7 @@ class ProjekController extends Controller
         ]), fn($value) => !is_null($value) && $value !== '');
 
         if (empty($content)) {
-            return back()->withInput()->withErrors(['portfolio' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
+            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
         }
 
         Project::create([
@@ -80,16 +80,15 @@ class ProjekController extends Controller
         $project = Project::where('id', $id)
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();
-
-        $request->validate([
-            'nama_project'   => 'required|string|max:255',
-            'tanggal_mulai'  => 'required|date',
-            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
-            'link_project'   => 'nullable|url|max:255',
-            'link_github'    => 'nullable|url|max:500',
-            'link_video'     => 'nullable|url|max:500',
-        ]);
-
+            $request->validate([
+                'nama_project'   => 'required|string|max:255',
+                'tanggal_mulai'  => 'required|date',
+                'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+                'link_project'   => 'nullable|url|max:255',
+                'link_github'    => 'nullable|url|max:500',
+                'link_video'     => 'nullable|url|max:500',
+                ]);
+                
         $content = $project->isi_content ?? [];
 
         $content['nama_project'] = $request->nama_project;
@@ -97,21 +96,20 @@ class ProjekController extends Controller
         $content['link_github']  = $request->link_github;
         $content['link_video']   = $request->link_video;
 
-        $project->update([
-            'isi_content'   => $content,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_akhir' => $request->tanggal_akhir,
-        ]);
-
         $removeLinks = $request->remove_links ?? [];
         
         foreach ($removeLinks as $linkField) {
         if (in_array($linkField, ['link_project', 'link_github', 'link_video'])) {
             unset($content[$linkField]);
         }
-    }
+        }
+        $project->update([
+            'isi_content'   => $content,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_akhir' => $request->tanggal_akhir,
+        ]);
 
-        //Penghapusan Link yang terpilih ?
+        /*Penghapusan Link yang terpilih ?
         foreach (['link_project', 'link_github', 'link_video'] as $link) {
 
         // Kalau link dicentang untuk dihapus → skip
@@ -123,7 +121,7 @@ class ProjekController extends Controller
         if ($request->filled($link)) {
             $content[$link] = $request->$link;
         }
-    }
+    } */
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil diperbarui!');
 

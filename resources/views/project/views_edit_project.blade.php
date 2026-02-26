@@ -14,7 +14,9 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('project.update', $project->id) }}" class="space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100">
+    <form method="POST"
+          action="{{ route('project.update', $project->id) }}"
+          class="space-y-6 bg-white p-8 rounded-xl shadow-md border border-gray-100">
         @csrf
         @method('PUT')
 
