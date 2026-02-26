@@ -3,12 +3,13 @@
 
 @section('content')
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    @if($keyword || request()->jurusan || request()->keahlian || request()->angkatan)
+
+    <!-- Filter Aktif -->
+    @if($keyword || request()->jurusan || request()->keahlian || request()->angkatan || request()->type)
     <div class="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div class="flex flex-wrap items-center gap-3">
             <span class="text-sm font-medium text-gray-700">Filter aktif:</span>
-            
+
             @if($keyword)
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,9 +21,7 @@
 
             @if(request()->jurusan && $results->isNotEmpty())
                 @php
-                    $jurusanItem = $results->first(function($item) {
-                        return isset($item->jurusan) && $item->jurusan->id_jurusan == request()->jurusan;
-                    });
+                    $jurusanItem = $results->first(fn($item) => isset($item->jurusan) && $item->jurusan->id_jurusan == request()->jurusan);
                 @endphp
                 @if($jurusanItem)
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800">
@@ -36,9 +35,7 @@
 
             @if(request()->keahlian && $results->isNotEmpty())
                 @php
-                    $keahlianItem = $results->first(function($item) {
-                        return isset($item->keahlian) && $item->keahlian->id_keahlian == request()->keahlian;
-                    });
+                    $keahlianItem = $results->first(fn($item) => isset($item->keahlian) && $item->keahlian->id_keahlian == request()->keahlian);
                 @endphp
                 @if($keahlianItem)
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800">
@@ -49,24 +46,22 @@
                 </span>
                 @endif
             @endif
-
-            @if(request()->angkatan)
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-amber-100 text-amber-800">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Angkatan {{ request()->angkatan }}
-            </span>
-            @endif
-
-            @if(request()->type)
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-100 text-emerald-800">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                </svg>
-                Tipe: {{ ucfirst(request()->type) }}
-            </span>
-            @endif
+            
+            <!-- 3 Pilihan Tipe -->
+            <div class="flex gap-2">
+                <a href="{{ route('search', array_merge(request()->query(), ['type' => 'mahasiswa'])) }}"
+                   class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ request()->type === 'mahasiswa' ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800 hover:bg-blue-200' }}">
+                    Mahasiswa
+                </a>
+                <a href="{{ route('search', array_merge(request()->query(), ['type' => 'project'])) }}"
+                   class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ request()->type === 'project' ? 'bg-green-600 text-white' : 'bg-green-100 text-green-800 hover:bg-green-200' }}">
+                    Project
+                </a>
+                <a href="{{ route('search', array_merge(request()->query(), ['type' => 'sertifikat'])) }}"
+                   class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ request()->type === 'sertifikat' ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-800 hover:bg-amber-200' }}">
+                    Sertifikat
+                </a>
+            </div>
 
             <a href="{{ route('search') }}" class="ml-auto inline-flex items-center px-3 py-1 text-sm text-gray-600 hover:text-gray-900">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,21 +73,8 @@
     </div>
     @endif
 
-    <!-- Ringkasan Hasil Total -->
     @if($results->count() > 0)
-        <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
-            <h2 class="text-2xl font-bold text-gray-900">Hasil Pencarian</h2>
-            <div class="flex items-center gap-3">
-                <span class="text-gray-700 font-medium text-lg">
-                    Total: {{ $results->count() }} entri ditemukan
-                </span>
-            </div>
-        </div>
-    @endif
-
-    @if($results->count() > 0)
-
-        <!-- 1. Bagian Mahasiswa -->
+        <!-- Mahasiswa -->
         @php $mahasiswa = $results->where('type', 'mahasiswa'); @endphp
         @if($mahasiswa->count() > 0)
         <div class="mb-12" id="mahasiswa-section">
@@ -103,7 +85,6 @@
                     </span>
                 </h3>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mahasiswa-grid">
                 @foreach($mahasiswa->take(3) as $item)
                     <a href="{{ route('portfolio.show', $item) }}"
@@ -170,6 +151,7 @@
                                 <div class="mt-auto">
                                     <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
                                         <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
+                                        <span><strong class="text-gray-900">{{ $item->sertifikats_count ?? 0 }}</strong> Sertifikat</span>
                                         <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
@@ -189,6 +171,7 @@
                 @foreach($mahasiswa->skip(3) as $item)
                     <a href="{{ route('portfolio.show', $item) }}"
                        class="block h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl mahasiswa-item hidden">
+                        <!-- Card mahasiswa sama seperti di atas (copy isi card) -->
                         <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
                             <div class="p-6 flex flex-col flex-1">
                                 <div class="flex items-start gap-4 mb-4">
@@ -249,6 +232,7 @@
                                 <div class="mt-auto">
                                     <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
                                         <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
+                                        <span><strong class="text-gray-900">{{ $item->sertifikats_count ?? 0 }}</strong> Sertifikat</span>
                                         <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
@@ -267,12 +251,11 @@
             </div>
 
             @if($mahasiswa->count() > 3)
-                <div class="mt-8 text-center">
-                    <button 
-                        onclick="toggleSeeMore('mahasiswa-grid', this, {{ $mahasiswa->count() }})"
-                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition shadow-md">
-                        Lihat semua {{ $mahasiswa->count() }} mahasiswa
-                        <svg class="w-5 h-5 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="mt-6 text-left">
+                    <button onclick="toggleSeeMore('mahasiswa-grid', this, {{ $mahasiswa->count() }})"
+                            class="text-sm font-medium text-gray-900 hover:text-indigo-700 transition flex items-center gap-1">
+                        Lihat semua
+                        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
@@ -281,13 +264,12 @@
         </div>
         @endif
 
-    
-        <!-- Separator -->
+        <!-- Separator Project -->
         @if($results->where('type', 'project')->count() > 0)
             <hr class="my-12 border-gray-200">
         @endif
 
-        <!-- 3. Bagian Project -->
+        <!-- Project -->
         @php $projects = $results->where('type', 'project'); @endphp
         @if($projects->count() > 0)
         <div class="mb-12" id="project-section">
@@ -298,7 +280,6 @@
                     </span>
                 </h3>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 project-grid">
                 @foreach($projects->take(3) as $item)
                     <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
@@ -344,6 +325,7 @@
 
                 @foreach($projects->skip(3) as $item)
                     <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item hidden">
+                        <!-- Isi card project sama seperti di atas -->
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
                                 Project
@@ -386,12 +368,136 @@
             </div>
 
             @if($projects->count() > 3)
-                <div class="mt-8 text-center">
-                    <button 
-                        onclick="toggleSeeMore('project-grid', this, {{ $projects->count() }})"
-                        class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition shadow-md">
-                        Lihat semua {{ $projects->count() }} project
-                        <svg class="w-5 h-5 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="mt-6 text-left">
+                    <button onclick="toggleSeeMore('project-grid', this, {{ $projects->count() }})"
+                            class="text-sm font-medium text-gray-900 hover:text-indigo-700 transition flex items-center gap-1">
+                        Lihat semua 
+                        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+            @endif
+        </div>
+        @endif
+
+        <!-- Separator Sertifikat -->
+        @if($results->where('type', 'sertifikat')->count() > 0)
+            <hr class="my-12 border-gray-200">
+        @endif
+
+        <!-- Sertifikat -->
+        @php $sertifikats = $results->where('type', 'sertifikat'); @endphp
+        @if($sertifikats->count() > 0)
+        <div class="mb-12" id="sertifikat-section">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+                    <span class="inline-flex px-4 py-2 rounded-full bg-amber-100 text-amber-800 font-medium text-base">
+                        Sertifikat ({{ $sertifikats->count() }})
+                    </span>
+                </h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sertifikat-grid">
+                @foreach($sertifikats->take(3) as $item)
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-amber-500 sertifikat-item">
+                        <div class="p-6 flex flex-col flex-1">
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
+                                Sertifikat
+                            </span>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                                {{ $item->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
+                            </h3>
+                            @if($item->mahasiswa)
+                                <p class="text-sm text-gray-600 mb-3">
+                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    @if($item->mahasiswa->angkatan)
+                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                        </span>
+                                    @endif
+                                </p>
+                            @endif
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+                                    </svg>
+                                    <span class="font-medium">Penerbit:</span> {{ $item->lembaga_penerbit ?? 'Tidak diketahui' }}
+                                </div>
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="font-medium">Terbit:</span> {{ $item->tanggal_terbit ? \Carbon\Carbon::parse($item->tanggal_terbit)->format('d M Y') : '—' }}
+                                </div>
+                            </div>
+
+                            @if($item->link_sertifikat)
+                              
+                             <a href="{{ asset('storage/' . $item->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
+                                class="mt-auto inline-flex items-center justify-center px-5 py-2.5 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 transition">
+                                    Lihat Sertifikat →
+                                </a>
+                            @else
+                                <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+
+                @foreach($sertifikats->skip(3) as $item)
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-amber-500 sertifikat-item hidden">
+                        <div class="p-6 flex flex-col flex-1">
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
+                                Sertifikat
+                            </span>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                                {{ $item->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
+                            </h3>
+                            @if($item->mahasiswa)
+                                <p class="text-sm text-gray-600 mb-3">
+                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    @if($item->mahasiswa->angkatan)
+                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                        </span>
+                                    @endif
+                                </p>
+                            @endif
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+                                    </svg>
+                                    <span class="font-medium">Penerbit:</span> {{ $item->lembaga_penerbit ?? 'Tidak diketahui' }}
+                                </div>
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="font-medium">Terbit:</span> {{ $item->tanggal_terbit ? \Carbon\Carbon::parse($item->tanggal_terbit)->format('d M Y') : '—' }}
+                                </div>
+                            </div>
+
+                            @if($item->link_sertifikat)
+                                <a href="{{ asset('storage/' . $item->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
+                                   class="mt-auto inline-flex items-center justify-center px-5 py-2.5 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 transition">
+                                    Lihat Sertifikat →
+                                </a>
+                            @else
+                                <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            @if($sertifikats->count() > 3)
+                <div class="mt-6 text-left">
+                    <button onclick="toggleSeeMore('sertifikat-grid', this, {{ $sertifikats->count() }})"
+                            class="text-sm font-medium text-gray-900 hover:text-indigo-700 transition flex items-center gap-1">
+                        Lihat semua
+                        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
@@ -421,6 +527,7 @@
         </div>
     @endif
 
+    <!-- Pagination -->
     @if(method_exists($results, 'links'))
         <div class="mt-10 flex justify-center">
             {{ $results->links() }}
@@ -437,42 +544,26 @@ function toggleSeeMore(gridClass, button, totalCount) {
     const hidden = Array.from(items).filter(item => item.classList.contains('hidden'));
 
     if (hidden.length > 0) {
-        // Tampilkan semua
         hidden.forEach(item => item.classList.remove('hidden'));
         button.innerHTML = `
-            Sembunyikan 
-            <svg class="w-5 h-5 ml-2 inline transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            Sembunyikan
+            <svg class="w-4 h-4 ml-1 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
         `;
     } else {
-        // Sembunyikan kembali ke 3 item
         items.forEach((item, index) => {
             if (index >= 3) item.classList.add('hidden');
         });
         button.innerHTML = `
-            Lihat semua ${totalCount} 
-            <svg class="w-5 h-5 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            Lihat semua
+            <svg class="w-4 h-4 ml-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
         `;
     }
 }
 
-// Animasi smooth scroll saat klik lihat semua
-document.querySelectorAll('[onclick^="toggleSeeMore"]').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const gridClass = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-        setTimeout(() => {
-            document.querySelector(`.${gridClass}`).scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-        }, 100);
-    });
-});
 </script>
 @endpush
-
 @endsection

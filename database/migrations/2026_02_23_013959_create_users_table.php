@@ -25,6 +25,10 @@ return new class extends Migration
             $table->string('email',100)->unique()->nullable();
             $table->string('username', 100)->unique()->nullable();
             $table->string('password', 255)->nullable();
+            $table->string('background_url')->nullable();
+            $table->enum('jenis_kelamin', [ 'Laki-laki','Perempuan','Tidak ingin memberi tahu'])->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->json('keahlian_tambahan')->nullable();
             $table->unsignedBigInteger('id_jurusan');
             $table->unsignedBigInteger('id_keahlian');
             $table->unsignedBigInteger('id_angkatan');

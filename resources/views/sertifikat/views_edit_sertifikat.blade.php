@@ -2,8 +2,8 @@
 @section('title', 'Edit Sertifikat')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+<div class="min-h-screen">
+    <div class=" p-8">
         <!-- Header -->
         <div class="mb-8 text-center md:text-left">
             <div class="flex items-center gap-3 mb-2">
@@ -81,7 +81,7 @@
                 <input type="date" 
                        name="tanggal_terbit" 
                        id="tanggal_terbit" 
-                       value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit->format('Y-m-d')) }}" 
+                       value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
                        required
                        max="{{ date('Y-m-d') }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">

@@ -48,6 +48,8 @@
                 </button>
             </div>
 
+            
+
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div class="flex items-center">
                     <input type="checkbox" name="remember" id="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
@@ -83,6 +85,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             showErrorAlert('{{ $errors->first() }}');
         });
+
+         document.addEventListener('click', function (e) {
+
+        const toggleBtn = e.target.closest('[data-toggle-password]');
+        if (!toggleBtn) return;
+
+        const input = toggleBtn.closest('div').querySelector('input[type="password"], input[type="text"]');
+        if (!input) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggleBtn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            toggleBtn.textContent = '👁';
+        }
+    });
     </script>
     @endif
 

@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
   
-    // Universal Toggle Password (Works Everywhere)
+    // Show/hide Toggle Password
     document.addEventListener('click', function (e) {
 
         const toggleBtn = e.target.closest('[data-toggle-password]');
@@ -90,7 +90,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Show Dropdown Menu Porto on click
+// Show Dropdown Menu on click
 function toggleDropdown(section) {
     const menuId  = section + 'Menu';
     const arrowId = section + 'Arrow';
@@ -125,24 +125,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('close-sidebar')?.addEventListener('click', () => {
         sidebar.classList.add('-translate-x-full');
     });
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('toggle-search-mobile');
-    const dropdown = document.getElementById('mobile-search-dropdown');
-
-    if (toggleBtn && dropdown) {
-        toggleBtn.addEventListener('click', () => {
-            dropdown.classList.toggle('hidden');
-            
-            // Animasi slide (max-height)
-            if (!dropdown.classList.contains('hidden')) {
-                dropdown.style.maxHeight = dropdown.scrollHeight + 'px';
-            } else {
-                dropdown.style.maxHeight = '0px';
-            }
-        });
-    }
 });
 

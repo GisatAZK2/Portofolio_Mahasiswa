@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_project');
+            $table->json('isi_content');
             $table->date('tanggal_mulai');
             $table->date('tanggal_akhir')->nullable();
-            $table->string('link_project')->nullable();
-
             $table->unsignedBigInteger('id_mahasiswa');
+
             $table->foreign('id_mahasiswa')
                   ->references('id')
                   ->on('users')

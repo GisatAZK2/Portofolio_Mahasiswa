@@ -8,7 +8,7 @@ use App\Models\User;
 class Angkatan extends Model
 {
     protected $table = 'angkatan';
-    protected $primaryKey = 'id_angkatan';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'nama_angkatan',
