@@ -19,14 +19,14 @@
                 </button>
             </div>
 
-             <!-- MOBILE TITLE (center) -->
+             <!-- MOBILE TITLE  -->
     <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
         <h1 class="text-sm font-semibold text-indigo-600 tracking-wide">
             PORTOFOLIO MAHASISWA
         </h1>
     </div>
 
-            <!-- DESKTOP SEARCH (lg ke atas) -->
+            <!-- DESKTOP SEARCH -->
             <div id="search-container" class="hidden lg:flex lg:items-center lg:gap-3 w-full max-w-5xl mx-auto">
                 <form method="GET" action="{{ route('search') }}" class="flex items-center gap-2.5 w-full">
 
@@ -50,7 +50,7 @@
                             Reset
                         </a>
 
-                    <!-- Filters (lebih compact) -->
+                    <!-- Filters -->
                     <select name="jurusan" class="block border border-gray-300/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
                         <option value="">Semua Jurusan</option>
                         @foreach($jurusanList ?? [] as $jurusan)

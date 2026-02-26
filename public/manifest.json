@@ -1,0 +1,16 @@
+{
+    "name": "Portofolio Mahasiswa",
+    "short_name": "POLMA",
+    "display": "fullscreen",
+    "description": "Portofolio mahasiswa berbasis web.",
+    "background_color": "#ffffff",
+    "theme_color": "#87CEEB",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "assets/Logo.svg",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
