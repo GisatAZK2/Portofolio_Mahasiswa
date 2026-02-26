@@ -6,22 +6,6 @@
         <!-- Statistic Cards with Mini Charts -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             
-            <!-- Total Mahasiswa -->
-            <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-base font-semibold text-gray-700">Total Mahasiswa</h3>
-                    <span class="text-blue-500">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </span>
-                </div>
-                <p class="text-4xl font-extrabold text-blue-600">{{ $totalMahasiswa ?? 0 }}</p>
-                <div class="mt-4 h-20">
-                    <canvas id="mahasiswaChart"></canvas>
-                </div>
-            </div>
-
             <!-- Learning Corner -->
             <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
                 <div class="flex items-center justify-between mb-3">
@@ -75,10 +59,6 @@
         <div>
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">Perihal Terbaru</h2>
-                <a href="{{ route('search') ?? '#' }}"
-                   class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
-                    Lihat Semua →
-                </a>
             </div>
 
             @if($randomPosts->isEmpty())

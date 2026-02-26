@@ -22,7 +22,7 @@ class ProjekController extends Controller
         return view('project.views_project', compact('projects'));
     }
 
-    public function indexuser()
+    public function project_user()
     {
         $projects = Project::with('mahasiswa')->latest()->get();
         return view('project.views_project_user', compact('projects'));
@@ -42,6 +42,7 @@ class ProjekController extends Controller
             'tanggal_mulai'  => 'required|date',
             'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
             'link_project'   => 'nullable|url|max:255',
+            'deskripsi'     => 'nullable|string|max:255',
             'link_github'    => 'nullable|url|max:500',
             'link_video'     => 'nullable|url|max:500',
         ]);
@@ -87,11 +88,13 @@ class ProjekController extends Controller
                 'link_project'   => 'nullable|url|max:255',
                 'link_github'    => 'nullable|url|max:500',
                 'link_video'     => 'nullable|url|max:500',
+                'deskripsi'      => 'nullable|string|max:255',
                 ]);
                 
         $content = $project->isi_content ?? [];
 
         $content['nama_project'] = $request->nama_project;
+        $content['deskripsi'] = $request->deskripsi;
         $content['link_project'] = $request->link_project;
         $content['link_github']  = $request->link_github;
         $content['link_video']   = $request->link_video;

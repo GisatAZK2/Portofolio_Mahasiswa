@@ -15,6 +15,8 @@ Route::get('/search', [DashboardController::class, 'search'])->name('search');
 // Semua route yang butuh login
 Route::middleware('auth')->group(function () {
 
+    Route::get('/MyDashboard', [DashboardController::class, 'myDashboard'])->name('dashboard.me');
+
     Route::get('/profile-page', function () {
         return view('views_profile_page');
     })->name('profile-page');
@@ -39,15 +41,6 @@ Route::middleware('auth')->group(function () {
             'destroy' => 'learning-corner.destroy',
         ]);
 
-    // CRUD Portofolio (manual, bukan resource)
-    Route::prefix('portofolio')->name('portofolio.')->group(function () {
-        Route::get('/create', [PortofolioController::class, 'create'])->name('create');
-        Route::post('/', [PortofolioController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [PortofolioController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [PortofolioController::class, 'update'])->name('update');
-        Route::delete('/{id}', [PortofolioController::class, 'destroy'])->name('destroy');
-    });
-
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
@@ -60,9 +53,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 // Route ini sepertinya boleh guest juga
-Route::get('/Portofolio', [PortofolioController::class, 'index'])->name('portofolio.index');
-
-Route::get('/PortofolioUser', [PortofolioController::class, 'indexuser'])->name('portofolio.indexuser');
 Route::get('/portfolio/{user}', [PortofolioController::class, 'show'])->name('portfolio.show');
+route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
 
-Route::get('/projectuser', [ProjekController::class, 'indexuser'])->name('project.indexuser');
+Route::get('/portfolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');

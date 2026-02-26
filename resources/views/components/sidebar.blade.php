@@ -16,6 +16,16 @@
     <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         
     <!-- Dashboard -->
+      @auth 
+        <a href="{{ route('dashboard.me') }}"
+           class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
+                  {{ request()->routeIs('dashboard.me') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4"/>
+            </svg>
+            <span class="font-medium">My Dashboard</span>
+        
+        @endauth
         <a href="{{ route('dashboard') }}"
            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
                   {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
@@ -23,53 +33,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4"/>
             </svg>
             <span class="font-medium">Dashboard</span>
-        </a>
-
-        <!-- ================== PORTFOLIO ================== -->
-        <div class="space-y-1">
-            <button onclick="toggleDropdown('portfolio')"
-                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
-                           {{ request()->routeIs('portofolio.*', 'portfolio.show') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                </svg>
-                <span class="font-medium flex-1 text-left">Portfolio</span>
-                <svg id="portfolioArrow" class="w-4 h-4 transition-transform duration-300 {{ request()->routeIs('portofolio.*', 'portfolio.show') ? 'rotate-180' : '' }}"
-                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </button>
-
-            <div id="portfolioMenu" class="pl-5 space-y-1 {{ request()->routeIs('portofolio.*', 'portfolio.show') ? '' : 'hidden' }} mt-1">
-                @guest
-    <a href="{{ route('portofolio.indexuser') }}"
-       class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-              {{ request()->routeIs('portofolio.views_portofolio') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-        </svg>
-        <span>Lihat Semua Portfolio</span>
-    </a>
-@else
-    <a href="{{ route('portofolio.index') }}"
-       class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-              {{ request()->routeIs('portofolio.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-        </svg>
-        <span>Lihat Portfolio Saya</span>
-    </a>
-    @auth <a href="{{ route('portofolio.create') }}" class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200 {{ request()->routeIs('portofolio.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/> </svg> <span>Buat Portfolio Baru</span> </a> @endauth
-@endguest
-            </div>
-        </div>
+            </a>
 
         <!-- ================== PROJECT ================== -->
         @guest
-            <a href="{{ route('project.indexuser') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
-                      {{ request()->routeIs('project.indexuser') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <a href="{{ route('project.project_user') }}"
+       class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
+                  {{ request()->routeIs('project.project_user') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}"> <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span class="font-medium">Project Mahasiswa</span>
@@ -148,24 +118,27 @@
         </div>
         @endauth
 
-                <!-- Sertifikat - hanya untuk user yang sudah login -->
-        @auth
-        <div class="space-y-1">
-            <button onclick="toggleDropdown('sertifikat')"
-                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
-                           {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25m20-11.197C21.5 6.253 17 10.998 17 17.25m0-13V6a2 2 0 10-4 0v.253m4 0C13.5 5.482 12.8 5 12 5c-.8 0-1.5.482-1.5 1.253v13M12 21a2 2 0 100-4 2 2 0 000 4z"/>
-                </svg>
-                <span class="font-medium flex-1 text-left">Sertifikat</span>
-                <svg id="learningCornerArrow" class="w-4 h-4 transition-transform duration-300 {{ request()->routeIs('sertifikat.*') ? 'rotate-180' : '' }}"
-                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </button>
-
-            <div id="sertifikatMenu" class="pl-5 space-y-1 {{ request()->routeIs('sertifikat.*') ? '' : 'hidden' }} mt-1">
-                <a href="{{ route('sertifikat.index') }}"
+         <!-- Sertifikat - hanya untuk user yang sudah login -->
+          @auth
+      <div class="space-y-1">
+    <button onclick="toggleDropdown('sertifikat')"
+            class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
+                   {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+  <path d="M8 2v4"></path>
+  <path d="M16 2v4"></path>
+  <path d="M3 10h18"></path>
+  <circle cx="12" cy="14" r="2"></circle>
+</svg>
+        <span class="font-medium flex-1 text-left">Sertifikat</span>
+        <svg id="sertifikatArrow" class="w-4 h-4 transition-transform duration-300 {{ request()->routeIs('sertifikat.*') ? 'rotate-180' : '' }}"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+    </button>
+    <div id="sertifikatMenu" class="pl-5 space-y-1 {{ request()->routeIs('sertifikat.*') ? '' : 'hidden' }} mt-1">
+            <a href="{{ route('sertifikat.index') }}"
                    class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
                           {{ request()->routeIs('sertifikat.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

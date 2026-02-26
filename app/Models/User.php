@@ -8,8 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
-use App\Models\Portofolio;
 use App\Models\LearningCorner;
+use App\Models\Sertifikat;
 use App\Models\Angkatan;
 use App\Models\Project;
 
@@ -30,6 +30,9 @@ class User extends Authenticatable
     'photo_profile',
     'username',
     'password',
+    'jenis_kelamin',
+    'banner_url',
+    'deskripsi',
     'id_jurusan',
     'id_keahlian',
     'id_angkatan',
@@ -48,13 +51,9 @@ class User extends Authenticatable
 }
 
 public function angkatan() {
-    return $this->belongsTo(Angkatan::class, 'id_angkatan');
+    return $this->belongsTo(Angkatan::class, 'id');
 }
 
-public function portofolio()
-{
-    return $this->hasMany(Portofolio::class, 'id_mahasiswa');
-}
 
 public function learning_corners()
 {
@@ -64,6 +63,11 @@ public function learning_corners()
 public function projects()
 {
     return $this->hasMany(Project::class, 'id_mahasiswa', 'id');
+}
+
+public function sertifikats()
+{
+    return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
 }
 
 
