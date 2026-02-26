@@ -22,7 +22,7 @@ class ProjekController extends Controller
         return view('project.views_project', compact('projects'));
     }
 
-    public function indexuser()
+    public function project_user()
     {
         $projects = Project::with('mahasiswa')->latest()->get();
         return view('project.views_project_user', compact('projects'));

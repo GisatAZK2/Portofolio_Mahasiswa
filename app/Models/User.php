@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\LearningCorner;
+use App\Models\Sertifikat;
 use App\Models\Angkatan;
 use App\Models\Project;
 
@@ -58,6 +59,11 @@ public function learning_corners()
 public function projects()
 {
     return $this->hasMany(Project::class, 'id_mahasiswa', 'id');
+}
+
+public function sertifikats()
+{
+    return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
 }
 
 

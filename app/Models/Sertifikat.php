@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class sertifikat extends Model
+class Sertifikat extends Model
 {
     protected $table = 'sertifikat';
-    
+
     protected $fillable = [
         'nama_sertifikat',
         'lembaga_penerbit',

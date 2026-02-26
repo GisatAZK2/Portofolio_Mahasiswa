@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto space-y-10">
         <!-- Statistic Cards with Mini Charts -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 lg:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             
             <!-- Total Mahasiswa -->
             <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
@@ -76,7 +76,7 @@
         <!-- Random Posts -->
         <div>
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Postingan Terbaru</h2>
+                <h2 class="text-2xl font-bold text-gray-900">Perihal Terbaru</h2>
                 @auth
                 <a href="{{ route('search') ?? '#' }}"
                    class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
@@ -93,176 +93,173 @@
                     <p class="mt-4 text-gray-600">Belum ada postingan acak untuk ditampilkan saat ini.</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($randomPosts as $post)
-                        @if($post->mahasiswa)
-                            <a href="{{ $post->type === 'sertifikat' ? '#' : route('portfolio.show', $post->mahasiswa) }}"
-                               class="block group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-xl cursor-pointer {{ $post->type === 'sertifikat' ? 'pointer-events-none' : '' }}">
-                        @endif
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach($randomPosts as $post)
+            <!-- Card wrapper - selalu flex-col h-full -->
+            <div class="flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
 
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
-                            <div class="p-5 lg:p-6 flex-1 flex flex-col">
-                                <!-- User Info -->
-                                <div class="flex items-center space-x-3 mb-4">
-                                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm flex-shrink-0 relative transition-transform {{ $post->type !== 'sertifikat' ? 'group-hover:scale-105' : '' }}">
-                                        @if($post->mahasiswa?->photo_profile)
-                                            <img
-                                                src="{{ asset('storage/' . ltrim($post->mahasiswa->photo_profile, '/')) }}"
-                                                alt="{{ $post->mahasiswa->nama_mahasiswa ?? 'Profile' }}"
-                                                class="w-full h-full object-cover"
-                                                loading="lazy"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                                            >
-                                            <div class="absolute inset-0 hidden bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center text-white font-bold text-lg">
-                                                {{ substr($post->mahasiswa->nama_mahasiswa ?? 'U', 0, 1) }}
-                                            </div>
-                                        @else
-                                            <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                                                {{ substr($post->mahasiswa->nama_mahasiswa ?? 'U', 0, 1) }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold text-gray-900 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
-                                            {{ $post->mahasiswa->nama_mahasiswa ?? 'Pengguna' }}
-                                        </p>
-                                        <p class="text-xs text-gray-500">
-                                            {{ $post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru saja' }}
-                                        </p>
-                                    </div>
+            @php
+                $cardHref = '#'; // default
+                $isExternal = false;
+
+                if ($post->type === 'project' && $post->link_project) {
+                    $cardHref = $post->link_project;
+                    $isExternal = true;
+                } elseif ($post->mahasiswa) {
+                    $cardHref = route('portfolio.show', $post->mahasiswa);
+                    $isExternal = false;
+                }
+            @endphp
+
+            @if($cardHref !== '#')
+                <a href="{{ $cardHref }}"
+                
+                   {{ $isExternal ? 'target="_blank" rel="noopener noreferrer"' : '' }}>
+            @endif
+
+                <!-- Card body -->
+                <div class="flex flex-col flex-1 bg-white p-5 lg:p-6">
+
+                    <!-- User Info -->
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm flex-shrink-0 relative transition-transform {{ $post->type !== 'sertifikat' ? 'group-hover:scale-105' : '' }}">
+                            @if($post->mahasiswa?->photo_profile)
+                                <img src="{{ asset('storage/' . ltrim($post->mahasiswa->photo_profile, '/')) }}"
+                                     alt="{{ $post->mahasiswa->nama_mahasiswa ?? 'Profile' }}"
+                                     class="w-full h-full object-cover"
+                                     loading="lazy"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="absolute inset-0 hidden bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center text-white font-bold text-lg">
+                                    {{ substr($post->mahasiswa->nama_mahasiswa ?? 'U', 0, 1) }}
+                                </div>
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                                    {{ substr($post->mahasiswa->nama_mahasiswa ?? 'U', 0, 1) }}
+                                </div>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
+                                {{ $post->mahasiswa->nama_mahasiswa ?? 'Pengguna' }}
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                {{ $post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru saja' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Badge -->
+                    @if($post->type === 'learning')
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mb-3">Learning Corner</span>
+                    @elseif($post->type === 'project')
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mb-3">Project</span>
+                    @elseif($post->type === 'sertifikat')
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3">Sertifikat</span>
+                    @endif
+
+                    <!-- Konten utama -->
+                    <div class="flex-1">
+                        @if($post->type === 'sertifikat')
+                            <div class="flex flex-col space-y-3">
+                                <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">
+                                    {{ $post->nama_sertifikat ?? '(Tanpa Judul Sertifikat)' }}
+                                </h3>
+
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+                                    </svg>
+                                    <span class="font-medium">Penerbit:</span>
+                                    <span class="ml-2">{{ $post->lembaga_penerbit ?? 'Tidak diketahui' }}</span>
                                 </div>
 
-                                <!-- Badge Tipe -->
-                                @if($post->type === 'learning')
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mb-3">
-                                        Learning Corner
-                                    </span>
-                                @elseif($post->type === 'project')
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mb-3">
-                                        Project
-                                    </span>
-                                @elseif($post->type === 'sertifikat')
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3">
-                                        Sertifikat
-                                    </span>
-                                @endif
+                                <div class="flex items-center text-sm text-gray-700">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="font-medium">Terbit:</span>
+                                    <span class="ml-2">{{ $post->tanggal_terbit ? \Carbon\Carbon::parse($post->tanggal_terbit)->format('d M Y') : '—' }}</span>
+                                </div>
 
-                            
-                                @if($post->type === 'learning' && !empty($post->content) && is_array($post->content))
-                                    @foreach($post->content as $item)
-                                        @if($item['type'] === 'title')
-                                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
-                                                {{ $item['content'] ?? '(Tanpa Judul)' }}
-                                            </h3>
-                                        @elseif($item['type'] === 'text')
-                                            <p class="text-gray-700 mb-3 line-clamp-3 text-sm">
-                                                {{ $item['content'] ?? '' }}
-                                            </p>
-                                        @elseif($item['type'] === 'image')
-                                            @php $imagePath = str_replace(['\\', '/'], '/', $item['content'] ?? ''); @endphp
-                                            <div class="mb-4">
-                                                <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-                                                     alt="{{ $item['alt'] ?? 'Gambar' }}"
-                                                     class="w-full h-40 object-cover rounded-lg border border-gray-200 shadow-sm"
-                                                     loading="lazy"
-                                                     onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
-                                            </div>
-                                        @elseif($item['type'] === 'link')
-                                            <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
-                                               class="text-indigo-600 hover:text-indigo-800 text-sm block mb-3 underline line-clamp-1 break-all">
-                                                {{ Str::limit($item['content'], 60) }}
-                                            </a>
-                                        @endif
-                                    @endforeach
-                                
-                                @elseif($post->type === 'project')
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
-                                        {{ $post->nama_project ?? '(Tanpa Judul)' }}
-                                    </h3>
-                                    <p class="text-sm text-gray-600 mb-3">
-                                        {{ $post->tanggal_mulai ? \Carbon\Carbon::parse($post->tanggal_mulai)->format('M Y') : '—' }}
-                                        @if($post->tanggal_akhir)
-                                            → {{ \Carbon\Carbon::parse($post->tanggal_akhir)->format('M Y') }}
-                                        @else
-                                            → Sekarang
-                                        @endif
-                                    </p>
-                                    @if($post->link_project)
-                                        <span class="inline-flex items-center gap-2 text-orange-600 hover:text-orange-800 font-medium text-sm mb-4">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                            </svg>
-                                            Lihat Project
-                                        </span>
-                                    @else
-                                        <p class="text-sm text-gray-500 italic mb-4">Tidak ada link project</p>
-                                    @endif
-                                
-                                @elseif($post->type === 'sertifikat')
-                                    <div class="flex flex-col space-y-3">
-                                        <h3 class="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
-                                            {{ $post->nama_sertifikat ?? '(Tanpa Judul Sertifikat)' }}
-                                        </h3>
-                                        
-                                        <div class="flex items-center text-sm text-gray-700 mb-2">
-                                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-                                            </svg>
-                                            <span class="font-medium">Penerbit:</span>
-                                            <span class="ml-2">{{ $post->lembaga_penerbit ?? 'Tidak diketahui' }}</span>
-                                        </div>
-                                        
-                                        <div class="flex items-center text-sm text-gray-700 mb-3">
-                                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span class="font-medium">Terbit:</span>
-                                            <span class="ml-2">{{ $post->tanggal_terbit ? \Carbon\Carbon::parse($post->tanggal_terbit)->format('d M Y') : '—' }}</span>
-                                        </div>
-                                        
-                                        @if($post->link_sertifikat)
-                                            <a href="{{ $post->link_sertifikat }}" target="_blank" rel="noopener noreferrer" 
-                                               class="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm mt-2 mb-3 bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                                Lihat Sertifikat
-                                            </a>
-                                        @else
-                                            <p class="text-sm text-gray-500 italic mb-3">Tidak ada link sertifikat</p>
-                                        @endif
-                                        
-                                        <!-- Preview sertifikat (simulasi gambar) -->
-                                        <div class="mt-2 p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center space-x-2">
-                                                    <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                                    </svg>
-                                                    <span class="text-sm font-medium text-amber-800">Sertifikat Resmi</span>
-                                                </div>
-                                                <span class="text-xs text-amber-600 bg-amber-200 px-2 py-1 rounded-full">PDF/Digital</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                @if($post->link_sertifikat)
+                                    <a href="{{ asset('storage/' . $post->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
+                                       class="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start mt-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        Lihat Sertifikat
+                                    </a>
+                                @else
+                                    <p class="text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
                                 @endif
-
-                                <!-- Footer tanggal -->
-                                <p class="text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100">
-                                    Diposting {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }} WIB
-                                </p>
                             </div>
-                        </div>
 
-                        @if($post->mahasiswa && $post->type !== 'sertifikat')
-                            </a>
-                        @elseif($post->mahasiswa && $post->type === 'sertifikat')
-                            </div> <!-- menutup div pembuka link, karena sertifikat tidak pakai link -->
+                        @elseif($post->type === 'learning' && !empty($post->content) && is_array($post->content))
+                            @foreach($post->content as $item)
+                                @if($item['type'] === 'title')
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
+                                        {{ $item['content'] ?? '(Tanpa Judul)' }}
+                                    </h3>
+                                @elseif($item['type'] === 'text')
+                                    <p class="text-gray-700 mb-3 line-clamp-3 text-sm">
+                                        {{ $item['content'] ?? '' }}
+                                    </p>
+                                @elseif($item['type'] === 'image')
+                                    @php $imagePath = str_replace(['\\', '/'], '/', $item['content'] ?? ''); @endphp
+                                    <div class="mb-4">
+                                        <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
+                                             alt="{{ $item['alt'] ?? 'Gambar' }}"
+                                             class="w-full h-40 object-cover rounded-lg border border-gray-200 shadow-sm"
+                                             loading="lazy"
+                                             onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
+                                    </div>
+                                @elseif($item['type'] === 'link')
+                                    <a href="{{ $item['content'] }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 text-sm block mb-3 underline line-clamp-1 break-all">
+                                        {{ Str::limit($item['content'], 60) }}
+                                    </a>
+                                @endif
+                            @endforeach
+
+                        @elseif($post->type === 'project')
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
+                                {{ $post->nama_project ?? '(Tanpa Judul)' }}
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-3">
+                                {{ $post->tanggal_mulai ? \Carbon\Carbon::parse($post->tanggal_mulai)->format('M Y') : '—' }}
+                                @if($post->tanggal_akhir)
+                                    → {{ \Carbon\Carbon::parse($post->tanggal_akhir)->format('M Y') }}
+                                @else
+                                    → Sekarang
+                                @endif
+                            </p>
+                            @if($post->link_project)
+                                <span class="inline-flex items-center gap-2 text-orange-600 hover:text-orange-800 font-medium text-sm mb-4">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                    </svg>
+                                    Lihat Project
+                                </span>
+                            @else
+                                <p class="text-sm text-gray-500 italic mb-4">Tidak ada link project</p>
+                            @endif
                         @endif
-                    @endforeach
+                    </div>
+
+                    <!-- Footer -->
+                    <p class="text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100">
+                        Diposting {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }} WIB
+                    </p>
                 </div>
-            @endif
+
+                @if($post->mahasiswa && $post->type !== 'sertifikat')
+                    </a>
+                @endif
+
+            </div>
+        @endforeach
+    </div>
+@endif
 
             <!-- Update timestamp -->
             <div class="text-center text-gray-500 text-sm mt-10">

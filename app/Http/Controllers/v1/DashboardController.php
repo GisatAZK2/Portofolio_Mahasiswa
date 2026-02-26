@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\LearningCorner;
@@ -74,6 +76,22 @@ class DashboardController extends Controller
         ));
     }
 
+    public function show(User $user)
+    {
+        $user->load([
+            'projects',
+            'learning_corners',
+            'jurusan',
+            'angkatan',
+            'sertifikats',
+            'keahlian'
+        ]);
+
+        $isOwner = Auth::check() && Auth::id() === $user->id;
+
+        return view('views_portofolio_user', compact('user', 'isOwner'));
+    }
+
     public function search(Request $request)
     {
         $keyword   = $request->q;
@@ -91,10 +109,11 @@ class DashboardController extends Controller
         */
         if (!$type || $type == 'mahasiswa') {
             $users = User::with(['jurusan', 'keahlian', 'angkatan'])
-            ->withCount([
-        'projects',
-        'learning_corners as learning_count'
-    ])
+                ->withCount([
+    'projects',
+    'learning_corners as learning_count',
+    'sertifikats as sertifikats_count',
+])
                 ->when($keyword, function ($query) use ($keyword) {
                     $query->where('nama_mahasiswa', 'like', "%$keyword%");
                 })
@@ -152,18 +171,57 @@ class DashboardController extends Controller
             $results = $results->concat($projects);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH SERTIFIKAT
+        |--------------------------------------------------------------------------
+        */
+        if (!$type || $type == 'sertifikat') {
+            $sertifikats = Sertifikat::with(['mahasiswa.jurusan', 'mahasiswa.keahlian'])
+                ->when($keyword, function ($query) use ($keyword) {
+                    $query->where('nama_sertifikat', 'like', "%$keyword%");     
+                })
+                ->when($jurusan, function ($query) use ($jurusan) {
+                    $query->whereHas('mahasiswa', function ($q) use ($jurusan)
+                        {
+                            $q->where('id_jurusan', $jurusan);
+                        });
+                })
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
+                        $q->where('id_keahlian', $keahlian);
+                    });
+                })
+                ->when($angkatan, function ($query) use ($angkatan) {
+                    $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
+                        $q->where('id_angkatan', $angkatan);
+                    });
+                })
+                ->get()
+                ->map(function ($item) {
+                    $item->type = 'sertifikat';
+                    return $item;
+        
+                });
+
+            $results = $results->concat($sertifikats);
+        }
+        
+
        
         $totalMahasiswa = User::count();
 
         $totalLearning = LearningCorner::count();
         $totalSertifikat = Sertifikat::count();
+        $totalProject = Project::count();
         
 
         return view('views_result_search', compact(
             'results',
             'keyword',
             'totalMahasiswa',
-            'totalLearning' 
+            'totalSertifikat',
+            'totalProject'
         ));
     }
 

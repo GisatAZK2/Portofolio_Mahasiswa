@@ -25,50 +25,9 @@
             <span class="font-medium">Dashboard</span>
         </a>
 
-        <!-- ================== PORTFOLIO ================== -->
-        <div class="space-y-1">
-            <button onclick="toggleDropdown('portfolio')"
-                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
-                           {{ request()->routeIs('portofolio.*', 'portfolio.show') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                </svg>
-                <span class="font-medium flex-1 text-left">Portfolio</span>
-                <svg id="portfolioArrow" class="w-4 h-4 transition-transform duration-300 {{ request()->routeIs('portofolio.*', 'portfolio.show') ? 'rotate-180' : '' }}"
-                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </button>
-
-            <div id="portfolioMenu" class="pl-5 space-y-1 {{ request()->routeIs('portofolio.*', 'portfolio.show') ? '' : 'hidden' }} mt-1">
-                @guest
-    <a href="{{ route('portofolio.indexuser') }}"
-       class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-              {{ request()->routeIs('portofolio.views_portofolio') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-        </svg>
-        <span>Lihat Semua Portfolio</span>
-    </a>
-@else
-    <a href="{{ route('portofolio.index') }}"
-       class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-              {{ request()->routeIs('portofolio.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-        </svg>
-        <span>Lihat Portfolio Saya</span>
-    </a>
-    @auth <a href="{{ route('portofolio.create') }}" class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200 {{ request()->routeIs('portofolio.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}"> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/> </svg> <span>Buat Portfolio Baru</span> </a> @endauth
-@endguest
-            </div>
-        </div>
-
-        
-
         <!-- ================== PROJECT ================== -->
         @guest
-            <a href="{{ route('project.indexuser') }}"
+            <a href="{{ route('project.project_user') }}"
                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200
                       {{ request()->routeIs('project.indexuser') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

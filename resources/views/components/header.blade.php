@@ -19,6 +19,13 @@
                 </button>
             </div>
 
+             <!-- MOBILE TITLE (center) -->
+    <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
+        <h1 class="text-sm font-semibold text-indigo-600 tracking-wide">
+            PORTOFOLIO MAHASISWA
+        </h1>
+    </div>
+
             <!-- DESKTOP SEARCH (lg ke atas) -->
             <div id="search-container" class="hidden lg:flex lg:items-center lg:gap-3 w-full max-w-5xl mx-auto">
                 <form method="GET" action="{{ route('search') }}" class="flex items-center gap-2.5 w-full">
