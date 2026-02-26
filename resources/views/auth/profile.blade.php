@@ -66,6 +66,34 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
+
+                        <!--<div class="bg-gray-50/70 p-5  min-w-screen rounded-lg border border-gray-100 hover:border-indigo-200 transition relative group cursor-pointer" onclick="toggleEdit('deskripsi')">
+                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Deskripsi</p>
+                            <p id="deskripsi-display" class="text-base font-medium text-gray-800 break-all">
+                            {{ $user->deskripsi ?? 'Klik untuk menambahkan deskripsi...' }}
+                            </p>
+                    
+                        <textarea id="deskripsi-input"
+                                  name="deskripsi"
+                                  rows="3"
+                                  class="hidden w-full text-base font-medium border-b border-indigo-500 focus:outline-none bg-transparent">{{ old('deskripsi', Auth::user()->deskripsi) }}</textarea>
+                        </div> -->
+                    
+
+                    
+                    <div class="bg-gray-50/70 p-5 rounded-lg border border-gray-100 hover:border-indigo-200 transition relative group cursor-pointer" onclick="toggleEdit('deskripsi')">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Deskripsi</p>
+
+                        <p id="deskripsi-display" class="text-base font-medium text-gray-800 break-all">
+                            {{ $user->deskripsi ?? 'Klik untuk menambahkan deskripsi...' }}
+                        </p>
+
+                        <textarea id="deskripsi-input"
+                                  name="deskripsi"
+                                  class="hidden w-full text-base font-medium border-b border-indigo-500 focus:outline-none bg-transparent"
+                                  rows="3">{{ old('deskripsi', $user->deskripsi) }}</textarea>
+                    </div> 
+                    
                         <div class="bg-gray-50/70 p-5 rounded-lg border border-gray-100 hover:border-indigo-200 transition relative group cursor-pointer" onclick="toggleEdit('email')">
                             <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Email</p>
                             <p id="email-display" class="text-base font-medium text-gray-800 break-all">

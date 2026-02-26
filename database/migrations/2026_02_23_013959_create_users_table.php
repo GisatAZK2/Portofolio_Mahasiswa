@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->string('background_url')->nullable();
             $table->enum('jenis_kelamin', [ 'Laki-laki','Perempuan','Tidak ingin memberi tahu'])->nullable();
-            $table->text('deskripsi');
+            $table->text('deskripsi')->nullable();
             $table->unsignedBigInteger('id_jurusan');
             $table->unsignedBigInteger('id_keahlian');
             $table->unsignedBigInteger('id_angkatan');
