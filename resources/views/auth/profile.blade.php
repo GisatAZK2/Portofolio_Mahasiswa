@@ -192,6 +192,35 @@
                             </p>
                         </div>
                     </div>
+
+                    <div onclick="toggleEdit('jenis_kelamin')" class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Jenis Kelamin</p>
+                        <p id="jenis_kelamin-display" class="text-base font-medium text-gray-800">
+                            {{ Auth::user()->jenis_kelamin ?? 'Klik untuk memilih' }}
+                        </p>
+
+                        <select id="jenis_kelamin-input" name="jenis_kelamin"
+                                                         class="hidden w-full text-base font-medium text-gray-800 border-b border-indigo-500 focus:outline-none bg-white">
+
+                            <option value="">-- Pilih --</option>
+
+                            <option value="laki-laki"
+                            {{ Auth::user()->jenis_kelamin == 'laki-laki' ? 'selected' : '' }}>
+                                Laki-laki
+                            </option>
+
+                            <option value="perempuan"
+                            {{ Auth::user()->jenis_kelamin == 'perempuan' ? 'selected' : '' }}>
+                                Perempuan
+                            </option>
+
+                            <option value="tidak ingin memberi tahu"
+                            {{ Auth::user()->jenis_kelamin == 'tidak ingin memberi tahu' ? 'selected' : '' }}>
+                                Tidak ingin memberi tahu
+                            </option>
+                        </select>
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Save Button -->

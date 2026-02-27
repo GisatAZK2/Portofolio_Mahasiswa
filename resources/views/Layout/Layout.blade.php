@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
 
-    @PwaHead
+    
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
