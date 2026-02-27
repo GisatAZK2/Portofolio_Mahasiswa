@@ -140,25 +140,26 @@ class UserController extends Controller
         'id_angkatan' => ['nullable','exists:angkatan,id'],
         'deskripsi' => ['nullable','string','max:1000'],
         'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
-        'url_background' => ['nullable','image','mimes:jpeg,png,jpg','max:4098'],
+        'background_url' => ['nullable','image','mimes:jpeg,png,jpg','max:4098'],
     
     ];
-    
-    if ($request->hasFile('url_background')) {
-
-        if ($user->url_background && Storage::disk('public')->exists($user->url_background)) {
-            Storage::disk('public')->delete($user->url_background);
-        }
-
-        $validated['url_background'] = $request->file('url_background')
-                                               ->store('covers','public');
-    }
 
     if ($request->filled('password')) {
         $rules['password'] = ['required','confirmed',Password::min(8)->mixedCase()];
     }
 
     $validated = $request->validate($rules);
+
+    // ===== HANDLE BACKGROUND =====
+    if ($request->hasFile('background_url')) {
+
+        if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+            Storage::disk('public')->delete($user->background_url);
+        }
+
+        $validated['background_url'] = $request->file('background_url')
+                                               ->store('covers','public');
+    }
 
     if ($request->hasFile('photo_profile')) {
         if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {

@@ -8,14 +8,14 @@
             @csrf
             @method('PATCH')
             <div class="relative h-48 
-            @if(Auth::user()->url_background)
+            @if(Auth::user()->background_url)
                 bg-cover bg-center
             @else
                 bg-gradient-to-br from-indigo-500 via-indigo-600 to-blue-600
             @endif
             "
-            @if(Auth::user()->url_background)
-            style="background-image: url('{{ asset('storage/' . Auth::user()->url_background) }}');"
+            @if(Auth::user()->background_url)
+            style="background-image: url('{{ asset('storage/' . Auth::user()->background_url) }}');"
             @endif
             >
             <label for="background_input" 
@@ -24,7 +24,7 @@
             </label>
 
             <input type="file" 
-                   name="url_background" 
+                   name="background_url" 
                    id="background_input" 
                    class="hidden" 
                    accept="image/*" />
@@ -491,6 +491,7 @@ function toggleEdit(field) {
     const displayEl = document.getElementById(field + '-display');
     const inputEl   = document.getElementById(field + '-input');
     const saveBtn   = document.getElementById('save-button-container');
+
     if (!displayEl || !inputEl) return;
 
     displayEl.classList.add('hidden');
@@ -510,13 +511,18 @@ function toggleEdit(field) {
     };
 }
 
+
+// ================= PHOTO PROFILE =================
 document.getElementById('photo_profile_input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
+
     reader.onload = function(ev) {
         const preview = document.getElementById('profile-preview');
         const placeholder = document.getElementById('profile-preview-placeholder');
+
         if (preview) {
             preview.src = ev.target.result;
         } else if (placeholder) {
@@ -527,7 +533,28 @@ document.getElementById('photo_profile_input').addEventListener('change', functi
             placeholder.replaceWith(newImg);
         }
     };
+
     reader.readAsDataURL(file);
+
+    document.getElementById('save-button-container').classList.remove('hidden');
+});
+
+
+// ================= BACKGROUND =================
+document.getElementById('background_input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(ev) {
+        const coverDiv = document.querySelector('.relative.h-48');
+        coverDiv.style.backgroundImage = `url('${ev.target.result}')`;
+        coverDiv.classList.add('bg-cover', 'bg-center');
+    };
+
+    reader.readAsDataURL(file);
+
     document.getElementById('save-button-container').classList.remove('hidden');
 });
 </script>
