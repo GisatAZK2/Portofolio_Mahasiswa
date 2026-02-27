@@ -26,6 +26,7 @@
 - **Manajemen Mahasiswa** (profile, data pribadi, dll)
 - **Manajemen Jurusan** & **Keahlian** (dengan relasi many-to-many)
 - **Portfolio Mahasiswa** (upload proyek, deskripsi, link, gambar)
+- **Sertifikat Mahasiswa** (upload sertifikat yang diraih)
 - **Learning Corner** (konten pembelajaran / tips / resources)
 - **Authentication lengkap**:
   - Login dengan **username**
