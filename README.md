@@ -14,14 +14,14 @@
   Cocok untuk universitas, politeknik, atau proyek akhir/skripsi berbasis web.
 </p>
 
-## Judul Proyek: Portofolio_Mahasiswa
 
 ## Link Demo:
 - <a href="https://trpl-polmind.com">Menuju website Portofolio_Mahasiswa 🔗</a>
 - <a href="https://trpl-polmind.com">https://trpl-polmind.com 🔗</a>
 
+## Judul Proyek: Portofolio_Mahasiswa
 
-## ✨ Fitur Utama
+# ✨ Fitur Utama
 
 - **Manajemen Mahasiswa** (profile, data pribadi, dll)
 - **Manajemen Jurusan** & **Keahlian** (dengan relasi many-to-many)
