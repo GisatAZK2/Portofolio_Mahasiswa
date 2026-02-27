@@ -2,7 +2,7 @@
 @section('title', 'Profil Saya')
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
         <form id="form-profile" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -34,7 +34,7 @@
             <!-- Profile Section -->
             <div class="bg-white rounded-b-2xl shadow-sm px-6 pb-8 sm:px-10">
                 <!-- Avatar -->
-                <div class="relative flex justify-center">
+                <div class="relative flex">
                     <div class="relative -mt-16 group">
                         <div class="relative w-32 h-32 rounded-full border-4 border-white bg-white shadow-xl overflow-hidden">
                             @if (Auth::user()->photo_profile)
@@ -63,7 +63,7 @@
                 </div>
 
                 <!-- Name and Username -->
-                <div class="text-center mt-4">
+                <div class=" mt-4">
                     <div class="relative group inline-block">
                         <div id="nama-container">
                             <h2 id="nama-display" class="text-2xl md:text-3xl font-bold text-gray-900 inline-block cursor-pointer hover:text-indigo-600" onclick="toggleEdit('nama')">
@@ -80,21 +80,20 @@
                             value="{{ old('nama_mahasiswa', Auth::user()->nama_mahasiswa) }}">
                     </div>
 
-                    <div class="relative group inline-block mt-1">
-                        <div id="username-container">
-                            <span id="username-display" class="text-gray-500 text-sm cursor-pointer hover:text-indigo-600" onclick="toggleEdit('username')">
-                                {{ Auth::user()->username ? '@' . Auth::user()->username : '(belum ada username)' }}
-                            </span>
-                            <button type="button" onclick="toggleEdit('username')" class="ml-1 opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-indigo-600">
-                                <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                            </button>
+                    <div class=" text-gray-500 text-sm mb-8 relative group">
+                            <div id="username-container">
+                                <span id="username-display" class="cursor-pointer" onclick="toggleEdit('username')">
+                                    {{ Auth::user()->username ? '@' . Auth::user()->username : '(belum ada username)' }}
+                                </span>
+                                <button type="button" onclick="toggleEdit('username')"
+                                    class="ml-2 opacity-0 group-hover:opacity-100 transition text-xs text-gray-400">
+                                    edit
+                                </button>
+                            </div>
+                            <input type="text" id="username-input" name="username"
+                                class="hidden text-center border-b border-indigo-500 focus:outline-none w-64 mx-auto bg-transparent"
+                                value="{{ old('username', Auth::user()->username) }}">
                         </div>
-                        <input type="text" id="username-input" name="username"
-                            class="hidden text-center text-sm border-b border-indigo-500 focus:outline-none w-64 mx-auto bg-transparent px-2 py-1"
-                            value="{{ old('username', Auth::user()->username) }}">
-                    </div>
                 </div>
 
                 <!-- Info Cards -->
