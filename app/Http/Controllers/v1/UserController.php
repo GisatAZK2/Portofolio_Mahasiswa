@@ -141,6 +141,7 @@ class UserController extends Controller
         'deskripsi' => ['nullable','string','max:1000'],
         'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
         'background_url' => ['nullable','image','mimes:jpeg,png,jpg','max:4098'],
+         'jenis_kelamin' => ['nullable','in:laki-laki,perempuan,tidak ingin memberi tahu'],    
     
     ];
 

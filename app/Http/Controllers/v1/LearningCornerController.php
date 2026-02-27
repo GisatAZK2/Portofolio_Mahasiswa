@@ -18,6 +18,12 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-learning-corner', compact('entries'));
     }
 
+    public function learning_corner_user()
+    {
+        $entries = LearningCorner::with('mahasiswa')->latest()->get();
+        return view('learning-corner.views_learning_corner_user', compact('entries'));
+    }
+
     public function create()
     {
         return view('learning-corner.views-create-learning-corner');

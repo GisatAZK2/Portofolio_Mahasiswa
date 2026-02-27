@@ -6,7 +6,6 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ProjekController extends Controller

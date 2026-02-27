@@ -37,7 +37,6 @@
                 </svg>
                 <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">My
                     Dashboard</span>
-
                 <!-- Tooltip untuk collapsed mode -->
                 @if(session('sidebar_collapsed', false))
                     <span
@@ -55,9 +54,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
             </svg>
-            <span
-                class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Dashboard</span>
-
+            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Dashboard</span>
             @if(session('sidebar_collapsed', false))
                 <span
                     class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
@@ -75,10 +72,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span
-                    class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project
                     Mahasiswa</span>
-
                 @if(session('sidebar_collapsed', false))
                     <span
                         class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
@@ -95,15 +90,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span
-                        class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project</span>
+                    <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project</span>
                     <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
                         :class="{ 'rotate-180': open }"
                         class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
-
                     @if(session('sidebar_collapsed', false))
                         <span
                             class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
@@ -111,7 +104,6 @@
                         </span>
                     @endif
                 </button>
-
                 <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
                     x-transition:enter="transition ease-out duration-200"
                     x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
@@ -125,7 +117,6 @@
                         </svg>
                         <span>Lihat Project Saya</span>
                     </a>
-
                     <a href="{{ route('project.create') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
                                   {{ request()->routeIs('project.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
@@ -138,8 +129,25 @@
             </div>
         @endguest
 
-        <!-- Learning Corners - hanya untuk user yang sudah login -->
-        @auth
+        <!-- ================== LEARNING CORNER MAHASISWA (Guest) ================== -->
+        @guest
+            <a href="{{ route('learning-corner-mahasiswa') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('learning-corner-mahasiswa') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25m20-11.197C21.5 6.253 17 10.998 17 17.25m0-13V6a2 2 0 10-4 0v.253m4 0C13.5 5.482 12.8 5 12 5c-.8 0-1.5.482-1.5 1.253v13M12 21a2 2 0 100-4 2 2 0 000 4z" />
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Corner Mahasiswa</span>
+                @if(session('sidebar_collapsed', false))
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Corner Mahasiswa
+                    </span>
+                @endif
+            </a>
+        @else
+            <!-- Learning Corners - hanya untuk user login (versi asli tetap) -->
             <div class="space-y-1 relative"
                 x-data="{ open: {{ request()->routeIs('learning-corner.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
@@ -149,16 +157,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25m20-11.197C21.5 6.253 17 10.998 17 17.25m0-13V6a2 2 0 10-4 0v.253m4 0C13.5 5.482 12.8 5 12 5c-.8 0-1.5.482-1.5 1.253v13M12 21a2 2 0 100-4 2 2 0 000 4z" />
                     </svg>
-                    <span
-                        class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Learning
-                        Corners</span>
+                    <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Learning Corners</span>
                     <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
                         :class="{ 'rotate-180': open }"
                         class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
-
                     @if(session('sidebar_collapsed', false))
                         <span
                             class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
@@ -166,14 +171,13 @@
                         </span>
                     @endif
                 </button>
-
                 <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
                     x-transition:enter="transition ease-out duration-200"
                     x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
                     class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
                     <a href="{{ route('learning-corner.index') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('learning-corner.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                                  {{ request()->routeIs('learning-corner.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h7" />
@@ -182,7 +186,7 @@
                     </a>
                     <a href="{{ route('learning-corner.create') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('learning-corner.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                                  {{ request()->routeIs('learning-corner.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
@@ -190,63 +194,82 @@
                     </a>
                 </div>
             </div>
-        @endauth
+        @endguest
 
-        <!-- Sertifikat - hanya untuk user yang sudah login -->
-        @auth
-            <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open"
-                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                               {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                    <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
-                        <path d="M8 2v4"></path>
-                        <path d="M16 2v4"></path>
-                        <path d="M3 10h18"></path>
-                        <circle cx="12" cy="14" r="2"></circle>
-                    </svg>
+        <!-- ================== SERTIFIKAT MAHASISWA (Guest) ================== -->
+        @guest
+            <a href="{{ route('sertifikat-mahasiswa') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('sertifikat-mahasiswa') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                    <path d="M8 2v4"></path>
+                    <path d="M16 2v4"></path>
+                    <path d="M3 10h18"></path>
+                    <circle cx="12" cy="14" r="2"></circle>
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat Mahasiswa</span>
+                @if(session('sidebar_collapsed', false))
                     <span
-                        class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat</span>
-                    <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
-                        :class="{ 'rotate-180': open }"
-                        class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-
-                    @if(session('sidebar_collapsed', false))
-                        <span
-                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Sertifikat
-                        </span>
-                    @endif
-                </button>
-
-                <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                    class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                    <a href="{{ route('sertifikat.index') }}"
-                        class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('sertifikat.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h7" />
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Sertifikat Mahasiswa
+                    </span>
+                @endif
+            </a>
+        @else
+            <!-- Sertifikat - hanya untuk user login (versi asli tetap) -->
+            @auth
+                <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }} }">
+                    <button @click="open = !open"
+                        class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                                   {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                        <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                            <path d="M8 2v4"></path>
+                            <path d="M16 2v4"></path>
+                            <path d="M3 10h18"></path>
+                            <circle cx="12" cy="14" r="2"></circle>
                         </svg>
-                        <span>Lihat Sertifikat</span>
-                    </a>
-                    <a href="{{ route('sertifikat.create') }}"
-                        class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('sertifikat.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat</span>
+                        <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
+                            :class="{ 'rotate-180': open }"
+                            class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                        <span>Tambah Sertifikat Baru</span>
-                    </a>
+                        @if(session('sidebar_collapsed', false))
+                            <span
+                                class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                                Sertifikat
+                            </span>
+                        @endif
+                    </button>
+                    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                        <a href="{{ route('sertifikat.index') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
+                                      {{ request()->routeIs('sertifikat.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h7" />
+                            </svg>
+                            <span>Lihat Sertifikat</span>
+                        </a>
+                        <a href="{{ route('sertifikat.create') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
+                                      {{ request()->routeIs('sertifikat.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span>Tambah Sertifikat Baru</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        @endauth
+            @endauth
+        @endguest
 
     </nav>
 
@@ -262,7 +285,7 @@
                                 alt="{{ Auth::user()->nama_mahasiswa }}" class="w-full h-full object-cover">
                         @else
                             <div
-                                class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                                class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                                 {{ substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1) }}
                             </div>
                         @endif
@@ -271,7 +294,6 @@
                         <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->nama_mahasiswa }}</p>
                         <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? Auth::user()->username }}</p>
                     </div>
-
                     @if(session('sidebar_collapsed', false))
                         <span
                             class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
@@ -280,7 +302,6 @@
                     @endif
                 </div>
             </a>
-
             <form method="POST" action="{{ route('logout') }}" class="mt-3">
                 @csrf
                 <button type="submit"
@@ -291,7 +312,6 @@
                         </path>
                     </svg>
                     <span class="{{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Logout</span>
-
                     @if(session('sidebar_collapsed', false))
                         <span
                             class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">

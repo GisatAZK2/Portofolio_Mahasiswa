@@ -8,6 +8,7 @@
 
                 <!-- Learning Corner -->
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
+                    <a  href="{{ route('learning-corner.index') }}">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700">Learning Corner</h3>
                         <span class="text-purple-500">
@@ -21,10 +22,12 @@
                     <div class="mt-4 h-20">
                         <canvas id="learningChart"></canvas>
                     </div>
+                    </a>
                 </div>
 
                 <!-- Total Project -->
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
+                    <a href="{{ route('project.index') }}">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700">Total Project Dikerjakan</h3>
                         <span class="text-orange-500">
@@ -38,10 +41,12 @@
                     <div class="mt-4 h-20">
                         <canvas id="projectChart"></canvas>
                     </div>
+                    </a>
                 </div>
 
                 <!-- Total Sertifikat -->
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
+                    <a href="{{ route('sertifikat.index') }}">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700">Total Sertifikat Didapat</h3>
                         <span class="text-amber-500">
@@ -56,6 +61,7 @@
                         <canvas id="sertifikatChart"></canvas>
                     </div>
                 </div>
+                </a>
             </div>
 
             <!-- Random Posts -->

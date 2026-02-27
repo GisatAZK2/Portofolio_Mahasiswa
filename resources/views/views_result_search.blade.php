@@ -290,6 +290,8 @@
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                                 {{ $item->nama_project ?? 'Project Tanpa Judul' }}
                             </h3>
+                            
+                            <a href="{{ route('portfolio.show', $item->mahasiswa) }}">
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
@@ -299,6 +301,7 @@
                                         </span>
                                     @endif
                                 </p>
+                            </a>
                             @endif
                             <p class="text-sm text-gray-500 mb-4 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,6 +336,8 @@
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                                 {{ $item->nama_project ?? 'Project Tanpa Judul' }}
                             </h3>
+                            
+                            <a href="{{ route('portfolio.show', $item->mahasiswa) }}">
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
@@ -342,6 +347,7 @@
                                         </span>
                                     @endif
                                 </p>
+                            </a>
                             @endif
                             <p class="text-sm text-gray-500 mb-4 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,6 +395,7 @@
         <!-- Sertifikat -->
         @php $sertifikats = $results->where('type', 'sertifikat'); @endphp
         @if($sertifikats->count() > 0)
+        
         <div class="mb-12" id="sertifikat-section">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
@@ -407,6 +414,7 @@
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                                 {{ $item->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                             </h3>
+                            <a href="{{ route('portfolio.show', $item->mahasiswa) }}">
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
@@ -416,6 +424,7 @@
                                         </span>
                                     @endif
                                 </p>
+                                </a>
                             @endif
                             <div class="space-y-2 mb-4">
                                 <div class="flex items-center text-sm text-gray-700">
@@ -454,6 +463,8 @@
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                                 {{ $item->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                             </h3>
+                            
+                            <a href="{{ route('portfolio.show', $item->mahasiswa) }}"></a>
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
@@ -463,6 +474,7 @@
                                         </span>
                                     @endif
                                 </p>
+                            </a>
                             @endif
                             <div class="space-y-2 mb-4">
                                 <div class="flex items-center text-sm text-gray-700">

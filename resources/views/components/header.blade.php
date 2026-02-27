@@ -21,9 +21,11 @@
 
              <!-- MOBILE TITLE  -->
     <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
+        <a href="{{ route('dashboard') }}">
         <h1 class="text-sm font-semibold text-indigo-600 tracking-wide">
             PORTOFOLIO MAHASISWA
         </h1>
+        </a>
     </div>
 
             <!-- DESKTOP SEARCH -->
