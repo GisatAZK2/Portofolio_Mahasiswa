@@ -27,7 +27,7 @@ return [
         'theme_color' => '#87CEEB',
         'icons' => [
             [
-                'src' => 'assets/Logo.svg',
+                'src' => 'assets/Logo-rounded.svg',
                 'sizes' => '512x512',
                 'type' => 'image/png',
             ],
