@@ -8,7 +8,7 @@
     "start_url": "/",
     "icons": [
         {
-            "src": "assets/Logo.svg",
+            "src": "assets/Logo-rounded.svg",
             "sizes": "512x512",
             "type": "image/png"
         }
