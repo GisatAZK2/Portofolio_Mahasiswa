@@ -17,7 +17,8 @@
 ## Judul Proyek: Portofolio_Mahasiswa
 
 ## Link Demo:
-- <a href="https://trpl-polmind.com">Menuju website Portofolio_Mahasiswa $checkmark;</a>
+- <a href="https://trpl-polmind.com">Menuju website Portofolio_Mahasiswa 🔗</a>
+- <a href="https://trpl-polmind.com">https://trpl-polmind.com 🔗</a>
 
 
 ## ✨ Fitur Utama
