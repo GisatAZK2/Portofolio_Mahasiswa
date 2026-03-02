@@ -17,7 +17,7 @@
 
                     <p class="font-semibold">Deskripsi:</p>
                     <p class="text-gray-700 mb-6">
-                        {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
+                        {{ $project->isi_content['deskripsi'] ?? 'Tanpa Judul' }}
                     </p>
 
                     <p class="font-semibold">Siswa Terlibat:</p>
@@ -125,11 +125,18 @@
         </div>
 
         <!-- LEARNING CORNER -->
-        <div class="bg-white rounded-xl shadow-md p-8">
+        <div class="bg-white rounded-xl shadow-md p-8 relative">
             <h2 class="text-2xl font-bold mb-6">
                 Learning Corner
             </h2>
-
+            
+            <div class="flex justify-end items-center mb-6">
+                <a href="{{ route('learning-corner.create') }}" 
+                   class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                Tambahkan Learning Corner
+            </a>
+            </div>
+            
             <div class="w-full md:w-1/2 bg-gray-100 rounded-xl overflow-hidden shadow">
 
                 <div class="bg-gray-800 h-48 flex items-center justify-center text-white">

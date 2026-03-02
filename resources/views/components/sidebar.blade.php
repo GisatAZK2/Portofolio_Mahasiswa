@@ -139,7 +139,7 @@
         @endguest
 
         <!-- Learning Corners - hanya untuk user yang sudah login -->
-        @auth
+        <!-- @auth
             <div class="space-y-1 relative"
                 x-data="{ open: {{ request()->routeIs('learning-corner.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
@@ -190,7 +190,7 @@
                     </a>
                 </div>
             </div>
-        @endauth
+        @endauth -->
 
         <!-- Sertifikat - hanya untuk user yang sudah login -->
         @auth
