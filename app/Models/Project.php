@@ -17,7 +17,8 @@ class Project extends Model
         'isi_content',
         'tanggal_mulai',
         'tanggal_akhir',
-        'id_mahasiswa'
+        'id_mahasiswa',
+        'leader_id'
     ];
 
     protected $casts = [
@@ -30,5 +31,15 @@ class Project extends Model
     public function mahasiswa()
     {
         return $this->belongsTo(User::class, 'id_mahasiswa', 'id');
+    }
+
+    public function leader()
+    {
+        return $this->belongsTo(User::class, 'leader_id');
+    }
+
+    public function members()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

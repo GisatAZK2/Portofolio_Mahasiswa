@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\v1\UserController;
-use App\Http\Controllers\v1\PortofolioController;
+//use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
 Use App\Http\Controllers\v1\DashboardController;
 use App\Http\Controllers\v1\LearningCornerController;
@@ -22,16 +22,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile-page', function () {
         return view('views_profile_page');
     })->name('profile-page');
-
+    
+    // Ingin menambahkan id di antara project dan details
+    Route::get('/project/details', function() {
+        return 'test detail';
+    });
     // CRUD Project
     Route::resource('project', ProjekController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
 
+    //CRUD Sertifikat
     Route::resource('sertifikat', SertifikatController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
-    ]);
-
+        ]);
+        
     // CRUD Learning Corner
     Route::resource('learning-corner', LearningCornerController::class)
         ->names([
@@ -55,10 +60,11 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 // Route ini sepertinya boleh guest juga
-Route::get('/portfolio/{user}', [PortofolioController::class, 'show'])->name('portfolio.show');
+//Route::get('/portfolio/{user}', [PortofolioController::class, 'show'])->name('portfolio.show');
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
-
+Route::get('/project/{id}', [ProjekController::class, 'show'])->name('project.show');
 Route::get('/portfolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
+
 
 Route::post('/toggle-sidebar', function (Request $request) {
     Session::put('sidebar_collapsed', $request->collapsed);

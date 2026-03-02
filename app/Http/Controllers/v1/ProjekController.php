@@ -31,9 +31,10 @@ class ProjekController extends Controller
     // FORM TAMBAH
     public function create()
     {
-        return view('project.views_create_project');
+        $users = User::select('id', 'nama_mahasiswa')->get() ;
+        return view('project.views_create_project', compact('users'));
     }
-
+    
     // SIMPAN BARU
     public function store(Request $request)
     {
@@ -54,12 +55,17 @@ class ProjekController extends Controller
             return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
         }
 
-        Project::create([
+        $project = Project::create([
             'tanggal_mulai'  => $request->tanggal_mulai,
             'tanggal_akhir'  => $request->tanggal_akhir,
             'isi_content'    => $content,
             'id_mahasiswa'   => Auth::id(),
+            'leader_id'      => $request->leader,
         ]);
+        if($request->members) {
+            $project->members()->attach($request->members);
+        }
+
 
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil ditambahkan!');
@@ -71,8 +77,8 @@ class ProjekController extends Controller
         $project = Project::where('id', $id)
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();
-
-        return view('project.views_edit_project', compact('project'));
+        $users = User::select('id', 'nama_mahasiswa')->get();
+        return view('project.views_edit_project', compact('project', 'users'));
     }
 
     // UPDATE
@@ -110,7 +116,19 @@ class ProjekController extends Controller
             'isi_content'   => $content,
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
+            'leader_id'     => $request->leader
         ]);
+        $members = collect($request->members)
+            ->filter()
+            ->map(fn($id) => (int) $id)
+            ->values()
+            ->all();
+
+        if (!empty($members)) {
+            $project->members()->sync($members);
+        } else {
+            $project->members()->detach();
+        }
 
         /*Penghapusan Link yang terpilih ?
         foreach (['link_project', 'link_github', 'link_video'] as $link) {
@@ -141,5 +159,11 @@ class ProjekController extends Controller
 
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil dihapus!');
+    }
+
+    public function show($id){
+        $project = Project::with('leader', 'members')->findOrFail($id);
+
+        return view('project.views_detail_project', compact('project'));
     }
 }

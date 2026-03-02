@@ -36,6 +36,52 @@
                 @error('deskripsi') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
 
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Tambah Pemimpin (opsional)
+                </label>
+            </div>
+
+            <div>
+                <select name="leader" id="leader-select" class="min-w-full border border-gray-300 rounded-lg p-3">
+                    <option>-- Pilih Pemimpin Project --</option>
+                    @foreach ($users as $user)
+                        <option value="{{ $user->id }}" {{ old('leader', $project->leader_id) == $user->id ? 'selected' : '' }}>
+                            {{$user->nama_mahasiswa}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div id="member-wrapper">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+            Tambah Rekan (opsional)
+            </label>
+
+            @php
+            $oldMembers = old('members', $project->members->pluck('id')->toArray());
+            @endphp
+
+            @foreach($oldMembers as $memberId)
+            <div class="member-item mb-3">
+                <select name="members[]" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <option value="">-- Pilih Mahasiswa --</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}"
+                            {{ $memberId == $user->id ? 'selected' : '' }}>
+                            {{ $user->nama_mahasiswa }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @endforeach
+            </div>
+
+            <button type="button"
+                onclick="addMemberSelect()"
+                class="text-sm text-indigo-600 hover:underline">
+                + Tambah Rekan
+            </button>
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -101,4 +147,35 @@
             </div>
         </form>
     </div>
+
+<script>
+    function addMemberSelect() {
+        let wrapper = document.getElementById('member-wrapper');
+
+        let newSelect = document.createElement('div');
+        newSelect.classList.add('member-item', 'mb-3');
+
+        newSelect.innerHTML = `
+            <div class="flex gap-2">
+                <select name="members[]" 
+                    class="w-full p-3 border border-gray-300 rounded-lg">
+                    <option value="">-- Pilih Mahasiswa --</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">
+                            {{ $user->nama_mahasiswa }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <button type="button" 
+                    onclick="this.parentElement.parentElement.remove()"
+                    class="px-3 bg-red-100 text-red-600 rounded-lg">
+                    ✕
+                </button>
+            </div>
+        `;
+
+        wrapper.appendChild(newSelect);
+}
+</script>
 @endsection

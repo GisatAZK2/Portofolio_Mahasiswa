@@ -150,7 +150,7 @@
                                     @endphp
 
                                     <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition">
-                                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div onclick="window.location='{{ route('project.show', $project->id) }}'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                             <!-- Kiri: Info Project + Links -->
                                             <div class="flex flex-col">
                                                 <div class="flex items-start gap-4 mb-4">
@@ -221,7 +221,7 @@
                                         </div>
                                     </div>
                                 @endforeach
-                            </div>
+                                </div>
                         @else
                             <p class="text-sm text-gray-500 text-center py-6">Belum ada proyek yang ditambahkan</p>
                         @endif
