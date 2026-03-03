@@ -129,17 +129,95 @@
             <h2 class="text-2xl font-bold mb-6">
                 Learning Corner
             </h2>
-            
+
             <div class="flex justify-end items-center mb-6">
-                <a href="{{ route('learning-corner.create') }}" 
-                   class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                Tambahkan Learning Corner
-            </a>
+                @auth
+                @if (auth()->id()===$project->id_mahasiswa)
+                <a href="{{ route('learning-corner.create', $project->id) }}" 
+                    class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    Tambahkan Learning Corner
+                </a>
+                @endif
+                @endauth
             </div>
             
-            <div class="w-full md:w-1/2 bg-gray-100 rounded-xl overflow-hidden shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                @forelse($entries ?? [] as $entry)
+                    <div class="bg-white rounded-xl p-4 shadow">
+                        @if (!empty($entry->content) && is_array($entry->content))
+                                @foreach ($entry->content as $item)
+                                    @if ($item['type'] === 'title')
+                                        <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                                            {{ $item['content'] ?? '(Tanpa Judul)' }}
+                                        </h3>
+                                    @elseif ($item['type'] === 'text')
+                                        <p class="text-gray-700 mb-4 line-clamp-4">
+                                            {{ $item['content'] }}
+                                        </p>
+                                    @elseif ($item['type'] === 'image')
+                                        @php
+                                            $imagePath = str_replace(['\\', '/'], '/', $item['content'] ?? '');
+                                        @endphp
+                                        <div class="mb-5">
+                                            <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
+                                                alt="{{ $item['alt'] ?? 'Gambar konten Learning Corner' }}"
+                                                class="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm" loading="lazy"
+                                                onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
+                                        </div>
+                                    @elseif ($item['type'] === 'link')
+                                        <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
+                                            class="text-indigo-600 hover:text-indigo-800 hover:underline mb-4 block line-clamp-1 break-all">
+                                            {{ Str::limit($item['content'], 70) }}
+                                        </a>
+                                    @endif
+                                @endforeach
+                            @else
+                                <p class="text-gray-500 italic text-center py-4">Konten tidak tersedia atau format salah</p>
+                            @endif
 
-                <div class="bg-gray-800 h-48 flex items-center justify-center text-white">
+                            <!-- Tanggal -->
+                            <p class="text-sm text-gray-500 mt-auto pt-5 border-t border-gray-100">
+                                Diposting pada:
+                                {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
+                            </p>
+
+                        <div class="mt-4 text-right">
+                            <a href="#" class="text-blue-500">
+                                Lihat lebih lengkap >>
+                            </a>
+                        </div>
+                        <div>
+                            @auth
+                                @if (auth()->id()===$project->id_mahasiswa)
+                                    <div class="flex space-x-3 mt-6">
+                                        <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
+                                           class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200">
+                                            Edit
+                                        </a>
+
+                                    <form class="delete-form flex-1"
+                                        action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button"
+                                                class="delete-btn w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium border border-red-200">
+                                                    Hapus
+                                        </button>
+                                    </form>
+                                    </div>
+                                @endif
+                            @endauth
+                        </div>
+                    </div>
+                    @empty
+                       <div class="col-span-2 flex justify-center items-center py-10 text-gray-400 bg-white italic">
+                            <p>Belum ada Learning Corner.</p>
+                       </div>
+                    @endforelse
+
+            </div>
+        </div>
+                <!--<div class="bg-gray-800 h-48 flex items-center justify-center text-white">
                     embed video/github
                 </div>
 
@@ -156,10 +234,33 @@
                             Lihat lebih lengkap >>
                         </a>
                     </div>
-                </div>
+                </div>-->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async function (e) {
+                    e.preventDefault();
 
-            </div>
-        </div>
+                    const confirmed = await showConfirmAlert({
+                        title: 'Hapus Entri Learning Corner?',
+                        text: 'Catatan ini akan dihapus permanen dan tidak bisa dikembalikan.',
+                        icon: 'warning',
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                    });
 
-    </div>
+                    if (confirmed) {
+                        showLoading('Menghapus catatan...');
+                        this.closest('form').submit();
+                    }
+                });
+            });
+
+            @if (session('success'))
+                showSuccessAlert('{{ session('success') }}');
+            @endif
+    });
+</script>
 @endsection

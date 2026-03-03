@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\LearningCorner;
 use Illuminate\Support\Facades\Auth;
 
 class ProjekController extends Controller
@@ -162,8 +163,12 @@ class ProjekController extends Controller
     }
 
     public function show($id){
-        $project = Project::with('leader', 'members')->findOrFail($id);
-
-        return view('project.views_detail_project', compact('project'));
+        // Ambil semua Learning Corner milik pemilik project
+        $project = Project::with('leader', 'members', 'learningCorners')
+                   ->findOrFail($id);
+         $entries = LearningCorner::where('project_id', $project->id)
+        ->latest()
+        ->get();
+        return view('project.views_detail_project', compact('project', 'entries'));
     }
 }

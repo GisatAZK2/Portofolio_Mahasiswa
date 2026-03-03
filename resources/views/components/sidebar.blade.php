@@ -138,59 +138,7 @@
             </div>
         @endguest
 
-        <!-- Learning Corners - hanya untuk user yang sudah login -->
-        <!-- @auth
-            <div class="space-y-1 relative"
-                x-data="{ open: {{ request()->routeIs('learning-corner.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open"
-                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                               {{ request()->routeIs('learning-corner.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                    <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25m20-11.197C21.5 6.253 17 10.998 17 17.25m0-13V6a2 2 0 10-4 0v.253m4 0C13.5 5.482 12.8 5 12 5c-.8 0-1.5.482-1.5 1.253v13M12 21a2 2 0 100-4 2 2 0 000 4z" />
-                    </svg>
-                    <span
-                        class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Learning
-                        Corners</span>
-                    <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
-                        :class="{ 'rotate-180': open }"
-                        class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-
-                    @if(session('sidebar_collapsed', false))
-                        <span
-                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Learning Corners
-                        </span>
-                    @endif
-                </button>
-
-                <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                    class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                    <a href="{{ route('learning-corner.index') }}"
-                        class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('learning-corner.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                        <span>Lihat Catatan</span>
-                    </a>
-                    <a href="{{ route('learning-corner.create') }}"
-                        class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('learning-corner.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>Tambah Catatan Baru</span>
-                    </a>
-                </div>
-            </div>
-        @endauth -->
+        
 
         <!-- Sertifikat - hanya untuk user yang sudah login -->
         @auth

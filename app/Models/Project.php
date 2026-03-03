@@ -42,4 +42,8 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    public function learningCorners()
+{
+    return $this->hasMany(LearningCorner::class, 'project_id', 'id');
+}
 }

@@ -23,7 +23,7 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('learning-corner.store') }}" enctype="multipart/form-data"
+            <form method="POST" action="{{ route('learning-corner.store', $project) }}" enctype="multipart/form-data"
                 class="space-y-8">
                 @csrf
 
@@ -43,7 +43,7 @@
                 <div class="pt-6 border-t border-gray-200">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-lg font-medium text-gray-800">Konten Tambahan (opsional)</h3>
-                        <button type="button" id="add-item"
+                        <button type="button" id="add-item" name="project_id" value="$project->project_id"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -59,7 +59,7 @@
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200">
-                    <button type="submit"
+                    <button type="submit" name="project_id" value="{{$project->id}}"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
                         Simpan Catatan
                     </button>

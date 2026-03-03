@@ -10,6 +10,11 @@ Use App\Http\Controllers\v1\DashboardController;
 use App\Http\Controllers\v1\LearningCornerController;
 use App\Http\Controllers\v1\SertifikatController;
 
+// Halaman Admin
+Route::get('/admin/dashboard', function() {
+    return view('admin.dashboard');
+});
+
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
@@ -22,11 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile-page', function () {
         return view('views_profile_page');
     })->name('profile-page');
-    
-    // Ingin menambahkan id di antara project dan details
-    Route::get('/project/details', function() {
-        return 'test detail';
-    });
+
     // CRUD Project
     Route::resource('project', ProjekController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
@@ -36,17 +37,28 @@ Route::middleware('auth')->group(function () {
     Route::resource('sertifikat', SertifikatController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
         ]);
-        
+
     // CRUD Learning Corner
-    Route::resource('learning-corner', LearningCornerController::class)
-        ->names([
-            'index'   => 'learning-corner.index',
-            'create'  => 'learning-corner.create',
-            'store'   => 'learning-corner.store',
-            'edit'    => 'learning-corner.edit',
-            'update'  => 'learning-corner.update',
-            'destroy' => 'learning-corner.destroy',
-        ]);
+    Route::get('/project/{project}/learning-corner/create',
+        [LearningCornerController::class, 'create']
+        )->name('learning-corner.create');
+    Route::post('/project/{project}/learning-corner',
+        [LearningCornerController::class, 'store']
+        )->name('learning-corner.store');
+
+    Route::get('/learning-corner/{learningCorner}/edit',
+        [LearningCornerController::class, 'edit']
+        )->name('learning-corner.edit');
+
+    Route::put('/learning-corner/{learningCorner}',
+        [LearningCornerController::class, 'update']
+        )->name('learning-corner.update');
+
+    Route::delete('/learning-corner/{learningCorner}',
+        [LearningCornerController::class, 'destroy']
+        )->name('learning-corner.destroy');
+
+    
 
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');

@@ -102,7 +102,7 @@
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200 space-x-4">
-                    <a href="{{ route('learning-corner.index') }}"
+                    <a href="{{ route('project.index') }}"
                         class="px-8 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition">
                         Batal
                     </a>
