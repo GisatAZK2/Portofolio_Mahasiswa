@@ -93,7 +93,7 @@
                             }
                         @endphp
 
-                        <div class=" shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full">
+                        <div onclick="window.location='{{ route('project.show', $project->id) }}'" class=" shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full hover:cursor-pointer">
                             <!-- Media Header -->
                             @if($embedVideo)
                                 <div class="relative w-full pb-[56.25%] bg-black">

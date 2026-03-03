@@ -59,7 +59,8 @@
                     @endphp
 
                     <div
-                        class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                        onclick="window.location='{{ route('project.show', $project->id) }}'"
+                        class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100 cursor-pointer">
                         <div class="p-6">
                             <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
                                 {{ $nama_project }}
