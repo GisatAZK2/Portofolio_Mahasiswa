@@ -21,14 +21,15 @@
                     </p>
 
                     <p class="font-semibold mb-1">Siswa Terlibat:</p>
+                    <p class=" mt-4">Pemimpin Tim:</p>
                     @if($project->leader)
                         <li class="ml-4">    
                             <ul>
-                                <div class="flex items-center gap-2 border px-1 py-1 mt-2 rounded-lg max-w-max">
+                                <div class="flex hover:text-indigo-800 items-center gap-2 border px-1 py-1 mt-2 rounded-lg max-w-max">
                                     @if($project->leader)
                                         <img src="{{ asset('storage/' . ltrim($project->leader->photo_profile)) }}"
                                              alt="{{ $project->leader->nama_mahasiswa ?? 'Mahasiswa' }}"
-                                             class="w-4 h-4 rounded-full object-cover">
+                                             class="w-4 h-4 rounded-full text-indigo-600 object-cover">
                                     @else
                                         <div
                                             class="w-4 h-4 bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
@@ -53,19 +54,18 @@
                                 @if($member->photo_profile)
                                     <img src="{{ asset('storage/' . ltrim($member->photo_profile, '/')) }}"
                                          alt="{{ $user->nama_mahasiswa ?? 'Mahasiswa' }}"
-                                         class="w-4 h-4 rounded-full object-cover">
+                                         class="w-4 h-4 rounded-full object-cover text-indigo-600 hover:underline hover:text-indigo-800">
                                 @else
-                                <div class="flex items-center gap-2 border p-1 max-w-max rounded-lg">
+                                <div class="flex hover:text-indigo-800 items-center gap-2 border p-1 max-w-max rounded-lg">
                                     <div
                                         class="w-4 h-4 bg-indigo-600 flex items-center justify-center text-white text-xs font-bold rounded-full">
                                         {{ strtoupper(mb_substr(trim($member->nama_mahasiswa ?? 'M'), 0, 1)) }}
                                         
                                     </div>
-                                    
-                                            <a href="{{ route('portfolio.show', $member->id) }}"
-                                               class="text-indigo-600 hover:underline hover:text-indigo-800">
-                                            {{ $member->nama_mahasiswa }}
-                                            </a>
+                                    <a href="{{ route('portfolio.show', $member->id) }}"
+                                       class="">
+                                    {{ $member->nama_mahasiswa }}
+                                    </a> 
                                 </div>
                                 @endif
                                 
