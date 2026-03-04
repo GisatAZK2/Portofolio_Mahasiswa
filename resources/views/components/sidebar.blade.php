@@ -1,4 +1,4 @@
-<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-200 shadow-xl
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 bg- dark:border-gray-800 border-r border-gray-200 shadow-xl
              transform -translate-x-full lg:translate-x-0 transition-all duration-300 ease-in-out
              lg:static lg:inset-auto lg:shadow-sm
              flex flex-col overflow-hidden
@@ -6,15 +6,15 @@
 
     <!-- Tombol Toggle Collapse untuk Desktop -->
     <button id="toggle-desktop-sidebar"
-        class="hidden lg:flex absolute -right-3 top-16 w-6 h-6 bg-white border border-gray-300 rounded-full items-center justify-center hover:bg-gray-100 z-10 shadow-sm">
+        class="hidden lg:flex absolute -right-3 top-16 w-6 h-6 bg-white dark:bg-gray-900 border dark:border-gray-700 border-gray-300 rounded-full items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-900 z-10 shadow-sm">
         <svg id="toggleCollapseIcon"
-            class="w-4 h-4 text-gray-600 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'rotate-180' : '' }}"
+            class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'rotate-180' : '' }}"
             fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
     </button>
 
-    <div class="px-6 py-6 mt-10 border-b border-gray-200 flex items-center justify-between shrink-0">
+    <div class="px-6 py-6 mt-10 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0">
         <div class="flex-1 flex justify-center lg:justify-center">
             <div
                 class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center shadow-md overflow-hidden">
@@ -30,7 +30,7 @@
         @auth
             <a href="{{ route('dashboard.me') }}"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                          {{ request()->routeIs('dashboard.me') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                          {{ request()->routeIs('dashboard.me') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700' }}">
                 <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
@@ -50,7 +50,7 @@
 
         <a href="{{ route('dashboard') }}"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-              {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+              {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
@@ -70,7 +70,7 @@
         @guest
             <a href="{{ route('project.project_user') }}"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                          {{ request()->routeIs('project.project_user') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                          {{ request()->routeIs('project.project_user') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
                 <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -90,7 +90,7 @@
             <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('project.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                     class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                                   {{ request()->routeIs('project.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                                   {{ request()->routeIs('project.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
                     <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -118,7 +118,7 @@
                     class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
                     <a href="{{ route('project.index') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                                  {{ request()->routeIs('project.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                                  {{ request()->routeIs('project.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h7" />
@@ -128,7 +128,7 @@
 
                     <a href="{{ route('project.create') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                                  {{ request()->routeIs('project.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                                  {{ request()->routeIs('project.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
@@ -145,7 +145,7 @@
             <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                     class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                               {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                               {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
                     <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2">
                         <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
@@ -177,7 +177,7 @@
                     class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
                     <a href="{{ route('sertifikat.index') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('sertifikat.index') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                              {{ request()->routeIs('sertifikat.index') ? 'bg-blue-100 text-blue-800 font-medium' : ' dark:text-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h7" />
@@ -186,7 +186,7 @@
                     </a>
                     <a href="{{ route('sertifikat.create') }}"
                         class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
-                              {{ request()->routeIs('sertifikat.create') ? 'bg-blue-100 text-blue-800 font-medium' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                              {{ request()->routeIs('sertifikat.create') ? 'bg-blue-100 text-blue-800 font-medium' : ' dark:text-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
@@ -195,8 +195,9 @@
                 </div>
             </div>
         @endauth
+        <!-- Settings -->
             <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                          {{ request()->routeIs('settings') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                          {{ request()->routeIs('settings') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" 
                          class="h-4 w-4"
                          viewBox="0 0 24 24" 
@@ -248,12 +249,12 @@
     </nav>
 
     <!-- FOOTER -->
-    <div class="px-2 py-5 border-t border-gray-200 bg-gray-50 shrink-0">
+    <div class="px-2 py-5 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-700 shrink-0">
         @auth
             <a href="{{ route('profile') ?? '/profile' }}"
-                class="block hover:bg-gray-100 rounded-lg transition p-2 -mx-2 group relative">
+                class="block hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg dark:bg-gray-700 transition p-2 -mx-2 group relative">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0">
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-900 shadow-sm shrink-0">
                         @if (Auth::user()->photo_profile)
                             <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
                                 alt="{{ Auth::user()->nama_mahasiswa }}" class="w-full h-full object-cover">
@@ -265,8 +266,8 @@
                         @endif
                     </div>
                     <div class="flex-1 min-w-0 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                        <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->nama_mahasiswa }}</p>
-                        <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? Auth::user()->username }}</p>
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">{{ Auth::user()->nama_mahasiswa }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-300 truncate">{{ Auth::user()->email ?? Auth::user()->username }}</p>
                     </div>
 
                     @if(session('sidebar_collapsed', false))
@@ -281,7 +282,7 @@
             <form method="POST" action="{{ route('logout') }}" class="mt-3">
                 @csrf
                 <button type="submit"
-                    class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium group relative">
+                    class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 bg-red-50 dark:bg-red-600 text-red-700 dark:text-red-50 rounded-lg hover:bg-red-100 transition font-medium group relative">
                     <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">

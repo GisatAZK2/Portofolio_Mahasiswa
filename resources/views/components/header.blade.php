@@ -1,10 +1,10 @@
-<header class="bg-white/70 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 transition-all">
+<header class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">
     <div class="px-4 py-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
 
             <!-- Mobile: Hamburger + Search Icon -->
             <div class="flex items-center gap-4 lg:hidden">
-                <button id="toggle-sidebar" class="text-gray-700 focus:outline-none">
+                <button id="toggle-sidebar" class="text-gray-700 dark:text-gray-300 focus:outline-none">
                     <svg id="sidebar-hamburger" class="w-7 h-7 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -12,7 +12,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
-                <button id="toggle-search-mobile" class="text-gray-700 focus:outline-none">
+                <button id="toggle-search-mobile" class="text-gray-700 dark:text-gray-300 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -33,7 +33,7 @@
                     <!-- Search Input -->
                    <div class="relative flex-grow min-w-0">
     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-        <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="h-5 w-5 text-gray-500 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
     </div>
@@ -41,38 +41,38 @@
         type="text"
         name="q"
         value="{{ request('q') }}"
-        class="w-full pl-11 pr-4 py-2.5 border border-gray-300/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 placeholder-gray-500 text-sm transition shadow-sm bg-white/80 backdrop-blur-sm"
+        class="w-full pl-11 pr-4 py-2.5 border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-100 text-sm transition shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
         placeholder="Cari mahasiswa, proyek, portofolio..."
     >
 </div>
 
-                     <a href="{{ route('search') }}" class="bg-white/60 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-100/80 focus:ring-2 focus:ring-gray-300 transition text-sm font-medium backdrop-blur-sm border border-gray-300/50">
+                     <a href="{{ route('search') }}" class="bg-white/60 dark:bg-gray-200/60 dark:text-gray-300 dark:border-gray-700/50 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-100/80 focus:ring-2 focus:ring-gray-300 transition text-sm font-medium backdrop-blur-sm border border-gray-300/50">
                             Reset
                         </a>
 
                     <!-- Filters -->
-                    <select name="jurusan" class="block border border-gray-300/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
-                        <option value="">Semua Jurusan</option>
+                    <select name="jurusan" class="block border border-gray-300/80 dark:bg-gray-200/60 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
+                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Jurusan</option>
                         @foreach($jurusanList ?? [] as $jurusan)
-                            <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
+                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
                                 {{ Str::limit($jurusan->nama_jurusan, 20) }}
                             </option>
                         @endforeach
                     </select>
 
-                    <select name="keahlian" class="block border border-gray-300/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
-                        <option value="">Semua Keahlian</option>
+                    <select name="keahlian" class="block border  border-gray-300/80 dark:bg-gray-200/60 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
+                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Keahlian</option>
                         @foreach($keahlianList ?? [] as $keahlian)
-                            <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
+                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
                                 {{ Str::limit($keahlian->nama_keahlian, 20) }}
                             </option>
                         @endforeach
                     </select>
 
-                    <select name="angkatan" class="block border border-gray-300/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[120px] lg:min-w-[140px]">
-                        <option value="">Semua Angkatan</option>
+                    <select name="angkatan" class="block border border-gray-300/80 dark:bg-gray-200/60 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[120px] lg:min-w-[140px]">
+                        <option class="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-900" value="">Semua Angkatan</option>
                         @foreach($angkatanList ?? [] as $angkatan)
-                            <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
+                            <option class="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-900" value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
                                 {{ $angkatan->nama_angkatan }}
                             </option>
                         @endforeach

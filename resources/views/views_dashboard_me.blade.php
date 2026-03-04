@@ -1,15 +1,15 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-700 py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 sm:gap-2 lg:grid-cols-3 lg:gap-6">
 
                 <!-- Learning Corner -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
+                <div class="bg-white  rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700">Learning Corner</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Learning Corner</h3>
                         <span class="text-purple-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -24,9 +24,9 @@
                 </div>
 
                 <!-- Total Project -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
+                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700">Total Project Dikerjakan</h3>
+                        <h3 class="text-base font-semibold dark:text-gray-200 text-gray-700">Total Project Dikerjakan</h3>
                         <span class="text-orange-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -41,9 +41,9 @@
                 </div>
 
                 <!-- Total Sertifikat -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
+                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700">Total Sertifikat Didapat</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Sertifikat Didapat</h3>
                         <span class="text-amber-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -61,11 +61,11 @@
             <!-- Random Posts -->
             <div>
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Perihal Terbaru</h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Perihal Terbaru</h2>
                 </div>
 
                 @if($randomPosts->isEmpty())
-                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
                         <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -77,7 +77,7 @@
                         @foreach($randomPosts as $post)
                             <!-- Card wrapper -->
                             <div
-                                class="min-h-[320px]flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-30 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
+                                class="min-h-[320px]flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 shadow-md hover:shadow-xl transition-all duration-30 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
                                 @php
                                     $cardHref = '#'; // default
                                     $isExternal = false;
@@ -117,11 +117,11 @@
                                 @endif
 
                                     <!-- Card body -->
-                                    <div class="flex flex-col h-full bg-white p-5 lg:p-6">
+                                    <div class="flex flex-col h-full dark:border-gray-900 bg-white dark:bg-gray-700 p-5 lg:p-6">
                                         <!-- User Info -->
                                         <div class="flex items-center space-x-3 mb-4">
                                             <div
-                                                class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm flex-shrink-0 relative transition-transform {{ $post->type !== 'sertifikat' ? 'group-hover:scale-105' : '' }}">
+                                                class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100 dark:border-gray-900 shadow-sm flex-shrink-0 relative transition-transform {{ $post->type !== 'sertifikat' ? 'group-hover:scale-105' : '' }}">
                                                 @if($post->mahasiswa?->photo_profile)
                                                     <img src="{{ asset('storage/' . ltrim($post->mahasiswa->photo_profile, '/')) }}"
                                                         alt="{{ $post->mahasiswa->nama_mahasiswa ?? 'Profile' }}"
@@ -140,10 +140,10 @@
                                             </div>
                                             <div>
                                                 <p
-                                                    class="font-semibold text-gray-900 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
+                                                    class="font-semibold text-gray-900 dark:text-gray-300 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
                                                     {{ $post->mahasiswa->nama_mahasiswa ?? 'Pengguna' }}
                                                 </p>
-                                                <p class="text-xs text-gray-500">
+                                                <p class="text-xs text-gray-500 dark:text-gray-100">
                                                     {{ $post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru saja' }}
                                                 </p>
                                             </div>
@@ -166,10 +166,10 @@
                                         <div class="flex-1 mt-3">
                                             @if($post->type === 'sertifikat')
                                                 <div class="flex flex-col space-y-3">
-                                                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">
+                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                                                         {{ $post->nama_sertifikat ?? '(Tanpa Judul Sertifikat)' }}
                                                     </h3>
-                                                    <div class="flex items-center text-sm text-gray-700">
+                                                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                                                         <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -178,7 +178,7 @@
                                                         <span class="font-medium">Penerbit:</span>
                                                         <span class="ml-2">{{ $post->lembaga_penerbit ?? 'Tidak diketahui' }}</span>
                                                     </div>
-                                                    <div class="flex items-center text-sm text-gray-700">
+                                                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                                                         <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -209,11 +209,11 @@
                                                 @foreach($post->content as $item)
                                                     @if($item['type'] === 'title')
                                                         <h3
-                                                            class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
+                                                            class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 {{ $post->type !== 'sertifikat' ? 'group-hover:text-indigo-700' : '' }} transition-colors">
                                                             {{ $item['content'] ?? '(Tanpa Judul)' }}
                                                         </h3>
                                                     @elseif($item['type'] === 'text')
-                                                        <p class="text-gray-700 mb-3 line-clamp-3 text-sm">
+                                                        <p class="text-gray-700 dark:text-gray-200 mb-3 line-clamp-3 text-sm">
                                                             {{ $item['content'] ?? '' }}
                                                         </p>
                                                     @elseif($item['type'] === 'image')
@@ -235,7 +235,7 @@
 
                                             @elseif($post->type === 'project')
 
-                                                <h3 class="text-xl font-semibold text-gray-900 line-clamp-2 leading-tight">
+                                                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">
                                                     {{ $nama_project }}
                                                 </h3>
 
@@ -253,7 +253,7 @@
                                                 </div>
 
                                                 @if($youtube_id)
-                                                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm mt-4">
+                                                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-4">
                                                         <div class="aspect-video">
                                                             <iframe class="w-full h-full"
                                                                 src="https://www.youtube.com/embed/{{ $youtube_id }}?rel=0&modestbranding=1"
@@ -308,8 +308,8 @@
                                         </div>
 
                                         <!-- Footer -->
-                                        <div class="mt-auto pt-4 border-t border-gray-100">
-                                            <p class="text-xs text-gray-500">
+                                        <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-900">
+                                            <p class="text-xs text-gray-500 dark:text-gray-50">
                                                 Diposting
                                                 {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }}
                                                 WIB
@@ -326,7 +326,7 @@
                 @endif
 
                 <!-- Update timestamp -->
-                <div class="text-center text-gray-500 text-sm mt-10">
+                <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
                     Data terakhir diperbarui: {{ now()->format('d F Y H:i') }} WIB
                 </div>
             </div>

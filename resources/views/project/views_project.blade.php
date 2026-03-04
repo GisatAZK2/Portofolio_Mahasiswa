@@ -3,7 +3,7 @@
 @section('title', 'Project Saya')
 
 @section('content')
-    <div class="p-6 lg:p-8">
+    <div class="p-6 lg:p-8 dark:bg-gray-200">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Project Saya</h1>
