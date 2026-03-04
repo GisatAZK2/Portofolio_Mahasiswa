@@ -195,7 +195,56 @@
                 </div>
             </div>
         @endauth
-
+            <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('settings') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                         class="h-4 w-4"
+                         viewBox="0 0 24 24" 
+                         fill="none" 
+                         stroke="currentColor" 
+                         stroke-width="2" 
+                         stroke-linecap="round" 
+                         stroke-linejoin="round">
+                        
+                        <!-- Gear shape -->
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15
+                                 a1.65 1.65 0 0 0 .33 1.82
+                                 l.06.06
+                                 a2 2 0 1 1-2.83 2.83
+                                 l-.06-.06
+                                 a1.65 1.65 0 0 0-1.82-.33
+                                 1.65 1.65 0 0 0-1 1.51V21
+                                 a2 2 0 1 1-4 0v-.09
+                                 a1.65 1.65 0 0 0-1-1.51
+                                 1.65 1.65 0 0 0-1.82.33
+                                 l-.06.06
+                                 a2 2 0 1 1-2.83-2.83
+                                 l.06-.06
+                                 a1.65 1.65 0 0 0 .33-1.82
+                                 1.65 1.65 0 0 0-1.51-1H3
+                                 a2 2 0 1 1 0-4h.09
+                                 a1.65 1.65 0 0 0 1.51-1
+                                 1.65 1.65 0 0 0-.33-1.82
+                                 l-.06-.06
+                                 a2 2 0 1 1 2.83-2.83
+                                 l.06.06
+                                 a1.65 1.65 0 0 0 1.82.33H9
+                                 a1.65 1.65 0 0 0 1-1.51V3
+                                 a2 2 0 1 1 4 0v.09
+                                 a1.65 1.65 0 0 0 1 1.51
+                                 1.65 1.65 0 0 0 1.82-.33
+                                 l.06-.06
+                                 a2 2 0 1 1 2.83 2.83
+                                 l-.06.06
+                                 a1.65 1.65 0 0 0-.33 1.82V9
+                                 a1.65 1.65 0 0 0 1.51 1H21
+                                 a2 2 0 1 1 0 4h-.09
+                                 a1.65 1.65 0 0 0-1.51 1z">
+                            </path>
+                    </svg>
+                    <span class="font-medium whitespace-nowrap">Settings</span>
+                    </a>
     </nav>
 
     <!-- FOOTER -->

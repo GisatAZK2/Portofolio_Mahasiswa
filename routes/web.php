@@ -76,7 +76,9 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
 Route::get('/project/{id}', [ProjekController::class, 'show'])->name('project.show');
 Route::get('/portfolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
-
+Route::get('/settings', function () {
+    return view('settings');
+})->name('settings');
 
 Route::post('/toggle-sidebar', function (Request $request) {
     Session::put('sidebar_collapsed', $request->collapsed);
