@@ -17,18 +17,61 @@
 
                     <p class="font-semibold">Deskripsi:</p>
                     <p class="text-gray-700 mb-6">
-                        {{ $project->isi_content['deskripsi'] ?? 'Tanpa Judul' }}
+                        {{ $project->isi_content['deskripsi'] ?? 'Tidak ada Deskripsi' }}
                     </p>
 
-                    <p class="font-semibold">Siswa Terlibat:</p>
-                    <p class="mt-2">
-                        <span class="font-medium">Project Leader:</span> 
-                        {{ $project->leader->nama_mahasiswa ?? 'Tidak ada leader' }}
-                    </p>
-
-                    <div class="mt-3 space-y-1 text-gray-700">
+                    <p class="font-semibold mb-1">Siswa Terlibat:</p>
+                    @if($project->leader)
+                        <li class="ml-4">    
+                            <ul>
+                                <div class="flex items-center gap-2 border px-1 py-1 mt-2 rounded-lg max-w-max">
+                                    @if($project->leader)
+                                        <img src="{{ asset('storage/' . ltrim($project->leader->photo_profile)) }}"
+                                             alt="{{ $project->leader->nama_mahasiswa ?? 'Mahasiswa' }}"
+                                             class="w-4 h-4 rounded-full object-cover">
+                                    @else
+                                        <div
+                                            class="w-4 h-4 bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
+                                            {{ strtoupper(mb_substr(trim($project->leader->nama_mahasiswa ?? 'M'), 0, 1)) }}
+                                        </div>
+                                    @endif
+                                    <a href="{{ route('portfolio.show', $project->leader->id) }}">
+                                        {{ $project->leader->nama_mahasiswa }}
+                                    </a>
+                                </div>
+                            </ul>
+                        </li>
+                    @else
+                        Tidak ada leader
+                    @endif
+                    
+                    <p class="mt-6">Rekan Rekan Kerja:</p>
+                    <div class="mt-2 ml-4 space-y-1 text-gray-700">
                         @forelse($project->members as $member)
-                        <p>{{ $member->nama_mahasiswa }}</p>
+                        <li>
+                            <ul>
+                                @if($member->photo_profile)
+                                    <img src="{{ asset('storage/' . ltrim($member->photo_profile, '/')) }}"
+                                         alt="{{ $user->nama_mahasiswa ?? 'Mahasiswa' }}"
+                                         class="w-4 h-4 rounded-full object-cover">
+                                @else
+                                <div class="flex items-center gap-2 border p-1 max-w-max rounded-lg">
+                                    <div
+                                        class="w-4 h-4 bg-indigo-600 flex items-center justify-center text-white text-xs font-bold rounded-full">
+                                        {{ strtoupper(mb_substr(trim($member->nama_mahasiswa ?? 'M'), 0, 1)) }}
+                                        
+                                    </div>
+                                    
+                                            <a href="{{ route('portfolio.show', $member->id) }}"
+                                               class="text-indigo-600 hover:underline hover:text-indigo-800">
+                                            {{ $member->nama_mahasiswa }}
+                                            </a>
+                                </div>
+                                @endif
+                                
+                            </ul>
+                        </li>
+                        
                         @empty
                         <p class="text-gray-400">Tidak ada rekan</p>
                         @endforelse
