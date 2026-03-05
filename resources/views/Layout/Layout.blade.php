@@ -7,16 +7,25 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
 
-    @PwaHead
+    
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    if (
+        localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+        document.documentElement.classList.add('dark');
+    }
+</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body class="bg-gray-50 antialiased">
+<body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
     <!-- Overlay backdrop untuk mobile -->
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
@@ -178,6 +187,16 @@
                     menu.classList.toggle('hidden');
                     arrow.classList.toggle('rotate-180');
                 }
+            };
+
+            window.toggleTheme = function () {
+                const html = document.documentElement;
+                html.classList.toggle('dark');
+
+                localStorage.setItem(
+                    'theme',
+                    html.classList.contains('dark') ? 'dark' : 'light'
+                );
             };
         });
     </script>

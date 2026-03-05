@@ -3,7 +3,7 @@
 @section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
 
 @section('content')
-    <div class="min-h-screen bg-gray-100 py-8">
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-700 py-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- Grid utama ala LinkedIn -->
@@ -13,7 +13,7 @@
                 <div class="lg:col-span-1 lg:sticky lg:top-8 lg:self-start space-y-6">
 
                     <!-- Kartu Profil Ringkas -->
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-900 shadow-sm overflow-hidden">
                         <!-- Background Banner -->
                         <div class="h-32
                             {{ $user->background_url
@@ -26,7 +26,7 @@
                             <div class="flex justify-between items-start">
                                 <div class="-mt-12 mb-3">
                                     <div
-                                        class="w-24 h-24 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden">
+                                        class="w-24 h-24 rounded-full border-4 border-white bg-white dark:border-gray-900 dark:bg-gray-900 shadow-lg overflow-hidden">
                                         @if($user->photo_profile)
                                             <img src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
                                                 alt="{{ $user->nama_mahasiswa ?? 'Mahasiswa' }}"
@@ -48,14 +48,14 @@
                                 </div>
                             </div>
 
-                            <h1 class="text-xl font-bold text-gray-900 mt-2">
+                            <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mt-2">
                                 {{ trim($user->nama_mahasiswa ?? 'Mahasiswa') }}
                             </h1>
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
                                 {{ $user->jurusan?->nama_jurusan ?? 'Mahasiswa' }}
                             </p>
 
-                            <p class="mt-4 text-sm text-gray-700 leading-relaxed">
+                            <p class="mt-4 text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
                                 {{ !empty(trim($user->deskripsi)) ? $user->deskripsi : 'Tidak ada deskripsi.' }}
                             </p>
 
@@ -66,12 +66,12 @@
                     </div>
 
                     <!-- Keahlian -->
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-                        <h3 class="text-base font-bold text-gray-900 mb-4">Keahlian</h3>
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5">
+                        <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-4">Keahlian</h3>
 
                         @if($user->keahlian)
                             <div class="mb-5">
-                                <p class="text-sm font-medium text-gray-700 mb-2">Utama:</p>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Utama:</p>
                                 <div class="flex flex-wrap gap-2">
                                     <span
                                         class="px-3 py-1 text-xs font-medium bg-red-50 text-red-700 rounded-full border border-red-100">
@@ -83,7 +83,7 @@
 
                         @if(!empty($user->keahlian_tambahan))
                             <div>
-                                <p class="text-sm font-medium text-gray-700 mb-2">Tambahan:</p>
+                                <p class="text-sm font-medium text-gray-700 dark:gray-300 mb-2">Tambahan:</p>
                                 <div class="flex flex-wrap gap-2">
                                     @php
                                         $keahlianTambahan = \App\Models\Keahlian::whereIn(
@@ -112,10 +112,10 @@
                 <div class="lg:col-span-2 space-y-6">
 
                     <!-- Projects -->
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 lg:p-6">
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-lg font-bold text-gray-900">Projects</h3>
-                            <span class="text-sm text-gray-500">{{ $user->projects->count() }} proyek</span>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Projects</h3>
+                            <span class="text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-100">{{ $user->projects->count() }} proyek</span>
                         </div>
 
                         @if($user->projects->isNotEmpty())
@@ -149,8 +149,8 @@
                                         }
                                     @endphp
 
-                                    <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition">
-                                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="border border-gray-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-md transition">
+                                        <div onclick="window.location='{{ route('project.show', $project->id) }}'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                             <!-- Kiri: Info Project + Links -->
                                             <div class="flex flex-col">
                                                 <div class="flex items-start gap-4 mb-4">
@@ -163,11 +163,11 @@
                                                         </svg>
                                                     </div>
                                                     <div class="flex-1">
-                                                        <h4 class="text-base font-semibold text-gray-900">{{ $nama }}</h4>
+                                                        <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ $nama }}</h4>
                                                         @if($deskripsi)
-                                                            <p class="text-sm text-gray-600 mt-1 line-clamp-4">{{ $deskripsi }}</p>
+                                                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-4">{{ $deskripsi }}</p>
                                                         @else
-                                                            <p class="text-sm text-gray-500 mt-1 italic">Tidak ada deskripsi</p>
+                                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">Tidak ada deskripsi</p>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -186,7 +186,7 @@
                                                     @endif
                                                     @if($linkGithub)
                                                         <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
-                                                            class="inline-flex hover:underline items-center text-sm text-gray-700 hover:text-gray-900 font-medium">
+                                                            class="inline-flex hover:underline items-center text-sm text-gray-700 dark:text-gray-200 dark:hover:text-gray-400 hover:text-gray-900 font-medium">
                                                             <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="currentColor">
                                                                 <path
                                                                     d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
@@ -221,17 +221,17 @@
                                         </div>
                                     </div>
                                 @endforeach
-                            </div>
+                                </div>
                         @else
-                            <p class="text-sm text-gray-500 text-center py-6">Belum ada proyek yang ditambahkan</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-200 text-center py-6">Belum ada proyek yang ditambahkan</p>
                         @endif
                     </div>
 
                     <!-- Sertifikat -->
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 lg:p-6">
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-lg font-bold text-gray-900">Sertifikat</h3>
-                            <span class="text-sm text-gray-500">{{ $user->sertifikats->count() }} sertifikat</span>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Sertifikat</h3>
+                            <span class="text-sm text-gray-500 dark:text-gray-200">{{ $user->sertifikats->count() }} sertifikat</span>
                         </div>
 
                         @if($user->sertifikats->isNotEmpty())
@@ -252,7 +252,7 @@
                                         );
                                     @endphp
 
-                                    <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition">
+                                    <div class="border border-gray-100 dark:border-gray-700  rounded-xl p-5 hover:shadow-md transition">
                                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                             <div class="flex flex-col justify-between">
                                                 <div class="flex items-start gap-4">
@@ -265,9 +265,9 @@
                                                         </svg>
                                                     </div>
                                                     <div class="flex-1">
-                                                        <h4 class="text-base font-semibold text-gray-900">{{ $namaSertif }}</h4>
-                                                        <p class="text-sm text-gray-600 mt-1">{{ $lembaga }}</p>
-                                                        <p class="text-xs text-gray-500 mt-1">Diterbitkan {{ $tanggal }}</p>
+                                                        <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ $namaSertif }}</h4>
+                                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ $lembaga }}</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-200 mt-1">Diterbitkan {{ $tanggal }}</p>
                                                     </div>
                                                 </div>
 
@@ -298,11 +298,11 @@
                                                             class="w-full h-full object-contain" loading="lazy"
                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                         <div
-                                                            class="absolute inset-0 hidden flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+                                                            class="absolute inset-0 hidden flex items-center justify-center bg-gray-200 text-gray-500 dark:text-gray-200 text-xs">
                                                             Gagal memuat preview
                                                         </div>
                                                     @else
-                                                        <div class="flex flex-col items-center justify-center text-gray-500">
+                                                        <div class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-200">
                                                             <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor"
                                                                 viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -313,7 +313,7 @@
                                                     @endif
                                                 </div>
                                             @else
-                                                <div class="flex items-center justify-center text-gray-400 text-sm italic">
+                                                <div class="flex items-center justify-center text-gray-400 dark:text-gray-200 text-sm italic">
                                                     Tidak ada preview tersedia
                                                 </div>
                                             @endif
@@ -327,13 +327,13 @@
                     </div>
 
                     <!-- Learning Corners - FIXED VERSION -->
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 lg:p-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-5">Learning Corners</h3>
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Learning Corners</h3>
 
                         @if($user->learning_corners->isNotEmpty())
                             <div class="space-y-6">
                                 @foreach($user->learning_corners as $entry)
-                                    <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition">
+                                    <div class="border border-gray-100 dark:border-gray-700 dark:text-gray-100 rounded-xl p-5 hover:shadow-md transition">
                                         <div class="space-y-4">
                                             @php
                                                 // Ambil content - bisa array atau string JSON
@@ -349,12 +349,12 @@
                                             @if(!empty($items) && is_array($items))
                                                 @foreach($items as $item)
                                                     @if(($item['type'] ?? '') === 'title')
-                                                        <h4 class="text-base font-bold text-gray-900">
+                                                        <h4 class="text-base font-bold text-gray-900 dark:text-gray-100">
                                                             {{ $item['content'] ?? 'Judul tidak tersedia' }}
                                                         </h4>
 
                                                     @elseif(($item['type'] ?? '') === 'text')
-                                                        <p class="text-sm text-gray-700 leading-relaxed">
+                                                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                                                             {{ $item['content'] ?? '' }}
                                                         </p>
 
@@ -377,12 +377,12 @@
                                                     @endif
                                                 @endforeach
                                             @else
-                                                <p class="text-sm text-gray-600 italic">
+                                                <p class="text-sm text-gray-600 dark:text-gray-300 italic">
                                                     Tidak ada konten yang dapat ditampilkan
                                                 </p>
                                             @endif
 
-                                            <p class="text-xs text-gray-500 mt-3">
+                                            <p class="text-xs dark:text-gray-200 text-gray-500 mt-3">
                                                 {{ $entry->created_at?->format('d M Y H:i') }}
                                             </p>
                                         </div>
@@ -390,7 +390,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-sm text-gray-500 text-center py-8 italic">
+                            <p class="text-sm text-gray-500 dark:text-gray-200 text-center py-8 italic">
                                 Belum ada catatan learning corner
                             </p>
                         @endif

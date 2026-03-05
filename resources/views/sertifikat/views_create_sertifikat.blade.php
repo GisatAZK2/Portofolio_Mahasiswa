@@ -7,9 +7,9 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800">Tambah Sertifikat Baru</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Tambah Sertifikat Baru</h1>
                 </div>
-                <p class="mt-2 text-gray-600">Tambahkan sertifikat yang kamu peroleh untuk melengkapi portofoliomu.</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-200">Tambahkan sertifikat yang kamu peroleh untuk melengkapi portofoliomu.</p>
             </div>
 
             <!-- Error Global -->
@@ -37,12 +37,12 @@
 
                 <!-- Nama Sertifikat -->
                 <div>
-                    <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Nama Sertifikat <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
                         required placeholder="Contoh: Sertifikat Kompetensi Programming"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:placeholder:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -50,12 +50,12 @@
 
                 <!-- Lembaga Penerbit -->
                 <div>
-                    <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Lembaga Penerbit <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
                         required placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:placeholder:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -63,27 +63,27 @@
 
                 <!-- Tanggal Terbit -->
                 <div>
-                    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Tanggal Terbit <span class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
                         required max="{{ date('Y-m-d') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500">Maksimal tanggal hari ini</p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50">Maksimal tanggal hari ini</p>
                 </div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
-                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Upload File Sertifikat <span class="text-red-500">*</span>
                     </label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400 transition cursor-pointer"
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400  transition cursor-pointer"
                         onclick="document.getElementById('link_sertifikat').click()">
                         <div class="space-y-2 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                            <svg class="mx-auto h-12 w-12 text-gray-400 dark:hover:text-gray-500" stroke="currentColor" fill="none"
                                 viewBox="0 0 48 48">
                                 <path
                                     d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
@@ -105,7 +105,7 @@
                     @error('link_sertifikat')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-50 flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -139,7 +139,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200">
+                <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200 ">
                     <a href="{{ route('sertifikat.index') }}"
                         class="px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
                         Batal

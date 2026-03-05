@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\LearningCorner;
 use Illuminate\Http\Request;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 
 class LearningCornerController extends Controller
@@ -18,17 +19,12 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-learning-corner', compact('entries'));
     }
 
-    public function learning_corner_user()
+    public function create($projectId)
     {
-        $entries = LearningCorner::with('mahasiswa')->latest()->get();
-        return view('learning-corner.views_learning_corner_user', compact('entries'));
-    }
+        $project = Project::findOrFail($projectId);
 
-    public function create()
-    {
-        return view('learning-corner.views-create-learning-corner');
-    }
-
+        return view('learning-corner.views-create-learning-corner', compact('project'));
+    } 
     public function store(Request $request)
 {
     $validated = $request->validate([
@@ -62,10 +58,11 @@ class LearningCornerController extends Controller
 
     LearningCorner::create([
         'id_mahasiswa' => Auth::id(),
+        'project_id'   => $request->project_id,
         'content'      => $content,
     ]);
 
-    return redirect()->route('learning-corner.index')
+    return redirect()->route('project.show', $request->project_id)
         ->with('success', 'Learning Corner berhasil ditambahkan!');
 }
 
@@ -112,7 +109,7 @@ class LearningCornerController extends Controller
         'content' => $content,
     ]);
 
-    return redirect()->route('learning-corner.index')
+    return redirect()->route('project.index')
         ->with('success', 'Learning Corner berhasil diperbarui!');
 }
 
@@ -122,14 +119,13 @@ class LearningCornerController extends Controller
 
         $learningCorner->delete();
 
-        return redirect()->route('learning-corner.index')
+        return redirect()->route('project.index')
             ->with('success', 'Learning Corner berhasil dihapus.');
     }
 
     private function authorizeEntry(LearningCorner $entry): void
     {
-        if ($entry->id_mahasiswa !== Auth::id()) {
+        if ($entry->project->id_mahasiswa !== Auth::id())
             abort(403, 'Aksi tidak diizinkan.');
         }
-    }
 }
