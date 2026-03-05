@@ -6,8 +6,8 @@
         <div class=" p-8">
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
-                <h1 class="text-3xl font-bold text-gray-800">Tambah Catatan Baru</h1>
-                <p class="mt-2 text-gray-600">Tulis apa yang kamu pelajari hari ini atau bagikan ilmu yang ingin kamu
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Tambah Catatan Baru</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300 ">Tulis apa yang kamu pelajari hari ini atau bagikan ilmu yang ingin kamu
                     simpan.</p>
             </div>
 
@@ -29,11 +29,11 @@
 
                 <!-- Judul -->
                 <div>
-                    <label for="judul" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Judul Catatan <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="judul" id="judul" value="{{ old('judul') }}" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
+                    <input type="text" name="judul" id="judul" value="{{ old('judul') }}" placeholder="Judul Catatan disini.." required
+                        class="w-full px-4 py-3 border border-gray-300 dark:placeholder:text-white dark:bg-gray-400 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -42,7 +42,7 @@
                 <!-- Dynamic Items -->
                 <div class="pt-6 border-t border-gray-200">
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-medium text-gray-800">Konten Tambahan (opsional)</h3>
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Konten Tambahan (opsional)</h3>
                         <button type="button" id="add-item" name="project_id" value="$project->project_id"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,15 +75,15 @@
         function addItem() {
             const container = document.getElementById('items-container');
             const newItem = document.createElement('div');
-            newItem.className = 'item bg-gray-50 border border-gray-200 rounded-xl p-6 relative';
+            newItem.className = 'item bg-gray-50 border border-gray-200 dark:bg-gray-900 rounded-xl p-6 relative';
             newItem.dataset.index = itemIndex;
 
             newItem.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="text">Teks tambahan</option>
-                        <option value="image">Gambar</option>
-                        <option value="link">Link / Referensi</option>
+                <div class="flex justify-between items-start mb-4 ">
+                    <select name="items[${itemIndex}][type]" class="type-select border dark:text-white border-gray-300 dark:bg-gray-400 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
+                        <option class="dark:text-white" value="text">Teks tambahan</option>
+                        <option class="dark:text-white" value="image">Gambar</option>
+                        <option class="dark:text-white" value="link">Link / Referensi</option>
                     </select>
                     <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
                         Hapus
@@ -92,18 +92,18 @@
 
                 <div class="content-area">
                     <!-- Teks default -->
-                    <input type="text" name="items[${itemIndex}][content]" class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                    <input type="text" name="items[${itemIndex}][content]" class="text-input dark:placeholder:text-white w-full px-4 py-3 border border-gray-300 dark:bg-gray-400 rounded-lg focus:border-indigo-500 outline-none transition"
                            placeholder="Masukkan teks di sini...">
 
                     <!-- File upload (hidden awal) -->
                     <div class="file-input hidden mt-2">
                         <input type="file" name="items[${itemIndex}][file]" accept="image/*"
-                               class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                               class="block w-full text-sm text-gray-500 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                         <p class="mt-1 text-xs text-gray-500">Maks 5MB • jpg, png, gif</p>
                     </div>
 
                     <!-- Link (hidden awal) -->
-                    <input type="url" name="items[${itemIndex}][content]" class="link-input hidden w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                    <input type="url" name="items[${itemIndex}][content]" class="link-input hidden w-full px-4 py-3 dark:placeholder:text-white dark:bg-gray-400 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
                            placeholder="https://example.com">
                 </div>
             `;

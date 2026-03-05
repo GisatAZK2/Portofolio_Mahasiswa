@@ -47,6 +47,7 @@ class ProjekController extends Controller
             'deskripsi'     => 'nullable|string|max:255',
             'link_github'    => 'nullable|url|max:500',
             'link_video'     => 'nullable|url|max:500',
+            'leader'         => 'nullable|exists:users,id'
         ]);
         $content = array_filter($request->only([
             'nama_project', 'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
@@ -55,16 +56,24 @@ class ProjekController extends Controller
         if (empty($content)) {
             return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
         }
-
+        
         $project = Project::create([
-            'tanggal_mulai'  => $request->tanggal_mulai,
-            'tanggal_akhir'  => $request->tanggal_akhir,
-            'isi_content'    => $content,
-            'id_mahasiswa'   => Auth::id(),
-            'leader_id'      => $request->leader,
+        'tanggal_mulai'  => $request->tanggal_mulai,
+        'tanggal_akhir'  => $request->tanggal_akhir,
+        'isi_content'    => $content,
+        'id_mahasiswa'   => Auth::id(),
+        'leader_id'      => $request->leader,
         ]);
-        if($request->members) {
-            $project->members()->attach($request->members);
+
+        $members = collect($request->members ?? [])
+        ->filter()
+        ->reject(fn($id) => $id == $request->leader)
+        ->map(fn($id) => (int) $id)
+        ->values()
+        ->all();
+
+        if (!empty($members)) {
+            $project->members()->attach($members);
         }
 
 

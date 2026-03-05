@@ -1,13 +1,13 @@
 @extends('Layout.Layout')
 @section('title', 'Edit Catatan Learning Corner')
 @section('content')
-    <div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+    <div class="min-h-screen bg-gray-50 py-10 px-4 dark:bg-gray-900 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-900 dark:border-gray-900 rounded-2xl shadow-sm border border-gray-200 p-8">
 
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
-                <h1 class="text-3xl font-bold text-gray-800">Edit Catatan</h1>
-                <p class="mt-2 text-gray-600">Ubah judul atau tambah/ubah/hapus konten yang sudah ada.</p>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Catatan</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">Ubah judul atau tambah/ubah/hapus konten yang sudah ada.</p>
             </div>
 
             <!-- Error Global -->
@@ -30,11 +30,11 @@
 
                 <!-- Judul -->
                 <div>
-                    <label for="judul" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Judul Catatan <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="judul" value="{{ old('judul', $learningCorner->judul) }}" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:text-white rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -43,7 +43,7 @@
                 <!-- Dynamic Items -->
                 <div class="pt-6 border-t border-gray-200">
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-medium text-gray-800">Konten Tambahan</h3>
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Konten Tambahan</h3>
                         <button type="button" id="add-item"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,11 +55,11 @@
 
                     <div id="items-container" class="space-y-6">
                         @foreach ($items as $idx => $item)
-                            <div class="item bg-gray-50 border border-gray-200 rounded-xl p-6 relative" data-index="{{ $idx }}">
+                            <div class="item bg-gray-50 dark:bg-gray-900 border border-gray-200 rounded-xl p-6 relative" data-index="{{ $idx }}">
 
                                 <div class="flex justify-between items-start mb-4">
                                     <select name="items[{{ $idx }}][type]"
-                                        class="type-select border border-gray-300 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
+                                        class="type-select border border-gray-300 dark:bg-gray-500 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
                                         <option value="text" {{ $item['type'] === 'text' ? 'selected' : '' }}>Teks tambahan
                                         </option>
                                         <option value="image" {{ $item['type'] === 'image' ? 'selected' : '' }}>Gambar</option>
@@ -78,20 +78,20 @@
                                             @if ($item['content'] && Storage::disk('public')->exists($item['content']))
                                                 <img src="{{ Storage::url($item['content']) }}" alt="Preview gambar lama"
                                                     class="max-h-64 object-contain rounded border border-gray-300 bg-white">
-                                                <p class="text-xs text-gray-500 mt-1">Gambar saat ini</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-50 mt-1">Gambar saat ini</p>
                                             @else
-                                                <p class="text-sm text-gray-500 italic">Gambar tidak ditemukan</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-50 italic">Gambar tidak ditemukan</p>
                                             @endif
                                         </div>
-                                        <label class="block text-sm text-gray-600 mb-1">Ganti gambar (opsional):</label>
+                                        <label class="block text-sm text-gray-600 dark:text-gray-300 mb-1">Ganti gambar (opsional):</label>
                                         <input type="file" name="items[{{ $idx }}][image_file]" accept="image/*"
-                                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                            class="block w-full text-sm text-gray-500 dark:text-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                         <!-- Hidden untuk mempertahankan gambar lama jika tidak upload baru -->
                                         <input type="hidden" name="items[{{ $idx }}][content]" value="{{ $item['content'] ?? '' }}">
                                     @else
                                         <input type="text" name="items[{{ $idx }}][content]"
                                             value="{{ old("items.$idx.content", $item['content'] ?? '') }}"
-                                            class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition @error("items.$idx.content") border-red-500 @enderror"
+                                            class="text-input w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:text-white rounded-lg focus:border-indigo-500 outline-none transition @error("items.$idx.content") border-red-500 @enderror"
                                             placeholder="{{ $item['type'] === 'link' ? 'https://...' : 'Masukkan teks di sini...' }}">
                                     @endif
                                 </div>

@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-700 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-700 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards with Mini Charts -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
@@ -61,7 +61,7 @@
             <!-- Random Posts -->
             <div>
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Perihal Terbaru</h2>
+                    <h2 class="text-2xl font-bold text-gray-900  dark:text-gray-100">Perihal Terbaru</h2>
                     <a href="{{ route('search') ?? '#' }}"
                         class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
                         Lihat Semua →
@@ -69,12 +69,12 @@
                 </div>
 
                 @if($randomPosts->isEmpty())
-                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200  shadow-sm">
-                        <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900  shadow-sm">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600">Belum ada postingan acak untuk ditampilkan saat ini.</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada postingan acak untuk ditampilkan saat ini.</p>
                     </div>
                 @else
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

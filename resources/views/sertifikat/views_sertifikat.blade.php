@@ -1,11 +1,11 @@
 @extends('Layout.Layout')
 @section('title', 'Sertifikat Saya')
 @section('content')
-<div class="p-6 lg:p-8">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900">Sertifikat Saya</h1>
-            <p class="text-gray-600">
+<div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between  mb-8 gap-4">
+        <div >
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Sertifikat Saya</h1>
+            <p class="text-gray-600 dark:text-gray-200">
                 Kelola semua sertifikat yang kamu miliki di sini.
             </p>
         </div>
@@ -20,12 +20,12 @@
 
     {{-- Data Sertifikat --}}
     @if ($sertifikat->isEmpty())
-        <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
-            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <div class="text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200">
+            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p class="mt-4 text-gray-600">Belum ada sertifikat.</p>
-            <p class="text-gray-500 text-sm mt-2">Mulai tambahkan sertifikat pertama kamu!</p>
+            <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada sertifikat.</p>
+            <p class="text-gray-500 dark:text-gray-50 text-sm mt-2">Mulai tambahkan sertifikat pertama kamu!</p>
         </div>
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

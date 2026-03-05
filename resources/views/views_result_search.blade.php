@@ -6,9 +6,9 @@
 
     <!-- Filter Aktif -->
     @if($keyword || request()->jurusan || request()->keahlian || request()->angkatan || request()->type)
-    <div class="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+    <div class="mb-8 bg-white dark:bg-gray-800 dark:border-gray-900 rounded-xl shadow-sm border border-gray-200 p-4">
         <div class="flex flex-wrap items-center gap-3">
-            <span class="text-sm font-medium text-gray-700">Filter aktif:</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-50">Filter aktif:</span>
 
             @if($keyword)
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
@@ -63,7 +63,7 @@
                 </a>
             </div>
 
-            <a href="{{ route('search') }}" class="ml-auto inline-flex items-center px-3 py-1 text-sm text-gray-600 hover:text-gray-900">
+            <a href="{{ route('search') }}" class="ml-auto inline-flex items-center px-3 py-1 text-sm text-gray-600 dark:text-gray-300 dark:hover:text-gray-400 hover:text-gray-900">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -89,7 +89,7 @@
                 @foreach($mahasiswa->take(3) as $item)
                     <a href="{{ route('portfolio.show', $item) }}"
                        class="block h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl mahasiswa-item">
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
+                        <div class="bg-white dark:bg-gray-900 dark:border-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
                             <div class="p-6 flex flex-col flex-1">
                                 <!-- Foto + Nama + Badge -->
                                 <div class="flex items-start gap-4 mb-4">
@@ -99,22 +99,22 @@
                                                  class="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm transition-transform group-hover:scale-105"
                                                  alt="{{ $item->nama_mahasiswa ?? 'Profil' }}">
                                         @else
-                                            <div class="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xl shadow-sm transition-transform group-hover:scale-105">
+                                            <div class="w-14 h-14 rounded-full bg-indigo-600 flex items-center justify-center text-gray-50 font-bold text-xl shadow-sm transition-transform group-hover:scale-105">
                                                 {{ strtoupper(substr($item->nama_mahasiswa ?? 'U', 0, 1)) }}
                                             </div>
                                         @endif
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex justify-between items-start">
-                                            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50 group-hover:text-indigo-700 transition-colors">
                                                 {{ $item->nama_mahasiswa ?? 'Nama tidak tersedia' }}
                                             </h3>
                                             <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                 Mahasiswa
                                             </span>
                                         </div>
-                                        <p class="mt-1 text-sm text-gray-600 flex items-center gap-1">
-                                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-100 flex items-center gap-1">
+                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                             </svg>
                                             {{ $item->email ?? 'Email tidak tersedia' }}
@@ -172,31 +172,31 @@
                     <a href="{{ route('portfolio.show', $item) }}"
                        class="block h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl mahasiswa-item hidden">
                         <!-- Card mahasiswa sama seperti di atas (copy isi card) -->
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
+                        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-900 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
                             <div class="p-6 flex flex-col flex-1">
                                 <div class="flex items-start gap-4 mb-4">
                                     <div class="flex-shrink-0">
                                         @if($item->photo_profile)
                                             <img src="{{ asset('storage/' . $item->photo_profile) }}"
-                                                 class="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm transition-transform group-hover:scale-105"
+                                                 class="w-14 h-14 rounded-full object-cover dark:text-white border-2 border-gray-200 shadow-sm transition-transform group-hover:scale-105"
                                                  alt="{{ $item->nama_mahasiswa ?? 'Profil' }}">
                                         @else
-                                            <div class="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xl shadow-sm transition-transform group-hover:scale-105">
+                                            <div class="w-14 h-14 rounded-full flex items-center justify-center text-white bg-indigo-600 font-bold text-xl shadow-sm transition-transform group-hover:scale-105">
                                                 {{ strtoupper(substr($item->nama_mahasiswa ?? 'U', 0, 1)) }}
                                             </div>
                                         @endif
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex justify-between items-start">
-                                            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-700 transition-colors">
                                                 {{ $item->nama_mahasiswa ?? 'Nama tidak tersedia' }}
                                             </h3>
                                             <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                 Mahasiswa
                                             </span>
                                         </div>
-                                        <p class="mt-1 text-sm text-gray-600 flex items-center gap-1">
-                                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-100 flex items-center gap-1">
+                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                             </svg>
                                             {{ $item->email ?? 'Email tidak tersedia' }}
@@ -231,9 +231,9 @@
                                 </div>
                                 <div class="mt-auto">
                                     <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
-                                        <span><strong class="text-gray-900">{{ $item->projects_count ?? 0 }}</strong> Project</span>
-                                        <span><strong class="text-gray-900">{{ $item->sertifikats_count ?? 0 }}</strong> Sertifikat</span>
-                                        <span><strong class="text-gray-900">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
+                                        <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->projects_count ?? 0 }}</strong> Project</span>
+                                        <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->sertifikats_count ?? 0 }}</strong> Sertifikat</span>
+                                        <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
                                         <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center justify-end gap-1">
@@ -253,7 +253,7 @@
             @if($mahasiswa->count() > 3)
                 <div class="mt-6 text-left">
                     <button onclick="toggleSeeMore('mahasiswa-grid', this, {{ $mahasiswa->count() }})"
-                            class="text-sm font-medium text-gray-900 hover:text-indigo-700 transition flex items-center gap-1">
+                            class="text-sm font-medium text-gray-900 dark:text-gray-50 hover:text-indigo-700 transition flex items-center gap-1">
                         Lihat semua
                         <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -282,16 +282,16 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 project-grid">
                 @foreach($projects->take(3) as $item)
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
+                    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
                                 Project
                             </span>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                 {{ $item->nama_project ?? 'Project Tanpa Judul' }}
                             </h3>
                             @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-3">
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
                                     @if($item->mahasiswa->angkatan)
                                         <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
@@ -300,7 +300,7 @@
                                     @endif
                                 </p>
                             @endif
-                            <p class="text-sm text-gray-500 mb-4 flex items-center gap-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-50 mb-4 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
@@ -317,24 +317,23 @@
                                     Lihat Project →
                                 </a>
                             @else
-                                <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link project</p>
+                                <p class="mt-auto text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link project</p>
                             @endif
                         </div>
                     </div>
                 @endforeach
 
-                @foreach($projects->skip(3) as $item)
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item hidden">
-                        <!-- Isi card project sama seperti di atas -->
+                @foreach($projects->take(3) as $item)
+                    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
                                 Project
                             </span>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                 {{ $item->nama_project ?? 'Project Tanpa Judul' }}
                             </h3>
                             @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-3">
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
                                     @if($item->mahasiswa->angkatan)
                                         <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
@@ -343,7 +342,7 @@
                                     @endif
                                 </p>
                             @endif
-                            <p class="text-sm text-gray-500 mb-4 flex items-center gap-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-50 mb-4 flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
@@ -360,7 +359,7 @@
                                     Lihat Project →
                                 </a>
                             @else
-                                <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link project</p>
+                                <p class="mt-auto text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link project</p>
                             @endif
                         </div>
                     </div>
@@ -370,7 +369,7 @@
             @if($projects->count() > 3)
                 <div class="mt-6 text-left">
                     <button onclick="toggleSeeMore('project-grid', this, {{ $projects->count() }})"
-                            class="text-sm font-medium text-gray-900 hover:text-indigo-700 transition flex items-center gap-1">
+                            class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-700 transition flex items-center gap-1">
                         Lihat semua 
                         <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -391,7 +390,7 @@
         @if($sertifikats->count() > 0)
         <div class="mb-12" id="sertifikat-section">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
                     <span class="inline-flex px-4 py-2 rounded-full bg-amber-100 text-amber-800 font-medium text-base">
                         Sertifikat ({{ $sertifikats->count() }})
                     </span>
@@ -399,16 +398,16 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sertifikat-grid">
                 @foreach($sertifikats->take(3) as $item)
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-amber-500 sertifikat-item">
+                    <div class="bg-white dark:bg-gray-900 dark:border-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-amber-500 sertifikat-item">
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
                                 Sertifikat
                             </span>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                 {{ $item->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                             </h3>
                             @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-3">
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
                                     @if($item->mahasiswa->angkatan)
                                         <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
@@ -418,17 +417,17 @@
                                 </p>
                             @endif
                             <div class="space-y-2 mb-4">
-                                <div class="flex items-center text-sm text-gray-700">
+                                <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                     </svg>
-                                    <span class="font-medium">Penerbit:</span> {{ $item->lembaga_penerbit ?? 'Tidak diketahui' }}
+                                    <span class="font-medium">Penerbit: </span> {{ $item->lembaga_penerbit ?? 'Tidak diketahui' }}
                                 </div>
-                                <div class="flex items-center text-sm text-gray-700">
+                                <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="font-medium">Terbit:</span> {{ $item->tanggal_terbit ? \Carbon\Carbon::parse($item->tanggal_terbit)->format('d M Y') : '—' }}
+                                    <span class="font-medium">Terbit: </span> {{ $item->tanggal_terbit ? \Carbon\Carbon::parse($item->tanggal_terbit)->format('d M Y') : '—' }}
                                 </div>
                             </div>
 
@@ -446,16 +445,16 @@
                 @endforeach
 
                 @foreach($sertifikats->skip(3) as $item)
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-amber-500 sertifikat-item hidden">
+                    <div class="bg-white dark:bg-gray-900 dark:border-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-amber-500 sertifikat-item hidden">
                         <div class="p-6 flex flex-col flex-1">
                             <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
                                 Sertifikat
                             </span>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                 {{ $item->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                             </h3>
                             @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 mb-3">
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
                                     @if($item->mahasiswa->angkatan)
                                         <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
@@ -465,17 +464,17 @@
                                 </p>
                             @endif
                             <div class="space-y-2 mb-4">
-                                <div class="flex items-center text-sm text-gray-700">
+                                <div class="flex items-center text-sm text-gray-700 dark:text-gray-200">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                     </svg>
-                                    <span class="font-medium">Penerbit:</span> {{ $item->lembaga_penerbit ?? 'Tidak diketahui' }}
+                                    <span class="font-medium dark:text-gray-100">Penerbit: </span> {{ $item->lembaga_penerbit ?? 'Tidak diketahui' }}
                                 </div>
-                                <div class="flex items-center text-sm text-gray-700">
+                                <div class="flex items-center text-sm text-gray-700 dark:text-gray-200">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="font-medium">Terbit:</span> {{ $item->tanggal_terbit ? \Carbon\Carbon::parse($item->tanggal_terbit)->format('d M Y') : '—' }}
+                                    <span class="font-medium dark:text-gray-100">Terbit: </span> {{ $item->tanggal_terbit ? \Carbon\Carbon::parse($item->tanggal_terbit)->format('d M Y') : '—' }}
                                 </div>
                             </div>
 
@@ -485,7 +484,7 @@
                                     Lihat Sertifikat →
                                 </a>
                             @else
-                                <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
+                                <p class="mt-auto text-sm text-gray-500 dark:text-gray-100 italic">Tidak ada link sertifikat</p>
                             @endif
                         </div>
                     </div>
@@ -495,7 +494,7 @@
             @if($sertifikats->count() > 3)
                 <div class="mt-6 text-left">
                     <button onclick="toggleSeeMore('sertifikat-grid', this, {{ $sertifikats->count() }})"
-                            class="text-sm font-medium text-gray-900 hover:text-indigo-700 transition flex items-center gap-1">
+                            class="text-sm font-medium text-gray-900 dark:text-gray-50 hover:text-indigo-700 transition flex items-center gap-1">
                         Lihat semua
                         <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -508,12 +507,12 @@
 
     @else
         <!-- Tidak ada hasil -->
-        <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-200 dark:border-gray-900 dark:bg-gray-900">
             <svg class="mx-auto h-20 w-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <h3 class="mt-6 text-2xl font-medium text-gray-900">Tidak ada hasil ditemukan</h3>
-            <p class="mt-3 text-gray-600 max-w-md mx-auto">
+            <h3 class="mt-6 text-2xl font-medium text-gray-900 dark:text-gray-100">Tidak ada hasil ditemukan</h3>
+            <p class="mt-3 text-gray-600 dark:text-gray-300 max-w-md mx-auto">
                 Coba ubah kata kunci, pilih jurusan/keahlian/angkatan lain, atau hapus filter di atas.
             </p>
             <div class="mt-6 flex justify-center gap-3">

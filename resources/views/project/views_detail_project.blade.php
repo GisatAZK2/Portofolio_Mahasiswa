@@ -2,30 +2,30 @@
 
 @section('content')
     <!-- CONTENT -->
-    <!-- CONTENT -->
+
     <div class=" p-10 space-y-10">
 
         <!-- PROJECT CARD -->
-        <div class="bg-white rounded-xl shadow-md p-8">
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                 <!-- LEFT SIDE -->
                 <div>
-                    <h2 class="text-2xl font-bold mb-4">
+                    <h2 class="text-2xl font-bold mb-4 dark:text-gray-200">
                         {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
                     </h2>
 
-                    <p class="font-semibold">Deskripsi:</p>
-                    <p class="text-gray-700 mb-6">
+                    <p class="font-semibold dark:text-gray-200">Deskripsi:</p>
+                    <p class="text-gray-700 m dark:text-gray-300 b-6">
                         {{ $project->isi_content['deskripsi'] ?? 'Tidak ada Deskripsi' }}
                     </p>
 
-                    <p class="font-semibold mb-1">Siswa Terlibat:</p>
-                    <p class=" mt-4">Pemimpin Tim:</p>
+                    <p class="font-semibold mb-1 dark:text-gray-200">Siswa Terlibat:</p>
+                    <p class=" mt-4 dark:text-gray-200">Pemimpin Tim:</p>
                     @if($project->leader)
                         <li class="ml-4">    
                             <ul>
-                                <div class="flex hover:text-indigo-800 items-center gap-2 border px-1 py-1 mt-2 rounded-lg max-w-max">
+                                <div class="flex dark:text-gray-200 dark:hover:text-indigo-300 hover:text-indigo-800 items-center gap-2 border px-1 py-1 mt-2 rounded-lg max-w-max">
                                     @if($project->leader)
                                         <img src="{{ asset('storage/' . ltrim($project->leader->photo_profile)) }}"
                                              alt="{{ $project->leader->nama_mahasiswa ?? 'Mahasiswa' }}"
@@ -43,11 +43,11 @@
                             </ul>
                         </li>
                     @else
-                        Tidak ada leader
+                        <p class="dark:text-gray-100 ml-4">Tidak ada leader</p>
                     @endif
                     
-                    <p class="mt-6">Rekan Rekan Kerja:</p>
-                    <div class="mt-2 ml-4 space-y-1 text-gray-700">
+                    <p class="mt-6 dark:text-gray-200">Rekan Rekan Kerja:</p>
+                    <div class="mt-2 ml-4 space-y-1 text-gray-700 dark:text-gray-300">
                         @forelse($project->members as $member)
                         <li>
                             <ul>
@@ -73,15 +73,15 @@
                         </li>
                         
                         @empty
-                        <p class="text-gray-400">Tidak ada rekan</p>
+                        <p class="text-gray-400 dark:text-gray-200">Tidak ada rekan</p>
                         @endforelse
                     </div>
                 </div>
 
                 <!-- RIGHT SIDE -->
                 <div>
-                    <p class="font-semibold mb-2">Time Period</p>
-                    <div class="pb-2">
+                    <p class="font-semibold mb-2 dark:text-gray-200">Time Period</p>
+                    <div class="pb-2 dark:text-gray-200">
 
                     {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d/m/Y') }}
                     →
@@ -90,11 +90,11 @@
                     : '-' }}
                     </div>
                     
-                    <p class="font-semibold mb-2">
+                    <p class="font-semibold mb-2 dark:text-gray-200">
                         Link:
                     </p>
                     
-        <div class="flex gap-4 text-blue-500 mb-6">
+        <div class="flex gap-4 text-blue-500 dark:text-blue-300 mb-6">
         @if(!empty($project->isi_content['link_video']))
         <a href="{{ $project->isi_content['link_video'] }}" 
            target="_blank"
@@ -168,8 +168,8 @@
         </div>
 
         <!-- LEARNING CORNER -->
-        <div class="bg-white rounded-xl shadow-md p-8 relative">
-            <h2 class="text-2xl font-bold mb-6">
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-8 relative">
+            <h2 class="text-2xl dark:text-gray-50 font-bold mb-6">
                 Learning Corner
             </h2>
 
@@ -186,15 +186,15 @@
             
             <div class="grid md:grid-cols-2 gap-6">
                 @forelse($entries ?? [] as $entry)
-                    <div class="bg-white rounded-xl p-4 shadow">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
                         @if (!empty($entry->content) && is_array($entry->content))
                                 @foreach ($entry->content as $item)
                                     @if ($item['type'] === 'title')
-                                        <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-50 mb-3 line-clamp-2">
                                             {{ $item['content'] ?? '(Tanpa Judul)' }}
                                         </h3>
                                     @elseif ($item['type'] === 'text')
-                                        <p class="text-gray-700 mb-4 line-clamp-4">
+                                        <p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
                                             {{ $item['content'] }}
                                         </p>
                                     @elseif ($item['type'] === 'image')
@@ -209,7 +209,7 @@
                                         </div>
                                     @elseif ($item['type'] === 'link')
                                         <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
-                                            class="text-indigo-600 hover:text-indigo-800 hover:underline mb-4 block line-clamp-1 break-all">
+                                            class="text-indigo-600 dark:text-indigo-300 dark:hover:text-indigo-500 hover:text-indigo-800 hover:underline mb-4 block line-clamp-1 break-all">
                                             {{ Str::limit($item['content'], 70) }}
                                         </a>
                                     @endif
@@ -219,7 +219,7 @@
                             @endif
 
                             <!-- Tanggal -->
-                            <p class="text-sm text-gray-500 mt-auto pt-5 border-t border-gray-100">
+                            <p class="text-sm text-gray-500 mt-auto pt-5 border-t border-gray-100 dark:text-white">
                                 Diposting pada:
                                 {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
                             </p>
@@ -253,7 +253,7 @@
                         </div>
                     </div>
                     @empty
-                       <div class="col-span-2 flex justify-center items-center py-10 text-gray-400 bg-white italic">
+                       <div class="col-span-2 flex justify-center items-center py-10 text-gray-400 dark:text-white dark:bg-gray-900 bg-white italic">
                             <p>Belum ada Learning Corner.</p>
                        </div>
                     @endforelse
