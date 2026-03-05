@@ -2,8 +2,9 @@
 @section('title', 'Profil Saya')
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
+
         <form id="form-profile" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
@@ -20,7 +21,7 @@
                     style="background-image: url('{{ asset('storage/' . Auth::user()->background_url) }}');"
                 @endif
             >
-                <label for="background_input" 
+                <label for="background_input"
                     class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-white shadow-md transition">
                     <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -33,8 +34,9 @@
 
             <!-- Profile Section -->
             <div class="bg-white rounded-b-2xl shadow-sm px-6 pb-8 sm:px-10">
+
                 <!-- Avatar -->
-                <div class="relative flex justify-center">
+                <div class="relative flex">
                     <div class="relative -mt-16 group">
                         <div class="relative w-32 h-32 rounded-full border-4 border-white bg-white shadow-xl overflow-hidden">
                             @if (Auth::user()->photo_profile)
@@ -47,7 +49,7 @@
                                     {{ strtoupper(substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1)) }}
                                 </div>
                             @endif
-                            
+
                             <!-- Upload Overlay -->
                             <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                                 <label for="photo_profile_input" class="cursor-pointer w-full h-full flex items-center justify-center">
@@ -63,7 +65,7 @@
                 </div>
 
                 <!-- Name and Username -->
-                <div class="text-center mt-4">
+                <div class="mt-4">
                     <div class="relative group inline-block">
                         <div id="nama-container">
                             <h2 id="nama-display" class="text-2xl md:text-3xl font-bold text-gray-900 inline-block cursor-pointer hover:text-indigo-600" onclick="toggleEdit('nama')">
@@ -80,25 +82,25 @@
                             value="{{ old('nama_mahasiswa', Auth::user()->nama_mahasiswa) }}">
                     </div>
 
-                    <div class="relative group inline-block mt-1">
+                    <div class="text-gray-500 text-sm mb-8 relative group">
                         <div id="username-container">
-                            <span id="username-display" class="text-gray-500 text-sm cursor-pointer hover:text-indigo-600" onclick="toggleEdit('username')">
+                            <span id="username-display" class="cursor-pointer" onclick="toggleEdit('username')">
                                 {{ Auth::user()->username ? '@' . Auth::user()->username : '(belum ada username)' }}
                             </span>
-                            <button type="button" onclick="toggleEdit('username')" class="ml-1 opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-indigo-600">
-                                <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
+                            <button type="button" onclick="toggleEdit('username')"
+                                class="ml-2 opacity-0 group-hover:opacity-100 transition text-xs text-gray-400">
+                                edit
                             </button>
                         </div>
                         <input type="text" id="username-input" name="username"
-                            class="hidden text-center text-sm border-b border-indigo-500 focus:outline-none w-64 mx-auto bg-transparent px-2 py-1"
+                            class="hidden text-center border-b border-indigo-500 focus:outline-none w-64 mx-auto bg-transparent"
                             value="{{ old('username', Auth::user()->username) }}">
                     </div>
                 </div>
 
                 <!-- Info Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto mt-8">
+
                     <!-- Deskripsi -->
                     <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group sm:col-span-2" onclick="toggleEdit('deskripsi')">
                         <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Deskripsi</p>
@@ -193,6 +195,22 @@
                             </p>
                         </div>
                     </div>
+
+                    <!-- Jenis Kelamin -->
+                    <div onclick="toggleEdit('jenis_kelamin')" class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Jenis Kelamin</p>
+                        <p id="jenis_kelamin-display" class="text-base font-medium text-gray-800">
+                            {{ Auth::user()->jenis_kelamin ?? 'Klik untuk memilih' }}
+                        </p>
+                        <select id="jenis_kelamin-input" name="jenis_kelamin"
+                            class="hidden w-full text-base font-medium text-gray-800 border-b border-indigo-500 focus:outline-none bg-white">
+                            <option value="">-- Pilih --</option>
+                            <option value="laki-laki" {{ Auth::user()->jenis_kelamin == 'laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="perempuan" {{ Auth::user()->jenis_kelamin == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="tidak ingin memberi tahu" {{ Auth::user()->jenis_kelamin == 'tidak ingin memberi tahu' ? 'selected' : '' }}>Tidak ingin memberi tahu</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <!-- Save Button -->
@@ -206,8 +224,17 @@
                         Batal
                     </button>
                 </div>
+
             </div>
         </form>
+
+        @if (session('success'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showSuccessAlert('{{ session('success') }}');
+                });
+            </script>
+        @endif
 
         @if(Auth::check())
             <!-- Projects Section -->
@@ -218,7 +245,6 @@
                         {{ $user->projects->count() }} proyek
                     </span>
                 </div>
-
                 @if($user->projects->isNotEmpty())
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($user->projects as $project)
@@ -229,19 +255,15 @@
                                 $linkProject = $content['link_project'] ?? null;
                                 $linkGithub = $content['link_github'] ?? null;
                                 $linkVideo = $content['link_video'] ?? null;
-
                                 $mulaiRaw = $project->tanggal_mulai ?? null;
                                 $akhirRaw = $project->tanggal_akhir ?? null;
                                 $mulai = $mulaiRaw ? \Carbon\Carbon::parse($mulaiRaw) : null;
                                 $akhir = $akhirRaw ? \Carbon\Carbon::parse($akhirRaw) : null;
                                 $today = \Carbon\Carbon::today();
-
                                 $mulaiFormatted = $mulai ? $mulai->translatedFormat('M Y') : '—';
                                 $akhirFormatted = $akhir ? $akhir->translatedFormat('M Y') : 'Sekarang';
-
                                 $statusClass = 'bg-gray-100 text-gray-700';
                                 $statusText = 'Tidak diketahui';
-
                                 if ($mulai && $akhir) {
                                     if ($akhir < $today) {
                                         $statusClass = 'bg-red-100 text-red-800';
@@ -267,15 +289,12 @@
                                         $statusText = 'Selesai';
                                     }
                                 }
-
                                 // Extract YouTube Video ID
                                 $youtubeEmbedUrl = null;
                                 $youtubeThumbnail = null;
                                 
                                 if ($linkVideo) {
-                                    // Match various YouTube URL formats
                                     preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $linkVideo, $matches);
-                                    
                                     if (!empty($matches[1])) {
                                         $videoId = $matches[1];
                                         $youtubeEmbedUrl = "https://www.youtube.com/embed/" . $videoId;
@@ -283,19 +302,15 @@
                                     }
                                 }
                             @endphp
-
                             <div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full group">
                                 <!-- Media Header with YouTube Thumbnail/Embed -->
                                 <div class="relative w-full bg-black overflow-hidden">
                                     @if($youtubeEmbedUrl)
-                                        <!-- YouTube Thumbnail with Play Button -->
                                         <div class="relative w-full pb-[56.25%] bg-gray-900 cursor-pointer" onclick="playVideo(this, '{{ $youtubeEmbedUrl }}')">
-                                            <img src="{{ $youtubeThumbnail }}" 
-                                                 alt="YouTube thumbnail" 
+                                            <img src="{{ $youtubeThumbnail }}"
+                                                 alt="YouTube thumbnail"
                                                  class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                                                  onerror="this.src='https://via.placeholder.com/480x360?text=Video+Tidak+Tersedia'">
-                                            
-                                            <!-- Play Button Overlay -->
                                             <div class="absolute inset-0 flex items-center justify-center">
                                                 <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
                                                     <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
@@ -303,8 +318,6 @@
                                                     </svg>
                                                 </div>
                                             </div>
-                                            
-                                            <!-- YouTube Logo -->
                                             <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded flex items-center">
                                                 <svg class="w-4 h-4 mr-1 text-red-600" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -312,11 +325,8 @@
                                                 YouTube
                                             </div>
                                         </div>
-                                        
-                                        <!-- Hidden iframe container -->
                                         <div id="player-{{ $loop->index }}" class="hidden absolute inset-0 w-full h-full"></div>
                                     @elseif($linkProject)
-                                        <!-- Project Link Thumbnail -->
                                         <div class="w-full h-48 bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
                                             <svg class="w-20 h-20 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -324,7 +334,6 @@
                                             </svg>
                                         </div>
                                     @else
-                                        <!-- Default Thumbnail -->
                                         <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
                                             <svg class="w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -344,13 +353,11 @@
                                             {{ $statusText }}
                                         </span>
                                     </div>
-
                                     <div class="text-sm text-gray-600 mb-3 flex items-center gap-2 flex-wrap">
                                         <span>Mulai: {{ $mulaiFormatted }}</span>
                                         <span class="text-gray-400">→</span>
                                         <span>Selesai: {{ $akhirFormatted }}</span>
                                     </div>
-
                                     @if($deskripsi)
                                         <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
                                             {{ $deskripsi }}
@@ -358,7 +365,6 @@
                                     @else
                                         <p class="text-gray-500 text-sm mb-4 italic flex-1">Tidak ada deskripsi</p>
                                     @endif
-
                                     <div class="flex flex-wrap gap-3 mt-auto pt-4 border-t border-gray-100">
                                         @if($linkProject)
                                             <a href="{{ $linkProject }}" target="_blank" rel="noopener noreferrer"
@@ -369,7 +375,6 @@
                                                 Website
                                             </a>
                                         @endif
-
                                         @if($linkGithub)
                                             <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
                                                 class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 hover:text-black">
@@ -379,7 +384,6 @@
                                                 GitHub
                                             </a>
                                         @endif
-
                                         @if($linkVideo && !$youtubeEmbedUrl)
                                             <a href="{{ $linkVideo }}" target="_blank" rel="noopener noreferrer"
                                                 class="inline-flex items-center gap-1.5 text-sm font-medium text-red-600 hover:text-red-800">
@@ -413,7 +417,6 @@
                         {{ $user->sertifikats?->count() ?? 0 }} sertifikat
                     </span>
                 </div>
-
                 @if($user->sertifikats?->isNotEmpty() ?? false)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($user->sertifikats as $sertifikat)
@@ -422,11 +425,9 @@
                                     <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
                                         Sertifikat
                                     </span>
-
                                     <h3 class="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
                                         {{ $sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                                     </h3>
-
                                     @if($sertifikat->lembaga_penerbit)
                                         <div class="flex items-center text-sm text-gray-600 mb-2">
                                             <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -435,14 +436,12 @@
                                             {{ $sertifikat->lembaga_penerbit }}
                                         </div>
                                     @endif
-
                                     <div class="flex items-center text-sm text-gray-600 mb-4">
                                         <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         {{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('d M Y') : 'Tanggal tidak tersedia' }}
                                     </div>
-
                                     @if($sertifikat->link_sertifikat)
                                         <a href="{{ $sertifikat->link_sertifikat }}" target="_blank" rel="noopener noreferrer"
                                             class="mt-auto inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
@@ -454,7 +453,6 @@
                                     @else
                                         <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
                                     @endif
-
                                     <p class="text-xs text-gray-500 mt-5 pt-4 border-t border-gray-100">
                                         Ditambahkan: {{ $sertifikat->created_at?->format('d M Y') ?? '—' }}
                                     </p>
@@ -480,7 +478,6 @@
                         {{ $user->learning_corners->count() }} catatan
                     </span>
                 </div>
-
                 @if($user->learning_corners->isNotEmpty())
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($user->learning_corners as $entry)
@@ -519,7 +516,6 @@
                                             {{ Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150) }}
                                         </p>
                                     @endif
-
                                     <p class="text-sm text-gray-500 mt-auto pt-4 border-t border-gray-100">
                                         Diposting pada:
                                         {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
@@ -538,6 +534,7 @@
         <div class="mt-8 text-center text-xs text-gray-500">
             Terakhir diperbarui: {{ now()->format('d F Y H:i') }} WIB
         </div>
+
     </div>
 </div>
 
@@ -546,18 +543,13 @@ function toggleEdit(field) {
     const displayEl = document.getElementById(field + '-display');
     const inputEl   = document.getElementById(field + '-input');
     const saveBtn   = document.getElementById('save-button-container');
-
     if (!displayEl || !inputEl) return;
-
     displayEl.classList.add('hidden');
     inputEl.classList.remove('hidden');
-
     const container = document.getElementById(field + '-container');
     if (container) container.classList.add('hidden');
-
     inputEl.focus();
     saveBtn.classList.remove('hidden');
-
     inputEl.onkeypress = function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -570,13 +562,10 @@ function toggleEdit(field) {
 document.getElementById('photo_profile_input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-
     reader.onload = function(ev) {
         const preview = document.getElementById('profile-preview');
         const placeholder = document.getElementById('profile-preview-placeholder');
-
         if (preview) {
             preview.src = ev.target.result;
         } else if (placeholder) {
@@ -587,7 +576,6 @@ document.getElementById('photo_profile_input').addEventListener('change', functi
             placeholder.replaceWith(newImg);
         }
     };
-
     reader.readAsDataURL(file);
     document.getElementById('save-button-container').classList.remove('hidden');
 });
@@ -596,15 +584,12 @@ document.getElementById('photo_profile_input').addEventListener('change', functi
 document.getElementById('background_input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-
     reader.onload = function(ev) {
         const coverDiv = document.querySelector('.relative.h-48');
         coverDiv.style.backgroundImage = `url('${ev.target.result}')`;
         coverDiv.classList.add('bg-cover', 'bg-center');
     };
-
     reader.readAsDataURL(file);
     document.getElementById('save-button-container').classList.remove('hidden');
 });
@@ -612,17 +597,12 @@ document.getElementById('background_input').addEventListener('change', function(
 // YouTube Video Player
 function playVideo(element, embedUrl) {
     const container = element;
-    const playerId = 'player-' + Math.random().toString(36).substr(2, 9);
-    
-    // Create iframe
     const iframe = document.createElement('iframe');
     iframe.className = 'absolute inset-0 w-full h-full';
     iframe.src = embedUrl + '?autoplay=1&rel=0&modestbranding=1';
     iframe.frameborder = '0';
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     iframe.allowFullscreen = true;
-    
-    // Replace container content with iframe
     container.innerHTML = '';
     container.appendChild(iframe);
     container.classList.remove('cursor-pointer');
@@ -636,7 +616,6 @@ function playVideo(element, embedUrl) {
     width: 100%;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
 }
-
 .relative.w-full.pb-\[56\.25\%\] iframe {
     position: absolute;
     top: 0;
@@ -644,12 +623,10 @@ function playVideo(element, embedUrl) {
     width: 100%;
     height: 100%;
 }
-
 /* Hover effects */
 .group:hover .group-hover\:scale-110 {
     transform: scale(1.1);
 }
-
 .transition-transform {
     transition-property: transform;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

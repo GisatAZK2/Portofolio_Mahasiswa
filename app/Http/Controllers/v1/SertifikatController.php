@@ -19,6 +19,12 @@ class SertifikatController extends Controller
         return view('sertifikat.views_sertifikat', compact('sertifikat'));
     }
 
+    public function sertifikat_user()
+    {
+        $sertifikat = Sertifikat::with('mahasiswa')->latest()->get();
+        return view('sertifikat.views_sertifikat_user', compact('sertifikat'));
+    }
+
     public function create()
     {
         return view('sertifikat.views_create_sertifikat');

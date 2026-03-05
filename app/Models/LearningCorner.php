@@ -16,11 +16,14 @@ class LearningCorner extends Model
     
     protected $fillable = [
         'id_mahasiswa',
-        'content',     // json
+        'project_id',  // json
+        'content',   
+        'tanggal',
     ];
 
     protected $casts = [
         'content' => 'array',   
+        'tanggal' => 'date',
     ];
 
     public function mahasiswa()
@@ -28,6 +31,10 @@ class LearningCorner extends Model
     return $this->belongsTo(User::class, 'id_mahasiswa', 'id');
 }
 
+public function project()
+{
+    return $this->belongsTo(Project::class, 'project_id');
+}
  
     public function getJudulAttribute()
     {

@@ -13,12 +13,17 @@ return new class extends Migration
             $table->json('isi_content');
             $table->date('tanggal_mulai');
             $table->date('tanggal_akhir')->nullable();
-            $table->unsignedBigInteger('id_mahasiswa');
+            //pemimpin project
+            $table->unsignedBigInteger('leader_id')->nullable();
 
-            $table->foreign('id_mahasiswa')
+            $table->foreign('leader_id')
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
+            // Pembuat project / mahasiswa
+            $table->foreignId('id_mahasiswa')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
 
             $table->timestamps();
         });

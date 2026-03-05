@@ -1,31 +1,24 @@
 @extends('Layout.Layout')
 @section('title', 'Sertifikat Saya')
 @section('content')
-<div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between  mb-8 gap-4">
-        <div >
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Sertifikat Saya</h1>
-            <p class="text-gray-600 dark:text-gray-200">
+<div class="p-6 lg:p-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Sertifikat Saya</h1>
+            <p class="text-gray-600">
                 Kelola semua sertifikat yang kamu miliki di sini.
             </p>
         </div>
-        <a href="{{ route('sertifikat.create') }}"
-           class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            Tambah Sertifikat Baru
-        </a>
     </div>
 
     {{-- Data Sertifikat --}}
     @if ($sertifikat->isEmpty())
-        <div class="text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200">
-            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada sertifikat.</p>
-            <p class="text-gray-500 dark:text-gray-50 text-sm mt-2">Mulai tambahkan sertifikat pertama kamu!</p>
+            <p class="mt-4 text-gray-600">Belum ada sertifikat.</p>
+            <p class="text-gray-500 text-sm mt-2">Mulai tambahkan sertifikat pertama kamu!</p>
         </div>
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -108,24 +101,6 @@
                             @endif
                         </p>
 
-                        <!-- Action buttons -->
-                        <div class="flex space-x-3 mt-4">
-                            <a href="{{ route('sertifikat.edit', $entry->id) }}"
-                               class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200">
-                                Edit
-                            </a>
-
-                            <form class="delete-form flex-1" 
-                                  action="{{ route('sertifikat.destroy', $entry->id) }}" 
-                                  method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button"
-                                        class="delete-btn w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium border border-red-200">
-                                    Hapus
-                                </button>
-                            </form>
-                        </div>
                     </div>
                 </div>
             @endforeach

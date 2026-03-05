@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\LearningCorner;
 use Illuminate\Http\Request;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 
 class LearningCornerController extends Controller
@@ -18,11 +19,12 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-learning-corner', compact('entries'));
     }
 
-    public function create()
+    public function create($projectId)
     {
-        return view('learning-corner.views-create-learning-corner');
-    }
+        $project = Project::findOrFail($projectId);
 
+        return view('learning-corner.views-create-learning-corner', compact('project'));
+    } 
     public function store(Request $request)
 {
     $validated = $request->validate([
@@ -56,10 +58,12 @@ class LearningCornerController extends Controller
 
     LearningCorner::create([
         'id_mahasiswa' => Auth::id(),
+        'project_id'   => $request->project_id,
         'content'      => $content,
+        'tanggal'      => now(),
     ]);
 
-    return redirect()->route('learning-corner.index')
+    return redirect()->route('project.show', $request->project_id)
         ->with('success', 'Learning Corner berhasil ditambahkan!');
 }
 
@@ -104,9 +108,10 @@ class LearningCornerController extends Controller
 
     $learningCorner->update([
         'content' => $content,
+        'tanggal' => now(),
     ]);
 
-    return redirect()->route('learning-corner.index')
+    return redirect()->route('project.index')
         ->with('success', 'Learning Corner berhasil diperbarui!');
 }
 
@@ -116,14 +121,13 @@ class LearningCornerController extends Controller
 
         $learningCorner->delete();
 
-        return redirect()->route('learning-corner.index')
+        return redirect()->route('project.index')
             ->with('success', 'Learning Corner berhasil dihapus.');
     }
 
     private function authorizeEntry(LearningCorner $entry): void
     {
-        if ($entry->id_mahasiswa !== Auth::id()) {
+        if ($entry->project->id_mahasiswa !== Auth::id())
             abort(403, 'Aksi tidak diizinkan.');
         }
-    }
 }

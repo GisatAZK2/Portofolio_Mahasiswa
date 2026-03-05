@@ -6,8 +6,8 @@
     <div class="p-6 lg:p-8">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Project Saya</h1>
-                <p class="text-gray-600 mt-1">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Project Saya</h1>
+                <p class="text-gray-600 dark:text-gray-200 mt-1">
                     Kelola semua postingan project kamu di sini.
                 </p>
             </div>
@@ -22,12 +22,12 @@
         </div>
 
         @if ($projects->isEmpty())
-            <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
-                <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900">
+                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600">Belum ada project yang ditambahkan.</p>
+                <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada project yang ditambahkan.</p>
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -59,17 +59,18 @@
                     @endphp
 
                     <div
-                        class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                        onclick="window.location='{{ route('project.show', $project->id) }}'"
+                        class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:bg-gray-900 dark:border-gray-900 cursor-pointer">
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">
                                 {{ $nama_project }}
                             </h3>
 
-                            <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="space-y-2 text-sm text-gray-600 dark:text-gray-200  mb-4">
                                 <p><span class="font-medium">Mulai:</span>
                                     {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}</p>
                                 @if ($project->tanggal_akhir)
-                                    <p><span class="font-medium">Selesai:</span>
+                                    <p><span class="font-medium dark:text-gray-200 ">Selesai:</span>
                                         {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y') }}</p>
                                 @endif
                             </div>

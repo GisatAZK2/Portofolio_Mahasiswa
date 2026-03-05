@@ -14,11 +14,19 @@
   Cocok untuk universitas, politeknik, atau proyek akhir/skripsi berbasis web.
 </p>
 
+
+## Link Demo:
+- <a href="https://trpl-polmind.com">Menuju website Portofolio_Mahasiswa 🔗</a>
+- <a href="https://trpl-polmind.com">https://trpl-polmind.com 🔗</a>
+
+# Judul Proyek: Portofolio_Mahasiswa
+
 ## ✨ Fitur Utama
 
 - **Manajemen Mahasiswa** (profile, data pribadi, dll)
 - **Manajemen Jurusan** & **Keahlian** (dengan relasi many-to-many)
 - **Portfolio Mahasiswa** (upload proyek, deskripsi, link, gambar)
+- **Sertifikat Mahasiswa** (upload sertifikat yang diraih)
 - **Learning Corner** (konten pembelajaran / tips / resources)
 - **Authentication lengkap**:
   - Login dengan **username**
@@ -30,7 +38,7 @@
 
 ## 🛠️ Teknologi Stack
 
-- **Backend**: Laravel 12 (latest features 2025)
+- **Backend** : Laravel 12 (latest features 2025)
 - **Database**: MySQL 8+
 - **Frontend**: Blade + Tailwind CSS + Alpine.js (atau Vite + JS framework pilihan)
 - **Session Driver**: Database
@@ -41,8 +49,8 @@
 1. **Clone repository**
 
    ```bash
-   git clone https://github.com/[username-anda]/[nama-repo].git
-   cd [nama-repo]
+   git clone https://github.com/GisatAZK2/Portofolio_Mahasiswa
+   cd Portofolio_Mahasiswa
    ```
 
 2. **Install dependencies**
@@ -51,7 +59,7 @@
    composer install
    ```
 
-   Jika menggunakan frontend build (Vite):
+   Menggunakan frontend build (Vite):
 
    ```bash
    npm install && npm run build
@@ -103,21 +111,21 @@
    Buka: http://127.0.0.1:8000
 
    **Akun demo default**:
-   - Username: `budi` / `siti`  
-   - Password: `password`
+   - Username: `root`  
+   - Password: ` `
 
 ## 📊 Struktur Tabel Utama
 
-| Tabel                | Deskripsi                              |
-|----------------------|----------------------------------------|
-| `users`              | Data autentikasi & mahasiswa           |
-| `jurusan`            | Daftar jurusan                         |
-| `keahlian`           | Daftar skill/keahlian                  |
-| `keahlian_user`      | Pivot table many-to-many               |
-| `portfolio`          | Kumpulan karya/proyek mahasiswa        |
-| `learning_corner`    | Konten edukasi / tips                  |
-| `sessions`           | Database session driver                |
-| `password_reset_tokens` | Token reset password                |
+| Tabel                   | Deskripsi                              |
+|-------------------------|----------------------------------------|
+| `users`                 | Data autentikasi & mahasiswa           |
+| `jurusan`               | Daftar jurusan                         |
+| `keahlian`              | Daftar skill/keahlian                  |
+| `keahlian_user`         | Pivot table many-to-many               |
+| `projects`              | Kumpulan karya/proyek mahasiswa        |
+| `learning_corner`       | Konten edukasi / tips                  |
+| `sessions`              | Database session driver                |
+| `password_reset_tokens` | Token reset password                   |
 
 ## 🧹 Maintenance Commands
 
@@ -149,6 +157,6 @@ MIT License – bebas digunakan, dimodifikasi, dan didistribusikan untuk keperlu
 
 Laravel 12 & semangat belajar!
 
-Developed with ❤️ by **Team Kasih Sayang**
+Developed with ❤️ by **Team Developer**
 
 ---

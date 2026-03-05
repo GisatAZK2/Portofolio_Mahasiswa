@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\LearningCorner;
 use Illuminate\Support\Facades\Auth;
 
 class ProjekController extends Controller
@@ -31,9 +32,10 @@ class ProjekController extends Controller
     // FORM TAMBAH
     public function create()
     {
-        return view('project.views_create_project');
+        $users = User::select('id', 'nama_mahasiswa')->get() ;
+        return view('project.views_create_project', compact('users'));
     }
-
+    
     // SIMPAN BARU
     public function store(Request $request)
     {
@@ -45,6 +47,7 @@ class ProjekController extends Controller
             'deskripsi'     => 'nullable|string|max:255',
             'link_github'    => 'nullable|url|max:500',
             'link_video'     => 'nullable|url|max:500',
+            'leader'         => 'nullable|exists:users,id'
         ]);
         $content = array_filter($request->only([
             'nama_project', 'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
@@ -53,13 +56,26 @@ class ProjekController extends Controller
         if (empty($content)) {
             return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
         }
-
-        Project::create([
-            'tanggal_mulai'  => $request->tanggal_mulai,
-            'tanggal_akhir'  => $request->tanggal_akhir,
-            'isi_content'    => $content,
-            'id_mahasiswa'   => Auth::id(),
+        
+        $project = Project::create([
+        'tanggal_mulai'  => $request->tanggal_mulai,
+        'tanggal_akhir'  => $request->tanggal_akhir,
+        'isi_content'    => $content,
+        'id_mahasiswa'   => Auth::id(),
+        'leader_id'      => $request->leader,
         ]);
+
+        $members = collect($request->members ?? [])
+        ->filter()
+        ->reject(fn($id) => $id == $request->leader)
+        ->map(fn($id) => (int) $id)
+        ->values()
+        ->all();
+
+        if (!empty($members)) {
+            $project->members()->attach($members);
+        }
+
 
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil ditambahkan!');
@@ -71,8 +87,8 @@ class ProjekController extends Controller
         $project = Project::where('id', $id)
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();
-
-        return view('project.views_edit_project', compact('project'));
+        $users = User::select('id', 'nama_mahasiswa')->get();
+        return view('project.views_edit_project', compact('project', 'users'));
     }
 
     // UPDATE
@@ -110,7 +126,19 @@ class ProjekController extends Controller
             'isi_content'   => $content,
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
+            'leader_id'     => $request->leader
         ]);
+        $members = collect($request->members)
+            ->filter()
+            ->map(fn($id) => (int) $id)
+            ->values()
+            ->all();
+
+        if (!empty($members)) {
+            $project->members()->sync($members);
+        } else {
+            $project->members()->detach();
+        }
 
         /*Penghapusan Link yang terpilih ?
         foreach (['link_project', 'link_github', 'link_video'] as $link) {
@@ -141,5 +169,15 @@ class ProjekController extends Controller
 
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil dihapus!');
+    }
+
+    public function show($id){
+        // Ambil semua Learning Corner milik pemilik project
+        $project = Project::with('leader', 'members', 'learningCorners')
+                   ->findOrFail($id);
+         $entries = LearningCorner::where('project_id', $project->id)
+        ->latest()
+        ->get();
+        return view('project.views_detail_project', compact('project', 'entries'));
     }
 }
