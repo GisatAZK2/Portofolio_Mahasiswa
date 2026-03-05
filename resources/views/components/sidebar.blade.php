@@ -1,4 +1,4 @@
-<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 bg- dark:border-gray-800 border-r border-gray-200 shadow-xl
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 bg-gray-100 dark:bg-gray-800 dark:border-gray-800 border-r border-gray-200 shadow-xl
              transform -translate-x-full lg:translate-x-0 transition-all duration-300 ease-in-out
              lg:static lg:inset-auto lg:shadow-sm
              flex flex-col overflow-hidden
@@ -299,7 +299,7 @@
                 </button>
             </form>
         @else
-            <div class="text-center text-sm text-gray-500 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+            <div class="text-center text-sm text-gray-500 dark:text-gray-50 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
                 Login untuk mengakses fitur lengkap
             </div>
             <div class="mt-3 flex {{ session('sidebar_collapsed', false) ? 'lg:flex-col lg:space-y-2' : '' }} space-x-2">
