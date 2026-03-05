@@ -1,5 +1,5 @@
 
-@extends('Layout.layout')
+@extends('Layout.Layout')
 @section('title', 'settings')
 
 @section('content')

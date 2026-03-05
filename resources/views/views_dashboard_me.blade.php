@@ -7,12 +7,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 sm:gap-2 lg:grid-cols-3 lg:gap-6">
 
                 <!-- Learning Corner -->
-<<<<<<< HEAD
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
-                    <a  href="{{ route('learning-corner.index') }}">
-=======
                 <div class="bg-white  rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
->>>>>>> origin/Fauzan
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Learning Corner</h3>
                         <span class="text-purple-500">
@@ -26,16 +21,10 @@
                     <div class="mt-4 h-20">
                         <canvas id="learningChart"></canvas>
                     </div>
-                    </a>
                 </div>
 
                 <!-- Total Project -->
-<<<<<<< HEAD
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
-                    <a href="{{ route('project.index') }}">
-=======
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
->>>>>>> origin/Fauzan
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold dark:text-gray-200 text-gray-700">Total Project Dikerjakan</h3>
                         <span class="text-orange-500">
@@ -49,16 +38,10 @@
                     <div class="mt-4 h-20">
                         <canvas id="projectChart"></canvas>
                     </div>
-                    </a>
                 </div>
 
                 <!-- Total Sertifikat -->
-<<<<<<< HEAD
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
-                    <a href="{{ route('sertifikat.index') }}">
-=======
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
->>>>>>> origin/Fauzan
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Sertifikat Didapat</h3>
                         <span class="text-amber-500">
@@ -73,7 +56,6 @@
                         <canvas id="sertifikatChart"></canvas>
                     </div>
                 </div>
-                </a>
             </div>
 
             <!-- Random Posts -->

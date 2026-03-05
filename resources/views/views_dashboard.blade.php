@@ -3,53 +3,6 @@
 @section('content')
     <div class="min-h-screen bg-gray-50 dark:bg-gray-700 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
-<<<<<<< HEAD
-            <!-- Statistic Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-
-                <!-- Total Mahasiswa -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow">
-                    <a href="{{ route('search') }}">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-base font-semibold text-gray-700">Total Seluruh Mahasiswa</h3>
-                            <span class="text-blue-500">
-                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <p class="text-4xl font-extrabold text-blue-600">{{ $totalMahasiswa ?? 0 }}</p>
-                        <div class="mt-4 h-20">
-                            <canvas id="mahasiswaChart"></canvas>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Semua Learning Corner -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow cursor-pointer"
-                     onclick="window.location.href = '{{ auth()->check() ? route('learning-corner.index') : route('learning-corner-mahasiswa') }}';">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700">Semua Learning Corner</h3>
-                        <span class="text-purple-500">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                        </span>
-                    </div>
-                    <p class="text-4xl font-extrabold text-purple-600">{{ $totalLearning ?? 0 }}</p>
-                    <div class="mt-4 h-20">
-                        <canvas id="learningChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Total Semua Project -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow cursor-pointer"
-                     onclick="window.location.href = '{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700">Total Semua Project</h3>
-=======
             <!-- Statistic Cards with Mini Charts -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
 
@@ -74,11 +27,10 @@
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300">Total Project</h3>
->>>>>>> origin/Fauzan
                         <span class="text-orange-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </span>
                     </div>
@@ -88,18 +40,10 @@
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <!-- Total Semua Sertifikat -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow cursor-pointer"
-                     onclick="window.location.href = '{{ auth()->check() ? route('sertifikat.index') : route('sertifikat-mahasiswa') }}';">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700">Total Semua Sertifikat</h3>
-=======
                 <!-- Total Sertifikat -->
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 ">Total Sertifikat</h3>
->>>>>>> origin/Fauzan
                         <span class="text-amber-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -112,7 +56,6 @@
                         <canvas id="sertifikatChart"></canvas>
                     </div>
                 </div>
-
             </div>
 
             <!-- Random Posts -->
@@ -120,7 +63,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-900  dark:text-gray-100">Perihal Terbaru</h2>
                     <a href="{{ route('search') ?? '#' }}"
-                       class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
+                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
                         Lihat Semua →
                     </a>
                 </div>
@@ -138,12 +81,7 @@
                         @foreach($randomPosts as $post)
                             <!-- Card wrapper -->
                             <div
-<<<<<<< HEAD
-                                class="min-h-[320px] flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
-
-=======
                                 class="min-h-[320px]flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 shadow-md hover:shadow-xl transition-all duration-30 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
->>>>>>> origin/Fauzan
                                 @php
                                     $cardHref = '#'; // default
                                     $isExternal = false;
@@ -154,17 +92,24 @@
                                         $cardHref = route('portfolio.show', $post->mahasiswa);
                                         $isExternal = false;
                                     }
+
                                     $projectData = $post->isi_content;
+
                                     if (is_string($projectData)) {
                                         $projectData = json_decode($projectData, true) ?? [];
                                     }
+
                                     if (!is_array($projectData)) {
                                         $projectData = [];
                                     }
+
+                                    // Sekarang aman diakses
                                     $nama_project = $projectData['nama_project'] ?? '(Nama Project Tidak Tersedia)';
                                     $link_project = $projectData['link_project'] ?? '';
                                     $link_github = $projectData['link_github'] ?? '';
                                     $link_video = $projectData['link_video'] ?? '';
+
+                                    // Ekstrak youtube_id jika link_video adalah YouTube
                                     $youtube_id = '';
                                     if ($link_video) {
                                         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link_video, $matches)) {
@@ -185,9 +130,9 @@
                                                 class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm flex-shrink-0 relative transition-transform {{ $post->type !== 'sertifikat' ? 'group-hover:scale-105' : '' }}">
                                                 @if($post->mahasiswa?->photo_profile)
                                                     <img src="{{ asset('storage/' . ltrim($post->mahasiswa->photo_profile, '/')) }}"
-                                                         alt="{{ $post->mahasiswa->nama_mahasiswa ?? 'Profile' }}"
-                                                         class="w-full h-full object-cover" loading="lazy"
-                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        alt="{{ $post->mahasiswa->nama_mahasiswa ?? 'Profile' }}"
+                                                        class="w-full h-full object-cover" loading="lazy"
+                                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                     <div
                                                         class="absolute inset-0 hidden bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center text-white font-bold text-lg">
                                                         {{ substr($post->mahasiswa->nama_mahasiswa ?? 'U', 0, 1) }}
@@ -213,7 +158,8 @@
                                         <!-- Badge -->
                                         @if($post->type === 'learning')
                                             <span
-                                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mb-3">Learning Corner</span>
+                                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mb-3">Learning
+                                                Corner</span>
                                         @elseif($post->type === 'project')
                                             <span
                                                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mb-3">Project</span>
@@ -250,8 +196,8 @@
                                                     </div>
                                                     @if($post->link_sertifikat)
                                                         <a href="{{ asset('storage/' . $post->link_sertifikat) }}" target="_blank"
-                                                           rel="noopener noreferrer"
-                                                           class="inline-flex hover:underline items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start mt-2">
+                                                            rel="noopener noreferrer"
+                                                            class="inline-flex hover:underline items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start mt-2">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -264,6 +210,7 @@
                                                         <p class="text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link sertifikat</p>
                                                     @endif
                                                 </div>
+
                                             @elseif($post->type === 'learning' && !empty($post->content) && is_array($post->content))
                                                 @foreach($post->content as $item)
                                                     @if($item['type'] === 'title')
@@ -279,32 +226,20 @@
                                                         @php $imagePath = str_replace(['\\', '/'], '/', $item['content'] ?? ''); @endphp
                                                         <div class="mb-4">
                                                             <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-<<<<<<< HEAD
-                                                                 alt="{{ $item['alt'] ?? 'Gambar' }}"
-                                                                 class="w-full h-40 object-cover rounded-lg border border-gray-200 shadow-sm"
-                                                                 loading="lazy"
-                                                                 onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
-=======
                                                                 alt="{{ $item['alt'] ?? 'Gambar' }}"
                                                                 class="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
                                                                 loading="lazy"
                                                                 onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
->>>>>>> origin/Fauzan
                                                         </div>
                                                     @elseif($item['type'] === 'link')
                                                         <a href="{{ $item['content'] }}" target="_blank"
-                                                           class="text-indigo-600 hover:text-indigo-800 text-sm block mb-3 underline line-clamp-1 break-all">
+                                                            class="text-indigo-600 hover:text-indigo-800 text-sm block mb-3 underline line-clamp-1 break-all">
                                                             {{ Str::limit($item['content'], 60) }}
                                                         </a>
                                                     @endif
                                                 @endforeach
+
                                             @elseif($post->type === 'project')
-<<<<<<< HEAD
-                                                <h3 class="text-xl font-semibold text-gray-900 line-clamp-2 leading-tight">
-                                                    {{ $nama_project }}
-                                                </h3>
-                                                <div class="text-sm text-gray-600 space-y-1 mt-2">
-=======
 
                                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">
                                                     {{ $nama_project }}
@@ -312,7 +247,6 @@
 
                                                 <div class="text-sm text-gray-600 dark:text-gray-200 space-y-1 mt-2">
                                                     <!-- Periode opsional - tambahkan jika ada di JSON -->
->>>>>>> origin/Fauzan
                                                     @if(!empty($projectData['tanggal_mulai']))
                                                         <p><span class="font-medium">Periode:</span>
                                                             {{ \Carbon\Carbon::parse($projectData['tanggal_mulai'])->format('M Y') }}
@@ -324,22 +258,24 @@
                                                         </p>
                                                     @endif
                                                 </div>
+
                                                 @if($youtube_id)
                                                     <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-4">
                                                         <div class="aspect-video">
                                                             <iframe class="w-full h-full"
-                                                                    src="https://www.youtube.com/embed/{{ $youtube_id }}?rel=0&modestbranding=1"
-                                                                    title="Video {{ $nama_project }}" frameborder="0"
-                                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowfullscreen></iframe>
+                                                                src="https://www.youtube.com/embed/{{ $youtube_id }}?rel=0&modestbranding=1"
+                                                                title="Video {{ $nama_project }}" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen></iframe>
                                                         </div>
                                                     </div>
                                                 @endif
+
                                                 @if($link_project || $link_github || $link_video)
                                                     <div class="flex flex-wrap gap-4 text-sm mt-4">
                                                         @if($link_project)
                                                             <a href="{{ $link_project }}" target="_blank" rel="noopener noreferrer"
-                                                               class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
+                                                                class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
                                                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor"
                                                                     viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -348,9 +284,10 @@
                                                                 Lihat Project
                                                             </a>
                                                         @endif
+
                                                         @if($link_github)
                                                             <a href="{{ $link_github }}" target="_blank" rel="noopener noreferrer"
-                                                               class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
+                                                                class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
                                                                 <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
                                                                     <path
                                                                         d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
@@ -358,9 +295,10 @@
                                                                 GitHub
                                                             </a>
                                                         @endif
+
                                                         @if($link_video && !$youtube_id)
                                                             <a href="{{ $link_video }}" target="_blank" rel="noopener noreferrer"
-                                                               class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
+                                                                class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
                                                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor"
                                                                     viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -386,9 +324,9 @@
                                         </div>
                                     </div>
 
-                                @if($cardHref !== '#' && $post->mahasiswa && $post->type !== 'sertifikat')
-                                    </a>
-                                @endif
+                                    @if($cardHref !== '#' && $post->mahasiswa && $post->type !== 'sertifikat')
+                                        </a>
+                                    @endif
                             </div>
                         @endforeach
                     </div>

@@ -95,7 +95,7 @@
     </div>
 
     <!-- MOBILE Search Dropdown -->
-    <div id="mobile-search-dropdown" class="hidden lg:hidden bg-white/90 backdrop-blur-lg border-b border-gray-200/50 overflow-hidden transition-all duration-300 ease-in-out max-h-0">
+   <div id="mobile-search-dropdown" class="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 ease-in-out max-h-0">
         <div class="px-4 py-5 space-y-5 sm:px-6">
             <form method="GET" action="{{ route('search') }}" class="space-y-4">
 

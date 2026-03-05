@@ -60,6 +60,7 @@ class LearningCornerController extends Controller
         'id_mahasiswa' => Auth::id(),
         'project_id'   => $request->project_id,
         'content'      => $content,
+        'tanggal'      => now(),
     ]);
 
     return redirect()->route('project.show', $request->project_id)
@@ -107,6 +108,7 @@ class LearningCornerController extends Controller
 
     $learningCorner->update([
         'content' => $content,
+        'tanggal' => now(),
     ]);
 
     return redirect()->route('project.index')

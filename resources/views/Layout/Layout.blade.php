@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -7,7 +6,7 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
 
-    
+    @PwaHead
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -111,33 +110,57 @@
                 });
             }
 
-            if (toggleSearch && searchDrop) {
-                toggleSearch.addEventListener('click', () => {
-                    const isClosed = searchDrop.classList.contains('max-h-0');
-
-                    if (isClosed) {
-                        searchDrop.style.maxHeight = '0px';
-                        searchDrop.classList.remove('max-h-0', 'opacity-0', '-translate-y-2', 'scale-y-95');
-                        searchDrop.classList.add('opacity-100', 'translate-y-0', 'scale-y-100');
-
-                        requestAnimationFrame(() => {
-                            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
-                        });
-                    } else {
-                        searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
-                        requestAnimationFrame(() => {
+                if (toggleSearch && searchDrop) {
+                    toggleSearch.addEventListener('click', () => {
+            
+                        const isClosed = searchDrop.classList.contains('max-h-0');
+            
+                        if (isClosed) {
+            
                             searchDrop.style.maxHeight = '0px';
-                        });
-                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95');
-                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
-
-                        setTimeout(() => {
-                            if (searchDrop.style.maxHeight === '0px') {
-                            }
-                        }, 350);
-                    }
-                });
-            }
+            
+                            searchDrop.classList.remove(
+                                'max-h-0',
+                                'opacity-0',
+                                '-translate-y-2',
+                                'scale-y-95'
+                            );
+            
+                            searchDrop.classList.add(
+                                'opacity-100',
+                                'translate-y-0',
+                                'scale-y-100'
+                            );
+            
+                            requestAnimationFrame(() => {
+                                searchDrop.style.maxHeight =
+                                    searchDrop.scrollHeight + 'px';
+                            });
+            
+                        } else {
+            
+                            searchDrop.style.maxHeight =
+                                searchDrop.scrollHeight + 'px';
+            
+                            requestAnimationFrame(() => {
+                                searchDrop.style.maxHeight = '0px';
+                            });
+            
+                            searchDrop.classList.add(
+                                'opacity-0',
+                                '-translate-y-2',
+                                'scale-y-95',
+                                'max-h-0'
+                            );
+            
+                            searchDrop.classList.remove(
+                                'opacity-100',
+                                'translate-y-0',
+                                'scale-y-100'
+                            );
+                        }
+                    });
+                }
 
             function openSidebar() {
                 if (!sidebar) return;
@@ -188,6 +211,7 @@
                     arrow.classList.toggle('rotate-180');
                 }
             };
+
 
             window.toggleTheme = function () {
                 const html = document.documentElement;

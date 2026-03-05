@@ -18,10 +18,12 @@ class LearningCorner extends Model
         'id_mahasiswa',
         'project_id',  // json
         'content',   
+        'tanggal',
     ];
 
     protected $casts = [
         'content' => 'array',   
+        'tanggal' => 'date',
     ];
 
     public function mahasiswa()
