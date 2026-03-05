@@ -300,7 +300,7 @@
             </form>
         @else
             <div class="text-center text-sm text-gray-500 dark:text-gray-50 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                Login untuk mengakses fitur lengkap
+                Kamu Mahasiswa? Login Sekarang!
             </div>
             <div class="mt-3 flex {{ session('sidebar_collapsed', false) ? 'lg:flex-col lg:space-y-2' : '' }} space-x-2">
                 <a href="{{ route('login') }}"
@@ -315,20 +315,6 @@
                         <span
                             class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
                             Login
-                        </span>
-                    @endif
-                </a>
-                <a href="{{ route('register') }}"
-                    class="flex-1 px-4 py-2.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition font-medium text-sm text-center group relative">
-                    <span class="{{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Register</span>
-                    @if(session('sidebar_collapsed', false))
-                        <svg class="w-5 h-5 hidden lg:block mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                        </svg>
-                        <span
-                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Register
                         </span>
                     @endif
                 </a>
