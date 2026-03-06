@@ -26,7 +26,7 @@
                         <li class="ml-4">    
                             <ul>
                                 <div class="flex dark:text-gray-200 dark:hover:text-indigo-300 hover:text-indigo-800 items-center gap-2 border px-1 py-1 mt-2 rounded-lg max-w-max">
-                                    @if($project->leader)
+                                    @if($project->leader && $project->leader->photo_profile)
                                         <img src="{{ asset('storage/' . ltrim($project->leader->photo_profile)) }}"
                                              alt="{{ $project->leader->nama_mahasiswa ?? 'Mahasiswa' }}"
                                              class="w-4 h-4 rounded-full text-indigo-600 object-cover">
