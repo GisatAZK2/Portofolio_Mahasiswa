@@ -32,7 +32,7 @@
                                              class="w-4 h-4 rounded-full text-indigo-600 object-cover">
                                     @else
                                         <div
-                                            class="w-4 h-4 bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
+                                            class="w-4 h-4 bg-indigo-600 flex items-center justify-center text-white text-xs rounded-full font-bold">
                                             {{ strtoupper(mb_substr(trim($project->leader->nama_mahasiswa ?? 'M'), 0, 1)) }}
                                         </div>
                                     @endif
