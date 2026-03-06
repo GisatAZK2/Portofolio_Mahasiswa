@@ -1,7 +1,6 @@
 @extends('Layout.Layout')
 @section('title', 'Learning Corner Saya')
 @section('content')
-<div class="p-6 lg:p-8">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-200">Learning Corner Mahasiswa</h1>
@@ -25,17 +24,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($entries as $entry)
                     <div
-                        class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
+                        class="bg-white dark:bg-gray-900 dark:border-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
                         <div class="p-6 flex-1 flex flex-col">
                             <!-- Render konten dinamis -->
                             @if (!empty($entry->content) && is_array($entry->content))
                                 @foreach ($entry->content as $item)
                                     @if ($item['type'] === 'title')
-                                        <h3 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">
                                             {{ $item['content'] ?? '(Tanpa Judul)' }}
                                         </h3>
                                     @elseif ($item['type'] === 'text')
-                                        <p class="text-gray-700 mb-4 line-clamp-4">
+                                        <p class="text-gray-700 dark:text-gray-200 mb-4 line-clamp-4">
                                             {{ $item['content'] }}
                                         </p>
                                     @elseif ($item['type'] === 'image')
@@ -56,23 +55,17 @@
                                     @endif
                                 @endforeach
                             @else
-                                <p class="text-gray-500 italic text-center py-4">Konten tidak tersedia atau format salah</p>
+                                <p class="text-gray-500 dark:text-gray-300 italic text-center py-4">Konten tidak tersedia atau format salah</p>
                             @endif
 
                             <!-- Tanggal -->
-                            <p class="text-sm text-gray-500 mt-auto pt-5 border-t border-gray-100">
+                            <p class="text-sm text-gray-500 dark:text-gray-300 mt-auto pt-5 border-t border-gray-100">
                                 Diposting pada:
                                 {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
                             </p>
 
                             <!-- Action buttons -->
-                            <div class="flex space-x-3 mt-6">
-                                <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
-                                    class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200">
-                                    Edit
-                                </a>
-
-                                <form class="delete-form flex-1"
+                                <form class="delete-form pt-3 flex-1"
                                     action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" method="POST">
                                     @csrf
                                     @method('DELETE')

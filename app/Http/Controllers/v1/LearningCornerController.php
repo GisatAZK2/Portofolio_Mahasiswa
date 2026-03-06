@@ -12,7 +12,7 @@ class LearningCornerController extends Controller
 {
     public function index()
     {
-        $entries = LearningCorner::where('id_mahasiswa', Auth::id())
+        $entries = LearningCorner::with(['mahasiswa', 'project'])
             ->latest('tanggal')
             ->get();
 
@@ -125,7 +125,18 @@ class LearningCornerController extends Controller
 
     private function authorizeEntry(LearningCorner $entry): void
     {
-        if ($entry->project->id_mahasiswa !== Auth::id())
-            abort(403, 'Aksi tidak diizinkan.');
+        $user = Auth::user();
+
+    // jika admin/dosen boleh
+    if ($user->role === 'dosen') {
+        return;
+    }
+
+    // jika pemilik project boleh
+    if ($entry->project->id_mahasiswa === $user->id) {
+        return;
+    }
+
+    abort(403, 'Aksi tidak diizinkan.');
         }
 }
