@@ -132,7 +132,7 @@
                             @endif
 
                             <div class="flex space-x-3 mt-4">
-                                <a href="{{ route('project.edit', $project->id) }}"
+                                <a href="{{ route('project.edit', $project->id) }}" onclick="event.stopPropagation()"
                                     class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium">
                                     Edit
                                 </a>
@@ -140,7 +140,7 @@
                                     method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button"
+                                    <button type="button" onclick="event.stopPropagation()"
                                         class="delete-btn w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium">
                                         Hapus
                                     </button>
