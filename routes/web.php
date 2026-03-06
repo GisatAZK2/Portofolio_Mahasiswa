@@ -82,19 +82,19 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','dosen'])->prefix('admin')->group(function () {
 
-    Route::get('/admin/mahasiswa', [AdminController::class, 'mahasiswa'])->name('admin.mahasiswa');
+    Route::get('/mahasiswa', [AdminController::class, 'mahasiswa'])->name('admin.mahasiswa');
 
-    Route::get('/admin/project', function () {
+    Route::get('/project', function () {
         return view('admin.project');
     })->name('admin.project');
 
-    Route::get('/admin/learning', function () {
+    Route::get('/learning', function () {
         return view('admin.learning-corner');
     })->name('admin.learning');
 
-    Route::get('/admin/sertifikat', function () {
+    Route::get('/sertifikat', function () {
         return view('admin.sertifikat');
     })->name('admin.sertifikat');
 

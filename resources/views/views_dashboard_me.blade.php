@@ -173,7 +173,7 @@
                         @foreach($randomPosts as $post)
                             <!-- Card wrapper -->
                             <div
-                                class="min-h-[320px] flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
+                                class="min-h-[320px] flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
                                 @php
                                     $cardHref = '#'; // default
                                     $isExternal = false;
