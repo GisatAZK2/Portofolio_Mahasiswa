@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\Angkatan;
+use App\Models\LearningCorner;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
@@ -37,8 +38,8 @@ class UserController extends Controller
             'id_jurusan'     => ['required', 'exists:jurusan,id_jurusan'],
             'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
             'id_angkatan'    => ['required', 'exists:angkatan,id'],
-            'photo_profile'  => ['nullable', 'image', 'max:2048'],
             'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
+            'role'           => ['required', 'in:mahasiswa,dosen']
         ]);
 
         if ($request->hasFile('photo_profile')) {
@@ -51,7 +52,7 @@ class UserController extends Controller
 
         User::create($validated);
 
-        return redirect()->route('login')
+        return redirect()->route('admin.mahasiswa')
             ->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
@@ -178,5 +179,14 @@ class UserController extends Controller
     $user->update($validated);
 
     return redirect()->route('profile')->with('success','Profil berhasil diperbarui!');
+}
+    public function isDosen()
+{
+    return $this->role === 'dosen';
+}
+
+public function isMahasiswa()
+{
+    return $this->role === 'mahasiswa';
 }
 }

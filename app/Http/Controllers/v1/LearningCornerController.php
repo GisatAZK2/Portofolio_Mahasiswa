@@ -16,7 +16,7 @@ class LearningCornerController extends Controller
             ->latest('tanggal')
             ->get();
 
-        return view('learning-corner.views-learning-corner', compact('entries'));
+        return view('admin.learning-corner', compact('entries'));
     }
 
     public function create($projectId)

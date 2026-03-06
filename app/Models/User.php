@@ -31,18 +31,20 @@ class User extends Authenticatable
     'password',
     'jenis_kelamin',
     'background_url',
-    'deskripsi',
     'id_jurusan',
     'keahlian_tambahan',
     'id_keahlian',
     'id_angkatan',
     'deskripsi',
-    'is_active'
+    'is_active',
+    'role'
     ];
-
-            protected $casts = [
-            'keahlian_tambahan' => 'array',
-        ];
+    
+    protected $casts = [
+    'keahlian_tambahan' => 'array',
+    'email_verified_at' => 'datetime',
+    'password' => 'hashed',
+    ];
 
     public function jurusan()
 {
@@ -91,12 +93,5 @@ public function sertifikats()
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 }
 

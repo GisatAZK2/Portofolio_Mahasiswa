@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\v1\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
@@ -58,6 +59,7 @@ Route::middleware('auth')->group(function () {
         [LearningCornerController::class, 'destroy']
         )->name('learning-corner.destroy');
 
+    Route::get('/admin/learning-corner', [LearningCornerController::class, 'index'])->name('admin.learning-corner');
     
 
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
@@ -79,6 +81,24 @@ Route::get('/portfolio/{user}', [DashboardController::class, 'show'])->name('por
 Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/admin/mahasiswa', [AdminController::class, 'mahasiswa'])->name('admin.mahasiswa');
+
+    Route::get('/admin/project', function () {
+        return view('admin.project');
+    })->name('admin.project');
+
+    Route::get('/admin/learning', function () {
+        return view('admin.learning-corner');
+    })->name('admin.learning');
+
+    Route::get('/admin/sertifikat', function () {
+        return view('admin.sertifikat');
+    })->name('admin.sertifikat');
+
+});
 
 Route::post('/toggle-sidebar', function (Request $request) {
     Session::put('sidebar_collapsed', $request->collapsed);

@@ -4,6 +4,100 @@
     <div class="min-h-screen bg-gray-50 dark:bg-gray-700 py-6 px-4 rounded-2xl sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards -->
+            @auth
+            @if (auth()->user()->role === 'dosen')
+            
+            <div class="grid grid-cols-1 sm:grid-cols-4 sm:gap-2 lg:grid-cols-4 lg:gap-6">
+            
+                <!-- Mahasiswa  -->
+                <div class="bg-white  rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Mahasiswa</h3>
+                        <span class="text-blue-600">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z"/>
+                                <path d="M12 14c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="text-4xl font-extrabold text-blue-600">{{ $totalMahasiswa ?? 0 }}</p>
+                    <div class="mt-4 h-20">
+                        <canvas id="mahasiswaChart"></canvas>
+                    </div>
+                    <a href="{{route('admin.mahasiswa')}}">
+                    <div class="mt-5 text-center bg-blue-600 rounded-lg text-white w-full p-3 hover:cursor-pointer">
+                        Pantau
+                    </div>
+                    </a>
+                </div>
+                <!-- Learning Chart -->
+                <div class="bg-white  rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Learning Corner</h3>
+                        <span class="text-purple-500">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="text-4xl font-extrabold text-purple-600">{{ $totalLearning ?? 0 }}</p>
+                    <div class="mt-4 h-20">
+                        <canvas id="learningChart"></canvas>
+                    </div>
+                    <a href="{{route('admin.learning-corner')}}">
+                    <div class="mt-5 text-center bg-purple-600 rounded-lg text-white w-full p-3 hover:cursor-pointer">
+                        Pantau
+                    </div>
+                    </a>
+                </div>
+            
+            <!-- Total Project -->
+            <div class="bg-white rounded-xl shadow-md p-5 border overflow-hidden border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-base font-semibold dark:text-gray-200 text-gray-700">Total Project</h3>
+                    <span class="text-orange-500">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-4xl font-extrabold text-orange-600">{{ $totalProject ?? 0 }}</p>
+                <div class="mt-4 h-20">
+                    <canvas id="projectChart"></canvas>
+                </div>
+                <a href="{{route('admin.project')}}">
+                <div class="mt-5 text-center bg-orange-600 rounded-lg text-white w-full p-3 hover:cursor-pointer">
+                Pantau
+                </div>
+                </a>
+            </div>
+
+            <!-- Total Sertifikat -->
+            <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Sertifikat</h3>
+                    <span class="text-amber-500">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-4xl font-extrabold text-amber-600">{{ $totalSertifikat ?? 0 }}</p>
+                <div class="mt-4 h-20">
+                    <canvas id="sertifikatChart"></canvas>
+                </div>
+                <a href='{{route('admin.sertifikat')}}'>
+                <div class="mt-5 text-center bg-amber-600 rounded-lg text-white w-full p-3 hover:cursor-pointer">
+                Pantau
+                </div>
+                </a>
+            </div>
+            </div>
+            @else
+            
             <div class="grid grid-cols-1 sm:grid-cols-3 sm:gap-2 lg:grid-cols-3 lg:gap-6">
 
                 <!-- Learning Corner -->
@@ -57,6 +151,8 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @endauth
 
             <!-- Random Posts -->
             <div>
@@ -77,7 +173,7 @@
                         @foreach($randomPosts as $post)
                             <!-- Card wrapper -->
                             <div
-                                class="min-h-[320px]flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-30 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
+                                class="min-h-[320px] flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200' : '' }}">
                                 @php
                                     $cardHref = '#'; // default
                                     $isExternal = false;

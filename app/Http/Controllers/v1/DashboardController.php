@@ -19,7 +19,7 @@ class DashboardController extends Controller
     public function index()
     {
        
-        $totalMahasiswa = User::count();
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
         $totalLearning = LearningCorner::count();
         $totalProject = Project::count();
         $jurusanList  = Jurusan::all();
@@ -78,18 +78,34 @@ class DashboardController extends Controller
 
     public function myDashboard()
 {
-    $userId = auth()->id();
+    $user = auth()->user();
 
-    $totalLearning = LearningCorner::where('id_mahasiswa', $userId)->count();
-    $totalProject = Project::where('id_mahasiswa', $userId)->count();
-    $totalSertifikat = Sertifikat::where('id_mahasiswa', $userId)->count();
+    if ($user->role === 'dosen') {
+
+        // DATA GLOBAL (DOSEN)
+        $totalMahasiswa  = User::where('role','mahasiswa')->count();
+        $totalLearning   = LearningCorner::count();
+        $totalProject    = Project::count();
+        $totalSertifikat = Sertifikat::count();
+
+    } else {
+
+        // DATA MILIK MAHASISWA
+        $totalMahasiswa  = null;
+        $totalLearning   = LearningCorner::where('id_mahasiswa',$user->id)->count();
+        $totalProject    = Project::where('id_mahasiswa',$user->id)->count();
+        $totalSertifikat = Sertifikat::where('id_mahasiswa',$user->id)->count();
+
+    }
+
+    
 
     // =========================
     // AMBIL POSTING RANDOM USER
     // =========================
 
     $randomLearning = LearningCorner::with('mahasiswa')
-        ->where('id_mahasiswa', $userId)
+        ->where('id_mahasiswa', $user)
         ->inRandomOrder()
         ->take(3)
         ->get()
@@ -99,7 +115,7 @@ class DashboardController extends Controller
         });
 
     $randomProject = Project::with('mahasiswa')
-        ->where('id_mahasiswa', $userId)
+        ->where('id_mahasiswa', $user)
         ->inRandomOrder()
         ->take(3)
         ->get()
@@ -109,7 +125,7 @@ class DashboardController extends Controller
         });
 
     $randomSertifikat = Sertifikat::with('mahasiswa')
-        ->where('id_mahasiswa', $userId)
+        ->where('id_mahasiswa', $user)
         ->inRandomOrder()
         ->take(3)
         ->get()
@@ -125,6 +141,7 @@ class DashboardController extends Controller
         ->take(6);
 
     return view('views_dashboard_me', compact(
+        'totalMahasiswa',
         'totalLearning',
         'totalProject',
         'totalSertifikat',
