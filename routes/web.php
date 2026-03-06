@@ -67,8 +67,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Auth routes (bisa di luar middleware auth)
-Route::get('/register', [UserController::class, 'showRegister'])->name('register');
-Route::post('/register', [UserController::class, 'register']);
+
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
@@ -82,8 +81,9 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
-Route::middleware(['auth','dosen'])->prefix('admin')->group(function () {
 
+//Khusus dosen yang bisa akses
+Route::middleware(['auth','dosen'])->prefix('admin')->group(function () {
     Route::get('/mahasiswa', [AdminController::class, 'mahasiswa'])->name('admin.mahasiswa');
 
     Route::get('/project', function () {
@@ -98,6 +98,11 @@ Route::middleware(['auth','dosen'])->prefix('admin')->group(function () {
         return view('admin.sertifikat');
     })->name('admin.sertifikat');
 
+});
+
+Route::middleware('auth', 'dosen')->group(function () {
+    Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+    Route::post('/register', [UserController::class, 'register']);
 });
 
 Route::post('/toggle-sidebar', function (Request $request) {
