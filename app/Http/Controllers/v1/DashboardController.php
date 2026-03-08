@@ -135,7 +135,7 @@ class DashboardController extends Controller
 
 public function show(User $user, Request $request)
 {
-    // Load relasi utama user
+    // Load relasi user
     $user->load([
         'jurusan',
         'angkatan',
@@ -144,42 +144,46 @@ public function show(User $user, Request $request)
         'learning_corners'
     ]);
 
-    // Cek apakah yang melihat adalah pemilik akun
+    // cek apakah owner profile
     $isOwner = Auth::check() && Auth::id() === $user->id;
 
-    // Default tab project
     $projectTab = $request->get('project_tab', 'now');
-
-    // Query project milik user
-    $projectsQuery = $user->projects()->with(['leader', 'mahasiswa']);
-
     $today = Carbon::today();
 
+    // Query project dimana user adalah owner / leader / member
+    $projectsQuery = Project::with(['owner', 'leader', 'members'])
+        ->where(function ($query) use ($user) {
+            $query->where('id_mahasiswa', $user->id) // owner
+                  ->orWhere('leader_id', $user->id) // leader
+                  ->orWhereHas('members', function ($q) use ($user) { // member
+                        $q->where('users.id', $user->id);
+                  });
+        });
+
+    // Filter berdasarkan tab
     switch ($projectTab) {
 
         case 'upcoming':
-            // Project yang akan datang
             $projectsQuery->where('tanggal_mulai', '>', $today);
             break;
 
         case 'completed':
-            // Project yang sudah selesai
-            $projectsQuery->where('tanggal_akhir', '<', $today);
+            $projectsQuery->whereNotNull('tanggal_akhir')
+                          ->where('tanggal_akhir', '<', $today);
             break;
 
         case 'now':
         default:
-            // Project yang sedang berjalan
             $projectsQuery
                 ->where('tanggal_mulai', '<=', $today)
-                ->where(function ($query) use ($today) {
-                    $query->where('tanggal_akhir', '>=', $today)
-                          ->orWhereNull('tanggal_akhir');
+                ->where(function ($q) use ($today) {
+                    $q->where('tanggal_akhir', '>=', $today)
+                      ->orWhereNull('tanggal_akhir');
                 });
             break;
     }
 
-    // Pagination project
+    // Pagination
     $projects = $projectsQuery
         ->latest()
         ->paginate(5)
@@ -192,7 +196,6 @@ public function show(User $user, Request $request)
         'isOwner'
     ));
 }
-
     public function search(Request $request)
     {
         $keyword   = $request->q;

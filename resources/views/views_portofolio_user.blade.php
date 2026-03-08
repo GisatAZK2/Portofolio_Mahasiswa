@@ -174,15 +174,27 @@
                                         $content = $project->isi_content ?? [];
                                         $namaProject = $content['nama_project'] ?? 'Tanpa Nama';
                                         
-                                        // Ambil data leader (pemimpin project) - PERBAIKAN: gunakan relasi yang benar
-                                        $leader = null;
-                                        if ($project->leader_id) {
-                                            // Coba cari di tabel users berdasarkan id
-                                            $leader = \App\Models\User::find($project->leader_id);
-                                        }
+                                        // Ambil data leader, owner, dan cek apakah user adalah member
+                                        $leader = $project->leader;
+                                        $owner = $project->owner;
                                         
-                                        // Ambil data owner (pembuat project / mahasiswa)
-                                        $owner = $project->mahasiswa;
+                                        // Cek apakah owner dan leader adalah orang yang sama
+                                        $isOwnerAndLeaderSame = $owner && $leader && $owner->id === $leader->id;
+                                        
+                                        // Tentukan peran user dalam project ini
+                                        $userRole = null;
+                                        $userRoleBadge = '';
+                                        
+                                        if ($owner && $owner->id === $user->id) {
+                                            $userRole = 'owner';
+                                            $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Owner</span>';
+                                        } elseif ($leader && $leader->id === $user->id) {
+                                            $userRole = 'leader';
+                                            $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">Leader</span>';
+                                        } elseif ($project->members->contains('id', $user->id)) {
+                                            $userRole = 'member';
+                                            $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Member</span>';
+                                        }
 
                                         // Tentukan status proyek
                                         $today = now()->startOfDay();
@@ -210,10 +222,14 @@
                                         <div class="flex flex-col space-y-4">
                                             <!-- Header: Nama Project dan Status -->
                                             <div class="flex flex-wrap items-start justify-between gap-3">
-                                                <a href="{{ route('project.show', $project->id) }}" 
-                                                   class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-                                                    {{ $namaProject }}
-                                                </a>
+                                                <div class="flex items-center flex-wrap gap-2">
+                                                    <a href="{{ route('project.show', $project->id) }}" 
+                                                       class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                                                        {{ $namaProject }}
+                                                    </a>
+                                                    <!-- Badge peran user (jika ada) -->
+                                                    {!! $userRoleBadge !!}
+                                                </div>
                                                 
                                                 <!-- Status Badge -->
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -224,71 +240,161 @@
                                                 </span>
                                             </div>
                                             
-                                            <!-- Grid untuk Leader dan Owner -->
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <!-- Leader Section - Bisa diklik -->
-                                                <div class="flex items-center space-x-3">
-                                                    <div class="flex-shrink-0">
-                                                        @if($leader && $leader->photo_profile)
-                                                            <img src="{{ asset('storage/' . ltrim($leader->photo_profile, '/')) }}"
-                                                                alt="{{ $leader->nama_mahasiswa ?? 'Leader' }}"
-                                                                class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
-                                                        @else
-                                                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-gray-200">
-                                                                <span class="text-indigo-600 font-medium text-sm">
-                                                                    {{ $leader ? strtoupper(mb_substr(trim($leader->nama_mahasiswa ?? 'L'), 0, 1)) : 'L' }}
-                                                                </span>
+                                            <!-- Grid untuk Leader, Owner, dan Members -->
+                                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                                @if($isOwnerAndLeaderSame)
+                                                    <!-- Jika Owner dan Leader sama, tampilkan satu section -->
+                                                    <div class="lg:col-span-2">
+                                                        <div class="flex items-center space-x-3 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
+                                                            <div class="flex-shrink-0">
+                                                                @if($owner && $owner->photo_profile)
+                                                                    <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                                        alt="{{ $owner->nama_mahasiswa ?? 'Owner/Leader' }}"
+                                                                        class="w-12 h-12 rounded-full object-cover border-2 border-purple-300">
+                                                                @else
+                                                                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center border-2 border-purple-300">
+                                                                        <span class="text-purple-600 font-medium text-lg">
+                                                                            {{ $owner ? strtoupper(mb_substr(trim($owner->nama_mahasiswa ?? 'O'), 0, 1)) : 'O' }}
+                                                                        </span>
+                                                                    </div>
+                                                                @endif
                                                             </div>
-                                                        @endif
+                                                            <div class="flex-1 min-w-0">
+                                                                <div class="flex items-center gap-2 mb-1">
+                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                                                        Owner & Leader
+                                                                    </span>
+                                                                </div>
+                                                                @if($owner)
+                                                                    <a href="{{ route('portfolio.show', $owner->id) }}" 
+                                                                       class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-purple-600 dark:hover:text-purple-400 truncate block">
+                                                                        {{ $owner->nama_mahasiswa }}
+                                                                        @if($owner->id === $user->id)
+                                                                            <span class="ml-1 text-xs text-purple-600">(Anda)</span>
+                                                                        @endif
+                                                                    </a>
+                                                                @else
+                                                                    <p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                        Tidak ada owner/leader
+                                                                    </p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">Project Leader</p>
-                                                        @if($leader)
-                                                            <a href="{{ route('portfolio.show', $leader->id) }}" 
-                                                               class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
-                                                                {{ $leader->nama_mahasiswa }}
-                                                            </a>
-                                                        @else
-                                                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                                                Tidak ada leader
-                                                            </p>
-                                                        @endif
+                                                @else
+                                                    <!-- Tampilkan terpisah jika berbeda -->
+                                                    <!-- Leader Section -->
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="flex-shrink-0">
+                                                            @if($leader && $leader->photo_profile)
+                                                                <img src="{{ asset('storage/' . ltrim($leader->photo_profile, '/')) }}"
+                                                                    alt="{{ $leader->nama_mahasiswa ?? 'Leader' }}"
+                                                                    class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                                                            @else
+                                                                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-gray-200">
+                                                                    <span class="text-indigo-600 font-medium text-sm">
+                                                                        {{ $leader ? strtoupper(mb_substr(trim($leader->nama_mahasiswa ?? 'L'), 0, 1)) : 'L' }}
+                                                                    </span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <p class="text-xs text-gray-500 dark:text-gray-400">Project Leader</p>
+                                                            @if($leader)
+                                                                <a href="{{ route('portfolio.show', $leader->id) }}" 
+                                                                   class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                    {{ $leader->nama_mahasiswa }}
+                                                                    @if($leader->id === $user->id)
+                                                                        <span class="ml-1 text-xs text-blue-600">(Anda)</span>
+                                                                    @endif
+                                                                </a>
+                                                            @else
+                                                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                    Tidak ada leader
+                                                                </p>
+                                                            @endif
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <!-- Owner Section - Bisa diklik -->
-                                                <div class="flex items-center space-x-3">
-                                                    <div class="flex-shrink-0">
-                                                        @if($owner && $owner->photo_profile)
-                                                            <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
-                                                                alt="{{ $owner->nama_mahasiswa ?? 'Owner' }}"
-                                                                class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
-                                                        @else
-                                                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center border-2 border-gray-200">
-                                                                <span class="text-amber-600 font-medium text-sm">
-                                                                    {{ $owner ? strtoupper(mb_substr(trim($owner->nama_mahasiswa ?? 'O'), 0, 1)) : 'O' }}
-                                                                </span>
-                                                            </div>
-                                                        @endif
+                                                    <!-- Owner Section -->
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="flex-shrink-0">
+                                                            @if($owner && $owner->photo_profile)
+                                                                <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                                    alt="{{ $owner->nama_mahasiswa ?? 'Owner' }}"
+                                                                    class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                                                            @else
+                                                                <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center border-2 border-gray-200">
+                                                                    <span class="text-amber-600 font-medium text-sm">
+                                                                        {{ $owner ? strtoupper(mb_substr(trim($owner->nama_mahasiswa ?? 'O'), 0, 1)) : 'O' }}
+                                                                    </span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <p class="text-xs text-gray-500 dark:text-gray-400">Project Owner</p>
+                                                            @if($owner)
+                                                                <a href="{{ route('portfolio.show', $owner->id) }}" 
+                                                                   class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                    {{ $owner->nama_mahasiswa }}
+                                                                    @if($owner->id === $user->id)
+                                                                        <span class="ml-1 text-xs text-purple-600">(Anda)</span>
+                                                                    @endif
+                                                                </a>
+                                                            @else
+                                                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                    Tidak ada owner
+                                                                </p>
+                                                            @endif
+                                                        </div>
                                                     </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">Project Owner</p>
-                                                        @if($owner)
-                                                            <a href="{{ route('portfolio.show', $owner->id) }}" 
-                                                               class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
-                                                                {{ $owner->nama_mahasiswa }}
-                                                            </a>
-                                                        @else
-                                                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                                                Tidak ada owner
-                                                            </p>
-                                                        @endif
-                                                    </div>
-                                                </div>
+                                                @endif
                                             </div>
 
+                                            <!-- Members Section (Anggota Tim) -->
+                                            @if($project->members->isNotEmpty())
+                                                <div class="mt-2">
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Anggota Tim ({{ $project->members->count() }})</p>
+                                                    <div class="flex flex-wrap gap-3">
+                                                        @foreach($project->members->take(5) as $member)
+                                                            <div class="flex items-center space-x-2 group relative" title="{{ $member->nama_mahasiswa }}">
+                                                                @if($member->photo_profile)
+                                                                    <img src="{{ asset('storage/' . ltrim($member->photo_profile, '/')) }}"
+                                                                        alt="{{ $member->nama_mahasiswa }}"
+                                                                        class="w-8 h-8 rounded-full object-cover border-2 border-gray-200 hover:border-indigo-400 transition cursor-pointer">
+                                                                @else
+                                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-200 hover:border-indigo-400 transition cursor-pointer">
+                                                                        <span class="text-gray-600 font-medium text-xs">
+                                                                            {{ strtoupper(mb_substr(trim($member->nama_mahasiswa ?? 'M'), 0, 1)) }}
+                                                                        </span>
+                                                                    </div>
+                                                                @endif
+                                                                <span class="text-xs text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
+                                                                    {{ $member->nama_mahasiswa }}
+                                                                    @if($member->id === $user->id)
+                                                                        <span class="text-green-600">(Anda)</span>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                        @endforeach
+                                                        
+                                                        @if($project->members->count() > 5)
+                                                            <div class="flex items-center">
+                                                                <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                                    +{{ $project->members->count() - 5 }} lainnya
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <p class="text-xs text-gray-400 dark:text-gray-500 italic mt-2">
+                                                    Belum ada anggota tim
+                                                </p>
+                                            @endif
+
                                             <!-- Tanggal Project -->
-                                            <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                                            <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mt-3">
                                                 <span class="flex items-center">
                                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -488,6 +594,18 @@
                                                 <p class="text-sm text-gray-600 dark:text-gray-300 italic">
                                                     Tidak ada konten yang dapat ditampilkan
                                                 </p>
+                                            @endif
+
+                                            <!-- Informasi Project terkait (jika ada) -->
+                                            @if($entry->project)
+                                                <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                        Dari project: 
+                                                        <a href="{{ route('project.show', $entry->project->id) }}" class="text-indigo-600 hover:underline">
+                                                            {{ $entry->project->isi_content['nama_project'] ?? 'Project' }}
+                                                        </a>
+                                                    </p>
+                                                </div>
                                             @endif
 
                                             <p class="text-xs dark:text-gray-200 text-gray-500 mt-3">
