@@ -17,9 +17,12 @@
                         <!-- Background Banner -->
                         <div class="h-32
                             {{ $user->background_url
-        ? 'bg-cover bg-center'
-        : 'bg-gradient-to-r from-indigo-500 to-indigo-600' }}" @if($user->background_url)
-        style="background-image: url('{{ asset('storage/' . $user->background_url) }}');" @endif></div>
+                                ? 'bg-cover bg-center'
+                                : 'bg-gradient-to-r from-indigo-500 to-indigo-600' }}" 
+                            @if($user->background_url)
+                                style="background-image: url('{{ asset('storage/' . $user->background_url) }}');" 
+                            @endif>
+                        </div>
 
                         <!-- Avatar dan Info Utama -->
                         <div class="px-5 pb-6 relative">
@@ -111,119 +114,224 @@
                 <!-- ========== KONTEN UTAMA ========== -->
                 <div class="lg:col-span-2 space-y-6">
 
-                    <!-- Projects -->
+                    <!-- Projects dengan Tabs dan Pagination -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
-                        <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Projects</h3>
-                            <span class="text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-100">{{ $user->projects->count() }} proyek</span>
+                        <!-- Header dengan Tabs -->
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-0">Projects</h3>
+                            
+                            <!-- Tab Navigation -->
+                            <div class="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                                <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'now']) }}" 
+                                   class="px-4 py-2 text-sm font-medium rounded-md transition-all
+                                          {{ $projectTab == 'now' 
+                                             ? 'bg-white dark:bg-gray-900 text-indigo-600 shadow-sm' 
+                                             : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                                    Sedang Berjalan
+                                </a>
+                                <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'upcoming']) }}" 
+                                   class="px-4 py-2 text-sm font-medium rounded-md transition-all
+                                          {{ $projectTab == 'upcoming' 
+                                             ? 'bg-white dark:bg-gray-900 text-indigo-600 shadow-sm' 
+                                             : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                                    Akan Datang
+                                </a>
+                                <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'completed']) }}" 
+                                   class="px-4 py-2 text-sm font-medium rounded-md transition-all
+                                          {{ $projectTab == 'completed' 
+                                             ? 'bg-white dark:bg-gray-900 text-indigo-600 shadow-sm' 
+                                             : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                                    Selesai
+                                </a>
+                            </div>
                         </div>
 
-                        @if($user->projects->isNotEmpty())
-                            <div class="space-y-6">
-                                @foreach($user->projects as $project)
+                        <!-- Info Tab dan Count -->
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                                @switch($projectTab)
+                                    @case('now')
+                                        Proyek yang sedang berjalan
+                                        @break
+                                    @case('upcoming')
+                                        Proyek yang akan datang
+                                        @break
+                                    @case('completed')
+                                        Proyek yang sudah selesai
+                                        @break
+                                @endswitch
+                            </span>
+                            <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                                {{ $projects->total() }} proyek
+                            </span>
+                        </div>
+
+                        <!-- Daftar Projects -->
+                        @if($projects->isNotEmpty())
+                            <div class="space-y-4">
+                                @foreach($projects as $project)
                                     @php
                                         $content = $project->isi_content ?? [];
-                                        $nama = $content['nama_project'] ?? 'Tanpa Nama';
-                                        $deskripsi = $content['deskripsi'] ?? null;
-                                        $linkWeb = $content['link_project'] ?? null;
-                                        $linkGithub = $content['link_github'] ?? null;
-                                        $linkVideo = $content['link_video'] ?? null;
+                                        $namaProject = $content['nama_project'] ?? 'Tanpa Nama';
+                                        
+                                        // Ambil data leader (pemimpin project) - PERBAIKAN: gunakan relasi yang benar
+                                        $leader = null;
+                                        if ($project->leader_id) {
+                                            // Coba cari di tabel users berdasarkan id
+                                            $leader = \App\Models\User::find($project->leader_id);
+                                        }
+                                        
+                                        // Ambil data owner (pembuat project / mahasiswa)
+                                        $owner = $project->mahasiswa;
 
-                                        $videoId = null;
-                                        if ($linkVideo) {
-                                            $parsedUrl = parse_url($linkVideo);
-                                            $path = $parsedUrl['path'] ?? '';
-                                            $host = $parsedUrl['host'] ?? '';
-                                            if (strpos($host, 'youtu.be') !== false) {
-                                                $videoId = trim(explode('/', $path)[1] ?? '', '/');
-                                                $videoId = explode('?', $videoId)[0];
-                                            } elseif (strpos($path, '/watch') !== false || strpos($path, '/embed/') !== false || strpos($path, '/v/') !== false) {
-                                                if (isset($parsedUrl['query'])) {
-                                                    parse_str($parsedUrl['query'], $query);
-                                                    $videoId = $query['v'] ?? null;
-                                                }
-                                                if (!$videoId && preg_match('/^\/(?:embed|v)\/([a-zA-Z0-9_-]{11})/', $path, $matches)) {
-                                                    $videoId = $matches[1];
-                                                }
-                                            }
+                                        // Tentukan status proyek
+                                        $today = now()->startOfDay();
+                                        $mulai = \Carbon\Carbon::parse($project->tanggal_mulai)->startOfDay();
+                                        $akhir = $project->tanggal_akhir 
+                                            ? \Carbon\Carbon::parse($project->tanggal_akhir)->startOfDay()
+                                            : null;
+
+                                        if ($akhir && $akhir < $today) {
+                                            $status = 'completed';
+                                            $statusText = 'Selesai';
+                                            $statusColor = 'green';
+                                        } elseif ($mulai > $today) {
+                                            $status = 'upcoming';
+                                            $statusText = 'Akan Datang';
+                                            $statusColor = 'yellow';
+                                        } else {
+                                            $status = 'now';
+                                            $statusText = 'Sedang Berjalan';
+                                            $statusColor = 'blue';
                                         }
                                     @endphp
 
                                     <div class="border border-gray-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-md transition">
-                                        <div onclick="window.location='{{ route('project.show', $project->id) }}'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                            <!-- Kiri: Info Project + Links -->
-                                            <div class="flex flex-col">
-                                                <div class="flex items-start gap-4 mb-4">
-                                                    <div
-                                                        class="w-14 h-14 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                        <svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div class="flex-1">
-                                                        <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ $nama }}</h4>
-                                                        @if($deskripsi)
-                                                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-4">{{ $deskripsi }}</p>
+                                        <div class="flex flex-col space-y-4">
+                                            <!-- Header: Nama Project dan Status -->
+                                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                                <a href="{{ route('project.show', $project->id) }}" 
+                                                   class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                                                    {{ $namaProject }}
+                                                </a>
+                                                
+                                                <!-- Status Badge -->
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                    @if($statusColor == 'green') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                                    @elseif($statusColor == 'yellow') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                                    @else bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 @endif">
+                                                    {{ $statusText }}
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- Grid untuk Leader dan Owner -->
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <!-- Leader Section - Bisa diklik -->
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="flex-shrink-0">
+                                                        @if($leader && $leader->photo_profile)
+                                                            <img src="{{ asset('storage/' . ltrim($leader->photo_profile, '/')) }}"
+                                                                alt="{{ $leader->nama_mahasiswa ?? 'Leader' }}"
+                                                                class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
                                                         @else
-                                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">Tidak ada deskripsi</p>
+                                                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-gray-200">
+                                                                <span class="text-indigo-600 font-medium text-sm">
+                                                                    {{ $leader ? strtoupper(mb_substr(trim($leader->nama_mahasiswa ?? 'L'), 0, 1)) : 'L' }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400">Project Leader</p>
+                                                        @if($leader)
+                                                            <a href="{{ route('portfolio.show', $leader->id) }}" 
+                                                               class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                {{ $leader->nama_mahasiswa }}
+                                                            </a>
+                                                        @else
+                                                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                Tidak ada leader
+                                                            </p>
                                                         @endif
                                                     </div>
                                                 </div>
 
-                                                <div class="flex flex-wrap gap-4 mt-2">
-                                                    @if($linkWeb)
-                                                        <a href="{{ $linkWeb }}" target="_blank" rel="noopener noreferrer"
-                                                            class="inline-flex hover:underline items-center text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                                                viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                                            </svg>
-                                                            Website / Demo
-                                                        </a>
-                                                    @endif
-                                                    @if($linkGithub)
-                                                        <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
-                                                            class="inline-flex hover:underline items-center text-sm text-gray-700 dark:text-gray-200 dark:hover:text-gray-400 hover:text-gray-900 font-medium">
-                                                            <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="currentColor">
-                                                                <path
-                                                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                                                            </svg>
-                                                            GitHub
-                                                        </a>
-                                                    @endif
-                                                    @if($linkVideo)
-                                                        <a href="{{ $linkVideo }}" target="_blank" rel="noopener noreferrer"
-                                                            class="inline-flex hover:underline items-center text-sm text-red-600 hover:text-red-800 font-medium">
-                                                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                                <path
-                                                                    d="M21.5 10.833l-7.5 4.33v-8.66l7.5 4.33zM2 5h12v2H4v10h10v2H2V5zm16 2v10l-8-5 8-5z" />
-                                                            </svg>
-                                                            Video Demo
-                                                        </a>
-                                                    @endif
+                                                <!-- Owner Section - Bisa diklik -->
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="flex-shrink-0">
+                                                        @if($owner && $owner->photo_profile)
+                                                            <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                                alt="{{ $owner->nama_mahasiswa ?? 'Owner' }}"
+                                                                class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                                                        @else
+                                                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center border-2 border-gray-200">
+                                                                <span class="text-amber-600 font-medium text-sm">
+                                                                    {{ $owner ? strtoupper(mb_substr(trim($owner->nama_mahasiswa ?? 'O'), 0, 1)) : 'O' }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400">Project Owner</p>
+                                                        @if($owner)
+                                                            <a href="{{ route('portfolio.show', $owner->id) }}" 
+                                                               class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                {{ $owner->nama_mahasiswa }}
+                                                            </a>
+                                                        @else
+                                                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                Tidak ada owner
+                                                            </p>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            @if($videoId)
-                                                <div
-                                                    class="relative w-full aspect-video rounded-lg overflow-hidden bg-black/5 shadow-inner">
-                                                    <iframe class="absolute inset-0 w-full h-full"
-                                                        src="https://www.youtube.com/embed/{{ $videoId }}?rel=0&modestbranding=1&showinfo=0&controls=1"
-                                                        title="YouTube video player for {{ $nama }}" frameborder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                                        allowfullscreen>
-                                                    </iframe>
-                                                </div>
-                                            @endif
+                                            <!-- Tanggal Project -->
+                                            <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                                                <span class="flex items-center">
+                                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    Mulai: {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}
+                                                </span>
+                                                @if($project->tanggal_akhir)
+                                                    <span class="flex items-center">
+                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                        </svg>
+                                                        Selesai: {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y') }}
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
-                                </div>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="mt-6">
+                                {{ $projects->appends(['project_tab' => $projectTab])->links() }}
+                            </div>
                         @else
-                            <p class="text-sm text-gray-500 dark:text-gray-200 text-center py-6">Belum ada proyek yang ditambahkan</p>
+                            <div class="text-center py-12">
+                                <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                    @switch($projectTab)
+                                        @case('now')
+                                            Belum ada proyek yang sedang berjalan
+                                            @break
+                                        @case('upcoming')
+                                            Belum ada proyek yang akan datang
+                                            @break
+                                        @case('completed')
+                                            Belum ada proyek yang selesai
+                                            @break
+                                    @endswitch
+                                </p>
+                            </div>
                         @endif
                     </div>
 

@@ -33,6 +33,25 @@ class Project extends Model
         return $this->belongsTo(User::class, 'id_mahasiswa', 'id');
     }
 
+    public function scopeCanBeEditedBy($query, $userId)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('id_mahasiswa', $userId)
+              ->orWhere('leader_id', $userId);
+        });
+    }
+
+    // Helper: apakah user ini bisa edit/hapus project ini
+    public function canBeEditedByUser(?User $user): bool
+    {
+        if (!$user) return false;
+        return $this->id_mahasiswa === $user->id || $this->leader_id === $user->id;
+    }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'id_mahasiswa');
+    }
+
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader_id');

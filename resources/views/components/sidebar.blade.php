@@ -26,6 +26,33 @@
 
     <nav class="flex-1 px-2 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
 
+        <a href="{{ route('dashboard') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+
+                <!-- Icon Home -->
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" />
+                </svg>
+
+                <!-- Text -->
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Home
+                </span>
+
+                <!-- Tooltip ketika sidebar collapse -->
+                @if(session('sidebar_collapsed', false))
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Home
+                    </span>
+                @endif
+
+            </a>
+
         <!-- Dashboard -->
         @auth
             <a href="{{ route('dashboard.me') }}"
@@ -48,23 +75,6 @@
             </a>
         @endauth
 
-        <a href="{{ route('dashboard') }}"
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-              {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
-            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
-            </svg>
-            <span
-                class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Dashboard</span>
-
-            @if(session('sidebar_collapsed', false))
-                <span
-                    class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                    Dashboard
-                </span>
-            @endif
-        </a>
 
         <!-- ================== PROJECT ================== -->
         @guest

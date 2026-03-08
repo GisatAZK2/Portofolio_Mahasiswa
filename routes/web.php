@@ -45,6 +45,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/project/{project}/learning-corner',
         [LearningCornerController::class, 'store']
         )->name('learning-corner.store');
+    
+    Route::post('/learning-corner-mass/mass-destroy',
+    [LearningCornerController::class, 'massDestroy']
+    )->name('learning-corner.mass-destroy');
 
     Route::get('/learning-corner/{learningCorner}/edit',
         [LearningCornerController::class, 'edit']
@@ -54,11 +58,10 @@ Route::middleware('auth')->group(function () {
         [LearningCornerController::class, 'update']
         )->name('learning-corner.update');
 
-    Route::delete('/learning-corner/{learningCorner}',
-        [LearningCornerController::class, 'destroy']
-        )->name('learning-corner.destroy');
 
-    
+    Route::delete('/learning-corner/{learning_corner}', 
+    [LearningCornerController::class, 'destroy']
+)->name('learning-corner.destroy');
 
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');

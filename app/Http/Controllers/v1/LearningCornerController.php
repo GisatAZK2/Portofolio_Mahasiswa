@@ -4,15 +4,17 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\LearningCorner;
-use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LearningCornerController extends Controller
 {
     public function index()
     {
-        $entries = LearningCorner::where('id_mahasiswa', Auth::id())
+        $entries = LearningCorner::with('mahasiswa', 'project')
+            ->where('id_mahasiswa', Auth::id())
             ->latest('tanggal')
             ->get();
 
@@ -21,113 +23,188 @@ class LearningCornerController extends Controller
 
     public function create($projectId)
     {
-        $project = Project::findOrFail($projectId);
+        $project = Project::with(['owner', 'leader', 'members'])
+            ->findOrFail($projectId);
+
+        // Cek apakah user terlibat di project (owner/leader/member)
+        $userId = Auth::id();
+        if ($project->id_mahasiswa !== $userId &&
+            $project->leader_id !== $userId &&
+            !$project->members()->where('user_id', $userId)->exists()) {
+            abort(403, 'Anda tidak terlibat dalam project ini.');
+        }
 
         return view('learning-corner.views-create-learning-corner', compact('project'));
-    } 
-    public function store(Request $request)
-{
-    $validated = $request->validate([
-        'judul'           => 'required|string|max:255',
-        'items'           => 'nullable|array',
-        'items.*.type'    => 'required|in:text,image,link',
-        'items.*.content' => 'required_if:items.*.type,text,link|string|nullable',
-        'items.*.file'    => 'required_if:items.*.type,image|image|mimes:jpg,jpeg,png,gif|max:5120', // 5MB
-    ]);
-
-    $content = [
-        ['type' => 'title', 'content' => $validated['judul']],
-    ];
-
-    if (!empty($validated['items'])) {
-        foreach ($validated['items'] as $index => $item) {
-            $processedItem = [
-                'type'    => $item['type'],
-                'content' => $item['content'] ?? null,
-            ];
-
-            if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
-                $file = $request->file("items.$index.file");
-                $path = $file->store('learning-corner/images', 'public');
-                $processedItem['content'] = $path; // simpan path, bukan URL langsung
-            }
-
-            $content[] = $processedItem;
-        }
     }
 
-    LearningCorner::create([
-        'id_mahasiswa' => Auth::id(),
-        'project_id'   => $request->project_id,
-        'content'      => $content,
-        'tanggal'      => now(),
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id'      => 'required|exists:projects,id',
+            'judul'           => 'required|string|max:255',
+            'items'           => 'nullable|array',
+            'items.*.type'    => 'required|in:text,image,link',
+            'items.*.content' => 'nullable|string',
+            'items.*.file'    => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+        ]);
 
-    return redirect()->route('project.show', $request->project_id)
-        ->with('success', 'Learning Corner berhasil ditambahkan!');
-}
+        $project = Project::findOrFail($request->project_id);
+
+        // Cek apakah user boleh create di project ini
+        $userId = Auth::id();
+        if ($project->id_mahasiswa !== $userId &&
+            $project->leader_id !== $userId &&
+            !$project->members()->where('user_id', $userId)->exists()) {
+            abort(403);
+        }
+
+        $content = [
+            ['type' => 'title', 'content' => $validated['judul']],
+        ];
+
+        if (!empty($validated['items'])) {
+            foreach ($validated['items'] as $index => $item) {
+                $processed = [
+                    'type'    => $item['type'],
+                    'content' => $item['content'] ?? null,
+                ];
+
+                if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
+                    $path = $request->file("items.$index.file")->store('learning-corner/images', 'public');
+                    $processed['content'] = $path;
+                }
+
+                $content[] = $processed;
+            }
+        }
+
+        LearningCorner::create([
+            'id_mahasiswa' => Auth::id(),
+            'project_id'   => $project->id,
+            'content'      => $content,
+            'tanggal'      => now(),
+        ]);
+
+        return redirect()->route('project.show', $project->id)
+            ->with('success', 'Learning Corner berhasil ditambahkan!');
+    }
 
     public function edit(LearningCorner $learningCorner)
     {
-        $this->authorizeEntry($learningCorner);
+        $this->authorizeManage($learningCorner);
 
         $judul = $learningCorner->judul;
-        $items = array_values(   // reset index array
-            array_filter($learningCorner->content, fn($item) => ($item['type'] ?? '') !== 'title')
+
+        $items = array_values(
+            array_filter($learningCorner->content ?? [], fn($i) => ($i['type'] ?? '') !== 'title')
         );
 
         return view('learning-corner.views-edit-learning-corner', compact('learningCorner', 'judul', 'items'));
     }
 
     public function update(Request $request, LearningCorner $learningCorner)
-{
-    $this->authorizeEntry($learningCorner);
+    {
+        $this->authorizeManage($learningCorner);
 
-    $validated = $request->validate([
-        'judul'               => 'required|string|max:255',
-        'items'               => 'nullable|array',
-        'items.*.type'        => 'required|in:text,image,link',
-        'items.*.content'     => 'nullable|string',               // lama / link / text
-        'items.*.image_file'  => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB
-    ]);
+        $validated = $request->validate([
+            'judul'               => 'required|string|max:255',
+            'items'               => 'nullable|array',
+            'items.*.type'        => 'required|in:text,image,link',
+            'items.*.content'     => 'nullable|string',
+            'items.*.image_file'  => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+        ]);
 
-    $content = [
-        ['type' => 'title', 'content' => $validated['judul']],
-    ];
+        $content = [
+            ['type' => 'title', 'content' => $validated['judul']],
+        ];
 
-    if (!empty($validated['items'])) {
-        foreach ($validated['items'] as $idx => $item) {
-            if ($item['type'] === 'image' && $request->hasFile("items.$idx.image_file")) {
-                $path = $request->file("items.$idx.image_file")->store('learning-corner', 'public');
-                $item['content'] = $path; // simpan path baru
+        if (!empty($validated['items'])) {
+            foreach ($validated['items'] as $idx => $item) {
+                $processed = $item;
+
+                if ($item['type'] === 'image' && $request->hasFile("items.$idx.image_file")) {
+                    // Hapus gambar lama jika ada
+                    if (!empty($item['content']) && Storage::disk('public')->exists($item['content'])) {
+                        Storage::disk('public')->delete($item['content']);
+                    }
+                    $path = $request->file("items.$idx.image_file")->store('learning-corner/images', 'public');
+                    $processed['content'] = $path;
+                }
+
+                $content[] = $processed;
             }
-            // jika tidak upload gambar baru → content lama tetap dipakai (dari hidden input)
-            $content[] = $item;
         }
+
+        $learningCorner->update([
+            'content' => $content,
+            'tanggal' => now(),
+        ]);
+
+        return redirect()->route('project.show', $learningCorner->project_id)
+            ->with('success', 'Learning Corner berhasil diperbarui!');
     }
-
-    $learningCorner->update([
-        'content' => $content,
-        'tanggal' => now(),
-    ]);
-
-    return redirect()->route('project.index')
-        ->with('success', 'Learning Corner berhasil diperbarui!');
-}
 
     public function destroy(LearningCorner $learningCorner)
     {
-        $this->authorizeEntry($learningCorner);
+        $this->authorizeManage($learningCorner);
+
+        // Hapus semua gambar yang terkait
+        foreach ($learningCorner->content ?? [] as $item) {
+            if (($item['type'] ?? '') === 'image' && !empty($item['content'])) {
+                Storage::disk('public')->delete($item['content']);
+            }
+        }
 
         $learningCorner->delete();
 
-        return redirect()->route('project.index')
+        return redirect()->route('project.show', $learningCorner->project_id)
             ->with('success', 'Learning Corner berhasil dihapus.');
     }
 
-    private function authorizeEntry(LearningCorner $entry): void
+    public function massDestroy(Request $request)
     {
-        if ($entry->project->id_mahasiswa !== Auth::id())
-            abort(403, 'Aksi tidak diizinkan.');
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
         }
+
+        $learningCorners = LearningCorner::whereIn('id_learning_corner', $ids)->get();
+
+        foreach ($learningCorners as $learningCorner) {
+            // Cek permission untuk setiap entry
+            if (!$learningCorner->canManage(Auth::user())) {
+                continue; // Lewati yang tidak punya akses
+            }
+
+            // Hapus semua gambar
+            foreach ($learningCorner->content ?? [] as $item) {
+                if (($item['type'] ?? '') === 'image' && !empty($item['content'])) {
+                    Storage::disk('public')->delete($item['content']);
+                }
+            }
+
+            // Hapus record
+            $learningCorner->delete();
+        }
+
+        return back()->with('success', 'Learning Corner berhasil dihapus.');
+    }
+
+    public function learning_corner_user()
+    {
+        $entries = LearningCorner::with(['mahasiswa', 'project'])
+            ->where('id_mahasiswa', Auth::id())
+            ->latest('tanggal')
+            ->paginate(10);
+
+        return view('learning-corner.views-learning-corner-user', compact('entries'));
+    }
+
+    private function authorizeManage(LearningCorner $entry): void
+    {
+        if (!$entry->canManage(Auth::user())) {
+            abort(403, 'Anda tidak memiliki izin untuk mengelola entri ini.');
+        }
+    }
 }

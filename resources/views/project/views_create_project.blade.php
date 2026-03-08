@@ -23,7 +23,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('project.store') }}" class="space-y-6 mt-4">
+        <form method="POST" action="{{ route('project.store') }}" class="space-y-6 mt-4" id="projectForm">
             @csrf
 
             <div>
@@ -46,6 +46,7 @@
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
+            
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                     Tambah Pemimpin (opsional)
@@ -56,27 +57,20 @@
                 <select name="leader" id="leader-select" class="min-w-full border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg p-3">
                     <option class="dark:text-white" value="">-- Pilih Pemimpin Project --</option>
                     @foreach ($users as $user)
-                        <option class="dark:text-white" value="{{ $user->id }}">
+                        <option class="dark:text-white" value="{{ $user->id }}" data-name="{{ $user->nama_mahasiswa }}">
                             {{$user->nama_mahasiswa}}
                         </option>
                     @endforeach
                 </select>
             </div>
+            
             <div id="member-wrapper">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Tambah Rekan (opsional)
                 </label>
 
-                <div class=" member-item mb-3">
-                    <select name="members[]" 
-                        class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
-                        <option value="">-- Pilih Mahasiswa --</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}">
-                                {{ $user->nama_mahasiswa }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div id="members-container">
+                    <!-- Member items will be dynamically added here -->
                 </div>
             </div>
 
@@ -158,63 +152,206 @@
                 showErrorAlert('{{ $errors->first() }}');
                 {{ implode("\n", $errors->all()) }}
             @endif
+
+            // Load saved data from localStorage
+            loadSavedData();
+
+            // Initialize member selects
+            initializeMemberSelects();
+
+            // Add change listener to leader select
+            const leaderSelect = document.getElementById("leader-select");
+            leaderSelect.addEventListener("change", function() {
+                updateDisabledOptions();
+                saveToLocalStorage();
+            });
+
+            // Add submit event listener to form
+            document.getElementById('projectForm').addEventListener('submit', function() {
+                clearLocalStorage();
+            });
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
+        // Function to save form data to localStorage
+        function saveToLocalStorage() {
+            const leaderId = document.getElementById("leader-select").value;
+            
+            // Get all member selects
+            const memberSelects = document.querySelectorAll('.member-select');
+            const memberIds = [];
+            
+            memberSelects.forEach(select => {
+                if (select.value) {
+                    memberIds.push(select.value);
+                }
+            });
 
-            const leaderSelect = document.getElementById("leader-select");
+            const projectData = {
+                leader: leaderId,
+                members: memberIds
+            };
 
-            leaderSelect.addEventListener("change", function() {
+            localStorage.setItem('projectTeamData', JSON.stringify(projectData));
+        }
 
-                const leaderId = this.value;
+        // Function to load saved data from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem('projectTeamData');
+            
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    // Set leader
+                    if (data.leader) {
+                        document.getElementById("leader-select").value = data.leader;
+                    }
 
-                document.querySelectorAll(".member-select").forEach(select => {
+                    // Clear existing members
+                    const container = document.getElementById('members-container');
+                    container.innerHTML = '';
 
-                    select.querySelectorAll("option").forEach(option => {
-                        option.disabled = false; // reset dulu
-                    });
+                    // Add saved members
+                    if (data.members && data.members.length > 0) {
+                        data.members.forEach(memberId => {
+                            if (memberId) {
+                                addMemberSelect(memberId);
+                            }
+                        });
+                    } else {
+                        // Add one empty member select if no saved members
+                        addMemberSelect();
+                    }
 
+                    // Update disabled options
+                    setTimeout(() => {
+                        updateDisabledOptions();
+                    }, 100);
+                    
+                } catch (e) {
+                    console.error('Error parsing saved data:', e);
+                    // Add one empty member select if error
+                    addMemberSelect();
+                }
+            } else {
+                // Add one empty member select if no saved data
+                addMemberSelect();
+            }
+        }
+
+        // Function to clear localStorage after submit
+        function clearLocalStorage() {
+            localStorage.removeItem('projectTeamData');
+        }
+
+        // Function to update disabled options based on selected leader and members
+        function updateDisabledOptions() {
+            const leaderId = document.getElementById("leader-select").value;
+            
+            // Get all selected member IDs
+            const selectedMemberIds = [];
+            document.querySelectorAll(".member-select").forEach(select => {
+                if (select.value) {
+                    selectedMemberIds.push(select.value);
+                }
+            });
+
+            // Update all member selects
+            document.querySelectorAll(".member-select").forEach(select => {
+                // Enable all options first
+                select.querySelectorAll("option").forEach(option => {
+                    option.disabled = false;
+                });
+
+                // Disable leader option if leader is selected
                 if (leaderId) {
-                    let sameOption = select.querySelector(`option[value="${leaderId}"]`);
-                    if (sameOption) {
-                        sameOption.disabled = true;
+                    let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
+                    if (leaderOption) {
+                        leaderOption.disabled = true;
                     }
                 }
 
+                // Disable options that are selected in other member selects
+                selectedMemberIds.forEach(selectedId => {
+                    if (selectedId && select.value !== selectedId) {
+                        let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
+                        if (selectedOption) {
+                            selectedOption.disabled = true;
+                        }
+                    }
                 });
+            });
+        }
 
+        // Function to initialize member selects
+        function initializeMemberSelects() {
+            // Add change listeners to all member selects
+            document.querySelectorAll(".member-select").forEach(select => {
+                select.addEventListener("change", function() {
+                    updateDisabledOptions();
+                    saveToLocalStorage();
+                });
+            });
+        }
+
+        // Function to add new member select
+        function addMemberSelect(savedValue = null) {
+            const container = document.getElementById('members-container');
+
+            const memberDiv = document.createElement('div');
+            memberDiv.classList.add('member-item', 'mb-3');
+
+            const usersData = @json($users);
+            
+            let optionsHtml = '<option value="">-- Pilih Mahasiswa --</option>';
+            usersData.forEach(user => {
+                const selected = savedValue && savedValue == user.id ? 'selected' : '';
+                optionsHtml += `<option value="${user.id}" data-name="${user.nama_mahasiswa}" ${selected}>${user.nama_mahasiswa}</option>`;
             });
 
+            memberDiv.innerHTML = `
+                <div class="flex gap-2">
+                    <select name="members[]" 
+                        class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
+                        ${optionsHtml}
+                    </select>
+                    <button type="button" 
+                        onclick="removeMember(this)"
+                        class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                        ✕
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(memberDiv);
+
+            // Add change listener to new select
+            const newSelect = memberDiv.querySelector('.member-select');
+            newSelect.addEventListener('change', function() {
+                updateDisabledOptions();
+                saveToLocalStorage();
             });
 
-        function addMemberSelect() {
-        let wrapper = document.getElementById('member-wrapper');
+            // Update disabled options
+            setTimeout(() => {
+                updateDisabledOptions();
+            }, 100);
+        }
 
-        let newSelect = document.createElement('div');
-        newSelect.classList.add('member-item', 'mb-3');
+        // Function to remove member
+        function removeMember(button) {
+            const memberDiv = button.closest('.member-item');
+            memberDiv.remove();
+            
+            // Update disabled options after removal
+            updateDisabledOptions();
+            
+            // Save to localStorage
+            saveToLocalStorage();
+        }
 
-        newSelect.innerHTML = `
-            <div class="flex gap-2">
-                <select name="members[]" 
-                    class="w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
-                    <option value="">-- Pilih Mahasiswa --</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">
-                            {{ $user->nama_mahasiswa }}
-                        </option>
-                    @endforeach
-                </select>
-
-                <button type="button" 
-                    onclick="this.parentElement.parentElement.remove()"
-                    class="px-3 bg-red-100 text-red-600 rounded-lg">
-                    ✕
-                </button>
-            </div>
-        `;
-
-        wrapper.appendChild(newSelect);
-        document.getElementById("leader-select").dispatchEvent(new Event("change"));
-}
+        // Export functions to global scope
+        window.addMemberSelect = addMemberSelect;
+        window.removeMember = removeMember;
     </script>
 @endsection

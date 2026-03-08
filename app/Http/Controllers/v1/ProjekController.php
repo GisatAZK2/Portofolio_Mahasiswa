@@ -13,19 +13,27 @@ use Illuminate\Support\Facades\Auth;
 class ProjekController extends Controller
 {
     // HALAMAN LIST (Blade)
-    public function index()
-    {
-        $projects = Project::with('mahasiswa')
-            ->where('id_mahasiswa', Auth::id())
-            ->latest()
-            ->get();
+      public function index()
+{
+    $userId = Auth::id();
 
-        return view('project.views_project', compact('projects'));
-    }
+    $projects = Project::with(['owner', 'leader', 'members'])
+        ->where(function ($query) use ($userId) {
+            $query->where('id_mahasiswa', $userId)      // owner
+                  ->orWhere('leader_id', $userId)       // leader
+                  ->orWhereHas('members', function ($q) use ($userId) { // member
+                      $q->where('user_id', $userId);
+                  });
+        })
+        ->latest()
+        ->get();
+
+    return view('project.views_project', compact('projects'));
+}
 
     public function project_user()
     {
-        $projects = Project::with('mahasiswa')->latest()->get();
+        $projects = Project::with(['mahasiswa', 'leader'])->latest()->paginate(12);
         return view('project.views_project_user', compact('projects'));
     }
 

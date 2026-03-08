@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\LearningCorner;
 use App\Models\Project;
@@ -132,21 +133,65 @@ class DashboardController extends Controller
     ));
 }
 
-    public function show(User $user)
-    {
-        $user->load([
-            'projects',
-            'learning_corners',
-            'jurusan',
-            'angkatan',
-            'sertifikats',
-            'keahlian'
-        ]);
+public function show(User $user, Request $request)
+{
+    // Load relasi utama user
+    $user->load([
+        'jurusan',
+        'angkatan',
+        'keahlian',
+        'sertifikats',
+        'learning_corners'
+    ]);
 
-        $isOwner = Auth::check() && Auth::id() === $user->id;
+    // Cek apakah yang melihat adalah pemilik akun
+    $isOwner = Auth::check() && Auth::id() === $user->id;
 
-        return view('views_portofolio_user', compact('user', 'isOwner'));
+    // Default tab project
+    $projectTab = $request->get('project_tab', 'now');
+
+    // Query project milik user
+    $projectsQuery = $user->projects()->with(['leader', 'mahasiswa']);
+
+    $today = Carbon::today();
+
+    switch ($projectTab) {
+
+        case 'upcoming':
+            // Project yang akan datang
+            $projectsQuery->where('tanggal_mulai', '>', $today);
+            break;
+
+        case 'completed':
+            // Project yang sudah selesai
+            $projectsQuery->where('tanggal_akhir', '<', $today);
+            break;
+
+        case 'now':
+        default:
+            // Project yang sedang berjalan
+            $projectsQuery
+                ->where('tanggal_mulai', '<=', $today)
+                ->where(function ($query) use ($today) {
+                    $query->where('tanggal_akhir', '>=', $today)
+                          ->orWhereNull('tanggal_akhir');
+                });
+            break;
     }
+
+    // Pagination project
+    $projects = $projectsQuery
+        ->latest()
+        ->paginate(5)
+        ->withQueryString();
+
+    return view('views_portofolio_user', compact(
+        'user',
+        'projects',
+        'projectTab',
+        'isOwner'
+    ));
+}
 
     public function search(Request $request)
     {
@@ -191,34 +236,44 @@ class DashboardController extends Controller
             $results = $results->concat($users);
         }
 
-        if ($type === null || $type === 'project') {
+      if ($type === null || $type === 'project') {
+
     $projects = Project::with(['mahasiswa.jurusan', 'mahasiswa.keahlian', 'mahasiswa.angkatan'])
         ->when($keyword, function ($query) use ($keyword) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('isi_content->nama_project', 'like', "%{$keyword}%");
-            });
+            $query->where('isi_content->nama_project', 'like', "%{$keyword}%");
         })
+
         ->when($jurusan, function ($query) use ($jurusan) {
             $query->whereHas('mahasiswa', fn($q) => $q->where('id_jurusan', $jurusan));
         })
+
         ->when($keahlian, function ($query) use ($keahlian) {
             $query->whereHas('mahasiswa', fn($q) => $q->where('id_keahlian', $keahlian));
         })
+
         ->when($angkatan, function ($query) use ($angkatan) {
             $query->whereHas('mahasiswa', fn($q) => $q->where('id_angkatan', $angkatan));
         })
+
         ->get()
+
+        // 🔥 cegah project muncul 2x
+        ->unique('id')
+
         ->map(function ($project) {
+
             $content = $project->isi_content ?? [];
 
-            $project->nama_project  = $content['nama_project'] ?? null;
-            $project->link_project  = $content['link_project'] ?? null;
-            $project->link_github   = $content['link_github'] ?? null;
-            $project->link_video    = $content['link_video'] ?? null;
+            $project->nama_project = $content['nama_project'] ?? null;
+            $project->link_project = $content['link_project'] ?? null;
+            $project->link_github  = $content['link_github'] ?? null;
+            $project->link_video   = $content['link_video'] ?? null;
             $project->type = 'project';
 
             return $project;
-        });
+        })
+
+        ->values(); // reset index
 
     $results = $results->concat($projects);
 }

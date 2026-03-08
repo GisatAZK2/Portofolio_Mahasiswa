@@ -270,116 +270,131 @@
         @endif
 
         <!-- Project -->
-        @php $projects = $results->where('type', 'project'); @endphp
-        @if($projects->count() > 0)
-        <div class="mb-12" id="project-section">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
-                    <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-800 font-medium text-base">
-                        Project ({{ $projects->count() }})
-                    </span>
-                </h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 project-grid">
-                @foreach($projects->take(3) as $item)
-                    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
-                        <div class="p-6 flex flex-col flex-1">
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
-                                Project
-                            </span>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-                                {{ $item->nama_project ?? 'Project Tanpa Judul' }}
-                            </h3>
-                            @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
-                                    @if($item->mahasiswa->angkatan)
-                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
-                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
-                                        </span>
-                                    @endif
-                                </p>
+@php $projects = $results->where('type', 'project'); @endphp
+@if($projects->count() > 0)
+<div class="mb-12" id="project-section">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+            <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-800 font-medium text-base">
+                Project ({{ $projects->count() }})
+            </span>
+        </h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 project-grid">
+        @foreach($projects->take(3) as $item)
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
+                <div class="p-6 flex flex-col flex-1">
+                    <a href="{{ route('project.show', $item->id) }}" class="block flex-1">
+                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
+                            Project
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 hover:text-green-600 transition">
+                            {{ $item->nama_project ?? 'Project Tanpa Judul' }}
+                        </h3>
+                    </a>
+                    
+                    @if($item->mahasiswa)
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                            Oleh 
+                            <a href="{{ route('portfolio.show', $item->mahasiswa->id) }}" class="font-semibold hover:text-green-600 transition">
+                                {{ $item->mahasiswa->nama_mahasiswa ?? '—' }}
+                            </a>
+                            @if($item->mahasiswa->angkatan)
+                                <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                    Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                </span>
                             @endif
-                            <p class="text-sm text-gray-500 dark:text-gray-50 mb-4 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                {{ $item->tanggal_mulai ? \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') : '—' }}
-                                @if($item->tanggal_akhir)
-                                    - {{ \Carbon\Carbon::parse($item->tanggal_akhir)->format('d M Y') }}
-                                @else
-                                    - Sekarang
-                                @endif
-                            </p>
-                            @if($item->link_project)
-                                <a href="{{ $item->link_project }}" target="_blank" rel="noopener noreferrer"
-                                   class="mt-auto inline-flex items-center justify-center px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
-                                    Lihat Project →
-                                </a>
-                            @else
-                                <p class="mt-auto text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link project</p>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-
-                @foreach($projects->take(3) as $item)
-                    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
-                        <div class="p-6 flex flex-col flex-1">
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
-                                Project
-                            </span>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-                                {{ $item->nama_project ?? 'Project Tanpa Judul' }}
-                            </h3>
-                            @if($item->mahasiswa)
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                                    Oleh <strong>{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
-                                    @if($item->mahasiswa->angkatan)
-                                        <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
-                                            Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
-                                        </span>
-                                    @endif
-                                </p>
-                            @endif
-                            <p class="text-sm text-gray-500 dark:text-gray-50 mb-4 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                {{ $item->tanggal_mulai ? \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') : '—' }}
-                                @if($item->tanggal_akhir)
-                                    - {{ \Carbon\Carbon::parse($item->tanggal_akhir)->format('d M Y') }}
-                                @else
-                                    - Sekarang
-                                @endif
-                            </p>
-                            @if($item->link_project)
-                                <a href="{{ $item->link_project }}" target="_blank" rel="noopener noreferrer"
-                                   class="mt-auto inline-flex items-center justify-center px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
-                                    Lihat Project →
-                                </a>
-                            @else
-                                <p class="mt-auto text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link project</p>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            @if($projects->count() > 3)
-                <div class="mt-6 text-left">
-                    <button onclick="toggleSeeMore('project-grid', this, {{ $projects->count() }})"
-                            class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-700 transition flex items-center gap-1">
-                        Lihat semua 
-                        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </p>
+                    @endif
+                    
+                    <p class="text-sm text-gray-500 dark:text-gray-50 mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
-                    </button>
+                        {{ $item->tanggal_mulai ? \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') : '—' }}
+                        @if($item->tanggal_akhir)
+                            - {{ \Carbon\Carbon::parse($item->tanggal_akhir)->format('d M Y') }}
+                        @else
+                            - Sekarang
+                        @endif
+                    </p>
+                    
+                    @if($item->link_project)
+                        <a href="{{ $item->link_project }}" target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
+                            Lihat Project →
+                        </a>
+                    @else
+                        <p class="text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link project</p>
+                    @endif
                 </div>
-            @endif
-        </div>
-        @endif
+            </div>
+        @endforeach
 
+        @foreach($projects->skip(3) as $item)
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
+                <div class="p-6 flex flex-col flex-1">
+                    <a href="{{ route('project.show', $item->id) }}" class="block flex-1">
+                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
+                            Project
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 hover:text-green-600 transition">
+                            {{ $item->nama_project ?? 'Project Tanpa Judul' }}
+                        </h3>
+                    </a>
+                    
+                    @if($item->mahasiswa)
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                            Oleh 
+                            <a href="{{ route('portfolio.show', $item->mahasiswa->id) }}" class="font-semibold hover:text-green-600 transition">
+                                {{ $item->mahasiswa->nama_mahasiswa ?? '—' }}
+                            </a>
+                            @if($item->mahasiswa->angkatan)
+                                <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                    Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
+                                </span>
+                            @endif
+                        </p>
+                    @endif
+                    
+                    <p class="text-sm text-gray-500 dark:text-gray-50 mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        {{ $item->tanggal_mulai ? \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') : '—' }}
+                        @if($item->tanggal_akhir)
+                            - {{ \Carbon\Carbon::parse($item->tanggal_akhir)->format('d M Y') }}
+                        @else
+                            - Sekarang
+                        @endif
+                    </p>
+                    
+                    @if($item->link_project)
+                        <a href="{{ $item->link_project }}" target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
+                            Lihat Project →
+                        </a>
+                    @else
+                        <p class="text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link project</p>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    @if($projects->count() > 3)
+        <div class="mt-6 text-left">
+            <button onclick="toggleSeeMore('project-grid', this, {{ $projects->count() }})"
+                    class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-700 transition flex items-center gap-1">
+                Lihat semua 
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+        </div>
+    @endif
+</div>
+@endif
         <!-- Separator Sertifikat -->
         @if($results->where('type', 'sertifikat')->count() > 0)
             <hr class="my-12 border-gray-200">
