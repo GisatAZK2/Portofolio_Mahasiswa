@@ -108,9 +108,29 @@ function toggleDropdown(section) {
 }
 
 window.toggleDropdown = toggleDropdown;
+document.addEventListener('DOMContentLoaded', () => {
+    // Sync dropdown bahasa dengan localStorage
+    const langSelect = document.getElementById('languageSelect');
+    if (langSelect) {
+        langSelect.value = localStorage.getItem('lang') || 'id';
+    }
+});
+document.addEventListener('turbo:load', () => {
+    const langSelect = document.getElementById('languageSelect');
+    if (langSelect) {
+        langSelect.value = localStorage.getItem('lang') || 'id';
+    }
+});
+import { getTranslation } from './translate.js';
 
-
-
+// Contoh: update judul dashboard
+document.addEventListener('DOMContentLoaded', () => {
+    const dashboardTitle = document.getElementById('dashboard-title');
+    if (dashboardTitle) {
+        dashboardTitle.textContent = getTranslation('dashboard', 'title');
+    }
+    // Tambahkan update untuk elemen lain sesuai kebutuhan
+});
 // Toggle Dark Mode dan refresh browser
 window.toggleDarkMode = function() {
     document.documentElement.classList.toggle('dark');

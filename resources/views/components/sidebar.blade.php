@@ -223,14 +223,14 @@
             class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-md mt-2 p-4 border border-gray-200 dark:border-gray-700 absolute left-0 w-60 z-50">
             <!-- Dark Mode Toggle -->
             <div class="flex items-center justify-between mb-4">
-                <span class="text-sm font-medium">Mode</span>
+                <span class="text-gray-700 dark:text-gray-200">Mode</span>
                 <button id="darkModeBtn"
-                    class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200"
+                    class="dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200"
                     onclick="toggleDarkMode()">Dark Mode</button>
             </div>
             <!-- Language Selection -->
             <div class="flex items-center justify-between">
-                <span class="text-sm font-medium">Bahasa</span>
+                <span class="text-gray-700 dark:text-gray-200">Bahasa</span>
                 <select id="languageSelect"
                     class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200"
                     onchange="changeLanguage()">
