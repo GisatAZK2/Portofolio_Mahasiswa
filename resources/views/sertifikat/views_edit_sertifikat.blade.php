@@ -7,9 +7,9 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800">Edit Sertifikat</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Sertifikat</h1>
                 </div>
-                <p class="mt-2 text-gray-600">Perbarui informasi sertifikat yang sudah kamu peroleh.</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Perbarui informasi sertifikat yang sudah kamu peroleh.</p>
             </div>
 
             <!-- Error Global -->
@@ -39,13 +39,13 @@
 
                 <!-- Nama Sertifikat -->
                 <div>
-                    <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="nama_sertifikat" class="block text-sm dark:text-gray-100 font-medium text-gray-700 mb-2">
                         Nama Sertifikat <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
                         placeholder="Contoh: Sertifikat Kompetensi Programming"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border dark:text-gray-200 dark:bg-gray-700/60 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -53,13 +53,13 @@
 
                 <!-- Lembaga Penerbit -->
                 <div>
-                    <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="lembaga_penerbit" class="block text-sm dark:text-gray-100 font-medium text-gray-700 mb-2">
                         Lembaga Penerbit <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
                         placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border dark:text-gray-200 dark:bg-gray-700/60 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -67,22 +67,22 @@
 
                 <!-- Tanggal Terbit -->
                 <div>
-                    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="tanggal_terbit" class="block text-sm font-medium dark:text-gray-100 text-gray-700 mb-2">
                         Tanggal Terbit <span class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
                         required max="{{ date('Y-m-d') }}"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border dark:text-gray-200 dark:bg-gray-700/60 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500">Maksimal tanggal hari ini</p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200">Maksimal tanggal hari ini</p>
                 </div>
 
                 <!-- Current File Information -->
                 @if($sertifikat->link_sertifikat)
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div class="bg-gray-50 border border-gray-200 dark:bg-gray-700/60 rounded-lg p-4">
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
                                 <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-700">File saat ini:</p>
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">File saat ini:</p>
                                     <a href="{{ Storage::url($sertifikat->link_sertifikat) }}" target="_blank"
                                         class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,8 +169,8 @@
 
                 <!-- Preview File Saat Ini (jika ada) -->
                 @if($sertifikat->link_sertifikat && preg_match('/\.(jpg|jpeg|png|gif)$/i', $sertifikat->link_sertifikat))
-                    <div id="current-image-preview" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <p class="text-sm font-medium text-gray-700 mb-2">File Saat Ini:</p>
+                    <div id="current-image-preview" class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-gray-200">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">File Saat Ini:</p>
                         <img src="{{ Storage::url($sertifikat->link_sertifikat) }}" alt="Current Sertifikat"
                             class="max-h-48 rounded-lg shadow-sm">
                     </div>

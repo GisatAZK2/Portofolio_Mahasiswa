@@ -30,7 +30,7 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($sertifikat as $entry)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
+                <div class="bg-white dark:border-gray-900 dark:bg-gray-900 dark:text-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
                     <!-- Header dengan ikon sertifikat -->
                     <div class="bg-gradient-to-r from-blue-700 to-blue-500 p-4">
                         <div class="flex items-center justify-between">
@@ -43,12 +43,12 @@
 
                     <div class="p-6 flex-1 flex flex-col">
                         <!-- Nama Sertifikat -->
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                             {{ $entry->nama_sertifikat }}
                         </h3>
 
                         <!-- Lembaga Penerbit -->
-                        <div class="flex items-center text-gray-600 mb-3">
+                        <div class="flex items-center text-gray-600 dark:text-gray-200 mb-3">
                             <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l14-7 3.5 1.5L21 21z"></path>
                             </svg>
@@ -56,7 +56,7 @@
                         </div>
 
                         <!-- Tanggal Terbit -->
-                        <div class="flex items-center text-gray-600 mb-4">
+                        <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
                             <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>

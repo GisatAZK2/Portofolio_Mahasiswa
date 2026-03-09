@@ -20,7 +20,7 @@ class DashboardController extends Controller
     public function index()
     {
        
-        $totalMahasiswa = User::count();
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
         $totalLearning = LearningCorner::count();
         $totalProject = Project::count();
         $jurusanList  = Jurusan::all();
@@ -79,53 +79,83 @@ class DashboardController extends Controller
 
     public function myDashboard()
 {
-    $userId = auth()->id();
+    $user = auth()->user();
 
-    $totalLearning = LearningCorner::where('id_mahasiswa', $userId)->count();
-    $totalProject = Project::where('id_mahasiswa', $userId)->count();
-    $totalSertifikat = Sertifikat::where('id_mahasiswa', $userId)->count();
+    // ======================
+    // DOSEN
+    // ======================
+    if ($user->role === 'dosen') {
+
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+
+        $totalLearning = LearningCorner::count();
+        $totalProject = Project::count();
+        $totalSertifikat = Sertifikat::count();
+
+        $learning = LearningCorner::with('mahasiswa')->inRandomOrder()->take(3)->get();
+        $project = Project::with('mahasiswa')->inRandomOrder()->take(3)->get();
+        $sertifikat = Sertifikat::with('mahasiswa')->inRandomOrder()->take(3)->get();
+    }
+
+    // ======================
+    // MAHASISWA
+    // ======================
+    else {
+
+        $totalMahasiswa = null;
+
+        $totalLearning = LearningCorner::where('id_mahasiswa', $user->id)->count();
+        $totalProject = Project::where('id_mahasiswa', $user->id)->count();
+        $totalSertifikat = Sertifikat::where('id_mahasiswa', $user->id)->count();
+
+        $learning = LearningCorner::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
+        $project = Project::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
+        $sertifikat = Sertifikat::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+    }
+
+    
 
     // =========================
     // AMBIL POSTING RANDOM USER
     // =========================
 
-    $randomLearning = LearningCorner::with('mahasiswa')
-        ->where('id_mahasiswa', $userId)
-        ->inRandomOrder()
-        ->take(3)
-        ->get()
-        ->map(function ($item) {
-            $item->type = 'learning';
-            return $item;
-        });
+    $learning = $learning->map(function ($item) {
+        $item->type = 'learning';
+        return $item;
+    });
 
-    $randomProject = Project::with('mahasiswa')
-        ->where('id_mahasiswa', $userId)
-        ->inRandomOrder()
-        ->take(3)
-        ->get()
-        ->map(function ($item) {
-            $item->type = 'project';
-            return $item;
-        });
+    $project = $project->map(function ($item) {
+        $item->type = 'project';
+        return $item;
+    });
 
-    $randomSertifikat = Sertifikat::with('mahasiswa')
-        ->where('id_mahasiswa', $userId)
-        ->inRandomOrder()
-        ->take(3)
-        ->get()
-        ->map(function ($item) {
-            $item->type = 'sertifikat';
-            return $item;
-        });
+    $sertifikat = $sertifikat->map(function ($item) {
+        $item->type = 'sertifikat';
+        return $item;
+    });
 
-    $randomPosts = $randomProject
-        ->concat($randomLearning)
-        ->concat($randomSertifikat)
+    $randomPosts = $learning
+        ->concat($project)
+        ->concat($sertifikat)
         ->shuffle()
         ->take(6);
 
     return view('views_dashboard_me', compact(
+        'totalMahasiswa',
         'totalLearning',
         'totalProject',
         'totalSertifikat',

@@ -25,7 +25,7 @@
                 <!-- Total Project Dikerjakan -->
                 <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300">Total Project Dikerjakan</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300" data-translate="total_project" data-translate-page="dashboard_me">Total Project Dikerjakan</h3>
                         <span class="text-orange-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-
+        
             <!-- Random Posts - Masonry Layout -->
             <div>
                 <div class="flex justify-between items-center mb-6">

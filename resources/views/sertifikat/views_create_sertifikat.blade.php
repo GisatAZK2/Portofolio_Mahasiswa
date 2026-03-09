@@ -42,7 +42,7 @@
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
                         required placeholder="Contoh: Sertifikat Kompetensi Programming"
-                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:placeholder:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border dark:text-gray-200 border-gray-300 dark:bg-gray-500 dark:placeholder:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror

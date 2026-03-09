@@ -39,7 +39,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Tambah Pemimpin (opsional)
+                    Tambah Pemimpin (Wajib) <span class="text-red-500">*</span>
                 </label>
             </div>
 
@@ -177,6 +177,7 @@
         `;
 
         wrapper.appendChild(newSelect);
+        document.getElementById("leader-select").dispatchEvent(new Event("change"));
 }
 </script>
 @endsection

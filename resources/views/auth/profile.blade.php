@@ -38,7 +38,7 @@
                 <!-- Avatar -->
                 <div class="relative flex">
                     <div class="relative -mt-16 group">
-                        <div class="relative w-32 h-32 rounded-full border-4 border-white bg-white shadow-xl overflow-hidden">
+                        <div class="relative w-32 h-32 rounded-full border-4 border-white dark:border-gray-900 bg-white shadow-xl overflow-hidden">
                             @if (Auth::user()->photo_profile)
                                 <img id="profile-preview"
                                      src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
@@ -68,17 +68,17 @@
                 <div class="mt-4">
                     <div class="relative group inline-block">
                         <div id="nama-container">
-                            <h2 id="nama-display" class="text-2xl md:text-3xl font-bold text-gray-900 inline-block cursor-pointer hover:text-indigo-600" onclick="toggleEdit('nama')">
+                            <h2 id="nama-display" class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 inline-block cursor-pointer hover:text-indigo-600" onclick="toggleEdit('nama')">
                                 {{ Auth::user()->nama_mahasiswa ?? 'Mahasiswa' }}
                             </h2>
-                            <button type="button" onclick="toggleEdit('nama')" class="ml-2 opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-indigo-600">
+                            <button type="button" onclick="toggleEdit('nama')" class="ml-2 opacity-0 group-hover:opacity-100 transition text-gray-400 dark:text-gray-200 hover:text-indigo-600">
                                 <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
                             </button>
                         </div>
                         <input type="text" id="nama-input" name="nama_mahasiswa"
-                            class="hidden text-2xl md:text-3xl font-bold text-center w-full max-w-lg mx-auto border-b-2 border-indigo-500 focus:outline-none bg-transparent px-2 py-1"
+                            class="hidden dark:text-gray-100 text-2xl md:text-3xl font-bold text-center w-full max-w-lg mx-auto border-b-2 border-indigo-500 focus:outline-none bg-transparent px-2 py-1"
                             value="{{ old('nama_mahasiswa', Auth::user()->nama_mahasiswa) }}">
                     </div>
 
@@ -102,53 +102,53 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto mt-8">
 
                     <!-- Deskripsi -->
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group sm:col-span-2" onclick="toggleEdit('deskripsi')">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Deskripsi</p>
+                    <div class="bg-gray-50 dark:bg-gray-700/60 dark:border-gray-600 p-5 rounded-lg border border-gray-200  hover:border-indigo-300 transition cursor-pointer group sm:col-span-2" onclick="toggleEdit('deskripsi')">
+                        <p class="text-xs text-gray-500 dark:text-gray-200 uppercase tracking-wide mb-2">Deskripsi</p>
                         <div class="flex items-center justify-between">
-                            <p id="deskripsi-display" class="text-base text-gray-800 break-all">
+                            <p id="deskripsi-display" class="text-base dark:text-gray-200 text-gray-800 break-all">
                                 {{ $user->deskripsi ?? 'Klik untuk menambahkan deskripsi...' }}
                             </p>
-                            <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                         </div>
                         <textarea id="deskripsi-input" name="deskripsi"
-                            class="hidden w-full text-base text-gray-800 border-b border-indigo-500 focus:outline-none bg-transparent"
+                            class="hidden w-full text-base text-gray-800 dark:text-gray-200 border-b border-indigo-500 focus:outline-none bg-transparent"
                             rows="3">{{ old('deskripsi', $user->deskripsi) }}</textarea>
                     </div>
 
                     <!-- Email -->
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group" onclick="toggleEdit('email')">
+                    <div class="bg-gray-50 dark:bg-gray-700/60 dark:border-gray-600 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group" onclick="toggleEdit('email')">
                         <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Email</p>
                         <div class="flex items-center justify-between">
-                            <p id="email-display" class="text-base font-medium text-gray-800 break-all">
+                            <p id="email-display" class="text-base font-medium dark:text-gray-200 text-gray-800 break-all">
                                 {{ Auth::user()->email ?? '-' }}
                             </p>
-                            <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                         </div>
                         <input type="email" id="email-input" name="email"
-                            class="hidden w-full text-base font-medium text-gray-800 border-b border-indigo-500 focus:outline-none bg-transparent"
+                            class="hidden w-full text-base font-medium text-gray-800 dark:text-gray-200 border-b border-indigo-500 focus:outline-none bg-transparent"
                             value="{{ old('email', Auth::user()->email) }}">
                     </div>
 
                     <!-- Jurusan -->
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group" onclick="toggleEdit('jurusan')">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Jurusan</p>
+                    <div class="bg-gray-50 dark:bg-gray-700/60 dark:border-gray-600  p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group" onclick="toggleEdit('jurusan')">
+                        <p class="text-xs text-gray-500 dark:text-gray-200 uppercase tracking-wide mb-2">Jurusan</p>
                         <div class="flex items-center justify-between">
-                            <p id="jurusan-display" class="text-base font-medium text-gray-800">
+                            <p id="jurusan-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
                                 {{ Auth::user()->jurusan->nama_jurusan ?? '-' }}
                             </p>
-                            <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-200 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                         </div>
                         <select id="jurusan-input" name="id_jurusan"
-                            class="hidden w-full text-base font-medium text-gray-800 border-b border-indigo-500 focus:outline-none bg-white">
-                            <option value="">-- Pilih Jurusan --</option>
+                            class="hidden w-full text-base font-medium dark:bg-gray-700/60 dark:text-gray-200 text-gray-800  border-b border-indigo-500 focus:outline-none bg-white">
+                            <option class="dark:text-gray-200 dark:bg-gray-800" value="">-- Pilih Jurusan --</option>
                             @foreach($jurusans ?? [] as $jurusan)
-                                <option value="{{ $jurusan->id_jurusan }}" {{ (Auth::user()->id_jurusan == $jurusan->id_jurusan) ? 'selected' : '' }}>
+                                <option class="dark:text-gray-200 dark:bg-gray-800" value="{{ $jurusan->id_jurusan }}" {{ (Auth::user()->id_jurusan == $jurusan->id_jurusan) ? 'selected' : '' }}>
                                     {{ $jurusan->nama_jurusan }}
                                 </option>
                             @endforeach
@@ -156,18 +156,18 @@
                     </div>
 
                     <!-- Angkatan -->
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Angkatan</p>
-                        <p class="text-base font-medium text-gray-800">
+                    <div class="bg-gray-50 dark:bg-gray-700/60 dark:border-gray-600 p-5 rounded-lg border border-gray-200">
+                        <p class="text-xs text-gray-500 dark:text-gray-100 uppercase tracking-wide mb-2">Angkatan</p>
+                        <p class="text-base font-medium text-gray-800 dark:text-gray-200">
                             {{ Auth::user()->angkatan->nama_angkatan ?? 'Angkatan 2026' }}
                         </p>
                     </div>
 
                     <!-- Keahlian -->
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group" onclick="toggleEdit('keahlian')">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Keahlian / Program Studi</p>
+                    <div class="bg-gray-50 dark:text-gray-100 dark:bg-gray-700/60 dark:border-gray-600 p-5 rounded-lg border border-gray-200 hover:border-indigo-300 transition cursor-pointer group" onclick="toggleEdit('keahlian')">
+                        <p class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-200 uppercase tracking-wide mb-2">Keahlian / Program Studi</p>
                         <div class="flex items-center justify-between">
-                            <p id="keahlian-display" class="text-base font-medium text-gray-800">
+                            <p id="keahlian-display" class="text-base dark:text-gray-200 font-medium text-gray-800">
                                 {{ Auth::user()->keahlian->nama_keahlian ?? '-' }}
                             </p>
                             <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,10 +175,10 @@
                             </svg>
                         </div>
                         <select id="keahlian-input" name="id_keahlian"
-                            class="hidden w-full text-base font-medium text-gray-800 border-b border-indigo-500 focus:outline-none bg-white">
-                            <option value="">-- Pilih Keahlian --</option>
+                            class="hidden w-full text-base font-medium text-gray-800 dark:bg-gray-700/60 dark:text-gray-200 border-b border-indigo-500 focus:outline-none bg-white">
+                            <option class="dark:text-gray-200 dark:bg-gray-800" value="">-- Pilih Keahlian --</option>
                             @foreach($keahlians ?? [] as $keahlian)
-                                <option value="{{ $keahlian->id_keahlian }}" {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}>
+                                <option class="dark:text-gray-200 dark:bg-gray-800" value="{{ $keahlian->id_keahlian }}" {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}>
                                     {{ $keahlian->nama_keahlian }}
                                 </option>
                             @endforeach
@@ -186,11 +186,11 @@
                     </div>
 
                     <!-- Status Akun -->
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Status Akun</p>
+                    <div class="bg-gray-50 dark:bg-gray-700/60 dark:border-gray-600 p-5 rounded-lg border border-gray-200">
+                        <p class="text-xs text-gray-500 dark:text-gray-100 uppercase tracking-wide mb-2">Status Akun</p>
                         <div class="flex items-center gap-2">
-                            <span class="inline-block w-3 h-3 rounded-full {{ Auth::user()->is_active ? 'bg-green-500' : 'bg-red-500' }}"></span>
-                            <p class="text-base font-medium {{ Auth::user()->is_active ? 'text-green-700' : 'text-red-700' }}">
+                            <span class="inline-block w-3 h-3 rounded-full {{ Auth::user()->is_active ? 'bg-green-500 dark:bg-green-200' : 'bg-red-500' }}"></span>
+                            <p class="text-base font-medium {{ Auth::user()->is_active ? 'text-green-700 dark:text-gray-300' : 'text-red-700' }}">
                                 {{ Auth::user()->is_active ? 'Aktif' : 'Nonaktif' }}
                             </p>
                         </div>
@@ -238,10 +238,10 @@
 
         @if(Auth::check())
             <!-- Projects Section -->
-            <section class="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8">
+            <section class="mt-8 bg-white rounded-2xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900  shadow-sm p-6 md:p-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Projects</h2>
-                    <span class="text-sm text-gray-600 bg-gray-100 px-4 py-1.5 rounded-full">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Projects</h2>
+                    <span class="text-sm text-gray-600 bg-gray-100 dark:bg-gray-700/60 dark:text-gray-200 px-4 py-1.5 rounded-full">
                         {{ $user->projects->count() }} proyek
                     </span>
                 </div>
@@ -346,7 +346,7 @@
                                 <!-- Content -->
                                 <div class="p-5 flex flex-col flex-1">
                                     <div class="flex items-start justify-between mb-2 gap-2">
-                                        <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 flex-1">
                                             {{ $nama }}
                                         </h3>
                                         <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }} whitespace-nowrap">
@@ -359,11 +359,11 @@
                                         <span>Selesai: {{ $akhirFormatted }}</span>
                                     </div>
                                     @if($deskripsi)
-                                        <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+                                        <p class="text-gray-600 dark:text-gray-200 text-sm mb-4 line-clamp-3 flex-1">
                                             {{ $deskripsi }}
                                         </p>
                                     @else
-                                        <p class="text-gray-500 text-sm mb-4 italic flex-1">Tidak ada deskripsi</p>
+                                        <p class="text-gray-500 dark:text-gray-100 text-sm mb-4 italic flex-1">Tidak ada deskripsi</p>
                                     @endif
                                     <div class="flex flex-wrap gap-3 mt-auto pt-4 border-t border-gray-100">
                                         @if($linkProject)
@@ -377,7 +377,7 @@
                                         @endif
                                         @if($linkGithub)
                                             <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 hover:text-black">
+                                                class="inline-flex items-center gap-1.5 text-sm font-medium dark:text-gray-200 dark:hover:text-gray-500 text-gray-800 hover:text-black">
                                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                                                     <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                                                 </svg>
@@ -400,27 +400,27 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
-                        <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/60  dark:border-gray-800 dark:text-gray-200 rounded-xl border border-gray-200">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600">Belum ada proyek yang ditambahkan.</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada proyek yang ditambahkan.</p>
                     </div>
                 @endif
             </section>
 
             <!-- Sertifikat Section -->
-            <section class="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8">
+            <section class="mt-8 bg-white  rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-800 shadow-sm p-6 md:p-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Sertifikat</h2>
-                    <span class="text-sm text-gray-600 bg-gray-100 px-4 py-1.5 rounded-full">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Sertifikat</h2>
+                    <span class="text-sm text-gray-600 bg-gray-100 dark:bg-gray-700/60 dark:text-gray-200 px-4 py-1.5 rounded-full">
                         {{ $user->sertifikats?->count() ?? 0 }} sertifikat
                     </span>
                 </div>
                 @if($user->sertifikats?->isNotEmpty() ?? false)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($user->sertifikats as $sertifikat)
-                            <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 flex flex-col h-full">
+                            <div class="bg-white dark:bg-gray-700/60 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 flex flex-col h-full">
                                 <div class="p-6 flex flex-col flex-1">
                                     <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">
                                         Sertifikat
@@ -429,8 +429,8 @@
                                         {{ $sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                                     </h3>
                                     @if($sertifikat->lembaga_penerbit)
-                                        <div class="flex items-center text-sm text-gray-600 mb-2">
-                                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-200 mb-2">
+                                            <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                             </svg>
                                             {{ $sertifikat->lembaga_penerbit }}
@@ -451,7 +451,7 @@
                                             </svg>
                                         </a>
                                     @else
-                                        <p class="mt-auto text-sm text-gray-500 italic">Tidak ada link sertifikat</p>
+                                        <p class="mt-auto text-sm text-gray-500 dark:text-gray-200 italic">Tidak ada link sertifikat</p>
                                     @endif
                                     <p class="text-xs text-gray-500 mt-5 pt-4 border-t border-gray-100">
                                         Ditambahkan: {{ $sertifikat->created_at?->format('d M Y') ?? '—' }}
@@ -461,36 +461,36 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
-                        <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/60 dark:border-gray-800 dark:text-gray-200 rounded-xl border border-gray-200">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600">Belum ada sertifikat yang ditambahkan.</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-100">Belum ada sertifikat yang ditambahkan.</p>
                     </div>
                 @endif
             </section>
 
             <!-- Learning Corners Section -->
-            <section class="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8 mb-10">
+            <section class="mt-8 bg-white dark:bg-gray-900 dark:text-gray-200 dark:border-gray-800 rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8 mb-10">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Learning Corners</h2>
-                    <span class="text-sm text-gray-600 bg-gray-100 px-4 py-1.5 rounded-full">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Learning Corners</h2>
+                    <span class="text-sm text-gray-600 bg-gray-100 dark:bg-gray-700/60 dark:text-gray-200 px-4 py-1.5 rounded-full">
                         {{ $user->learning_corners->count() }} catatan
                     </span>
                 </div>
                 @if($user->learning_corners->isNotEmpty())
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($user->learning_corners as $entry)
-                            <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 flex flex-col h-full">
+                            <div class="bg-white dark:bg-gray-700/60 dark:text-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 flex flex-col h-full">
                                 <div class="p-6 flex-1 flex flex-col">
                                     @if (!empty($entry->content) && is_array($entry->content))
                                         @foreach ($entry->content as $item)
                                             @if ($item['type'] === 'title')
-                                                <h3 class="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">
                                                     {{ $item['content'] ?? '(Tanpa Judul)' }}
                                                 </h3>
                                             @elseif ($item['type'] === 'text')
-                                                <p class="text-gray-700 mb-4 line-clamp-4">
+                                                <p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
                                                     {{ $item['content'] }}
                                                 </p>
                                             @elseif ($item['type'] === 'image')
@@ -500,7 +500,7 @@
                                                 <div class="mb-4">
                                                     <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
                                                         alt="{{ $item['alt'] ?? 'Gambar konten' }}"
-                                                        class="w-full h-40 object-cover rounded-lg border border-gray-200 shadow-sm"
+                                                        class="w-full h-40 object-cover rounded-lg border dark:border-gray-800 border-gray-200 shadow-sm"
                                                         loading="lazy"
                                                         onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
                                                 </div>
@@ -512,7 +512,7 @@
                                             @endif
                                         @endforeach
                                     @else
-                                        <p class="text-gray-700 mb-4 line-clamp-4">
+                                        <p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
                                             {{ Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150) }}
                                         </p>
                                     @endif
@@ -525,13 +525,13 @@
                         @endforeach
                     </div>
                 @else
-                    <p class="text-center text-gray-500 py-10">Belum ada catatan learning corner.</p>
+                    <p class="text-center text-gray-500 dark:text-gray-300 py-10">Belum ada catatan learning corner.</p>
                 @endif
             </section>
         @endif
 
         <!-- Footer -->
-        <div class="mt-8 text-center text-xs text-gray-500">
+        <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-200">
             Terakhir diperbarui: {{ now()->format('d F Y H:i') }} WIB
         </div>
 

@@ -106,45 +106,39 @@ class ProjekController extends Controller
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();
             $request->validate([
-                'nama_project'   => 'required|string|max:255',
-                'tanggal_mulai'  => 'required|date',
-                'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
-                'link_project'   => 'nullable|url|max:255',
-                'link_github'    => 'nullable|url|max:500',
-                'link_video'     => 'nullable|url|max:500',
-                'deskripsi'      => 'nullable|string|max:255',
-                ]);
-                
-        $content = $project->isi_content ?? [];
-
-        $content['nama_project'] = $request->nama_project;
-        $content['deskripsi'] = $request->deskripsi;
-        $content['link_project'] = $request->link_project;
-        $content['link_github']  = $request->link_github;
-        $content['link_video']   = $request->link_video;
-
-        $removeLinks = $request->remove_links ?? [];
-        
-        foreach ($removeLinks as $linkField) {
-        if (in_array($linkField, ['link_project', 'link_github', 'link_video'])) {
-            unset($content[$linkField]);
-        }
-        }
-        $project->update([
-            'isi_content'   => $content,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'leader_id'     => $request->leader
+            'nama_project'   => 'required|string|max:255',
+            'tanggal_mulai'  => 'required|date',
+            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+            'link_project'   => 'nullable|url|max:255',
+            'deskripsi'      => 'nullable|string|max:255',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
+            'leader'         => 'nullable|exists:users,id'
         ]);
-        $members = collect($request->members)
-            ->filter()
-            ->map(fn($id) => (int) $id)
-            ->values()
-            ->all();
+        $content = array_filter($request->only([
+            'nama_project', 'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
+        ]), fn($value) => !is_null($value) && $value !== '');
+
+        if (empty($content)) {
+            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
+        }
+        
+        $project->update([
+        'tanggal_mulai'  => $request->tanggal_mulai,
+        'tanggal_akhir'  => $request->tanggal_akhir,
+        'isi_content'    => $content,
+        'id_mahasiswa'   => Auth::id(),
+        'leader_id'      => $request->leader,
+        ]);
+
+        $members = collect($request->members ?? [])
+        ->filter()
+        ->reject(fn($id) => $id == $request->leader)
+        ->map(fn($id) => (int) $id)
+        ->values()
+        ->all();
 
         if (!empty($members)) {
-            $project->members()->sync($members);
-        } else {
             $project->members()->detach();
         }
 

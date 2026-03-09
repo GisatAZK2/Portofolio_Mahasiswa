@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('tanggal');
             $table->timestamps();
 
+
             $table->foreign('id_mahasiswa')
               ->references('id')
               ->on('users')

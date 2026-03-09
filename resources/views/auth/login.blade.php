@@ -74,7 +74,7 @@
                 Belum punya akun?
                 <a href="{{ route('register') }}"
                     class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
-                    Daftar dulu yuk
+                    Hubungi admin
                 </a>
             </p>
         </form>

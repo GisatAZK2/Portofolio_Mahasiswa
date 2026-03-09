@@ -109,6 +109,28 @@ function toggleDropdown(section) {
 
 window.toggleDropdown = toggleDropdown;
 
+
+
+// Toggle Dark Mode dan refresh browser
+window.toggleDarkMode = function() {
+    document.documentElement.classList.toggle('dark');
+    // Simpan preferensi ke localStorage
+    if(document.documentElement.classList.contains('dark')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+    // Refresh browser
+    location.reload();
+}
+
+// Pilihan Bahasa
+window.changeLanguage = function() {
+    const lang = document.getElementById('languageSelect').value;
+    localStorage.setItem('lang', lang);
+    location.reload();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;

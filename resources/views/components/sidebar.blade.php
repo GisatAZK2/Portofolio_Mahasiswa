@@ -205,58 +205,42 @@
                 </div>
             </div>
         @endauth
-        <!-- Settings -->
-            <a href="/settings" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                          {{ request()->routeIs('settings') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" 
-                         class="h-4 w-4"
-                         viewBox="0 0 24 24" 
-                         fill="none" 
-                         stroke="currentColor" 
-                         stroke-width="2" 
-                         stroke-linecap="round" 
-                         stroke-linejoin="round">
-                        
-                        <!-- Gear shape -->
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15
-                                 a1.65 1.65 0 0 0 .33 1.82
-                                 l.06.06
-                                 a2 2 0 1 1-2.83 2.83
-                                 l-.06-.06
-                                 a1.65 1.65 0 0 0-1.82-.33
-                                 1.65 1.65 0 0 0-1 1.51V21
-                                 a2 2 0 1 1-4 0v-.09
-                                 a1.65 1.65 0 0 0-1-1.51
-                                 1.65 1.65 0 0 0-1.82.33
-                                 l-.06.06
-                                 a2 2 0 1 1-2.83-2.83
-                                 l.06-.06
-                                 a1.65 1.65 0 0 0 .33-1.82
-                                 1.65 1.65 0 0 0-1.51-1H3
-                                 a2 2 0 1 1 0-4h.09
-                                 a1.65 1.65 0 0 0 1.51-1
-                                 1.65 1.65 0 0 0-.33-1.82
-                                 l-.06-.06
-                                 a2 2 0 1 1 2.83-2.83
-                                 l.06.06
-                                 a1.65 1.65 0 0 0 1.82.33H9
-                                 a1.65 1.65 0 0 0 1-1.51V3
-                                 a2 2 0 1 1 4 0v.09
-                                 a1.65 1.65 0 0 0 1 1.51
-                                 1.65 1.65 0 0 0 1.82-.33
-                                 l.06-.06
-                                 a2 2 0 1 1 2.83 2.83
-                                 l-.06.06
-                                 a1.65 1.65 0 0 0-.33 1.82V9
-                                 a1.65 1.65 0 0 0 1.51 1H21
-                                 a2 2 0 1 1 0 4h-.09
-                                 a1.65 1.65 0 0 0-1.51 1z">
-                            </path>
-                    </svg>
-                    <span class="font-medium whitespace-nowrap">Settings</span>
-                    </a>
     </nav>
+    <div class="group relative mt-auto mb-4 px-2">
+        <button onclick="toggleDropdown('setting')"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative text-gray-700 hover:bg-blue-50 hover:text-blue-700 w-full">
+          <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    d="M11.983 5.5c-.47 0-.93.05-1.372.146l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648a6.987 6.987 0 00-1.186.688L4.69 5.5a.5.5 0 00-.607.06L3.04 6.603a.5.5 0 00-.06.607l.834 1.186a6.987 6.987 0 00-.688 1.186l-1.648.388a.5.5 0 00-.398.487v1.472c0 .232.158.433.388.487l1.648.388c.162.42.393.816.688 1.186l-.834 1.186a.5.5 0 00.06.607l1.043 1.043a.5.5 0 00.607.06l1.186-.834c.37.295.766.526 1.186.688l.388 1.648a.5.5 0 00.487.398h1.472a.5.5 0 00.487-.398l.388-1.648a6.987 6.987 0 001.186-.688l1.186.834a.5.5 0 00.607-.06l1.043-1.043a.5.5 0 00.06-.607l-.834-1.186c.295-.37.526-.766.688-1.186l1.648-.388a.5.5 0 00.398-.487v-1.472a.5.5 0 00-.398-.487l-1.648-.388a6.987 6.987 0 00-.688-1.186l.834-1.186a.5.5 0 00-.06-.607L19.277 5.56a.5.5 0 00-.607-.06l-1.186.834a6.987 6.987 0 00-1.186-.688l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648A7.02 7.02 0 0011.983 5.5zM12 15a3 3 0 100-6 3 3 0 000 6z"/>
+</svg>
+            <span class="font-medium whitespace-nowrap">Setting</span>
+            <svg id="settingArrow" class="w-4 h-4 ml-auto transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+        <div id="settingMenu"
+            class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-md mt-2 p-4 border border-gray-200 dark:border-gray-700 absolute left-0 w-60 z-50">
+            <!-- Dark Mode Toggle -->
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-medium">Mode</span>
+                <button id="darkModeBtn"
+                    class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200"
+                    onclick="toggleDarkMode()">Dark Mode</button>
+            </div>
+            <!-- Language Selection -->
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">Bahasa</span>
+                <select id="languageSelect"
+                    class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200"
+                    onchange="changeLanguage()">
+                    <option value="id">Indonesia</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
 
     <!-- FOOTER -->
     <div class="px-2 py-5 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-700 shrink-0">
