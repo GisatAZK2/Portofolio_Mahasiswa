@@ -14,6 +14,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -29,33 +30,62 @@ class UserController extends Controller
 
     // Proses registrasi
     public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'nama_mahasiswa' => ['required', 'string', 'max:100'],
-            'email'          => ['nullable', 'email', 'max:100', 'unique:users,email'],
-            'username'       => ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
-            'password'       => ['required', 'confirmed', Password::min(8)->mixedCase()],
-            'id_jurusan'     => ['required', 'exists:jurusan,id_jurusan'],
-            'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
-            'id_angkatan'    => ['required', 'exists:angkatan,id'],
-            'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
-            'role'           => ['required', 'in:mahasiswa,dosen']
-        ]);
+{
+    $ipAddress = $request->ip();
+    $userAgent = $request->userAgent();
+    $sessionId = $request->session()->getId();
+    
+    $guestIdentifier = md5($ipAddress . $userAgent . $sessionId);
 
-        if ($request->hasFile('photo_profile')) {
-            $path = $request->file('photo_profile')->store('photos', 'public');
-            $validated['photo_profile'] = $path;
-        }
-
-        $validated['password']  = Hash::make($validated['password']);
-        $validated['is_active'] = true;
-
-        User::create($validated);
-
-        return redirect()->route('admin.mahasiswa')
-            ->with('success', 'Registrasi berhasil! Silakan login.');
+    $registrationCount = Cache::remember("registration_count_{$guestIdentifier}", 3600, function() {
+        return 0;
+    });
+    
+    // Cek di session juga sebagai backup
+    $sessionCount = $request->session()->get('registration_attempts', 0);
+    
+    $totalAttempts = max($registrationCount, $sessionCount);
+    
+    if ($totalAttempts >= 3) {
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Anda telah mencapai batas maksimal 3 kali pengajuan registrasi. Silakan hubungi admin untuk bantuan lebih lanjut.');
     }
 
+    $validated = $request->validate([
+        'nama_mahasiswa' => ['required', 'string', 'max:100'],
+        'email'          => ['nullable', 'email', 'max:100', 'unique:users,email'],
+        'username'       => ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
+        'password'       => ['required', 'confirmed', Password::min(8)->mixedCase()],
+        'id_jurusan'     => ['required', 'exists:jurusan,id_jurusan'],
+        'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
+        'id_angkatan'    => ['required', 'exists:angkatan,id'],
+        'photo_profile'  => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
+        'role'           => ['required', 'in:mahasiswa,dosen']
+    ]);
+
+    if ($request->hasFile('photo_profile')) {
+        $path = $request->file('photo_profile')->store('photos', 'public');
+        $validated['photo_profile'] = $path;
+    }
+
+    $validated['password']  = Hash::make($validated['password']);
+    $validated['is_active'] = true;
+    $validated['status_pengajuan'] = 'Sedang Di Ajukan'; 
+
+    User::create($validated);
+
+    $newCount = $totalAttempts + 1;
+    
+    Cache::put("registration_count_{$guestIdentifier}", $newCount, now()->addHours(24));
+    
+    // Simpan di session
+    $request->session()->put('registration_attempts', $newCount);
+    $request->session()->put('last_registration_time', now());
+
+    return redirect()->route('login')
+        ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');
+}
     // Tampilkan form login
     public function showLogin()
     {
@@ -64,32 +94,153 @@ class UserController extends Controller
 
     // Proses login (email ATAU username)
     public function login(Request $request)
-    {
-        $request->validate([
-            'login'    => ['required', 'string'],
-            'password' => ['required', 'string'],
-        ]);
+{
+    $request->validate([
+        'login'    => ['required', 'string'],
+        'password' => ['required', 'string'],
+    ]);
 
-        $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+    $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $credentials = [
-            $fieldType  => $request->login,
-            'password'  => $request->password,
-            'is_active' => true,
-        ];
+    $user = User::where($fieldType, $request->login)->first();
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('dashboard.me'))
-                ->with('success', 'Login berhasil!');
-        }
-
-        throw ValidationException::withMessages([
-            'login' => ['Email/Username atau password salah.'],
-        ]);
+    if (!$user) {
+        return back()->withErrors([
+            'login' => 'Akun tidak ditemukan.',
+        ])->onlyInput('login');
     }
 
-    // Logout
+    if ($user->is_active == 0 && empty($user->status_pengajuan)) {
+        return back()->withErrors([
+            'login' => 'AKUN_DIBLOKIR',
+        ])->onlyInput('login');
+    }
+
+    if ($user->status_pengajuan === 'Sedang Di Ajukan') {
+        return back()->withErrors([
+            'login' => 'PENGAJUAN_DIPROSES',
+        ])->onlyInput('login');
+    }
+
+    if ($user->status_pengajuan === 'Di Tolak') {
+        return back()->withErrors([
+            'login' => 'PENGAJUAN_DITOLAK',
+        ])->onlyInput('login');
+    }
+
+    if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
+        return back()->withErrors([
+            'login' => 'AKUN_DIBLOKIR',
+        ])->onlyInput('login');
+    }
+
+    $credentials = [
+        $fieldType => $request->login,
+        'password' => $request->password,
+    ];
+
+    if (Auth::attempt($credentials, $request->boolean('remember'))) {
+
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+
+ 
+        if ($user->role === 'admin') {
+            return redirect()->route('dashboard.admin')
+                ->with('success', 'Login berhasil! Selamat datang Admin.');
+        }
+
+        if ($user->role === 'dosen') {
+            return redirect()->route('dashboard.dosen')
+                ->with('success', 'Login berhasil! Selamat datang Dosen.');
+        }
+
+        // Default mahasiswa
+        return redirect()->route('dashboard.me')
+            ->with('success', 'Login berhasil! Selamat datang kembali.');
+    }
+
+    return back()->withErrors([
+        'login' => 'Password yang Anda masukkan salah.',
+    ])->onlyInput('login');
+}
+
+/**
+ * Update status pengajuan user (hanya untuk admin/dosen yang sesuai)
+ */
+public function updateStatusPengajuan(Request $request, $id)
+{
+    // Validasi user yang sedang login
+    $currentUser = Auth::user();
+    
+    // Cari user yang akan diupdate
+    $user = User::with(['jurusan', 'angkatan', 'keahlian'])->findOrFail($id);
+    
+    // Cek otorisasi
+    if ($currentUser->role === 'admin') {
+        // Admin bisa menyetujui semua
+        // Lanjutkan proses
+    } 
+    elseif ($currentUser->role === 'dosen') {
+        // Dosen hanya bisa menyetujui mahasiswa dengan jurusan, angkatan, dan keahlian yang sama
+        if ($currentUser->id_jurusan != $user->id_jurusan ||
+            $currentUser->id_angkatan != $user->id_angkatan ||
+            $currentUser->id_keahlian != $user->id_keahlian) {
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda hanya dapat menyetujui mahasiswa dengan jurusan, angkatan, dan keahlian yang sama.'
+            ], 403);
+        }
+    } 
+    else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized action.'
+        ], 403);
+    }
+    
+    // Validasi request
+    $request->validate([
+        'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
+        'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:255'
+    ]);
+    
+    try {
+        // Update status
+        $updateData = [
+            'status_pengajuan' => $request->status_pengajuan
+        ];
+        
+        // Jika diterima, set is_active = true
+        if ($request->status_pengajuan === 'Di Terima') {
+            $updateData['is_active'] = true;
+        }
+        
+        if ($request->status_pengajuan === 'Di Tolak') {
+            session()->flash('keterangan_tolak_' . $user->id, $request->keterangan_tolak);
+        }
+        
+        $user->update($updateData);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Status pengajuan berhasil diperbarui.',
+            'data' => [
+                'nama' => $user->nama_mahasiswa,
+                'status' => $user->status_pengajuan
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
     public function logout(Request $request)
     {
         Auth::logout();

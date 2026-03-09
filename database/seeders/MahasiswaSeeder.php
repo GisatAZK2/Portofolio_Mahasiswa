@@ -66,6 +66,19 @@ public function run(): void
             'id_keahlian' => 3,
             'id_angkatan' => 2,
             'is_active' => true,
+            'role' => 'admin'
+        ],
+        [
+            'nama_mahasiswa' => 'dosen',
+            'username' => 'dosen',
+            'email' => 'dosen@example.com',
+            'password' => Hash::make('password123'),
+            'jenis_kelamin' => 'Laki-Laki',
+            'deskripsi' => 'saya adalah seorang Dosen Kalian Mau Apa 😹😹😹',
+            'id_jurusan' => 3,
+            'id_keahlian' => 3,
+            'id_angkatan' => 2,
+            'is_active' => true,
             'role' => 'dosen'
         ]
     ]);

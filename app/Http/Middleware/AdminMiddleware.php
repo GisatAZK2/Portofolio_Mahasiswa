@@ -13,12 +13,16 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+   public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!auth()->check() || auth()->user()->role !== 'dosen') {
-        abort(403); // akses ditolak
-    }
+        if (!auth()->check()) {
+            abort(403);
+        }
 
-    return $next($request);
+        if (!in_array(auth()->user()->role, $roles)) {
+            abort(403);
+        }
+
+        return $next($request);
     }
 }
