@@ -489,18 +489,18 @@
                     <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-900 shadow-sm shrink-0">
                         @if (Auth::user()->photo_profile)
                             <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
-                                alt="{{ Auth::user()->nama_dosen }}" class="w-full h-full object-cover">
+                                alt="{{ Auth::user()->nama_mahasiswa }}" class="w-full h-full object-cover">
                         @else
                             <div
                                 class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                                {{ substr(Auth::user()->nama_dosen ?? 'D', 0, 1) }}
+                                {{ substr(Auth::user()->nama_mahasiswa ?? 'D', 0, 1) }}
                             </div>
                         @endif
                     </div>
 
                     <div class="flex-1 min-w-0 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
                         <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">
-                            {{ Auth::user()->nama_dosen }}
+                            {{ Auth::user()->nama_mahasiswa }}
                         </p>
 
                         <p class="text-xs text-gray-500 dark:text-gray-300 truncate">

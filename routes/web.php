@@ -65,7 +65,12 @@ Route::middleware(['auth','role:mahasiswa'])->group(function () {
 
 Route::middleware(['auth','role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('dashboard.admin');
-    Route::get('/admin/manageUser', [AdminController::class, 'mahasiswa'])->name('admin.users.index');
+    Route::get('/admin/manageUser', [AdminController::class, 'ListUser'])->name('admin.users.index');
+    Route::get('/admin/manageUser/Details/{user}',[AdminController::class, 'DetailsUser'])->name('admin.users.details');
+    Route::patch('/admin/manageUser/edit/{user}',[AdminController::class, 'UpdateUser'])->name('admin.users.edit');
+    Route::get('/admin/AddUser', [AdminController::class, 'ViewAddUser'])->name('admin.users.ViewCreate');
+    Route::post('/admin/StoreUser', [AdminController::class, 'AddUser'])->name('admin.users.StoreUser');
+    Route::delete('/admin/DeleteUser/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
     Route::get('/admin/manageProject', [AdminController::class, 'projects'])->name('admin.projects.index');
     Route::get('/admin/manageSertfikat', [AdminController::class, 'sertifikat'])->name('admin.sertifikat.index');
 });
