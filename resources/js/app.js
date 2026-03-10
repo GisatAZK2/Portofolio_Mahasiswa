@@ -1,5 +1,6 @@
 
 import './bootstrap';
+import Alpine from 'alpinejs';
 import { showSuccessAlert, showErrorAlert, showLoading, closeLoading,showConfirmAlert  } from './alert.js';
 
 window.showSuccessAlert = showSuccessAlert;
@@ -9,9 +10,13 @@ window.closeLoading     = closeLoading;
 window.showConfirmAlert = showConfirmAlert;
 
 
+window.Alpine = Alpine;
+Alpine.start();
+
+
 // Zoom logo image on click
 window.addEventListener('DOMContentLoaded', () => {
-    const logoImg = document.querySelector('.logo-zoom');
+    const logoImg = document.querySelector('#logo-zoom');
     if (!logoImg) return;
 
     logoImg.style.transition = 'transform 0.3s ease';
@@ -25,33 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
             logoImg.style.transform = 'scale(1.5)';
         }
     });
-  
-    // Show/hide Toggle Password
-    document.addEventListener('click', function (e) {
 
-        const toggleBtn = e.target.closest('[data-toggle-password]');
-        if (!toggleBtn) return;
-
-        const input = toggleBtn.closest('div').querySelector('input[type="password"], input[type="text"]');
-        if (!input) return;
-
-        if (input.type === 'password') {
-            input.type = 'text';
-            toggleBtn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            toggleBtn.textContent = '👁';
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!logoImg.contains(e.target) && logoImg.classList.contains('zoomed')) {
-            logoImg.classList.remove('zoomed');
-            logoImg.style.transform = 'scale(1)';
-        }
-    });
-
-    // Modal popup for logo image
     // Create modal element
     const modal = document.createElement('div');
     modal.id = 'logoModal';
@@ -90,6 +69,66 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener('click', function(e) {
+    const img = e.target.closest('.image-zoom')
+    if (!img) return
+
+    const modal = document.createElement('div')
+    modal.style.position = 'fixed'
+    modal.style.top = '0'
+    modal.style.left = '0'
+    modal.style.width = '100vw'
+    modal.style.height = '100vh'
+    modal.style.background = 'rgba(0,0,0,0.7)'
+    modal.style.display = 'flex'
+    modal.style.justifyContent = 'center'
+    modal.style.alignItems = 'center'
+    modal.style.zIndex = '9999'
+
+    const modalImg = document.createElement('img')
+    modalImg.src = img.src;
+    modalImg.alt = img.alt;
+    modalImg.style.maxWidth = '60vw';
+    modalImg.style.maxHeight = '60vh';
+    modalImg.style.boxShadow = '0 0 20px #0008';
+    modalImg.style.background = '#fff';
+    modal.style.padding = '24px';
+
+    modal.appendChild(modalImg)
+
+    modal.addEventListener('click', () => {
+        modal.remove()
+    })
+
+    document.body.appendChild(modal)
+})
+
+
+// Show/hide Toggle Password
+    document.addEventListener('click', function (e) {
+
+        const toggleBtn = e.target.closest('[data-toggle-password]');
+        if (!toggleBtn) return;
+
+        const input = toggleBtn.closest('div').querySelector('input[type="password"], input[type="text"]');
+        if (!input) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggleBtn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            toggleBtn.textContent = '👁';
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!logoImg.contains(e.target) && logoImg.classList.contains('zoomed')) {
+            logoImg.classList.remove('zoomed');
+            logoImg.style.transform = 'scale(1)';
+        }
+    });
+
 // Show Dropdown Menu on click
 function toggleDropdown(section) {
     const menuId  = section + 'Menu';
@@ -123,15 +162,13 @@ document.addEventListener('turbo:load', () => {
 });
 import { getTranslation } from './translate.js';
 
-// Contoh: update judul dashboard
 document.addEventListener('DOMContentLoaded', () => {
     const dashboardTitle = document.getElementById('dashboard-title');
     if (dashboardTitle) {
         dashboardTitle.textContent = getTranslation('dashboard', 'title');
     }
-    // Tambahkan update untuk elemen lain sesuai kebutuhan
 });
-// Toggle Dark Mode dan refresh browser
+
 window.toggleDarkMode = function() {
     document.documentElement.classList.toggle('dark');
     // Simpan preferensi ke localStorage

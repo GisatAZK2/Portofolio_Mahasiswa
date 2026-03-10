@@ -98,15 +98,15 @@ Route::middleware(['auth','dosen'])->prefix('admin')->group(function () {
 
 });
 
-Route::middleware('auth', 'dosen')->group(function () {
-    Route::get('/register', [UserController::class, 'showRegister'])->name('register');
-    Route::post('/register', [UserController::class, 'register']);
-});
 
 Route::post('/toggle-sidebar', function (Request $request) {
     Session::put('sidebar_collapsed', $request->collapsed);
     return response()->json(['success' => true]);
 })->middleware('web');
+
+// Auth routes (bisa di luar middleware auth)
+Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserController::class, 'register']);
 
 
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');

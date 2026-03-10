@@ -41,12 +41,12 @@
                 @endphp
 
                 <div class="flex flex-wrap items-center gap-3 mb-3">
-                    <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $statusColor }}">
+                    <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $statusColor }}" data-translate="status_{{ $status }}" data-translate-page="project_detail">
                         {{ $statusText }}
                     </span>
                     @if($status !== 'past')
                         <span class="text-sm text-gray-600 dark:text-gray-400">
-                            {{ $progress }}% Selesai
+                            {{ $progress }}% <span data-translate="progress_done" data-translate-page="project_detail"></span>
                         </span>
                     @endif
                 </div>
@@ -64,16 +64,16 @@
                 <!-- LEFT SIDE -->
                 <div>
                     <h2 class="text-xl sm:text-2xl font-bold mb-4 dark:text-gray-200">
-                        {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
+                        <span data-translate="nama_project" data-translate-page="project_detail"></span>: {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
                     </h2>
 
-                    <p class="font-semibold dark:text-gray-200">Deskripsi:</p>
+                    <p class="font-semibold dark:text-gray-200" data-translate="deskripsi_opsional" data-translate-page="project_detail"></p>
                     <p class="text-gray-700 dark:text-gray-300 mb-6 text-sm sm:text-base">
                         {{ $project->isi_content['deskripsi'] ?? 'Tidak ada Deskripsi' }}
                     </p>
 
-                    <p class="font-semibold mb-1 dark:text-gray-200">Siswa Terlibat:</p>
-                    <p class="mt-4 dark:text-gray-200">Pemimpin Tim:</p>
+                    <p class="font-semibold mb-1 dark:text-gray-200" data-translate="students_involved" data-translate-page="project_detail"></p>
+                    <p class="mt-4 dark:text-gray-200" data-translate="tambah_pemimpin" data-translate-page="project_detail"></p>
                     @if($project->leader)
                         <li class="ml-2 sm:ml-4 list-none">
                             <ul class="p-0">
@@ -94,10 +94,10 @@
                             </ul>
                         </li>
                     @else
-                        <p class="dark:text-gray-100 ml-2 sm:ml-4 text-sm sm:text-base">Tidak ada leader</p>
+                        <p class="dark:text-gray-100 ml-2 sm:ml-4 text-sm sm:text-base" data-translate="no_leader" data-translate-page="project_detail"></p>
                     @endif
                     
-                    <p class="mt-6 dark:text-gray-200">Rekan Rekan Kerja:</p>
+                    <p class="mt-6 dark:text-gray-200" data-translate="tambah_rekan" data-translate-page="project_detail"></p>
                     <div class="mt-2 ml-2 sm:ml-4 space-y-2 text-gray-700 dark:text-gray-300">
                         @forelse($project->members as $member)
                             @if($member->id !== $project->leader_id)
@@ -121,14 +121,14 @@
                                 </li>
                             @endif
                         @empty
-                            <p class="text-gray-400 dark:text-gray-200 text-sm sm:text-base">Tidak ada rekan</p>
+                            <p class="text-gray-400 dark:text-gray-200 text-sm sm:text-base" data-translate="no_member" data-translate-page="project_detail"></p>
                         @endforelse
                     </div>
                 </div>
 
                 <!-- RIGHT SIDE -->
                 <div>
-                    <p class="font-semibold mb-2 dark:text-gray-200">Time Period</p>
+                    <p class="font-semibold mb-2 dark:text-gray-200" data-translate="time_period" data-translate-page="project_detail"></p>
                     <div class="pb-2 dark:text-gray-200 text-sm sm:text-base">
                         {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d/m/Y') }}
                         →
@@ -137,14 +137,14 @@
                         : '-' }}
                     </div>
                     
-                    <p class="font-semibold mb-2 dark:text-gray-200">Link:</p>
+                    <p class="font-semibold mb-2 dark:text-gray-200" data-translate="links" data-translate-page="project_detail"></p>
                     
                     <div class="flex flex-wrap gap-3 sm:gap-4 text-blue-500 dark:text-blue-300 mb-6">
                         @if(!empty($project->isi_content['link_video']))
                             <a href="{{ $project->isi_content['link_video'] }}" 
                                target="_blank"
                                class="hover:underline text-sm sm:text-base">
-                               🎥 Video
+                               <span data-translate="link_video_opsional" data-translate-page="project_detail"></span>
                             </a>
                         @endif
                         
@@ -152,7 +152,7 @@
                             <a href="{{ $project->isi_content['link_github'] }}" 
                                target="_blank"
                                class="hover:underline text-sm sm:text-base">
-                               💻 GitHub
+                               <span data-translate="link_github_opsional" data-translate-page="project_detail"></span>
                             </a>
                         @endif
                         
@@ -160,7 +160,7 @@
                             <a href="{{ $project->isi_content['link_project'] }}" 
                                 target="_blank"
                                 class="hover:underline text-sm sm:text-base">
-                                🌐 Project
+                                <span data-translate="link_project_opsional" data-translate-page="project_detail"></span>
                             </a>
                         @endif
                     </div>
@@ -208,7 +208,7 @@
         <!-- LEARNING CORNER SECTION -->
         <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 sm:p-6 lg:p-8 relative mt-6 sm:mt-8 lg:mt-10">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <h2 class="text-xl sm:text-2xl font-bold dark:text-gray-50">Learning Corner</h2>
+                <h2 class="text-xl sm:text-2xl font-bold dark:text-gray-50" data-translate="learning_corner" data-translate-page="project_detail"></h2>
 
                 <div class="flex items-center gap-3">
                     @auth
@@ -231,14 +231,14 @@
                                             id="massDeleteBtn"
                                             class="px-4 sm:px-5 py-2 sm:py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-sm text-sm font-medium text-center opacity-50 cursor-not-allowed"
                                             disabled>
-                                        Hapus Terpilih (0)
+                                        <span data-translate="delete_selected" data-translate-page="project_detail"></span> (0)
                                     </button>
                                 </form>
                             @endif
 
                             <a href="{{ route('learning-corner.create', $project->id) }}"
                                class="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm font-medium text-center">
-                                + Tambah Catatan Baru
+                                <span data-translate="add_new_note" data-translate-page="project_detail"></span>
                             </a>
                         @endif
                     @else
@@ -248,7 +248,7 @@
 
             @if ($entries->isEmpty())
                 <div class="text-center py-8 sm:py-12 text-gray-500 dark:text-gray-400 italic text-sm sm:text-base">
-                    Belum ada catatan Learning Corner di project ini.
+                    <span data-translate="no_learning_corner" data-translate-page="project_detail"></span>
                 </div>
             @else
                 <!-- Grid dengan 1 card vertikal -->
@@ -293,7 +293,7 @@
                                     <input type="checkbox" 
                                            class="entry-checkbox w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                            data-id="{{ $entry->id_learning_corner }}">
-                                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Pilih untuk dihapus</span>
+                                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400" data-translate="select_to_delete" data-translate-page="project_detail"></span>
                                 </div>
                             @endif
 
@@ -341,7 +341,7 @@
                                                 <div class="flex flex-col sm:flex-row gap-2">
                                                     <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
                                                        class="flex-1 text-center px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition text-xs sm:text-sm">
-                                                        Edit
+                                                        <span data-translate="edit" data-translate-page="project_detail"></span>
                                                     </a>
 
                                                     <form action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" 
@@ -351,7 +351,7 @@
                                                         @method('DELETE')
                                                         <button type="button"
                                                                 class="w-full px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900 transition text-xs sm:text-sm delete-btn">
-                                                            Hapus
+                                                            <span data-translate="delete" data-translate-page="project_detail"></span>
                                                         </button>
                                                     </form>
                                                 </div>
