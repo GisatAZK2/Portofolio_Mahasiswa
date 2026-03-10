@@ -26,6 +26,7 @@
 
     <nav class="flex-1 px-2 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
 
+        <!-- Home - Untuk semua user -->
         <a href="{{ route('dashboard') }}"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
                 {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
@@ -53,8 +54,9 @@
 
             </a>
 
-        <!-- Dashboard -->
+        <!-- My Dashboard - Hanya untuk user yang sudah login (non-admin dan non-dosen) -->
         @auth
+            @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
             <a href="{{ route('dashboard.me') }}"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
                           {{ request()->routeIs('dashboard.me') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
@@ -73,11 +75,161 @@
                     </span>
                 @endif
             </a>
+            @endif
         @endauth
 
+        <!-- ================== MENU UNTUK ADMIN ================== -->
+        @auth
+            @if(Auth::user()->role === 'admin')
+            <!-- Manajemen Users -->
+            <a href="{{ route('admin.users.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('admin.users.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Manajemen Users
+                </span>
 
-        <!-- ================== PROJECT ================== -->
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Manajemen Users
+                    </span>
+                @endif
+            </a>
+
+            <!-- Manajemen Projects -->
+            <a href="{{ route('admin.projects.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('admin.projects.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Manajemen Projects
+                </span>
+
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Manajemen Projects
+                    </span>
+                @endif
+            </a>
+
+            <!-- Manajemen Sertifikat -->
+            <a href="{{ route('admin.sertifikat.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('admin.sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                    <path d="M8 2v4"></path>
+                    <path d="M16 2v4"></path>
+                    <path d="M3 10h18"></path>
+                    <circle cx="12" cy="14" r="2"></circle>
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Manajemen Sertifikat
+                </span>
+
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Manajemen Sertifikat
+                    </span>
+                @endif
+            </a>
+            @endif
+        @endauth
+
+        <!-- ================== MENU UNTUK DOSEN ================== -->
+        @auth
+            @if(Auth::user()->role === 'dosen')
+            <!-- Dashboard Dosen -->
+            <a href="{{ route('dashboard.dosen') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('dashboard.dosen') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M8 8h8M8 12h8M8 16h4" />
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Dashboard Dosen
+                </span>
+
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Dashboard Dosen
+                    </span>
+                @endif
+            </a>
+
+            <!-- Manajemen Mahasiswa Bimbingan -->
+            <a href="{{ route('dosen.mahasiswa.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('dosen.mahasiswa.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Mahasiswa Bimbingan
+                </span>
+
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Mahasiswa Bimbingan
+                    </span>
+                @endif
+            </a>
+
+            <!-- Manajemen Projects Dosen -->
+            <a href="{{ route('dosen.projects.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('dosen.projects.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Projects Bimbingan
+                </span>
+
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Projects Bimbingan
+                    </span>
+                @endif
+            </a>
+
+            <!-- Manajemen Sertifikat Dosen -->
+            <a href="{{ route('dosen.sertifikat.index') }}"
+                class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                          {{ request()->routeIs('dosen.sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                    <path d="M8 2v4"></path>
+                    <path d="M16 2v4"></path>
+                    <path d="M3 10h18"></path>
+                    <circle cx="12" cy="14" r="2"></circle>
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    Sertifikat Bimbingan
+                </span>
+
+                @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Sertifikat Bimbingan
+                    </span>
+                @endif
+            </a>
+            @endif
+        @endauth
+
+        <!-- ================== MENU UNTUK NON-ADMIN DAN NON-DOSEN ================== -->
         @guest
+            <!-- Project Mahasiswa - Untuk guest -->
             <a href="{{ route('project.project_user') }}"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
                           {{ request()->routeIs('project.project_user') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
@@ -97,6 +249,8 @@
                 @endif
             </a>
         @else
+            @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
+            <!-- Project untuk non-admin & non-dosen yang sudah login -->
             <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('project.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                     class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
@@ -148,12 +302,12 @@
                     </a>
                 </div>
             </div>
+            @endif
         @endguest
 
-        
-
-        <!-- Sertifikat - hanya untuk user yang sudah login -->
+        <!-- Sertifikat - hanya untuk user yang sudah login (non-admin & non-dosen) -->
         @auth
+            @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
             <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                     class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
@@ -209,8 +363,11 @@
                     </a>
                 </div>
             </div>
+            @endif
         @endauth
     </nav>
+
+    <!-- Setting Menu -->
     <div class="group relative mt-auto mb-4 px-2">
        <button onclick="toggleDropdown('setting')"
     class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative 
@@ -256,9 +413,9 @@
                 </select>
             </div>
         </div>
+
     </div>
-
-
+</div>
     <!-- FOOTER -->
     <div class="px-2 py-5 border-t border-gray-200 dark:border-gray-900 bg-gray-50 dark:bg-gray-800 shrink-0">
         @auth
@@ -276,9 +433,95 @@
                             </div>
                         @endif
                     </div>
+
                     <div class="flex-1 min-w-0 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                        <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">{{ Auth::user()->nama_mahasiswa }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-300 truncate">{{ Auth::user()->email ?? Auth::user()->username }}</p>
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">
+                            {{ Auth::user()->nama_mahasiswa }}
+                        </p>
+
+                        <p class="text-xs text-gray-500 dark:text-gray-300 truncate">
+                            {{ Auth::user()->email ?? Auth::user()->username }}
+                            <span class="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-[10px] font-semibold">
+                                Admin
+                            </span>
+                        </p>
+                    </div>
+
+                    @if(session('sidebar_collapsed', false))
+                        <span
+                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                            {{ Auth::user()->nama_mahasiswa }} (Admin)
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+        {{-- DOSEN (ADA LINK PROFILE) --}}
+        @elseif(Auth::user()->role === 'dosen')
+           
+            <div class="block hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg dark:bg-gray-700 transition p-2 -mx-2 group relative">
+                <div class="flex items-center space-x-3">
+
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-900 shadow-sm shrink-0">
+                        @if (Auth::user()->photo_profile)
+                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
+                                alt="{{ Auth::user()->nama_mahasiswa }}" class="w-full h-full object-cover">
+                        @else
+                            <div
+                                class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                                {{ substr(Auth::user()->nama_mahasiswa ?? 'D', 0, 1) }}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="flex-1 min-w-0 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">
+                            {{ Auth::user()->nama_mahasiswa }}
+                        </p>
+
+                        <p class="text-xs text-gray-500 dark:text-gray-300 truncate">
+                            {{ Auth::user()->email ?? Auth::user()->username }}
+                            <span class="ml-1 px-1.5 py-0.5 bg-green-100 text-green-800 rounded-full text-[10px] font-semibold">
+                                Dosen
+                            </span>
+                        </p>
+                    </div>
+
+                    @if(session('sidebar_collapsed', false))
+                        <span
+                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                            {{ Auth::user()->nama_dosen }} (Dosen)
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+        {{-- USER BIASA (ADA LINK PROFILE) --}}
+        @else
+            <a href="{{ route('profile') }}"
+                class="block hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg dark:bg-gray-700 transition p-2 -mx-2 group relative">
+                <div class="flex items-center space-x-3">
+
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-900 shadow-sm shrink-0">
+                        @if (Auth::user()->photo_profile)
+                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
+                                alt="{{ Auth::user()->nama_mahasiswa }}" class="w-full h-full object-cover">
+                        @else
+                            <div
+                                class="w-full h-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                                {{ substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1) }}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="flex-1 min-w-0 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">
+                            {{ Auth::user()->nama_mahasiswa }}
+                        </p>
+
+                        <p class="text-xs text-gray-500 dark:text-gray-300 truncate">
+                            {{ Auth::user()->email ?? Auth::user()->username }}
+                        </p>
                     </div>
 
                     @if(session('sidebar_collapsed', false))
@@ -289,17 +532,20 @@
                     @endif
                 </div>
             </a>
+        @endif
 
-            <form method="POST" action="{{ route('logout') }}" class="mt-3">
-                @csrf
-                <button type="submit"
-                    class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 bg-red-50 dark:bg-red-600 text-red-700 dark:text-red-50 rounded-lg hover:bg-red-100 transition font-medium group relative">
-                    <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                        </path>
-                    </svg>
-                    <span class="{{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Logout</span>
+
+        <form method="POST" action="{{ route('logout') }}" class="mt-3">
+            @csrf
+            <button type="submit"
+                class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 bg-red-50 dark:bg-red-600 text-red-700 dark:text-red-50 rounded-lg hover:bg-red-100 transition font-medium group relative">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+
+                <span class="{{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Logout</span>
 
                     @if(session('sidebar_collapsed', false))
                         <span
@@ -334,3 +580,60 @@
         @endauth
     </div>
 </aside>
+
+<script>
+    // Fungsi untuk toggle dropdown setting
+    function toggleDropdown(menu) {
+        const settingMenu = document.getElementById('settingMenu');
+        const settingArrow = document.getElementById('settingArrow');
+        
+        if (settingMenu.classList.contains('hidden')) {
+            settingMenu.classList.remove('hidden');
+            settingArrow.classList.add('rotate-180');
+        } else {
+            settingMenu.classList.add('hidden');
+            settingArrow.classList.remove('rotate-180');
+        }
+    }
+
+    // Fungsi untuk toggle dark mode
+    function toggleDarkMode() {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('darkMode', 'false');
+            document.getElementById('darkModeBtn').innerHTML = 'Dark Mode';
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('darkMode', 'true');
+            document.getElementById('darkModeBtn').innerHTML = 'Light Mode';
+        }
+    }
+
+    // Fungsi untuk change language
+    function changeLanguage() {
+        const lang = document.getElementById('languageSelect').value;
+        // Implementasi change language sesuai kebutuhan
+        console.log('Language changed to:', lang);
+    }
+
+    // Cek preferensi dark mode saat load
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+        if (document.getElementById('darkModeBtn')) {
+            document.getElementById('darkModeBtn').innerHTML = 'Light Mode';
+        }
+    }
+
+    // Click outside untuk menutup dropdown setting
+    document.addEventListener('click', function(event) {
+        const settingMenu = document.getElementById('settingMenu');
+        const settingButton = event.target.closest('button[onclick="toggleDropdown(\'setting\')"]');
+        
+        if (!settingButton && !settingMenu?.contains(event.target)) {
+            if (settingMenu && !settingMenu.classList.contains('hidden')) {
+                settingMenu.classList.add('hidden');
+                document.getElementById('settingArrow')?.classList.remove('rotate-180');
+            }
+        }
+    });
+</script>

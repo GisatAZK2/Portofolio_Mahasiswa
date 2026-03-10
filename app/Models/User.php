@@ -37,6 +37,7 @@ class User extends Authenticatable
     'id_angkatan',
     'deskripsi',
     'is_active',
+    'status_pengajuan',
     'role'
     ];
     
