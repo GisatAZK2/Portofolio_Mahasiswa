@@ -30,7 +30,8 @@ class AdminController extends Controller
         ->withCount([
             'projects',
             'sertifikats',
-            'learning_corners'
+            'learning_corners',
+            
         ])
         ->orderBy('created_at', 'desc')
         ->get();

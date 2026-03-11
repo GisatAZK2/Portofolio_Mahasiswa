@@ -1,13 +1,13 @@
 
 import './bootstrap';
 import Alpine from 'alpinejs';
-import { showSuccessAlert, showErrorAlert, showLoading, closeLoading,showConfirmAlert  } from './alert.js';
+import { showSuccessAlert, showErrorAlert, showLoading, closeLoading,showConfirm  } from './alert.js';
 
 window.showSuccessAlert = showSuccessAlert;
 window.showErrorAlert   = showErrorAlert;
 window.showLoading      = showLoading;
 window.closeLoading     = closeLoading;
-window.showConfirmAlert = showConfirmAlert;
+window.showConfirmAlert = showConfirm;
 
 
 window.Alpine = Alpine;
@@ -15,93 +15,50 @@ Alpine.start();
 
 
 // Zoom logo image on click
-window.addEventListener('DOMContentLoaded', () => {
-    const logoImg = document.querySelector('#logo-zoom');
-    if (!logoImg) return;
+document.addEventListener('DOMContentLoaded', () => {
+    const zoomImages = document.querySelectorAll('#logo-zoom');
 
-    logoImg.style.transition = 'transform 0.3s ease';
+    zoomImages.forEach(img => {
+        img.style.transition = 'transform 0.3s ease';
 
-    logoImg.addEventListener('click', () => {
-        if (logoImg.classList.contains('zoomed')) {
-            logoImg.classList.remove('zoomed');
-            logoImg.style.transform = 'scale(1)';
-        } else {
-            logoImg.classList.add('zoomed');
-            logoImg.style.transform = 'scale(1.5)';
-        }
-    });
+        img.addEventListener('click', (e) => {
+            e.stopPropagation(); 
 
-    // Create modal element
-    const modal = document.createElement('div');
-    modal.id = 'logoModal';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100vw';
-    modal.style.height = '100vh';
-    modal.style.background = 'rgba(0,0,0,0.6)';
-    modal.style.display = 'none';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '9999';
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.inset = '0';
+            modal.style.background = 'rgba(0,0,0,0.85)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '9999';
+            modal.style.cursor = 'zoom-out';
 
-    // Modal image
-    const modalImg = document.createElement('img');
-    modalImg.src = logoImg.src;
-    modalImg.alt = logoImg.alt;
-    modalImg.style.maxWidth = '60vw';
-    modalImg.style.maxHeight = '60vh';
-    modalImg.style.borderRadius = '50%';
-    modalImg.style.boxShadow = '0 0 20px #0008';
-    modalImg.style.background = '#fff';
-    modalImg.style.padding = '24px';
-    modal.appendChild(modalImg);
+            const modalImg = document.createElement('img');
+            modalImg.src = img.src;
+            modalImg.alt = img.alt || 'Zoomed image';
+            modalImg.style.maxWidth = '90vw';
+            modalImg.style.maxHeight = '90vh';
+            modalImg.style.objectFit = 'contain';
+            modalImg.style.borderRadius = '12px';
+            modalImg.style.boxShadow = '0 10px 40px rgba(0,0,0,0.6)';
+            modalImg.style.background = '#fff';
+            modalImg.style.padding = img.classList.contains('rounded-full') ? '16px' : '0';
 
-    // Close modal on click
-    modal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+            modal.appendChild(modalImg);
 
-    document.body.appendChild(modal);
+            modal.addEventListener('click', () => {
+                modal.remove();
+                document.body.style.overflow = '';
+            });
 
-    logoImg.addEventListener('click', () => {
-        modal.style.display = 'flex';
+            modalImg.addEventListener('click', (e) => e.stopPropagation());
+
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden'; 
+        });
     });
 });
-
-document.addEventListener('click', function(e) {
-    const img = e.target.closest('.image-zoom')
-    if (!img) return
-
-    const modal = document.createElement('div')
-    modal.style.position = 'fixed'
-    modal.style.top = '0'
-    modal.style.left = '0'
-    modal.style.width = '100vw'
-    modal.style.height = '100vh'
-    modal.style.background = 'rgba(0,0,0,0.7)'
-    modal.style.display = 'flex'
-    modal.style.justifyContent = 'center'
-    modal.style.alignItems = 'center'
-    modal.style.zIndex = '9999'
-
-    const modalImg = document.createElement('img')
-    modalImg.src = img.src;
-    modalImg.alt = img.alt;
-    modalImg.style.maxWidth = '60vw';
-    modalImg.style.maxHeight = '60vh';
-    modalImg.style.boxShadow = '0 0 20px #0008';
-    modalImg.style.background = '#fff';
-    modal.style.padding = '24px';
-
-    modal.appendChild(modalImg)
-
-    modal.addEventListener('click', () => {
-        modal.remove()
-    })
-
-    document.body.appendChild(modal)
-})
 
 
 // Show/hide Toggle Password
@@ -119,13 +76,6 @@ document.addEventListener('click', function(e) {
         } else {
             input.type = 'password';
             toggleBtn.textContent = '👁';
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!logoImg.contains(e.target) && logoImg.classList.contains('zoomed')) {
-            logoImg.classList.remove('zoomed');
-            logoImg.style.transform = 'scale(1)';
         }
     });
 
@@ -160,14 +110,7 @@ document.addEventListener('turbo:load', () => {
         langSelect.value = localStorage.getItem('lang') || 'id';
     }
 });
-import { getTranslation } from './translate.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const dashboardTitle = document.getElementById('dashboard-title');
-    if (dashboardTitle) {
-        dashboardTitle.textContent = getTranslation('dashboard', 'title');
-    }
-});
 
 window.toggleDarkMode = function() {
     document.documentElement.classList.toggle('dark');

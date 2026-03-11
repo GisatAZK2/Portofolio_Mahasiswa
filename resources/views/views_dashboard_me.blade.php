@@ -608,4 +608,13 @@
             createSparkline('sertifikatChart', '#f59e0b');
         });
     </script>
+
+    
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+});
+</script>
+
 @endsection

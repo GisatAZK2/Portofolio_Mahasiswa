@@ -159,26 +159,20 @@
                 {{ implode("\n", $errors->all()) }}
             @endif
 
-            // Load saved data from localStorage
             loadSavedData();
-
-            // Initialize member selects
             initializeMemberSelects();
 
-            // Add change listener to leader select
             const leaderSelect = document.getElementById("leader-select");
             leaderSelect.addEventListener("change", function () {
                 updateDisabledOptions();
                 saveToLocalStorage();
             });
 
-            // Add submit event listener to form
             document.getElementById('projectForm').addEventListener('submit', function () {
                 clearLocalStorage();
             });
         });
 
-        // Function to save form data to localStorage
         function saveToLocalStorage() {
             const leaderId = document.getElementById("leader-select").value;
 
@@ -200,7 +194,6 @@
             localStorage.setItem('projectTeamData', JSON.stringify(projectData));
         }
 
-        // Function to load saved data from localStorage
         function loadSavedData() {
             const savedData = localStorage.getItem('projectTeamData');
 
@@ -213,11 +206,9 @@
                         document.getElementById("leader-select").value = data.leader;
                     }
 
-                    // Clear existing members
                     const container = document.getElementById('members-container');
                     container.innerHTML = '';
 
-                    // Add saved members
                     if (data.members && data.members.length > 0) {
                         data.members.forEach(memberId => {
                             if (memberId) {
@@ -225,32 +216,26 @@
                             }
                         });
                     } else {
-                        // Add one empty member select if no saved members
                         addMemberSelect();
                     }
 
-                    // Update disabled options
                     setTimeout(() => {
                         updateDisabledOptions();
                     }, 100);
 
                 } catch (e) {
                     console.error('Error parsing saved data:', e);
-                    // Add one empty member select if error
                     addMemberSelect();
                 }
             } else {
-                // Add one empty member select if no saved data
                 addMemberSelect();
             }
         }
 
-        // Function to clear localStorage after submit
         function clearLocalStorage() {
             localStorage.removeItem('projectTeamData');
         }
 
-        // Function to update disabled options based on selected leader and members
         function updateDisabledOptions() {
             const leaderId = document.getElementById("leader-select").value;
 
@@ -264,12 +249,10 @@
 
             // Update all member selects
             document.querySelectorAll(".member-select").forEach(select => {
-                // Enable all options first
                 select.querySelectorAll("option").forEach(option => {
                     option.disabled = false;
                 });
 
-                // Disable leader option if leader is selected
                 if (leaderId) {
                     let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
                     if (leaderOption) {
@@ -277,7 +260,6 @@
                     }
                 }
 
-                // Disable options that are selected in other member selects
                 selectedMemberIds.forEach(selectedId => {
                     if (selectedId && select.value !== selectedId) {
                         let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
@@ -291,7 +273,6 @@
 
         // Function to initialize member selects
         function initializeMemberSelects() {
-            // Add change listeners to all member selects
             document.querySelectorAll(".member-select").forEach(select => {
                 select.addEventListener("change", function () {
                     updateDisabledOptions();
@@ -349,15 +330,19 @@
             const memberDiv = button.closest('.member-item');
             memberDiv.remove();
 
-            // Update disabled options after removal
             updateDisabledOptions();
-
-            // Save to localStorage
             saveToLocalStorage();
         }
 
-        // Export functions to global scope
         window.addMemberSelect = addMemberSelect;
         window.removeMember = removeMember;
     </script>
+
+    
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Tambahkan project baru dengan mengisi formulir. Pastikan untuk memilih pemimpin project dan menambahkan anggota tim jika diperlukan. Jangan lupa untuk menyimpan perubahan setelah selesai.");
+});
+</script>
 @endsection

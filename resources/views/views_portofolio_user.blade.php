@@ -3,16 +3,12 @@
 @section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
 
 @section('content')
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-700 py-8">
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-800 py-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <!-- Grid utama ala LinkedIn -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-
-                <!-- ========== SIDEBAR KIRI (Profil + Keahlian) - Sticky hanya di lg+ ========== -->
                 <div class="lg:col-span-1 lg:sticky lg:top-8 lg:self-start space-y-6">
 
-                    <!-- Kartu Profil Ringkas -->
                     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-900 shadow-sm overflow-hidden">
                         <!-- Background Banner -->
                         <div class="h-32
@@ -24,47 +20,81 @@
                             @endif>
                         </div>
 
-                        <!-- Avatar dan Info Utama -->
+                        <!-- Avatar -->
                         <div class="px-5 pb-6 relative">
                             <div class="flex justify-between items-start">
                                 <div class="-mt-12 mb-3">
-                                    <div
-                                        class="w-24 h-24 rounded-full border-4 border-white bg-white dark:border-gray-900 dark:bg-gray-900 shadow-lg overflow-hidden">
+                                    <div class="w-24 h-24 rounded-full border-4 border-white bg-white dark:border-gray-900 dark:bg-gray-900 shadow-lg overflow-hidden">
                                         @if($user->photo_profile)
-                                            <img src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
+                                            <img id="logo-zoom" 
+                                                src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
                                                 alt="{{ $user->nama_mahasiswa ?? 'Mahasiswa' }}"
-                                                class="w-full h-full object-cover">
+                                                class="cursor-pointer w-full h-full object-cover"
+                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'w-full h-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold\'>{{ strtoupper(mb_substr(trim($user->nama_mahasiswa ?? 'M'), 0, 1)) }}</div>'">
                                         @else
-                                            <div
-                                                class="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
+                                            <div class="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
                                                 {{ strtoupper(mb_substr(trim($user->nama_mahasiswa ?? 'M'), 0, 1)) }}
                                             </div>
                                         @endif
                                     </div>
                                 </div>
-
-                                <div class="text-xs text-gray-600 mt-2">
-                                    <span class="inline-flex items-center gap-1">
-                                        <span>Jenis kelamin :</span>
-                                        {{ $user->jenis_kelamin ?? '-' }}
-                                    </span>
-                                </div>
                             </div>
 
-                            <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mt-2">
+                            <!-- Email Section -->
+                            <div class="mt-2 mb-1">
+                                <a href="mailto:{{ $user->email ?? '#' }}" class="text-sm text-gray-500 dark:text-gray-400 hover:underline truncate block" title="{{ $user->email ?? 'Email tidak tersedia' }}">
+                                    {{ $user->email ?? 'Email tidak tersedia' }}
+                                </a>
+                            </div>
+
+                            <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
                                 {{ trim($user->nama_mahasiswa ?? 'Mahasiswa') }}
                             </h1>
                             <p class="text-sm text-gray-600 dark:text-gray-300">
                                 {{ $user->jurusan?->nama_jurusan ?? 'Mahasiswa' }}
                             </p>
 
+                            <div class="text-xs text-gray-600 dark:text-gray-300 mt-3 flex flex-col gap-2">
+                                <!-- Jenis Kelamin dengan Icon -->
+                                <span class="flex items-center gap-2">
+                                    @if(($user->jenis_kelamin ?? '') == 'Laki-laki')
+                                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M13 3a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 11-2 0V4.414l-9.293 9.293a1 1 0 01-1.414-1.414L15.586 3H14a1 1 0 01-1-1z"></path>
+                                            <path d="M5 4a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-3a1 1 0 112 0v3a4 4 0 01-4 4H5a4 4 0 01-4-4V6a4 4 0 014-4h3a1 1 0 110 2H5z"></path>
+                                        </svg>
+                                    @elseif(($user->jenis_kelamin ?? '') == 'Perempuan')
+                                        <svg class="w-4 h-4 text-pink-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 5a3 3 0 100 6 3 3 0 000-6zm-5 3a5 5 0 1110 0 5 5 0 01-10 0z"></path>
+                                            <path d="M9 13v2h2a1 1 0 010 2H9v2a1 1 0 11-2 0v-2H5a1 1 0 010-2h2v-2a1 1 0 112 0z"></path>
+                                        </svg>
+                                    @else
+                                        <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    @endif
+                                    <span>Jenis kelamin :</span>
+                                    <span class="font-medium">{{ $user->jenis_kelamin ?? '-' }}</span>
+                                </span>
+
+                                <!-- Angkatan dengan Icon -->
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                                    </svg>
+                                    <span>Angkatan :</span>
+                                    <span class="font-medium">{{ $user->angkatan?->nama_angkatan ?? '-' }}</span>
+                                </span>
+                            </div>
+
                             <p class="mt-4 text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
                                 {{ !empty(trim($user->deskripsi)) ? $user->deskripsi : 'Tidak ada deskripsi.' }}
                             </p>
 
-                            <p class="mt-4 text-xs text-blue-600 font-medium cursor-pointer hover:underline">
-                                Politeknik Mitra Industri
-                            </p>
+                            <a href="https://www.polmind.ac.id/" target="_blank">
+                                <p class="mt-4 text-xs text-blue-600 font-medium cursor-pointer hover:underline">
+                                    Politeknik Mitra Industri
+                                </p>
+                            </a>
                         </div>
                     </div>
 
@@ -114,13 +144,11 @@
                 <!-- ========== KONTEN UTAMA ========== -->
                 <div class="lg:col-span-2 space-y-6">
 
-                    <!-- Projects dengan Tabs dan Pagination -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
-                        <!-- Header dengan Tabs -->
+                        
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-0">Projects</h3>
-                            
-                            <!-- Tab Navigation -->
+            
                             <div class="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
                                 <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'now']) }}" 
                                    class="px-4 py-2 text-sm font-medium rounded-md transition-all
@@ -146,7 +174,6 @@
                             </div>
                         </div>
 
-                        <!-- Info Tab dan Count -->
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-sm text-gray-500 dark:text-gray-400">
                                 @switch($projectTab)
@@ -181,7 +208,7 @@
                                         // Cek apakah owner dan leader adalah orang yang sama
                                         $isOwnerAndLeaderSame = $owner && $leader && $owner->id === $leader->id;
                                         
-                                        // Tentukan peran user dalam project ini
+                                        // Tentukan peran user dalam project 
                                         $userRole = null;
                                         $userRoleBadge = '';
                                         
@@ -248,9 +275,10 @@
                                                         <div class="flex items-center space-x-3 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
                                                             <div class="flex-shrink-0">
                                                                 @if($owner && $owner->photo_profile)
-                                                                    <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                                    <img id="logo-zoom" src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                                       
                                                                         alt="{{ $owner->nama_mahasiswa ?? 'Owner/Leader' }}"
-                                                                        class="w-12 h-12 rounded-full object-cover border-2 border-purple-300">
+                                                                        class="cursor-pointer w-12 h-12 rounded-full object-cover border-2 border-purple-300">
                                                                 @else
                                                                     <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center border-2 border-purple-300">
                                                                         <span class="text-purple-600 font-medium text-lg">
@@ -282,14 +310,15 @@
                                                         </div>
                                                     </div>
                                                 @else
-                                                    <!-- Tampilkan terpisah jika berbeda -->
+
                                                     <!-- Leader Section -->
                                                     <div class="flex items-center space-x-3">
                                                         <div class="flex-shrink-0">
                                                             @if($leader && $leader->photo_profile)
                                                                 <img src="{{ asset('storage/' . ltrim($leader->photo_profile, '/')) }}"
+                                                                    id="logo-zoom"
                                                                     alt="{{ $leader->nama_mahasiswa ?? 'Leader' }}"
-                                                                    class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                                                                    class="cursor-pointer w-10 h-10 rounded-full object-cover border-2 border-gray-200">
                                                             @else
                                                                 <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-gray-200">
                                                                     <span class="text-indigo-600 font-medium text-sm">
@@ -320,9 +349,10 @@
                                                     <div class="flex items-center space-x-3">
                                                         <div class="flex-shrink-0">
                                                             @if($owner && $owner->photo_profile)
-                                                                <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                                <img id="logo-zoom" src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+
                                                                     alt="{{ $owner->nama_mahasiswa ?? 'Owner' }}"
-                                                                    class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                                                                    class="cursor-pointer w-10 h-10 rounded-full object-cover border-2 border-gray-200">
                                                             @else
                                                                 <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center border-2 border-gray-200">
                                                                     <span class="text-amber-600 font-medium text-sm">
@@ -359,9 +389,9 @@
                                                         @foreach($project->members->take(5) as $member)
                                                             <div class="flex items-center space-x-2 group relative" title="{{ $member->nama_mahasiswa }}">
                                                                 @if($member->photo_profile)
-                                                                    <img src="{{ asset('storage/' . ltrim($member->photo_profile, '/')) }}"
+                                                                    <img id="logo-zoom" src="{{ asset('storage/' . ltrim($member->photo_profile, '/')) }}"
                                                                         alt="{{ $member->nama_mahasiswa }}"
-                                                                        class="w-8 h-8 rounded-full object-cover border-2 border-gray-200 hover:border-indigo-400 transition cursor-pointer">
+                                                                        class="cursor-pointer w-8 h-8 rounded-full object-cover border-2 border-gray-200 hover:border-indigo-400 transition">
                                                                 @else
                                                                     <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-200 hover:border-indigo-400 transition cursor-pointer">
                                                                         <span class="text-gray-600 font-medium text-xs">
@@ -445,7 +475,7 @@
                     <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-5">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Sertifikat</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-200">{{ $user->sertifikats->count() }} sertifikat</span>
+                            <span class="text-sm text-indigo-600 dark:text-indigo-400">{{ $user->sertifikats->count() }} sertifikat</span>
                         </div>
 
                         @if($user->sertifikats->isNotEmpty())
@@ -508,7 +538,7 @@
                                                 <div
                                                     class="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 shadow-inner flex items-center justify-center">
                                                     @if($isImage)
-                                                        <img src="{{ $linkSertif }}" alt="Preview {{ $namaSertif }}"
+                                                        <img  src="{{ $linkSertif }}" alt="Preview {{ $namaSertif }}"
                                                             class="w-full h-full object-contain" loading="lazy"
                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                         <div
@@ -540,9 +570,12 @@
                         @endif
                     </div>
 
-                    <!-- Learning Corners - FIXED VERSION -->
+                    <!-- Learning Corners  -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                     <div class="flex justify-between items-center mb-5">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Learning Corners</h3>
+                        <span class="text-sm text-indigo-600 dark:text-indigo-400 ">{{ $user->learning_corners->count() }} catatan</span>
+                     </div>
 
                         @if($user->learning_corners->isNotEmpty())
                             <div class="space-y-6">
@@ -574,8 +607,8 @@
 
                                                     @elseif(($item['type'] ?? '') === 'image' && !empty($item['content']))
                                                         <div class="my-3">
-                                                            <img src="{{ asset('storage/' . $item['content']) }}" alt="Gambar learning corner"
-                                                                class="w-30 rounded-lg shadow-sm object-cover max-h-[500px]" loading="lazy"
+                                                            <img id="logo-zoom" src="{{ asset('storage/' . $item['content']) }}" alt="Gambar learning corner"
+                                                                class="cursor-pointer w-30 rounded-lg shadow-sm object-cover max-h-[500px]" loading="lazy"
                                                                 onerror="this.src='https://st4.depositphotos.com/17828278/24401/v/450/depositphotos_244011872-stock-illustration-image-vector-symbol-missing-available.jpg'; this.alt='Gambar gagal dimuat';">
                                                         </div>
 
@@ -591,7 +624,7 @@
                                                     @endif
                                                 @endforeach
                                             @else
-                                                <p class="text-sm text-gray-600 dark:text-gray-300 italic">
+                                                <p class="text-sm text-gray-600 italic">
                                                     Tidak ada konten yang dapat ditampilkan
                                                 </p>
                                             @endif
@@ -616,7 +649,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-sm text-gray-500 dark:text-gray-200 text-center py-8 italic">
+                            <p class="text-sm text-center text-gray-500  italic">
                                 Belum ada catatan learning corner
                             </p>
                         @endif

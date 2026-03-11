@@ -52,8 +52,8 @@ export const translations = {
     },
     project_create: {
       tambah_project: 'Tambah Project Baru',
-        edit_project: 'Edit Project',
-        edit_project: 'Edit Project',
+      edit_project: 'Edit Project',
+      edit_project: 'Edit Project',
       desc_create: 'Tambah project yang pernah kamu buat.',
       nama_project: 'Nama Project',
       deskripsi_opsional: 'Deskripsi (opsional)',
@@ -111,6 +111,13 @@ export const translations = {
     sidebar: {
       dashboard: 'Dashboard',
       my_dashboard: 'My Dashboard',
+      manajemen_users: 'Manajemen User',    
+      manajemen_projects: 'Manajemen Project',
+      manajemen_sertifikat: 'Manajemen Sertifikat',
+      dashboard_dosen: 'Dashboard Dosen',
+      mahasiswa_bimbingan: 'Mahasiswa Bimbingan',
+      projects_bimbingan: 'Projects Bimbingan',
+      sertifikat_bimbingan: 'Sertifikat Bimbingan',
       project_mahasiswa: 'Project Mahasiswa',
       project_mahasiswa_saya: 'Project Saya',
       project_mahasiswa_saya_tambah: 'Tambah Project Baru',
@@ -154,7 +161,72 @@ export const translations = {
       no_thumbnail_text: 'Tidak ada thumbnail tersedia',
       no_thumbnail_description: 'Tambahkan link video dengan benar',
     },
-  },
+    sertifikat: { 
+      sertifikat_title: 'Sertifikat Saya',
+      sertifikat_desc: 'Kelola semua sertifikat yang kamu miliki di sini.',
+      sertifikat_create_button: 'Tambah Sertifikat Baru',
+      sertifikat_no_data: 'Belum ada sertifikat.',
+      sertifikat_no_data_description: 'Mulai tambahkan sertifikat pertama kamu!',
+      sertifikat_link: 'Lihat Sertifikat',
+      sertifikat_dibuat: 'Ditambahkan',
+      sertifikat_diupdate: 'Diupdate',
+      edit_button: 'Edit',
+      delete_button: 'Hapus',
+    },
+
+    sertifikat_user: { 
+      sertifikat_title: 'Sertifikat Saya',
+      sertifikat_desc: 'Kelola semua sertifikat yang kamu miliki di sini.',
+      sertifikat_create_button: 'Tambah Sertifikat Baru',
+      sertifikat_no_data: 'Belum ada sertifikat.',
+      sertifikat_no_data_description: 'Mulai tambahkan sertifikat pertama kamu!',
+      sertifikat_link: 'Lihat Sertifikat',
+      sertifikat_dibuat: 'Ditambahkan',
+      sertifikat_diupdate: 'Diupdate',
+    },
+
+    sertifikat_create: {
+      sertifikat_create_title: 'Tambah Sertifikat Baru',
+      sertifikat_create_desc: 'Tambahkan sertifikat yang kamu peroleh untuk melengkapi portofoliomu.',
+      nama_sertifikat: 'Nama Sertifikat',
+      error_global_title: 'Terdapat kesalahan pada input:',
+      tanggal_terbit: 'Tanggal Terbit',
+      lembaga_penerbit: 'Lembaga Penerbit',
+      upload_file_sertifikat: 'Upload File Sertifikat',
+      max_date: 'Maksimal tanggal hari ini',
+      upload_file: 'Upload File',
+      or_drag_drop: 'atau drag and drop',
+      upload_file_desc: 'Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB',
+      upload_file_tips: 'File yang diupload akan tersimpan dan dapat diakses melalui link publik.',
+      cancel: 'Batal',
+      save: 'Simpan Sertifikat'
+    
+    },
+
+    sertifikat_edit: { 
+      sertifikat_edit_title: 'Edit Sertifikat',
+      sertifikat_edit_desc: 'Perbarui informasi sertifikat yang kamu miliki.',
+      error_global_title: 'Terdapat kesalahan pada input:',
+      nama_sertifikat: 'Nama Sertifikat',
+      lembaga_penerbit: 'Lembaga Penerbit',
+      tanggal_terbit: 'Tanggal Terbit',
+      max_date: 'Maksimal tanggal hari ini',
+      upload_file_sertifikat: 'Upload File Sertifikat',
+      replace_file: 'Ganti File',
+      upload_file: 'Upload File',
+      or_drag_drop: 'atau drag and drop',
+      current_file: 'File Saat Ini',
+      view_current_file: 'Lihat File Saat Ini',
+      upload_file_desc: 'Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB',
+      upload_file_tips: 'File yang diupload akan tersimpan dan dapat diakses melalui link publik.',
+      new_file_preview: 'Preview File Baru:',
+      current_file_preview: 'File Saat Ini:',
+      additional_info: 'File yang diupload akan menggantikan file lama. File lama akan otomatis dihapus.',
+      cancel: 'Batal',
+      update_sertifikat: 'Update Sertifikat', 
+      
+    },
+  }, 
   en: {
     dashboard: {
       total_mahasiswa: 'Total Students',
@@ -211,6 +283,7 @@ export const translations = {
       video: 'Video',
     },
     project_create: {
+      tambah_project: 'Add New Project',
       desc_create: 'Add projects you have created.',
       nama_project: 'Project Name',
       deskripsi_opsional: 'Description (optional)',
@@ -265,6 +338,13 @@ export const translations = {
     sidebar: {
       dashboard: 'Dashboard',
       my_dashboard: 'My Dashboard',
+      manajemen_users: 'User Management',
+      manajemen_projects: 'Project Management',
+      manajemen_sertifikat: 'Certificate Management',
+      dashboard_dosen: 'Lecturer Dashboard',
+      mahasiswa_bimbingan: 'Supervised Students',
+      projects_bimbingan: 'Supervised Projects',
+      sertifikat_bimbingan: 'Supervised Certificates',
       project_mahasiswa: 'Student Projects',
       project_mahasiswa_saya: 'My Projects',
       project_mahasiswa_saya_tambah: 'Add New Project',
@@ -298,22 +378,125 @@ export const translations = {
       no_thumbnail_text: 'No thumbnail available',
       no_thumbnail_description: 'add a video link correctly',
     },
-  }
+    sertifikat: { 
+      sertifikat_title: 'My Certificates',
+      sertifikat_desc: 'Manage all the certificates you have here.',
+      sertifikat_create_button: 'Add New Certificate',
+      sertifikat_no_data: 'No certificates yet.',
+      sertifikat_no_data_description: 'Start adding your first certificate!',
+      sertifikat_link: 'View Certificate',
+      sertifikat_dibuat: 'Added',
+      sertifikat_diupdate: 'Updated',
+      edit_button: 'Edit',
+      delete_button: 'Delete',
+    },
+    sertifikat_user: { 
+      sertifikat_title: 'My Certificates',
+      sertifikat_desc: 'Manage all the certificates you have here.',
+      sertifikat_create_button: 'Add New Certificate',  
+      sertifikat_no_data: 'No certificates yet.',
+      sertifikat_no_data_description: 'Start adding your first certificate!',
+      sertifikat_link: 'View Certificate',
+      sertifikat_dibuat: 'Added',
+      sertifikat_diupdate: 'Updated',
+    },
+    sertifikat_create: { 
+      sertifikat_create_title: 'Add New Certificate',
+      sertifikat_create_desc: 'Add the certificates you have earned to complete your portfolio.',
+      nama_sertifikat: 'Certificate Name',
+      error_global_title: 'There are errors with the input:',
+      tanggal_terbit: 'Issue Date',
+      lembaga_penerbit: 'Issuing Institution',
+      upload_file_sertifikat: 'Upload Certificate File',
+      upload_file: 'Upload File',
+      or_drag_drop: 'or drag and drop',
+      max_date: 'Maximum date is today',
+      upload_file_desc: 'Allowed formats: JPG, JPEG, PNG, GIF. Maximum size: 5MB',
+      upload_file_tips: 'Uploaded files will be stored and accessible via a public link.',
+      cancel: 'Cancel',
+      save: 'Save Certificate'
+
+    },
+    sertifikat_edit: {
+      sertifikat_edit_title: 'Edit Certificate',
+      sertifikat_edit_desc: 'Update the information of the certificate you have.',
+      error_global_title: 'There are errors with the input:',
+      nama_sertifikat: 'Certificate Name',
+      lembaga_penerbit: 'Issuing Institution',
+      tanggal_terbit: 'Issue Date',
+      max_date: 'Maximum date is today',
+      upload_file_sertifikat: 'Upload Certificate File',
+      replace_file: 'Replace File',
+      upload_file: 'Upload File',
+      or_drag_drop: 'or drag and drop',
+      current_file: 'Current File',
+      view_current_file: 'View Current File',
+      upload_file_desc: 'Allowed formats: JPG, JPEG, PNG, GIF. Maximum size: 5MB',
+      upload_file_tips: 'Uploaded files will be stored and accessible via a public link.',
+      new_file_preview: 'New File Preview:',
+      current_file_preview: 'Current File:',
+      additional_info: 'The uploaded file will replace the old file. The old file will be automatically deleted.',
+      cancel: 'Cancel',
+      update_sertifikat: 'Update Certificate', 
+    },
+  }   
 };
 
-export function getTranslation(page, key) {
-  const lang = localStorage.getItem('lang') || 'id';
-  return translations[lang]?.[page]?.[key] || key;
-}
+  const DEFAULT_LANG = 'id';
+  let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;
 
-export function updateTranslations() {
-  const lang = localStorage.getItem('lang') || 'id';
-  document.querySelectorAll('[data-translate]').forEach(el => {
-    const page = el.getAttribute('data-translate-page') || 'dashboard';
-    const key = el.getAttribute('data-translate');
-    el.textContent = translations[lang]?.[page]?.[key] || key;
+  let translateElements = [];
+
+  function cacheTranslateElements() {
+    translateElements = Array.from(document.querySelectorAll('[data-translate]'));
+  }
+
+  function applyTranslations() {
+    const langData = translations[currentLang] || translations[DEFAULT_LANG];
+
+    translateElements.forEach(el => {
+      const page = el.dataset.translatePage || 'sidebar';
+      const key  = el.dataset.translate;
+
+      if (!page || !key) return;
+
+      const text = langData?.[page]?.[key] 
+                  || translations[DEFAULT_LANG]?.[page]?.[key] 
+                  || key;
+
+      if (text !== el.textContent) {
+        el.textContent = text;
+      }
+    });
+
+    const select = document.getElementById('languageSelect');
+    if (select) select.value = currentLang;
+  }
+
+  window.changeLanguage = function () {
+    const select = document.getElementById('languageSelect');
+    if (!select) return;
+
+    const newLang = select.value;
+    if (newLang === currentLang) return;
+
+    currentLang = newLang;
+    localStorage.setItem('lang', newLang);
+    document.documentElement.lang = newLang === 'id' ? 'id-ID' : 'en-US';
+
+    applyTranslations();  
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('languageSelect');
+    if (select) {
+      select.value = currentLang;
+    }
+
+    cacheTranslateElements();
+    applyTranslations();
   });
-}
-
-document.addEventListener('turbo:load', updateTranslations);
-document.addEventListener('DOMContentLoaded', updateTranslations);
+  window.refreshTranslations = function () {
+    cacheTranslateElements(); 
+    applyTranslations();
+  };

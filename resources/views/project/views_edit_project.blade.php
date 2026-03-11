@@ -196,4 +196,13 @@
         document.getElementById("leader-select").dispatchEvent(new Event("change"));
 }
 </script>
+
+
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Edit informasi project atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.");
+});
+</script>
+
 @endsection
