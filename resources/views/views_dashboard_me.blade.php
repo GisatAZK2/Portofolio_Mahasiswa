@@ -198,11 +198,36 @@
                                 $displayName = $isLeaderAvailable ? $leaderName : $ownerName;
                                 $displayId = $isLeaderAvailable ? $leaderId : $ownerId;
                                 $displayRole = $isLeaderAvailable ? 'Leader' : 'Owner';
+                                
+                                // Cek status sertifikat (untuk tipe sertifikat)
+                                $isSertifikatValid = false;
+                                $statusBadge = '';
+                                $statusColor = '';
+                                if ($post->type === 'sertifikat') {
+                                    $isSertifikatValid = ($post->status_pengajuan === 'Di Terima' && $post->is_active == 1);
+                                    
+                                    if ($post->status_pengajuan === 'Di Terima' && $post->is_active == 1) {
+                                        $statusBadge = 'Aktif';
+                                        $statusColor = 'green';
+                                    } elseif ($post->status_pengajuan === 'Sedang Di Ajukan') {
+                                        $statusBadge = 'Sedang Diajukan';
+                                        $statusColor = 'yellow';
+                                    } elseif ($post->status_pengajuan === 'Di Tolak') {
+                                        $statusBadge = 'Ditolak';
+                                        $statusColor = 'red';
+                                    } elseif ($post->is_active == 0) {
+                                        $statusBadge = 'Tidak Aktif';
+                                        $statusColor = 'gray';
+                                    }
+                                }
                             @endphp
                             
                             <!-- Card wrapper with independent expansion -->
                             <div 
-                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }}"
+                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }} 
+                                @if($post->type === 'sertifikat' && !$isSertifikatValid)
+                                    opacity-70
+                                @endif"
                                 x-data="{ expanded: false }"
                             >
                                 <!-- Card body -->
@@ -246,13 +271,32 @@
                                     @elseif($post->type === 'project')
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mb-3 w-fit">Project</span>
                                     @elseif($post->type === 'sertifikat')
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">Sertifikat</span>
+                                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 w-fit">
+                                                Sertifikat
+                                            </span>
+                                            
+                                            <!-- Status Badge -->
+                                            @if($statusBadge)
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
+                                                    @if($statusColor == 'green') bg-green-100 text-green-800
+                                                    @elseif($statusColor == 'yellow') bg-yellow-100 text-yellow-800
+                                                    @elseif($statusColor == 'red') bg-red-100 text-red-800
+                                                    @else bg-gray-100 text-gray-800
+                                                    @endif">
+                                                    {{ $statusBadge }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     @endif
 
                                     <!-- Konten utama -->
                                     <div class="flex-1 mt-3">
                                         @if($post->type === 'sertifikat')
-                                            <div class="flex flex-col space-y-3">
+                                            <div class="flex flex-col space-y-3 
+                                                @if(!$isSertifikatValid)
+                                                    grayscale
+                                                @endif">
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                                                     {{ $post->nama_sertifikat ?? '(Tanpa Judul Sertifikat)' }}
                                                 </h3>
@@ -270,7 +314,17 @@
                                                     <span class="font-medium">Terbit:</span>
                                                     <span class="ml-2">{{ $post->tanggal_terbit ? \Carbon\Carbon::parse($post->tanggal_terbit)->format('d M Y') : '—' }}</span>
                                                 </div>
-                                                @if($post->link_sertifikat)
+                                                
+                                                <!-- Keterangan (untuk status non-aktif/ditolak) -->
+                                                @if(!$isSertifikatValid && $post->keterangan)
+                                                    <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                                            <span class="font-semibold">Keterangan:</span> {{ $post->keterangan }}
+                                                        </p>
+                                                    </div>
+                                                @endif
+                                                
+                                                @if($post->link_sertifikat && $isSertifikatValid)
                                                     <a href="{{ asset('storage/' . $post->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
                                                        class="inline-flex hover:underline items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start mt-2">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -279,13 +333,32 @@
                                                         </svg>
                                                         Lihat Sertifikat
                                                     </a>
+                                                @elseif($post->link_sertifikat && !$isSertifikatValid)
+                                                    <div class="mt-2 inline-flex items-center gap-2 text-gray-500 font-medium text-sm bg-gray-100 px-4 py-2 rounded-lg cursor-not-allowed">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                        </svg>
+                                                        Sertifikat Tidak Tersedia
+                                                    </div>
                                                 @else
                                                     <p class="text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link sertifikat</p>
+                                                @endif
+                                                
+                                                <!-- Informasi Status Tambahan -->
+                                                @if(!$isSertifikatValid)
+                                                    <div class="mt-3 text-xs text-gray-500 dark:text-gray-400 italic">
+                                                        @if($post->status_pengajuan === 'Sedang Di Ajukan')
+                                                            Sertifikat sedang dalam proses pengajuan
+                                                        @elseif($post->status_pengajuan === 'Di Tolak')
+                                                            Pengajuan sertifikat ditolak
+                                                        @elseif($post->is_active == 0)
+                                                            Sertifikat tidak aktif
+                                                        @endif
+                                                    </div>
                                                 @endif
                                             </div>
 
                                         @elseif($post->type === 'learning')
-                                            <!-- Title - Clickable ke Project -->
                                             @if($relatedProject)
                                                 <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
                                                    class="block group-hover:text-indigo-700 transition-colors">

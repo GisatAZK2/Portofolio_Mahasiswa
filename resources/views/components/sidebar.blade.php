@@ -119,6 +119,26 @@
                 @endif
             </a>
 
+            <a href="{{ route('admin.angkatan.index') }}"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                    {{ request()->routeIs('admin.angkatan.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
+                    
+                    <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m8-6a4 4 0 11-8 0 4 4 0 018 0zM5 8a3 3 0 106 0 3 3 0 00-6 0z"/>
+                    </svg>
+
+                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                        Manajemen Angkatan
+                    </span>
+
+                    @if(session('sidebar_collapsed', false))
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        Manajemen Angkatan
+                    </span>
+                    @endif
+            </a>
+
             <!-- Manajemen Sertifikat -->
             <a href="{{ route('admin.sertifikat.index') }}"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative

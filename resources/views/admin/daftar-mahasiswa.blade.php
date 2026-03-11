@@ -674,7 +674,7 @@ document.getElementById('status_pengajuan')?.addEventListener('change', function
     }
 });
 
-// Close modals when clicking outside
+
 window.onclick = function(event) {
     const detailModal = document.getElementById('detailModal');
     const updateModal = document.getElementById('updateModal');
@@ -691,7 +691,6 @@ window.onclick = function(event) {
     }
 }
 
-// Keyboard shortcut: ESC to close modals
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeDetailModal();

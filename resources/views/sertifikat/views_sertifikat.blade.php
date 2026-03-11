@@ -2,8 +2,8 @@
 @section('title', 'Sertifikat Saya')
 @section('content')
 <div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between  mb-8 gap-4">
-        <div >
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Sertifikat Saya</h1>
             <p class="text-gray-600 dark:text-gray-200">
                 Kelola semua sertifikat yang kamu miliki di sini.
@@ -31,13 +31,36 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($sertifikat as $entry)
                 <div class="bg-white dark:border-gray-900 dark:bg-gray-900 dark:text-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
-                    <!-- Header dengan ikon sertifikat -->
+                    <!-- Header dengan ikon sertifikat dan status badge -->
                     <div class="bg-gradient-to-r from-blue-700 to-blue-500 p-4">
                         <div class="flex items-center justify-between">
                             <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
-                            <span class="text-white text-xs font-medium bg-white/20 px-2 py-1 rounded-full">Sertifikat</span>
+                            
+                            {{-- Status Badge --}}
+                            @php
+                                $statusClass = '';
+                                $statusText = '';
+                                
+                                if ($entry->status_pengajuan == 'Di Terima' && $entry->is_active == 1) {
+                                    $statusClass = 'bg-green-100 text-green-800';
+                                    $statusText = 'Diterima & Aktif';
+                                } elseif ($entry->status_pengajuan == 'Sedang Di Ajukan') {
+                                    $statusClass = 'bg-yellow-100 text-yellow-800';
+                                    $statusText = 'Sedang Diajukan';
+                                } elseif ($entry->status_pengajuan == 'Di Tolak' || $entry->is_active == 0) {
+                                    $statusClass = 'bg-red-100 text-red-800';
+                                    $statusText = 'Ditolak / Tidak Aktif';
+                                } else {
+                                    $statusClass = 'bg-gray-100 text-gray-800';
+                                    $statusText = $entry->status_pengajuan ?? 'Unknown';
+                                }
+                            @endphp
+                            
+                            <span class="text-xs font-medium px-2 py-1 rounded-full {{ $statusClass }}">
+                                {{ $statusText }}
+                            </span>
                         </div>
                     </div>
 
@@ -63,19 +86,20 @@
                             <span class="text-sm">{{ \Carbon\Carbon::parse($entry->tanggal_terbit)->format('d F Y') }}</span>
                         </div>
 
-<!-- Link Sertifikat  -->
-@if($entry->link_sertifikat)
-    <div class="mb-4">
-        <a href="{{ asset('storage/' . $entry->link_sertifikat) }}" 
-           target="_blank"
-           class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 hover:underline">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-            </svg>
-            Lihat Sertifikat
-        </a>
-    </div>
-@endif
+                        <!-- Link Sertifikat (hanya ditampilkan jika status Diterima & Aktif) -->
+                        @if($entry->link_sertifikat && $entry->status_pengajuan == 'Di Terima' && $entry->is_active == 1)
+                            <div class="mb-4">
+                                <a href="{{ asset('storage/' . $entry->link_sertifikat) }}" 
+                                   target="_blank"
+                                   class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 hover:underline">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                    Lihat Sertifikat
+                                </a>
+                            </div>
+                        @endif
+
                         <!-- Isi Content (dari JSON) -->
                         @if(!empty($entry->isi_content))
                             @php
@@ -100,6 +124,27 @@
                             @endif
                         @endif
 
+                        <!-- Informasi Status Detail -->
+                        <div class="mb-3 space-y-1">
+                            <p class="text-xs">
+                                <span class="font-semibold">Status Pengajuan:</span> 
+                                <span class="
+                                    @if($entry->status_pengajuan == 'Di Terima') text-green-600
+                                    @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
+                                    @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
+                                    @endif
+                                ">
+                                    {{ $entry->status_pengajuan }}
+                                </span>
+                            </p>
+                            <p class="text-xs">
+                                <span class="font-semibold">Status Aktif:</span> 
+                                <span class="{{ $entry->is_active ? 'text-green-600' : 'text-red-600' }}">
+                                    {{ $entry->is_active ? 'Aktif' : 'Tidak Aktif' }}
+                                </span>
+                            </p>
+                        </div>
+
                         <!-- Tanggal dibuat/diupdate -->
                         <p class="text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100">
                             Ditambahkan: {{ $entry->created_at ? $entry->created_at->format('d M Y') : '-' }}
@@ -108,14 +153,22 @@
                             @endif
                         </p>
 
-                        <!-- Action buttons -->
+                        <!-- Action buttons - Conditional berdasarkan status -->
                         <div class="flex space-x-3 mt-4">
-                            <a href="{{ route('sertifikat.edit', $entry->id) }}"
-                               class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200">
-                                Edit
-                            </a>
+                            @php
+                                $canEdit = ($entry->status_pengajuan == 'Di Terima' && $entry->is_active == 1) || 
+                                           $entry->status_pengajuan == 'Sedang Di Ajukan';
+                            @endphp
 
-                            <form class="delete-form flex-1" 
+                            @if($canEdit)
+                                <a href="{{ route('sertifikat.edit', $entry->id) }}"
+                                   class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200">
+                                    Edit
+                                </a>
+                            @endif
+
+                            {{-- Tombol Hapus selalu ada untuk semua status --}}
+                            <form class="delete-form {{ $canEdit ? 'flex-1' : 'w-full' }}" 
                                   action="{{ route('sertifikat.destroy', $entry->id) }}" 
                                   method="POST">
                                 @csrf
@@ -126,6 +179,13 @@
                                 </button>
                             </form>
                         </div>
+
+                        {{-- Info tambahan jika tidak bisa diedit --}}
+                        @if(!$canEdit)
+                            <p class="text-xs text-gray-500 mt-2 text-center italic">
+                                *Sertifikat tidak dapat diedit karena status {{ $entry->status_pengajuan == 'Di Tolak' ? 'Ditolak' : 'Tidak Aktif' }}
+                            </p>
+                        @endif
                     </div>
                 </div>
             @endforeach

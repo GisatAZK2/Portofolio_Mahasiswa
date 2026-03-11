@@ -54,7 +54,7 @@ class User extends Authenticatable
 
    public function keahlian()
 {
-    return $this->belongsTo(Keahlian::class, 'id_keahlian');
+    return $this->belongsTo(Keahlian::class, 'id_keahlian', 'id_keahlian');
 }
 
 public function angkatan() {

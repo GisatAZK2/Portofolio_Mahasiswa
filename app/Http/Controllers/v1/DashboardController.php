@@ -53,6 +53,8 @@ class DashboardController extends Controller
             });
 
          $randomSertifikat = Sertifikat::with('mahasiswa')
+            ->where('is_active', true)
+            ->where('status_pengajuan', 'Di Terima')
             ->inRandomOrder()
             ->take(3)
             ->get()
@@ -127,11 +129,6 @@ class DashboardController extends Controller
             ->get();
     }
 
-    
-
-    // =========================
-    // AMBIL POSTING RANDOM USER
-    // =========================
 
     $learning = $learning->map(function ($item) {
         $item->type = 'learning';
@@ -170,7 +167,9 @@ public function show(User $user, Request $request)
         'jurusan',
         'angkatan',
         'keahlian',
-        'sertifikats',
+        'sertifikats' => function ($q) {
+            $q->where('is_active', true)->where('status_pengajuan', 'Di Terima');
+        },
         'learning_corners'
     ]);
 
@@ -336,6 +335,8 @@ public function show(User $user, Request $request)
                         $q->where('id_angkatan', $angkatan);
                     });
                 })
+                ->where('is_active', true)
+                ->where('status_pengajuan', 'Di Terima')
                 ->get()
                 ->map(function ($item) {
                     $item->type = 'sertifikat';
