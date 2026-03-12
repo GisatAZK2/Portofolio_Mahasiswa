@@ -201,11 +201,21 @@
                                 $displayName = $isLeaderAvailable ? $leaderName : $ownerName;
                                 $displayId = $isLeaderAvailable ? $leaderId : $ownerId;
                                 $displayRole = $isLeaderAvailable ? 'Leader' : 'Owner';
+                                
+                                // Cek status sertifikat untuk menentukan opacity/grayscale
+                                $isSertifikatInactive = false;
+                                $sertifikatStatus = '';
+                                $sertifikatKeterangan = '';
+                                if ($post->type === 'sertifikat') {
+                                    $sertifikatStatus = $post->status_pengajuan ?? 'Sedang Di Ajukan';
+                                    $sertifikatKeterangan = $post->keterangan ?? '';
+                                    $isSertifikatInactive = ($sertifikatStatus === 'Di Tolak' || !($post->is_active ?? false));
+                                }
                             @endphp
                             
                             <!-- Card wrapper with independent expansion -->
                             <div 
-                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }}"
+                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }} {{ $isSertifikatInactive ? 'opacity-70 grayscale-[0.3]' : '' }}"
                                 x-data="{ expanded: false }"
                             >
                                 <!-- Card body -->
@@ -240,43 +250,73 @@
                                     </a>
 
                                     <!-- Badge -->
-                                    @if($post->type === 'learning')
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mb-3 w-fit">
-                                            Learning Corner
-                                            @if($relatedProject)
-                                                <span class="ml-1 text-purple-600">({{ $relatedProjectData['nama_project'] ?? 'Project' }})</span>
+                                    <div class="flex items-center gap-2 mb-3">
+                                        @if($post->type === 'learning')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 w-fit">
+                                                Learning Corner
+                                                @if($relatedProject)
+                                                    <span class="ml-1 text-purple-600">({{ $relatedProjectData['nama_project'] ?? 'Project' }})</span>
+                                                @endif
+                                            </span>
+                                        @elseif($post->type === 'project')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 w-fit">Project</span>
+                                        @elseif($post->type === 'sertifikat')
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $isSertifikatInactive ? 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-amber-100 text-amber-800' }} w-fit">
+                                                Sertifikat
+                                            </span>
+                                            
+                                            {{-- Status Badge untuk Sertifikat --}}
+                                            @if($sertifikatStatus)
+                                                @php
+                                                    $statusClass = match($sertifikatStatus) {
+                                                        'Sedang Di Ajukan' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+                                                        'Di Terima' => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+                                                        'Di Tolak' => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                                                        default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                                                    };
+                                                @endphp
+                                                <span class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">
+                                                    {{ $sertifikatStatus }}
+                                                </span>
                                             @endif
-                                        </span>
-                                    @elseif($post->type === 'project')
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mb-3 w-fit">Project</span>
-                                    @elseif($post->type === 'sertifikat')
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">Sertifikat</span>
-                                    @endif
+                                        @endif
+                                    </div>
 
                                     <!-- Konten utama -->
                                     <div class="flex-1 mt-3">
                                         @if($post->type === 'sertifikat')
                                             <div class="flex flex-col space-y-3">
-                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+                                                <h3 class="text-lg font-semibold {{ $isSertifikatInactive ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100' }} line-clamp-2">
                                                     {{ $post->nama_sertifikat ?? '(Tanpa Judul Sertifikat)' }}
                                                 </h3>
-                                                <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <div class="flex items-center text-sm {{ $isSertifikatInactive ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300' }}">
+                                                    <svg class="w-4 h-4 mr-2 {{ $isSertifikatInactive ? 'text-gray-400' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                                     </svg>
                                                     <span class="font-medium">Penerbit:</span>
                                                     <span class="ml-2">{{ $post->lembaga_penerbit ?? 'Tidak diketahui' }}</span>
                                                 </div>
-                                                <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <div class="flex items-center text-sm {{ $isSertifikatInactive ? 'text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300' }}">
+                                                    <svg class="w-4 h-4 mr-2 {{ $isSertifikatInactive ? 'text-gray-400' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
                                                     <span class="font-medium">Terbit:</span>
                                                     <span class="ml-2">{{ $post->tanggal_terbit ? \Carbon\Carbon::parse($post->tanggal_terbit)->format('d M Y') : '—' }}</span>
                                                 </div>
+                                                
+                                                {{-- Keterangan untuk sertifikat ditolak --}}
+                                                @if($sertifikatStatus === 'Di Tolak' && $sertifikatKeterangan)
+                                                    <div class="mt-3 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded">
+                                                        <p class="text-xs text-red-800 dark:text-red-300 font-semibold mb-1">
+                                                            Alasan Penolakan:
+                                                        </p>
+                                                        <p class="text-sm text-red-700 dark:text-red-200">{{ $sertifikatKeterangan }}</p>
+                                                    </div>
+                                                @endif
+                                                
                                                 @if($post->link_sertifikat)
                                                     <a href="{{ asset('storage/' . $post->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
-                                                       class="inline-flex hover:underline items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start mt-2">
+                                                       class="inline-flex hover:underline items-center gap-2 {{ $isSertifikatInactive ? 'text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200' : 'text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100' }} font-medium text-sm px-4 py-2 rounded-lg transition-colors self-start mt-2">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -284,7 +324,7 @@
                                                         Lihat Sertifikat
                                                     </a>
                                                 @else
-                                                    <p class="text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link sertifikat</p>
+                                                    <p class="text-sm {{ $isSertifikatInactive ? 'text-gray-400' : 'text-gray-500' }} dark:text-gray-50 italic">Tidak ada link sertifikat</p>
                                                 @endif
                                             </div>
 
@@ -529,7 +569,7 @@
 
                                     <!-- Footer -->
                                     <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-900">
-                                       <p class="text-xs text-gray-500 dark:text-gray-50">
+                                       <p class="text-xs {{ $isSertifikatInactive ? 'text-gray-400' : 'text-gray-500' }} dark:text-gray-50">
                                             <span data-translate="diposting" data-translate-page="dashboard"></span>
                                             {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }}
                                             <span data-translate="oleh" data-translate-page="dashboard">oleh</span>
@@ -551,13 +591,13 @@
 
                 <!-- Update timestamp -->
                 <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
-                    
                     <span data-translate="terakhir_diperbarui" data-translate-page="dashboard"></span> {{ now()->format('d F Y H:i') }} WIB
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function createSparkline(canvasId, borderColor) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
@@ -565,7 +605,7 @@
             
             // Generate random data for sparkline
             const generateRandomData = () => {
-                return Array.from({ length: 7 }, () => Math.floor(Math.random() * 40));
+                return Array.from({ length: 7 }, () => Math.floor(Math.random() * 40) + 10);
             };
             
             const data = generateRandomData();

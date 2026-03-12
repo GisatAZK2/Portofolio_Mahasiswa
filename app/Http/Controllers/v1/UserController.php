@@ -9,6 +9,7 @@ use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\Angkatan;
 use App\Models\LearningCorner;
+use App\Models\Project;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,7 @@ use Illuminate\Support\Facades\Cache;
 class UserController extends Controller
 {
     // Tampilkan form registrasi
-    public function showRegister()
-    {
+    public function showRegister(){
         $jurusans  = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
@@ -29,8 +29,7 @@ class UserController extends Controller
     }
 
     // Proses registrasi
-    public function register(Request $request)
-{
+    public function register(Request $request){
     $ipAddress = $request->ip();
     $userAgent = $request->userAgent();
     $sessionId = $request->session()->getId();
@@ -256,7 +255,7 @@ public function updateStatusPengajuan(Request $request, $id)
         $jurusans  = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatan   = Angkatan::all();
-
+        
         return view('auth.profile', compact('user', 'jurusans', 'keahlians', 'angkatan'));
     }
 
@@ -327,13 +326,5 @@ public function updateStatusPengajuan(Request $request, $id)
 
     return redirect()->route('profile')->with('success','Profil berhasil diperbarui!');
 }
-    public function isDosen()
-{
-    return $this->role === 'dosen';
-}
 
-public function isMahasiswa()
-{
-    return $this->role === 'mahasiswa';
-}
 }

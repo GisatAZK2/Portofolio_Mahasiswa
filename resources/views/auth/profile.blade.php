@@ -281,7 +281,7 @@
 
         @if(Auth::check())
             <!-- Projects Section -->
-            <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
+            <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8" x-data="{ showAllProjects: false }">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                         <svg class="w-8 h-8 mr-2 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,14 +289,25 @@
                         </svg>
                         Projects
                     </h2>
-                    <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                        {{ $user->projects->count() }} proyek
-                    </span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
+                            {{ $user->projects->count() }} proyek
+                        </span>
+                        @if($user->projects->count() > 3)
+                        <button @click="showAllProjects = !showAllProjects" 
+                                class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium flex items-center gap-1">
+                            <span x-text="showAllProjects ? 'Tampilkan lebih sedikit' : 'Lihat semua ({{ $user->projects->count() }})'"></span>
+                            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllProjects }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @endif
+                    </div>
                 </div>
                 
                 @if($user->projects->isNotEmpty())
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach($user->projects as $project)
+                        @foreach($user->projects as $index => $project)
                             @php
                                 $content = $project->isi_content ?? [];
                                 $nama = $content['nama_project'] ?? 'Tanpa Nama Project';
@@ -351,7 +362,11 @@
                                 }
                             @endphp
                             
-                            <div class="bg-white dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full group">
+                            <div class="bg-white dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full group"
+                                 x-show="showAllProjects || {{ $index < 3 ? 'true' : 'false' }}"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-90"
+                                 x-transition:enter-end="opacity-100 scale-100">
                                 <!-- Media Header -->
                                 <div class="relative w-full bg-black overflow-hidden">
                                     @if($youtubeEmbedUrl)
@@ -451,6 +466,15 @@
                             </div>
                         @endforeach
                     </div>
+                    
+                    @if($user->projects->count() == 0)
+                        <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
+                            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p class="mt-4 text-gray-600 dark:text-gray-400">Belum ada proyek yang ditambahkan.</p>
+                        </div>
+                    @endif
                 @else
                     <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
                         <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -462,7 +486,7 @@
             </section>
 
             <!-- Sertifikat Section -->
-            <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
+            <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8" x-data="{ showAllSertifikat: false }">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                         <svg class="w-8 h-8 mr-2 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -470,49 +494,91 @@
                         </svg>
                         Sertifikat
                     </h2>
-                    <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                        {{ $user->sertifikats?->count() ?? 0 }} sertifikat
-                    </span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
+                            {{ $user->sertifikats?->count() ?? 0 }} sertifikat
+                        </span>
+                        @if(($user->sertifikats?->count() ?? 0) > 3)
+                        <button @click="showAllSertifikat = !showAllSertifikat" 
+                                class="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium flex items-center gap-1">
+                            <span x-text="showAllSertifikat ? 'Tampilkan lebih sedikit' : 'Lihat semua ({{ $user->sertifikats->count() }})'"></span>
+                            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllSertifikat }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @endif
+                    </div>
                 </div>
                 
                 @if($user->sertifikats?->isNotEmpty() ?? false)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach($user->sertifikats as $sertifikat)
-                            <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full">
+                        @foreach($user->sertifikats as $index => $sertifikat)
+                            @php
+                                $isInactive = ($sertifikat->status_pengajuan === 'Di Tolak' || !($sertifikat->is_active ?? true));
+                                $statusClass = match($sertifikat->status_pengajuan) {
+                                    'Sedang Di Ajukan' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+                                    'Di Terima' => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+                                    'Di Tolak' => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                                    default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                                };
+                            @endphp
+                            <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full {{ $isInactive ? 'opacity-70 grayscale-[0.3]' : '' }}"
+                                 x-show="showAllSertifikat || {{ $index < 3 ? 'true' : 'false' }}"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-90"
+                                 x-transition:enter-end="opacity-100 scale-100">
                                 <div class="p-6 flex flex-col flex-1">
-                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 mb-3 w-fit">
-                                        Sertifikat
-                                    </span>
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2">
+                                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $isInactive ? 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' }} w-fit">
+                                            Sertifikat
+                                        </span>
+                                        @if($sertifikat->status_pengajuan)
+                                            <span class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">
+                                                {{ $sertifikat->status_pengajuan }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    
+                                    <h3 class="text-lg font-semibold {{ $isInactive ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white' }} mb-3 line-clamp-2">
                                         {{ $sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
                                     </h3>
                                     
                                     @if($sertifikat->lembaga_penerbit)
-                                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 mb-2">
-                                            <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="flex items-center text-sm {{ $isInactive ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-300' }} mb-2">
+                                            <svg class="w-4 h-4 mr-2 {{ $isInactive ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                             </svg>
                                             <span class="line-clamp-1">{{ $sertifikat->lembaga_penerbit }}</span>
                                         </div>
                                     @endif
                                     
-                                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-300 mb-4">
-                                        <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="flex items-center text-sm {{ $isInactive ? 'text-gray-400 dark:text-gray-500' : 'text-gray-600 dark:text-gray-300' }} mb-4">
+                                        <svg class="w-4 h-4 mr-2 {{ $isInactive ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         {{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('d M Y') : 'Tanggal tidak tersedia' }}
                                     </div>
                                     
+                                    {{-- Keterangan untuk sertifikat ditolak --}}
+                                    @if($sertifikat->status_pengajuan === 'Di Tolak' && $sertifikat->keterangan)
+                                        <div class="mb-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded">
+                                            <p class="text-xs text-red-800 dark:text-red-300 font-semibold mb-1">
+                                                Alasan Penolakan:
+                                            </p>
+                                            <p class="text-sm text-red-700 dark:text-red-200">{{ $sertifikat->keterangan }}</p>
+                                        </div>
+                                    @endif
+                                    
                                     @if($sertifikat->link_sertifikat)
-                                        <a href="{{ $sertifikat->link_sertifikat }}" target="_blank" rel="noopener noreferrer"
-                                            class="mt-auto inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium">
+                                        <a href="{{ asset('storage/' . $sertifikat->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
+                                            class="mt-auto inline-flex items-center {{ $isInactive ? 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300' : 'text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300' }} font-medium">
                                             Lihat Sertifikat
                                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                             </svg>
                                         </a>
                                     @else
-                                        <p class="mt-auto text-sm text-gray-500 dark:text-gray-400 italic">Tidak ada link sertifikat</p>
+                                        <p class="mt-auto text-sm {{ $isInactive ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400' }} italic">Tidak ada link sertifikat</p>
                                     @endif
                                     
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -533,7 +599,7 @@
             </section>
 
             <!-- Learning Corners Section -->
-            <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 mb-10">
+            <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 mb-10" x-data="{ showAllLearning: false }">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                         <svg class="w-8 h-8 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -541,15 +607,30 @@
                         </svg>
                         Learning Corners
                     </h2>
-                    <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                        {{ $user->learning_corners->count() }} catatan
-                    </span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
+                            {{ $user->learning_corners->count() }} catatan
+                        </span>
+                        @if($user->learning_corners->count() > 3)
+                        <button @click="showAllLearning = !showAllLearning" 
+                                class="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium flex items-center gap-1">
+                            <span x-text="showAllLearning ? 'Tampilkan lebih sedikit' : 'Lihat semua ({{ $user->learning_corners->count() }})'"></span>
+                            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllLearning }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @endif
+                    </div>
                 </div>
                 
                 @if($user->learning_corners->isNotEmpty())
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach($user->learning_corners as $entry)
-                            <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full">
+                        @foreach($user->learning_corners as $index => $entry)
+                            <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full"
+                                 x-show="showAllLearning || {{ $index < 3 ? 'true' : 'false' }}"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-90"
+                                 x-transition:enter-end="opacity-100 scale-100">
                                 <div class="p-6 flex-1 flex flex-col">
                                     @if (!empty($entry->content) && is_array($entry->content))
                                         @foreach ($entry->content as $item)
@@ -583,6 +664,7 @@
                                         <p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
                                             {{ Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150) }}
                                         </p>
+                                        
                                     @endif
                                     
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -691,8 +773,14 @@ function playVideo(element, embedUrl) {
     container.appendChild(iframe);
     container.classList.remove('cursor-pointer');
 }
-</script>
 
+// Alpine.js untuk collapse functionality
+document.addEventListener('alpine:init', () => {
+    Alpine.data('collapseSection', () => ({
+        showAll: false
+    }));
+});
+</script>
 
 <!-- Page Info -->
 <script>
