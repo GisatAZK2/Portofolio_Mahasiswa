@@ -100,8 +100,7 @@ class ProjekController extends Controller
     }
 
     // UPDATE
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $project = Project::where('id', $id)
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();

@@ -17,14 +17,25 @@
 
             <!-- Header Sederhana -->
             <div class="mb-6 sm:mb-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200">Project Mahasiswa</h1>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">Beberapa Pameran Project Mahasiswa</p>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="kelola_project_title" data-translate-page="kelola_project"></h1>
+                  <a href="{{ route('admin.projects.create') }}"
+               class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span data-translate="tambah_project" data-translate-page="kelola_project"></span>
+            </a>
+            </div>
+            
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1" data-translate="kelola_project_desc" data-translate-page="kelola_project"></p>
             </div>
 
             <!-- Projects Grid -->
             <section>
                 @if($projects->isNotEmpty())
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    
                         @foreach($projects as $project)
                             @php
                                 $content = $project->isi_content ?? [];
@@ -101,34 +112,41 @@
                             @endphp
 
                             <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
-                                
-                                <!-- Media Header -->
+                              
+                           
                                 <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                                    @if($embedVideo)
-                                        <div class="relative w-full h-full">
-                                            <iframe class="absolute inset-0 w-full h-full" src="{{ $embedVideo }}?rel=0&modestbranding=1" 
-                                                title="Video: {{ $nama }}" frameborder="0"
+                                @if($embedVideo)
+                                    <div class="relative w-full h-full">
+                                        <iframe class="absolute inset-0 w-full h-full" 
+                                                src="{{ $embedVideo }}?rel=0&modestbranding=1"
+                                                title="Video: {{ $nama }}" 
+                                                frameborder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowfullscreen></iframe>
-                                        </div>
-                                    @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
-                                        <img src="{{ Storage::url($thumbnail) }}" alt="{{ $nama }}"
-                                            class="w-full h-full object-cover">
-                                    @elseif($linkProject)
-                                        <div class="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center">
-                                            <svg class="w-12 h-12 text-indigo-400 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                    @else
-                                        <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                                            <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                    @endif
+                                    </div>
+
+                                @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
+                                    <img src="{{ Storage::url($thumbnail) }}" 
+                                        alt="{{ $nama }}"
+                                        class="w-full h-full object-cover">
+
+                                @else
+                                    <!-- Kondisi: Tidak ada video embed & tidak ada thumbnail -->
+                                    <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
+                                                flex flex-col items-center justify-center text-center px-4">
+                                        <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" 
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p   data-translate="no_thumbnail_text" data-translate-page="project_user"  class="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
+                                            
+                                        </p>
+                                        <p data-translate="no_thumbnail_description" data-translate-page="project_user" class="text-gray-400 dark:text-gray-500 text-xs mt-1">
+                                           
+                                        </p>
+                                    </div>
+                                @endif
                                     
                                     <!-- Status Badge -->
                                     <div class="absolute top-2 right-2">
@@ -141,9 +159,8 @@
                                 <!-- Content -->
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     
-                                    <!-- User Info - SEPERTI CONTOH SERTIFIKAT dengan LINK -->
+                                    <!-- User Info -->
                                     <div class="flex items-center gap-3 mb-3">
-                                        <!-- Foto Profile Leader/Owner dengan LINK -->
                                         <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @php
                                                 $displayUser = $leader ?? $mahasiswa;
@@ -187,7 +204,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Jika Owner berbeda dengan Leader, tampilkan owner tambahan dengan LINK -->
+                                    <!-- Jika Owner berbeda dengan Leader -->
                                     @if($mahasiswa && $leader && !$isSameUser)
                                         <div class="flex items-center gap-2 mb-3 pl-2 border-l-2 border-gray-300 dark:border-gray-600">
                                             <a href="{{ route('portfolio.show', $mahasiswa->id) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
@@ -284,7 +301,7 @@
 
                                     <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
                                     <div class="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                                        Diposting {{ $project->created_at?->format('d M Y H:i') ?? '—' }} WIB
+                                        <span data-translate="diposting" data-translate-page="kelola_project"></span> {{ $project->created_at?->format('d M Y H:i') ?? '—' }}
                                     </div>
                                 </div>
                             </div>

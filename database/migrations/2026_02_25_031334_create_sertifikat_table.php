@@ -22,6 +22,9 @@ return new class extends Migration
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
+            $table->enum('status_pengajuan', ['Sedang Di Ajukan', 'Di Terima', 'Di Tolak'])->default('Sedang Di Ajukan')->nullable();
+            $table->string('keterangan')->nullable();
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

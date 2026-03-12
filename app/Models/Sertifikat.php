@@ -15,10 +15,13 @@ class Sertifikat extends Model
         'tanggal_terbit',
         'link_sertifikat',
         'id_mahasiswa',
+        'status_pengajuan',
+        'keterangan',
+        'is_active'
     ];
 
     public function mahasiswa()
     {
-        return $this->belongsTo(User::class, 'id_mahasiswa');
+        return $this->belongsTo(User::class, 'id_mahasiswa', 'id');
     }
 }

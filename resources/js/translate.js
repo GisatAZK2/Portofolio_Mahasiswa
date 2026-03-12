@@ -114,6 +114,7 @@ export const translations = {
       manajemen_users: 'Manajemen User',    
       manajemen_projects: 'Manajemen Project',
       manajemen_sertifikat: 'Manajemen Sertifikat',
+      manajemen_angkatan : 'Manajemen Angkatan',
       dashboard_dosen: 'Dashboard Dosen',
       mahasiswa_bimbingan: 'Mahasiswa Bimbingan',
       projects_bimbingan: 'Projects Bimbingan',
@@ -224,8 +225,41 @@ export const translations = {
       additional_info: 'File yang diupload akan menggantikan file lama. File lama akan otomatis dihapus.',
       cancel: 'Batal',
       update_sertifikat: 'Update Sertifikat', 
-      
     },
+    kelola_user: {
+      kelola_user_title: 'Kelola Users',
+      kelola_user_desc: 'Tambah, edit, atau hapus user di sistem.',
+      status_diterima: 'Diterima',
+      status_ditolak: 'Ditolak',
+      status_sedang_di_ajukan: 'Sedang Di Ajukan',
+      tambah_user: 'Tambah User',
+      edit_user: 'Edit User',
+      hapus_user: 'Hapus User',
+      sertifikat_title: 'Sertifikat',
+      aksi: 'Aksi',
+    },
+    kelola_project: {
+      kelola_project_title: 'Kelola Projects',
+      kelola_project_desc: 'Tambah, edit, atau hapus project di sistem.',
+      tambah_project: 'Tambah Project',
+      edit_project: 'Edit Project',
+      hapus_project: 'Hapus Project',
+      nama_project: 'Nama Project',
+      deskripsi: 'Deskripsi',
+      tanggal_mulai: 'Tanggal Mulai',
+      tanggal_selesai: 'Tanggal Selesai',
+      link_project: 'Link Project',
+      link_github: 'Link GitHub',
+      link_video: 'Link Video',
+      diposting: 'Diposting',
+    },
+    kelola_create_project: {
+      kelola_create_project_title: 'Tambah Project',
+      kelola_create_project_desc: 'Tambah project yang pernah dibuat oleh mahasiswa.',
+      nama_project: 'Nama Project',
+
+    },
+
   }, 
   en: {
     dashboard: {
@@ -341,6 +375,7 @@ export const translations = {
       manajemen_users: 'User Management',
       manajemen_projects: 'Project Management',
       manajemen_sertifikat: 'Certificate Management',
+      manajemen_angkatan : 'Angkatan Management',
       dashboard_dosen: 'Lecturer Dashboard',
       mahasiswa_bimbingan: 'Supervised Students',
       projects_bimbingan: 'Supervised Projects',
@@ -439,6 +474,40 @@ export const translations = {
       cancel: 'Cancel',
       update_sertifikat: 'Update Certificate', 
     },
+    kelola_user: {
+      kelola_user_title: 'Manage Users',
+      kelola_user_desc: 'Add, edit, or delete users in the system.',
+      status_diterima: 'Accepted',
+      status_ditolak: 'Rejected',
+      status_sedang_di_ajukan: 'Pending',
+      tambah_user: 'Add User',
+      edit_user: 'Edit User',
+      hapus_user: 'Delete User',
+      sertifikat_title: 'Certificates',
+      aksi: 'Actions',
+    },
+    kelola_project: {
+      kelola_project_title: 'Manage Projects',
+      kelola_project_desc: 'Add, edit, or delete projects in the system.',
+      tambah_project: 'Add Project',
+      edit_project: 'Edit Project',
+      hapus_project: 'Delete Project',
+      nama_project: 'Project Name',
+      deskripsi: 'Description',
+      tanggal_mulai: 'Start Date',
+      tanggal_selesai: 'End Date',
+      link_project: 'Project Link',
+      link_github: 'GitHub Link',
+      link_video: 'Video Link',
+      diposting: 'Posted',
+    },
+    kelola_create_project: {
+      kelola_create_project_title: 'Add Project',
+      kelola_create_project_desc: 'Add projects that students have created.',
+      nama_project: 'Project Name',
+
+    },
+
   }   
 };
 

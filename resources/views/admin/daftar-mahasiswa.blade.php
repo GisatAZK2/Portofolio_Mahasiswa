@@ -6,9 +6,8 @@
         <!-- Header -->
         <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Kelola Pengguna</h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Kelola semua pengguna yang terdaftar dalam sistem
+                <h1 data-translate="kelola_user_title" data-translate-page="kelola_user" class="text-2xl font-bold text-gray-900 dark:text-white"></h1>
+                <p data-translate="kelola_user_desc" data-translate-page="kelola_user" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 </p>
             </div>
             <a href="{{ route('admin.users.ViewCreate') }}"
@@ -16,7 +15,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                Tambah Pengguna
+                <span data-translate="tambah_user" data-translate-page="kelola_user"></span>
             </a>
         </div>
 
@@ -27,7 +26,7 @@
                
                 <div class="relative h-24 bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 px-6 pt-6">
                     
-                    <!-- Background Image jika ada -->
+                    <!-- Background -->
                     @if($user->background_url && Storage::disk('public')->exists($user->background_url))
                     <div class="absolute inset-0">
                         <img src="{{ asset('storage/' . ltrim($user->background_url, '/')) }}"
@@ -56,7 +55,7 @@
                         <span class="px-3 py-1 rounded-full text-xs font-medium shadow-sm
                             @if($user->role == 'admin') bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
                             @elseif($user->role == 'dosen') bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
-                            @else bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+                            @else bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-white
                             @endif">
                             {{ ucfirst($user->role) }}
                         </span>
@@ -65,7 +64,7 @@
 
                 <!-- Content -->
                 <div class="pt-12 px-6 pb-6">
-                    <!-- Nama dan Username (dapat diklik) -->
+                    <!-- Nama dan Username-->
                     <a href="{{ route('portfolio.show', $user->id) }}" class="block group-hover:opacity-90 transition-opacity">
                         <h3 class="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                             {{ $user->nama_mahasiswa ?? 'Pengguna' }}
@@ -73,27 +72,28 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ '@' . ($user->username ?? 'username') }}</p>
                     </a>
 
-                    <!-- Status Pengajuan -->
+                  <!-- Status Pengajuan -->
                     @if($user->status_pengajuan)
                     <div class="mb-4">
                         @if($user->status_pengajuan == 'Di Terima')
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                 <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
-                                Diterima
+                                <span data-translate="status_diterima" data-translate-page="kelola_user"></span>
                             </span>
                         @elseif($user->status_pengajuan == 'Di Tolak')
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
                                 <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
-                                Ditolak
+                                <span data-translate="status_ditolak" data-translate-page="kelola_user"></span>
                             </span>
                         @elseif($user->status_pengajuan == 'Sedang Di Ajukan')
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
                                 <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-1.5 animate-pulse"></span>
-                                Menunggu
+                                <span data-translate="status_sedang_di_ajukan" data-translate-page="kelola_user"></span>
                             </span>
                         @endif
                     </div>
                     @endif
+
 
                     <!-- Info Details -->
                     <div class="space-y-2 text-sm mb-4">
@@ -148,7 +148,7 @@
                         </div>
                         <div class="text-center">
                             <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $user->sertifikats_count ?? 0 }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Sertifikat</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="sertifikat_title" data-translate-page="kelola_user"></p>
                         </div>
                     </div>
 

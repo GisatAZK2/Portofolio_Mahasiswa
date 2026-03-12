@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\Sertifikat;
 use App\Models\Keahlian;
 use App\Models\Jurusan;
 use App\Models\Angkatan;
+use App\Models\LearningCorner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -22,22 +24,20 @@ class AdminController extends Controller
     }
 
     //For Pages User
-    public function ListUser(Request $request)
-{
-    $users = User::whereIn('role', ['mahasiswa', 'admin', 'dosen'])
-        ->where('id', '!=', Auth::id()) // tidak tampilkan user yang sedang login
-        ->with(['jurusan', 'angkatan', 'keahlian'])
-        ->withCount([
-            'projects',
-            'sertifikats',
-            'learning_corners',
-            
-        ])
-        ->orderBy('created_at', 'desc')
-        ->get();
+    public function ListUser(Request $request){
+        $users = User::whereIn('role', ['mahasiswa', 'admin', 'dosen'])
+            ->where('id', '!=', Auth::id()) // tidak tampilkan user yang sedang login
+            ->with(['jurusan', 'angkatan', 'keahlian'])
+            ->withCount([
+                'projects',
+                'sertifikats',
+                'learning_corners'
+            ])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return view('admin.daftar-mahasiswa', compact('users'));
-}
+        return view('admin.daftar-mahasiswa', compact('users'));
+    }
 
     public function ViewAddUser(){
         $jurusan  = Jurusan::all();
@@ -46,234 +46,739 @@ class AdminController extends Controller
         return view('admin.user.views_add_user',compact('jurusan', 'keahlian', 'angkatan'));
     }
 
-    public function AddUser(Request $request)
-{
-    $validated = $request->validate([
-        'nama_mahasiswa' => ['required', 'string', 'max:100'],
-        'email' => ['nullable','email','max:100','unique:users,email'],
-        'username' => ['required','string','max:100','unique:users,username','regex:/^[a-zA-Z0-9_]+$/'
-        ],
+    public function AddUser(Request $request){
+            $validated = $request->validate([
+                'nama_mahasiswa' => ['required', 'string', 'max:100'],
+                'email' => ['nullable','email','max:100','unique:users,email'],
+                'username' => ['required','string','max:100','unique:users,username','regex:/^[a-zA-Z0-9_]+$/'
+                ],
 
-        'password' => [
-            'required',
-            'confirmed',
-            Password::min(8)->mixedCase()
-        ],
+                'password' => [
+                    'required',
+                    'confirmed',
+                    Password::min(8)->mixedCase()
+                ],
 
-        'role' => [
-            'required',
-            'in:mahasiswa,dosen,admin'
-        ],
+                'role' => [
+                    'required',
+                    'in:mahasiswa,dosen,admin'
+                ],
 
-        'id_jurusan' => [
-            'nullable',
-            'required_if:role,mahasiswa,dosen',
-            'exists:jurusan,id_jurusan'
-        ],
+                'id_jurusan' => [
+                    'nullable',
+                    'required_if:role,mahasiswa,dosen',
+                    'exists:jurusan,id_jurusan'
+                ],
 
-        'id_keahlian' => [
-            'nullable',
-            'required_if:role,mahasiswa,dosen',
-            'exists:keahlian,id_keahlian'
-        ],
+                'id_keahlian' => [
+                    'nullable',
+                    'required_if:role,mahasiswa,dosen',
+                    'exists:keahlian,id_keahlian'
+                ],
 
-        'id_angkatan' => [
-            'nullable',
-            'required_if:role,mahasiswa,dosen',
-            'exists:angkatan,id'
-        ],
+                'id_angkatan' => [
+                    'nullable',
+                    'required_if:role,mahasiswa,dosen',
+                    'exists:angkatan,id'
+                ],
 
-        'photo_profile' => [
-            'nullable',
-            'image',
-            'mimes:jpeg,png,jpg',
-            'max:2048'
-        ],
-    ]);
+                'photo_profile' => [
+                    'nullable',
+                    'image',
+                    'mimes:jpeg,png,jpg',
+                    'max:2048'
+                ],
+            ]);
 
 
-    $photoPath = null;
+            $photoPath = null;
 
-    if ($request->hasFile('photo_profile')) {
-        $photoPath = $request->file('photo_profile')
-            ->store('photo_profile', 'public');
+            if ($request->hasFile('photo_profile')) {
+                $photoPath = $request->file('photo_profile')
+                    ->store('photo_profile', 'public');
+            }
+
+            User::create([
+                'nama_mahasiswa' => $validated['nama_mahasiswa'],
+                'email' => $validated['email'] ?? null,
+                'username' => $validated['username'],
+                'password' => Hash::make($validated['password']),
+
+                'photo_profile' => $photoPath,
+
+                'role' => $validated['role'],
+
+                'id_jurusan' => $validated['id_jurusan'] ?? null,
+                'id_keahlian' => $validated['id_keahlian'] ?? null,
+                'id_angkatan' => $validated['id_angkatan'] ?? null,
+
+                'status_pengajuan' => 'Di Terima',
+                'is_active' => 1,
+            ]);
+
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'User berhasil ditambahkan.');
     }
 
-    User::create([
-        'nama_mahasiswa' => $validated['nama_mahasiswa'],
-        'email' => $validated['email'] ?? null,
-        'username' => $validated['username'],
-        'password' => Hash::make($validated['password']),
-
-        'photo_profile' => $photoPath,
-
-        'role' => $validated['role'],
-
-        'id_jurusan' => $validated['id_jurusan'] ?? null,
-        'id_keahlian' => $validated['id_keahlian'] ?? null,
-        'id_angkatan' => $validated['id_angkatan'] ?? null,
-
-        'status_pengajuan' => 'Di Terima',
-        'is_active' => 1,
-    ]);
-
-    return redirect()
-        ->route('admin.users.index')
-        ->with('success', 'User berhasil ditambahkan.');
+    public function DetailsUser($id){
+            $jurusans = Jurusan::all();
+            $keahlians = Keahlian::all();
+            $angkatans = Angkatan::all();
+            $user = User::with(['jurusan','keahlian','angkatan'])->findOrFail($id);
+            return view('admin.user.views_edit_user', compact(
+                'user', 
+                'jurusans', 
+                'keahlians', 
+                'angkatans'
+            ));
     }
 
-    public function DetailsUser($id)
-{
-     $jurusans = Jurusan::all();
-    $keahlians = Keahlian::all();
-    $angkatans = Angkatan::all();
-    $user = User::with(['jurusan','keahlian','angkatan'])->findOrFail($id);
-    return view('admin.user.views_edit_user', compact(
-        'user', 
-        'jurusans', 
-        'keahlians', 
-        'angkatans'
-    ));
-}
+    public function UpdateUser(Request $request, $id_user) {
+        $user = User::findOrFail($id_user);
 
-public function UpdateUser(Request $request, $id_user)
-{
-    $user = User::findOrFail($id_user);
+        // Base validation rules
+        $rules = [
+            'nama_mahasiswa' => ['sometimes','string','max:100'],
 
-    // Base validation rules
-    $rules = [
-        'nama_mahasiswa' => ['sometimes','string','max:100'],
+            'username' => [
+                'sometimes',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-Z0-9_]+$/',
+                Rule::unique('users')->ignore($user->id)
+            ],
 
-        'username' => [
-            'sometimes',
-            'string',
-            'max:100',
-            'regex:/^[a-zA-Z0-9_]+$/',
-            Rule::unique('users')->ignore($user->id)
-        ],
+            'email' => [
+                'sometimes',
+                'nullable',
+                'email',
+                'max:100',
+                Rule::unique('users')->ignore($user->id)
+            ],
 
-        'email' => [
-            'sometimes',
-            'nullable',
+            'role' => [
+                'sometimes',
+                'in:mahasiswa,dosen,admin'
+            ],
+
+            'status_pengajuan' => [
+                'sometimes',
+                'in:Di Terima,Di Tolak'
+            ],
+
+            'is_active' => [
+                'sometimes',
+                'boolean'
+            ],
+
+            'id_jurusan' => [
+                'sometimes',
+                'nullable',
+                'exists:jurusan,id_jurusan'
+            ],
+
+            'id_keahlian' => [
+                'sometimes',
+                'nullable',
+                'exists:keahlian,id_keahlian'
+            ],
+
+            'id_angkatan' => [
+                'sometimes',
+                'nullable',
+                'exists:angkatan,id'
+            ],
+
+            'password' => [
+                'nullable',
+                'string',
+                'confirmed',
+                Password::min(8)->mixedCase()
+            ],
+
+            'photo_profile' => [
+                'sometimes',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:2048'
+            ],
+        ];
+
+        $validated = $request->validate($rules);
+
+        $updateData = [];
+
+        // Update basic fields
+        foreach ([
+            'nama_mahasiswa',
+            'username',
             'email',
-            'max:100',
-            Rule::unique('users')->ignore($user->id)
-        ],
-
-        'role' => [
-            'sometimes',
-            'in:mahasiswa,dosen,admin'
-        ],
-
-        'status_pengajuan' => [
-            'sometimes',
-            'in:Di Terima,Di Tolak'
-        ],
-
-        'is_active' => [
-            'sometimes',
-            'boolean'
-        ],
-
-        'id_jurusan' => [
-            'sometimes',
-            'nullable',
-            'exists:jurusan,id_jurusan'
-        ],
-
-        'id_keahlian' => [
-            'sometimes',
-            'nullable',
-            'exists:keahlian,id_keahlian'
-        ],
-
-        'id_angkatan' => [
-            'sometimes',
-            'nullable',
-            'exists:angkatan,id'
-        ],
-
-        'password' => [
-            'nullable',
-            'string',
-            'confirmed',
-            Password::min(8)->mixedCase()
-        ],
-
-        'photo_profile' => [
-            'sometimes',
-            'image',
-            'mimes:jpeg,png,jpg',
-            'max:2048'
-        ],
-    ];
-
-    $validated = $request->validate($rules);
-
-    $updateData = [];
-
-    // Update basic fields
-    foreach ([
-        'nama_mahasiswa',
-        'username',
-        'email',
-        'role',
-        'status_pengajuan',
-        'is_active',
-        'id_jurusan',
-        'id_keahlian',
-        'id_angkatan'
-    ] as $field) {
-        if ($request->has($field)) {
-            $updateData[$field] = $validated[$field] ?? null;
-        }
-    }
-
-    // Password update
-    if ($request->filled('password')) {
-        $updateData['password'] = Hash::make($validated['password']);
-    }
-
-    // Role logic
-    if ($request->has('role') && $validated['role'] === 'admin') {
-        $updateData['id_jurusan'] = null;
-        $updateData['id_keahlian'] = null;
-        $updateData['id_angkatan'] = null;
-    }
-
-    // Photo upload
-    if ($request->hasFile('photo_profile')) {
-
-        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
-            Storage::disk('public')->delete($user->photo_profile);
+            'role',
+            'status_pengajuan',
+            'is_active',
+            'id_jurusan',
+            'id_keahlian',
+            'id_angkatan'
+        ] as $field) {
+            if ($request->has($field)) {
+                $updateData[$field] = $validated[$field] ?? null;
+            }
         }
 
-        $photoPath = $request->file('photo_profile')->store('photo_profile', 'public');
+        // Password update
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($validated['password']);
+        }
 
-        $updateData['photo_profile'] = $photoPath;
+        // Role logic
+        if ($request->has('role') && $validated['role'] === 'admin') {
+            $updateData['id_jurusan'] = null;
+            $updateData['id_keahlian'] = null;
+            $updateData['id_angkatan'] = null;
+        }
+
+        // Photo upload
+        if ($request->hasFile('photo_profile')) {
+
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+
+            $photoPath = $request->file('photo_profile')->store('photo_profile', 'public');
+
+            $updateData['photo_profile'] = $photoPath;
+        }
+
+        // Update user
+        $user->update($updateData);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil diperbarui.');
     }
 
-    // Update user
-    $user->update($updateData);
-
-    return redirect()
-        ->route('admin.users.index')
-        ->with('success', 'User berhasil diperbarui.');
-}
-    public function destroy(User $user){
+    public function destroyUser(User $user){
          $user->delete();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Sertifikat berhasil dihapus.');
     }
 
-      public function projects()
-    {
+    //For Pages Sertifikat
+    public function sertifikat(Request $request) {
+        $search = $request->input('search');
+        $angkatan = $request->input('angkatan');
+        $jurusan = $request->input('jurusan');
+        $keahlian = $request->input('keahlian');
+        $status_pengajuan = $request->input('status_pengajuan');
+        $selected_ids = $request->input('selected_ids', []);
+
+        $query = Sertifikat::with('mahasiswa.jurusan', 'mahasiswa.angkatan', 'mahasiswa.keahlian');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nama_sertifikat', 'like', '%' . $search . '%')
+                  ->orWhereHas('mahasiswa', function($subQ) use ($search) {
+                      $subQ->where('nama_mahasiswa', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        if ($angkatan) {
+            $query->whereHas('mahasiswa', function($q) use ($angkatan) {
+                $q->where('id_angkatan', $angkatan);
+            });
+        }
+
+        if ($jurusan) {
+            $query->whereHas('mahasiswa', function($q) use ($jurusan) {
+                $q->where('id_jurusan', $jurusan);
+            });
+        }
+
+        if ($keahlian) {
+            $query->whereHas('mahasiswa', function($q) use ($keahlian) {
+                $q->where('id_keahlian', $keahlian);
+            });
+        }
+
+        if ($status_pengajuan && $status_pengajuan !== 'Semua') {
+            $query->where('status_pengajuan', $status_pengajuan);
+        }
+
+    
+        $sertifikat = $query->orderBy('created_at', 'desc')->paginate(12)->withQueryString();
+
+    
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        $statusOptions = Sertifikat::distinct()->pluck('status_pengajuan')->filter()->values();
+
+        return view('admin.sertifikat', compact(
+            'sertifikat', 
+            'angkatans', 
+            'jurusans', 
+            'keahlians', 
+            'statusOptions',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian',
+            'status_pengajuan',
+            'selected_ids'
+        ));
+    }
+
+    public function DetailsSertifikat($id){
+            $sertifikat = Sertifikat::findorfail($id);
+            return view('admin.sertifikat.views_edit_sertifikat', compact('sertifikat'));
+    }
+
+    public function approve($id) {
+        $sertifikat = Sertifikat::findOrFail($id);
+        $sertifikat->status_pengajuan = 'Di Terima';
+        $sertifikat->is_active = true;
+        $sertifikat->save();
+            
+        return redirect()->back()->with('success', 'Sertifikat berhasil diterima');
+    }
+
+    public function reject(Request $request, $id) {
+        $request->validate(['keterangan' => 'required|string']);
+            
+        $sertifikat = Sertifikat::findOrFail($id);
+        $sertifikat->status_pengajuan = 'Di Tolak';
+        $sertifikat->is_active = false;
+        $sertifikat->keterangan = $request->keterangan;
+        $sertifikat->save();
+            
+        return redirect()->back()->with('success', 'Sertifikat ditolak');
+    }
+
+    public function TambahSertifikat(Request $request) {
+        $search = $request->input('search');
+        $angkatan = $request->input('angkatan');
+        $jurusan = $request->input('jurusan');
+        $keahlian = $request->input('keahlian');
+
+        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+            ->where('role', 'mahasiswa');
+        
+        // Filter pencarian berdasarkan nama mahasiswa
+        if ($search) {
+            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        }
+
+        // Filter berdasarkan angkatan
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
+
+        // Filter berdasarkan jurusan
+        if ($jurusan) {
+            $query->where('id_jurusan', $jurusan);
+        }
+
+        // Filter berdasarkan keahlian
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
+
+        // Ambil data dengan pagination
+        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        // Ambil data untuk dropdown filter
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        return view('admin.sertifikat.views_create_sertifikat', compact(
+            'users',
+            'angkatans',
+            'jurusans',
+            'keahlians',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian'
+        ));
+    }
+
+    public function StoreSertifikat(Request $request){
+        $validated = $request->validate([
+            'nama_sertifikat'   => 'required|string|max:255',
+            'lembaga_penerbit'  => 'required|string|max:255',
+            'tanggal_terbit'    => 'required|date',
+            'link_sertifikat'   => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
+            'user_id'              => 'required|string|max:255' 
+        ]);
+        
+        if ($request->hasFile('link_sertifikat')) {
+            $path = $request->file('link_sertifikat')
+                            ->store('sertifikat', 'public');
+            $validated['link_sertifikat'] = $path;
+        }
+
+        Sertifikat::create([
+            'id_mahasiswa'     => $validated['user_id'],
+            'nama_sertifikat'  => $validated['nama_sertifikat'],
+            'lembaga_penerbit' => $validated['lembaga_penerbit'],
+            'tanggal_terbit'   => $validated['tanggal_terbit'],
+            'link_sertifikat'  => $validated['link_sertifikat'],
+
+            'status_pengajuan' => 'Di Terima',
+            'is_active' => 1,
+        ]);
+
+        return redirect()->route('admin.sertifikat.index')
+            ->with('success', 'Sertifikat berhasil ditambahkan!');  
+    }
+
+    public function UpdateSertifikat(Request $request, Sertifikat $sertifikat) {
+
+        $validated = $request->validate([
+            'nama_sertifikat'   => 'required|string|max:255',
+            'lembaga_penerbit'  => 'required|string|max:255',
+            'tanggal_terbit'    => 'required|date',
+            'link_sertifikat'   => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
+        ]);
+
+        if ($request->hasFile('link_sertifikat')) {
+
+        
+            if ($sertifikat->link_sertifikat && 
+                Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
+                
+                Storage::disk('public')->delete($sertifikat->link_sertifikat);
+            }
+
+            $path = $request->file('link_sertifikat')
+                            ->store('sertifikat', 'public');
+
+            $validated['link_sertifikat'] = $path;
+        } else {
+        
+            $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
+        }
+
+        $sertifikat->update($validated);
+
+        return redirect()->route('admin.sertifikat.index')
+            ->with('success', 'Sertifikat berhasil diperbarui!');
+    }
+
+    public function DestroySertifikat(Sertifikat $sertifikat) {
+        $sertifikat->delete();
+
+        return redirect()->route('admin.sertifikat.index')
+            ->with('success', 'Sertifikat berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request) {
+        $request->validate([
+            'selected_ids' => 'required|array',
+            'selected_ids.*' => 'exists:sertifikat,id'
+        ]);
+
+        try {
+            $ids = $request->selected_ids;
+            $sertifikats = Sertifikat::whereIn('id', $ids)->get();
+
+            // Delete files from storage
+            foreach ($sertifikats as $sertifikat) {
+                if ($sertifikat->link_sertifikat && Storage::exists($sertifikat->link_sertifikat)) {
+                    Storage::delete($sertifikat->link_sertifikat);
+                }
+            }
+
+            // Delete records
+            Sertifikat::whereIn('id', $ids)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => count($ids) . ' sertifikat berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus sertifikat: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // For Pages Angkatan
+    public function ListAngkatan() {
+        $angkatans = Angkatan::all();
+        return view('admin.list-angkatan', compact('angkatans'));
+    }
+
+    public function DetailsAngkatan($id){
+        
+            $angkatan = Angkatan::withCount('mahasiswa')->findorfail($id);
+            return view('admin.angkatan.views_edit_angkatan', compact('angkatan'));
+    }
+
+    public function TambahAngkatan() {
+        return view('admin.angkatan.views_create_angkatan');
+    }
+
+    public function StoreAngkatan(Request $request) {
+         $validated = $request->validate([
+            'nama_angkatan'   => 'required|string|max:255',
+            'tahun_masuk'     => 'required|date',
+            'tahun_keluar'    => 'required|date',
+        ]);
+
+        Angkatan::create([
+            'nama_angkatan' => $validated['nama_angkatan'],
+            'tahun_masuk'   => $validated['tahun_masuk'],
+            'tahun_keluar'  => $validated['tahun_keluar']
+        ]);
+
+        return redirect()->route('admin.angkatan.index')
+            ->with('success', 'Angkatan berhasil ditambahkan!');  
+    }
+
+    public function UpdateAngkatan(Request $request, Angkatan $angkatan) {
+
+        $validated = $request->validate([
+            'nama_angkatan'   => 'required|string|max:255',
+            'tahun_masuk'     => 'required|date',
+            'tahun_keluar'    => 'required|date',
+        ]);
+
+        $angkatan->update($validated);
+
+        return redirect()->route('admin.angkatan.index')
+            ->with('success', 'Data Angkatan berhasil diperbarui!');
+    }
+
+    public function DestroyAngkatan(Angkatan $angkatan) {
+        $angkatan->delete();
+
+        return redirect()->route('admin.angkatan.index')
+            ->with('success', 'Angkatan berhasil dihapus.');
+    }
+
+    public function bulkDestroyAngkatan(Request $request) {
+        $ids = explode(',', $request->selected_ids);
+
+        Angkatan::whereIn('id', $ids)->delete();
+
+        return redirect()->back()->with('success', count($ids).' Angkatan berhasil dihapus');
+    }
+
+    //For Projects Pages
+    public function projects(){
         $projects = Project::with(['mahasiswa', 'leader'])->latest()->paginate(12);
         return view('admin.project', compact('projects'));
     }
 
-    public function sertifikat(){
-        return view('admin.sertifikat');
+    public function TambahProjects(Request $request){
+        $search = $request->input('search');
+        $angkatan = $request->input('angkatan');
+        $jurusan = $request->input('jurusan');
+        $keahlian = $request->input('keahlian');
+
+        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+            ->where('role', 'mahasiswa');
+        
+        // Filter pencarian berdasarkan nama mahasiswa
+        if ($search) {
+            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        }
+
+        // Filter berdasarkan angkatan
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
+
+        // Filter berdasarkan jurusan
+        if ($jurusan) {
+            $query->where('id_jurusan', $jurusan);
+        }
+
+        // Filter berdasarkan keahlian
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
+
+        // Ambil data dengan pagination
+        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        // Ambil data untuk dropdown filter
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        return view('admin.projects.views_create_project', compact(
+            'users',
+            'angkatans',
+            'jurusans',
+            'keahlians',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian'
+        ));
     }
+
+    public function EditProjects($id){
+        $project = Project::with('leader', 'members', 'learningCorners')
+                   ->findOrFail($id);
+         $entries = LearningCorner::where('project_id', $project->id)
+        ->latest()
+        ->get();
+        return view('admin.projects.views_edit_project', compact('project', 'entries'));
+    }
+
+
+
+    public function StoreProject(Request $request) {
+        $request->merge([
+            'members' => collect($request->members)
+                ->filter(fn ($id) => !empty($id))
+                ->values()
+                ->all()
+        ]);
+        
+        $request->validate([
+            'nama_project'   => 'required|string|max:255',
+            'deskripsi'      => 'nullable|string|max:2000', // Diperbesar menjadi 2000 karakter
+            'tanggal_mulai'  => 'required|date',
+            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+            'link_project'   => 'nullable|url|max:500',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
+            'leader' => 'nullable|exists:users,id',
+            'members' => 'nullable|array',
+            'members.*' => 'nullable|exists:users,id|different:leader'
+        ]);
+
+        // Siapkan content sebagai JSON
+        $content = [
+            'nama_project' => $request->nama_project,
+            'deskripsi' => $request->deskripsi,
+            'link_project' => $request->link_project,
+            'link_github' => $request->link_github,
+            'link_video' => $request->link_video
+        ];
+
+        // Filter out null values
+        $content = array_filter($content, fn($value) => !is_null($value) && $value !== '');
+
+        // Validasi minimal ada content yang diisi (opsional, bisa dihapus jika tidak diperlukan)
+        if (empty($content)) {
+            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (deskripsi, link_project, link_github, atau link_video)']);
+        }
+
+        // Buat project baru
+        $project = Project::create([
+            'tanggal_mulai'  => $request->tanggal_mulai,
+            'tanggal_akhir'  => $request->tanggal_akhir,
+            'isi_content'    => $content,
+            'id_mahasiswa'   => $request->leader, // id_mahasiswa diisi dengan leader (pemimpin project)
+            'leader_id'      => $request->leader,
+        ]);
+
+        // Proses members (rekan project)
+        $members = collect($request->members ?? [])
+            ->filter() // Hapus nilai kosong
+            ->reject(fn($id) => $id == $request->leader) // Pastikan tidak ada duplikasi dengan leader
+            ->map(fn($id) => (int) $id)
+            ->unique() // Hapus duplikasi ID
+            ->values()
+            ->all();
+
+        // Attach members ke project (jika ada)
+        if (!empty($members)) {
+            $project->members()->attach($members);
+        }
+
+        // Hapus data sementara dari localStorage (opsional, bisa diarahkan ke frontend)
+        return redirect()->route('admin.projects.index') // Perhatikan route-nya, sesuaikan dengan kebutuhan
+            ->with('success', 'Project berhasil ditambahkan!')
+            ->with('clear_local_storage', true); // Tambahkan flag untuk membersihkan localStorage di frontend
+    }
+
+    public function UpdateProject(Request $request, $id) {
+        $project = Project::where('id', $id)
+            ->where('id_mahasiswa', Auth::id())
+            ->firstOrFail();
+            $request->validate([
+            'nama_project'   => 'required|string|max:255',
+            'tanggal_mulai'  => 'required|date',
+            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+            'link_project'   => 'nullable|url|max:255',
+            'deskripsi'      => 'nullable|string|max:255',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
+            'leader'         => 'nullable|exists:users,id',
+            'id_mahasiswa'   => 'nullable|exist:users,id'
+        ]);
+        $content = array_filter($request->only([
+            'nama_project', 'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
+        ]), fn($value) => !is_null($value) && $value !== '');
+
+        if (empty($content)) {
+            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
+        }
+        
+        $project->update([
+        'tanggal_mulai'  => $request->tanggal_mulai,
+        'tanggal_akhir'  => $request->tanggal_akhir,
+        'isi_content'    => $content,
+        'id_mahasiswa'   => $content->id_mahasiswa,
+        'leader_id'      => $request->leader,
+        ]);
+
+        $members = collect($request->members ?? [])
+        ->filter()
+        ->reject(fn($id) => $id == $request->leader)
+        ->map(fn($id) => (int) $id)
+        ->values()
+        ->all();
+
+        if (!empty($members)) {
+            $project->members()->detach();
+        }
+
+        /*Penghapusan Link yang terpilih ?
+        foreach (['link_project', 'link_github', 'link_video'] as $link) {
+
+        // Kalau link dicentang untuk dihapus → skip
+        if (in_array($link, $removeLinks)) {
+            continue;
+        }
+
+        // Kalau ada value baru → update
+        if ($request->filled($link)) {
+            $content[$link] = $request->$link;
+        }
+        } */
+        return redirect()->route('project.index')
+            ->with('success', 'Project berhasil diperbarui!');
+
+    }
+
+    public function DestroyProject(Project $projects) {
+        $projects->delete();
+
+        return redirect()->route('admin.project.index')
+            ->with('success', 'Project Mahasiswa berhasil dihapus!');
+    }
+
+    public function bulkDestroyProject(Request $request) {
+        $ids = explode(',', $request->selected_ids);
+
+        Project::whereIn('id', $ids)->delete();
+
+        return redirect()->back()->with('success', count($ids).' Project berhasil dihapus');
+    }
+
 }

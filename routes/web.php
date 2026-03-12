@@ -63,17 +63,54 @@ Route::middleware(['auth','role:mahasiswa'])->group(function () {
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
-Route::middleware(['auth','role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('dashboard.admin');
-    Route::get('/admin/manageUser', [AdminController::class, 'ListUser'])->name('admin.users.index');
-    Route::get('/admin/manageUser/Details/{user}',[AdminController::class, 'DetailsUser'])->name('admin.users.details');
-    Route::patch('/admin/manageUser/edit/{user}',[AdminController::class, 'UpdateUser'])->name('admin.users.edit');
-    Route::get('/admin/AddUser', [AdminController::class, 'ViewAddUser'])->name('admin.users.ViewCreate');
-    Route::post('/admin/StoreUser', [AdminController::class, 'AddUser'])->name('admin.users.StoreUser');
-    Route::delete('/admin/DeleteUser/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
-    Route::get('/admin/manageProject', [AdminController::class, 'projects'])->name('admin.projects.index');
-    Route::get('/admin/manageSertfikat', [AdminController::class, 'sertifikat'])->name('admin.sertifikat.index');
+Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.') ->group(function () {
+
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+    Route::prefix('manageUser')->name('users.')->group(function () {
+        Route::get('/', [AdminController::class, 'ListUser'])->name('index');
+        Route::get('/Details/{user}', [AdminController::class, 'DetailsUser'])->name('details');
+        Route::patch('/edit/{user}', [AdminController::class, 'UpdateUser'])->name('edit');
+        Route::get('/AddUser', [AdminController::class, 'ViewAddUser'])->name('ViewCreate');
+        Route::post('/StoreUser', [AdminController::class, 'AddUser'])->name('StoreUser');
+        Route::delete('/DeleteUser/{user}', [AdminController::class, 'destroyUser'])->name('destroy');
+    });
+
+    Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
+        Route::get('/', [AdminController::class, 'sertifikat'])->name('index');
+        Route::get('/AddSertifikat', [AdminController::class, 'TambahSertifikat'])->name('create');
+        Route::get('/Details/{sertifikat}', [AdminController::class, 'DetailsSertifikat'])->name('details');
+        Route::patch('/edit/{sertifikat}', [AdminController::class, 'UpdateSertifikat'])->name('update');
+        Route::post('/store', [AdminController::class, 'StoreSertifikat'])->name('store');
+        Route::delete('/DeleteSertifikat/{sertifikat}', [AdminController::class, 'DestroySertifikat'])->name('destroy');
+        Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroy'])->name('bulk-destroy');
+    });
+
+    Route::patch('/sertifikat/{id}/approve', [AdminController::class, 'approve'])->name('sertifikat.approve');
+    Route::patch('/sertifikat/{id}/reject', [AdminController::class, 'reject'])->name('sertifikat.reject');
+
+    Route::prefix('manageAngkatan')->name('angkatan.')->group(function () {
+        Route::get('/', [AdminController::class, 'ListAngkatan'])->name('index');
+        Route::get('/AddAngkatan', [AdminController::class, 'TambahAngkatan'])->name('create');
+        Route::get('/Details/{angkatan}', [AdminController::class, 'DetailsAngkatan'])->name('details');
+        Route::patch('/edit/{angkatan}', [AdminController::class, 'UpdateAngkatan'])->name('update');
+        Route::post('/store', [AdminController::class, 'StoreAngkatan'])->name('store');
+        Route::delete('/DeleteAngkatan/{angkatan}', [AdminController::class, 'DestroyAngkatan'])->name('destroy');
+        Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyAngkatan'])->name('bulk-destroy');
+    });
+
+    Route::prefix('manageProject')->name('projects.')->group(function () {
+        Route::get('/', [AdminController::class, 'projects'])->name('index');
+        Route::get('/create', [AdminController::class, 'TambahProjects'])->name('create');
+        Route::post('/store', [AdminController::class, 'StoreProject'])->name('store');
+        Route::get('/Details/{project}', [AdminController::class, 'EditProjects'])->name('details');
+        Route::post('/EditProject/{project}', [AdminController::class, 'UpdateProject'])->name('update');
+        Route::delete('/DeleteProject/{project}', [AdminController::class, 'DestroyProject'])->name('delete');
+        Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProject'])->name('bulk-delete');
+    });
+
 });
+
 
 Route::middleware(['auth','role:dosen'])->group(function () {
      Route::get('/dosen/dashboard', [DosenController::class, 'index'])->name('dashboard.dosen');

@@ -52,6 +52,9 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="deskripsi_opsional" data-translate-page="project_create"></span>
                 </label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="deskripsi_opsional" data-translate-page="project_create"></span>
+                </label>
                 <textarea name="deskripsi" rows="4"
                           class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
@@ -153,6 +156,9 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         <span data-translate="tanggal_selesai" data-translate-page="project_create"></span>
                     </label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="tanggal_selesai" data-translate-page="project_create"></span>
+                    </label>
                     <input type="date" name="tanggal_akhir"
                            value="{{ old('tanggal_akhir', $project->tanggal_akhir?->format('Y-m-d') ?? '') }}"
                            class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
@@ -168,6 +174,9 @@
 
             <!-- Link Project -->
             <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="link_project_opsional" data-translate-page="project_create"></span>
+                </label>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="link_project_opsional" data-translate-page="project_create"></span>
                 </label>
@@ -190,6 +199,9 @@
                 <label for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="link_github_opsional" data-translate-page="project_create"></span>
                 </label>
+                <label for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="link_github_opsional" data-translate-page="project_create"></span>
+                </label>
                 <input type="url" name="link_github" id="link_github" maxlength="500"
                        value="{{ old('link_github', $project->isi_content['link_github'] ?? '') }}"
                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
@@ -206,6 +218,9 @@
 
             <!-- Link Video -->
             <div>
+                <label for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="link_video_opsional" data-translate-page="project_create"></span>
+                </label>
                 <label for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="link_video_opsional" data-translate-page="project_create"></span>
                 </label>
