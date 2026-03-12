@@ -7,9 +7,9 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Sertifikat</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="sertifikat_edit_title" data-translate-page="sertifikat_edit"></h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Perbarui informasi sertifikat yang sudah kamu peroleh.</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-300" data-translate="sertifikat_edit_desc" data-translate-page="sertifikat_edit"></p>
             </div>
 
             <!-- Error Global -->
@@ -21,7 +21,7 @@
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        <span class="font-medium">Terdapat kesalahan pada input:</span>
+                        <span class="font-medium" data-translate="error_global_title" data-translate-page="sertifikat_edit"></span>
                     </div>
                     <ul class="list-disc pl-10 space-y-1.5">
                         @foreach ($errors->all() as $error)
@@ -40,7 +40,7 @@
                 <!-- Nama Sertifikat -->
                 <div>
                     <label for="nama_sertifikat" class="block text-sm dark:text-gray-100 font-medium text-gray-700 mb-2">
-                        Nama Sertifikat <span class="text-red-500">*</span>
+                        <span data-translate="nama_sertifikat" data-translate-page="sertifikat_edit"></span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
@@ -54,7 +54,7 @@
                 <!-- Lembaga Penerbit -->
                 <div>
                     <label for="lembaga_penerbit" class="block text-sm dark:text-gray-100 font-medium text-gray-700 mb-2">
-                        Lembaga Penerbit <span class="text-red-500">*</span>
+                        <span data-translate="lembaga_penerbit" data-translate-page="sertifikat_edit"></span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
@@ -68,7 +68,7 @@
                 <!-- Tanggal Terbit -->
                 <div>
                     <label for="tanggal_terbit" class="block text-sm font-medium dark:text-gray-100 text-gray-700 mb-2">
-                        Tanggal Terbit <span class="text-red-500">*</span>
+                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_edit"></span> <span class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
@@ -77,7 +77,7 @@
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200">Maksimal tanggal hari ini</p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="max_date" data-translate-page="sertifikat_edit"></p>
                 </div>
 
                 <!-- Current File Information -->
@@ -90,7 +90,7 @@
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">File saat ini:</p>
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="current_file" data-translate-page="sertifikat_edit"></p>
                                     <a href="{{ Storage::url($sertifikat->link_sertifikat) }}" target="_blank"
                                         class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,13 +100,13 @@
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                             </path>
                                         </svg>
-                                        Lihat file saat ini
+                                        <span data-translate="view_current_file" data-translate-page="sertifikat_edit"></span>
                                     </a>
                                 </div>
                             </div>
                             <button type="button" onclick="document.getElementById('replace-file-checkbox').click()"
                                 class="text-sm px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
-                                Ganti File
+                                <span data-translate="replace_file" data-translate-page="sertifikat_edit"></span>
                             </button>
                         </div>
 
@@ -133,12 +133,12 @@
                             <div class="flex text-sm text-gray-600">
                                 <label
                                     class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
-                                    <span>Upload file</span>
+                                    <span data-translate="upload_file" data-translate-page="sertifikat_edit"></span>
                                     <input id="link_sertifikat" name="link_sertifikat" type="file"
                                         accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
                                         onchange="updateFileLabel(this)">
                                 </label>
-                                <p class="pl-1">atau drag and drop</p>
+                                <p class="pl-1" data-translate="or_drag_drop" data-translate-page="sertifikat_edit"></p>
                             </div>
                             <p class="text-xs text-gray-500" id="file-name">
                                 @if($sertifikat->link_sertifikat)
@@ -157,20 +157,20 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB
+                        <span data-translate="upload_file_tips" data-translate-page="sertifikat_edit"></span>
                     </p>
                 </div>
 
                 <!-- Preview Gambar (untuk file baru) -->
                 <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-sm font-medium text-gray-700 mb-2">Preview File Baru:</p>
+                    <p class="text-sm font-medium text-gray-700 mb-2" data-translate="new_file_preview" data-translate-page="sertifikat_edit"></p>
                     <img id="image-preview" src="#" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
                 </div>
 
                 <!-- Preview File Saat Ini (jika ada) -->
                 @if($sertifikat->link_sertifikat && preg_match('/\.(jpg|jpeg|png|gif)$/i', $sertifikat->link_sertifikat))
                     <div id="current-image-preview" class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-gray-200">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">File Saat Ini:</p>
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="current_file_preview" data-translate-page="sertifikat_edit"></p>
                         <img src="{{ Storage::url($sertifikat->link_sertifikat) }}" alt="Current Sertifikat"
                             class="max-h-48 rounded-lg shadow-sm">
                     </div>
@@ -188,7 +188,7 @@
                         </div>
                         <div class="ml-3 flex-1">
                             <p class="text-sm text-blue-700">
-                                File yang diupload akan menggantikan file lama. File lama akan otomatis dihapus.
+                                <span data-translate="additional_info" data-translate-page="sertifikat_edit"></span>
                             </p>
                         </div>
                     </div>
@@ -198,11 +198,11 @@
                 <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200">
                     <a href="{{ route('sertifikat.index') }}"
                         class="px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
-                        Batal
+                        <span data-translate="cancel" data-translate-page="sertifikat_edit"></span>
                     </a>
                     <button type="submit"
                         class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        Update Sertifikat
+                        <span data-translate="update_sertifikat" data-translate-page="sertifikat_edit"></span>
                     </button>
                 </div>
             </form>
@@ -360,44 +360,11 @@
     });
     </script>
 
-    <!-- CSS Tambahan -->
-    <style>
-        .border-dashed {
-            transition: all 0.2s ease;
-        }
-
-        .border-dashed:hover {
-            border-color: #6366f1;
-            background-color: #f9fafb;
-        }
-
-        /* Hide spinner on number input */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        /* Custom file input */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        /* Transisi untuk hidden class */
-        .hidden {
-            display: none;
-        }
-    </style>
+    
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Edit informasi sertifikat atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.");
+});
+</script>
 @endsection

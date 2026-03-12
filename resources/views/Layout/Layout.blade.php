@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -6,11 +8,10 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
     @PwaHead
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
     if (
@@ -21,7 +22,7 @@
         document.documentElement.classList.add('dark');
     }
 </script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -31,8 +32,14 @@
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
     </div>
 
+    
 
     <div class="flex h-screen">
+
+      <div id="toast-container"
+        class="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-4
+        z-[9999] flex flex-col gap-3 w-full max-w-sm px-4 sm:px-0 items-center sm:items-end">
+        </div>
 
         <!-- Sidebar -->
         @include('components.sidebar')
@@ -49,47 +56,10 @@
             </main>
 
             <!-- Footer -->
-
+            @include('components.up-page')
             @include('components.footer')
         </div>
     </div>
-
-    <style>
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-/* Dark mode scrollbar */
-.dark ::-webkit-scrollbar-track {
-    background: #374151;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-    background: #4b5563;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-}
-
-</style>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -261,6 +231,8 @@
                 );
             };
         });
+
+
     </script>
 
     @stack('scripts')

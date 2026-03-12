@@ -1,15 +1,15 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-700 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards with Mini Charts -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Learning Corner -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
-                          <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200"
-                                data-translate="learning_corner" data-translate-page="dashboard_me">Learning Corner</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200"
+                            data-translate="semua_learning_corner" data-translate-page="dashboard">Semua Learning Corner
+                        </h3>
                         <span class="text-purple-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -17,16 +17,18 @@
                             </svg>
                         </span>
                     </div>
-                    <p class="text-4xl font-extrabold text-purple-600">{{ $totalLearning ?? 0 }}</p>
+                    <p class="text-4xl font-extrabold text-purple-600 dark:text-purple-300">{{ $totalLearning ?? 0 }}</p>
                     <div class="mt-4 h-20">
                         <canvas id="learningChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Total Project Dikerjakan -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <!-- Total Semua Project -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                    onclick="window.location.href = '{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300" data-translate="total_project" data-translate-page="dashboard_me">Total Project Dikerjakan</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="total_project"
+                            data-translate-page="dashboard">Total Semua Project</h3>
                         <span class="text-orange-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,11 +42,12 @@
                     </div>
                 </div>
 
-                <!-- Total Sertifikat Didapat -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <!-- Total Semua Sertifikat -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                    onclick="window.location.href = '{{ auth()->check() ? route('sertifikat.index') : route('sertifikat-mahasiswa') }}';">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700" data-translate="total_sertifikat"
-                                data-translate-page="dashboard_me">Total Sertifikat Didapat</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="total_sertifikat"
+                            data-translate-page="dashboard">Total Semua Sertifikat</h3>
                         <span class="text-amber-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -62,10 +65,10 @@
             <!-- Random Posts - Masonry Layout -->
             <div>
                 <div class="flex justify-between items-center mb-6">
-                     <h2 class="text-2xl font-bold text-gray-900" data-translate="perihal_terbaru"
-                        data-translate-page="dashboard_me">Perihal Terbaru</h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
+                        data-translate-page="dashboard">Perihal Terbaru</h2>
                     <a href="{{ route('search') ?? '#' }}"
-                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
+                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1" data-translate="lihat_semua" data-translate-page="dashboard">
                         Lihat Semua →
                     </a>
                 </div>
@@ -198,46 +201,22 @@
                                 $displayName = $isLeaderAvailable ? $leaderName : $ownerName;
                                 $displayId = $isLeaderAvailable ? $leaderId : $ownerId;
                                 $displayRole = $isLeaderAvailable ? 'Leader' : 'Owner';
-                                
-                                // Cek status sertifikat (untuk tipe sertifikat)
-                                $isSertifikatValid = false;
-                                $statusBadge = '';
-                                $statusColor = '';
-                                if ($post->type === 'sertifikat') {
-                                    $isSertifikatValid = ($post->status_pengajuan === 'Di Terima' && $post->is_active == 1);
-                                    
-                                    if ($post->status_pengajuan === 'Di Terima' && $post->is_active == 1) {
-                                        $statusBadge = 'Aktif';
-                                        $statusColor = 'green';
-                                    } elseif ($post->status_pengajuan === 'Sedang Di Ajukan') {
-                                        $statusBadge = 'Sedang Diajukan';
-                                        $statusColor = 'yellow';
-                                    } elseif ($post->status_pengajuan === 'Di Tolak') {
-                                        $statusBadge = 'Ditolak';
-                                        $statusColor = 'red';
-                                    } elseif ($post->is_active == 0) {
-                                        $statusBadge = 'Tidak Aktif';
-                                        $statusColor = 'gray';
-                                    }
-                                }
                             @endphp
                             
                             <!-- Card wrapper with independent expansion -->
                             <div 
-                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }} 
-                                @if($post->type === 'sertifikat' && !$isSertifikatValid)
-                                    opacity-70
-                                @endif"
+                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }}"
                                 x-data="{ expanded: false }"
                             >
                                 <!-- Card body -->
                                 <div class="flex flex-col p-5 lg:p-6">
-                                    <!-- User Info - Clickable ke Portfolio -->
+                                    <!-- User Info -->
                                     <a href="{{ $userId ? route('portfolio.show', ['user' => $userId]) : '#' }}" 
                                        class="flex items-center space-x-3 mb-4 hover:opacity-80 transition-opacity">
                                         <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm flex-shrink-0 relative">
                                             @if($userPhoto)
                                                 <img src="{{ asset('storage/' . ltrim($userPhoto, '/')) }}"
+                                                    id="image-zoom"
                                                     alt="{{ $userName }}"
                                                     class="w-full h-full object-cover" loading="lazy"
                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -271,32 +250,13 @@
                                     @elseif($post->type === 'project')
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mb-3 w-fit">Project</span>
                                     @elseif($post->type === 'sertifikat')
-                                        <div class="flex flex-wrap items-center gap-2 mb-3">
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 w-fit">
-                                                Sertifikat
-                                            </span>
-                                            
-                                            <!-- Status Badge -->
-                                            @if($statusBadge)
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
-                                                    @if($statusColor == 'green') bg-green-100 text-green-800
-                                                    @elseif($statusColor == 'yellow') bg-yellow-100 text-yellow-800
-                                                    @elseif($statusColor == 'red') bg-red-100 text-red-800
-                                                    @else bg-gray-100 text-gray-800
-                                                    @endif">
-                                                    {{ $statusBadge }}
-                                                </span>
-                                            @endif
-                                        </div>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">Sertifikat</span>
                                     @endif
 
                                     <!-- Konten utama -->
                                     <div class="flex-1 mt-3">
                                         @if($post->type === 'sertifikat')
-                                            <div class="flex flex-col space-y-3 
-                                                @if(!$isSertifikatValid)
-                                                    grayscale
-                                                @endif">
+                                            <div class="flex flex-col space-y-3">
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                                                     {{ $post->nama_sertifikat ?? '(Tanpa Judul Sertifikat)' }}
                                                 </h3>
@@ -314,17 +274,7 @@
                                                     <span class="font-medium">Terbit:</span>
                                                     <span class="ml-2">{{ $post->tanggal_terbit ? \Carbon\Carbon::parse($post->tanggal_terbit)->format('d M Y') : '—' }}</span>
                                                 </div>
-                                                
-                                                <!-- Keterangan (untuk status non-aktif/ditolak) -->
-                                                @if(!$isSertifikatValid && $post->keterangan)
-                                                    <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                                        <p class="text-xs text-gray-600 dark:text-gray-400">
-                                                            <span class="font-semibold">Keterangan:</span> {{ $post->keterangan }}
-                                                        </p>
-                                                    </div>
-                                                @endif
-                                                
-                                                @if($post->link_sertifikat && $isSertifikatValid)
+                                                @if($post->link_sertifikat)
                                                     <a href="{{ asset('storage/' . $post->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
                                                        class="inline-flex hover:underline items-center gap-2 text-amber-600 hover:text-amber-800 font-medium text-sm bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg transition-colors self-start mt-2">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,32 +283,13 @@
                                                         </svg>
                                                         Lihat Sertifikat
                                                     </a>
-                                                @elseif($post->link_sertifikat && !$isSertifikatValid)
-                                                    <div class="mt-2 inline-flex items-center gap-2 text-gray-500 font-medium text-sm bg-gray-100 px-4 py-2 rounded-lg cursor-not-allowed">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                        </svg>
-                                                        Sertifikat Tidak Tersedia
-                                                    </div>
                                                 @else
                                                     <p class="text-sm text-gray-500 dark:text-gray-50 italic">Tidak ada link sertifikat</p>
-                                                @endif
-                                                
-                                                <!-- Informasi Status Tambahan -->
-                                                @if(!$isSertifikatValid)
-                                                    <div class="mt-3 text-xs text-gray-500 dark:text-gray-400 italic">
-                                                        @if($post->status_pengajuan === 'Sedang Di Ajukan')
-                                                            Sertifikat sedang dalam proses pengajuan
-                                                        @elseif($post->status_pengajuan === 'Di Tolak')
-                                                            Pengajuan sertifikat ditolak
-                                                        @elseif($post->is_active == 0)
-                                                            Sertifikat tidak aktif
-                                                        @endif
-                                                    </div>
                                                 @endif
                                             </div>
 
                                         @elseif($post->type === 'learning')
+                                            <!-- Title - Clickable ke Project -->
                                             @if($relatedProject)
                                                 <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
                                                    class="block group-hover:text-indigo-700 transition-colors">
@@ -399,7 +330,7 @@
                                             @endif
                                             
                                             <!-- Images - Collapsible -->
-                                            @if(count($learningImages) > 0)
+                                             @if(count($learningImages) > 0)
                                                 <div class="space-y-3 mt-2">
                                                     <!-- First image always visible -->
                                                     <div class="relative">
@@ -414,7 +345,8 @@
                                                         @if(count($learningImages) > 1)
                                                             <button @click="expanded = !expanded" 
                                                                     class="absolute bottom-2 right-2 bg-black/50 hover:bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1 transition-colors">
-                                                                <span x-text="expanded ? 'Sembunyikan' : '+{{ count($learningImages)-1 }} lagi'"></span>
+                                                                <span x-show="!expanded" data-translate="tampilkan_lagi" data-translate-page="dashboard">+{{ count($learningImages)-1 }}</span>
+                                                                <span x-show="expanded" data-translate="sembunyikan" data-translate-page="dashboard"></span>
                                                                 <svg class="w-3 h-3" :class="{ 'rotate-180': expanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                                                 </svg>
@@ -454,7 +386,7 @@
                                             @if($relatedProject)
                                                 <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
                                                     <!-- Label Project Terkait -->
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Project Terkait:</p>
+                                                    <p data-translate="project_terkait" data-translate-page="dashboard" class="text-xs text-gray-500 dark:text-gray-400 mb-3">Project Terkait:</p>
                                                     
                                                     <!-- Nama Project - Ditampilkan Lebih Menonjol -->
                                                     <div class="mb-3">
@@ -500,9 +432,8 @@
                                                         <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                                         </svg>
-                                                        <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
+                                                        <a data-translate="project_detail" data-translate-page="dashboard" href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
                                                         class="hover:text-indigo-600 transition-colors">
-                                                            Lihat Detail Project
                                                         </a>
                                                     </div>
                                                     
@@ -559,13 +490,13 @@
                                             @if($link_project || $link_github || $link_video)
                                                 <div class="flex flex-wrap gap-4 text-sm mt-4">
                                                     @if($link_project)
-                                                        <a href="{{ $link_project }}" target="_blank" rel="noopener noreferrer"
+                                                        <a  href="{{ $link_project }}" target="_blank" rel="noopener noreferrer"
                                                            class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
                                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                                             </svg>
-                                                            Lihat Project
+                                                            <span data-translate="link_project" data-translate-page="dashboard"></span>
                                                         </a>
                                                     @endif
 
@@ -598,10 +529,18 @@
 
                                     <!-- Footer -->
                                     <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-900">
-                                        <p class="text-xs text-gray-500 dark:text-gray-50">
-                                            Diposting
+                                       <p class="text-xs text-gray-500 dark:text-gray-50">
+                                            <span data-translate="diposting" data-translate-page="dashboard"></span>
                                             {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }}
-                                            WIB
+                                            <span data-translate="oleh" data-translate-page="dashboard">oleh</span>
+                                            {{ $userName }}
+                                            @if($relatedProject)
+                                                <span data-translate="untuk_project" data-translate-page="dashboard">untuk project</span>
+                                                <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
+                                                   class="text-indigo-600 hover:text-indigo-800 transition-colors font-medium">
+                                                    {{ $relatedProjectData['nama_project'] ?? 'Project' }}
+                                                </a>
+                                            @endif
                                         </p>
                                     </div>
                                 </div>
@@ -612,15 +551,13 @@
 
                 <!-- Update timestamp -->
                 <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
-                    Data terakhir diperbarui: {{ now()->format('d F Y H:i') }} WIB
+                    
+                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard"></span> {{ now()->format('d F Y H:i') }} WIB
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Chart.js and Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
         function createSparkline(canvasId, borderColor) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
@@ -671,4 +608,13 @@
             createSparkline('sertifikatChart', '#f59e0b');
         });
     </script>
+
+    
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+});
+</script>
+
 @endsection

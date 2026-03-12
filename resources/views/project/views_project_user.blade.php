@@ -17,8 +17,8 @@
 
             <!-- Header Sederhana -->
             <div class="mb-6 sm:mb-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200">Project Mahasiswa</h1>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">Beberapa Pameran Project Mahasiswa</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="project_user_title" data-translate-page="project_user"></h1>
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1" data-translate="project_user_desc" data-translate-page="project_user"></p>
             </div>
 
             <!-- Projects Grid -->
@@ -46,40 +46,48 @@
                                 $mulaiFormatted = $mulai ? $mulai->translatedFormat('d M Y') : '—';
                                 $akhirFormatted = $akhir ? $akhir->translatedFormat('d M Y') : 'Sekarang';
 
-                                // Status logic
                                 $status = '—';
                                 $statusBadgeClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+
+                                // Default
                                 $statusText = 'Tidak diketahui';
+                                $statusTranslateKey = 'tidak_diketahui';
 
                                 if ($mulai && $akhir) {
                                     if ($akhir < $today) {
                                         $status = 'Past';
                                         $statusBadgeClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
                                         $statusText = 'Selesai';
+                                        $statusTranslateKey = 'selesai';
                                     } elseif ($mulai <= $today && $today <= $akhir) {
                                         $status = 'Now';
                                         $statusBadgeClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
                                         $statusText = 'Sedang Berjalan';
+                                        $statusTranslateKey = 'sedang_berjalan';
                                     } elseif ($mulai > $today) {
                                         $status = 'Coming';
                                         $statusBadgeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
                                         $statusText = 'Akan Datang';
+                                        $statusTranslateKey = 'akan_datang';
                                     }
                                 } elseif ($mulai && !$akhir) {
                                     if ($mulai <= $today) {
                                         $status = 'Now';
                                         $statusBadgeClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
                                         $statusText = 'Sedang Berjalan';
+                                        $statusTranslateKey = 'sedang_berjalan';
                                     } else {
                                         $status = 'Coming';
                                         $statusBadgeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
                                         $statusText = 'Akan Datang';
+                                        $statusTranslateKey = 'akan_datang';
                                     }
                                 } elseif (!$mulai && $akhir) {
                                     if ($akhir < $today) {
                                         $status = 'Past';
                                         $statusBadgeClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
                                         $statusText = 'Selesai';
+                                        $statusTranslateKey = 'selesai';
                                     }
                                 }
 
@@ -103,36 +111,45 @@
                             <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
                                 
                                 <!-- Media Header -->
-                                <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                                    @if($embedVideo)
-                                        <div class="relative w-full h-full">
-                                            <iframe class="absolute inset-0 w-full h-full" src="{{ $embedVideo }}?rel=0&modestbranding=1" 
-                                                title="Video: {{ $nama }}" frameborder="0"
+                            <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                @if($embedVideo)
+                                    <div class="relative w-full h-full">
+                                        <iframe class="absolute inset-0 w-full h-full" 
+                                                src="{{ $embedVideo }}?rel=0&modestbranding=1"
+                                                title="Video: {{ $nama }}" 
+                                                frameborder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowfullscreen></iframe>
-                                        </div>
-                                    @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
-                                        <img src="{{ Storage::url($thumbnail) }}" alt="{{ $nama }}"
-                                            class="w-full h-full object-cover">
-                                    @elseif($linkProject)
-                                        <div class="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center">
-                                            <svg class="w-12 h-12 text-indigo-400 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                    @else
-                                        <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                                            <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                    @endif
+                                    </div>
+
+                                @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
+                                    <img src="{{ Storage::url($thumbnail) }}" 
+                                        alt="{{ $nama }}"
+                                        class="w-full h-full object-cover">
+
+                                @else
+                                    <!-- Kondisi: Tidak ada video embed & tidak ada thumbnail -->
+                                    <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
+                                                flex flex-col items-center justify-center text-center px-4">
+                                        <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" 
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p   data-translate="no_thumbnail_text" data-translate-page="project_user"  class="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
+                                            
+                                        </p>
+                                        <p data-translate="no_thumbnail_description" data-translate-page="project_user" class="text-gray-400 dark:text-gray-500 text-xs mt-1">
+                                           
+                                        </p>
+                                    </div>
+                                @endif
                                     
-                                    <!-- Status Badge -->
+                                   <!-- Status Badge -->
                                     <div class="absolute top-2 right-2">
-                                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm"
+                                            data-translate="{{ $statusTranslateKey }}"
+                                            data-translate-page="project_user">
                                             {{ $statusText }}
                                         </span>
                                     </div>
@@ -282,9 +299,10 @@
                                         @endif
                                     </div>
 
-                                    <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
+                                    <!-- Footer Date -->
                                     <div class="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                                        Diposting {{ $project->created_at?->format('d M Y H:i') ?? '—' }} WIB
+                                        <span data-translate="diposting" data-translate-page="project_user"></span>
+                                     {{ $project->created_at?->format('d M Y H:i') ?? '—' }} 
                                     </div>
                                 </div>
                             </div>

@@ -1,32 +1,38 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-700 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards with Mini Charts -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
 
-                <!-- Total Mahasiswa -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300">Total Mahasiswa</h3>
-                        <span class="text-blue-500">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </span>
-                    </div>
-                    <p class="text-4xl font-extrabold text-blue-600">{{ $totalMahasiswa ?? 0 }}</p>
-                    <div class="mt-4 h-20">
-                        <canvas id="mahasiswaChart"></canvas>
-                    </div>
+            <div
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                    <a href="{{ route('search') }}">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200"
+                                data-translate="total_mahasiswa" data-translate-page="dashboard">Total Seluruh Mahasiswa
+                            </h3>
+                            <span class="text-blue-500">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="text-4xl font-extrabold text-blue-600 dark:text-blue-300">{{ $totalMahasiswa ?? 0 }}</p>
+                        <div class="mt-4 h-20">
+                            <canvas id="mahasiswaChart"></canvas>
+                        </div>
+                    </a>
                 </div>
 
-                <!-- Total Project -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <!-- Total Semua Project -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                    onclick="window.location.href = '{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300">Total Project</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="total_project"
+                            data-translate-page="dashboard">Total Semua Project</h3>
                         <span class="text-orange-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,10 +46,11 @@
                     </div>
                 </div>
 
-                <!-- Total Sertifikat -->
-                <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-600 dark:bg-gray-900 hover:shadow-lg transition-shadow">
+                <!-- Total Semua Sertifikat -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-300 ">Total Sertifikat</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="total_sertifikat"
+                            data-translate-page="dashboard">Total Semua Sertifikat</h3>
                         <span class="text-amber-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,15 +63,18 @@
                         <canvas id="sertifikatChart"></canvas>
                     </div>
                 </div>
+
+               
             </div>
 
-            <!-- Random Posts - Masonry Layout -->
+            <!-- Random Posts -->
             <div>
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Perihal Terbaru</h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
+                            data-translate-page="dashboard">Perihal Terbaru</h2>
                     <a href="{{ route('search') ?? '#' }}"
-                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1">
-                        Lihat Semua →
+                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1" data-translate="lihat_semua"
+                            data-translate-page="dashboard">
                     </a>
                 </div>
 
@@ -330,16 +340,17 @@
                                                     <div class="relative">
                                                         @php $firstImage = $learningImages[0]; @endphp
                                                         @php $imagePath = str_replace(['\\', '/'], '/', $firstImage['content'] ?? ''); @endphp
-                                                        <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-                                                             alt="{{ $firstImage['alt'] ?? 'Gambar' }}"
-                                                             class="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
-                                                             loading="lazy"
-                                                             onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
+                                                       <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
+     class="image-zoom w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
+     alt="{{ $image['alt'] ?? 'Gambar' }}"
+     loading="lazy"
+     onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
                                                         
                                                         @if(count($learningImages) > 1)
                                                             <button @click="expanded = !expanded" 
                                                                     class="absolute bottom-2 right-2 bg-black/50 hover:bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1 transition-colors">
-                                                                <span x-text="expanded ? 'Sembunyikan' : '+{{ count($learningImages)-1 }} lagi'"></span>
+                                                                <span x-show="!expanded" data-translate="tampilkan_lagi" data-translate-page="dashboard">+{{ count($learningImages)-1 }}</span>
+                                                                <span x-show="expanded" data-translate="sembunyikan" data-translate-page="dashboard"></span>
                                                                 <svg class="w-3 h-3" :class="{ 'rotate-180': expanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                                                 </svg>
@@ -355,7 +366,7 @@
                                                             @php $imagePath = str_replace(['\\', '/'], '/', $image['content'] ?? ''); @endphp
                                                             <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
                                                                  alt="{{ $image['alt'] ?? 'Gambar' }}"
-                                                                 class="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
+                                                                 class="image-zoom w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
                                                                  loading="lazy"
                                                                  onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
                                                         @endforeach
@@ -379,7 +390,7 @@
                                             @if($relatedProject)
                                                 <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
                                                     <!-- Label Project Terkait -->
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Project Terkait:</p>
+                                                    <p data-translate="project_terkait" data-translate-page="dashboard" class="text-xs text-gray-500 dark:text-gray-400 mb-3">Project Terkait:</p>
                                                     
                                                     <!-- Nama Project - Ditampilkan Lebih Menonjol -->
                                                     <div class="mb-3">
@@ -425,9 +436,8 @@
                                                         <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                                         </svg>
-                                                        <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
+                                                        <a data-translate="project_detail" data-translate-page="dashboard" href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
                                                         class="hover:text-indigo-600 transition-colors">
-                                                            Lihat Detail Project
                                                         </a>
                                                     </div>
                                                     
@@ -489,8 +499,8 @@
                                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                                            </svg>
-                                                            Lihat Project
+                                                            </svg>                                                     
+                                                            <span data-translate="link_project" data-translate-page="dashboard"></span>
                                                         </a>
                                                     @endif
 
@@ -524,9 +534,17 @@
                                     <!-- Footer -->
                                     <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-900">
                                         <p class="text-xs text-gray-500 dark:text-gray-50">
-                                            Diposting
+                                            <span data-translate="diposting" data-translate-page="dashboard"></span>
                                             {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }}
-                                            WIB
+                                            <span data-translate="oleh" data-translate-page="dashboard">oleh</span>
+                                            {{ $userName }}
+                                            @if($relatedProject)
+                                                <span data-translate="untuk_project" data-translate-page="dashboard">untuk project</span>
+                                                <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
+                                                   class="text-indigo-600 hover:text-indigo-800 transition-colors font-medium">
+                                                    {{ $relatedProjectData['nama_project'] ?? 'Project' }}
+                                                </a>
+                                            @endif
                                         </p>
                                     </div>
                                 </div>
@@ -537,16 +555,13 @@
 
                 <!-- Update timestamp -->
                 <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
-                    Data terakhir diperbarui: {{ now()->format('d F Y H:i') }} WIB
+                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard"></span>
+                     {{ now()->format('d F Y H:i') }} WIB
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!-- Chart.js and Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
         function createSparkline(canvasId, borderColor) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
@@ -596,5 +611,15 @@
             createSparkline('projectChart', '#f97316');
             createSparkline('sertifikatChart', '#f59e0b');
         });
+
+        
     </script>
+
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+});
+</script>
+
 @endsection
