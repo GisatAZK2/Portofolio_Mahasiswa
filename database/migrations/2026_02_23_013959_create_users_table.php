@@ -18,8 +18,7 @@ return new class extends Migration
         */
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-
-            // Custom Mahasiswa Fields
+            
             $table->string('nama_mahasiswa', 100);
             $table->string('photo_profile', 100)->nullable();
             $table->string('email',100)->unique()->nullable();
@@ -29,6 +28,7 @@ return new class extends Migration
             $table->enum('jenis_kelamin', [ 'Laki-laki','Perempuan','Tidak ingin memberi tahu'])->nullable();
             $table->enum('status_pengajuan', ['Sedang Di Ajukan', 'Di Terima', 'Di Tolak'])->default('Sedang Di Ajukan')->nullable();
             $table->text('deskripsi')->nullable();
+            $table->string('keterangan')->nullable();
             $table->json('keahlian_tambahan')->nullable();
             $table->unsignedBigInteger('id_jurusan')->nullable();
             $table->unsignedBigInteger('id_keahlian')->nullable();

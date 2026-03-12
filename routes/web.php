@@ -74,6 +74,7 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.') ->grou
         Route::get('/AddUser', [AdminController::class, 'ViewAddUser'])->name('ViewCreate');
         Route::post('/StoreUser', [AdminController::class, 'AddUser'])->name('StoreUser');
         Route::delete('/DeleteUser/{user}', [AdminController::class, 'destroyUser'])->name('destroy');
+        Route::patch('/{user}/update-status', [UserController::class, 'updateStatus'])->name('update-status');
     });
 
     Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
@@ -112,14 +113,42 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.') ->grou
 });
 
 
-Route::middleware(['auth','role:dosen'])->group(function () {
-     Route::get('/dosen/dashboard', [DosenController::class, 'index'])->name('dashboard.dosen');
-     Route::get('/dosen/manageUser', [DosenController::class, 'mahasiswa'])->name('dosen.mahasiswa.index');
-    Route::get('/dosen/manageProject', [DosenController::class, 'projects'])->name('dosen.projects.index');
-    Route::get('/dosen/manageSertfikat', [DosenController::class, 'sertifikat'])->name('dosen.sertifikat.index');
+Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
+    Route::get('/dashboard', [DosenController::class, 'index'])->name('dashboard');
 
+    Route::prefix('manageUser')->name('users.')->group(function () {
+        Route::get('/', [DosenController::class, 'ListUser'])->name('index');
+        Route::get('/Details/{user}', [DosenController::class, 'DetailsUser'])->name('details');
+        Route::patch('/edit/{user}', [DosenController::class, 'UpdateUser'])->name('edit');
+        Route::get('/AddUser', [DosenController::class, 'ViewAddUser'])->name('ViewCreate');
+        Route::post('/StoreUser', [DosenController::class, 'AddUser'])->name('StoreUser');
+        Route::delete('/DeleteUser/{user}', [DosenController::class, 'destroyUser'])->name('destroy');
+        Route::patch('/{user}/update-status', [UserController::class, 'updateStatus'])->name('update-status');
+    });
+
+    Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
+        Route::get('/', [DosenController::class, 'sertifikat'])->name('index');
+        Route::get('/AddSertifikat', [DosenController::class, 'TambahSertifikat'])->name('create');
+        Route::get('/Details/{sertifikat}', [DosenController::class, 'DetailsSertifikat'])->name('details');
+        Route::patch('/edit/{sertifikat}', [DosenController::class, 'UpdateSertifikat'])->name('update');
+        Route::post('/store', [DosenController::class, 'StoreSertifikat'])->name('store');
+        Route::delete('/DeleteSertifikat/{sertifikat}', [DosenController::class, 'DestroySertifikat'])->name('destroy');
+        Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroy'])->name('bulk-destroy');
+    });
+
+    Route::patch('/sertifikat/{id}/approve', [DosenController::class, 'approve'])->name('sertifikat.approve');
+    Route::patch('/sertifikat/{id}/reject', [DosenController::class, 'reject'])->name('sertifikat.reject');
+
+    Route::prefix('manageProject')->name('projects.')->group(function () {
+        Route::get('/', [DosenController::class, 'projects'])->name('index');
+        Route::get('/create', [DosenController::class, 'TambahProjects'])->name('create');
+        Route::post('/store', [DosenController::class, 'StoreProject'])->name('store');
+        Route::get('/Details/{project}', [DosenController::class, 'EditProjects'])->name('details');
+        Route::post('/EditProject/{project}', [DosenController::class, 'UpdateProject'])->name('update');
+        Route::delete('/DeleteProject/{project}', [DosenController::class, 'DestroyProject'])->name('delete');
+        Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
+    });
 });
-
 
 Route::middleware(['auth'])->group(function () {
     Route::patch('/user/{id}/update-status', [App\Http\Controllers\v1\UserController::class, 'updateStatusPengajuan'])

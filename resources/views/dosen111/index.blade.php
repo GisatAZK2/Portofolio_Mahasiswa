@@ -70,7 +70,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 class="text-xl font-semibold mb-4">Menu Cepat</h2>
             <div class="space-y-3">
-                <a href="{{ route('dosen.users.index') }}" 
+                <a href="{{ route('dosen.mahasiswa.index') }}" 
                    class="block p-3 bg-blue-50 dark:bg-gray-700 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-600">
                     <span class="font-medium">Kelola Mahasiswa</span>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Setujui atau tolak pengajuan mahasiswa</p>

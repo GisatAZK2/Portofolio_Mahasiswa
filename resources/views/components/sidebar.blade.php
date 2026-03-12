@@ -97,7 +97,6 @@
                     @endif
                 </a>
 
-                <!-- Manajemen Angkatans -->
                 <a href="{{ route('admin.angkatan.index') }}"
                     class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
                     {{ request()->routeIs('admin.angkatan.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700' }}">
@@ -146,9 +145,9 @@
         <!-- ================== MENU DOSEN ================== -->
         @auth
             @if(Auth::user()->role === 'dosen')
-                <a href="{{ route('dashboard.dosen') }}"
+                <a href="{{ route('dosen.dashboard') }}"
                    class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                   {{ request()->routeIs('dashboard.dosen') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                   {{ request()->routeIs('dosen.dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
                     <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M8 8h8M8 12h8M8 16h4" />
@@ -161,7 +160,7 @@
                     @endif
                 </a>
 
-                <a href="{{ route('dosen.mahasiswa.index') }}"
+                <a href="{{ route('dosen.users.index') }}"
                    class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
                    {{ request()->routeIs('dosen.mahasiswa.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
                     <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

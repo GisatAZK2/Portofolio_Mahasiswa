@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Project_User;
 
 class Project extends Model
 {
@@ -57,12 +58,16 @@ class Project extends Model
         return $this->belongsTo(User::class, 'leader_id');
     }
 
-    public function members()
-    {
-        return $this->belongsToMany(User::class);
+    public function members(){
+    return $this->belongsToMany(
+        User::class,
+        'project_user',
+        'project_id',
+        'user_id'
+    );
     }
-    public function learningCorners()
-{
+
+    public function learningCorners() {
     return $this->hasMany(LearningCorner::class, 'project_id', 'id');
-}
+    }
 }

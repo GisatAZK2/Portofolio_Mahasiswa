@@ -93,8 +93,7 @@ class UserController extends Controller
     }
 
     // Proses login (email ATAU username)
-    public function login(Request $request)
-{
+    public function login(Request $request) {
     $request->validate([
         'login'    => ['required', 'string'],
         'password' => ['required', 'string'],
@@ -152,7 +151,7 @@ class UserController extends Controller
         }
 
         if ($user->role === 'dosen') {
-            return redirect()->route('dashboard.dosen')
+            return redirect()->route('dosen.dashboard')
                 ->with('success', 'Login berhasil! Selamat datang Dosen.');
         }
 
@@ -282,7 +281,6 @@ public function updateStatusPengajuan(Request $request, $id)
         return back()->with('success','Foto berhasil diperbarui!');
     }
 
-    // ===== VALIDASI NORMAL PROFILE =====
     $rules = [
         'nama_mahasiswa' => ['required','string','max:100'],
         'email' => ['nullable','email','max:100','unique:users,email,' . $user->id],
@@ -293,7 +291,7 @@ public function updateStatusPengajuan(Request $request, $id)
         'deskripsi' => ['nullable','string','max:1000'],
         'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
         'background_url' => ['nullable','image','mimes:jpeg,png,jpg','max:4098'],
-        'jenis_kelamin' => ['nullable','in:laki-laki,perempuan,tidak ingin memberi tahu'],    
+        'jenis_kelamin' => ['nullable','in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
     ];
 
     if ($request->filled('password')) {
@@ -302,15 +300,13 @@ public function updateStatusPengajuan(Request $request, $id)
 
     $validated = $request->validate($rules);
 
-    // ===== HANDLE BACKGROUND =====
     if ($request->hasFile('background_url')) {
 
         if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
             Storage::disk('public')->delete($user->background_url);
         }
 
-        $validated['background_url'] = $request->file('background_url')
-                                               ->store('covers','public');
+        $validated['background_url'] = $request->file('background_url')->store('covers','public');
     }
 
     if ($request->hasFile('photo_profile')) {

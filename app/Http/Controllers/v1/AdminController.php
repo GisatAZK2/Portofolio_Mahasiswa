@@ -16,15 +16,32 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
+    private function authorizeAccess(): void
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(Response::HTTP_UNAUTHORIZED, 'Silakan login terlebih dahulu.');
+        }
+
+        if ($user->role !== 'admin') {
+            abort(Response::HTTP_FORBIDDEN, 'Akses hanya untuk Administrator.');
+        }
+    }
+
     public function index() {
+        $this->authorizeAccess();
         return view('admin.index');
     }
 
     //For Pages User
     public function ListUser(Request $request){
+        $this->authorizeAccess();
         $users = User::whereIn('role', ['mahasiswa', 'admin', 'dosen'])
             ->where('id', '!=', Auth::id()) // tidak tampilkan user yang sedang login
             ->with(['jurusan', 'angkatan', 'keahlian'])
@@ -40,6 +57,7 @@ class AdminController extends Controller
     }
 
     public function ViewAddUser(){
+        $this->authorizeAccess();
         $jurusan  = Jurusan::all();
         $keahlian = Keahlian::all();
         $angkatan = Angkatan::all();
@@ -47,6 +65,7 @@ class AdminController extends Controller
     }
 
     public function AddUser(Request $request){
+        $this->authorizeAccess();
             $validated = $request->validate([
                 'nama_mahasiswa' => ['required', 'string', 'max:100'],
                 'email' => ['nullable','email','max:100','unique:users,email'],
@@ -122,6 +141,7 @@ class AdminController extends Controller
     }
 
     public function DetailsUser($id){
+            $this->authorizeAccess();
             $jurusans = Jurusan::all();
             $keahlians = Keahlian::all();
             $angkatans = Angkatan::all();
@@ -133,8 +153,8 @@ class AdminController extends Controller
                 'angkatans'
             ));
     }
-
     public function UpdateUser(Request $request, $id_user) {
+        $this->authorizeAccess();
         $user = User::findOrFail($id_user);
 
         // Base validation rules
@@ -258,7 +278,32 @@ class AdminController extends Controller
             ->with('success', 'User berhasil diperbarui.');
     }
 
+    public function updateStatus(Request $request, User $user) {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
+            'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|string|max:500',
+        ]);
+
+        $user->status_pengajuan = $validated['status_pengajuan'];
+
+        if ($validated['status_pengajuan'] === 'Di Tolak') {
+            $user->keterangan_tolak = $validated['keterangan_tolak'];
+        } else {
+            $user->keterangan_tolak = null;
+        }
+
+        $user->save();
+
+        $nama = $user->nama_mahasiswa ?? $user->username;
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', "Status pengajuan {$nama} berhasil diupdate menjadi {$user->status_pengajuan}");
+    }
+
     public function destroyUser(User $user){
+         $this->authorizeAccess();
          $user->delete();
 
         return redirect()->route('admin.users.index')
@@ -267,6 +312,7 @@ class AdminController extends Controller
 
     //For Pages Sertifikat
     public function sertifikat(Request $request) {
+        $this->authorizeAccess();
         $search = $request->input('search');
         $angkatan = $request->input('angkatan');
         $jurusan = $request->input('jurusan');
@@ -333,11 +379,13 @@ class AdminController extends Controller
     }
 
     public function DetailsSertifikat($id){
+            $this->authorizeAccess();
             $sertifikat = Sertifikat::findorfail($id);
             return view('admin.sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
 
     public function approve($id) {
+        $this->authorizeAccess();
         $sertifikat = Sertifikat::findOrFail($id);
         $sertifikat->status_pengajuan = 'Di Terima';
         $sertifikat->is_active = true;
@@ -347,6 +395,7 @@ class AdminController extends Controller
     }
 
     public function reject(Request $request, $id) {
+        $this->authorizeAccess();
         $request->validate(['keterangan' => 'required|string']);
             
         $sertifikat = Sertifikat::findOrFail($id);
@@ -359,6 +408,7 @@ class AdminController extends Controller
     }
 
     public function TambahSertifikat(Request $request) {
+        $this->authorizeAccess();
         $search = $request->input('search');
         $angkatan = $request->input('angkatan');
         $jurusan = $request->input('jurusan');
@@ -409,6 +459,7 @@ class AdminController extends Controller
     }
 
     public function StoreSertifikat(Request $request){
+        $this->authorizeAccess();
         $validated = $request->validate([
             'nama_sertifikat'   => 'required|string|max:255',
             'lembaga_penerbit'  => 'required|string|max:255',
@@ -439,7 +490,7 @@ class AdminController extends Controller
     }
 
     public function UpdateSertifikat(Request $request, Sertifikat $sertifikat) {
-
+        $this->authorizeAccess();
         $validated = $request->validate([
             'nama_sertifikat'   => 'required|string|max:255',
             'lembaga_penerbit'  => 'required|string|max:255',
@@ -472,6 +523,7 @@ class AdminController extends Controller
     }
 
     public function DestroySertifikat(Sertifikat $sertifikat) {
+        $this->authorizeAccess();
         $sertifikat->delete();
 
         return redirect()->route('admin.sertifikat.index')
@@ -479,6 +531,7 @@ class AdminController extends Controller
     }
 
     public function bulkDestroy(Request $request) {
+        $this->authorizeAccess();
         $request->validate([
             'selected_ids' => 'required|array',
             'selected_ids.*' => 'exists:sertifikat,id'
@@ -512,21 +565,24 @@ class AdminController extends Controller
 
     // For Pages Angkatan
     public function ListAngkatan() {
+        $this->authorizeAccess();
         $angkatans = Angkatan::all();
         return view('admin.list-angkatan', compact('angkatans'));
     }
 
     public function DetailsAngkatan($id){
-        
+            $this->authorizeAccess();
             $angkatan = Angkatan::withCount('mahasiswa')->findorfail($id);
             return view('admin.angkatan.views_edit_angkatan', compact('angkatan'));
     }
 
     public function TambahAngkatan() {
+        $this->authorizeAccess();
         return view('admin.angkatan.views_create_angkatan');
     }
 
     public function StoreAngkatan(Request $request) {
+         $this->authorizeAccess();
          $validated = $request->validate([
             'nama_angkatan'   => 'required|string|max:255',
             'tahun_masuk'     => 'required|date',
@@ -544,7 +600,7 @@ class AdminController extends Controller
     }
 
     public function UpdateAngkatan(Request $request, Angkatan $angkatan) {
-
+        $this->authorizeAccess();
         $validated = $request->validate([
             'nama_angkatan'   => 'required|string|max:255',
             'tahun_masuk'     => 'required|date',
@@ -558,6 +614,7 @@ class AdminController extends Controller
     }
 
     public function DestroyAngkatan(Angkatan $angkatan) {
+        $this->authorizeAccess();
         $angkatan->delete();
 
         return redirect()->route('admin.angkatan.index')
@@ -565,6 +622,7 @@ class AdminController extends Controller
     }
 
     public function bulkDestroyAngkatan(Request $request) {
+        $this->authorizeAccess();
         $ids = explode(',', $request->selected_ids);
 
         Angkatan::whereIn('id', $ids)->delete();
@@ -574,11 +632,13 @@ class AdminController extends Controller
 
     //For Projects Pages
     public function projects(){
+        $this->authorizeAccess();
         $projects = Project::with(['mahasiswa', 'leader'])->latest()->paginate(12);
         return view('admin.project', compact('projects'));
     }
 
     public function TambahProjects(Request $request){
+        $this->authorizeAccess();
         $search = $request->input('search');
         $angkatan = $request->input('angkatan');
         $jurusan = $request->input('jurusan');
@@ -629,6 +689,7 @@ class AdminController extends Controller
     }
 
     public function EditProjects($id){
+        $this->authorizeAccess();
         $project = Project::with('leader', 'members', 'learningCorners')
                    ->findOrFail($id);
          $entries = LearningCorner::where('project_id', $project->id)
@@ -637,9 +698,8 @@ class AdminController extends Controller
         return view('admin.projects.views_edit_project', compact('project', 'entries'));
     }
 
-
-
     public function StoreProject(Request $request) {
+        $this->authorizeAccess();
         $request->merge([
             'members' => collect($request->members)
                 ->filter(fn ($id) => !empty($id))
@@ -707,6 +767,7 @@ class AdminController extends Controller
     }
 
     public function UpdateProject(Request $request, $id) {
+        $this->authorizeAccess();
         $project = Project::where('id', $id)
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();
@@ -767,6 +828,7 @@ class AdminController extends Controller
     }
 
     public function DestroyProject(Project $projects) {
+        $this->authorizeAccess();
         $projects->delete();
 
         return redirect()->route('admin.project.index')
@@ -774,6 +836,7 @@ class AdminController extends Controller
     }
 
     public function bulkDestroyProject(Request $request) {
+        $this->authorizeAccess();
         $ids = explode(',', $request->selected_ids);
 
         Project::whereIn('id', $ids)->delete();

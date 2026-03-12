@@ -341,7 +341,7 @@
                                 {{-- Aksi Approve/Reject untuk status "Sedang Di Ajukan" --}}
                                 @if($entry->status_pengajuan == 'Sedang Di Ajukan')
                                     <div class="flex space-x-3 mt-2">
-                                        <form action="{{ route('sertifikat.approve', $entry->id) }}" 
+                                        <form action="{{ route('admin.sertifikat.approve', $entry->id) }}" 
                                               method="POST" 
                                               class="flex-1">
                                             @csrf
@@ -387,7 +387,7 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div class="mt-3">
                 <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Tolak Sertifikat</h3>
-                <form action="{{ route('sertifikat.reject', $entry->id) }}" method="POST">
+                <form action="{{ route('admin.sertifikat.reject', $entry->id) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <div class="mb-4">
@@ -442,8 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.classList.add('border-2');
         }
     }
-
-    // Function to update selected count and button state
+    
     function updateSelectedCount() {
         const checked = document.querySelectorAll('.certificate-checkbox:checked');
         const count = checked.length;

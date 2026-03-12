@@ -72,6 +72,16 @@ public function projects()
     return $this->hasMany(Project::class, 'id_mahasiswa', 'id');
 }
 
+public function memberProjects()
+{
+    return $this->belongsToMany(
+        Project::class,
+        'project_user',
+        'user_id',
+        'project_id'
+    );
+}
+
 public function sertifikats()
 {
     return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
