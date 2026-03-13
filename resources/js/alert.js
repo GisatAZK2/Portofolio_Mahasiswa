@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function(e) {
             e.preventDefault();
+            e.stopPropagation();
 
             const confirmed = await showConfirm();
 
@@ -96,7 +97,7 @@ function showPageInfo(message, type = "info", duration = 10000) {
     if (!container) return;
 
     const colors = {
-        info: "text-black bg-gray-200 dark:bg-blue-900/20 dark:text-white",
+        info: "text-black bg-gray-200 dark:bg-blue-900 dark:text-white",
         success: "bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-700 dark:text-green-200",
         warning: "bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-200",
         error: "bg-red-50 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-700 dark:text-red-200"
@@ -123,7 +124,7 @@ function showPageInfo(message, type = "info", duration = 10000) {
     const toast = document.createElement("div");
 
     toast.className =
-        `flex pointer-events-auto mt-15 items-start gap-3 rounded-xl shadow-lg px-4 py-3 text-sm
+        `flex pointer-events-auto mt-5 items-start gap-3 rounded-xl shadow-lg px-4 py-3 text-sm
         transition-all duration-300 transform -translate-y-6 opacity-0
         ${colors[type]}`;
 

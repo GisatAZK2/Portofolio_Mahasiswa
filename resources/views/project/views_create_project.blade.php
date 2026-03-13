@@ -31,7 +31,11 @@
                         class="text-red-500">*</span>
                 </label>
                 <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-500 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror"
                     placeholder="Contoh: Website Portfolio Pribadi">
                 @error('nama_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -43,7 +47,11 @@
                     <span data-translate="deskripsi_opsional" data-translate-page="project_create"></span>
                 </label>
                 <textarea name="deskripsi" rows="4"
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-500 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
                     placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
                 @error('deskripsi')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -51,14 +59,18 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
+                <label class="block text-sm font-medium text-gray-700 dark:text-white">
                     <span data-translate="tambah_pemimpin" data-translate-page="project_create"></span>
                 </label>
             </div>
 
             <div>
                 <select name="leader" id="leader-select"
-                    class="min-w-full border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg p-3">
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
                     <option class="dark:text-white" value="">-- Pilih Pemimpin Project --</option>
                     @foreach ($users as $user)
                         <option class="dark:text-white" value="{{ $user->id }}" data-name="{{ $user->nama_mahasiswa }}">
@@ -74,7 +86,6 @@
                 </label>
 
                 <div id="members-container">
-                    <!-- Member items will be dynamically added here -->
                 </div>
             </div>
 
@@ -85,18 +96,26 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <span data-translate="tanggal_mulai" data-translate-page="project_create"></span> <span
+                    <span class="text-black dark:text-white" data-translate="tanggal_mulai" data-translate-page="project_create"></span> <span
                         class="text-red-500">*</span>
                     <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
-                        class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
+                        class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_mulai') border-red-500 @enderror">
                     @error('tanggal_mulai')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <span data-translate="tanggal_selesai" data-translate-page="project_create"></span>
+                    <span class="text-black dark:text-white" data-translate="tanggal_selesai" data-translate-page="project_create"></span>
                     <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
-                        class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
+                        class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_akhir') border-red-500 @enderror">
                     @error('tanggal_akhir')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -104,9 +123,13 @@
             </div>
 
             <div>
-                <span data-translate="link_project_opsional" data-translate-page="project_create"></span>
+                <span class="text-black dark:text-white" data-translate="link_project_opsional" data-translate-page="project_create"></span>
                 <input type="url" name="link_project" value="{{ old('link_project') }}"
-                    class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 border-gray-300 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('link_project') border-red-500 @enderror"
                     placeholder="https://github.com/username/project">
                 @error('link_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -119,7 +142,11 @@
                     <span data-translate="link_github_opsional" data-translate-page="project_create"></span>
                 </label>
                 <input type="url" name="link_github" id="link_github" maxlength="500"
-                    class="w-full px-4 py-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_github') border-red-500 @enderror"
                     placeholder="https://github.com/username/repo" value="{{ old('link_github') }}">
                 @error('link_github')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -132,7 +159,11 @@
                     <span data-translate="link_video_opsional" data-translate-page="project_create"></span>
                 </label>
                 <input type="url" name="link_video" id="link_video" maxlength="500"
-                    class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 dark:placeholder:text-white border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_video') border-red-500 @enderror"
                     placeholder="https://www.youtube.com/watch?v=..." value="{{ old('link_video') }}">
                 @error('link_video')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -299,7 +330,11 @@
             memberDiv.innerHTML = `
                         <div class="flex gap-2">
                             <select name="members[]" 
-                                class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
+                                class="member-select w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
                                 ${optionsHtml}
                             </select>
                             <button type="button" 

@@ -164,80 +164,56 @@ class UserController extends Controller
     ])->onlyInput('login');
 }
 
-/**
- * Update status pengajuan user (hanya untuk admin/dosen yang sesuai)
- */
-public function updateStatusPengajuan(Request $request, $id)
+    public function updateStatusPengajuan(Request $request, $id)
 {
-    // Validasi user yang sedang login
     $currentUser = Auth::user();
-    
-    // Cari user yang akan diupdate
-    $user = User::with(['jurusan', 'angkatan', 'keahlian'])->findOrFail($id);
-    
-    // Cek otorisasi
-    if ($currentUser->role === 'admin') {
-        // Admin bisa menyetujui semua
-        // Lanjutkan proses
-    } 
-    elseif ($currentUser->role === 'dosen') {
-        // Dosen hanya bisa menyetujui mahasiswa dengan jurusan, angkatan, dan keahlian yang sama
-        if ($currentUser->id_jurusan != $user->id_jurusan ||
+    $user = User::findOrFail($id);
+
+    // 1. Cek Otorisasi (Khusus Dosen)
+    if ($currentUser->role === 'dosen') {
+        if (
+            $currentUser->id_jurusan != $user->id_jurusan ||
             $currentUser->id_angkatan != $user->id_angkatan ||
-            $currentUser->id_keahlian != $user->id_keahlian) {
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda hanya dapat menyetujui mahasiswa dengan jurusan, angkatan, dan keahlian yang sama.'
-            ], 403);
+            $currentUser->id_keahlian != $user->id_keahlian
+        ) {
+            return redirect()->back()->with('error', 'Anda hanya dapat menyetujui mahasiswa dengan jurusan, angkatan, dan keahlian yang sama.');
         }
-    } 
-    else {
-        return response()->json([
-            'success' => false,
-            'message' => 'Unauthorized action.'
-        ], 403);
+    } elseif ($currentUser->role !== 'admin') {
+        return redirect()->back()->with('error', 'Akses ditolak.');
     }
-    
-    // Validasi request
+
+    // 2. Validasi Input
     $request->validate([
         'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
-        'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:255'
+        'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:255',
     ]);
-    
+
     try {
-        // Update status
         $updateData = [
-            'status_pengajuan' => $request->status_pengajuan
+            'status_pengajuan' => $request->status_pengajuan,
         ];
-        
-        // Jika diterima, set is_active = true
+
+        // 3. Logika Update
         if ($request->status_pengajuan === 'Di Terima') {
             $updateData['is_active'] = true;
-        }
-        
-        if ($request->status_pengajuan === 'Di Tolak') {
+        } else {
+            $updateData['is_active'] = false;
+            // Simpan alasan tolak ke session agar bisa ditampilkan di view jika perlu
             session()->flash('keterangan_tolak_' . $user->id, $request->keterangan_tolak);
         }
-        
+
         $user->update($updateData);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Status pengajuan berhasil diperbarui.',
-            'data' => [
-                'nama' => $user->nama_mahasiswa,
-                'status' => $user->status_pengajuan
-            ]
-        ]);
-        
+
+        // 4. Return Redirect Success
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Status pengajuan mahasiswa ' . $user->name . ' berhasil diperbarui.');
+
     } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-        ], 500);
+        return redirect()->back()
+            ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
     }
 }
+
 
     public function logout(Request $request)
     {

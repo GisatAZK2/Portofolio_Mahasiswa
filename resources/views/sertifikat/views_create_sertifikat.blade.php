@@ -42,7 +42,11 @@
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
                         required placeholder="Contoh: Sertifikat Kompetensi Programming"
-                        class="w-full px-4 py-3 border dark:text-gray-200 border-gray-300 dark:bg-gray-500 dark:placeholder:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                              text-gray-700 dark:text-gray-300
+                              placeholder-gray-500 dark:placeholder-gray-400
+                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -55,7 +59,10 @@
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
                         required placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
-                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:placeholder:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg                   focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                              text-gray-700 dark:text-gray-300
+                              placeholder-gray-500 dark:placeholder-gray-400
+                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -68,7 +75,11 @@
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
                         required max="{{ date('Y-m-d') }}"
-                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:text-white dark:border-gray-900 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                              text-gray-700 dark:text-gray-300
+                              placeholder-gray-500 dark:placeholder-gray-400
+                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror

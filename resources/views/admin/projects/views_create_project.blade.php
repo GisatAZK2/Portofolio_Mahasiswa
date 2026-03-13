@@ -6,10 +6,11 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Tambah Project Baru</h1>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">    
+                        <span data-translate="kelola_create_project_title" data-translate-page="kelola_create_project"></span>
                 </div>
                 <p class="mt-2 text-gray-600 dark:text-gray-200">
-                    Tambah Projek Yang Pernah Kamu Buat.
+                    <span data-translate="kelola_create_project_desc" data-translate-page="kelola_create_project"></span>
                 </p>
             </div>
 
@@ -156,9 +157,13 @@
                         <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
+                                    <div class="flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
                                     <span class="text-green-800 font-medium" id="selected-leader-name"></span>
                                 </div>
                                 <button type="button" onclick="clearSelectedLeader()" class="text-green-600 hover:text-green-800">
@@ -182,6 +187,9 @@
                                         Pilih
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Photo
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Nama Mahasiswa
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -193,22 +201,47 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Keahlian
                                     </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"                                  style="width: 150px;">
+                                        Aksi
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="leader-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer" 
-                                        onclick="selectLeader({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                        onclick="selectLeader({{ $user->id }}, '{{ $user->nama_mahasiswa }}', '{{ $user->photo_profile }}')">
                                         <td class="px-6 py-4">
                                             <input type="radio" 
                                                    name="leader_radio" 
                                                    value="{{ $user->id }}"
                                                    class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
                                                    {{ old('leader') == $user->id ? 'checked' : '' }}
-                                                   onchange="selectLeader({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                                   onchange="selectLeader({{ $user->id }}, '{{ $user->nama_mahasiswa }}', '{{ $user->photo_profile }}')">
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
-                                            {{ $user->nama_mahasiswa }}
+                                        <td class="px-6 py-4">
+                                            <div class="flex-shrink-0">
+                                                @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
+                                                    <img class="h-10 w-10 rounded-full object-cover" 
+                                                         src="{{ asset('storage/' . $user->photo_profile) }}"
+                                                         id="logo-zoom" 
+                                                         alt="{{ $user->nama_mahasiswa }}"
+                                                         onerror="this.onerror=null; this.src='{{ asset('default-avatar.png') }}'">
+                                                @else
+                                                    <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                                        <span class="text-indigo-600 dark:text-indigo-300 font-medium text-sm">
+                                                            {{ strtoupper(substr($user->nama_mahasiswa, 0, 2)) }}
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                                                {{ $user->nama_mahasiswa }}
+                                            </div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->email }}
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                             {{ $user->angkatan->nama_angkatan ?? '-' }}
@@ -216,13 +249,21 @@
                                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                             {{ $user->jurusan->nama_jurusan ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $user->keahlian->nama_keahlian ?? '-'}}
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                {{ $user->keahlian->nama_keahlian ?? '-' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium">
+                                            <a href="{{ $user->id ? route('portfolio.show', ['user' => $user->id]) : '#' }}" 
+                                                class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded transition">
+                                                Lihat Profil
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                             <div class="flex flex-col items-center justify-center">
                                                 <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
@@ -369,7 +410,6 @@
             url.searchParams.set('keahlian', currentFilters.keahlian);
             url.searchParams.set('page', page);
             
-            // Use fetch to get filtered results
             fetch(url.toString(), {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -377,26 +417,21 @@
             })
             .then(response => response.text())
             .then(html => {
-                // Parse the HTML response
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 
-                // Update leader table
                 const newLeaderBody = doc.querySelector('#leader-table-body');
                 if (newLeaderBody) {
                     document.getElementById('leader-table-body').innerHTML = newLeaderBody.innerHTML;
                 }
                 
-                // Update pagination
                 const newPagination = doc.querySelector('#pagination-links');
                 if (newPagination) {
                     document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
                 }
 
-                // Re-attach event listeners
                 attachTableRowListeners();
                 
-                // Restore selected leader if any
                 const selectedLeaderId = document.getElementById('selected-leader-id').value;
                 if (selectedLeaderId) {
                     const selectedRadio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
@@ -413,36 +448,50 @@
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
                 const radio = row.querySelector('.leader-radio');
                 if (radio) {
-                    row.onclick = () => selectLeader(radio.value, row.querySelector('td:nth-child(2)').textContent.trim());
+                    const nameCell = row.querySelector('td:nth-child(3) .font-medium');
+                    const name = nameCell ? nameCell.textContent.trim() : '';
+                    const photoProfile = ''; // We don't have photo profile in the row click
+                    
+                    row.onclick = () => {
+                        const img = row.querySelector('img');
+                        const photoSrc = img ? img.src : '';
+                        selectLeader(radio.value, name, photoSrc);
+                    };
                 }
             });
         }
 
         // Function to select leader
-        function selectLeader(userId, userName) {
-            // Update hidden input
+        function selectLeader(userId, userName, photoProfile) {
             document.getElementById('selected-leader-id').value = userId;
             
-            // Update radio buttons
             document.querySelectorAll('.leader-radio').forEach(radio => {
                 radio.checked = (radio.value == userId);
             });
             
-            // Update display
             const display = document.getElementById('selected-leader-display');
             const nameSpan = document.getElementById('selected-leader-name');
             
             if (userId) {
-                nameSpan.textContent = 'Pemimpin: ' + userName;
+                // Create leader display with photo if available
+                const photoHtml = photoProfile ? 
+                    `<img class="w-8 h-8 rounded-full object-cover" src="${photoProfile}" alt="${userName}">` :
+                    `<div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                        <span class="text-green-600 font-medium text-sm">${userName.charAt(0).toUpperCase()}</span>
+                    </div>`;
+                
+                nameSpan.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        ${photoHtml}
+                        <span>Pemimpin: ${userName}</span>
+                    </div>
+                `;
                 display.classList.remove('hidden');
             } else {
                 display.classList.add('hidden');
             }
 
-            // Update disabled options in member selects
             updateDisabledOptions();
-            
-            // Save to localStorage
             saveToLocalStorage();
         }
 
@@ -454,10 +503,7 @@
             });
             document.getElementById('selected-leader-display').classList.add('hidden');
             
-            // Update disabled options
             updateDisabledOptions();
-            
-            // Save to localStorage
             saveToLocalStorage();
         }
 
@@ -468,20 +514,29 @@
             const memberDiv = document.createElement('div');
             memberDiv.classList.add('member-item', 'mb-3');
 
-            // Get all users from the current table
             const users = [];
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
                 const radio = row.querySelector('.leader-radio');
                 if (radio) {
-                    const name = row.querySelector('td:nth-child(2)').textContent.trim();
+                    const nameElement = row.querySelector('td:nth-child(3) .font-medium');
+                    const name = nameElement ? nameElement.textContent.trim() : '';
+                    
+                    // Get photo
+                    const img = row.querySelector('img');
+                    const photoProfile = img ? img.src : '';
+                    
+                    // Get initial if no photo
+                    const initial = name.charAt(0).toUpperCase();
+                    
                     users.push({
                         id: radio.value,
-                        name: name
+                        name: name,
+                        photoProfile: photoProfile,
+                        initial: initial
                     });
                 }
             });
 
-            // If no users in table, use a default message
             if (users.length === 0) {
                 memberDiv.innerHTML = `
                     <div class="flex gap-2">
@@ -499,39 +554,71 @@
                 let optionsHtml = '<option value="">-- Pilih Mahasiswa --</option>';
                 users.forEach(user => {
                     const selected = savedValue && savedValue == user.id ? 'selected' : '';
-                    optionsHtml += `<option value="${user.id}" ${selected}>${user.name}</option>`;
+                    optionsHtml += `<option value="${user.id}" data-photo="${user.photoProfile}" data-initial="${user.initial}" ${selected}>${user.name}</option>`;
                 });
 
                 memberDiv.innerHTML = `
-                    <div class="flex gap-2">
-                        <select name="members[]" 
-                            class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
-                            ${optionsHtml}
-                        </select>
+                    <div class="flex gap-2 items-center">
+                        <div class="relative flex-1">
+                            <select name="members[]" 
+                                class="member-select w-full p-3 pl-12 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg appearance-none">
+                                ${optionsHtml}
+                            </select>
+                            <div class="member-photo absolute left-2 top-1/2 transform -translate-y-1/2">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
+                                    <span class="member-initial text-indigo-600 font-medium text-sm"></span>
+                                    <img class="member-img hidden w-full h-full object-cover" src="" alt="">
+                                </div>
+                            </div>
+                        </div>
                         <button type="button" 
                             onclick="removeMember(this)"
-                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                            class="px-3 py-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
                             ✕
                         </button>
                     </div>
                 `;
-            }
 
-            container.appendChild(memberDiv);
+                container.appendChild(memberDiv);
 
-            // Add change listener to new select
-            const newSelect = memberDiv.querySelector('.member-select');
-            if (newSelect && !newSelect.disabled) {
-                newSelect.addEventListener('change', function() {
+                const select = memberDiv.querySelector('.member-select');
+                const photoDiv = memberDiv.querySelector('.member-photo');
+                const initialSpan = memberDiv.querySelector('.member-initial');
+                const img = memberDiv.querySelector('.member-img');
+
+                // Update photo when selection changes
+                select.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (this.value) {
+                        const photo = selectedOption.dataset.photo;
+                        const initial = selectedOption.dataset.initial;
+                        
+                        if (photo) {
+                            img.src = photo;
+                            img.classList.remove('hidden');
+                            initialSpan.classList.add('hidden');
+                        } else {
+                            img.classList.add('hidden');
+                            initialSpan.classList.remove('hidden');
+                            initialSpan.textContent = initial;
+                        }
+                    } else {
+                        img.classList.add('hidden');
+                        initialSpan.classList.remove('hidden');
+                        initialSpan.textContent = '?';
+                    }
                     updateDisabledOptions();
                     saveToLocalStorage();
                 });
+
+                // Trigger initial change if there's a saved value
+                if (savedValue) {
+                    select.value = savedValue;
+                    select.dispatchEvent(new Event('change'));
+                }
             }
 
-            // Update disabled options
-            setTimeout(() => {
-                updateDisabledOptions();
-            }, 100);
+            updateDisabledOptions();
         }
 
         // Function to remove member
@@ -539,10 +626,7 @@
             const memberDiv = button.closest('.member-item');
             memberDiv.remove();
             
-            // Update disabled options after removal
             updateDisabledOptions();
-            
-            // Save to localStorage
             saveToLocalStorage();
         }
 
@@ -550,7 +634,6 @@
         function updateDisabledOptions() {
             const leaderId = document.getElementById('selected-leader-id').value;
             
-            // Get all selected member IDs
             const selectedMemberIds = [];
             document.querySelectorAll('.member-select').forEach(select => {
                 if (select.value && !select.disabled) {
@@ -558,16 +641,13 @@
                 }
             });
 
-            // Update all member selects
             document.querySelectorAll('.member-select').forEach(select => {
                 if (select.disabled) return;
                 
-                // Enable all options first
                 select.querySelectorAll('option').forEach(option => {
                     option.disabled = false;
                 });
 
-                // Disable leader option if leader is selected
                 if (leaderId) {
                     let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
                     if (leaderOption) {
@@ -575,7 +655,6 @@
                     }
                 }
 
-                // Disable options that are selected in other member selects
                 selectedMemberIds.forEach(selectedId => {
                     if (selectedId && select.value !== selectedId) {
                         let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
@@ -591,7 +670,6 @@
         function saveToLocalStorage() {
             const leaderId = document.getElementById('selected-leader-id').value;
             
-            // Get all member selects
             const memberSelects = document.querySelectorAll('.member-select');
             const memberIds = [];
             
@@ -617,19 +695,21 @@
                 try {
                     const data = JSON.parse(savedData);
                     
-                    // Set leader
                     if (data.leader) {
-                        // Find the user name from the table
-                        const userRow = document.querySelector(`.leader-radio[value="${data.leader}"]`).closest('tr');
-                        const userName = userRow.querySelector('td:nth-child(2)').textContent.trim();
-                        selectLeader(data.leader, userName);
+                        const userRow = document.querySelector(`.leader-radio[value="${data.leader}"]`);
+                        if (userRow) {
+                            const row = userRow.closest('tr');
+                            const nameElement = row.querySelector('td:nth-child(3) .font-medium');
+                            const name = nameElement ? nameElement.textContent.trim() : '';
+                            const img = row.querySelector('img');
+                            const photoSrc = img ? img.src : '';
+                            selectLeader(data.leader, name, photoSrc);
+                        }
                     }
 
-                    // Clear existing members
                     const container = document.getElementById('members-container');
                     container.innerHTML = '';
 
-                    // Add saved members
                     if (data.members && data.members.length > 0) {
                         data.members.forEach(memberId => {
                             if (memberId) {
@@ -637,22 +717,18 @@
                             }
                         });
                     } else {
-                        // Add one empty member select if no saved members
                         addMemberSelect();
                     }
 
-                    // Update disabled options
                     setTimeout(() => {
                         updateDisabledOptions();
                     }, 100);
                     
                 } catch (e) {
                     console.error('Error parsing saved data:', e);
-                    // Add one empty member select if error
                     addMemberSelect();
                 }
             } else {
-                // Add one empty member select if no saved data
                 addMemberSelect();
             }
         }
@@ -664,29 +740,26 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if there's an old selected leader
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             if (oldLeaderId) {
                 const selectedRadio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
                 if (selectedRadio) {
                     const row = selectedRadio.closest('tr');
-                    const userName = row.querySelector('td:nth-child(2)').textContent.trim();
-                    selectLeader(oldLeaderId, userName);
+                    const nameElement = row.querySelector('td:nth-child(3) .font-medium');
+                    const name = nameElement ? nameElement.textContent.trim() : '';
+                    const img = row.querySelector('img');
+                    const photoSrc = img ? img.src : '';
+                    selectLeader(oldLeaderId, name, photoSrc);
                 }
             }
 
-            // Attach table row listeners
             attachTableRowListeners();
-
-            // Load saved data from localStorage
             loadSavedData();
 
-            // Add submit event listener to form
             document.getElementById('projectForm').addEventListener('submit', function() {
                 clearLocalStorage();
             });
 
-            // Enter key for search
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
@@ -697,7 +770,6 @@
                 });
             }
 
-            // Pagination click handling
             document.addEventListener('click', function(e) {
                 if (e.target.matches('.pagination a')) {
                     e.preventDefault();
@@ -708,86 +780,4 @@
         });
     </script>
 
-    <style>
-        /* Table row hover effect */
-        tbody tr {
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.05);
-        }
-
-        .dark tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        /* Select styling */
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
-
-        select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%234F46E5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        /* Dark mode select */
-        .dark select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23E5E7EB' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        .dark select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238181F2' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        /* Pagination styling */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding: 0;
-        }
-
-        .pagination li {
-            margin: 0 2px;
-        }
-
-        .pagination li a,
-        .pagination li span {
-            display: inline-block;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            color: #374151;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .dark .pagination li a,
-        .dark .pagination li span {
-            border-color: #4b5563;
-            color: #e5e7eb;
-            background-color: #374151;
-        }
-
-        .pagination li.active span {
-            background-color: #4f46e5;
-            border-color: #4f46e5;
-            color: white;
-        }
-
-        .pagination li a:hover {
-            background-color: #f3f4f6;
-        }
-
-        .dark .pagination li a:hover {
-            background-color: #4b5563;
-        }
-    </style>
 @endsection

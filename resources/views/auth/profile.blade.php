@@ -229,33 +229,6 @@
                         </div>
                     </div>
 
-                    <!-- Jenis Kelamin -->
-                    <div onclick="toggleEdit('jenis_kelamin')" class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            Jenis Kelamin
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <p id="jenis_kelamin-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
-                                {{ Auth::user()->jenis_kelamin ?? 'Klik untuk memilih' }}
-                            </p>
-                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                            </svg>
-                        </div>
-                        <select id="jenis_kelamin-input" name="jenis_kelamin"
-                            class="hidden w-full text-base font-medium dark:bg-gray-700 dark:text-white border-b border-indigo-500 focus:outline-none bg-white">
-                            <option class="dark:bg-gray-700 dark:text-white" value="">-- Pilih --</option>
-                            <option class="dark:bg-gray-700 dark:text-white" value="Laki-laki" {{ Auth::user()->jenis_kelamin == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                            <option class="dark:bg-gray-700 dark:text-white" value="Perempuan" {{ Auth::user()->jenis_kelamin == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                            <option class="dark:bg-gray-700 dark:text-white" value="Tidak ingin memberi tahu" {{ Auth::user()->jenis_kelamin == 'Tidak ingin memberi tahu' ? 'selected' : '' }}>Tidak ingin memberi tahu</option>
-                        </select>
-                    </div>
-
-                </div>
-
                 <!-- Save Button -->
                 <div id="save-button-container" class="mt-8 text-center hidden">
                     <button type="submit"

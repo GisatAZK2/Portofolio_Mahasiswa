@@ -177,6 +177,10 @@ Session::put('sidebar_collapsed', $request->collapsed);
     return response()->json(['success' => true]);
 })->middleware('web');
 
+// Auth routes (bisa di luar middleware auth)
+Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserController::class, 'register']);
+
 
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
