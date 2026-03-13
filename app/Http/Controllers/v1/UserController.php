@@ -10,6 +10,7 @@ use App\Models\Keahlian;
 use App\Models\Angkatan;
 use App\Models\LearningCorner;
 use App\Models\Project;
+use App\Models\Keahlian_Tambahan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
@@ -224,83 +225,203 @@ class UserController extends Controller
             ->with('success', 'Anda telah logout.');
     }
 
-    // Halaman profile + form edit inline
-    public function profile()
+   public function profile()
     {
-        $user = Auth::user()->load(['jurusan', 'keahlian']);
+        $user = Auth::user()->load([
+            'jurusan',
+            'keahlian',
+            'angkatan',
+            'keahlianTambahan' // Load relasi many-to-many
+        ]);
+
         $jurusans  = Jurusan::all();
         $keahlians = Keahlian::all();
-        $angkatan   = Angkatan::all();
-        
-        return view('auth.profile', compact('user', 'jurusans', 'keahlians', 'angkatan'));
+        $angkatans = Angkatan::all();
+
+        return view('auth.profile', compact('user', 'jurusans', 'keahlians', 'angkatans'));
     }
 
-    // Proses update profile
+    private function addKeahlianTambahan($user, $id_keahlian)
+{
+    // Cek sudah ada
+    $exists = Keahlian_Tambahan::where('id_user', $user->id)
+        ->where('id_keahlian', $id_keahlian)
+        ->exists();
+
+    if ($exists) {
+        return 'Keahlian ini sudah ditambahkan sebelumnya';
+    }
+
+    // Cek bukan keahlian utama
+    if ($user->id_keahlian == $id_keahlian) {
+        return 'Tidak dapat menambahkan keahlian utama';
+    }
+
+    // Cek maksimal 3
+    $currentCount = Keahlian_Tambahan::where('id_user', $user->id)->count();
+
+    if ($currentCount >= 3) {
+        return 'Maksimal 3 keahlian tambahan';
+    }
+
+    Keahlian_Tambahan::create([
+        'id_user' => $user->id,
+        'id_keahlian' => $id_keahlian,
+        'is_active' => false,
+        'status_pengajuan' => 'Sedang Di Ajukan',
+        'keterangan' => null
+    ]);
+
+    return null;
+}
+
     public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        // -------------------------------
+        // Quick upload foto saja
+        // -------------------------------
+        if ($request->hasFile('photo_profile') && count($request->all()) === 3) { // _token, _method, photo_profile
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            $path = $request->file('photo_profile')->store('photos', 'public');
+            $user->update(['photo_profile' => $path]);
+
+            return back()->with('success', 'Foto profil berhasil diperbarui!');
+        }
+
+        // -------------------------------
+        // Validasi lengkap
+        // -------------------------------
+        $rules = [
+            'nama_mahasiswa'       => ['required', 'string', 'max:100'],
+            'email'                => ['nullable', 'email', 'max:100', 'unique:users,email,' . $user->id],
+            'username'             => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z0-9_]+$/', 'unique:users,username,' . $user->id],
+            'id_jurusan'           => ['nullable', 'exists:jurusan,id_jurusan'],
+            'id_keahlian'          => ['nullable', 'exists:keahlian,id_keahlian'],
+            'id_angkatan'          => ['nullable', 'exists:angkatan,id'],
+            'deskripsi'            => ['nullable', 'string', 'max:1500'],
+            'jenis_kelamin'        => ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
+            'photo_profile'        => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'background_url'       => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'id_keahlian_tambahan' => ['nullable','exists:keahlian,id_keahlian'],
+        ];
+
+        if ($request->filled('password')) {
+            $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()];
+        }
+
+        $validated = $request->validate($rules);
+
+        // Handle upload background
+        if ($request->hasFile('background_url')) {
+            if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+                Storage::disk('public')->delete($user->background_url);
+            }
+            $validated['background_url'] = $request->file('background_url')->store('covers', 'public');
+        }
+
+        // Handle upload photo
+        if ($request->hasFile('photo_profile')) {
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            $validated['photo_profile'] = $request->file('photo_profile')->store('photos', 'public');
+        }
+
+        // Handle password
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
+        }
+
+        if ($request->filled('id_keahlian_tambahan')) {
+
+    $error = $this->addKeahlianTambahan($user, $request->id_keahlian_tambahan);
+
+    if ($error) {
+        return back()->with('error', $error);
+    }
+}
+
+        // Update data utama
+        $user->update($validated);
+
+        return redirect()->route('profile')
+            ->with('success', 'Profil berhasil diperbarui!');
+    }
+
+ public function storeKeahlianTambahan(Request $request)
 {
     $user = Auth::user();
 
-    // ===== CEK JIKA HANYA UPDATE FOTO =====
-    if ($request->hasFile('photo_profile') && $request->keys() == ['_token','_method','photo_profile']) {
+    $request->validate([
+        'id_keahlian' => 'required|exists:keahlian,id_keahlian'
+    ]);
 
-        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
-            Storage::disk('public')->delete($user->photo_profile);
-        }
+    $error = $this->addKeahlianTambahan($user, $request->id_keahlian);
 
-        $path = $request->file('photo_profile')->store('photos', 'public');
-
-        $user->update([
-            'photo_profile' => $path
-        ]);
-
-        return back()->with('success','Foto berhasil diperbarui!');
+    if ($error) {
+        return redirect()->back()->with('error', $error);
     }
 
-    $rules = [
-        'nama_mahasiswa' => ['required','string','max:100'],
-        'email' => ['nullable','email','max:100','unique:users,email,' . $user->id],
-        'username' => ['required','string','max:100','regex:/^[a-zA-Z0-9_]+$/','unique:users,username,' . $user->id],
-        'id_jurusan' => ['nullable','exists:jurusan,id_jurusan'],
-        'id_keahlian' => ['nullable','exists:keahlian,id_keahlian'],
-        'id_angkatan' => ['nullable','exists:angkatan,id'],
-        'deskripsi' => ['nullable','string','max:1000'],
-        'photo_profile' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
-        'background_url' => ['nullable','image','mimes:jpeg,png,jpg','max:4098'],
-        'jenis_kelamin' => ['nullable','in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
-    ];
-
-    if ($request->filled('password')) {
-        $rules['password'] = ['required','confirmed',Password::min(8)->mixedCase()];
-    }
-
-    $validated = $request->validate($rules);
-
-    if ($request->hasFile('background_url')) {
-
-        if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
-            Storage::disk('public')->delete($user->background_url);
-        }
-
-        $validated['background_url'] = $request->file('background_url')->store('covers','public');
-    }
-
-    if ($request->hasFile('photo_profile')) {
-        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
-            Storage::disk('public')->delete($user->photo_profile);
-        }
-
-        $validated['photo_profile'] = $request->file('photo_profile')->store('photos','public');
-    }
-
-    if ($request->filled('password')) {
-        $validated['password'] = Hash::make($request->password);
-    } else {
-        unset($validated['password']);
-    }
-
-    $user->update($validated);
-
-    return redirect()->route('profile')->with('success','Profil berhasil diperbarui!');
+    return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
 }
+    public function destroyKeahlianTambahan($id)
+    {
+        $user = Auth::user();
+        
+        try {
+            $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
+                ->findOrFail($id);
+            
+            // Cek apakah boleh dihapus
+            if (!in_array($keahlianTambahan->status_pengajuan, ['Sedang Di Ajukan', 'Di Tolak'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hanya dapat menghapus keahlian dengan status Diajukan atau Ditolak'
+                ], 403);
+            }
+            
+            $keahlianTambahan->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Keahlian tambahan berhasil dihapus'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
+    public function keahliantambahanlist()
+    {
+        try {
+            $user = Auth::user();
+            
+            // Ambil data keahlian tambahan dengan relasi keahlian
+            $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
+                ->with('keahlian')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => $keahlianTambahan
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data keahlian tambahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

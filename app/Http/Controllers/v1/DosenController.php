@@ -44,9 +44,6 @@ class DosenController extends Controller
                 if ($dosen->id_jurusan) {
                     $q->where('id_jurusan', $dosen->id_jurusan);
                 }
-                if ($dosen->id_angkatan) {
-                    $q->where('id_angkatan', $dosen->id_angkatan);
-                }
                 if ($dosen->id_keahlian) {
                     $q->where('id_keahlian', $dosen->id_keahlian);
                 }
@@ -65,9 +62,6 @@ class DosenController extends Controller
             $query->whereHas($relation, function($q) use ($dosen) {
                 if ($dosen->id_jurusan) {
                     $q->where('id_jurusan', $dosen->id_jurusan);
-                }
-                if ($dosen->id_angkatan) {
-                    $q->where('id_angkatan', $dosen->id_angkatan);
                 }
                 if ($dosen->id_keahlian) {
                     $q->where('id_keahlian', $dosen->id_keahlian);

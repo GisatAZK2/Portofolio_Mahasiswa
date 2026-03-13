@@ -3,17 +3,7 @@
              lg:static lg:inset-auto lg:shadow-sm
              flex flex-col overflow-hidden
              {{ session('sidebar_collapsed', false) ? 'lg:w-20' : 'lg:w-62' }}">
-
-    <!-- Tombol Collapse Sidebar (Desktop) -->
-    <button id="toggle-desktop-sidebar"
-            class="hidden lg:flex absolute -right-3 top-16 w-6 h-6 bg-white dark:bg-gray-900 border dark:border-gray-700 border-gray-300 rounded-full items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-900 z-10 shadow-sm">
-        <svg id="toggleCollapseIcon"
-             class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'rotate-180' : '' }}"
-             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
-
+              
     <!-- Logo -->
     <div class="px-6 py-6 mt-10 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0">
         <div class="flex-1 flex justify-center lg:justify-center">

@@ -29,7 +29,6 @@ return new class extends Migration
             $table->enum('status_pengajuan', ['Sedang Di Ajukan', 'Di Terima', 'Di Tolak'])->default('Sedang Di Ajukan')->nullable();
             $table->text('deskripsi')->nullable();
             $table->string('keterangan')->nullable();
-            $table->json('keahlian_tambahan')->nullable();
             $table->unsignedBigInteger('id_jurusan')->nullable();
             $table->unsignedBigInteger('id_keahlian')->nullable();
             $table->unsignedBigInteger('id_angkatan')->nullable();

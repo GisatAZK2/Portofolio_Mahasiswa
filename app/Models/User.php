@@ -11,6 +11,7 @@ use App\Models\LearningCorner;
 use App\Models\Sertifikat;
 use App\Models\Angkatan;
 use App\Models\Project;
+use App\Models\Keahlian_Tambahan;
 
 class User extends Authenticatable
 {
@@ -56,6 +57,17 @@ class User extends Authenticatable
 {
     return $this->belongsTo(Keahlian::class, 'id_keahlian', 'id_keahlian');
 }
+
+public function keahlianTambahan()
+    {
+        return $this->belongsToMany(
+            Keahlian::class,
+            'keahlian_tambahan',
+            'id_user',
+            'id_keahlian'
+        )->withPivot('status_pengajuan', 'keterangan', 'is_active')
+         ->withTimestamps();
+    }
 
 public function angkatan() {
     return $this->belongsTo(Angkatan::class, 'id_angkatan', 'id');

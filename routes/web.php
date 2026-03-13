@@ -22,6 +22,12 @@ Route::middleware(['auth','role:mahasiswa'])->group(function () {
 
     Route::get('/MyDashboard', [DashboardController::class, 'myDashboard'])->name('dashboard.me');
 
+     Route::prefix('keahlian-tambahan')->name('keahlian-tambahan.')->group(function () {
+        Route::get('/', [UserController::class, 'keahliantambahanlist'])->name('index');
+        Route::post('/', [UserController::class, 'storeKeahlianTambahan'])->name('store');
+        Route::delete('/{id}', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
+    });
+
     Route::get('/profile-page', function () {
         return view('views_profile_page');
     })->name('profile-page');

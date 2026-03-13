@@ -35,10 +35,39 @@
         .toggle-password:hover {
             color: #374151;
         }
+
+        .back-button {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 9999px;
+            color: #374151;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            z-index: 50;
+        }
+
+        .back-button:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+            transform: translateX(-4px);
+        }
+
+        .back-button:active {
+            transform: translateX(0);
+        }
     </style>
 </head>
 
-<body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased">
+<body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+
 
     <!-- Background Noise -->
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
@@ -124,10 +153,26 @@
                         Ingat saya
                     </label>
                 </div>
+                
+                <!-- Forgot Password Link (Optional) -->
+                @if(Route::has('password.request'))
+                <div>
+                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                        Lupa password?
+                    </a>
+                </div>
+                @endif
             </div>
 
-            <!-- Submit Button -->
-            <div class="mt-8 flex justify-center sm:justify-end">
+            <!-- Action Buttons -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 sm:justify-end">
+                <!-- Cancel Button -->
+                <a href="{{ route('dashboard') }}" 
+                   class="px-8 py-4 bg-gray-100 text-gray-700 font-semibold rounded-full shadow hover:bg-gray-200 hover:shadow-md active:scale-95 transition-all duration-300 text-center">
+                    Batal
+                </a>
+                
+                <!-- Submit Button -->
                 <button 
                     type="submit"
                     class="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -290,6 +335,44 @@
                     errorElement.remove();
                 }
             });
+        }
+
+        // Handle back button confirmation jika form sudah diisi
+        const backButton = document.querySelector('.back-button');
+        const cancelButton = document.querySelector('a[href="{{ route('dashboard') }}"]');
+        
+        function handleBackClick(e) {
+            const formInputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+            let isFormFilled = false;
+            
+            formInputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    isFormFilled = true;
+                }
+            });
+            
+            if (isFormFilled) {
+                e.preventDefault();
+                showConfirmAlert({
+                    title: 'Yakin ingin kembali?',
+                    text: 'Data yang sudah diisi akan hilang.',
+                    icon: 'question',
+                    confirmButtonText: 'Ya, Kembali',
+                    cancelButtonText: 'Tetap di Sini'
+                }).then((confirmed) => {
+                    if (confirmed) {
+                        window.location.href = '{{ route('dashboard') }}';
+                    }
+                });
+            }
+        }
+
+        if (backButton) {
+            backButton.addEventListener('click', handleBackClick);
+        }
+        
+        if (cancelButton) {
+            cancelButton.addEventListener('click', handleBackClick);
         }
     </script>
 
