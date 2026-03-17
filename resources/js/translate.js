@@ -146,6 +146,17 @@ export const translations = {
     result_search: {
       hasil_pencarian: 'Hasil Pencarian',
       filter_aktif: 'Filter aktif:',
+      clr_filter: 'Hapus semua filter',
+      mhs: 'Mahasiswa',
+      tampil: 'Lihat Semua',
+      sembunyi: 'Sembunyikan',
+      prtfl_lengkap: 'Lihat portofolio lengkap →',
+      sertifikat: 'Sertifikat',
+      none: 'Tidak ada hasil yang ditemukan',
+      none_desc: 'Coba ubah kata kunci, pilih jurusan/keahlian/angkatan lain, atau hapus filter di atas.',
+      empty_link: 'Tidak ada link project',
+      oleh: 'Oleh',
+      see_project: 'Lihat Project →'
     },
     sidebar: {
       dashboard: 'Dashboard',
@@ -442,6 +453,17 @@ export const translations = {
     result_search: {
       hasil_pencarian: 'Search Results',
       filter_aktif: 'Active filter:',
+      clr_filter: 'Clear all filters',
+      mhs: 'Students',
+      tampil: 'See all',
+      sembunyi: 'Hide',
+      prtfl_lengkap: 'See complete portofolio →',
+      sertifikat: 'Certificates',
+      none: 'There are no results',
+      none_desc: 'Try to search for other keyword, Majors/Skills/Cohorts or to delete the filters above.',
+      empty_link: 'There are no link project',
+      oleh: 'By',
+      see_project: 'See Project →'
     },
     sidebar: {
       dashboard: 'Dashboard',
@@ -481,7 +503,7 @@ export const translations = {
     },
     project_user: {
       project_user_title: 'Project',
-      project_user_desc: 'List of projects you participate in as a member.',
+      project_user_desc: 'List of projects made by our students.',
       nama_project: 'Project Name',
       tanpa_nama_project:      "Untitled Project",
       tidak_diketahui:         "Unknown",

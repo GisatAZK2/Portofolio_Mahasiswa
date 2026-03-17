@@ -8,7 +8,7 @@
     @if($keyword || request()->jurusan || request()->keahlian || request()->angkatan || request()->type)
     <div class="mb-8 bg-white dark:bg-gray-800 dark:border-gray-900 rounded-xl shadow-sm border border-gray-200 p-4">
         <div class="flex flex-wrap items-center gap-3">
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-50">Filter aktif:</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-50" data-translate="filter_aktif" data-translate-page="result_search">Filter aktif:</span>
 
             @if($keyword)
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
@@ -67,7 +67,7 @@
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                Hapus semua filter
+                <span data-translate="clr_filter" data-translate-page="result_search">Hapus semua filter</span>
             </a>
         </div>
     </div>
@@ -81,7 +81,8 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
                     <span class="inline-flex px-4 py-2 rounded-full bg-blue-100 text-blue-800 font-medium text-base">
-                        Mahasiswa ({{ $mahasiswa->count() }})
+                        <span data-translate="mhs" data-translate-page="result_search">Mahasiswa</span>
+                        <span>({{ $mahasiswa->count() }})</span>
                     </span>
                 </h3>
             </div>
@@ -157,11 +158,11 @@
                                 <div class="mt-auto">
                                     <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
                                         <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->projects_count ?? 0 }}</strong> Project</span>
-                                        <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->sertifikats_count ?? 0 }}</strong> Sertifikat</span>
+                                        <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->sertifikats_count ?? 0 }}</strong> <span data-translate="sertifikat" data-translate-page="result_search">Sertifikat</span></span>
                                         <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
-                                        <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center justify-end gap-1">
+                                        <span data-translate="prtfl_lengkap" data-translate-page="result_search" class="text-sm font-medium text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center justify-end gap-1">
                                             Lihat portfolio lengkap →
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -198,7 +199,7 @@
                                                 {{ $item->nama_mahasiswa ?? 'Nama tidak tersedia' }}
                                             </h3>
                                             <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 flex-shrink-0">
-                                                Mahasiswa
+                                                <span>Mahasiswa</span>
                                             </span>
                                         </div>
                                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-100 flex items-center gap-1 truncate">
@@ -248,7 +249,7 @@
                                         <span class="dark:text-gray-50"><strong class="text-gray-900 dark:text-gray-50">{{ $item->learning_count ?? 0 }}</strong> Learning</span>
                                     </div>
                                     <div class="mt-3 text-right">
-                                        <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center justify-end gap-1">
+                                        <span data-translate="prtfl_lengkap" data-translate-page="result_search" class="text-sm font-medium text-indigo-600 group-hover:text-indigo-800 transition-colors flex items-center justify-end gap-1">
                                             Lihat portfolio lengkap →
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -266,7 +267,8 @@
                 <div class="mt-6 text-left">
                     <button onclick="toggleSeeMore('mahasiswa-grid', this, {{ $mahasiswa->count() }})"
                             class="text-sm font-medium text-gray-900 dark:text-gray-50 hover:text-indigo-700 transition flex items-center gap-1">
-                        Lihat semua
+                        <span data-translate="tampil"
+                            data-translate-page="result_search">Lihat semua</span>
                         <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
@@ -307,7 +309,7 @@
                            
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                                    Oleh
+                                    <span data-translate="oleh" data-translate-page="result_search">Oleh</span>
                                     <a href="{{ route('portfolio.show', $item->mahasiswa->id) }}" class="font-semibold hover:text-green-600 transition truncate inline-block max-w-[150px]" title="{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}">
                                         {{ $item->mahasiswa->nama_mahasiswa ?? '—' }}
                                     </a>
@@ -337,10 +339,10 @@
                                 @if($item->link_project)
                                     <a href="{{ $item->link_project }}" target="_blank" rel="noopener noreferrer"
                                        class="inline-flex items-center justify-center w-full px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
-                                        Lihat Project →
+                                        <span data-translate="see_project" data-translate-page="result_search">Lihat Project →</span>
                                     </a>
                                 @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-50 italic text-center py-2.5">Tidak ada link project</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-50 italic text-center py-2.5" data-translate="empty_link" data-translate-page="result_search">Tidak ada link project</p>
                                 @endif
                             </div>
                         </div>
@@ -361,7 +363,7 @@
                            
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                                    Oleh
+                                    <span data-translate="oleh" data-translate-page="result_search">Oleh</span>
                                     <a href="{{ route('portfolio.show', $item->mahasiswa->id) }}" class="font-semibold hover:text-green-600 transition truncate inline-block max-w-[150px]" title="{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}">
                                         {{ $item->mahasiswa->nama_mahasiswa ?? '—' }}
                                     </a>
@@ -391,10 +393,10 @@
                                 @if($item->link_project)
                                     <a href="{{ $item->link_project }}" target="_blank" rel="noopener noreferrer"
                                        class="inline-flex items-center justify-center w-full px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
-                                        Lihat Project →
+                                        <span data-translate="see_project" data-translate-page="result_search">Lihat Project →</span>
                                     </a>
                                 @else
-                                    <p class="text-sm text-gray-500 dark:text-gray-50 italic text-center py-2.5">Tidak ada link project</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-50 italic text-center py-2.5" data-translate="empty_link" data-translate-page="result_search">Tidak ada link project</p>
                                 @endif
                             </div>
                         </div>
@@ -406,7 +408,7 @@
                 <div class="mt-6 text-left">
                     <button onclick="toggleSeeMore('project-grid', this, {{ $projects->count() }})"
                             class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-700 transition flex items-center gap-1">
-                        Lihat semua
+                        <span data-translate="tampil" data-translate-page="result_search">Lihat semua</span>
                         <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
@@ -444,7 +446,7 @@
                             </h3>
                             @if($item->mahasiswa)
                                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                                    Oleh <strong class="truncate inline-block max-w-[150px]" title="{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}">{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
+                                    <span data-translate="oleh" data-translate-page="result_search"></span> <strong class="truncate inline-block max-w-[150px]" title="{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}">{{ $item->mahasiswa->nama_mahasiswa ?? '—' }}</strong>
                                     @if($item->mahasiswa->angkatan)
                                         <span class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700 whitespace-nowrap">
                                             Angkatan {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
@@ -554,9 +556,9 @@
             <svg class="mx-auto h-20 w-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <h3 class="mt-6 text-2xl font-medium text-gray-900 dark:text-gray-100">Tidak ada hasil ditemukan</h3>
-            <p class="mt-3 text-gray-600 dark:text-gray-300 max-w-md mx-auto">
-                Coba ubah kata kunci, pilih jurusan/keahlian/angkatan lain, atau hapus filter di atas.
+            <h3 class="mt-6 text-2xl font-medium text-gray-900 dark:text-gray-100" data-translate="none" data-translate-page="result_search">Tidak ada hasil ditemukan</h3>
+            <p class="mt-3 text-gray-600 dark:text-gray-300 max-w-md mx-auto" data-translate="none_desc" data-translate-page="result_search">
+                
             </p>
             <div class="mt-6 flex justify-center gap-3">
                 <a href="{{ route('search') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
@@ -589,7 +591,7 @@ function toggleSeeMore(gridClass, button, totalCount) {
     if (hidden.length > 0) {
         hidden.forEach(item => item.classList.remove('hidden'));
         button.innerHTML = `
-            Sembunyikan
+            <span data-translate="sembunyi" data-translate-page="result_search">Sembunyikan</span>
             <svg class="w-4 h-4 ml-1 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
@@ -599,7 +601,7 @@ function toggleSeeMore(gridClass, button, totalCount) {
             if (index >= 3) item.classList.add('hidden');
         });
         button.innerHTML = `
-            Lihat semua
+            <span data-translate="tampil" data-translate-page="result_search">Lihat semua</span>
             <svg class="w-4 h-4 ml-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
