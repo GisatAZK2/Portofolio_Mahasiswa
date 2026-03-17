@@ -6,8 +6,8 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Tambah User Baru</h1>
-        <p class="text-gray-600 mt-2">Pilih role user yang akan ditambahkan</p>
+        <h1 class="text-3xl font-bold text-gray-800" data-translate="tambah_user_form" data-translate-page="admin">Tambah User Baru</h1>
+        <p class="text-gray-600 mt-2" data-translate="pilih_role" data-translate-page="admin">Pilih role user yang akan ditambahkan</p>
     </div>
 
     <!-- Card Selection -->
@@ -22,8 +22,8 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Admin</h3>
-                    <p class="text-gray-600 text-sm">Hak akses penuh untuk mengelola sistem</p>
-                    <div class="mt-4 bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <p class="text-gray-600 text-sm" data-translate="desc_admin" data-translate-page="admin">Hak akses penuh untuk mengelola sistem</p>
+                    <div data-translate="form_admin" data-translate-page="admin" class="mt-4 bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
                         Form Sederhana
                     </div>
                 </div>
@@ -42,8 +42,8 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Mahasiswa</h3>
-                    <p class="text-gray-600 text-sm">Akses untuk mengikuti kegiatan akademik</p>
-                    <div class="mt-4 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <p class="text-gray-600 text-sm" data-translate="desc_mhs" data-translate-page="admin">Akses untuk mengikuti kegiatan akademik</p>
+                    <div class="mt-4 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium" data-translate="form_mhs" data-translate-page="admin">
                         Form Lengkap
                     </div>
                 </div>
@@ -60,8 +60,8 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Dosen</h3>
-                    <p class="text-gray-600 text-sm">Akses untuk mengelola pembelajaran</p>
-                    <div class="mt-4 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <p class="text-gray-600 text-sm" data-translate="desc_dosen" data-translate-page="admin">Akses untuk mengelola pembelajaran</p>
+                    <div data-translate="form_dosen" data-translate-page="admin" class="mt-4 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
                         Form Lengkap
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nama -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="nm_lgkp" data-translate-page="admin">
                             Nama Lengkap <span class="text-red-500">*</span>
                         </label>
                         <input type="text" 
@@ -98,7 +98,7 @@
 
                     <!-- Username -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="usrnm" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Username <span class="text-red-500">*</span>
                         </label>
                         <input type="text" 
@@ -109,12 +109,12 @@
                         @error('username')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
-                        <p class="mt-1 text-xs text-gray-500">Hanya huruf, angka, dan underscore (_)</p>
+                        <p class="mt-1 text-xs text-gray-500" data-translate="usrnm_error" data-translate-page="admin">Hanya huruf, angka, dan underscore (_)</p>
                     </div>
 
                     <!-- Email -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="email" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Email
                         </label>
                         <input type="email" 
@@ -128,7 +128,7 @@
 
                     <!-- Password -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="pw" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Password <span class="text-red-500">*</span>
                         </label>
                         <input type="password" 
@@ -142,7 +142,7 @@
 
                     <!-- Confirm Password -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="pw_confirm" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Konfirmasi Password <span class="text-red-500">*</span>
                         </label>
                         <input type="password" 
@@ -153,7 +153,7 @@
 
                     <!-- Photo Profile -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="pfp" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Photo Profile
                         </label>
                         <div class="flex items-center space-x-4">
@@ -169,7 +169,7 @@
                         @error('photo_profile')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
-                        <p class="mt-1 text-xs text-gray-500">Format: JPEG, PNG, JPG. Maks: 2MB</p>
+                        <p data-translate-page="admin" data-translate="pfp_error" class="mt-1 text-xs text-gray-500">Format: JPEG, PNG, JPG. Maks: 2MB</p>
                     </div>
                 </div>
             </div>
@@ -180,12 +180,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Jurusan -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="jurusan" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Jurusan <span class="text-red-500" id="jurusanRequired">*</span>
                         </label>
                         <select name="id_jurusan" 
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('id_jurusan') border-red-500 @enderror">
-                            <option value="">Pilih Jurusan</option>
+                            <option data-translate="opt_jurusan" data-translate-page="admin" value="">Pilih Jurusan</option>
                             @foreach($jurusan as $j)
                                 <option value="{{ $j->id_jurusan }}" {{ old('id_jurusan') == $j->id_jurusan ? 'selected' : '' }}>
                                     {{ $j->nama_jurusan }}
@@ -199,12 +199,12 @@
 
                     <!-- Keahlian -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="keahlian" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Bidang Keahlian <span class="text-red-500" id="keahlianRequired">*</span>
                         </label>
                         <select name="id_keahlian" 
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('id_keahlian') border-red-500 @enderror">
-                            <option value="">Pilih Keahlian</option>
+                            <option data-translate-page="admin" data-translate="opt_keahlian" value="">Pilih Keahlian</option>
                             @foreach($keahlian as $k)
                                 <option value="{{ $k->id_keahlian }}" {{ old('id_keahlian') == $k->id_keahlian ? 'selected' : '' }}>
                                     {{ $k->nama_keahlian }}
@@ -218,12 +218,12 @@
 
                     <!-- Angkatan -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label data-translate="angkatan" data-translate-page="admin" class="block text-sm font-medium text-gray-700 mb-2">
                             Angkatan <span class="text-red-500" id="angkatanRequired">*</span>
                         </label>
                         <select name="id_angkatan" 
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('id_angkatan') border-red-500 @enderror">
-                            <option value="">Pilih Angkatan</option>
+                            <option data-translate="opt_angkatan" data-translate-page="admin" value="">Pilih Angkatan</option>
                             @foreach($angkatan as $a)
                                 <option value="{{ $a->id }}" {{ old('id_angkatan') == $a->id ? 'selected' : '' }}>
                                     {{ $a->tahun }}
@@ -240,13 +240,17 @@
             <!-- Submit Buttons -->
             <div class="flex items-center justify-end space-x-4">
                 <a href="{{ route('admin.users.index') }}" 
-                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors">
+                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                   data-translate="cncl"
+                   data-translate-page="admin">
                     Batal
                 </a>
                 <button type="submit" 
                         id="submitBtn"
                         disabled
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        data-translate="tambah"
+                        data-translate-page="admin">
                     Tambah User
                 </button>
             </div>

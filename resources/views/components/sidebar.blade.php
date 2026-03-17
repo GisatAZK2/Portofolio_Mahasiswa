@@ -91,7 +91,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Semua User</span>
+                            <span data-translate="semua_user" data-translate-page="admin">Lihat Semua User</span>
                         </a>
                        
                         <a href="{{ route('admin.users.ViewCreate') }}"
@@ -99,7 +99,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                             </svg>
-                            <span>Tambah User</span>
+                            <span data-translate="tambah_user" data-translate-page="admin">Tambah User</span>
                         </a>
                     </div>
                 </div>
@@ -285,51 +285,160 @@
                         </span>
                     @endif
                 </a>
-                <a href="{{ route('dosen.users.index') }}"
-                   class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                   {{ request()->routeIs('dosen.mahasiswa.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                <div class="space-y-1 relative"
+                     x-data="{ open: {{ request()->routeIs('dosen.users.*') ? 'true' : 'false' }} }">
+
+                    <!-- BUTTON (yang bisa di klik) -->
+                    <button @click="open = !open"
+                            class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                            {{ request()->routeIs('dosen.users.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+
+                    <!-- ICON -->
                     <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
                     </svg>
-                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="mahasiswa_bimbingan">Mahasiswa Bimbingan</span>
-                    @if(session('sidebar_collapsed', false))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Mahasiswa Bimbingan
-                        </span>
-                    @endif
-                </a>
-                <a href="{{ route('dosen.projects.index') }}"
-                   class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                   {{ request()->routeIs('dosen.projects.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-                    <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+                    <!-- TEXT -->
+                    <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                        Mahasiswa Bimbingan
+                    </span>
+
+                    <!-- ARROW -->
+                    <svg :class="{ 'rotate-180': open }"
+                        class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 9l-7 7-7-7" />
                     </svg>
-                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="projects_bimbingan">Projects Bimbingan</span>
-                    @if(session('sidebar_collapsed', false))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Projects Bimbingan
-                        </span>
-                    @endif
-                </a>
-                <a href="{{ route('dosen.sertifikat.index') }}"
-                   class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                   {{ request()->routeIs('dosen.sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-                    <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
-                        <path d="M8 2v4"></path>
-                        <path d="M16 2v4"></path>
-                        <path d="M3 10h18"></path>
-                        <circle cx="12" cy="14" r="2"></circle>
-                    </svg>
-                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="sertifikat_bimbingan">Sertifikat Bimbingan</span>
-                    @if(session('sidebar_collapsed', false))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Sertifikat Bimbingan
-                        </span>
-                    @endif
-                </a>
+                    </button>
+
+                    <!-- DROPDOWN -->
+                    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+
+                        <!-- LIHAT -->
+                        <a href="{{ route('dosen.users.index') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                            {{ request()->routeIs('dosen.users.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <span>Lihat Mahasiswa</span>
+                        </a>
+
+                        <!-- TAMBAH -->
+                        <a href="{{ route('dosen.users.ViewCreate') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                            {{ request()->routeIs('dosen.users.ViewCreate') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <span>Tambah Mahasiswa</span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="space-y-1 relative"
+     x-data="{ open: {{ request()->routeIs('dosen.projects.*') ? 'true' : 'false' }} }">
+
+    <!-- BUTTON (yang bisa di klik) -->
+    <button @click="open = !open"
+        class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+        {{ request()->routeIs('dosen.projects.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+
+        <!-- ICON -->
+        <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
+        </svg>
+
+        <!-- TEXT -->
+        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+            Projects Bimbingan
+        </span>
+
+        <!-- ARROW -->
+        <svg :class="{ 'rotate-180': open }"
+            class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <!-- DROPDOWN -->
+    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+
+        <!-- LIHAT -->
+        <a href="{{ route('dosen.projects.index') }}"
+            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+            {{ request()->routeIs('dosen.projects.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+            <span>Lihat Project</span>
+        </a>
+
+        <!-- TAMBAH -->
+        <a href="{{ route('dosen.projects.create') }}"
+            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+            {{ request()->routeIs('dosen.projects.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+            <span>Tambah Project</span>
+        </a>
+
+    </div>
+</div>
+                <div class="space-y-1 relative"
+     x-data="{ open: {{ request()->routeIs('dosen.sertifikat.*') ? 'true' : 'false' }} }">
+
+    <!-- BUTTON (yang bisa di klik) -->
+    <button @click="open = !open"
+        class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+        {{ request()->routeIs('dosen.sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+
+        <!-- ICON -->
+        <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
+        </svg>
+
+        <!-- TEXT -->
+        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+            Sertifikat Bimbingan
+        </span>
+
+        <!-- ARROW -->
+        <svg :class="{ 'rotate-180': open }"
+            class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <!-- DROPDOWN -->
+    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+
+        <!-- LIHAT -->
+        <a href="{{ route('dosen.sertifikat.index') }}"
+            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+            {{ request()->routeIs('dosen.sertifikat.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+            <span>Lihat Sertifikat</span>
+        </a>
+
+        <!-- TAMBAH -->
+        <a href="{{ route('dosen.sertifikat.create') }}"
+            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+            {{ request()->routeIs('dosen.sertifikat.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+            <span>Tambah Sertifikat</span>
+        </a>
+
+    </div>
+</div>
             @endif
         @endauth
         <!-- ================== MENU PROJECT MAHASISWA ================== -->
