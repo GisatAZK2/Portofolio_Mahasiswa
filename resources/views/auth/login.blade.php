@@ -72,7 +72,7 @@
 
             <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
                 Belum punya akun?
-                <a href="{{ route('register') }}"
+                <a href="mailto:info@polmind.ac.id"
                     class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
                     Hubungi admin
                 </a>
