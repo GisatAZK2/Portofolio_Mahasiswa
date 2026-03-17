@@ -23,12 +23,12 @@
     }
 </script>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
-    <!-- Overlay backdrop untuk mobile -->
+
+    <!-- Overlay backdrop mobile -->
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
     </div>
 
@@ -44,14 +44,13 @@
         <!-- Sidebar -->
         @include('components.sidebar')
 
-        <!-- Main content area -->
         <div class="flex-1 flex flex-col">
-
-            <!-- Header Search Filter -->
-            @include('components.header')
+            
+        <!-- Header -->
+        @include('components.header')
 
             <!-- Page content -->
-            <main class="flex-1 overflow-auto p-6">
+            <main class="overflow-auto">
                 @yield('content')
             </main>
 
@@ -170,6 +169,31 @@
                     });
                 }
 
+            document.addEventListener('click', (e) => {
+                if (!searchDrop || !toggleSearch) return;
+                const isClickInsideSearch = searchDrop.contains(e.target);
+                const isClickOnToggle = toggleSearch.contains(e.target);
+                if (!isClickInsideSearch && !isClickOnToggle) {
+                    if (!searchDrop.classList.contains('max-h-0')) {
+                        searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
+                        requestAnimationFrame(() => {
+                            searchDrop.style.maxHeight = '0px';
+                        });
+                        searchDrop.classList.add(
+                            'opacity-0',
+                            '-translate-y-2',
+                            'scale-y-95',
+                            'max-h-0'
+                        );
+                        searchDrop.classList.remove(
+                            'opacity-100',
+                            'translate-y-0',
+                            'scale-y-100'
+                        );
+                    }
+                }
+            });
+
             function openSidebar() {
                 if (!sidebar) return;
                 sidebar.classList.remove('-translate-x-full');
@@ -182,6 +206,18 @@
                 if (hamburger) hamburger.classList.add('hidden');
                 if (closeIcon) closeIcon.classList.remove('hidden');
             }
+
+            // Fungsi untuk menutup sidebar saat klik di luar sidebar
+            document.addEventListener('click', (e) => {
+                if (!sidebar || !toggleBtn) return;
+
+                const isClickInsideSidebar = sidebar.contains(e.target);
+                const isClickOnToggle = toggleBtn.contains(e.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle) {
+                    closeSidebar();
+                }
+            });
 
             function closeSidebar() {
                 if (!sidebar) return;
