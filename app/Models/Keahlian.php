@@ -9,4 +9,6 @@ class Keahlian extends Model
     protected $table = 'keahlian';
     protected $primaryKey = 'id_keahlian';
     protected $fillable = ['nama_keahlian'];
+
+    
 }

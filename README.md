@@ -157,6 +157,6 @@ MIT License – bebas digunakan, dimodifikasi, dan didistribusikan untuk keperlu
 
 Laravel 12 & semangat belajar!
 
-Developed with ❤️ by **Team Kasih Sayang**
+Developed with ❤️ by **Team Developer**
 
 ---

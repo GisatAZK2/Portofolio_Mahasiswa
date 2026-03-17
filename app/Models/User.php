@@ -11,6 +11,7 @@ use App\Models\LearningCorner;
 use App\Models\Sertifikat;
 use App\Models\Angkatan;
 use App\Models\Project;
+use App\Models\Keahlian_Tambahan;
 
 class User extends Authenticatable
 {
@@ -37,6 +38,7 @@ class User extends Authenticatable
     'id_angkatan',
     'deskripsi',
     'is_active',
+    'status_pengajuan',
     'role'
     ];
     
@@ -53,8 +55,19 @@ class User extends Authenticatable
 
    public function keahlian()
 {
-    return $this->belongsTo(Keahlian::class, 'id_keahlian');
+    return $this->belongsTo(Keahlian::class, 'id_keahlian', 'id_keahlian');
 }
+
+public function keahlianTambahan()
+    {
+        return $this->belongsToMany(
+            Keahlian::class,
+            'keahlian_tambahan',
+            'id_user',
+            'id_keahlian'
+        )->withPivot('status_pengajuan', 'keterangan', 'is_active')
+         ->withTimestamps();
+    }
 
 public function angkatan() {
     return $this->belongsTo(Angkatan::class, 'id_angkatan', 'id');
@@ -69,6 +82,16 @@ public function learning_corners()
 public function projects()
 {
     return $this->hasMany(Project::class, 'id_mahasiswa', 'id');
+}
+
+public function memberProjects()
+{
+    return $this->belongsToMany(
+        Project::class,
+        'project_user',
+        'user_id',
+        'project_id'
+    );
 }
 
 public function sertifikats()
@@ -93,5 +116,33 @@ public function sertifikats()
      *
      * @return array<string, string>
      */
-}
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
+        public function getJenisKelaminFormattedAttribute()
+    {
+        if ($this->jenis_kelamin == 'L' || $this->jenis_kelamin == 'Laki-laki') {
+            return 'Laki-laki';
+        } elseif ($this->jenis_kelamin == 'P' || $this->jenis_kelamin == 'Perempuan') {
+            return 'Perempuan';
+        }
+        return $this->jenis_kelamin;
+    }
+
+    // Mutator untuk jenis kelamin (menyeragamkan penyimpanan)
+    public function setJenisKelaminAttribute($value)
+    {
+        if ($value == 'L' || $value == 'Laki-laki') {
+            $this->attributes['jenis_kelamin'] = 'Laki-laki';
+        } elseif ($value == 'P' || $value == 'Perempuan') {
+            $this->attributes['jenis_kelamin'] = 'Perempuan';
+        } else {
+            $this->attributes['jenis_kelamin'] = $value;
+        }
+    }
+}

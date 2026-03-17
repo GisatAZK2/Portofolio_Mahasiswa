@@ -2,10 +2,9 @@
 @section('title', 'Tambah Project Baru')
 @section('content')
     <div class="p-6 lg:p-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Tambah Project Baru</h1>
-        <p class="text-gray-600 dark:text-gray-200">
-            Tambah Projek Yang Pernah Kamu Buat.
-        </p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" data-translate="tambah_project"
+            data-translate-page="project_create"></h1>
+        <p class="text-gray-600 dark:text-gray-200" data-translate="desc_create" data-translate-page="project_create"></p>
 
         @if (session('success'))
             <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-xl">
@@ -23,14 +22,20 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('project.store') }}" class="space-y-6 mt-4">
+        <form method="POST" action="{{ route('project.store') }}" class="space-y-6 mt-4" id="projectForm">
             @csrf
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Project <span
-                        class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="nama_project" data-translate-page="project_create"></span> <span
+                        class="text-red-500">*</span>
+                </label>
                 <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-500 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror"
                     placeholder="Contoh: Website Portfolio Pribadi">
                 @error('nama_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -38,68 +43,79 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Deskripsi (opsional)</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <span data-translate="deskripsi_opsional" data-translate-page="project_create"></span>
+                </label>
                 <textarea name="deskripsi" rows="4"
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-500 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
                     placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
                 @error('deskripsi')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
+
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
-                    Tambah Pemimpin (opsional)
+                <label class="block text-sm font-medium text-gray-700 dark:text-white">
+                    <span data-translate="tambah_pemimpin" data-translate-page="project_create"></span>
                 </label>
             </div>
 
             <div>
-                <select name="leader" id="leader-select" class="min-w-full border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg p-3">
+                <select name="leader" id="leader-select"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
                     <option class="dark:text-white" value="">-- Pilih Pemimpin Project --</option>
                     @foreach ($users as $user)
-                        <option class="dark:text-white" value="{{ $user->id }}">
+                        <option class="dark:text-white" value="{{ $user->id }}" data-name="{{ $user->nama_mahasiswa }}">
                             {{$user->nama_mahasiswa}}
                         </option>
                     @endforeach
                 </select>
             </div>
+
             <div id="member-wrapper">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                    Tambah Rekan (opsional)
+                    <span data-translate="tambah_rekan" data-translate-page="project_create"></span>
                 </label>
 
-                <div class=" member-item mb-3">
-                    <select name="members[]" 
-                        class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
-                        <option value="">-- Pilih Mahasiswa --</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}">
-                                {{ $user->nama_mahasiswa }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div id="members-container">
                 </div>
             </div>
 
-            <button type="button"
-                onclick="addMemberSelect()"
+            <button type="button" onclick="addMemberSelect()"
                 class="text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline">
-                + Tambah Rekan
+                <span data-translate="tambah_rekan_btn" data-translate-page="project_create"></span>
             </button>
-                    
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Tanggal Mulai <span
-                            class="text-red-500">*</span></label>
+                    <span class="text-black dark:text-white" data-translate="tanggal_mulai" data-translate-page="project_create"></span> <span
+                        class="text-red-500">*</span>
                     <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
-                        class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
+                        class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_mulai') border-red-500 @enderror">
                     @error('tanggal_mulai')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Tanggal Selesai (opsional)</label>
+                    <span class="text-black dark:text-white" data-translate="tanggal_selesai" data-translate-page="project_create"></span>
                     <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
-                        class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
+                        class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_akhir') border-red-500 @enderror">
                     @error('tanggal_akhir')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -107,9 +123,13 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link Project (opsional)</label>
+                <span class="text-black dark:text-white" data-translate="link_project_opsional" data-translate-page="project_create"></span>
                 <input type="url" name="link_project" value="{{ old('link_project') }}"
-                    class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 border-gray-300 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('link_project') border-red-500 @enderror"
                     placeholder="https://github.com/username/project">
                 @error('link_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -118,9 +138,15 @@
 
             <!-- Link GitHub -->
             <div>
-                <label for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link GitHub (opsional)</label>
+                <label for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="link_github_opsional" data-translate-page="project_create"></span>
+                </label>
                 <input type="url" name="link_github" id="link_github" maxlength="500"
-                    class="w-full px-4 py-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 dark:placeholder:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_github') border-red-500 @enderror"
                     placeholder="https://github.com/username/repo" value="{{ old('link_github') }}">
                 @error('link_github')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -129,10 +155,15 @@
 
             <!-- Link Video -->
             <div>
-                <label for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link Video (YouTube,
-                    opsional)</label>
+                <label for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <span data-translate="link_video_opsional" data-translate-page="project_create"></span>
+                </label>
                 <input type="url" name="link_video" id="link_video" maxlength="500"
-                    class="w-full px-4 py-3 border dark:text-white dark:bg-gray-500 dark:border-gray-700 dark:placeholder:text-white border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
+                    class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_video') border-red-500 @enderror"
                     placeholder="https://www.youtube.com/watch?v=..." value="{{ old('link_video') }}">
                 @error('link_video')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -142,7 +173,7 @@
             <div class="flex justify-end pt-4">
                 <button type="submit"
                     class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition shadow-md">
-                    Simpan Project
+                    <span data-translate="simpan_project" data-translate-page="project_create"></span>
                 </button>
             </div>
         </form>
@@ -158,63 +189,195 @@
                 showErrorAlert('{{ $errors->first() }}');
                 {{ implode("\n", $errors->all()) }}
             @endif
-        });
 
-        document.addEventListener("DOMContentLoaded", function() {
+            loadSavedData();
+            initializeMemberSelects();
 
             const leaderSelect = document.getElementById("leader-select");
+            leaderSelect.addEventListener("change", function () {
+                updateDisabledOptions();
+                saveToLocalStorage();
+            });
 
-            leaderSelect.addEventListener("change", function() {
+            document.getElementById('projectForm').addEventListener('submit', function () {
+                clearLocalStorage();
+            });
+        });
 
-                const leaderId = this.value;
+        function saveToLocalStorage() {
+            const leaderId = document.getElementById("leader-select").value;
 
-                document.querySelectorAll(".member-select").forEach(select => {
+            // Get all member selects
+            const memberSelects = document.querySelectorAll('.member-select');
+            const memberIds = [];
 
-                    select.querySelectorAll("option").forEach(option => {
-                        option.disabled = false; // reset dulu
-                    });
+            memberSelects.forEach(select => {
+                if (select.value) {
+                    memberIds.push(select.value);
+                }
+            });
+
+            const projectData = {
+                leader: leaderId,
+                members: memberIds
+            };
+
+            localStorage.setItem('projectTeamData', JSON.stringify(projectData));
+        }
+
+        function loadSavedData() {
+            const savedData = localStorage.getItem('projectTeamData');
+
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+
+                    // Set leader
+                    if (data.leader) {
+                        document.getElementById("leader-select").value = data.leader;
+                    }
+
+                    const container = document.getElementById('members-container');
+                    container.innerHTML = '';
+
+                    if (data.members && data.members.length > 0) {
+                        data.members.forEach(memberId => {
+                            if (memberId) {
+                                addMemberSelect(memberId);
+                            }
+                        });
+                    } else {
+                        addMemberSelect();
+                    }
+
+                    setTimeout(() => {
+                        updateDisabledOptions();
+                    }, 100);
+
+                } catch (e) {
+                    console.error('Error parsing saved data:', e);
+                    addMemberSelect();
+                }
+            } else {
+                addMemberSelect();
+            }
+        }
+
+        function clearLocalStorage() {
+            localStorage.removeItem('projectTeamData');
+        }
+
+        function updateDisabledOptions() {
+            const leaderId = document.getElementById("leader-select").value;
+
+            // Get all selected member IDs
+            const selectedMemberIds = [];
+            document.querySelectorAll(".member-select").forEach(select => {
+                if (select.value) {
+                    selectedMemberIds.push(select.value);
+                }
+            });
+
+            // Update all member selects
+            document.querySelectorAll(".member-select").forEach(select => {
+                select.querySelectorAll("option").forEach(option => {
+                    option.disabled = false;
+                });
 
                 if (leaderId) {
-                    let sameOption = select.querySelector(`option[value="${leaderId}"]`);
-                    if (sameOption) {
-                        sameOption.disabled = true;
+                    let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
+                    if (leaderOption) {
+                        leaderOption.disabled = true;
                     }
                 }
 
+                selectedMemberIds.forEach(selectedId => {
+                    if (selectedId && select.value !== selectedId) {
+                        let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
+                        if (selectedOption) {
+                            selectedOption.disabled = true;
+                        }
+                    }
                 });
+            });
+        }
 
+        // Function to initialize member selects
+        function initializeMemberSelects() {
+            document.querySelectorAll(".member-select").forEach(select => {
+                select.addEventListener("change", function () {
+                    updateDisabledOptions();
+                    saveToLocalStorage();
+                });
+            });
+        }
+
+        // Function to add new member select
+        function addMemberSelect(savedValue = null) {
+            const container = document.getElementById('members-container');
+
+            const memberDiv = document.createElement('div');
+            memberDiv.classList.add('member-item', 'mb-3');
+
+            const usersData = @json($users);
+
+            let optionsHtml = '<option value="">-- Pilih Mahasiswa --</option>';
+            usersData.forEach(user => {
+                const selected = savedValue && savedValue == user.id ? 'selected' : '';
+                optionsHtml += `<option value="${user.id}" data-name="${user.nama_mahasiswa}" ${selected}>${user.nama_mahasiswa}</option>`;
             });
 
+            memberDiv.innerHTML = `
+                        <div class="flex gap-2">
+                            <select name="members[]" 
+                                class="member-select w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                    text-gray-700 dark:text-gray-300
+                    placeholder-gray-500 dark:placeholder-gray-400
+                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
+                                ${optionsHtml}
+                            </select>
+                            <button type="button" 
+                                onclick="removeMember(this)"
+                                class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                ✕
+                            </button>
+                        </div>
+                    `;
+
+            container.appendChild(memberDiv);
+
+            // Add change listener to new select
+            const newSelect = memberDiv.querySelector('.member-select');
+            newSelect.addEventListener('change', function () {
+                updateDisabledOptions();
+                saveToLocalStorage();
             });
 
-        function addMemberSelect() {
-        let wrapper = document.getElementById('member-wrapper');
+            // Update disabled options
+            setTimeout(() => {
+                updateDisabledOptions();
+            }, 100);
+        }
 
-        let newSelect = document.createElement('div');
-        newSelect.classList.add('member-item', 'mb-3');
+        // Function to remove member
+        function removeMember(button) {
+            const memberDiv = button.closest('.member-item');
+            memberDiv.remove();
 
-        newSelect.innerHTML = `
-            <div class="flex gap-2">
-                <select name="members[]" 
-                    class="w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
-                    <option value="">-- Pilih Mahasiswa --</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">
-                            {{ $user->nama_mahasiswa }}
-                        </option>
-                    @endforeach
-                </select>
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
 
-                <button type="button" 
-                    onclick="this.parentElement.parentElement.remove()"
-                    class="px-3 bg-red-100 text-red-600 rounded-lg">
-                    ✕
-                </button>
-            </div>
-        `;
-
-        wrapper.appendChild(newSelect);
-        document.getElementById("leader-select").dispatchEvent(new Event("change"));
-}
+        window.addMemberSelect = addMemberSelect;
+        window.removeMember = removeMember;
     </script>
+
+    
+<!-- Page Info -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    showPageInfo("Tambahkan project baru dengan mengisi formulir. Pastikan untuk memilih pemimpin project dan menambahkan anggota tim jika diperlukan. Jangan lupa untuk menyimpan perubahan setelah selesai.");
+});
+</script>
 @endsection

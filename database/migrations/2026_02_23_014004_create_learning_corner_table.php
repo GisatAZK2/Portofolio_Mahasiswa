@@ -17,13 +17,8 @@ return new class extends Migration
             $table->json('content');
             $table->timestamp('tanggal');
             $table->timestamps();
-            $table->unsignedBigInteger('project_id');
 
-            $table->foreign('project_id')
-                    ->references('id')
-                    ->on('projects')
-                    ->onDelete('cascade');
-            
+
             $table->foreign('id_mahasiswa')
               ->references('id')
               ->on('users')

@@ -18,8 +18,7 @@ return new class extends Migration
         */
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-
-            // Custom Mahasiswa Fields
+            
             $table->string('nama_mahasiswa', 100);
             $table->string('photo_profile', 100)->nullable();
             $table->string('email',100)->unique()->nullable();
@@ -27,11 +26,12 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->string('background_url')->nullable();
             $table->enum('jenis_kelamin', [ 'Laki-laki','Perempuan','Tidak ingin memberi tahu'])->nullable();
+            $table->enum('status_pengajuan', ['Sedang Di Ajukan', 'Di Terima', 'Di Tolak'])->default('Sedang Di Ajukan')->nullable();
             $table->text('deskripsi')->nullable();
-            $table->json('keahlian_tambahan')->nullable();
-            $table->unsignedBigInteger('id_jurusan');
-            $table->unsignedBigInteger('id_keahlian');
-            $table->unsignedBigInteger('id_angkatan');
+            $table->string('keterangan')->nullable();
+            $table->unsignedBigInteger('id_jurusan')->nullable();
+            $table->unsignedBigInteger('id_keahlian')->nullable();
+            $table->unsignedBigInteger('id_angkatan')->nullable();
             
             $table->boolean('is_active')->default(true);
             $table->rememberToken(); 

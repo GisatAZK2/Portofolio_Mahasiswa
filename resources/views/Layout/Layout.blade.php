@@ -1,16 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.90, maximum-scale=0.80, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
-
-    
-
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @PwaHead
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
     if (
@@ -21,35 +22,40 @@
         document.documentElement.classList.add('dark');
     }
 </script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
-    <!-- Overlay backdrop untuk mobile -->
+
+    <!-- Overlay backdrop mobile -->
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
     </div>
 
+    
 
     <div class="flex h-screen">
+
+      <div id="toast-container"
+        class="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-4
+        z-[9999] flex flex-col gap-3 w-full max-w-sm px-4 sm:px-0 items-center sm:items-end">
+        </div>
 
         <!-- Sidebar -->
         @include('components.sidebar')
 
-        <!-- Main content area -->
         <div class="flex-1 flex flex-col">
-
-            <!-- Header Search Filter -->
-            @include('components.header')
+            
+        <!-- Header -->
+        @include('components.header')
 
             <!-- Page content -->
-            <main class="flex-1 overflow-auto p-6">
+            <main class="overflow-auto">
                 @yield('content')
             </main>
 
             <!-- Footer -->
-
+            @include('components.up-page')
             @include('components.footer')
         </div>
     </div>
@@ -111,33 +117,82 @@
                 });
             }
 
-            if (toggleSearch && searchDrop) {
-                toggleSearch.addEventListener('click', () => {
-                    const isClosed = searchDrop.classList.contains('max-h-0');
+                if (toggleSearch && searchDrop) {
+                    toggleSearch.addEventListener('click', () => {
+            
+                        const isClosed = searchDrop.classList.contains('max-h-0');
+            
+                        if (isClosed) {
+            
+                            searchDrop.style.maxHeight = '0px';
+            
+                            searchDrop.classList.remove(
+                                'max-h-0',
+                                'opacity-0',
+                                '-translate-y-2',
+                                'scale-y-95'
+                            );
+            
+                            searchDrop.classList.add(
+                                'opacity-100',
+                                'translate-y-0',
+                                'scale-y-100'
+                            );
+            
+                            requestAnimationFrame(() => {
+                                searchDrop.style.maxHeight =
+                                    searchDrop.scrollHeight + 'px';
+                            });
+            
+                        } else {
+            
+                            searchDrop.style.maxHeight =
+                                searchDrop.scrollHeight + 'px';
+            
+                            requestAnimationFrame(() => {
+                                searchDrop.style.maxHeight = '0px';
+                            });
+            
+                            searchDrop.classList.add(
+                                'opacity-0',
+                                '-translate-y-2',
+                                'scale-y-95',
+                                'max-h-0'
+                            );
+            
+                            searchDrop.classList.remove(
+                                'opacity-100',
+                                'translate-y-0',
+                                'scale-y-100'
+                            );
+                        }
+                    });
+                }
 
-                    if (isClosed) {
-                        searchDrop.style.maxHeight = '0px';
-                        searchDrop.classList.remove('max-h-0', 'opacity-0', '-translate-y-2', 'scale-y-95');
-                        searchDrop.classList.add('opacity-100', 'translate-y-0', 'scale-y-100');
-
-                        requestAnimationFrame(() => {
-                            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
-                        });
-                    } else {
+            document.addEventListener('click', (e) => {
+                if (!searchDrop || !toggleSearch) return;
+                const isClickInsideSearch = searchDrop.contains(e.target);
+                const isClickOnToggle = toggleSearch.contains(e.target);
+                if (!isClickInsideSearch && !isClickOnToggle) {
+                    if (!searchDrop.classList.contains('max-h-0')) {
                         searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
                         requestAnimationFrame(() => {
                             searchDrop.style.maxHeight = '0px';
                         });
-                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95');
-                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
-
-                        setTimeout(() => {
-                            if (searchDrop.style.maxHeight === '0px') {
-                            }
-                        }, 350);
+                        searchDrop.classList.add(
+                            'opacity-0',
+                            '-translate-y-2',
+                            'scale-y-95',
+                            'max-h-0'
+                        );
+                        searchDrop.classList.remove(
+                            'opacity-100',
+                            'translate-y-0',
+                            'scale-y-100'
+                        );
                     }
-                });
-            }
+                }
+            });
 
             function openSidebar() {
                 if (!sidebar) return;
@@ -151,6 +206,18 @@
                 if (hamburger) hamburger.classList.add('hidden');
                 if (closeIcon) closeIcon.classList.remove('hidden');
             }
+
+            // Fungsi untuk menutup sidebar saat klik di luar sidebar
+            document.addEventListener('click', (e) => {
+                if (!sidebar || !toggleBtn) return;
+
+                const isClickInsideSidebar = sidebar.contains(e.target);
+                const isClickOnToggle = toggleBtn.contains(e.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle) {
+                    closeSidebar();
+                }
+            });
 
             function closeSidebar() {
                 if (!sidebar) return;
@@ -189,6 +256,7 @@
                 }
             };
 
+
             window.toggleTheme = function () {
                 const html = document.documentElement;
                 html.classList.toggle('dark');
@@ -199,6 +267,8 @@
                 );
             };
         });
+
+
     </script>
 
     @stack('scripts')
