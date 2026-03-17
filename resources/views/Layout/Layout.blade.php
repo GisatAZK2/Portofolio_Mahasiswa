@@ -10,7 +10,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    @PwaHead
+    
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
