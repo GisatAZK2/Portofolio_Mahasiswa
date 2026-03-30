@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\Angkatan;
+use App\Models\Jurusan;
+use App\Models\Keahlian;
 use App\Models\LearningCorner;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,12 +41,38 @@ class ProjekController extends Controller
     }
 
     // FORM TAMBAH
-    public function create(){
-        $users = User::select('id', 'nama_mahasiswa')
-            ->whereNotIn('role', ['admin', 'dosen'])
-            ->get();
+    public function create(Request $request){
+        $search = $request->input('search');
+        $angkatan = $request->input('angkatan');
+        $jurusan = $request->input('jurusan');
+        $keahlian = $request->input('keahlian');
 
-        return view('project.views_create_project', compact('users'));
+        $query = User::with(['jurusan', 'angkatan'])
+            ->whereNotIn('role', ['admin', 'dosen']);
+
+        if ($search) {
+            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        }
+
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
+
+        if ($jurusan) {
+            $query->where('id_jurusan', $jurusan);
+        }
+
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
+
+        $users = $query->orderBy('nama_mahasiswa')->get();
+
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        return view('project.views_create_project', compact('users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
     }
     
     // SIMPAN BARU
@@ -91,19 +120,56 @@ class ProjekController extends Controller
             ->with('success', 'Project berhasil ditambahkan!');
     }
 
-    public function edit($id)
+
+       public function edit($id)
 {
+    
+    
+    // Get search and filter inputs
+    $search = request()->input('search');
+    $angkatan = request()->input('angkatan');
+    $jurusan = request()->input('jurusan');
+    $keahlian = request()->input('keahlian');
+
+    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+        ->where('role', 'mahasiswa');
+    
+    // Filter pencarian berdasarkan nama mahasiswa
+    if ($search) {
+        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+    }
+
+    // Filter berdasarkan angkatan
+    if ($angkatan) {
+        $query->where('id_angkatan', $angkatan);
+    }
+
+    // Filter berdasarkan jurusan
+    if ($jurusan) {
+        $query->where('id_jurusan', $jurusan);
+    }
+
+    // Filter berdasarkan keahlian
+    if ($keahlian) {
+        $query->where('id_keahlian', $keahlian);
+    }
+
+    // Ambil data dengan pagination
+    $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    // Ambil data untuk dropdown filter
+    $angkatans = Angkatan::all();
+    $jurusans = Jurusan::all();
+    $keahlians = Keahlian::all();
+
+    // Get project data
     $project = Project::with('members')
         ->where('id', $id)
-        ->where('id_mahasiswa', Auth::id())
         ->firstOrFail();
 
-    $users = User::select('id', 'nama_mahasiswa')
-        ->whereNotIn('role', ['admin', 'dosen'])
-        ->get();
-
-    return view('project.views_edit_project', compact('project', 'users'));
-    }
+         return view('project.views_edit_project', compact('project', 'users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
+}
 
     // UPDATE - FIXED VERSION
     public function update(Request $request, $id)

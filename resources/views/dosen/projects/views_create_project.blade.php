@@ -173,6 +173,19 @@
                     <!-- Hidden Input for Selected Leader ID -->
                     <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader') }}">
 
+                    <!-- Search untuk Pemimpin -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input type="text" id="leader-search" placeholder="Cari nama pemimpin project..."
+                                   class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Table of Users for Leader -->
                     <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -418,6 +431,14 @@
             });
         }
 
+        function filterLeaderTable() {
+            const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                const nameCell = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                row.style.display = nameCell.includes(keyword) ? '' : 'none';
+            });
+        }
+
         // Function to select leader
         function selectLeader(userId, userName) {
             // Update hidden input
@@ -503,16 +524,26 @@
                 });
 
                 memberDiv.innerHTML = `
-                    <div class="flex gap-2">
-                        <select name="members[]" 
-                            class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
-                            ${optionsHtml}
-                        </select>
-                        <button type="button" 
-                            onclick="removeMember(this)"
-                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                            ✕
-                        </button>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="relative mb-3">
+                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <select name="members[]" 
+                                class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
+                                ${optionsHtml}
+                            </select>
+                            <button type="button" 
+                                onclick="removeMember(this)"
+                                class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                ✕
+                            </button>
+                        </div>
                     </div>
                 `;
             }
@@ -527,7 +558,18 @@
                     saveToLocalStorage();
                 });
             }
-
+            // Add search listener to new member row
+            const newSearchInput = memberDiv.querySelector('.member-search');
+            if (newSearchInput) {
+                newSearchInput.addEventListener('input', function() {
+                    const keyword = this.value.toLowerCase().trim();
+                    const select = memberDiv.querySelector('.member-select');
+                    Array.from(select.options).forEach(option => {
+                        if (option.value === '') return;
+                        option.style.display = option.textContent.toLowerCase().includes(keyword) ? '' : 'none';
+                    });
+                });
+            }
             // Update disabled options
             setTimeout(() => {
                 updateDisabledOptions();
@@ -697,15 +739,10 @@
                 });
             }
 
-            // Pagination click handling
-            document.addEventListener('click', function(e) {
-                if (e.target.matches('.pagination a')) {
-                    e.preventDefault();
-                    const page = new URL(e.target.href).searchParams.get('page');
-                    fetchFilteredUsers(page);
-                }
-            });
-        });
+            const leaderSearch = document.getElementById('leader-search');
+            if (leaderSearch) {
+                leaderSearch.addEventListener('input', filterLeaderTable);
+            }
     </script>
 
     <style>

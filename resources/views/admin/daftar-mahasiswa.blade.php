@@ -124,29 +124,29 @@
 
     <!-- Table - Desktop View -->
     <div class="hidden md:block overflow-x-auto">
-        <table class="min-w-full bg-white dark:bg-gray-800">
+        <table class="min-w-full w-full table-auto bg-white dark:bg-gray-800 text-sm">
             <thead>
                 <tr class="bg-gray-100 dark:bg-gray-700">
-                    <th class="px-4 py-3 text-left">
+                    <th class="px-3 py-2 text-left">
                         <input type="checkbox" id="tableSelectAllCheckbox" class="rounded text-blue-600 focus:ring-blue-500">
                     </th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Foto</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama / Username</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Foto</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama / Username</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                    <th class="hidden xl:table-cell px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role</th>
+                    <th class="hidden xl:table-cell px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="hidden xl:table-cell px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
+                    <th class="hidden xl:table-cell px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($users as $index => $user)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td class="px-4 py-4">
+                <tr data-item-index="{{ $index }}" class="paginated-item hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td class="px-3 py-3">
                         <input type="checkbox" name="selected[]" value="{{ $user->id }}" class="item-checkbox rounded text-blue-600 focus:ring-blue-500">
                     </td>
-                    <td class="px-4 py-4">
+                    <td class="px-3 py-3">
                         @if($user->photo_profile && Storage::disk('public')->exists($user->photo_profile))
                             <img src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
                                  alt="{{ $user->nama_mahasiswa ?? $user->username }}"
@@ -159,12 +159,12 @@
                             </div>
                         @endif
                     </td>
-                    <td class="px-4 py-4">
+                    <td class="px-3 py-3">
                         <div class="font-medium dark:text-white">{{ $user->nama_mahasiswa ?? 'Pengguna' }}</div>
                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ '@' . ($user->username ?? 'username') }}</div>
                     </td>
-                    <td class="px-4 py-4 dark:text-white text-sm">{{ $user->email ?? '-' }}</td>
-                    <td class="px-4 py-4">
+                    <td class="px-3 py-3 dark:text-white text-sm max-w-[220px] overflow-hidden whitespace-nowrap text-ellipsis truncate" title="{{ $user->email ?? '-' }}">{{ $user->email ?? '-' }}</td>
+                    <td class="px-3 py-3">
                         <span class="px-2 py-1 rounded-full text-xs font-medium
                             @if($user->role == 'admin') bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
                             @elseif($user->role == 'dosen') bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400
@@ -173,7 +173,7 @@
                             {{ ucfirst($user->role) }}
                         </span>
                     </td>
-                    <td class="px-4 py-4">
+                    <td class="px-3 py-3">
                         @if($user->status_pengajuan)
                             @if($user->status_pengajuan == 'Di Terima')
                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
@@ -195,9 +195,9 @@
                             <span class="text-xs text-gray-500">-</span>
                         @endif
                     </td>
-                    <td class="px-4 py-4 dark:text-white text-sm">{{ $user->jurusan?->nama_jurusan ?? '-' }}</td>
-                    <td class="px-4 py-4 dark:text-white text-sm">{{ $user->angkatan?->nama_angkatan ?? '-' }}</td>
-                    <td class="px-4 py-4">
+                    <td class="hidden xl:table-cell px-3 py-3 dark:text-white text-sm">{{ $user->jurusan?->nama_jurusan ?? '-' }}</td>
+                    <td class="hidden xl:table-cell px-3 py-3 dark:text-white text-sm">{{ $user->angkatan?->nama_angkatan ?? '-' }}</td>
+                    <td class="px-3 py-3">
                         <div class="flex space-x-2">
                             @if(in_array($user->role, ['mahasiswa', 'dosen']))
                             <a href="{{ route('portfolio.show', $user->id) }}"
@@ -255,7 +255,7 @@
     <!-- Mobile View - Card Layout -->
     <div class="md:hidden space-y-4">
         @forelse($users as $index => $user)
-        <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600">
+        <div data-item-index="{{ $index }}" class="paginated-item bg-white dark:bg-gray-700 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600">
             <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center space-x-3">
                     <input type="checkbox" name="selected[]" value="{{ $user->id }}" class="item-checkbox rounded text-blue-600 focus:ring-blue-500">
@@ -286,7 +286,7 @@
                 <div class="flex-1">
                     <h3 class="font-semibold dark:text-white">{{ $user->nama_mahasiswa ?? 'Pengguna' }}</h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@' . ($user->username ?? 'username') }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $user->email ?? '-' }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 break-words max-w-full" title="{{ $user->email ?? '-' }}">{{ $user->email ?? '-' }}</p>
                 </div>
             </div>
            
@@ -380,6 +380,13 @@
         @endforelse
     </div>
 
+    <div id="clientPaginationControls" class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            Menampilkan <span id="paginationVisibleCount">0</span> dari <span id="paginationTotalCount">{{ $users->count() }}</span> pengguna.
+        </p>
+        <nav id="paginationNumberButtons" class="flex flex-wrap items-center gap-2"></nav>
+    </div>
+
     <!-- Hidden Delete Form -->
     <form id="hiddenDeleteForm" method="POST" style="display: none;">
         @csrf
@@ -403,9 +410,8 @@ let selectedIds = [];
 function updateSelectedIds() {
     selectedIds = [];
 
-    // Ambil checkbox yang terlihat saja (tidak display:none)
     document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-        if (checkbox.offsetParent !== null && checkbox.checked) {
+        if (checkbox.checked) {
             selectedIds.push(checkbox.value);
         }
     });
@@ -428,9 +434,7 @@ function updateSelectedIds() {
         bulkForm.appendChild(input);
     });
 
-    // FIX: hanya hitung checkbox visible
-    const allCheckboxes = Array.from(document.querySelectorAll('.item-checkbox'))
-        .filter(cb => cb.offsetParent !== null);
+    const allCheckboxes = Array.from(document.querySelectorAll('.item-checkbox')); 
 
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
@@ -599,10 +603,103 @@ function toggleKeteranganField(selectElement) {
     }
 }
 
+const clientPageSize = 20;
+let clientCurrentPage = 1;
+
+function getClientPaginationItems() {
+    return Array.from(document.querySelectorAll('.paginated-item'))
+        .sort((a, b) => parseInt(a.dataset.itemIndex, 10) - parseInt(b.dataset.itemIndex, 10));
+}
+
+function renderPaginationButtons() {
+    const totalCount = parseInt(document.getElementById('paginationTotalCount').textContent, 10);
+    const pageCount = Math.max(1, Math.ceil(totalCount / clientPageSize));
+    const paginationNav = document.getElementById('paginationNumberButtons');
+
+    if (!paginationNav) return;
+    paginationNav.innerHTML = '';
+
+    const visiblePages = 10;
+    let startPage = Math.max(1, clientCurrentPage - Math.floor(visiblePages / 2));
+    let endPage = startPage + visiblePages - 1;
+
+    if (endPage > pageCount) {
+        endPage = pageCount;
+        startPage = Math.max(1, endPage - visiblePages + 1);
+    }
+
+    const addNavButton = (label, page, isActive, extraClasses = []) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.className = ['px-3 py-2 min-w-[40px] rounded-full text-sm font-medium transition', ...extraClasses].join(' ');
+        if (isActive) {
+            button.classList.add('bg-indigo-600', 'text-white');
+        } else {
+            button.classList.add('bg-white', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300', 'border', 'border-gray-200', 'dark:border-gray-700', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+            button.addEventListener('click', () => {
+                clientCurrentPage = page;
+                updateClientPagination();
+            });
+        }
+        paginationNav.appendChild(button);
+    };
+
+    if (clientCurrentPage > 1) {
+        addNavButton('«', clientCurrentPage - 1, false, ['px-3', 'py-2']);
+    }
+
+    if (startPage > 1) {
+        addNavButton('1', 1, false);
+        if (startPage > 2) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-3 py-2 text-sm text-gray-500 dark:text-gray-400';
+            paginationNav.appendChild(ellipsis);
+        }
+    }
+
+    for (let page = startPage; page <= endPage; page++) {
+        addNavButton(page, page, page === clientCurrentPage);
+    }
+
+    if (endPage < pageCount) {
+        if (endPage < pageCount - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-3 py-2 text-sm text-gray-500 dark:text-gray-400';
+            paginationNav.appendChild(ellipsis);
+        }
+        addNavButton(pageCount, pageCount, false);
+    }
+
+    if (clientCurrentPage < pageCount) {
+        addNavButton('»', clientCurrentPage + 1, false, ['px-3', 'py-2']);
+    }
+}
+
+function updateClientPagination() {
+    const items = getClientPaginationItems();
+    const totalCount = items.length;
+    const startIndex = (clientCurrentPage - 1) * clientPageSize;
+    const endIndex = clientCurrentPage * clientPageSize;
+
+    items.forEach((item, index) => {
+        item.classList.toggle('hidden', index < startIndex || index >= endIndex);
+    });
+
+    const visibleText = Math.min(endIndex, totalCount);
+    document.getElementById('paginationVisibleCount').textContent = visibleText;
+    document.getElementById('paginationTotalCount').textContent = totalCount;
+
+    renderPaginationButtons();
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     // Inisialisasi awal
     updateSelectedIds();
+    updateClientPagination();
 
     // Event listener untuk setiap checkbox item
    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
