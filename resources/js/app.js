@@ -98,7 +98,6 @@ function toggleDropdown(section) {
 
 window.toggleDropdown = toggleDropdown;
 document.addEventListener('DOMContentLoaded', () => {
-    // Sync dropdown bahasa dengan localStorage
     const langSelect = document.getElementById('languageSelect');
     if (langSelect) {
         langSelect.value = localStorage.getItem('lang') || 'id';
@@ -111,18 +110,42 @@ document.addEventListener('turbo:load', () => {
     }
 });
 
-
 window.toggleDarkMode = function() {
-    document.documentElement.classList.toggle('dark');
-    // Simpan preferensi ke localStorage
-    if(document.documentElement.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-    } else {
+    const html = document.documentElement;
+    const btn = document.getElementById('darkModeBtn');
+    
+    const isCurrentlyDark = html.classList.contains('dark');
+
+    if (isCurrentlyDark) {
+        html.classList.remove('dark');
         localStorage.setItem('theme', 'light');
+        if (btn) btn.innerHTML = 'Dark Mode';
+    } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        if (btn) btn.innerHTML = 'Light Mode';
     }
-    // Refresh browser
-    location.reload();
+};
+
+function initDarkMode() {
+    const html = document.documentElement;
+    const btn = document.getElementById('darkModeBtn');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark' || 
+        (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        
+        html.classList.add('dark');
+        if (btn) btn.innerHTML = 'Light Mode';
+    } else {
+        html.classList.remove('dark');
+        if (btn) btn.innerHTML = 'Dark Mode';
+    }
 }
+
+// Jalankan inisialisasi saat DOM siap dan setelah Turbo load
+document.addEventListener('DOMContentLoaded', initDarkMode);
+document.addEventListener('turbo:load', initDarkMode);
 
 // Pilihan Bahasa
 window.changeLanguage = function() {

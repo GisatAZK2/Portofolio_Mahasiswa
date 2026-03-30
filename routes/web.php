@@ -80,6 +80,7 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.') ->grou
         Route::get('/AddUser', [AdminController::class, 'ViewAddUser'])->name('ViewCreate');
         Route::post('/StoreUser', [AdminController::class, 'AddUser'])->name('StoreUser');
         Route::delete('/DeleteUser/{user}', [AdminController::class, 'destroyUser'])->name('destroy');
+        Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyUsers'])->name('bulkDestroy');
         Route::patch('/{user}/update-status', [UserController::class, 'updateStatus'])->name('update-status');
     });
 

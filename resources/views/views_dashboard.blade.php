@@ -4,10 +4,8 @@
     <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards with Mini Charts -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-
-            <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                     <a href="{{ route('search') }}">
                         <div class="flex items-center justify-between mb-3">
                             <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200"
@@ -63,11 +61,9 @@
                         <canvas id="sertifikatChart"></canvas>
                     </div>
                 </div>
-
-               
             </div>
 
-            <!-- Random Posts -->
+            <!-- Random Posts with Fixed Height Cards -->
             <div>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
@@ -75,6 +71,7 @@
                     <a href="{{ route('search') ?? '#' }}"
                         class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1" data-translate="lihat_semua"
                             data-translate-page="dashboard">
+                        Lihat Semua
                     </a>
                 </div>
 
@@ -84,11 +81,11 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="postingan_kosong" data-translate-page="dashboard"></p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="postingan_kosong" data-translate-page="dashboard">Belum ada postingan</p>
                     </div>
                 @else
-                    <!-- Masonry Grid with columns -->
-                    <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                    <!-- Grid dengan tinggi card sama -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
                         @foreach($randomPosts as $post)
                             @php
                                 // Decode JSON content untuk semua tipe
@@ -208,13 +205,9 @@
                                 $displayRole = $isLeaderAvailable ? 'Leader' : 'Owner';
                             @endphp
                             
-                            <!-- Card wrapper with independent expansion -->
-                            <div 
-                                class="flex flex-col h-fit rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 {{ $post->type !== 'sertifikat' ? 'group' : '' }}"
-                                x-data="{ expanded: false }"
-                            >
-                                <!-- Card body -->
-                                <div class="flex flex-col p-5 lg:p-6">
+                            <!-- Card dengan tinggi sama menggunakan flex -->
+                            <div class="flex flex-col h-full rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300">
+                                <div class="flex flex-col p-5 lg:p-6 flex-1">
                                     <!-- User Info - Clickable ke Portfolio -->
                                     <a href="{{ $userId ? route('portfolio.show', ['user' => $userId]) : '#' }}" 
                                        class="flex items-center space-x-3 mb-4 hover:opacity-80 transition-opacity">
@@ -234,7 +227,7 @@
                                             @endif
                                         </div>
                                         <div>
-                                            <p class="font-semibold text-gray-900 dark:text-gray-300 group-hover:text-indigo-700 transition-colors">
+                                            <p class="font-semibold text-gray-900 dark:text-gray-300">
                                                 {{ $userName }}
                                             </p>
                                             <p class="text-xs text-gray-500 dark:text-gray-200">
@@ -248,7 +241,7 @@
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 mb-3 w-fit">
                                             Learning Corner
                                             @if($relatedProject)
-                                                <span class="ml-1 text-purple-600">({{ $relatedProjectData['nama_project'] ?? 'Project' }})</span>
+                                                <span class="ml-1 text-purple-600">({{ Str::limit($relatedProjectData['nama_project'] ?? 'Project', 30) }})</span>
                                             @endif
                                         </span>
                                     @elseif($post->type === 'project')
@@ -257,7 +250,7 @@
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 mb-3 w-fit">Sertifikat</span>
                                     @endif
 
-                                    <!-- Konten utama -->
+                                    <!-- Konten utama - tetap seperti semula -->
                                     <div class="flex-1 mt-3">
                                         @if($post->type === 'sertifikat')
                                             <div class="flex flex-col space-y-3">
@@ -296,23 +289,22 @@
                                             <!-- Title - Clickable ke Project -->
                                             @if($relatedProject)
                                                 <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
-                                                   class="block group-hover:text-indigo-700 transition-colors">
-                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                                   class="block hover:text-indigo-700 transition-colors">
+                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                                         {{ $learningTitle ?: ($relatedProjectData['nama_project'] ?? 'Learning Corner') }}
                                                     </h3>
                                                 </a>
                                             @else
-                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                                     {{ $learningTitle ?: 'Learning Corner' }}
                                                 </h3>
                                             @endif
                                             
                                             <!-- Text with expand/collapse -->
                                             @if($learningText)
-                                                <div class="relative">
+                                                <div class="relative" x-data="{ expanded: false }">
                                                     <p class="text-gray-700 dark:text-gray-300 mb-3 text-sm" 
-                                                       :class="{ 'line-clamp-3': !expanded }"
-                                                       x-show="!expanded || $el.scrollHeight <= $el.clientHeight">
+                                                       :class="{ 'line-clamp-3': !expanded }">
                                                         {{ $learningText }}
                                                     </p>
                                                     <div x-show="expanded" x-collapse>
@@ -335,22 +327,22 @@
                                             
                                             <!-- Images - Collapsible -->
                                             @if(count($learningImages) > 0)
-                                                <div class="space-y-3 mt-2">
+                                                <div class="space-y-3 mt-2" x-data="{ expanded: false }">
                                                     <!-- First image always visible -->
                                                     <div class="relative">
                                                         @php $firstImage = $learningImages[0]; @endphp
                                                         @php $imagePath = str_replace(['\\', '/'], '/', $firstImage['content'] ?? ''); @endphp
-                                                       <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-     class="image-zoom w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
-     alt="{{ $image['alt'] ?? 'Gambar' }}"
-     loading="lazy"
-     onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
+                                                        <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
+                                                             class="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
+                                                             alt="{{ $firstImage['alt'] ?? 'Gambar' }}"
+                                                             loading="lazy"
+                                                             onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
                                                         
                                                         @if(count($learningImages) > 1)
                                                             <button @click="expanded = !expanded" 
                                                                     class="absolute bottom-2 right-2 bg-black/50 hover:bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1 transition-colors">
-                                                                <span x-show="!expanded" data-translate="tampilkan_lagi" data-translate-page="dashboard">+{{ count($learningImages)-1 }}</span>
-                                                                <span x-show="expanded" data-translate="sembunyikan" data-translate-page="dashboard"></span>
+                                                                <span x-show="!expanded">+{{ count($learningImages)-1 }}</span>
+                                                                <span x-show="expanded">Sembunyikan</span>
                                                                 <svg class="w-3 h-3" :class="{ 'rotate-180': expanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                                                 </svg>
@@ -366,7 +358,7 @@
                                                             @php $imagePath = str_replace(['\\', '/'], '/', $image['content'] ?? ''); @endphp
                                                             <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
                                                                  alt="{{ $image['alt'] ?? 'Gambar' }}"
-                                                                 class="image-zoom w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
+                                                                 class="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
                                                                  loading="lazy"
                                                                  onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
                                                         @endforeach
@@ -389,67 +381,31 @@
                                             <!-- Related Project Info with Leader/Owner Profile -->
                                             @if($relatedProject)
                                                 <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
-                                                    <!-- Label Project Terkait -->
-                                                    <p data-translate="project_terkait" data-translate-page="dashboard" class="text-xs text-gray-500 dark:text-gray-400 mb-3">Project Terkait:</p>
-                                                    
-                                                    <!-- Nama Project - Ditampilkan Lebih Menonjol -->
-                                                    <div class="mb-3">
-                                                        <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
-                                                        class="text-base font-semibold text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-2">
-                                                            {{ $relatedProjectData['nama_project'] ?? $relatedProject->nama_project ?? 'Project' }}
-                                                        </a>
-                                                    </div>
-                                                    
-                                                    <!-- Leader/Owner Profile dengan Highlight -->
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Project Terkait:</p>
+                                                    <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
+                                                       class="text-sm font-semibold text-gray-800 dark:text-gray-200 hover:text-indigo-600 transition-colors line-clamp-1">
+                                                        {{ $relatedProjectData['nama_project'] ?? $relatedProject->nama_project ?? 'Project' }}
+                                                    </a>
                                                     @if($displayName)
-                                                    <div class="flex items-center space-x-2 {{ $isLeaderAvailable ? 'bg-orange-50 dark:bg-orange-900/20' : 'bg-blue-50 dark:bg-blue-900/20' }} p-2 rounded-lg">
-                                                        <!-- Icon/Label -->
-                                                        <span class="text-xs font-medium {{ $isLeaderAvailable ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400' }}">
-                                                            {{ $displayRole }}:
-                                                        </span>
-                                                        
-                                                        <!-- Profile - Clickable ke Portfolio -->
-                                                        <a href="{{ $displayId ? route('portfolio.show', ['user' => $displayId]) : '#' }}" 
-                                                        class="flex items-center space-x-2 hover:opacity-80 transition-opacity flex-1">
-                                                            <div class="w-6 h-6 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 relative">
-                                                                @if($displayPhoto)
-                                                                    <img src="{{ asset('storage/' . ltrim($displayPhoto, '/')) }}" 
-                                                                        alt="{{ $displayName }}"
-                                                                        class="w-full h-full object-cover"
-                                                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                                    <div class="absolute inset-0 hidden {{ $isLeaderAvailable ? 'bg-gradient-to-br from-orange-500 to-red-500' : 'bg-gradient-to-br from-blue-500 to-indigo-500' }} items-center justify-center text-white text-xs font-bold">
-                                                                        {{ substr($displayName, 0, 1) }}
-                                                                    </div>
-                                                                @else
-                                                                    <div class="w-full h-full {{ $isLeaderAvailable ? 'bg-gradient-to-br from-orange-500 to-red-500' : 'bg-gradient-to-br from-blue-500 to-indigo-500' }} flex items-center justify-center text-white text-xs font-bold">
-                                                                        {{ substr($displayName, 0, 1) }}
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $displayName }}</span>
-                                                        </a>
-                                                    </div>
-                                                    @endif
-                                                    
-                                                    <!-- Arrow Icon dan Project Link -->
-                                                    <div class="flex items-center space-x-2 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                                        <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                                        </svg>
-                                                        <a data-translate="project_detail" data-translate-page="dashboard" href="{{ route('project.show', ['id' => $relatedProject->id]) }}" 
-                                                        class="hover:text-indigo-600 transition-colors">
-                                                        </a>
-                                                    </div>
-                                                    
-                                                    <!-- Periode Project -->
-                                                    @if(!empty($relatedProjectData['tanggal_mulai']))
-                                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                                            {{ \Carbon\Carbon::parse($relatedProjectData['tanggal_mulai'])->format('M Y') }}
-                                                            @if(!empty($relatedProjectData['tanggal_akhir']))
-                                                                → {{ \Carbon\Carbon::parse($relatedProjectData['tanggal_akhir'])->format('M Y') }}
-                                                            @else
-                                                                → Sekarang
-                                                            @endif
+                                                        <div class="flex items-center space-x-2 mt-2">
+                                                            <span class="text-xs font-medium {{ $isLeaderAvailable ? 'text-orange-600' : 'text-blue-600' }}">
+                                                                {{ $displayRole }}:
+                                                            </span>
+                                                            <a href="{{ $displayId ? route('portfolio.show', ['user' => $displayId]) : '#' }}" 
+                                                               class="flex items-center space-x-1 hover:opacity-80">
+                                                                <div class="w-5 h-5 rounded-full overflow-hidden bg-gray-200">
+                                                                    @if($displayPhoto)
+                                                                        <img src="{{ asset('storage/' . ltrim($displayPhoto, '/')) }}" 
+                                                                             alt="{{ $displayName }}"
+                                                                             class="w-full h-full object-cover">
+                                                                    @else
+                                                                        <div class="w-full h-full {{ $isLeaderAvailable ? 'bg-gradient-to-br from-orange-500 to-red-500' : 'bg-gradient-to-br from-blue-500 to-indigo-500' }} flex items-center justify-center text-white text-xs font-bold">
+                                                                            {{ substr($displayName, 0, 1) }}
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                                <span class="text-xs text-gray-600 dark:text-gray-400">{{ $displayName }}</span>
+                                                            </a>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -457,7 +413,7 @@
                                         @elseif($post->type === 'project')
                                             <!-- Project Title - Clickable ke Project -->
                                             <a href="{{ route('project.show', ['id' => $post->id]) }}" 
-                                               class="block group-hover:text-indigo-700 transition-colors">
+                                               class="block hover:text-indigo-700 transition-colors">
                                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">
                                                     {{ $nama_project }}
                                                 </h3>
@@ -500,7 +456,7 @@
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                                             </svg>                                                     
-                                                            <span data-translate="link_project" data-translate-page="dashboard"></span>
+                                                            Demo
                                                         </a>
                                                     @endif
 
@@ -534,7 +490,7 @@
                                     <!-- Footer -->
                                     <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-900">
                                         <p class="text-xs text-gray-500 dark:text-gray-50">
-                                            <span data-translate="diposting" data-translate-page="dashboard"></span>
+                                            <span data-translate="diposting" data-translate-page="dashboard">Diposting</span>
                                             {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }}
                                             <span data-translate="oleh" data-translate-page="dashboard">oleh</span>
                                             {{ $userName }}
@@ -555,7 +511,7 @@
 
                 <!-- Update timestamp -->
                 <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
-                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard"></span>
+                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard">Terakhir diperbarui</span>
                      {{ now()->format('d F Y H:i') }} WIB
                 </div>
             </div>
@@ -611,8 +567,6 @@
             createSparkline('projectChart', '#f97316');
             createSparkline('sertifikatChart', '#f59e0b');
         });
-
-        
     </script>
 
 <!-- Page Info -->

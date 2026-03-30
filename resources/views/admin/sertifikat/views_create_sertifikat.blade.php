@@ -7,19 +7,21 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Tambah Sertifikat Baru</h1>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                        Tambah Sertifikat Baru
+                    </h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-200">Tambahkan sertifikat yang kamu peroleh untuk melengkapi portofoliomu.</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">
+                    Tambahkan sertifikat yang diperoleh mahasiswa untuk melengkapi portofolio mereka.
+                </p>
             </div>
 
             <!-- Error Global -->
             @if ($errors->any())
-                <div class="mb-8 p-5 bg-red-50 border border-red-200 text-red-700 rounded-xl">
+                <div class="mb-8 p-5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 rounded-xl">
                     <div class="flex items-center gap-2 mb-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                         </svg>
                         <span class="font-medium">Terdapat kesalahan pada input:</span>
                     </div>
@@ -31,20 +33,17 @@
                 </div>
             @endif
 
-            <!-- Form -->
-            <form method="POST" action="{{ route('admin.sertifikat.store') }}" enctype="multipart/form-data" class="space-y-7">
+            <form method="POST" action="{{ route('admin.sertifikat.store') }}" enctype="multipart/form-data" class="space-y-7" id="sertifikatForm">
                 @csrf
 
-                <!-- Search and Filter Section -->
+                <!-- Filter Mahasiswa -->
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
                     
                     <!-- Search Bar -->
                     <div class="mb-4">
                         <div class="relative">
-                            <input type="text" 
-                                   name="search" 
-                                   id="search-input"
+                            <input type="text" id="search-input" name="search"
                                    placeholder="Cari nama mahasiswa..." 
                                    value="{{ $search ?? '' }}"
                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
@@ -58,29 +57,22 @@
 
                     <!-- Filter Dropdowns -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Filter Angkatan -->
                         <div>
-                            <label for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Angkatan
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
                             <select name="angkatan" id="angkatan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
+                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
-                                        {{ $angk->tahun_angkatan }}
+                                        {{ $angk->nama_angkatan }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Filter Jurusan -->
                         <div>
-                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Jurusan
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jurusan</label>
                             <select name="jurusan" id="jurusan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
+                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
@@ -89,14 +81,10 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Filter Keahlian -->
                         <div>
-                            <label for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Keahlian
-                            </label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keahlian</label>
                             <select name="keahlian" id="keahlian-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
+                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
@@ -107,103 +95,117 @@
                         </div>
                     </div>
 
-                    <!-- Filter Buttons -->
                     <div class="flex justify-end space-x-3 mt-4">
-                        <a href="{{ route('admin.sertifikat.create') }}" 
-                           class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
+                        <a href="{{ route('admin.sertifikat.create') }}"
+                           class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                             Reset Filter
                         </a>
                         <button type="button" onclick="applyFilters()"
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                             Terapkan Filter
                         </button>
                     </div>
                 </div>
 
+                <!-- Pilih Mahasiswa -->
                 <div>
-                    <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Pilih Mahasiswa <span class="text-red-500">*</span>
                     </label>
-                    
-                    <div id="selected-user-display" class="mb-4 hidden">
-                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+
+                    <!-- Selected User Display -->
+                    <div id="selected-user-display" class="mb-6 hidden">
+                        <div class="p-5 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span class="text-green-800 font-medium" id="selected-user-name"></span>
+                                <div class="flex items-center gap-4" id="selected-user-content">
+                                    <!-- Diisi oleh JavaScript -->
                                 </div>
-                                <button type="button" onclick="clearSelectedUser()" class="text-green-600 hover:text-green-800">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                <button type="button" onclick="clearSelectedUser()" 
+                                        class="text-green-600 dark:text-green-400 hover:text-red-600 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hidden Input for Selected User ID -->
                     <input type="hidden" name="user_id" id="selected-user-id" value="{{ old('user_id') }}">
 
-                    <!-- Table of Users -->
-                    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <!-- Table Mahasiswa -->
+                    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Pilih
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Nama Mahasiswa
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Angkatan
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Jurusan
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Keahlian
-                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12">Pilih</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Photo</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Mahasiswa</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Angkatan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Jurusan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Keahlian</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody id="user-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
-                                
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer" 
-    onclick="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
-    <td class="px-6 py-4">
-        <input type="radio" 
-               name="user_radio" 
-               value="{{ $user->id }}"
-               class="user-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-               {{ old('user_id') == $user->id ? 'checked' : '' }}
-               onchange="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
-        {{ $user->nama_mahasiswa }}
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {{ $user->angkatan->nama_angkatan ?? '-' }}
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {{ $user->jurusan->nama_jurusan ?? '-' }}
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {{ $user->keahlian->nama_keahlian ?? '-'}}
-    </td>
-</tr>
-                                
+                                    <tr onclick="selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')"
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/70 transition cursor-pointer">
+                                        <td class="px-6 py-5">
+                                            <input type="radio" name="user_radio" value="{{ $user->id }}"
+                                                   class="user-radio w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                   {{ old('user_id') == $user->id ? 'checked' : '' }}
+                                                   onchange="event.stopImmediatePropagation(); selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
+                                        </td>
+                                        <td class="px-6 py-5">
+                                            <div class="w-11 h-11 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-600">
+                                                @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
+                                                    <img src="{{ asset('storage/' . $user->photo_profile) }}" 
+                                                         class="w-full h-full object-cover"
+                                                         alt="{{ $user->nama_mahasiswa }}">
+                                                @else
+                                                    <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                                        <span class="text-white font-semibold text-xl">
+                                                            {{ strtoupper(substr($user->nama_mahasiswa, 0, 1)) }}
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-5">
+                                            <div class="font-semibold text-gray-900 dark:text-white">{{ $user->nama_mahasiswa }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
+                                        </td>
+                                        <td class="px-6 py-5 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $user->angkatan->nama_angkatan ?? $user->angkatan->tahun_angkatan ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-5 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $user->jurusan->nama_jurusan ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-5">
+                                            @if($user->keahlian)
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                                                    {{ $user->keahlian->nama_keahlian }}
+                                                </span>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-5">
+                                            <a href="{{ route('portfolio.show', $user->id) }}" target="_blank"
+                                               class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium">
+                                                Lihat Profil →
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                                            <div class="flex flex-col items-center justify-center">
-                                                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                        <td colspan="7" class="px-6 py-16 text-center">
+                                            <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 01-5.356-1.857M17 20H7m5-2v2m-5-2v2m5-2v-2m-5 2v-2" />
                                                 </svg>
                                                 <p class="text-lg font-medium">Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm">Coba ubah filter pencarian Anda</p>
+                                                <p class="text-sm mt-1">Coba ubah filter atau kata kunci pencarian</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -213,12 +215,12 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="mt-4">
+                    <div class="mt-6">
                         {{ $users->links() }}
                     </div>
 
                     @error('user_id')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -227,9 +229,10 @@
                     <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Nama Sertifikat <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
-                        required placeholder="Contoh: Sertifikat Kompetensi Programming"
-                        class="w-full px-4 py-3 border dark:text-gray-200 border-gray-300 dark:bg-gray-700 dark:placeholder:text-gray-400 dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
+                    <input type="text" name="nama_sertifikat" id="nama_sertifikat" 
+                           value="{{ old('nama_sertifikat') }}" required
+                           placeholder="Contoh: Sertifikat Kompetensi Web Developer"
+                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -240,9 +243,10 @@
                     <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Lembaga Penerbit <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
-                        required placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
-                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:placeholder:text-gray-400 dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
+                    <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" 
+                           value="{{ old('lembaga_penerbit') }}" required
+                           placeholder="Contoh: Dicoding, Coursera, Google, Kampus Merdeka"
+                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -253,86 +257,59 @@
                     <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Tanggal Terbit <span class="text-red-500">*</span>
                     </label>
-                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
-                        required max="{{ date('Y-m-d') }}"
-                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
+                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" 
+                           value="{{ old('tanggal_terbit') }}" required max="{{ date('Y-m-d') }}"
+                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    @enderror>
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Maksimal tanggal hari ini</p>
                 </div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
-                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Upload File Sertifikat <span class="text-red-500">*</span>
                     </label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400 transition cursor-pointer"
-                        onclick="document.getElementById('link_sertifikat').click()">
-                        <div class="space-y-2 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                viewBox="0 0 48 48">
-                                <path
-                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <div id="drop-zone" 
+                         class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-400 transition cursor-pointer"
+                         onclick="document.getElementById('link_sertifikat').click()">
+                        <div class="space-y-3 text-center">
+                            <svg class="mx-auto h-14 w-14 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            <div class="flex text-sm text-gray-600 dark:text-gray-400">
-                                <label
-                                    class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+                                <label class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
                                     <span>Upload file</span>
-                                    <input id="link_sertifikat" name="link_sertifikat" type="file"
-                                        accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
-                                        onchange="updateFileLabel(this)">
+                                    <input id="link_sertifikat" name="link_sertifikat" type="file" 
+                                           accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
+                                           onchange="updateFileLabel(this)">
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name">PNG, JPG, GIF up to 5MB</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name">PNG, JPG, GIF maksimal 5MB</p>
                         </div>
                     </div>
                     @error('link_sertifikat')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB
-                    </p>
                 </div>
 
-                <!-- Preview Gambar -->
-                <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Preview:</p>
-                    <img id="image-preview" src="#" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
-                </div>
-
-                <!-- Informasi Tambahan (optional) -->
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-6">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3 flex-1 md:flex md:justify-between">
-                            <p class="text-sm text-blue-700 dark:text-blue-300">
-                                File yang diupload akan tersimpan dan dapat diakses melalui link publik.
-                            </p>
-                        </div>
-                    </div>
+                <!-- Preview -->
+                <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Preview Sertifikat:</p>
+                    <img id="image-preview" src="#" alt="Preview" 
+                         class="max-h-64 w-full object-contain rounded-xl shadow">
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-end gap-4 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('admin.sertifikat.index') }}"
-                        class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
+                       class="px-8 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                         Batal
                     </a>
                     <button type="submit"
-                        class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
+                            class="px-10 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-2xl shadow-lg transition">
                         Simpan Sertifikat
                     </button>
                 </div>
@@ -342,146 +319,114 @@
 
     <!-- JavaScript -->
     <script>
-        // Function to apply filters
+        // Apply Filter
         function applyFilters() {
-            const search = document.getElementById('search-input').value;
-            const angkatan = document.getElementById('angkatan-filter').value;
-            const jurusan = document.getElementById('jurusan-filter').value;
-            const keahlian = document.getElementById('keahlian-filter').value;
-            
             const url = new URL(window.location.href);
-            url.searchParams.set('search', search);
-            url.searchParams.set('angkatan', angkatan);
-            url.searchParams.set('jurusan', jurusan);
-            url.searchParams.set('keahlian', keahlian);
-            
+            url.searchParams.set('search', document.getElementById('search-input').value);
+            url.searchParams.set('angkatan', document.getElementById('angkatan-filter').value);
+            url.searchParams.set('jurusan', document.getElementById('jurusan-filter').value);
+            url.searchParams.set('keahlian', document.getElementById('keahlian-filter').value);
             window.location.href = url.toString();
         }
 
-        // Function to select user
-        function selectUser(userId, userName) {
-            // Update hidden input
+        // Select User
+        function selectUser(userId, userName, photoProfile, email) {
             document.getElementById('selected-user-id').value = userId;
-            
-            // Update radio buttons
+
             document.querySelectorAll('.user-radio').forEach(radio => {
                 radio.checked = (radio.value == userId);
             });
-            
-            // Update display
+
             const display = document.getElementById('selected-user-display');
-            const nameSpan = document.getElementById('selected-user-name');
-            
-            if (userId) {
-                nameSpan.textContent = 'Dipilih: ' + userName;
-                display.classList.remove('hidden');
-            } else {
-                display.classList.add('hidden');
-            }
+            const content = document.getElementById('selected-user-content');
+
+            let photoHtml = photoProfile 
+                ? `<img src="${photoProfile}" class="w-12 h-12 rounded-2xl object-cover border border-white dark:border-gray-700 shadow" alt="${userName}">`
+                : `<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl shadow">
+                        ${userName.charAt(0).toUpperCase()}
+                   </div>`;
+
+            content.innerHTML = `
+                <div class="flex items-center gap-4">
+                    ${photoHtml}
+                    <div>
+                        <div class="font-semibold text-lg text-green-800 dark:text-green-200">${userName}</div>
+                        <div class="text-sm text-green-700 dark:text-green-300">${email}</div>
+                    </div>
+                </div>
+            `;
+
+            display.classList.remove('hidden');
         }
 
-        // Function to clear selected user
+        // Clear Selected User
         function clearSelectedUser() {
             document.getElementById('selected-user-id').value = '';
-            document.querySelectorAll('.user-radio').forEach(radio => {
-                radio.checked = false;
-            });
+            document.querySelectorAll('.user-radio').forEach(radio => radio.checked = false);
             document.getElementById('selected-user-display').classList.add('hidden');
         }
 
-        // Function to update file label and preview
+        // File Upload & Preview
         function updateFileLabel(input) {
-            const fileName = input.files[0]?.name;
-            const fileNameElement = document.getElementById('file-name');
+            const fileNameEl = document.getElementById('file-name');
             const previewContainer = document.getElementById('image-preview-container');
-            const previewImage = document.getElementById('image-preview');
+            const previewImg = document.getElementById('image-preview');
 
-            if (fileName) {
-                fileNameElement.textContent = fileName;
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                fileNameEl.textContent = file.name;
 
-                // Preview image
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        previewImage.src = e.target.result;
-                        previewContainer.classList.remove('hidden');
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
-            } else {
-                fileNameElement.textContent = 'PNG, JPG, GIF up to 5MB';
-                previewContainer.classList.add('hidden');
-                previewImage.src = '#';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            // Check if there's an old selected user
-            const oldUserId = document.getElementById('selected-user-id').value;
-            if (oldUserId) {
-                const selectedRadio = document.querySelector(`.user-radio[value="${oldUserId}"]`);
-                if (selectedRadio) {
-                    const row = selectedRadio.closest('tr');
-                    const userName = row.querySelector('td:nth-child(2)').textContent.trim();
-                    selectUser(oldUserId, userName);
-                }
-            }
-
-            // Setup drag and drop
-            const dropZone = document.querySelector('.border-dashed');
+        // Drag and Drop
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('drop-zone');
             const fileInput = document.getElementById('link_sertifikat');
 
             if (dropZone && fileInput) {
-                // Prevent default drag behaviors
                 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, preventDefaults, false);
-                    document.body.addEventListener(eventName, preventDefaults, false);
+                    dropZone.addEventListener(eventName, e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
                 });
 
-                // Highlight drop zone when dragging over it
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, highlight, false);
+                dropZone.addEventListener('dragenter', () => dropZone.classList.add('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20'));
+                dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20'));
+                dropZone.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        fileInput.files = files;
+                        updateFileLabel(fileInput);
+                    }
+                    dropZone.classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20');
                 });
-
-                ['dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, unhighlight, false);
-                });
-
-                // Handle dropped files
-                dropZone.addEventListener('drop', handleDrop, false);
             }
 
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            function highlight() {
-                dropZone.classList.add('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20');
-            }
-
-            function unhighlight() {
-                dropZone.classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20');
-            }
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-
-                if (files && files.length > 0) {
-                    fileInput.files = files;
-                    updateFileLabel(fileInput);
-
-                    // Trigger change event
-                    const event = new Event('change', { bubbles: true });
-                    fileInput.dispatchEvent(event);
+            // Load old selection
+            const oldUserId = document.getElementById('selected-user-id').value;
+            if (oldUserId) {
+                const radio = document.querySelector(`.user-radio[value="${oldUserId}"]`);
+                if (radio) {
+                    const row = radio.closest('tr');
+                    if (row) {
+                        const name = row.cells[2].querySelector('.font-semibold').textContent.trim();
+                        const email = row.cells[2].querySelector('.text-sm.text-gray-500').textContent.trim();
+                        const img = row.querySelector('img');
+                        const photo = img ? img.src : '';
+                        selectUser(oldUserId, name, photo, email);
+                    }
                 }
             }
 
-            // Enter key for search
+            // Enter key on search
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
@@ -493,125 +438,4 @@
             }
         });
     </script>
-
-    <!-- CSS Tambahan -->
-    <style>
-        .border-dashed {
-            transition: all 0.2s ease;
-        }
-
-        .border-dashed:hover {
-            border-color: #6366f1;
-            background-color: #f9fafb;
-        }
-
-        .dark .border-dashed:hover {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        /* Hide spinner on number input */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        /* Custom file input */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        /* Select styling */
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
-
-        select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%234F46E5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        /* Dark mode select */
-        .dark select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23E5E7EB' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        .dark select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238181F2' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        /* Table row hover effect */
-        tbody tr {
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.05);
-        }
-
-        .dark tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        /* Pagination styling */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding: 0;
-        }
-
-        .pagination li {
-            margin: 0 2px;
-        }
-
-        .pagination li a,
-        .pagination li span {
-            display: inline-block;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            color: #374151;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .dark .pagination li a,
-        .dark .pagination li span {
-            border-color: #4b5563;
-            color: #e5e7eb;
-            background-color: #374151;
-        }
-
-        .pagination li.active span {
-            background-color: #4f46e5;
-            border-color: #4f46e5;
-            color: white;
-        }
-
-        .pagination li a:hover {
-            background-color: #f3f4f6;
-        }
-
-        .dark .pagination li a:hover {
-            background-color: #4b5563;
-        }
-    </style>
 @endsection

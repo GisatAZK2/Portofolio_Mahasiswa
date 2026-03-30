@@ -53,6 +53,15 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $users = $users->filter(function ($user) use ($search) {
+                return str_contains(strtolower($user->nama_mahasiswa), strtolower($search)) ||
+                       str_contains(strtolower($user->username), strtolower($search)) ||
+                       str_contains(strtolower($user->email), strtolower($search));
+            });
+        }
+
         return view('admin.daftar-mahasiswa', compact('users'));
     }
 
@@ -156,6 +165,7 @@ class AdminController extends Controller
     public function UpdateUser(Request $request, $id_user) {
         $this->authorizeAccess();
         $user = User::findOrFail($id_user);
+        
 
         // Base validation rules
         $rules = [
@@ -309,6 +319,19 @@ class AdminController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'Sertifikat berhasil dihapus.');
     }
+
+   public function bulkDestroyUsers(Request $request)
+{
+    $ids = json_decode($request->selected_ids);
+    
+    if (empty($ids)) {
+        return response()->json(['success' => false, 'message' => 'Tidak ada data dipilih']);
+    }
+    
+    User::whereIn('id', $ids)->delete();
+    
+    return response()->json(['success' => true, 'message' => count($ids) . ' pengguna berhasil dihapus']);
+}
 
     //For Pages Sertifikat
     public function sertifikat(Request $request) {

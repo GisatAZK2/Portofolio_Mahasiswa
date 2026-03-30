@@ -56,16 +56,18 @@
             @enderror
         </div>
 
-        <div class="flex space-x-3">
-            <button type="submit" 
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
-                Simpan
-            </button>
-            <a href="{{ route('admin.angkatan.index') }}" 
-               class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
-                Batal
-            </a>
-        </div>
+       <!-- Action Buttons - Versi Terbaik -->
+<div class="pt-8 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <a href="{{ route('admin.projects.index') }}"
+       class="px-7 py-3.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-2xl transition focus:outline-none focus:ring-2 focus:ring-gray-500">
+        Batal
+    </a>
+    
+    <button type="submit"
+        class="px-9 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-2xl shadow-md transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Simpan Project
+    </button>
+</div>
     </form>
 </div>
 

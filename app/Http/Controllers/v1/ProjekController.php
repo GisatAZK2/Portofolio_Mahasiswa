@@ -52,7 +52,7 @@ class ProjekController extends Controller
         $request->validate([
             'nama_project'   => 'required|string|max:255',
             'tanggal_mulai'  => 'required|date',
-            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+            'tanggal_akhir'  => 'nullabl e|date|after_or_equal:tanggal_mulai',
             'link_project'   => 'nullable|url|max:255',
             'deskripsi'     => 'nullable|string|max:255',
             'link_github'    => 'nullable|url|max:500',

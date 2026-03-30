@@ -48,14 +48,14 @@ class User extends Authenticatable
     'password' => 'hashed',
     ];
 
-    public function jurusan()
+public function jurusan()
 {
-    return $this->belongsTo(Jurusan::class, 'id_jurusan');
+    return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
 }
 
    public function keahlian()
 {
-    return $this->belongsTo(Keahlian::class, 'id_keahlian', 'id_keahlian');
+    return $this->belongsTo(Keahlian::class, 'id_keahlian');
 }
 
 public function keahlianTambahan()
