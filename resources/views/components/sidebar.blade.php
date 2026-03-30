@@ -1,4 +1,4 @@
-<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 bg-gray-100 dark:bg-gray-900 dark:border-gray-800 border-r border-gray-200 shadow-xl
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-70 bg-gray-100 dark:bg-gray-900 dark:border-gray-800 border-r border-gray-200 shadow-xl
              transform -translate-x-full lg:translate-x-0 transition-all duration-300 ease-in-out
              lg:static lg:inset-auto lg:shadow-sm
              flex flex-col overflow-hidden
@@ -65,9 +65,10 @@
                                 
                             </span>
                         </div>
-                        <!-- Arrow Icon -->
-                        <svg :class="open ? 'rotate-180' : ''"
-                             class="w-4 h-4 transition-transform duration-200 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}"
+                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="open ? 'rotate-180' : ''"
+                             class="w-4 h-4 transition-transform duration-200"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -78,8 +79,8 @@
                             Manajemen Users
                         </span>
                     @endif
-                    <!-- Sub Menu (Dropdown Content) -->
-                    <div x-show="open"
+                    <!-- Sub Menu (Dropdown Content) - hanya tampil saat sidebar tidak collapsed atau saat open di mobile -->
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                          x-transition:enter="transition ease-out duration-100"
                          x-transition:enter-start="transform opacity-0 scale-95"
                          x-transition:enter-end="transform opacity-100 scale-100"
@@ -91,7 +92,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span data-translate="semua_user" data-translate-page="admin">Lihat Semua User</span>
+                            <span data-translate="semua_user" data-translate-page="admin"></span>
                         </a>
                        
                         <a href="{{ route('admin.users.ViewCreate') }}"
@@ -119,9 +120,10 @@
                                 Manajemen Project
                             </span>
                         </div>
-                        <!-- Arrow Icon -->
-                        <svg :class="open ? 'rotate-180' : ''"
-                             class="w-4 h-4 transition-transform duration-200 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}"
+                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="open ? 'rotate-180' : ''"
+                             class="w-4 h-4 transition-transform duration-200"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -133,7 +135,7 @@
                         </span>
                     @endif
                     <!-- Sub Menu (Dropdown Content) -->
-                    <div x-show="open"
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                          x-transition:enter="transition ease-out duration-100"
                          x-transition:enter-start="transform opacity-0 scale-95"
                          x-transition:enter-end="transform opacity-100 scale-100"
@@ -145,7 +147,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Projek</span>
+                            <span data-translate="lihat_proyek" data-translate-page="admin">Lihat Projek</span>
                         </a>
                        
                         <a href="{{ route('admin.projects.create') }}"
@@ -153,7 +155,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Projek</span>
+                            <span data-translate="tambah_proyek" data-translate-page="admin">Tambah Projek</span>
                         </a>
                     </div>
                 </div>
@@ -172,9 +174,10 @@
                                 Manajemen Angkatan
                             </span>
                         </div>
-                        <!-- Arrow Icon -->
-                        <svg :class="open ? 'rotate-180' : ''"
-                             class="w-4 h-4 transition-transform duration-200 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}"
+                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="open ? 'rotate-180' : ''"
+                             class="w-4 h-4 transition-transform duration-200"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -186,7 +189,7 @@
                         </span>
                     @endif
                     <!-- Sub Menu (Dropdown Content) -->
-                    <div x-show="open"
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                          x-transition:enter="transition ease-out duration-100"
                          x-transition:enter-start="transform opacity-0 scale-95"
                          x-transition:enter-end="transform opacity-100 scale-100"
@@ -198,7 +201,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Angkatan</span>
+                            <span data-translate="lihat_angkatan" data-translate-page="admin">Lihat Angkatan</span>
                         </a>
                        
                         <a href="{{ route('admin.angkatan.create') }}"
@@ -206,7 +209,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Angkatan</span>
+                            <span data-translate="tambah_angkatan" data-translate-page="admin">Tambah Angkatan</span>
                         </a>
                     </div>
                 </div>
@@ -228,9 +231,10 @@
                                 Manajemen Sertifikat
                             </span>
                         </div>
-                        <!-- Arrow Icon -->
-                        <svg :class="open ? 'rotate-180' : ''"
-                             class="w-4 h-4 transition-transform duration-200 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}"
+                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="open ? 'rotate-180' : ''"
+                             class="w-4 h-4 transition-transform duration-200"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -242,7 +246,7 @@
                         </span>
                     @endif
                     <!-- Sub Menu (Dropdown Content) -->
-                    <div x-show="open"
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                          x-transition:enter="transition ease-out duration-100"
                          x-transition:enter-start="transform opacity-0 scale-95"
                          x-transition:enter-end="transform opacity-100 scale-100"
@@ -254,7 +258,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Sertifikat</span>
+                            <span data-translate="lihat_sertifikat" data-translate-page="admin">Lihat Sertifikat</span>
                         </a>
                        
                         <a href="{{ route('admin.sertifikat.create') }}"
@@ -262,7 +266,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Sertifikat</span>
+                            <span data-translate="tambah_sertifikat" data-translate-page="admin">Tambah Sertifikat</span>
                         </a>
                     </div>
                 </div>
@@ -290,35 +294,45 @@
 
                     <!-- BUTTON (yang bisa di klik) -->
                     <button @click="open = !open"
-                            class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                            class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative
                             {{ request()->routeIs('dosen.users.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
 
-                    <!-- ICON -->
-                    <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
-                    </svg>
+                        <div class="flex items-center space-x-3">
+                            <!-- ICON -->
+                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
+                            </svg>
 
-                    <!-- TEXT -->
-                    <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                        Mahasiswa Bimbingan
-                    </span>
+                            <!-- TEXT -->
+                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                                Mahasiswa Bimbingan
+                            </span>
+                        </div>
 
-                    <!-- ARROW -->
-                    <svg :class="{ 'rotate-180': open }"
-                        class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 9l-7 7-7-7" />
-                    </svg>
+                        <!-- ARROW - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="{ 'rotate-180': open }"
+                             class="w-4 h-4 transition-transform duration-300"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                        </svg>
                     </button>
 
+                    <!-- Tooltip saat sidebar collapse -->
+                    @if(session('sidebar_collapsed'))
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                            Mahasiswa Bimbingan
+                        </span>
+                    @endif
+
                     <!-- DROPDOWN -->
-                    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 -translate-y-2"
                         x-transition:enter-end="opacity-100 translate-y-0"
-                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
 
                         <!-- LIHAT -->
                         <a href="{{ route('dosen.users.index') }}"
@@ -345,125 +359,141 @@
                 </div>
 
                 <div class="space-y-1 relative"
-     x-data="{ open: {{ request()->routeIs('dosen.projects.*') ? 'true' : 'false' }} }">
+                     x-data="{ open: {{ request()->routeIs('dosen.projects.*') ? 'true' : 'false' }} }">
 
-    <!-- BUTTON (yang bisa di klik) -->
-    <button @click="open = !open"
-        class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-        {{ request()->routeIs('dosen.projects.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                    <!-- BUTTON (yang bisa di klik) -->
+                    <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative
+                        {{ request()->routeIs('dosen.projects.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
 
-        <!-- ICON -->
-        <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
-        </svg>
+                        <div class="flex items-center space-x-3">
+                            <!-- ICON -->
+                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
+                            </svg>
 
-        <!-- TEXT -->
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- TEXT -->
+                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                                Projects Bimbingan
+                            </span>
+                        </div>
+
+                        <!-- ARROW - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="{ 'rotate-180': open }"
+                             class="w-4 h-4 transition-transform duration-300"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <!-- Tooltip saat sidebar collapse -->
+                    @if(session('sidebar_collapsed'))
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                            Projects Bimbingan
+                        </span>
+                    @endif
+
+                    <!-- DROPDOWN -->
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+
+                        <!-- LIHAT -->
+                        <a href="{{ route('dosen.projects.index') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                            {{ request()->routeIs('dosen.projects.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-            Projects Bimbingan
-        </span>
+                            <span>Lihat Project</span>
+                        </a>
 
-        <!-- ARROW -->
-        <svg :class="{ 'rotate-180': open }"
-            class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 9l-7 7-7-7" />
-        </svg>
-    </button>
-
-    <!-- DROPDOWN -->
-    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 -translate-y-2"
-        x-transition:enter-end="opacity-100 translate-y-0"
-        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-
-        <!-- LIHAT -->
-        <a href="{{ route('dosen.projects.index') }}"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
-            {{ request()->routeIs('dosen.projects.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-            <span>Lihat Project</span>
-        </a>
-
-        <!-- TAMBAH -->
-        <a href="{{ route('dosen.projects.create') }}"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
-            {{ request()->routeIs('dosen.projects.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- TAMBAH -->
+                        <a href="{{ route('dosen.projects.create') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                            {{ request()->routeIs('dosen.projects.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-            <span>Tambah Project</span>
-        </a>
+                            <span>Tambah Project</span>
+                        </a>
 
-    </div>
-</div>
+                    </div>
+                </div>
                 <div class="space-y-1 relative"
-     x-data="{ open: {{ request()->routeIs('dosen.sertifikat.*') ? 'true' : 'false' }} }">
+                     x-data="{ open: {{ request()->routeIs('dosen.sertifikat.*') ? 'true' : 'false' }} }">
 
-    <!-- BUTTON (yang bisa di klik) -->
-    <button @click="open = !open"
-        class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-        {{ request()->routeIs('dosen.sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                    <!-- BUTTON (yang bisa di klik) -->
+                    <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative
+                        {{ request()->routeIs('dosen.sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
 
-        <!-- ICON -->
-        <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
-        </svg>
+                        <div class="flex items-center space-x-3">
+                            <!-- ICON -->
+                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
+                            </svg>
 
-        <!-- TEXT -->
-        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-            Sertifikat Bimbingan
-        </span>
+                            <!-- TEXT -->
+                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                                Sertifikat Bimbingan
+                            </span>
+                        </div>
 
-        <!-- ARROW -->
-        <svg :class="{ 'rotate-180': open }"
-            class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 9l-7 7-7-7" />
-        </svg>
-    </button>
+                        <!-- ARROW - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
+                             :class="{ 'rotate-180': open }"
+                             class="w-4 h-4 transition-transform duration-300"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
 
-    <!-- DROPDOWN -->
-    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 -translate-y-2"
-        x-transition:enter-end="opacity-100 translate-y-0"
-        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                    <!-- Tooltip saat sidebar collapse -->
+                    @if(session('sidebar_collapsed'))
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                            Sertifikat Bimbingan
+                        </span>
+                    @endif
 
-        <!-- LIHAT -->
-        <a href="{{ route('dosen.sertifikat.index') }}"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
-            {{ request()->routeIs('dosen.sertifikat.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- DROPDOWN -->
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+
+                        <!-- LIHAT -->
+                        <a href="{{ route('dosen.sertifikat.index') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                            {{ request()->routeIs('dosen.sertifikat.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-            <span>Lihat Sertifikat</span>
-        </a>
+                            <span>Lihat Sertifikat</span>
+                        </a>
 
-        <!-- TAMBAH -->
-        <a href="{{ route('dosen.sertifikat.create') }}"
-            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
-            {{ request()->routeIs('dosen.sertifikat.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- TAMBAH -->
+                        <a href="{{ route('dosen.sertifikat.create') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                            {{ request()->routeIs('dosen.sertifikat.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-            <span>Tambah Sertifikat</span>
-        </a>
+                            <span>Tambah Sertifikat</span>
+                        </a>
 
-    </div>
-</div>
+                    </div>
+                </div>
             @endif
         @endauth
         <!-- ================== MENU PROJECT MAHASISWA ================== -->
@@ -486,16 +516,18 @@
             @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
                 <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('project.*') ? 'true' : 'false' }} }">
                     <button @click="open = !open"
-                            class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                            class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative
                             {{ request()->routeIs('project.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-                        <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="project_mahasiswa">Project</span>
-                        <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="project_mahasiswa">Project</span>
+                        </div>
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
                              :class="{ 'rotate-180': open }"
-                             class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                             class="w-4 h-4 transition-transform duration-300"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -505,11 +537,11 @@
                             </span>
                         @endif
                     </button>
-                    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                          x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-0 -translate-y-2"
                          x-transition:enter-end="opacity-100 translate-y-0"
-                         class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                         class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
                         <a href="{{ route('project.index') }}"
                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
                            {{ request()->routeIs('project.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
@@ -535,19 +567,21 @@
             @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
                 <div class="space-y-1 relative" x-data="{ open: {{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }} }">
                     <button @click="open = !open"
-                            class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                            class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative
                             {{ request()->routeIs('sertifikat.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
-                        <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
-                            <path d="M8 2v4"></path>
-                            <path d="M16 2v4"></path>
-                            <path d="M3 10h18"></path>
-                            <circle cx="12" cy="14" r="2"></circle>
-                        </svg>
-                        <span class="font-medium flex-1 text-left whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="sertifikat_mahasiswa">Sertifikat</span>
-                        <svg x-show="!{{ session('sidebar_collapsed', false) ? 'false' : 'true' }}"
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                                <path d="M8 2v4"></path>
+                                <path d="M16 2v4"></path>
+                                <path d="M3 10h18"></path>
+                                <circle cx="12" cy="14" r="2"></circle>
+                            </svg>
+                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="sertifikat_mahasiswa">Sertifikat</span>
+                        </div>
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}"
                              :class="{ 'rotate-180': open }"
-                             class="w-4 h-4 transition-transform duration-300 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                             class="w-4 h-4 transition-transform duration-300"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -557,11 +591,11 @@
                             </span>
                         @endif
                     </button>
-                    <div x-show="open && !{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}"
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                          x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-0 -translate-y-2"
                          x-transition:enter-end="opacity-100 translate-y-0"
-                         class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                         class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
                         <a href="{{ route('sertifikat.index') }}"
                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm transition-all duration-200
                            {{ request()->routeIs('sertifikat.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
@@ -586,13 +620,15 @@
     <!-- Setting Dropdown -->
     <div class="group relative mt-auto mb-4 px-2">
         <button onclick="toggleDropdown('setting')"
-                class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700">
-            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M11.983 5.5c-.47 0-.93.05-1.372.146l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648a6.987 6.987 0 00-1.186.688L4.69 5.5a.5.5 0 00-.607.06L3.04 6.603a.5.5 0 00-.06.607l.834 1.186a6.987 6.987 0 00-.688 1.186l-1.648.388a.5.5 0 00-.398.487v1.472c0 .232.158.433.388.487l1.648.388c.162.42.393.816.688 1.186l-.834 1.186a.5.5 0 00.06.607l1.043 1.043a.5.5 0 00.607.06l1.186-.834c.37.295.766.526 1.186.688l.388 1.648a.5.5 0 00.487.398h1.472a.5.5 0 00.487-.398l.388-1.648a6.987 6.987 0 001.186-.688l1.186.834a.5.5 0 00.607-.06l1.043-1.043a.5.5 0 00.06-.607l-.834-1.186c.295-.37.526-.766.688-1.186l1.648-.388a.5.5 0 00.398-.487v-1.472a.5.5 0 00-.398-.487l-1.648-.388a6.987 6.987 0 00-.688-1.186l.834-1.186a.5.5 0 00-.06-.607L19.277 5.56a.5.5 0 00-.607-.06l-1.186.834a6.987 6.987 0 00-1.186-.688l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648A7.02 7.02 0 0011.983 5.5zM12 15a3 3 0 100-6 3 3 0 000 6z"/>
-            </svg>
-            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="setting">Setting</span>
-            <svg id="settingArrow" class="w-4 h-4 ml-auto transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700">
+            <div class="flex items-center space-x-3">
+                <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11.983 5.5c-.47 0-.93.05-1.372.146l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648a6.987 6.987 0 00-1.186.688L4.69 5.5a.5.5 0 00-.607.06L3.04 6.603a.5.5 0 00-.06.607l.834 1.186a6.987 6.987 0 00-.688 1.186l-1.648.388a.5.5 0 00-.398.487v1.472c0 .232.158.433.388.487l1.648.388c.162.42.393.816.688 1.186l-.834 1.186a.5.5 0 00.06.607l1.043 1.043a.5.5 0 00.607.06l1.186-.834c.37.295.766.526 1.186.688l.388 1.648a.5.5 0 00.487.398h1.472a.5.5 0 00.487-.398l.388-1.648a6.987 6.987 0 001.186-.688l1.186.834a.5.5 0 00.607-.06l1.043-1.043a.5.5 0 00.06-.607l-.834-1.186c.295-.37.526-.766.688-1.186l1.648-.388a.5.5 0 00.398-.487v-1.472a.5.5 0 00-.398-.487l-1.648-.388a6.987 6.987 0 00-.688-1.186l.834-1.186a.5.5 0 00-.06-.607L19.277 5.56a.5.5 0 00-.607-.06l-1.186.834a6.987 6.987 0 00-1.186-.688l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648A7.02 7.02 0 0011.983 5.5zM12 15a3 3 0 100-6 3 3 0 000 6z"/>
+                </svg>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="setting">Setting</span>
+            </div>
+            <svg id="settingArrow" class="w-4 h-4 transition-transform {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
             @if(session('sidebar_collapsed', false))
@@ -602,7 +638,7 @@
             @endif
         </button>
         <div id="settingMenu"
-             class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-md mt-2 p-4 border border-gray-200 dark:border-gray-700 absolute left-0 w-60 z-50">
+             class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-md mt-2 p-4 border border-gray-200 dark:border-gray-700 absolute left-0 right-0 w-full lg:w-60 z-50">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-gray-700 dark:text-gray-200" data-translate="mode">Mode</span>
                 <button id="darkModeBtn"
@@ -755,11 +791,13 @@ function toggleDarkMode() {
     if (document.documentElement.classList.contains('dark')) {
         document.documentElement.classList.remove('dark');
         localStorage.setItem('darkMode', 'false');
-        document.getElementById('darkModeBtn').innerHTML = 'Dark Mode';
+        const btn = document.getElementById('darkModeBtn');
+        if (btn) btn.innerHTML = 'Dark Mode';
     } else {
         document.documentElement.classList.add('dark');
         localStorage.setItem('darkMode', 'true');
-        document.getElementById('darkModeBtn').innerHTML = 'Light Mode';
+        const btn = document.getElementById('darkModeBtn');
+        if (btn) btn.innerHTML = 'Light Mode';
     }
 }
 
@@ -779,49 +817,74 @@ if (localStorage.getItem('darkMode') === 'true') {
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
     const settingMenu = document.getElementById('settingMenu');
-    const settingButton = event.target.closest('button[onclick="toggleDropdown(\'setting\')"]');
+    const settingButton = event.target.closest('button[onclick*="toggleDropdown"]');
 
     if (!settingButton && settingMenu && !settingMenu.contains(event.target)) {
         if (!settingMenu.classList.contains('hidden')) {
             settingMenu.classList.add('hidden');
-            document.getElementById('settingArrow')?.classList.remove('rotate-180');
+            const settingArrow = document.getElementById('settingArrow');
+            if (settingArrow) settingArrow.classList.remove('rotate-180');
         }
     }
 });
 
 // Toggle sidebar collapse
-document.getElementById('toggle-desktop-sidebar')?.addEventListener('click', function() {
-    const sidebar = document.getElementById('sidebar');
-    const icon = document.getElementById('toggleCollapseIcon');
+const toggleBtn = document.getElementById('toggle-desktop-sidebar');
+if (toggleBtn) {
+    toggleBtn.addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        const icon = document.getElementById('toggleCollapseIcon');
+        
+        if (sidebar.classList.contains('lg:w-62')) {
+            sidebar.classList.remove('lg:w-62');
+            sidebar.classList.add('lg:w-20');
+            if (icon) icon.classList.add('rotate-180');
+            
+            // Save state to session
+            fetch('/toggle-sidebar', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ collapsed: true })
+            });
+        } else {
+            sidebar.classList.remove('lg:w-20');
+            sidebar.classList.add('lg:w-62');
+            if (icon) icon.classList.remove('rotate-180');
+            
+            // Save state to session
+            fetch('/toggle-sidebar', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ collapsed: false })
+            });
+        }
+    });
+}
+
+// Fix for mobile: ensure dropdowns work properly when sidebar is open on mobile
+// This handles the case where sidebar_collapsed might be true but on mobile we still want dropdowns
+function initMobileDropdownBehavior() {
+    const isMobile = window.innerWidth < 1024;
+    const isSidebarCollapsed = {{ session('sidebar_collapsed', false) ? 'true' : 'false' }};
     
-    if (sidebar.classList.contains('lg:w-62')) {
-        sidebar.classList.remove('lg:w-62');
-        sidebar.classList.add('lg:w-20');
-        icon.classList.add('rotate-180');
-        
-        // Save state to session
-        fetch('/toggle-sidebar', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ collapsed: true })
-        });
-    } else {
-        sidebar.classList.remove('lg:w-20');
-        sidebar.classList.add('lg:w-62');
-        icon.classList.remove('rotate-180');
-        
-        // Save state to session
-        fetch('/toggle-sidebar', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ collapsed: false })
+    // On mobile, we want dropdowns to work regardless of collapse state
+    if (isMobile && isSidebarCollapsed) {
+        // Override the x-show condition by adding a class to force show on mobile
+        const dropdownContents = document.querySelectorAll('[x-show*="open"]');
+        dropdownContents.forEach(el => {
+            // We can't easily override Alpine.js here, but the condition already includes window.innerWidth check
+            // So it will work correctly
         });
     }
-});
+}
+
+// Run on load and resize
+window.addEventListener('load', initMobileDropdownBehavior);
+window.addEventListener('resize', initMobileDropdownBehavior);
 </script>

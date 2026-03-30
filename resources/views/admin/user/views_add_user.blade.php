@@ -86,15 +86,15 @@
 
             <!-- Informasi Dasar -->
             <div class="mb-10">
-                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <h2 data-translate="info_adduser" data-translate-page="admin" class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
                     Informasi Dasar
                 </h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Nama Lengkap -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Nama Lengkap <span class="text-red-500">*</span>
+                        <label  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <span data-translate="nm_lgkp" data-translate-page="admin">Nama Lengkap</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="nama_mahasiswa" value="{{ old('nama_mahasiswa') }}"
                                class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
@@ -115,7 +115,7 @@
                         @error('username')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Hanya huruf, angka, dan underscore (_)</p>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="usr_req" data-translate-page="admin">Hanya huruf, angka, dan underscore (_)</p>
                     </div>
 
                     <!-- Email -->
@@ -130,7 +130,7 @@
 
                     <!-- Password -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="pw_adduser" data-translate-page="admin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Password <span class="text-red-500">*</span>
                         </label>
                         <input type="password" name="password"
@@ -143,7 +143,7 @@
 
                     <!-- Konfirmasi Password -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="pw_confirm_adduser" data-translate-page="admin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Konfirmasi Password <span class="text-red-500">*</span>
                         </label>
                         <input type="password" name="password_confirmation"
@@ -169,17 +169,17 @@
 
             <!-- Informasi Tambahan -->
             <div id="additionalFields" class="mb-10 hidden">
-                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <h2 data-translate="more_info_addusr" data-translate-page="admin" class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
                     Informasi Tambahan
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Jurusan -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Jurusan <span class="text-red-500" id="jurusanRequired">*</span>
+                            <span data-translate="jrs_addusr" data-translate-page="admin">Jurusan</span> <span class="text-red-500" id="jurusanRequired">*</span>
                         </label>
-                        <select name="id_jurusan" class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500">
-                            <option value="">Pilih Jurusan</option>
+                        <select name="id_jurusan" class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500">
+                            <option data-translate="chs_jrs_addusr" data-translate-page="admin" value="">Pilih Jurusan</option>
                             @foreach($jurusan as $j)
                                 <option value="{{ $j->id_jurusan }}" {{ old('id_jurusan') == $j->id_jurusan ? 'selected' : '' }}>
                                     {{ $j->nama_jurusan }}
@@ -191,10 +191,10 @@
                     <!-- Keahlian -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Bidang Keahlian <span class="text-red-500" id="keahlianRequired">*</span>
+                            <span data-translate="exp_addusr" data-translate-page="admin">Bidang Keahlian</span> <span class="text-red-500" id="keahlianRequired">*</span>
                         </label>
-                        <select name="id_keahlian" class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500">
-                            <option value="">Pilih Keahlian</option>
+                        <select name="id_keahlian" class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500">
+                            <option data-translate="chs_exp_addusr" data-translate-page="admin" value="">Pilih Keahlian</option>
                             @foreach($keahlian as $k)
                                 <option value="{{ $k->id_keahlian }}" {{ old('id_keahlian') == $k->id_keahlian ? 'selected' : '' }}>
                                     {{ $k->nama_keahlian }}
@@ -206,10 +206,10 @@
                     <!-- Angkatan -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Angkatan <span class="text-red-500" id="angkatanRequired">*</span>
+                            <span data-translate="agkt_addusr" data-translate-page="admin">Angkatan</span> <span class="text-red-500" id="angkatanRequired">*</span>
                         </label>
-                        <select name="id_angkatan" class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500">
-                            <option value="">Pilih Angkatan</option>
+                        <select name="id_angkatan" class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500">
+                            <option data-translate="chs_agkt_addusr" data-translate-page="admin" value="">Pilih Angkatan</option>
                             @foreach($angkatan as $a)
                                 <option value="{{ $a->id }}" {{ old('id_angkatan') == $a->id ? 'selected' : '' }}>
                                     {{ $a->nama_angkatan }}
@@ -223,11 +223,15 @@
             <!-- Buttons -->
             <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <a href="{{ route('admin.users.index') }}"
-                   class="px-8 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                   class="px-8 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                   data-translate="cancel_addusr"
+                   data-translate-page="admin">
                     Batal
                 </a>
                 <button type="submit" id="submitBtn" disabled
-                        class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+                        class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                        data-translate-page="admin"
+                        data-translate="add_addusr">
                     Tambah User
                 </button>
             </div>

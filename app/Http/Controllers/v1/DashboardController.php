@@ -21,7 +21,7 @@ class DashboardController extends Controller
     {
 
         // hanya mahasiswa
-       $totalMahasiswa = User::where('role', 'mahasiswa')->where('status', 'Di Terima')->count();
+       $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
 
         $totalLearning = LearningCorner::count();
         $totalProject = Project::count();

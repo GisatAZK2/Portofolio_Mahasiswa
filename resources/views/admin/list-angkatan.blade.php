@@ -5,7 +5,7 @@
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h2 class="text-xl sm:text-2xl font-bold dark:text-white">Daftar Angkatan</h2>
+        <h2 class="text-xl sm:text-2xl font-bold dark:text-white" data-translate='title_agkt' data-translate-page="admin">Daftar Angkatan</h2>
         <div class="flex flex-wrap gap-2 w-full sm:w-auto">
             <form id="bulkDeleteForm" action="{{ route('admin.angkatan.bulk-destroy') }}" method="POST" class="inline">
                 @csrf
@@ -15,15 +15,15 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    <span class="hidden sm:inline">Hapus Terpilih</span>
-                    <span class="sm:hidden">Hapus</span>
+                    <span class="hidden sm:inline" data-translate="delete_selected" data-translate-page="project_detail">Hapus Terpilih</span>
+                    <span class="sm:hidden" data-translate="delete" data-translate-page="project_detail">Hapus</span>
                 </button>
             </form>
             <a href="{{ route('admin.angkatan.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                <span class="hidden sm:inline">Tambah Angkatan</span>
+                <span class="hidden sm:inline" data-translate="tambah_angkatan" data-translate-page="admin">Tambah Angkatan</span>
                 <span class="sm:hidden">Tambah</span>
             </a>
         </div>
@@ -37,12 +37,12 @@
                     <th class="px-6 py-3 text-left">
                         <input type="checkbox" onclick="toggleAll(this)" class="rounded text-blue-600 focus:ring-blue-500">
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama Angkatan</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tahun Masuk</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tahun Keluar</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah Mahasiswa</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="no_agkt" data-translate-page="admin">No</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="nm_agkt" data-translate-page="admin">Nama Angkatan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="thn_agkt" data-translate-page="admin">Tahun Masuk</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="exit_agkt" data-translate-page="admin">Tahun Keluar</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="total_mhs" data-translate-page="admin">Jumlah Mahasiswa</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="aksi_agkt" data-translate-page="admin">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">

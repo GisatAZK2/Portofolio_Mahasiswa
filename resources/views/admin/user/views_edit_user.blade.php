@@ -10,7 +10,7 @@
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Edit User</h1>
             <a href="{{ route('admin.users.index') }}" 
                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2" data-translate="back" data-translate-page="admin"></i>
             </a>
         </div>
 
@@ -26,7 +26,7 @@
                     <!-- Nama Mahasiswa -->
                     <div class="col-span-2 md:col-span-1">
                         <label for="nama_mahasiswa" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Nama Lengkap <span class="text-red-500">*</span>
+                            <span data-translate="nm_lgkp" data-translate-page="admin"></span> <span class="text-red-500">*</span>
                         </label>
                         <input type="text" 
                                name="nama_mahasiswa" 
@@ -96,12 +96,12 @@
                     <div class="col-span-2 md:col-span-1 role-dependent" data-roles="mahasiswa,dosen" 
                          style="{{ !in_array(old('role', $user->role), ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
                         <label for="id_jurusan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Jurusan <span class="text-red-500">*</span>
+                            <span data-translate="jrs_addusr" data-translate-page="admin"></span> <span class="text-red-500">*</span>
                         </label>
                         <select name="id_jurusan" 
                                 id="id_jurusan" 
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_jurusan') border-red-500 @enderror">
-                            <option value="">Pilih Jurusan</option>
+                            <option data-translate="chs_jrs_addusr" data-translate-page="admin" value="">Pilih Jurusan</option>
                             @foreach($jurusans as $jurusan)
                                 <option value="{{ $jurusan->id_jurusan }}" {{ old('id_jurusan', $user->id_jurusan) == $jurusan->id_jurusan ? 'selected' : '' }}>
                                     {{ $jurusan->nama_jurusan }}
@@ -117,12 +117,12 @@
                     <div class="col-span-2 md:col-span-1 role-dependent" data-roles="mahasiswa,dosen"
                          style="{{ !in_array(old('role', $user->role), ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
                         <label for="id_keahlian" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Keahlian <span class="text-red-500">*</span>
+                            <span data-translate="exp_addusr" data-translate-page="admin"></span> <span class="text-red-500">*</span>
                         </label>
                         <select name="id_keahlian" 
                                 id="id_keahlian" 
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_keahlian') border-red-500 @enderror">
-                            <option value="">Pilih Keahlian</option>
+                            <option data-translate="chs_exp_addusr" data-translate-page="admin" value="">Pilih Keahlian</option>
                             @foreach($keahlians as $keahlian)
                                 <option value="{{ $keahlian->id_keahlian }}" {{ old('id_keahlian', $user->id_keahlian) == $keahlian->id_keahlian ? 'selected' : '' }}>
                                     {{ $keahlian->nama_keahlian }}
@@ -138,12 +138,12 @@
                     <div class="col-span-2 md:col-span-1 role-dependent" data-roles="mahasiswa,dosen"
                          style="{{ !in_array(old('role', $user->role), ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
                         <label for="id_angkatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Angkatan <span class="text-red-500">*</span>
+                            <span data-translate="agkt_addusr" data-translate-page="admin"></span> <span class="text-red-500">*</span>
                         </label>
                         <select name="id_angkatan" 
                                 id="id_angkatan" 
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_angkatan') border-red-500 @enderror">
-                            <option value="">Pilih Angkatan</option>
+                            <option data-translate="chs_agkt_addusr" data-translate-page="admin" value="">Pilih Angkatan</option>
                             @foreach($angkatans as $angkatan)
                                 <option value="{{ $angkatan->id }}" {{ old('id_angkatan', $user->id_angkatan) == $angkatan->id ? 'selected' : '' }}>
                                     {{ $angkatan->tahun_angkatan }}
@@ -158,14 +158,14 @@
                     <!-- Status Pengajuan -->
                     <div class="col-span-2 md:col-span-1">
                         <label for="status_pengajuan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Status Pengajuan <span class="text-red-500">*</span>
+                            <span data-translate="stat_pengajuan" data-translate-page="admin"></span> <span class="text-red-500">*</span>
                         </label>
                         <select name="status_pengajuan" 
                                 id="status_pengajuan" 
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('status_pengajuan') border-red-500 @enderror"
                                 required>
-                            <option value="Di Terima" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Terima' ? 'selected' : '' }}>Di Terima</option>
-                            <option value="Di Tolak" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Tolak' ? 'selected' : '' }}>Di Tolak</option>
+                            <option data-translate="stat_diterima" data-translate-page="admin" value="Di Terima" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Terima' ? 'selected' : '' }}>Di Terima</option>
+                            <option data-translate="stat_ditolak" data-translate-page="admin" value="Di Tolak" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Tolak' ? 'selected' : '' }}>Di Tolak</option>
                         </select>
                         @error('status_pengajuan')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -175,14 +175,14 @@
                     <!-- Status Aktif -->
                     <div class="col-span-2 md:col-span-1">
                         <label for="is_active" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Status Akun <span class="text-red-500">*</span>
+                            <span data-translate="stat_acc" data-translate-page="admin"></span> <span class="text-red-500">*</span>
                         </label>
                         <select name="is_active" 
                                 id="is_active" 
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('is_active') border-red-500 @enderror"
                                 required>
-                            <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Non Aktif</option>
+                            <option data-translate="stat_aktif" data-translate-page="admin" value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
+                            <option data-translate="stat_non_aktif" data-translate-page="admin" value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Non Aktif</option>
                         </select>
                         @error('is_active')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -192,7 +192,7 @@
                     <!-- Password Baru (opsional) -->
                     <div class="col-span-2 md:col-span-1">
                         <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Password Baru (Kosongkan jika tidak diubah)
+                            <span data-translate="pw_new" data-translate-page="admin"></span>
                         </label>
                         <input type="password" 
                                name="password" 
@@ -207,19 +207,20 @@
                     <!-- Konfirmasi Password -->
                     <div class="col-span-2 md:col-span-1">
                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Konfirmasi Password Baru
+                           <span data-translate="pw_new_confirm" data-translate-page="admin"></span>
                         </label>
                         <input type="password" 
                                name="password_confirmation" 
                                id="password_confirmation" 
                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                               data-translate-placeholder="pw_new_plceholder" data-translate-page="admin"
                                placeholder="Konfirmasi password baru">
                     </div>
 
                     <!-- Photo Profile -->
                     <div class="col-span-2">
                         <label for="photo_profile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Foto Profil
+                            <span data-translate="pfp_new" data-translate-page="admin"></span>
                         </label>
                         
                         <!-- Preview Foto Lama -->
@@ -243,8 +244,8 @@
                                id="photo_profile" 
                                accept="image/jpeg,image/png,image/jpg"
                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('photo_profile') border-red-500 @enderror">
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Format: JPG, JPEG, PNG. Maksimal 2MB.
+                        <p data-translate="pfp_frmt" data-translate-page="admin" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            
                         </p>
                         @error('photo_profile')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -260,7 +261,7 @@
                     </button>
                     <button type="submit" 
                             class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                        <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                        <i data-translate="save_new" data-translate-page="admin" class="fas fa-save mr-2"></i>
                     </button>
                 </div>
             </form>

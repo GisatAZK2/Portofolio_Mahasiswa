@@ -7,8 +7,8 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-            <h2 class="text-xl sm:text-2xl font-bold dark:text-white">Kelola Pengguna</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <h2 data-translate="kll_pengguna" data-translate-page="admin" class="text-xl sm:text-2xl font-bold dark:text-white">Kelola Pengguna</h2>
+            <p data-translate="desc_kll_pengguna" data-translate-page="admin" class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 Kelola semua pengguna yang terdaftar dalam sistem. Anda dapat melihat detail, memperbarui status pengajuan, atau menghapus pengguna sesuai kebutuhan.
             </p>
         </div>
@@ -20,7 +20,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    <span class="hidden sm:inline">Hapus Terpilih</span>
+                    <span class="hidden sm:inline" data-translate="del_user" data-translate-page="admin">Hapus Terpilih</span>
                     <span class="sm:hidden">Hapus</span>
                 </button>
             </form>
@@ -28,7 +28,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                <span class="hidden sm:inline">Tambah Pengguna</span>
+                <span data-translate="add_user" data-translate-page="admin" class="hidden sm:inline">Tambah Pengguna</span>
                 <span class="sm:hidden">Tambah</span>
             </a>
         </div>
@@ -40,7 +40,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {{-- Search Input --}}
                 <div class="lg:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label data-translate="srch_usr" data-translate-page="admin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Pencarian
                     </label>
                     <div class="relative">
@@ -65,12 +65,12 @@
                 </div>
                 {{-- Role Filter --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label data-translate="role_usr" data-translate-page="admin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Role
                     </label>
                     <select name="role"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option value="">Semua Role</option>
+                        <option data-translate="role_usr1" data-translate-page="admin" value="">Semua Role</option>
                         <option value="mahasiswa" {{ request('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                         <option value="dosen" {{ request('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                         <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
@@ -78,12 +78,12 @@
                 </div>
                 {{-- Status Pengajuan Filter --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label data-translate="stat_pengajuan" data-translate-page="admin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Status Pengajuan
                     </label>
                     <select name="status_pengajuan"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option value="">Semua Status</option>
+                        <option data-translate="all_stat" data-translate-page="admin" value="">Semua Status</option>
                         <option value="Di Terima" {{ request('status_pengajuan') == 'Di Terima' ? 'selected' : '' }}>Diterima</option>
                         <option value="Sedang Di Ajukan" {{ request('status_pengajuan') == 'Sedang Di Ajukan' ? 'selected' : '' }}>Menunggu Persetujuan</option>
                         <option value="Di Tolak" {{ request('status_pengajuan') == 'Di Tolak' ? 'selected' : '' }}>Ditolak</option>
@@ -92,11 +92,15 @@
             </div>
             <div class="flex justify-end mt-4 space-x-3">
                 <a href="{{ route('admin.users.index') }}"
-                   class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+                   class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                   data-translate="reset_filter"
+                   data-translate-page="admin">
                     Reset Filter
                 </a>
                 <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                        data-translate="trp_filter"
+                        data-translate-page="admin">
                     Terapkan Filter
                 </button>
             </div>
@@ -112,11 +116,11 @@
                     <input type="checkbox"
                            id="selectAllCheckbox"
                            class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Semua</span>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="plh_semua" data-translate-page="admin">Pilih Semua</span>
                 </label>
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">
-                Total dipilih: <span id="totalSelected">0</span> / <span id="totalItems">{{ count($users) }}</span>
+                <span data-translate="total_dipilih" data-translate-page="admin">Total dipilih:</span> <span id="totalSelected">0</span> / <span id="totalItems">{{ count($users) }}</span>
             </span>
         </div>
     </div>
@@ -130,14 +134,14 @@
                     <th class="px-4 py-3 text-left">
                         <input type="checkbox" id="tableSelectAllCheckbox" class="rounded text-blue-600 focus:ring-blue-500">
                     </th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Foto</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama / Username</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_foto" data-translate-page="admin">Foto</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_nm" data-translate-page="admin">Nama / Username</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_email" data-translate-page="admin">Email</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_role" data-translate-page="admin">Role</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_stat" data-translate-page="admin">Status</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_jrs" data-translate-page="admin">Jurusan</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_agkt" data-translate-page="admin">Angkatan</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_act" data-translate-page="admin">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
