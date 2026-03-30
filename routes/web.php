@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\v1\UserController;
 //use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
-Use App\Http\Controllers\v1\DashboardController;
+use App\Http\Controllers\v1\DashboardController;
 use App\Http\Controllers\v1\LearningCornerController;
 use App\Http\Controllers\v1\SertifikatController;
 use App\Http\Controllers\v1\DosenController;
@@ -16,13 +16,14 @@ use App\Http\Controllers\v1\DosenController;
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
+Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
 
 // Semua route yang butuh login
-Route::middleware(['auth','role:mahasiswa'])->group(function () {
+Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
     Route::get('/MyDashboard', [DashboardController::class, 'myDashboard'])->name('dashboard.me');
 
-     Route::prefix('keahlian-tambahan')->name('keahlian-tambahan.')->group(function () {
+    Route::prefix('keahlian-tambahan')->name('keahlian-tambahan.')->group(function () {
         Route::get('/', [UserController::class, 'keahliantambahanlist'])->name('index');
         Route::post('/', [UserController::class, 'storeKeahlianTambahan'])->name('store');
         Route::delete('/{id}', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
@@ -34,33 +35,48 @@ Route::middleware(['auth','role:mahasiswa'])->group(function () {
 
     // CRUD Project
     Route::resource('project', ProjekController::class)->only([
-        'index', 'create', 'store', 'edit', 'update', 'destroy'
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+        'destroy'
     ]);
 
     //CRUD Sertifikat
     Route::resource('sertifikat', SertifikatController::class)->only([
-        'index', 'create', 'store', 'edit', 'update', 'destroy'
-        ]);
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+        'destroy'
+    ]);
 
     // CRUD Learning Corner
-    Route::get('/project/{project}/learning-corner/create',
+    Route::get(
+        '/project/{project}/learning-corner/create',
         [LearningCornerController::class, 'create']
-        )->name('learning-corner.create');
-    Route::post('/project/{project}/learning-corner',
+    )->name('learning-corner.create');
+    Route::post(
+        '/project/{project}/learning-corner',
         [LearningCornerController::class, 'store']
-        )->name('learning-corner.store');
-    
-    Route::post('/learning-corner-mass/mass-destroy',
-    [LearningCornerController::class, 'massDestroy']
+    )->name('learning-corner.store');
+
+    Route::post(
+        '/learning-corner-mass/mass-destroy',
+        [LearningCornerController::class, 'massDestroy']
     )->name('learning-corner.mass-destroy');
 
-    Route::get('/learning-corner/{learningCorner}/edit',
+    Route::get(
+        '/learning-corner/{learningCorner}/edit',
         [LearningCornerController::class, 'edit']
-        )->name('learning-corner.edit');
+    )->name('learning-corner.edit');
 
-    Route::put('/learning-corner/{learningCorner}',
+    Route::put(
+        '/learning-corner/{learningCorner}',
         [LearningCornerController::class, 'update']
-        )->name('learning-corner.update');
+    )->name('learning-corner.update');
 
 
     Route::delete('/learning-corner/{learning_corner}', [LearningCornerController::class, 'destroy'])->name('learning-corner.destroy');
@@ -69,7 +85,7 @@ Route::middleware(['auth','role:mahasiswa'])->group(function () {
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
-Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.') ->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
@@ -180,7 +196,7 @@ Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('regis
 
 
 Route::post('/toggle-sidebar', function (Request $request) {
-Session::put('sidebar_collapsed', $request->collapsed);
+    Session::put('sidebar_collapsed', $request->collapsed);
     return response()->json(['success' => true]);
 })->middleware('web');
 

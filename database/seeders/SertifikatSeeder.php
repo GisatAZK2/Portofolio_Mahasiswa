@@ -47,20 +47,12 @@ class SertifikatSeeder extends Seeder
             'Khan Academy',
             'Pluralsight'
         ];
-
-        $links = [
-            'https://www.coursera.org/account/accomplishments/certificate/ABC12345',
-            'https://www.udemy.com/certificate/UC-DEF67890/',
-            'https://www.edx.org/certificate/1234abcd5678',
-            'https://www.freecodecamp.org/certification/username/responsive-web-design',
-            'https://www.codecademy.com/profiles/username/badges/123456',
-            'https://www.microsoft.com/learn/certifications/azure-fundamentals',
-            'https://learndigital.withgoogle.com/digitalgarage/certificate/1234567890',
-            'https://www.linkedin.com/learning/certificates/abcd1234',
-            'https://www.khanacademy.org/profile/user/certificate/abcd1234',
-            'https://app.pluralsight.com/library/courses/abcd1234'
+        
+       $links = [
+        'sertifikat/7GovEp0KkqFTv73x0xW8QsKuAyqewkgMkFvLbrCX.jpg',
+        // Tambahkan beberapa link lain kalau mau lebih variatif
+        // 'photos/sertifikat-default.jpg',
         ];
-
         $statuses = ['Di Terima', 'Sedang Di Ajukan', 'Di Tolak'];
 
         $certificates = [];

@@ -19,7 +19,10 @@ class DatabaseSeeder extends Seeder
             JurusanSeeder::class,
             KeahlianSeeder::class,
             AngkatanSeeder::class,
-            MahasiswaSeeder::class
+            UserSeeder::class,
+            ProjectSeeder::class,
+            SertifikatSeeder::class,
+            LearningCornerSeeder::class,
         ]);
     }
 }

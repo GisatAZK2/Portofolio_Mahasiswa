@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-6 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-6 px-4 sm:px-6 lg:px-8" data-dashboard-type="me">
         <div class="max-w-7xl mx-auto space-y-10">
             <!-- Statistic Cards with Mini Charts -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -62,42 +62,72 @@
                 </div>
             </div>
         
-            <!-- Random Posts - Grid Layout (Fixed Height Cards) -->
+            <!-- Postingan Terbaru: Dikelompokkan dan Pagination per Kelompok -->
             <div>
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
-                        data-translate-page="dashboard">Perihal Terbaru</h2>
-                    <a href="{{ route('search') ?? '#' }}"
-                        class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1" data-translate="lihat_semua" data-translate-page="dashboard">
-                        Lihat Semua →
-                    </a>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru" data-translate-page="dashboard">Postingan Terbaru</h2>
                 </div>
 
-                @if($randomPosts->isEmpty())
-                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="postingan_kosong" data-translate-page="dashboard">Belum ada postingan</p>
-                    </div>
-                @else
-                    <!-- Grid dengan tinggi card sama menggunakan CSS Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-                        @foreach($randomPosts as $post)
-                            @php
-                                // Decode JSON content untuk semua tipe
-                                $projectData = [];
-                                if ($post->type === 'project' && $post->isi_content) {
-                                    $projectData = is_string($post->isi_content) ? json_decode($post->isi_content, true) : (is_array($post->isi_content) ? $post->isi_content : []);
-                                }
-                                
-                                // Untuk learning corner, ambil data dari tabel learning_corner
-                                $learningContent = [];
-                                $learningImages = [];
-                                $learningTitle = '';
-                                $learningText = '';
-                                $learningLinks = [];
+                {{-- LEARNING CORNER --}}
+                <div class="mb-10">
+                    <h3 class="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3">Learning Corner</h3>
+                    @if($learningCorners->isEmpty())
+                        <div class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+                            <p class="text-gray-600 dark:text-gray-200">Belum ada postingan Learning Corner</p>
+                        </div>
+                    @else
+                        <div data-pagination-group="learning_corner">
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                            @foreach($learningCorners as $post)
+                                @include('components.card_postingan', ['post' => $post])
+                            @endforeach
+                            </div>
+                            <div class="mt-4">{{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => 'learning_corner']) }}</div>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- PROJECT --}}
+                <div class="mb-10">
+                    <h3 class="text-lg font-bold text-orange-600 dark:text-orange-300 mb-3">Project</h3>
+                    @if($projects->isEmpty())
+                        <div class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+                            <p class="text-gray-600 dark:text-gray-200">Belum ada postingan Project</p>
+                        </div>
+                    @else
+                        <div data-pagination-group="project">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            @foreach($projects as $post)
+                                @include('components.card_postingan', ['post' => $post])
+                            @endforeach
+                            </div>
+                            <div class="mt-4">{{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}</div>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- LIST PROJECT (Project User) --}}
+                <div class="mb-10">
+                    <h3 class="text-lg font-bold text-blue-700 dark:text-blue-300 mb-3">List Project User</h3>
+                    @if($projectUsers->isEmpty())
+                        <div class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+                            <p class="text-gray-600 dark:text-gray-200">Belum ada list project user</p>
+                        </div>
+                    @else
+                        <div data-pagination-group="project_user">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            @foreach($projectUsers as $post)
+                                @include('components.card_postingan', ['post' => $post])
+                            @endforeach
+                            </div>
+                            <div class="mt-4">{{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => 'project_user']) }}</div>
+                        </div>
+                    @endif
+                </div>
+                <!-- Update timestamp -->
+                <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
+                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard">Terakhir diperbarui</span> {{ now()->format('d F Y H:i') }} WIB
+                </div>
                                 
                                 // Data user untuk learning corner
                                 $userPhoto = null;

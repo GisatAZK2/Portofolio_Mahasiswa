@@ -21,64 +21,60 @@ class DashboardController extends Controller
     {
 
         // hanya mahasiswa
-       $totalMahasiswa = User::where('role', 'mahasiswa')->where('status', 'Di Terima')->count();
+        $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
 
         $totalLearning = LearningCorner::count();
         $totalProject = Project::count();
         $totalSertifikat = Sertifikat::count();
 
-        $jurusanList  = Jurusan::all();
+        $jurusanList = Jurusan::all();
         $keahlianList = Keahlian::all();
         $angkatanList = Angkatan::all();
 
 
         /*
         |--------------------------------------------------------------------------
-        | RANDOM POST
+        | POSTINGAN TERBARU - DIKELOMPOKKAN DENGAN PAGINATION
         |--------------------------------------------------------------------------
         */
 
-        $randomLearning = LearningCorner::with('mahasiswa')
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'learning';
-                return $item;
-            });
+        $learningCorners = LearningCorner::with('mahasiswa', 'project')
+            ->latest()
+            ->paginate(6, ['*'], 'learning_page');
 
-        $randomProject = Project::with('mahasiswa')
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'project';
-                return $item;
-            });
+        $learningCorners->transform(function ($item) {
+            $item->type = 'learning';
+            return $item;
+        });
 
-        $randomSertifikat = Sertifikat::with('mahasiswa')
+        $projects = Project::with('mahasiswa')
+            ->latest()
+            ->paginate(6, ['*'], 'project_page');
+
+        $projects->transform(function ($item) {
+            $item->type = 'project';
+            return $item;
+        });
+
+        $projectUsers = Sertifikat::with('mahasiswa')
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'sertifikat';
-                return $item;
-            });
+            ->latest()
+            ->paginate(6, ['*'], 'sertifikat_page');
 
-        $randomPosts = $randomProject
-            ->concat($randomLearning)
-            ->concat($randomSertifikat)
-            ->shuffle()
-            ->take(6);
+        $projectUsers->transform(function ($item) {
+            $item->type = 'sertifikat';
+            return $item;
+        });
 
         return view('views_dashboard', compact(
             'totalMahasiswa',
             'totalLearning',
             'totalProject',
             'totalSertifikat',
-            'randomPosts',
+            'learningCorners',
+            'projects',
+            'projectUsers',
         ));
     }
 
@@ -87,138 +83,197 @@ class DashboardController extends Controller
     {
 
         $user = auth()->user();
-        
-            $totalMahasiswa = null;
 
-            $totalLearning = LearningCorner::where('id_mahasiswa', $user->id)->count();
-            $totalProject = Project::where('id_mahasiswa', $user->id)->count();
-            $totalSertifikat = Sertifikat::where('id_mahasiswa', $user->id)->count();
+        $totalMahasiswa = null;
 
-            $learning = LearningCorner::with('mahasiswa')
-                ->where('id_mahasiswa', $user->id)
-                ->inRandomOrder()
-                ->take(3)
-                ->get();
+        $totalLearning = LearningCorner::where('id_mahasiswa', $user->id)->count();
+        $totalProject = Project::where('id_mahasiswa', $user->id)->count();
+        $totalSertifikat = Sertifikat::where('id_mahasiswa', $user->id)->count();
 
-            $project = Project::with('mahasiswa')
-                ->where('id_mahasiswa', $user->id)
-                ->inRandomOrder()
-                ->take(3)
-                ->get();
+        $learning = LearningCorner::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
 
-            $sertifikat = Sertifikat::with('mahasiswa')
-                ->where('id_mahasiswa', $user->id)
-                ->inRandomOrder()
-                ->take(3)
-                ->get();
-        
+        $project = Project::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
+        $sertifikat = Sertifikat::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
 
 
-        $learning = $learning->map(function ($item) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | POSTINGAN TERBARU - DIKELOMPOKKAN DENGAN PAGINATION
+        |--------------------------------------------------------------------------
+        */
+
+        $learningCorners = LearningCorner::with('mahasiswa', 'project')
+            ->where('id_mahasiswa', $user->id)
+            ->latest()
+            ->paginate(6, ['*'], 'learning_page');
+
+        $learningCorners->transform(function ($item) {
             $item->type = 'learning';
             return $item;
         });
 
-        $project = $project->map(function ($item) {
+        $projects = Project::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->latest()
+            ->paginate(6, ['*'], 'project_page');
+
+        $projects->transform(function ($item) {
             $item->type = 'project';
             return $item;
         });
 
-        $sertifikat = $sertifikat->map(function ($item) {
+        $projectUsers = Sertifikat::with('mahasiswa')
+            ->where('id_mahasiswa', $user->id)
+            ->where('is_active', true)
+            ->where('status_pengajuan', 'Di Terima')
+            ->latest()
+            ->paginate(6, ['*'], 'sertifikat_page');
+
+        $projectUsers->transform(function ($item) {
             $item->type = 'sertifikat';
             return $item;
         });
-
-        $randomPosts = $learning
-            ->concat($project)
-            ->concat($sertifikat)
-            ->shuffle()
-            ->take(6);
 
         return view('views_dashboard_me', compact(
             'totalLearning',
             'totalProject',
             'totalSertifikat',
-            'randomPosts'
+            'learningCorners',
+            'projects',
+            'projectUsers'
         ));
     }
 
-public function show(User $user, Request $request)
-{
+    public function paginationFragment(Request $request)
+    {
+        $group = $request->query('group');
+        $page = $request->query('page', 1);
+        $isDashboardMe = $request->query('dashboard') === 'me';
+        $user = auth()->user();
 
-    if (in_array($user->role, ['admin', 'dosen'])) {
-        return redirect()->back()->with('error', 'Halaman portofolio admin atau dosen tidak diperbolehkan dibuka.');
+        if ($group === 'learning_corner') {
+            $data = $isDashboardMe
+                ? LearningCorner::with('mahasiswa', 'project')->where('id_mahasiswa', $user->id)->latest()->paginate(6, ['*'], 'learning_page')
+                : LearningCorner::with('mahasiswa', 'project')->latest()->paginate(6, ['*'], 'learning_page');
+            $data->transform(function ($item) {
+                $item->type = 'learning';
+                return $item;
+            });
+            return view('partials.learning_corner_group', ['learningcorner' => $data]);
+        } elseif ($group === 'project') {
+            $data = $isDashboardMe
+                ? Project::with('mahasiswa')->where('id_mahasiswa', $user->id)->latest()->paginate(6, ['*'], 'project_page')
+                : Project::with('mahasiswa')->latest()->paginate(6, ['*'], 'project_page');
+            $data->transform(function ($item) {
+                $item->type = 'project';
+                return $item;
+            });
+            return view('partials.project_group', ['project' => $data]);
+        } elseif ($group === 'sertifikat') {
+            $data = $isDashboardMe
+                ? Sertifikat::with('mahasiswa')->where('id_mahasiswa', $user->id)->where('is_active', true)->where('status_pengajuan', 'Di Terima')->latest()->paginate(6, ['*'], 'sertifikat_page')
+                : Sertifikat::with('mahasiswa')->where('is_active', true)->where('status_pengajuan', 'Di Terima')->latest()->paginate(6, ['*'], 'sertifikat_page');
+            $data->transform(function ($item) {
+                $item->type = 'sertifikat';
+                return $item;
+            });
+            return view('partials.sertifikat_group', ['sertifikat' => $data]);
+        } else {
+            return response('Not found', 404);
+        }
     }
 
-    $user->load([
-        'jurusan',
-        'angkatan',
-        'keahlian',
-        'sertifikats' => function ($q) {
-            $q->where('is_active', true)
-              ->where('status_pengajuan', 'Di Terima');
-        },
-        'learning_corners'
-    ]);
-
-    $isOwner = Auth::check() && Auth::id() === $user->id;
-
-    $projectTab = $request->get('project_tab', 'now');
-
-    $today = Carbon::today();
-
-    $projectsQuery = Project::with(['owner', 'leader', 'members'])
-        ->where(function ($query) use ($user) {
-
-            $query->where('id_mahasiswa', $user->id)
-                ->orWhere('leader_id', $user->id)
-                ->orWhereHas('members', function ($q) use ($user) {
-                    $q->where('users.id', $user->id);
-                });
-
-        });
-
-    switch ($projectTab) {
-
-        case 'upcoming':
-            $projectsQuery->where('tanggal_mulai', '>', $today);
-            break;
-
-        case 'completed':
-            $projectsQuery->whereNotNull('tanggal_akhir')
-                ->where('tanggal_akhir', '<', $today);
-            break;
-
-        case 'now':
-        default:
-            $projectsQuery
-                ->where('tanggal_mulai', '<=', $today)
-                ->where(function ($q) use ($today) {
-                    $q->where('tanggal_akhir', '>=', $today)
-                      ->orWhereNull('tanggal_akhir');
-                });
-            break;
-    }
-
-    $projects = $projectsQuery
-        ->latest()
-        ->paginate(5)
-        ->withQueryString();
-
-    return view('views_portofolio_user', compact(
-        'user',
-        'projects',
-        'projectTab',
-        'isOwner'
-    ));
-}    public function search(Request $request)
+    public function show(User $user, Request $request)
     {
 
-        $keyword   = $request->q;
-        $jurusan   = $request->jurusan;
-        $keahlian  = $request->keahlian;
-        $angkatan  = $request->angkatan;
-        $type      = $request->type;
+        if (in_array($user->role, ['admin', 'dosen'])) {
+            return redirect()->back()->with('error', 'Halaman portofolio admin atau dosen tidak diperbolehkan dibuka.');
+        }
+
+        $user->load([
+            'jurusan',
+            'angkatan',
+            'keahlian',
+            'sertifikats' => function ($q) {
+                $q->where('is_active', true)
+                    ->where('status_pengajuan', 'Di Terima');
+            },
+            'learning_corners'
+        ]);
+
+        $isOwner = Auth::check() && Auth::id() === $user->id;
+
+        $projectTab = $request->get('project_tab', 'now');
+
+        $today = Carbon::today();
+
+        $projectsQuery = Project::with(['owner', 'leader', 'members'])
+            ->where(function ($query) use ($user) {
+
+                $query->where('id_mahasiswa', $user->id)
+                    ->orWhere('leader_id', $user->id)
+                    ->orWhereHas('members', function ($q) use ($user) {
+                        $q->where('users.id', $user->id);
+                    });
+
+            });
+
+        switch ($projectTab) {
+
+            case 'upcoming':
+                $projectsQuery->where('tanggal_mulai', '>', $today);
+                break;
+
+            case 'completed':
+                $projectsQuery->whereNotNull('tanggal_akhir')
+                    ->where('tanggal_akhir', '<', $today);
+                break;
+
+            case 'now':
+            default:
+                $projectsQuery
+                    ->where('tanggal_mulai', '<=', $today)
+                    ->where(function ($q) use ($today) {
+                        $q->where('tanggal_akhir', '>=', $today)
+                            ->orWhereNull('tanggal_akhir');
+                    });
+                break;
+        }
+
+        $projects = $projectsQuery
+            ->latest()
+            ->paginate(5)
+            ->withQueryString();
+
+        return view('views_portofolio_user', compact(
+            'user',
+            'projects',
+            'projectTab',
+            'isOwner'
+        ));
+    }
+    public function search(Request $request)
+    {
+
+        $keyword = $request->q;
+        $jurusan = $request->jurusan;
+        $keahlian = $request->keahlian;
+        $angkatan = $request->angkatan;
+        $type = $request->type;
 
         $results = collect();
 
@@ -238,7 +293,7 @@ public function show(User $user, Request $request)
                     'sertifikats as sertifikats_count',
                 ])
 
-                ->whereNotIn('role', ['admin','dosen'])
+                ->whereNotIn('role', ['admin', 'dosen'])
 
                 ->when($keyword, function ($query) use ($keyword) {
                     $query->where('nama_mahasiswa', 'like', "%$keyword%");
@@ -307,8 +362,8 @@ public function show(User $user, Request $request)
 
                     $project->nama_project = $content['nama_project'] ?? null;
                     $project->link_project = $content['link_project'] ?? null;
-                    $project->link_github  = $content['link_github'] ?? null;
-                    $project->link_video   = $content['link_video'] ?? null;
+                    $project->link_github = $content['link_github'] ?? null;
+                    $project->link_video = $content['link_video'] ?? null;
 
                     $project->type = 'project';
 
@@ -378,7 +433,7 @@ public function show(User $user, Request $request)
         }
 
 
-        $totalMahasiswa = User::where('role','mahasiswa')->count();
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
         $totalLearning = LearningCorner::count();
         $totalSertifikat = Sertifikat::count();
         $totalProject = Project::count();
