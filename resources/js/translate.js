@@ -160,6 +160,7 @@ export const translations = {
     },
     sidebar: {
       dashboard: 'Dashboard',
+      dashboard_nonuser: 'Beranda',
       my_dashboard: 'My Dashboard',
       manajemen_users: 'Manajemen User',    
       manajemen_projects: 'Manajemen Project',
@@ -467,6 +468,7 @@ export const translations = {
     },
     sidebar: {
       dashboard: 'Dashboard',
+      dashboard_nonuser:'Home',
       my_dashboard: 'My Dashboard',
       manajemen_users: 'User Management',
       semua_user: 'See All Users',

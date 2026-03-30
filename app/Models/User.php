@@ -34,6 +34,7 @@ class User extends Authenticatable
     'background_url',
     'id_jurusan',
     'keahlian_tambahan',
+    'keterangan',
     'id_keahlian',
     'id_angkatan',
     'deskripsi',

@@ -31,6 +31,25 @@
                 <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1" data-translate="kelola_project_desc" data-translate-page="kelola_project"></p>
             </div>
 
+            <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <input id="selectAllProjects" type="checkbox" class="w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                        Pilih Semua
+                    </label>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Terpilih: <strong id="selectedCount">0</strong> / <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <form id="bulkDeleteForm" action="{{ route('admin.projects.bulk-delete') }}" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" onclick="confirmBulkDelete()" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
+                            Hapus Terpilih
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             <!-- Projects Grid -->
             <section>
                 @if($projects->isNotEmpty())
@@ -161,6 +180,9 @@
                                     
                                     <!-- User Info -->
                                     <div class="flex items-center gap-3 mb-3">
+                                        <label class="inline-flex items-center mr-2">
+                                            <input type="checkbox" value="{{ $project->id }}" class="project-checkbox w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                                        </label>
                                         <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @php
                                                 $displayUser = $leader ?? $mahasiswa;
@@ -299,6 +321,15 @@
                                         @endif
                                     </div>
 
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        <a href="{{ route('admin.projects.details', $project->id) }}" class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
+                                            Edit
+                                        </a>
+                                        <button type="button" onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')" class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
+                                            Hapus
+                                        </button>
+                                    </div>
+
                                     <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
                                     <div class="mt-3 text-xs text-gray-400 dark:text-gray-500">
                                         <span data-translate="diposting" data-translate-page="kelola_project"></span> {{ $project->created_at?->format('d M Y H:i') ?? '—' }}
@@ -325,7 +356,93 @@
                         <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Silakan tambahkan proyek baru untuk memulai.</p>
                     </div>
                 @endif
+
+                <form id="deleteProjectForm" method="POST" style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
             </section>
         </div>
     </div>
+<script>
+    function updateSelectedProjects() {
+        const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
+        const selectedCountEl = document.getElementById('selectedCount');
+        const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+        const selectAllCheckbox = document.getElementById('selectAllProjects');
+        const allCheckboxes = document.querySelectorAll('.project-checkbox');
+
+        if (selectedCountEl) {
+            selectedCountEl.textContent = selectedCheckboxes.length;
+        }
+
+        if (bulkDeleteForm) {
+            bulkDeleteForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
+            selectedCheckboxes.forEach(cb => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_ids[]';
+                input.value = cb.value;
+                bulkDeleteForm.appendChild(input);
+            });
+        }
+
+        if (selectAllCheckbox) {
+            if (selectedCheckboxes.length === allCheckboxes.length) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else if (selectedCheckboxes.length === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+    }
+
+    function confirmBulkDelete() {
+        const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+            alert('Silakan pilih setidaknya satu project sebelum menghapus.');
+            return;
+        }
+
+        if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedCheckboxes.length} project terpilih?`)) {
+            return;
+        }
+
+        document.getElementById('bulkDeleteForm').submit();
+    }
+
+   function confirmDeleteProject(projectId, projectName) {
+    if (!confirm(`Hapus project "${projectName}"? Tindakan ini tidak dapat dibatalkan.`)) {
+        return;
+    }
+
+    const deleteForm = document.getElementById('deleteProjectForm');
+
+    let url = `{{ route('admin.projects.delete', ':id') }}`;
+    url = url.replace(':id', projectId);
+
+    deleteForm.action = url;
+    deleteForm.submit();
+}
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const projectCheckboxes = document.querySelectorAll('.project-checkbox');
+        projectCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedProjects));
+
+        const selectAllProjects = document.getElementById('selectAllProjects');
+        if (selectAllProjects) {
+            selectAllProjects.addEventListener('change', function () {
+                projectCheckboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                });
+                updateSelectedProjects();
+            });
+        }
+
+        updateSelectedProjects();
+    });
+</script>
 @endsection

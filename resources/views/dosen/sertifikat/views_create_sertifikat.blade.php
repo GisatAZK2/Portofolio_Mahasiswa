@@ -68,7 +68,7 @@
                                 <option value="">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
-                                        {{ $angk->tahun_angkatan }}
+                                        {{ $angk->nama_angkatan }}
                                     </option>
                                 @endforeach
                             </select>

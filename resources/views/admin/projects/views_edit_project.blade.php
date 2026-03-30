@@ -1,561 +1,681 @@
 @extends('Layout.Layout')
-
+@section('title', 'Edit Project Mahasiswa')
 @section('content')
-    <!-- CONTENT -->
-    <div class="p-4 sm:p-6 lg:p-10 space-y-6 sm:space-y-8 lg:space-y-10">
-
-        <!-- PROJECT CARD -->
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 sm:p-6 lg:p-8">
-            <!-- Project Status Bar -->
-            <div class="mb-6">
-                @php
-                    $today = now();
-                    $start = \Carbon\Carbon::parse($project->tanggal_mulai);
-                    $end = $project->tanggal_akhir ? \Carbon\Carbon::parse($project->tanggal_akhir) : null;
-                    
-                    // Determine status
-                    if ($today < $start) {
-                        $status = 'incoming';
-                        $statusText = 'Akan Datang';
-                        $statusColor = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
-                        $progress = 0;
-                    } elseif ($end && $today > $end) {
-                        $status = 'past';
-                        $statusText = 'Selesai';
-                        $statusColor = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-                        $progress = 100;
-                    } else {
-                        $status = 'present';
-                        $statusText = 'Sedang Berjalan';
-                        $statusColor = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-                        
-                        // Calculate progress percentage
-                        if ($end) {
-                            $totalDays = $start->diffInDays($end);
-                            $daysPassed = $start->diffInDays($today);
-                            $progress = min(100, max(0, round(($daysPassed / $totalDays) * 100)));
-                        } else {
-                            $progress = 50; // Default if no end date
-                        }
-                    }
-                @endphp
-
-                <div class="flex flex-wrap items-center gap-3 mb-3">
-                    <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $statusColor }}">
-                        {{ $statusText }}
-                    </span>
-                    @if($status !== 'past')
-                        <span class="text-sm text-gray-600 dark:text-gray-400">
-                            {{ $progress }}% Selesai
-                        </span>
-                    @endif
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <div class="p-4 md:p-8 max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="mb-6 md:mb-8 text-center md:text-left">
+                <div class="flex items-center gap-3 mb-2 justify-center md:justify-start">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+                        Edit Project
+                    </h1>
                 </div>
-
-                <!-- Progress Bar -->
-                @if($status !== 'past')
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                        <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" 
-                             style="width: {{ $progress }}%"></div>
-                    </div>
-                @endif
+                <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-md mx-auto md:mx-0">
+                    Edit informasi project atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.
+                </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-                <!-- LEFT SIDE -->
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-bold mb-4 dark:text-gray-200">
-                        {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
-                    </h2>
-
-                    <p class="font-semibold dark:text-gray-200">Deskripsi:</p>
-                    <p class="text-gray-700 dark:text-gray-300 mb-6 text-sm sm:text-base">
-                        {{ $project->isi_content['deskripsi'] ?? 'Tidak ada Deskripsi' }}
-                    </p>
-
-                    <p class="font-semibold mb-1 dark:text-gray-200">Siswa Terlibat:</p>
-                    <p class="mt-4 dark:text-gray-200">Pemimpin Tim:</p>
-                    @if($project->leader)
-                        <li class="ml-2 sm:ml-4 list-none">
-                            <ul class="p-0">
-                                <div class="flex dark:text-gray-200 dark:hover:text-indigo-300 hover:text-indigo-800 items-center gap-2 border px-2 py-1.5 mt-2 rounded-lg max-w-max">
-                                    @if($project->leader->photo_profile)
-                                        <img src="{{ asset('storage/' . ltrim($project->leader->photo_profile, '/')) }}"
-                                             alt="{{ $project->leader->nama_mahasiswa ?? 'Mahasiswa' }}"
-                                             class="w-5 h-5 rounded-full object-cover">
-                                    @else
-                                        <div class="w-5 h-5 bg-indigo-600 flex items-center justify-center text-white text-xs font-bold rounded-full">
-                                            {{ strtoupper(mb_substr(trim($project->leader->nama_mahasiswa ?? 'M'), 0, 1)) }}
-                                        </div>
-                                    @endif
-                                    <a href="{{ route('portfolio.show', $project->leader->id) }}" class="text-sm sm:text-base">
-                                        {{ $project->leader->nama_mahasiswa }}
-                                    </a>
-                                </div>
-                            </ul>
-                        </li>
-                    @else
-                        <p class="dark:text-gray-100 ml-2 sm:ml-4 text-sm sm:text-base">Tidak ada leader</p>
-                    @endif
-                    
-                    <p class="mt-6 dark:text-gray-200">Rekan Rekan Kerja:</p>
-                    <div class="mt-2 ml-2 sm:ml-4 space-y-2 text-gray-700 dark:text-gray-300">
-                        @forelse($project->members as $member)
-                            @if($member->id !== $project->leader_id)
-                                <li class="list-none">
-                                    <ul class="p-0">
-                                        <div class="flex hover:text-indigo-800 items-center gap-2 border p-1.5 max-w-max rounded-lg">
-                                            @if($member->photo_profile)
-                                                <img src="{{ asset('storage/' . ltrim($member->photo_profile, '/')) }}"
-                                                     alt="{{ $member->nama_mahasiswa ?? 'Mahasiswa' }}"
-                                                     class="w-5 h-5 rounded-full object-cover">
-                                            @else
-                                                <div class="w-5 h-5 bg-indigo-600 flex items-center justify-center text-white text-xs font-bold rounded-full">
-                                                    {{ strtoupper(mb_substr(trim($member->nama_mahasiswa ?? 'M'), 0, 1)) }}
-                                                </div>
-                                            @endif
-                                            <a href="{{ route('portfolio.show', $member->id) }}" class="text-sm sm:text-base">
-                                                {{ $member->nama_mahasiswa }}
-                                            </a> 
-                                        </div>
-                                    </ul>
-                                </li>
-                            @endif
-                        @empty
-                            <p class="text-gray-400 dark:text-gray-200 text-sm sm:text-base">Tidak ada rekan</p>
-                        @endforelse
+            <!-- Error Global -->
+            @if ($errors->any())
+                <div class="mb-6 md:mb-8 p-4 md:p-5 bg-red-50 border border-red-200 text-red-700 rounded-2xl">
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="font-medium">Terdapat kesalahan pada input:</span>
                     </div>
+                    <ul class="list-disc pl-5 md:pl-10 space-y-1 text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
 
-                <!-- RIGHT SIDE -->
-                <div>
-                    <p class="font-semibold mb-2 dark:text-gray-200">Time Period</p>
-                    <div class="pb-2 dark:text-gray-200 text-sm sm:text-base">
-                        {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d/m/Y') }}
-                        →
-                        {{ $project->tanggal_akhir 
-                        ? \Carbon\Carbon::parse($project->tanggal_akhir)->format('d/m/Y') 
-                        : '-' }}
-                    </div>
+            <!-- Form -->
+            <form method="POST" action="{{ route('project.update', $project->id) }}" class="space-y-6 md:space-y-7" id="projectForm">
+                @csrf
+                @method('PUT')
+
+                <!-- Filter Section -->
+                <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
                     
-                    <p class="font-semibold mb-2 dark:text-gray-200">Link:</p>
-                    
-                    <div class="flex flex-wrap gap-3 sm:gap-4 text-blue-500 dark:text-blue-300 mb-6">
-                        @if(!empty($project->isi_content['link_video']))
-                            <a href="{{ $project->isi_content['link_video'] }}" 
-                               target="_blank"
-                               class="hover:underline text-sm sm:text-base">
-                               🎥 Video
-                            </a>
-                        @endif
-                        
-                        @if(!empty($project->isi_content['link_github']))
-                            <a href="{{ $project->isi_content['link_github'] }}" 
-                               target="_blank"
-                               class="hover:underline text-sm sm:text-base">
-                               💻 GitHub
-                            </a>
-                        @endif
-                        
-                        @if(!empty($project->isi_content['link_project']))
-                            <a href="{{ $project->isi_content['link_project'] }}" 
-                                target="_blank"
-                                class="hover:underline text-sm sm:text-base">
-                                🌐 Project
-                            </a>
-                        @endif
-                    </div>
-    
-                    <!-- Embed Box -->
-                    @php
-                        $video = $project->isi_content['link_video'] ?? null;
-                        $github = $project->isi_content['link_github'] ?? null;
-                        $projectLink = $project->isi_content['link_project'] ?? null;
-                    @endphp
-
-                    @if($video)
-                        @php
-                            $embed = null;
-                            if (str_contains($video, 'watch?v=')) {
-                                $embed = str_replace('watch?v=', 'embed/', $video);
-                            } elseif (str_contains($video, 'youtu.be/')) {
-                                $embed = str_replace('youtu.be/', 'youtube.com/embed/', $video);
-                            }
-                        @endphp
-
-                        @if($embed)
-                            <div class="rounded-xl overflow-hidden shadow">
-                                <iframe 
-                                    class="w-full h-48 sm:h-56 lg:h-64"
-                                    src="{{ $embed }}"
-                                    frameborder="0"
-                                    allowfullscreen>
-                                </iframe>
+                    <div class="mb-5">
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Cari nama mahasiswa..." value="{{ $search ?? '' }}"
+                                   class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm md:text-base">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
                             </div>
-                        @endif
-                    @elseif($github || $projectLink)
-                        <div class="rounded-xl overflow-hidden shadow">
-                            <iframe 
-                                class="w-full h-48 sm:h-56 lg:h-64"
-                                src="{{ $github ?? $projectLink }}"
-                                frameborder="0">
-                            </iframe>
                         </div>
-                    @endif
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
+                            <select id="angkatan-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                <option value="">Semua Angkatan</option>
+                                @foreach($angkatans as $angk)
+                                    <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>{{ $angk->nama_angkatan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jurusan</label>
+                            <select id="jurusan-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                <option value="">Semua Jurusan</option>
+                                @foreach($jurusans as $jrs)
+                                    <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>{{ $jrs->nama_jurusan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keahlian</label>
+                            <select id="keahlian-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                <option value="">Semua Keahlian</option>
+                                @foreach($keahlians as $keahlianItem)
+                                    <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>{{ $keahlianItem->nama_keahlian }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 justify-end mt-6">
+                        <a href="{{ route('project.edit', $project->id) }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
+                            Reset Filter
+                        </a>
+                        <button type="button" onclick="applyFilters()" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">
+                            Terapkan Filter
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- LEARNING CORNER SECTION -->
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 sm:p-6 lg:p-8 relative mt-6 sm:mt-8 lg:mt-10">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <h2 class="text-xl sm:text-2xl font-bold dark:text-gray-50">Learning Corner</h2>
-
-                <div class="flex items-center gap-3">
-                    @auth
-                        @php
-                            $user = auth()->user();
-                            $isProjectMember = $user && (
-                                $user->id === $project->id_mahasiswa ||
-                                $user->id === $project->leader_id ||
-                                $project->members->contains('id', $user->id)
-                            );
-                        @endphp
-
-                        @if($isProjectMember)
-                            <!-- Mass Delete Form for Owner/Leader (hanya untuk member yang login) -->
-                            @if($user->id === $project->id_mahasiswa || $user->id === $project->leader_id)
-                                <form id="massDeleteForm" action="{{ route('learning-corner.mass-destroy') }}" method="POST" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="ids" id="massDeleteIds" value="">
-                                    <button type="button"
-                                            id="massDeleteBtn"
-                                            class="px-4 sm:px-5 py-2 sm:py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition shadow-sm text-sm font-medium text-center opacity-50 cursor-not-allowed"
-                                            disabled>
-                                        Hapus Terpilih (0)
-                                    </button>
-                                </form>
-                            @endif
-
-                            <a href="{{ route('learning-corner.create', $project->id) }}"
-                               class="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm font-medium text-center">
-                                + Tambah Catatan Baru
-                            </a>
-                        @endif
-                    @else
-                    @endauth
+                <!-- Nama Project -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Nama Project <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="nama_project" value="{{ old('nama_project', $project->isi_content['nama_project'] ?? '') }}" required
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
+                        placeholder="Contoh: Website Portfolio Pribadi">
+                    @error('nama_project')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
-            </div>
 
-            @if ($entries->isEmpty())
-                <div class="text-center py-8 sm:py-12 text-gray-500 dark:text-gray-400 italic text-sm sm:text-base">
-                    Belum ada catatan Learning Corner di project ini.
+                <!-- Deskripsi -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Deskripsi (opsional)</label>
+                    <textarea name="deskripsi" rows="4"
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
+                        placeholder="Deskripsikan project Anda...">{{ old('deskripsi', $project->isi_content['deskripsi'] ?? '') }}</textarea>
+                    @error('deskripsi')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
-            @else
-                <!-- Grid dengan 1 card vertikal -->
-                <div class="space-y-4 sm:space-y-5 lg:space-y-6">
-                    @foreach ($entries as $index => $entry)
-                        @php
-                            $canManage = $entry->canManage(auth()->user());
-                            $isOwnerOrLeader = auth()->check() && (auth()->id() === $project->id_mahasiswa || auth()->id() === $project->leader_id);
-                            
-                            // Parse content
-                            $titles = [];
-                            $texts = [];
-                            $images = [];
-                            $links = [];
-                            
-                            if (!empty($entry->content) && is_array($entry->content)) {
-                                foreach ($entry->content as $item) {
-                                    switch ($item['type'] ?? '') {
-                                        case 'title':
-                                            $titles[] = $item['content'] ?? '';
-                                            break;
-                                        case 'text':
-                                            $texts[] = $item['content'] ?? '';
-                                            break;
-                                        case 'image':
-                                            $images[] = $item['content'] ?? '';
-                                            break;
-                                        case 'link':
-                                            $links[] = $item['content'] ?? '';
-                                            break;
-                                    }
-                                }
-                            }
-                            
-                            $firstTitle = $titles[0] ?? 'Untitled';
-                        @endphp
 
-                        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700">
-                            <!-- Selection Checkbox for Mass Delete (hanya untuk owner/leader yang login) -->
-                            @if($isOwnerOrLeader)
-                                <div class="flex items-center mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
-                                    <input type="checkbox" 
-                                           class="entry-checkbox w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                           data-id="{{ $entry->id_learning_corner }}">
-                                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Pilih untuk dihapus</span>
-                                </div>
-                            @endif
+                <!-- Pemimpin Project dengan Search -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                        Pilih Mahasiswa (Pemimpin Project) <span class="text-red-500">*</span>
+                    </label>
 
-                            <div class="flex flex-col lg:flex-row gap-4 sm:gap-5 lg:gap-6">
-                                <!-- Left Side: Titles, Texts, Links -->
-                                <div class="flex-1 space-y-4">
-                                    <!-- Titles -->
-                                    @foreach($titles as $title)
-                                        <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                            {{ $title }}
-                                        </h3>
-                                    @endforeach
+                    <!-- Selected Leader Display -->
+                    <div id="selected-leader-display" class="mb-4 {{ old('leader', $project->leader_id) ? '' : 'hidden' }}">
+                        <div class="p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3" id="selected-leader-content"></div>
+                                <button type="button" onclick="clearSelectedLeader()" class="text-green-600 dark:text-green-400 hover:text-green-800 p-1 rounded-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                                    <!-- Texts -->
-                                    @foreach($texts as $text)
-                                        <p class="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-                                            {{ $text }}
-                                        </p>
-                                    @endforeach
+                    <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader', $project->leader_id) }}">
 
-                                    <!-- Links -->
-                                    @if(!empty($links))
-                                        <div class="space-y-2">
-                                            @foreach($links as $link)
-                                                <a href="{{ $link }}" target="_blank" rel="noopener noreferrer"
-                                                   class="inline-block text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline text-sm sm:text-base break-all">
-                                                    {{ Str::limit($link, 60) }}
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                    <!-- Search untuk Pemimpin -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input type="text" id="leader-search" placeholder="Cari nama pemimpin project..." 
+                                   class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
 
-                                    <!-- Meta Info & Actions -->
-                                    <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-                                        <div class="flex flex-wrap justify-between items-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3">
-                                            <span class="truncate max-w-[120px] sm:max-w-[150px]">
-                                                {{ $entry->mahasiswa->nama_mahasiswa ?? 'Unknown' }}
-                                            </span>
-                                            <span>{{ $entry->created_at?->format('d M Y') ?? ($entry->tanggal?->format('d M Y') ?? '-') }}</span>
-                                        </div>
-
-                                        <!-- Action Buttons - Hanya tampil jika user login DAN memiliki akses manage -->
-                                        @auth
-                                            @if ($canManage)
-                                                <div class="flex flex-col sm:flex-row gap-2">
-                                                    <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
-                                                       class="flex-1 text-center px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition text-xs sm:text-sm">
-                                                        Edit
-                                                    </a>
-
-                                                    <form action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}" 
-                                                          method="POST" 
-                                                          class="flex-1 delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button"
-                                                                class="w-full px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900 transition text-xs sm:text-sm delete-btn">
-                                                            Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            @endif
-                                        @endauth
-                                    </div>
-                                </div>
-
-                                <!-- Right Side: Images - VERTICAL LAYOUT -->
-                                @if(!empty($images))
-                                    <div class="lg:w-80 flex-shrink-0">
-                                        <div class="space-y-3">
-                                            @foreach($images as $image)
-                                                @php
-                                                    $imagePath = str_replace(['\\', '/'], '/', $image);
-                                                @endphp
-                                                <div class="relative group cursor-pointer image-thumbnail w-full"
-                                                    onclick="openImageModal('{{ asset('storage/' . ltrim($imagePath, '/')) }}')">
-
-                                                    <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-                                                        alt="Gambar konten"
-                                                        class="w-full h-auto max-h-48 object-contain rounded-lg border border-gray-200 shadow-sm hover:opacity-90 transition bg-gray-100 dark:bg-gray-700"
-                                                        loading="lazy"
-                                                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan'; this.classList.add('opacity-90');">
-
-                                                    <!-- Overlay -->
-                                                    <div class="absolute inset-0 bg-transparent group-hover:bg-black/60 transition duration-300 rounded-lg flex items-center justify-center">
-                                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition duration-300"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round"
-                                                                stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
-                                                            </path>
-                                                        </svg>
+                    <!-- Table Container -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">Pilih</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leader-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($users as $user)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group"
+                                            onclick="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                            <td class="px-4 py-4">
+                                                <input type="radio" name="leader_radio" value="{{ $user->id }}"
+                                                       class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                       {{ old('leader', $project->leader_id) == $user->id ? 'checked' : '' }}
+                                                       onchange="event.stopImmediatePropagation(); selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                            </td>
+                                            <td class="px-4 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex-shrink-0">
+                                                        @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
+                                                            <img src="{{ asset('storage/' . $user->photo_profile) }}" 
+                                                                 class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-700"
+                                                                 alt="{{ $user->nama_mahasiswa }}">
+                                                        @else
+                                                            <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center ring-2 ring-white dark:ring-gray-700">
+                                                                <span class="text-indigo-600 dark:text-indigo-300 font-medium text-sm">
+                                                                    {{ strtoupper(substr($user->nama_mahasiswa, 0, 2)) }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">{{ $user->nama_mahasiswa }}</div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
                                                     </div>
                                                 </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
+                                            </td>
+                                            <td class="hidden md:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->angkatan->nama_angkatan ?? '-' }}
+                                            </td>
+                                            <td class="hidden lg:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->jurusan->nama_jurusan ?? '-' }}
+                                            </td>
+                                            <td class="hidden xl:table-cell px-4 py-4">
+                                                <span class="px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    {{ $user->keahlian->nama_keahlian ?? '-' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-4 text-center">
+                                                <a href="{{ route('portfolio.show', $user->id) }}" 
+                                                   onclick="event.stopImmediatePropagation()"
+                                                   class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
+                                                    Lihat
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                                                <div class="flex flex-col items-center">
+                                                    <svg class="w-14 h-14 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                                    </svg>
+                                                    <p class="font-medium">Tidak ada mahasiswa ditemukan</p>
+                                                    <p class="text-sm mt-1">Coba ubah filter pencarian Anda</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                    @endforeach
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-5" id="pagination-links">
+                        {{ $users->links() }}
+                    </div>
+
+                    @error('leader')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <!-- Pagination (if needed) -->
-                @if(method_exists($entries, 'links'))
-                    <div class="mt-6 sm:mt-8">
-                        {{ $entries->links() }}
+                <!-- Rekan Project -->
+                <div id="member-wrapper">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                        Tambah Rekan (opsional)
+                    </label>
+                    <div id="members-container" class="space-y-3">
+                        @php
+                            $oldMembers = old('members', $project->members->pluck('id')->toArray() ?? []);
+                        @endphp
+                        @if(count($oldMembers) > 0)
+                            @foreach($oldMembers as $memberId)
+                                <div class="member-item" data-member-id="{{ $memberId }}"></div>
+                            @endforeach
+                        @endif
                     </div>
-                @endif
-            @endif
-        </div>
-    </div>
+                    <button type="button" onclick="addMemberSelect()"
+                            class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
+                        <span class="text-xl">+</span> Tambah Rekan
+                    </button>
+                </div>
 
-    <!-- Image Modal -->
-    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4" onclick="closeImageModal()">
-        <div class="relative max-w-4xl max-h-[90vh] w-full" onclick="event.stopPropagation()">
-            <button onclick="closeImageModal()" class="absolute -top-10 right-0 text-white hover:text-gray-300">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <img id="modalImage" src="" alt="Full size image" class="w-full h-auto max-h-[90vh] object-contain rounded-lg">
+                <!-- Tanggal -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                            Tanggal Mulai <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $project->tanggal_mulai->format('Y-m-d')) }}" required
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
+                        @error('tanggal_mulai')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                            Tanggal Selesai (opsional)
+                        </label>
+                        <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir', $project->tanggal_akhir?->format('Y-m-d') ?? '') }}"
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
+                        @error('tanggal_akhir')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Link Project -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link Project (opsional)</label>
+                    <input type="url" name="link_project" value="{{ old('link_project', $project->isi_content['link_project'] ?? '') }}"
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
+                        placeholder="https://example.com/project">
+                    @error('link_project')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Link GitHub & Video -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link GitHub (opsional)</label>
+                        <input type="url" name="link_github" maxlength="500" value="{{ old('link_github', $project->isi_content['link_github'] ?? '') }}"
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
+                            placeholder="https://github.com/username/repo">
+                        @error('link_github')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link Video (YouTube, opsional)</label>
+                        <input type="url" name="link_video" maxlength="500" value="{{ old('link_video', $project->isi_content['link_video'] ?? '') }}"
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
+                            placeholder="https://www.youtube.com/watch?v=...">
+                        @error('link_video')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex-1"></div> 
+                    
+                    <a href="{{ route('project.index') }}"
+                       class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto">
+                        Batal
+                    </a>
+                    
+                    <button type="submit"
+                        class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto">
+                        Update Project
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Individual delete buttons
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
+        let currentFilters = { search: '{{ $search ?? '' }}', angkatan: '{{ $angkatan ?? '' }}', jurusan: '{{ $jurusan ?? '' }}', keahlian: '{{ $keahlian ?? '' }}' };
+
+        function applyFilters() {
+            currentFilters.search = document.getElementById('search-input').value.trim();
+            currentFilters.angkatan = document.getElementById('angkatan-filter').value;
+            currentFilters.jurusan = document.getElementById('jurusan-filter').value;
+            currentFilters.keahlian = document.getElementById('keahlian-filter').value;
+            fetchFilteredUsers();
+        }
+
+        function fetchFilteredUsers(page = 1) {
+            const url = new URL('{{ route("project.edit", $project->id) }}');
+            url.searchParams.set('search', currentFilters.search);
+            url.searchParams.set('angkatan', currentFilters.angkatan);
+            url.searchParams.set('jurusan', currentFilters.jurusan);
+            url.searchParams.set('keahlian', currentFilters.keahlian);
+            url.searchParams.set('page', page);
+
+            fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
                     
-                    const form = this.closest('.delete-form');
-                    if (!form) return;
+                    const newBody = doc.querySelector('#leader-table-body');
+                    if (newBody) document.getElementById('leader-table-body').innerHTML = newBody.innerHTML;
 
-                    const confirmed = await showConfirmAlert({
-                        title: 'Hapus Entri Learning Corner?',
-                        text: 'Catatan ini akan dihapus permanen dan tidak bisa dikembalikan.',
-                        icon: 'warning',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal',
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
+                    const newPagination = doc.querySelector('#pagination-links');
+                    if (newPagination) document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
+
+                    attachTableRowListeners();
+                    const selectedId = document.getElementById('selected-leader-id').value;
+                    if (selectedId) {
+                        const radio = document.querySelector(`.leader-radio[value="${selectedId}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        function attachTableRowListeners() {
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                const radio = row.querySelector('.leader-radio');
+                if (radio) {
+                    row.addEventListener('click', function(e) {
+                        if (e.target.type !== 'radio') {
+                            const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                            const name = nameEl ? nameEl.textContent.trim() : '';
+                            const img = row.querySelector('img');
+                            const photoSrc = img ? img.src : '';
+                            selectLeader(radio.value, name, photoSrc);
+                        }
                     });
+                }
+            });
+        }
 
-                    if (confirmed) {
-                        showLoading('Menghapus catatan...');
-                        form.submit();
+        // Search untuk Leader Table
+        function filterLeaderTable() {
+            const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                if (!row.querySelector('.leader-radio')) return;
+                const nameText = row.textContent.toLowerCase();
+                row.style.display = nameText.includes(keyword) ? '' : 'none';
+            });
+        }
+
+        function selectLeader(userId, userName, photoProfile) {
+            document.getElementById('selected-leader-id').value = userId;
+            document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = (radio.value == userId));
+
+            const display = document.getElementById('selected-leader-display');
+            const content = document.getElementById('selected-leader-content');
+
+            let photoHtml = photoProfile 
+                ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-green-200" src="${photoProfile}" alt="${userName}">`
+                : `<div class="w-9 h-9 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center">
+                     <span class="text-green-700 dark:text-green-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
+                   </div>`;
+
+            content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">Pemimpin: ${userName}</div>`;
+            display.classList.remove('hidden');
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
+
+        function clearSelectedLeader() {
+            document.getElementById('selected-leader-id').value = '';
+            document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = false);
+            document.getElementById('selected-leader-display').classList.add('hidden');
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
+
+        // ==================== ADD MEMBER SELECT (Dropdown Full) ====================
+        function addMemberSelect(savedValue = null) {
+            const container = document.getElementById('members-container');
+            const memberDiv = document.createElement('div');
+            memberDiv.classList.add('member-item', 'mb-4');
+
+            const users = [];
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                const radio = row.querySelector('.leader-radio');
+                if (radio) {
+                    const nameElement = row.querySelector('td:nth-child(2) .font-medium');
+                    const fullName = nameElement ? nameElement.textContent.trim() : 'Nama Tidak Diketahui';
+                    const img = row.querySelector('img');
+                    const photoProfile = img ? img.src : '';
+                    const initial = fullName.charAt(0).toUpperCase();
+
+                    users.push({ id: radio.value, name: fullName, photoProfile: photoProfile, initial: initial });
+                }
+            });
+
+            if (users.length === 0) {
+                memberDiv.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700">
+                        <select class="member-select w-full p-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl" disabled>
+                            <option value="">Tidak ada mahasiswa tersedia</option>
+                        </select>
+                    </div>
+                `;
+            } else {
+                let optionsHtml = '<option value="">-- Pilih Rekan Project --</option>';
+                users.forEach(user => {
+                    const selected = savedValue && savedValue == user.id ? 'selected' : '';
+                    optionsHtml += `<option value="${user.id}" data-photo="${user.photoProfile}" data-initial="${user.initial}" ${selected}>${user.name}</option>`;
+                });
+
+                memberDiv.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="relative mb-4">
+                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <div class="relative flex-1 w-full">
+                                <select name="members[]" class="member-select w-full p-4 pl-14 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none transition text-base">
+                                    ${optionsHtml}
+                                </select>
+                                <div class="member-photo absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <div class="w-9 h-9 rounded-2xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center overflow-hidden ring-2 ring-white dark:ring-gray-700">
+                                        <span class="member-initial text-indigo-600 dark:text-indigo-400 font-semibold text-base"></span>
+                                        <img class="member-img hidden w-full h-full object-cover rounded-2xl" src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeMember(this)" class="px-6 py-4 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900 rounded-2xl transition font-medium flex-shrink-0">✕</button>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(memberDiv);
+
+                const select = memberDiv.querySelector('.member-select');
+                const searchInput = memberDiv.querySelector('.member-search');
+                const initialSpan = memberDiv.querySelector('.member-initial');
+                const img = memberDiv.querySelector('.member-img');
+
+                searchInput.addEventListener('input', function() {
+                    const keyword = this.value.toLowerCase().trim();
+                    Array.from(select.options).forEach(option => {
+                        if (option.value === '') return;
+                        option.style.display = option.textContent.toLowerCase().includes(keyword) ? '' : 'none';
+                    });
+                });
+
+                select.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (this.value) {
+                        const photo = selectedOption.dataset.photo;
+                        const initial = selectedOption.dataset.initial;
+                        if (photo && photo !== '') {
+                            img.src = photo; img.classList.remove('hidden'); initialSpan.classList.add('hidden');
+                        } else {
+                            img.classList.add('hidden'); initialSpan.classList.remove('hidden'); initialSpan.textContent = initial;
+                        }
+                    } else {
+                        img.classList.add('hidden'); initialSpan.classList.remove('hidden'); initialSpan.textContent = '?';
+                    }
+                    updateDisabledOptions();
+                    saveToLocalStorage();
+                });
+
+                if (savedValue) {
+                    select.value = savedValue;
+                    select.dispatchEvent(new Event('change'));
+                }
+            }
+            updateDisabledOptions();
+        }
+
+        function removeMember(button) {
+            const memberDiv = button.closest('.member-item');
+            if (memberDiv) memberDiv.remove();
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
+
+        function updateDisabledOptions() {
+            const leaderId = document.getElementById('selected-leader-id').value || '';
+            const selectedMemberIds = [];
+            document.querySelectorAll('.member-select').forEach(select => {
+                if (select.value && !select.disabled) selectedMemberIds.push(select.value);
+            });
+
+            document.querySelectorAll('.member-select').forEach(select => {
+                if (select.disabled) return;
+                select.querySelectorAll('option').forEach(option => option.disabled = false);
+
+                if (leaderId) {
+                    const leaderOption = select.querySelector(`option[value="${leaderId}"]`);
+                    if (leaderOption) leaderOption.disabled = true;
+                }
+
+                selectedMemberIds.forEach(selectedId => {
+                    if (selectedId && select.value !== selectedId) {
+                        const selectedOption = select.querySelector(`option[value="${selectedId}"]`);
+                        if (selectedOption) selectedOption.disabled = true;
                     }
                 });
             });
+        }
 
-            // Mass delete functionality
-            const checkboxes = document.querySelectorAll('.entry-checkbox');
-            const massDeleteBtn = document.getElementById('massDeleteBtn');
-            const massDeleteIds = document.getElementById('massDeleteIds');
-            const massDeleteForm = document.getElementById('massDeleteForm');
+        function saveToLocalStorage() {
+            const leaderId = document.getElementById('selected-leader-id').value || '';
+            const memberIds = Array.from(document.querySelectorAll('.member-select'))
+                .filter(s => s.value).map(s => s.value);
+            localStorage.setItem('projectTeamData', JSON.stringify({ leader: leaderId, members: memberIds }));
+        }
 
-            if (checkboxes.length > 0 && massDeleteBtn && massDeleteForm) {
-                function updateMassDeleteButton() {
-                    const checkedBoxes = document.querySelectorAll('.entry-checkbox:checked');
-                    const checkedCount = checkedBoxes.length;
-                    
-                    massDeleteBtn.textContent = `Hapus Terpilih (${checkedCount})`;
-                    
-                    // Update hidden input with selected IDs
-                    const selectedIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
-                    massDeleteIds.value = JSON.stringify(selectedIds);
-                    
-                    if (checkedCount > 0) {
-                        massDeleteBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                        massDeleteBtn.disabled = false;
-                    } else {
-                        massDeleteBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                        massDeleteBtn.disabled = true;
+        function loadSavedData() {
+            const savedData = localStorage.getItem('projectTeamData');
+            if (!savedData) { 
+                // Load existing members from database
+                const existingMembers = @json($project->members->pluck('id')->toArray());
+                if (existingMembers.length > 0) {
+                    existingMembers.forEach(id => addMemberSelect(id));
+                } else {
+                    addMemberSelect();
+                }
+                return; 
+            }
+            try {
+                const data = JSON.parse(savedData);
+                if (data.leader) {
+                    const radio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
+                    if (radio) {
+                        const row = radio.closest('tr');
+                        const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                        const name = nameEl ? nameEl.textContent.trim() : '';
+                        const img = row.querySelector('img');
+                        const photo = img ? img.src : '';
+                        selectLeader(data.leader, name, photo);
                     }
                 }
-
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', updateMassDeleteButton);
-                });
-
-                massDeleteBtn.addEventListener('click', async function() {
-                    const checkedCount = document.querySelectorAll('.entry-checkbox:checked').length;
-                    
-                    if (checkedCount === 0) return;
-
-                    const confirmed = await showConfirmAlert({
-                        title: 'Hapus Multiple Entri?',
-                        text: `Anda akan menghapus ${checkedCount} catatan. Tindakan ini tidak dapat dibatalkan.`,
-                        icon: 'warning',
-                        confirmButtonText: 'Ya, Hapus Semua',
-                        cancelButtonText: 'Batal',
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                    });
-
-                    if (confirmed) {
-                        showLoading('Menghapus catatan terpilih...');
-                        
-                        // Parse IDs from hidden input
-                        const ids = JSON.parse(massDeleteIds.value);
-                        
-                        // Create a new form with the IDs as array
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = massDeleteForm.action;
-                        
-                        const csrfInput = document.createElement('input');
-                        csrfInput.type = 'hidden';
-                        csrfInput.name = '_token';
-                        csrfInput.value = '{{ csrf_token() }}';
-                        form.appendChild(csrfInput);
-                        
-                        ids.forEach(id => {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'ids[]';
-                            input.value = id;
-                            form.appendChild(input);
-                        });
-                        
-                        document.body.appendChild(form);
-                        form.submit();
+                const container = document.getElementById('members-container');
+                container.innerHTML = '';
+                if (data.members && data.members.length > 0) {
+                    data.members.forEach(id => addMemberSelect(id));
+                } else {
+                    // Load existing members from database if no saved data
+                    const existingMembers = @json($project->members->pluck('id')->toArray());
+                    if (existingMembers.length > 0) {
+                        existingMembers.forEach(id => addMemberSelect(id));
+                    } else {
+                        addMemberSelect();
                     }
-                });
+                }
+                setTimeout(updateDisabledOptions, 150);
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+                // Load existing members from database
+                const existingMembers = @json($project->members->pluck('id')->toArray());
+                if (existingMembers.length > 0) {
+                    existingMembers.forEach(id => addMemberSelect(id));
+                } else {
+                    addMemberSelect();
+                }
             }
-
-            @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
-            @endif
-
-            @if (session('error'))
-                showErrorAlert('{{ session('error') }}');
-            @endif
-        });
-
-        // Image Modal Functions
-        function openImageModal(imageSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            modalImage.src = imageSrc;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
         }
 
-        function closeImageModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
-        }
-
-        // Close modal with ESC key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeImageModal();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const oldLeaderId = document.getElementById('selected-leader-id').value;
+            if (oldLeaderId) {
+                const radio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
+                if (radio) {
+                    const row = radio.closest('tr');
+                    const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                    const name = nameEl ? nameEl.textContent.trim() : '';
+                    const img = row.querySelector('img');
+                    const photo = img ? img.src : '';
+                    selectLeader(oldLeaderId, name, photo);
+                }
             }
+
+            attachTableRowListeners();
+            loadSavedData();
+
+            document.getElementById('projectForm').addEventListener('submit', () => localStorage.removeItem('projectTeamData'));
+
+            // Global Filter Search + Enter
+            document.getElementById('search-input').addEventListener('keypress', e => {
+                if (e.key === 'Enter') { e.preventDefault(); applyFilters(); }
+            });
+
+            // Leader Search
+            const leaderSearch = document.getElementById('leader-search');
+            leaderSearch.addEventListener('input', filterLeaderTable);
+
+            // Pagination AJAX
+            document.addEventListener('click', e => {
+                const link = e.target.closest('.pagination a');
+                if (link) {
+                    e.preventDefault();
+                    const url = new URL(link.href);
+                    const page = url.searchParams.get('page') || 1;
+                    fetchFilteredUsers(page);
+                }
+            });
         });
+
+        // Filter Leader Table Function
+        function filterLeaderTable() {
+            const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                if (!row.querySelector('.leader-radio')) return;
+                row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none';
+            });
+        }
     </script>
 @endsection

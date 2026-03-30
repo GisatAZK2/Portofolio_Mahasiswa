@@ -116,7 +116,7 @@
                 </label>
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">
-                Total dipilih: <span id="totalSelected">0</span>
+                Total dipilih: <span id="totalSelected">0</span> / <span id="totalItems">{{ count($users) }}</span>
             </span>
         </div>
     </div>
@@ -128,7 +128,7 @@
             <thead>
                 <tr class="bg-gray-100 dark:bg-gray-700">
                     <th class="px-4 py-3 text-left">
-                        <input type="checkbox" onclick="toggleAll(this)" class="rounded text-blue-600 focus:ring-blue-500">
+                        <input type="checkbox" id="tableSelectAllCheckbox" class="rounded text-blue-600 focus:ring-blue-500">
                     </th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Foto</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama / Username</th>
@@ -144,7 +144,7 @@
                 @forelse($users as $index => $user)
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td class="px-4 py-4">
-                        <input type="checkbox" name="selected[]" value="{{ $user->id }}" class="item-checkbox rounded text-blue-600 focus:ring-blue-500" onchange="updateSelectedIds()">
+                        <input type="checkbox" name="selected[]" value="{{ $user->id }}" class="item-checkbox rounded text-blue-600 focus:ring-blue-500">
                     </td>
                     <td class="px-4 py-4">
                         @if($user->photo_profile && Storage::disk('public')->exists($user->photo_profile))
@@ -196,7 +196,7 @@
                         @endif
                     </td>
                     <td class="px-4 py-4 dark:text-white text-sm">{{ $user->jurusan?->nama_jurusan ?? '-' }}</td>
-                    <td class="px-4 py-4 dark:text-white text-sm">{{ $user->angkatan?->tahun_angkatan ?? '-' }}</td>
+                    <td class="px-4 py-4 dark:text-white text-sm">{{ $user->angkatan?->nama_angkatan ?? '-' }}</td>
                     <td class="px-4 py-4">
                         <div class="flex space-x-2">
                             @if(in_array($user->role, ['mahasiswa', 'dosen']))
@@ -209,7 +209,7 @@
                             </a>
                             @endif
                             <!-- Edit User Button -->
-                            <a href="{{ route('admin.users.edit', $user->id) }}"
+                            <a href="{{ route('admin.users.details', $user->id) }}"
                                class="text-yellow-500 hover:text-yellow-700 transition-colors" title="Edit User">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -258,7 +258,7 @@
         <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600">
             <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center space-x-3">
-                    <input type="checkbox" name="selected[]" value="{{ $user->id }}" class="item-checkbox rounded text-blue-600 focus:ring-blue-500" onchange="updateSelectedIds()">
+                    <input type="checkbox" name="selected[]" value="{{ $user->id }}" class="item-checkbox rounded text-blue-600 focus:ring-blue-500">
                 </div>
                 <span class="px-2 py-1 rounded-full text-xs font-medium
                     @if($user->role == 'admin') bg-red-100 text-red-700
@@ -342,7 +342,7 @@
                 </a>
                 @endif
                 <!-- Edit User Button Mobile -->
-                <a href="{{ route('admin.users.edit', $user->id) }}"
+                <a href="{{ route('admin.users.details', $user->id) }}"
                    class="text-yellow-500 hover:text-yellow-700 p-2 transition-colors" title="Edit User">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -400,17 +400,26 @@
 <script>
 let selectedIds = [];
 
-// Update Selected IDs for Bulk Delete
 function updateSelectedIds() {
     selectedIds = [];
-    let checkboxes = document.querySelectorAll('.item-checkbox:checked');
-    checkboxes.forEach(checkbox => {
-        selectedIds.push(checkbox.value);
+
+    // Ambil checkbox yang terlihat saja (tidak display:none)
+    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+        if (checkbox.offsetParent !== null && checkbox.checked) {
+            selectedIds.push(checkbox.value);
+        }
     });
 
+    const totalSelectedEl = document.getElementById('totalSelected');
+    if (totalSelectedEl) {
+        totalSelectedEl.textContent = selectedIds.length;
+    }
+
+    // Reset input hidden
     const bulkForm = document.getElementById('bulkDeleteForm');
     bulkForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
 
+    // Tambah input baru
     selectedIds.forEach(id => {
         const input = document.createElement('input');
         input.type = 'hidden';
@@ -419,56 +428,69 @@ function updateSelectedIds() {
         bulkForm.appendChild(input);
     });
 
-    const totalSelected = document.getElementById('totalSelected');
-    if (totalSelected) {
-        totalSelected.textContent = selectedIds.length;
-    }
+    // FIX: hanya hitung checkbox visible
+    const allCheckboxes = Array.from(document.querySelectorAll('.item-checkbox'))
+        .filter(cb => cb.offsetParent !== null);
 
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-    const allCheckboxes = document.querySelectorAll('.item-checkbox');
-    if (selectAllCheckbox && allCheckboxes.length > 0) {
+    const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
+
+    if (allCheckboxes.length > 0) {
         if (selectedIds.length === allCheckboxes.length) {
-            selectAllCheckbox.checked = true;
-            selectAllCheckbox.indeterminate = false;
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            }
+            if (tableSelectAllCheckbox) {
+                tableSelectAllCheckbox.checked = true;
+                tableSelectAllCheckbox.indeterminate = false;
+            }
         } else if (selectedIds.length === 0) {
-            selectAllCheckbox.checked = false;
-            selectAllCheckbox.indeterminate = false;
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            }
+            if (tableSelectAllCheckbox) {
+                tableSelectAllCheckbox.checked = false;
+                tableSelectAllCheckbox.indeterminate = false;
+            }
         } else {
-            selectAllCheckbox.indeterminate = true;
+            if (selectAllCheckbox) selectAllCheckbox.indeterminate = true;
+            if (tableSelectAllCheckbox) tableSelectAllCheckbox.indeterminate = true;
         }
     }
 }
 
-// Toggle all checkboxes
+// Toggle All Checkboxes (fungsi utama)
 function toggleAll(source) {
-    let checkboxes = document.querySelectorAll('.item-checkbox');
-    checkboxes.forEach(checkbox => {
+    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
         checkbox.checked = source.checked;
     });
     updateSelectedIds();
 }
 
-// Confirm bulk delete
+// Confirm Bulk Delete
 function confirmBulkDelete() {
-    updateSelectedIds();
+    updateSelectedIds(); // Pastikan data ter-update sebelum konfirmasi
+
     if (selectedIds.length === 0) {
         Swal.fire({
             icon: 'warning',
             title: 'Tidak Ada Data Dipilih',
-            text: 'Silakan pilih pengguna yang ingin dihapus.',
+            text: 'Silakan pilih minimal satu pengguna.',
             confirmButtonColor: '#3b82f6'
         });
         return;
     }
-   
+
     Swal.fire({
         title: 'Hapus Pengguna Terpilih?',
-        text: `${selectedIds.length} pengguna akan dihapus permanen dan tidak bisa dikembalikan.`,
+        html: `Anda akan menghapus <strong>${selectedIds.length}</strong> pengguna secara permanen.<br><br><small class="text-red-600">Tindakan ini tidak dapat dibatalkan.</small>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ya, Hapus Semua',
+        confirmButtonText: 'Ya, Hapus Permanen',
         cancelButtonText: 'Batal',
         reverseButtons: true
     }).then((result) => {
@@ -478,18 +500,17 @@ function confirmBulkDelete() {
     });
 }
 
-// Open Delete Modal
+// Open Delete Modal (Single Delete)
 function openDeleteModal(id, name) {
     Swal.fire({
         title: 'Hapus Pengguna',
-        html: `<p class="text-sm text-gray-500 dark:text-gray-400">Apakah Anda yakin ingin menghapus pengguna <span class="font-bold">${name}</span>?<br>Tindakan ini tidak dapat dibatalkan.</p>`,
+        html: `Apakah Anda yakin ingin menghapus <strong>${name}</strong>?<br><br><small class="text-red-600">Tindakan ini tidak dapat dibatalkan.</small>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
         confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal',
-        reverseButtons: true
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.getElementById('hiddenDeleteForm');
@@ -501,7 +522,6 @@ function openDeleteModal(id, name) {
     });
 }
 
-// Open Update Modal
 function openUpdateModal(userId, userName) {
     Swal.fire({
         title: 'Update Status Pengajuan',
@@ -511,72 +531,99 @@ function openUpdateModal(userId, userName) {
                     Mahasiswa: <span class="font-medium text-gray-900 dark:text-white">${userName}</span>
                 </p>
             </div>
+
             <div class="mb-4">
                 <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-                    Status <span class="text-red-500">*</span>
+                    Status Pengajuan <span class="text-red-500">*</span>
                 </label>
-                <select id="swal-status_pengajuan" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                <select id="swal-status_pengajuan" 
+                        onchange="toggleKeteranganField(this)"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
                     <option value="">Pilih Status</option>
-                    <option value="Di Terima">Terima Pengajuan</option>
-                    <option value="Di Tolak">Tolak Pengajuan</option>
+                    <option value="Di Terima">✅ Terima Pengajuan</option>
+                    <option value="Di Tolak">❌ Tolak Pengajuan</option>
                 </select>
             </div>
+
             <div class="mb-4 hidden" id="swal-keteranganTolakField">
                 <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-                    Alasan Penolakan <span class="text-red-500">*</span>
+                    Keterangan / Alasan Penolakan <span class="text-red-500">*</span>
                 </label>
-                <textarea id="swal-keterangan_tolak" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Masukkan alasan penolakan..."></textarea>
-                <p class="text-xs text-gray-500 mt-1">Alasan akan dikirimkan ke email mahasiswa</p>
+                <textarea id="swal-keterangan_tolak" 
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                          placeholder="Masukkan alasan penolakan secara jelas..."></textarea>
+                <p class="text-xs text-gray-500 mt-1">Alasan ini akan dikirimkan ke email mahasiswa</p>
             </div>
         `,
         showCancelButton: true,
-        confirmButtonText: 'Simpan',
+        confirmButtonText: 'Simpan Perubahan',
         cancelButtonText: 'Batal',
+        width: '520px',
         preConfirm: () => {
-            const statusSelect = document.getElementById('swal-status_pengajuan');
-            const status = statusSelect ? statusSelect.value : '';
-            const kText = document.getElementById('swal-keterangan_tolak');
-            const keterangan = kText ? kText.value.trim() : '';
+            const status = document.getElementById('swal-status_pengajuan').value;
+            const keterangan = document.getElementById('swal-keterangan_tolak') ? 
+                              document.getElementById('swal-keterangan_tolak').value.trim() : '';
 
             if (!status) {
-                Swal.showValidationMessage('Silakan pilih status');
-                return false;
-            }
-            if (status === 'Di Tolak' && !keterangan) {
-                Swal.showValidationMessage('Alasan penolakan wajib diisi');
+                Swal.showValidationMessage('Silakan pilih status pengajuan');
                 return false;
             }
 
-            // Submit form
-            const hiddenForm = document.getElementById('hiddenUpdateForm');
-            if (hiddenForm) {
-                document.getElementById('hidden_status_pengajuan').value = status;
-                document.getElementById('hidden_keterangan_tolak').value = keterangan;
-                hiddenForm.action = `/user/${userId}/update-status`;
-                hiddenForm.submit();
+            if (status === 'Di Tolak' && !keterangan) {
+                Swal.showValidationMessage('Alasan penolakan wajib diisi!');
+                return false;
             }
+
+            const form = document.getElementById('hiddenUpdateForm');
+            form.action = `/user/${userId}/update-status`;
+            document.getElementById('hidden_status_pengajuan').value = status;
+            document.getElementById('hidden_keterangan_tolak').value = keterangan;
+
+            form.submit();
             return false;
         }
     });
 }
 
-// Initialize page
+// Toggle keterangan field
+function toggleKeteranganField(selectElement) {
+    const keteranganField = document.getElementById('swal-keteranganTolakField');
+    if (selectElement.value === 'Di Tolak') {
+        keteranganField.classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('swal-keterangan_tolak').focus();
+        }, 300);
+    } else {
+        keteranganField.classList.add('hidden');
+    }
+}
+
+// Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    // Inisialisasi awal
     updateSelectedIds();
 
-    let checkboxes = document.querySelectorAll('.item-checkbox');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateSelectedIds);
+    // Event listener untuk setiap checkbox item
+   document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+        if (checkbox.offsetParent !== null) {
+            checkbox.checked = this.checked;
+        }
     });
 
+    // Select All di bar atas (mobile & desktop)
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.item-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            updateSelectedIds();
+            toggleAll(this);   
+        });
+    }
+
+    // Select All di header tabel (desktop)
+    const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
+    if (tableSelectAllCheckbox) {
+        tableSelectAllCheckbox.addEventListener('change', function() {
+            toggleAll(this);
         });
     }
 
@@ -591,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
             timerProgressBar: true
         });
     @endif
+
     @if (session('error'))
         Swal.fire({
             icon: 'error',
@@ -599,6 +647,7 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmButtonColor: '#dc2626'
         });
     @endif
+
     @if (session('info'))
         Swal.fire({
             icon: 'info',

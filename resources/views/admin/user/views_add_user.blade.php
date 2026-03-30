@@ -212,7 +212,7 @@
                             <option value="">Pilih Angkatan</option>
                             @foreach($angkatan as $a)
                                 <option value="{{ $a->id }}" {{ old('id_angkatan') == $a->id ? 'selected' : '' }}>
-                                    {{ $a->tahun }}
+                                    {{ $a->nama_angkatan }}
                                 </option>
                             @endforeach
                         </select>

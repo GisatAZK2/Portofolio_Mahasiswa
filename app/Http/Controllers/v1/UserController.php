@@ -165,12 +165,12 @@ class UserController extends Controller
     ])->onlyInput('login');
 }
 
-    public function updateStatusPengajuan(Request $request, $id)
+public function updateStatusPengajuan(Request $request, $id)
 {
     $currentUser = Auth::user();
     $user = User::findOrFail($id);
 
-    // 1. Cek Otorisasi (Khusus Dosen)
+    // 1. Cek Otorisasi
     if ($currentUser->role === 'dosen') {
         if (
             $currentUser->id_jurusan != $user->id_jurusan ||
@@ -183,10 +183,10 @@ class UserController extends Controller
         return redirect()->back()->with('error', 'Akses ditolak.');
     }
 
-    // 2. Validasi Input
+    // 2. Validasi Input (sesuaikan dengan nama yang dikirim dari form)
     $request->validate([
         'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
-        'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:255',
+        'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:500',
     ]);
 
     try {
@@ -194,27 +194,27 @@ class UserController extends Controller
             'status_pengajuan' => $request->status_pengajuan,
         ];
 
-        // 3. Logika Update
         if ($request->status_pengajuan === 'Di Terima') {
             $updateData['is_active'] = true;
+            $updateData['keterangan'] = null;           // Kosongkan di database
         } else {
             $updateData['is_active'] = false;
-            // Simpan alasan tolak ke session agar bisa ditampilkan di view jika perlu
-            session()->flash('keterangan_tolak_' . $user->id, $request->keterangan_tolak);
+            $updateData['keterangan'] = $request->keterangan_tolak;   // Ambil dari form, simpan ke kolom 'keterangan'
         }
 
+        // Update ke database
         $user->update($updateData);
 
-        // 4. Return Redirect Success
+        $statusText = $request->status_pengajuan === 'Di Terima' ? 'diterima' : 'ditolak';
+
         return redirect()->route('admin.users.index')
-            ->with('success', 'Status pengajuan mahasiswa ' . $user->name . ' berhasil diperbarui.');
+            ->with('success', "Status pengajuan mahasiswa {$user->name} berhasil {$statusText}.");
 
     } catch (\Exception $e) {
         return redirect()->back()
             ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
     }
 }
-
 
     public function logout(Request $request)
     {

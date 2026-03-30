@@ -317,21 +317,33 @@ class AdminController extends Controller
          $user->delete();
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Sertifikat berhasil dihapus.');
+            ->with('success', 'User berhasil dihapus.');
     }
 
-   public function bulkDestroyUsers(Request $request)
-{
-    $ids = json_decode($request->selected_ids);
-    
-    if (empty($ids)) {
-        return response()->json(['success' => false, 'message' => 'Tidak ada data dipilih']);
+    public function bulkDestroyUsers(Request $request) {
+            $ids = $request->input('selected_ids');
+
+            // Handle jika dikirim sebagai JSON string (dari JS)
+            if (is_string($ids)) {
+                $ids = json_decode($ids, true);
+            }
+
+            if (empty($ids) || !is_array($ids)) {
+                return redirect()->back()
+                    ->with('error', 'Tidak ada pengguna yang dipilih untuk dihapus.');
+            }
+
+            // Optional: Tambahkan pengecekan agar admin tidak bisa menghapus dirinya sendiri
+            $currentUserId = Auth::id();
+            $ids = array_filter($ids, function($id) use ($currentUserId) {
+                return $id != $currentUserId;
+            });
+
+            $count = User::whereIn('id', $ids)->delete();
+
+            return redirect()->route('admin.users.index')
+                ->with('success', "{$count} pengguna berhasil dihapus secara permanen.");
     }
-    
-    User::whereIn('id', $ids)->delete();
-    
-    return response()->json(['success' => true, 'message' => count($ids) . ' pengguna berhasil dihapus']);
-}
 
     //For Pages Sertifikat
     public function sertifikat(Request $request) {
@@ -711,15 +723,55 @@ class AdminController extends Controller
         ));
     }
 
-    public function EditProjects($id){
-        $this->authorizeAccess();
-        $project = Project::with('leader', 'members', 'learningCorners')
-                   ->findOrFail($id);
-         $entries = LearningCorner::where('project_id', $project->id)
-        ->latest()
-        ->get();
-        return view('admin.projects.views_edit_project', compact('project', 'entries'));
+    public function EditProjects($id)
+{
+    $this->authorizeAccess();
+    
+    // Get search and filter inputs
+    $search = request()->input('search');
+    $angkatan = request()->input('angkatan');
+    $jurusan = request()->input('jurusan');
+    $keahlian = request()->input('keahlian');
+
+    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+        ->where('role', 'mahasiswa');
+    
+    // Filter pencarian berdasarkan nama mahasiswa
+    if ($search) {
+        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
     }
+
+    // Filter berdasarkan angkatan
+    if ($angkatan) {
+        $query->where('id_angkatan', $angkatan);
+    }
+
+    // Filter berdasarkan jurusan
+    if ($jurusan) {
+        $query->where('id_jurusan', $jurusan);
+    }
+
+    // Filter berdasarkan keahlian
+    if ($keahlian) {
+        $query->where('id_keahlian', $keahlian);
+    }
+
+    // Ambil data dengan pagination
+    $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    // Ambil data untuk dropdown filter
+    $angkatans = Angkatan::all();
+    $jurusans = Jurusan::all();
+    $keahlians = Keahlian::all();
+
+    // Get project data
+    $project = Project::with('members')
+        ->where('id', $id)
+        ->firstOrFail();
+
+    return view('admin.projects.views_edit_project', compact('project', 'users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
+}
 
     public function StoreProject(Request $request) {
         $this->authorizeAccess();
@@ -789,78 +841,101 @@ class AdminController extends Controller
             ->with('clear_local_storage', true); // Tambahkan flag untuk membersihkan localStorage di frontend
     }
 
-    public function UpdateProject(Request $request, $id) {
-        $this->authorizeAccess();
-        $project = Project::where('id', $id)
-            ->where('id_mahasiswa', Auth::id())
-            ->firstOrFail();
-            $request->validate([
-            'nama_project'   => 'required|string|max:255',
-            'tanggal_mulai'  => 'required|date',
-            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
-            'link_project'   => 'nullable|url|max:255',
-            'deskripsi'      => 'nullable|string|max:255',
-            'link_github'    => 'nullable|url|max:500',
-            'link_video'     => 'nullable|url|max:500',
-            'leader'         => 'nullable|exists:users,id',
-            'id_mahasiswa'   => 'nullable|exist:users,id'
-        ]);
-        $content = array_filter($request->only([
-            'nama_project', 'judul', 'deskripsi', 'link_project', 'link_github', 'link_video'
-        ]), fn($value) => !is_null($value) && $value !== '');
-
-        if (empty($content)) {
-            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (judul, deskripsi, atau link)']);
-        }
-        
-        $project->update([
+    
+public function UpdateProject(Request $request, $id) 
+{
+    $this->authorizeAccess();
+    
+    $project = Project::findOrFail($id);
+    
+    $request->validate([
+        'nama_project'   => 'required|string|max:255',
+        'tanggal_mulai'  => 'required|date',
+        'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+        'link_project'   => 'nullable|url|max:255',
+        'deskripsi'      => 'nullable|string|max:255',
+        'link_github'    => 'nullable|url|max:500',
+        'link_video'     => 'nullable|url|max:500',
+        'leader'         => 'nullable|exists:users,id',
+        'members'        => 'nullable|array',
+        'members.*'      => 'exists:users,id'
+    ]);
+    
+    // Prepare content array for isi_content JSON field
+    $content = [];
+    
+    if ($request->filled('nama_project')) {
+        $content['nama_project'] = $request->nama_project;
+    }
+    
+    if ($request->filled('deskripsi')) {
+        $content['deskripsi'] = $request->deskripsi;
+    }
+    
+    if ($request->filled('link_project')) {
+        $content['link_project'] = $request->link_project;
+    }
+    
+    if ($request->filled('link_github')) {
+        $content['link_github'] = $request->link_github;
+    }
+    
+    if ($request->filled('link_video')) {
+        $content['link_video'] = $request->link_video;
+    }
+    
+    // Check if at least one content field is filled
+    if (empty($content)) {
+        return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
+    }
+    
+    // Update project
+    $project->update([
         'tanggal_mulai'  => $request->tanggal_mulai,
         'tanggal_akhir'  => $request->tanggal_akhir,
         'isi_content'    => $content,
-        'id_mahasiswa'   => $content->id_mahasiswa,
+        'id_mahasiswa'   => $request->leader,
         'leader_id'      => $request->leader,
-        ]);
-
-        $members = collect($request->members ?? [])
+    ]);
+    
+    // Handle members
+    $members = collect($request->members ?? [])
         ->filter()
-        ->reject(fn($id) => $id == $request->leader)
+        ->reject(fn($memberId) => $memberId == $request->leader)
         ->map(fn($id) => (int) $id)
         ->values()
         ->all();
+    
+    // Sync members (remove old, add new)
+    $project->members()->sync($members);
+    
+    return redirect()->route('admin.projects.index')
+        ->with('success', 'Project berhasil diperbarui!');
+}
 
-        if (!empty($members)) {
-            $project->members()->detach();
-        }
 
-        /*Penghapusan Link yang terpilih ?
-        foreach (['link_project', 'link_github', 'link_video'] as $link) {
-
-        // Kalau link dicentang untuk dihapus → skip
-        if (in_array($link, $removeLinks)) {
-            continue;
-        }
-
-        // Kalau ada value baru → update
-        if ($request->filled($link)) {
-            $content[$link] = $request->$link;
-        }
-        } */
-        return redirect()->route('project.index')
-            ->with('success', 'Project berhasil diperbarui!');
-
-    }
-
-    public function DestroyProject(Project $projects) {
+   public function DestroyProject(Project $project)
+    {
         $this->authorizeAccess();
-        $projects->delete();
+        $project->delete();
 
-        return redirect()->route('admin.project.index')
+        return redirect()->route('admin.projects.index')
             ->with('success', 'Project Mahasiswa berhasil dihapus!');
     }
 
     public function bulkDestroyProject(Request $request) {
         $this->authorizeAccess();
-        $ids = explode(',', $request->selected_ids);
+
+        $selectedIds = $request->input('selected_ids', []);
+        if (!is_array($selectedIds)) {
+            $selectedIds = array_filter(explode(',', $selectedIds), fn($value) => trim($value) !== '');
+        }
+
+        $ids = array_values(array_filter(array_map('intval', $selectedIds)));
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
+        }
 
         Project::whereIn('id', $ids)->delete();
 
