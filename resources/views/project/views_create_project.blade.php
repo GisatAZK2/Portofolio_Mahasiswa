@@ -22,87 +22,8 @@
             </div>
         @endif
 
-        <form method="GET" action="{{ route('project.create') }}" class="space-y-6 mt-4">
-            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Angkatan & Prodi</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="angkatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
-                        <select id="angkatan" name="angkatan" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                            <option value="">Semua Angkatan</option>
-                            @foreach($angkatans as $angk)
-                                <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>{{ $angk->nama_angkatan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="jurusan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Prodi</label>
-                        <select id="jurusan" name="jurusan" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                            <option value="">Semua Prodi</option>
-                            @foreach($jurusans as $jrs)
-                                <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>{{ $jrs->nama_jurusan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cari Siswa</label>
-                        <input type="text" id="search" name="search" value="{{ $search ?? '' }}" placeholder="Nama siswa..."
-                            class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                    </div>
-                </div>
-                <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-end">
-                    <a href="{{ route('project.create') }}" class="px-5 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm text-center">Reset Filter</a>
-                    <button type="submit" class="px-5 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm">Terapkan Filter</button>
-                </div>
-            </div>
-        </form>
-
         <form method="POST" action="{{ route('project.store') }}" class="space-y-6 mt-4" id="projectForm">
             @csrf
-
-            @php $leaderDifferent = old('leader') && old('leader') != Auth::id(); @endphp
-            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="space-y-4">
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-200">Pemilik Project</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Anda - {{ Auth::user()->nama_mahasiswa ?? Auth::user()->name }}</p>
-                    </div>
-
-                    <label class="inline-flex items-center gap-3 text-sm text-gray-700 dark:text-gray-200">
-                        <input type="checkbox" id="leader-different-toggle" class="h-5 w-5 text-indigo-600 border-gray-300 rounded" {{ $leaderDifferent ? 'checked' : '' }}>
-                        Pilih leader berbeda
-                    </label>
-
-                    <div id="leader-select-wrapper" class="{{ $leaderDifferent ? '' : 'hidden' }}">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Pilih Pemimpin Project</label>
-                        <select id="leader-select" class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-300 shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                            <option value="">-- Pilih Pemimpin Project --</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" {{ old('leader') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->nama_mahasiswa }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Jika kosong, Anda akan menjadi pemimpin project secara default.</p>
-                    </div>
-
-                    <input type="hidden" name="leader" id="leader-input" value="{{ old('leader', Auth::id()) }}">
-                </div>
-            </div>
-
-            <div id="member-wrapper">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                    <span data-translate="tambah_rekan" data-translate-page="project_create"></span>
-                </label>
-
-                <div id="members-container">
-                </div>
-            </div>
-
-            <button type="button" onclick="addMemberSelect()"
-                class="text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline">
-                <span data-translate="tambah_rekan_btn" data-translate-page="project_create"></span>
-            </button>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -520,7 +441,7 @@
         }
 
         function updateDisabledOptions() {
-            const leaderId = document.getElementById("leader-input").value;
+            const leaderId = document.getElementById("leader-select").value;
 
             // Get all selected member IDs
             const selectedMemberIds = [];
@@ -533,8 +454,6 @@
             // Update all member selects
             document.querySelectorAll(".member-select").forEach(select => {
                 select.querySelectorAll("option").forEach(option => {
-                    const originalLabel = option.dataset.original || option.textContent;
-                    option.textContent = originalLabel;
                     option.disabled = false;
                 });
 
@@ -542,8 +461,6 @@
                     let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
                     if (leaderOption) {
                         leaderOption.disabled = true;
-                        const originalLabel = leaderOption.dataset.original || leaderOption.textContent;
-                        leaderOption.textContent = `${originalLabel} (Pemimpin)`;
                     }
                 }
 
@@ -552,50 +469,10 @@
                         let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
                         if (selectedOption) {
                             selectedOption.disabled = true;
-                            const originalLabel = selectedOption.dataset.original || selectedOption.textContent;
-                            selectedOption.textContent = `${originalLabel} (Sudah dipilih)`;
                         }
                     }
                 });
             });
-        }
-
-        function initializeLeaderToggle() {
-            const authLeaderId = '{{ Auth::id() }}';
-            const leaderToggle = document.getElementById('leader-different-toggle');
-            const leaderSelectWrapper = document.getElementById('leader-select-wrapper');
-            const leaderInput = document.getElementById('leader-input');
-            const leaderSelect = document.getElementById('leader-select');
-
-            function setLeaderInput(value) {
-                leaderInput.value = value || authLeaderId;
-            }
-
-            function updateLeaderWrapper() {
-                if (leaderToggle.checked) {
-                    leaderSelectWrapper.classList.remove('hidden');
-                    setLeaderInput(leaderSelect?.value || authLeaderId);
-                } else {
-                    leaderSelectWrapper.classList.add('hidden');
-                    if (leaderSelect) leaderSelect.value = '';
-                    setLeaderInput(authLeaderId);
-                }
-            }
-
-            if (leaderToggle) {
-                leaderToggle.addEventListener('change', function() {
-                    updateLeaderWrapper();
-                    updateDisabledOptions();
-                });
-                updateLeaderWrapper();
-            }
-
-            if (leaderSelect) {
-                leaderSelect.addEventListener('change', function () {
-                    setLeaderInput(this.value);
-                    updateDisabledOptions();
-                });
-            }
         }
 
         // Function to initialize member selects

@@ -7,13 +7,19 @@
             <!-- Header -->
             <div class="mb-6 md:mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2 justify-center md:justify-start">
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-                        Edit Project
-                    </h1>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="title" data-translate-page="project_edit"></h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-md mx-auto md:mx-0">
-                    Edit informasi project atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.
-                </p>
+                <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-md mx-auto md:mx-0" data-translate="desc" data-translate-page="project_edit"></p>
+            </div>
+
+            <div id="translation-templates" class="hidden">
+                <span id="selected-leader-prefix" data-translate="selected_leader_prefix" data-translate-page="project_edit"></span>
+                <span id="select-member-option" data-translate="select_member_option" data-translate-page="project_edit"></span>
+                <span id="member-search-placeholder" data-translate="member_search_placeholder" data-translate-page="project_edit"></span>
+                <span id="no-students-available" data-translate="no_students_available" data-translate-page="project_edit"></span>
+                <span id="name-unknown-text" data-translate="name_unknown" data-translate-page="project_edit"></span>
+                <span id="leader-suffix" data-translate="leader_suffix" data-translate-page="project_edit"></span>
+                <span id="already-selected-suffix" data-translate="already_selected_suffix" data-translate-page="project_edit"></span>
             </div>
 
             <!-- Error Global -->
@@ -40,11 +46,11 @@
 
                 <!-- Filter Section -->
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter_mhs" data-translate-page="project_edit"></h3>
                     
                     <div class="mb-5">
                         <div class="relative">
-                            <input type="text" id="search-input" placeholder="Cari nama mahasiswa..." value="{{ $search ?? '' }}"
+                            <input type="text" id="search-input" data-translate-placeholder="search_placeholder" data-translate-page="search" value="{{ $search ?? '' }}"
                                    class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm md:text-base">
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,27 +62,27 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
+                            <label for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="angkatan" data-translate-page="project_edit"></label>
                             <select id="angkatan-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option value="">Semua Angkatan</option>
+                                <option value="" data-translate="semua_angkatan" data-translate-page="project_edit"></option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>{{ $angk->nama_angkatan }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div>
-                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jurusan</label>
+                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jurusan" data-translate-page="project_edit"></label>
                             <select id="jurusan-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option value="">Semua Jurusan</option>
+                                <option value="" data-translate="semua_jurusan" data-translate-page="project_edit"></option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>{{ $jrs->nama_jurusan }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div>
-                            <label for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keahlian</label>
+                            <label for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="keahlian" data-translate-page="project_edit"></label>
                             <select id="keahlian-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option value="">Semua Keahlian</option>
+                                <option value="" data-translate="semua_keahlian" data-translate-page="project_edit"></option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>{{ $keahlianItem->nama_keahlian }}</option>
                                 @endforeach
@@ -85,20 +91,14 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 justify-end mt-6">
-                        <a href="{{ route('project.edit', $project->id) }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
-                            Reset Filter
-                        </a>
-                        <button type="button" onclick="applyFilters()" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">
-                            Terapkan Filter
-                        </button>
+                        <a href="{{ route('project.edit', $project->id) }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center" data-translate="reset_filter" data-translate-page="project_edit"></a>
+                        <button type="button" onclick="applyFilters()" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition" data-translate="apply_filter" data-translate-page="project_edit"></button>
                     </div>
                 </div>
 
                 <!-- Nama Project -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Nama Project <span class="text-red-500">*</span>
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="nama_project" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
                     <input type="text" name="nama_project" value="{{ old('nama_project', $project->isi_content['nama_project'] ?? '') }}" required
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
                         placeholder="Contoh: Website Portfolio Pribadi">
@@ -109,7 +109,7 @@
 
                 <!-- Deskripsi -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Deskripsi (opsional)</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="deskripsi_opsional" data-translate-page="project_edit"></span></label>
                     <textarea name="deskripsi" rows="4"
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
                         placeholder="Deskripsikan project Anda...">{{ old('deskripsi', $project->isi_content['deskripsi'] ?? '') }}</textarea>
@@ -120,9 +120,7 @@
 
                 <!-- Pemimpin Project dengan Search -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        Pilih Mahasiswa (Pemimpin Project) <span class="text-red-500">*</span>
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3"><span data-translate="leader_project" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
 
                     <!-- Selected Leader Display -->
                     <div id="selected-leader-display" class="mb-4 {{ old('leader', $project->leader_id) ? '' : 'hidden' }}">
@@ -143,7 +141,7 @@
                     <!-- Search untuk Pemimpin -->
                     <div class="mb-4">
                         <div class="relative">
-                            <input type="text" id="leader-search" placeholder="Cari nama pemimpin project..." 
+                            <input type="text" id="leader-search" data-translate-placeholder="leader_search_placeholder" data-translate-page="project_edit" 
                                    class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,12 +157,12 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">Pilih</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
-                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
-                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
-                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10" data-translate="pilih_col" data-translate-page="project_edit"></th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="mahasiswa_col" data-translate-page="project_edit"></th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="angkatan_col" data-translate-page="project_edit"></th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="jurusan_col" data-translate-page="project_edit"></th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="keahlian_col" data-translate-page="project_edit"></th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20" data-translate="aksi_col" data-translate-page="project_edit"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="leader-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -213,7 +211,7 @@
                                                 <a href="{{ route('portfolio.show', $user->id) }}" 
                                                    onclick="event.stopImmediatePropagation()"
                                                    class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
-                                                    Lihat
+                                                    <span data-translate="lihat" data-translate-page="project_edit"></span>
                                                 </a>
                                             </td>
                                         </tr>
@@ -224,8 +222,8 @@
                                                     <svg class="w-14 h-14 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                                                     </svg>
-                                                    <p class="font-medium">Tidak ada mahasiswa ditemukan</p>
-                                                    <p class="text-sm mt-1">Coba ubah filter pencarian Anda</p>
+                                                    <p class="font-medium" data-translate="no_students_found" data-translate-page="project_edit"></p>
+                                                    <p class="text-sm mt-1" data-translate="change_filter_hint" data-translate-page="project_edit"></p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -247,9 +245,7 @@
 
                 <!-- Rekan Project -->
                 <div id="member-wrapper">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        Tambah Rekan (opsional)
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3"><span data-translate="add_member" data-translate-page="project_edit"></span></label>
                     <div id="members-container" class="space-y-3">
                         @php
                             $oldMembers = old('members', $project->members->pluck('id')->toArray() ?? []);
@@ -262,16 +258,14 @@
                     </div>
                     <button type="button" onclick="addMemberSelect()"
                             class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
-                        <span class="text-xl">+</span> Tambah Rekan
+                        <span class="text-xl">+</span> <span data-translate="add_member_btn" data-translate-page="project_edit"></span>
                     </button>
                 </div>
 
                 <!-- Tanggal -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            Tanggal Mulai <span class="text-red-500">*</span>
-                        </label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="tanggal_mulai" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
                         <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $project->tanggal_mulai->format('Y-m-d')) }}" required
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
                         @error('tanggal_mulai')
@@ -279,9 +273,7 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            Tanggal Selesai (opsional)
-                        </label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="tanggal_selesai" data-translate-page="project_edit"></span></label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir', $project->tanggal_akhir?->format('Y-m-d') ?? '') }}"
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
                         @error('tanggal_akhir')
@@ -292,7 +284,7 @@
 
                 <!-- Link Project -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link Project (opsional)</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="link_project_opsional" data-translate-page="project_edit"></span></label>
                     <input type="url" name="link_project" value="{{ old('link_project', $project->isi_content['link_project'] ?? '') }}"
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
                         placeholder="https://example.com/project">
@@ -304,7 +296,7 @@
                 <!-- Link GitHub & Video -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link GitHub (opsional)</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="link_github_opsional" data-translate-page="project_edit"></span></label>
                         <input type="url" name="link_github" maxlength="500" value="{{ old('link_github', $project->isi_content['link_github'] ?? '') }}"
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
                             placeholder="https://github.com/username/repo">
@@ -313,7 +305,7 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Link Video (YouTube, opsional)</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="link_video_opsional" data-translate-page="project_edit"></span></label>
                         <input type="url" name="link_video" maxlength="500" value="{{ old('link_video', $project->isi_content['link_video'] ?? '') }}"
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
                             placeholder="https://www.youtube.com/watch?v=...">
@@ -328,14 +320,10 @@
                     <div class="flex-1"></div> 
                     
                     <a href="{{ route('project.index') }}"
-                       class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto">
-                        Batal
-                    </a>
+                       class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto" data-translate="cancel" data-translate-page="project_edit"></a>
                     
                     <button type="submit"
-                        class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto">
-                        Update Project
-                    </button>
+                        class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto" data-translate="update_project" data-translate-page="project_edit"></button>
                 </div>
             </form>
         </div>
@@ -343,6 +331,11 @@
 
     <script>
         let currentFilters = { search: '{{ $search ?? '' }}', angkatan: '{{ $angkatan ?? '' }}', jurusan: '{{ $jurusan ?? '' }}', keahlian: '{{ $keahlian ?? '' }}' };
+
+        function getTranslatedTemplate(id, fallback = '') {
+            const el = document.getElementById(id);
+            return el ? el.textContent.trim() || fallback : fallback;
+        }
 
         function applyFilters() {
             currentFilters.search = document.getElementById('search-input').value.trim();
@@ -423,7 +416,8 @@
                      <span class="text-green-700 dark:text-green-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
                    </div>`;
 
-            content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">Pemimpin: ${userName}</div>`;
+            const leaderLabel = getTranslatedTemplate('selected-leader-prefix', 'Pemimpin:');
+            content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">${leaderLabel} ${userName}</div>`;
             display.classList.remove('hidden');
             updateDisabledOptions();
             saveToLocalStorage();
@@ -448,7 +442,7 @@
                 const radio = row.querySelector('.leader-radio');
                 if (radio) {
                     const nameElement = row.querySelector('td:nth-child(2) .font-medium');
-                    const fullName = nameElement ? nameElement.textContent.trim() : 'Nama Tidak Diketahui';
+                    const fullName = nameElement ? nameElement.textContent.trim() : getTranslatedTemplate('name-unknown-text', 'Nama Tidak Diketahui');
                     const img = row.querySelector('img');
                     const photoProfile = img ? img.src : '';
                     const initial = fullName.charAt(0).toUpperCase();
@@ -458,15 +452,17 @@
             });
 
             if (users.length === 0) {
+                const noStudentsAvailableText = getTranslatedTemplate('no-students-available', 'Tidak ada mahasiswa tersedia');
                 memberDiv.innerHTML = `
                     <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700">
                         <select class="member-select w-full p-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl" disabled>
-                            <option value="">Tidak ada mahasiswa tersedia</option>
+                            <option value="">${noStudentsAvailableText}</option>
                         </select>
                     </div>
                 `;
             } else {
-                let optionsHtml = '<option value="">-- Pilih Rekan Project --</option>';
+                const selectMemberOptionText = getTranslatedTemplate('select-member-option', '-- Pilih Rekan Project --');
+                let optionsHtml = `<option value="">${selectMemberOptionText}</option>`;
                 users.forEach(user => {
                     const selected = savedValue && savedValue == user.id ? 'selected' : '';
                     optionsHtml += `<option value="${user.id}" data-photo="${user.photoProfile}" data-initial="${user.initial}" ${selected}>${user.name}</option>`;
@@ -475,7 +471,7 @@
                 memberDiv.innerHTML = `
                     <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm">
                         <div class="relative mb-4">
-                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
+                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="${getTranslatedTemplate('member-search-placeholder','Cari nama rekan...')}">
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -580,7 +576,8 @@
                     if (leaderOption) {
                         leaderOption.disabled = true;
                         const originalLabel = leaderOption.dataset.original || leaderOption.textContent;
-                        leaderOption.textContent = `${originalLabel} (Pemimpin)`;
+                        const leaderSuffix = getTranslatedTemplate('leader-suffix', ' (Pemimpin)');
+                        leaderOption.textContent = `${originalLabel}${leaderSuffix}`;
                     }
                 }
 
@@ -590,7 +587,8 @@
                         if (selectedOption) {
                             selectedOption.disabled = true;
                             const originalLabel = selectedOption.dataset.original || selectedOption.textContent;
-                            selectedOption.textContent = `${originalLabel} (Sudah dipilih)`;
+                            const alreadySelectedText = getTranslatedTemplate('already-selected-suffix', ' (Sudah dipilih)');
+                            selectedOption.textContent = `${originalLabel}${alreadySelectedText}`;
                         }
                     }
                 });

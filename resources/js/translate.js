@@ -349,6 +349,48 @@ export const translations = {
       link_video_opsional: 'Link Video (YouTube, opsional)',
       simpan_project: 'Simpan Project',
     },
+    project_edit: {
+      title: 'Edit Project',
+      desc: 'Edit informasi project atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.',
+      filter_mhs: 'Filter Mahasiswa',
+      angkatan: 'Angkatan',
+      jurusan: 'Jurusan',
+      keahlian: 'Keahlian',
+      semua_angkatan: 'Semua Angkatan',
+      semua_jurusan: 'Semua Jurusan',
+      semua_keahlian: 'Semua Keahlian',
+      reset_filter: 'Reset Filter',
+      apply_filter: 'Terapkan Filter',
+      nama_project: 'Nama Project',
+      deskripsi_opsional: 'Deskripsi (opsional)',
+      leader_project: 'Pilih Mahasiswa (Pemimpin Project)',
+      selected_leader_prefix: 'Pemimpin:',
+      leader_search_placeholder: 'Cari nama pemimpin project...',
+      pilih_col: 'Pilih',
+      mahasiswa_col: 'Mahasiswa',
+      angkatan_col: 'Angkatan',
+      jurusan_col: 'Jurusan',
+      keahlian_col: 'Keahlian',
+      aksi_col: 'Aksi',
+      lihat: 'Lihat',
+      no_students_found: 'Tidak ada mahasiswa ditemukan',
+      change_filter_hint: 'Coba ubah filter pencarian Anda',
+      add_member: 'Tambah Rekan (opsional)',
+      add_member_btn: '+ Tambah Rekan',
+      member_search_placeholder: 'Cari nama rekan...',
+      no_students_available: 'Tidak ada mahasiswa tersedia',
+      name_unknown: 'Nama Tidak Diketahui',
+      select_member_option: '-- Pilih Rekan Project --',
+      already_selected_suffix: ' (Sudah dipilih)',
+      leader_suffix: ' (Pemimpin)',
+      tanggal_mulai: 'Tanggal Mulai',
+      tanggal_selesai: 'Tanggal Selesai (opsional)',
+      link_project_opsional: 'Link Project (opsional)',
+      link_github_opsional: 'Link GitHub (opsional)',
+      link_video_opsional: 'Link Video (YouTube, opsional)',
+      cancel: 'Batal',
+      update_project: 'Update Project',
+    },
     project_detail: {
       detail_project: 'Detail Project',
       desc_detail: 'Lihat detail project yang pernah kamu buat.',
@@ -902,6 +944,48 @@ export const translations = {
       link_video_opsional: 'Video Link (YouTube, optional)',
       simpan_project: 'Save Project',
     },
+    project_edit: {
+      title: 'Edit Project',
+      desc: 'Edit project details or replace files if necessary. Make sure to save changes when you are done.',
+      filter_mhs: 'Filter Students',
+      angkatan: 'Cohort',
+      jurusan: 'Major',
+      keahlian: 'Skill',
+      semua_angkatan: 'All Cohorts',
+      semua_jurusan: 'All Majors',
+      semua_keahlian: 'All Skills',
+      reset_filter: 'Reset Filter',
+      apply_filter: 'Apply Filter',
+      nama_project: 'Project Name',
+      deskripsi_opsional: 'Description (optional)',
+      leader_project: 'Select Student (Project Leader)',
+      selected_leader_prefix: 'Leader:',
+      leader_search_placeholder: 'Search project leader name...',
+      pilih_col: 'Select',
+      mahasiswa_col: 'Student',
+      angkatan_col: 'Cohort',
+      jurusan_col: 'Major',
+      keahlian_col: 'Skill',
+      aksi_col: 'Action',
+      lihat: 'View',
+      no_students_found: 'No students found',
+      change_filter_hint: 'Try changing your search filters',
+      add_member: 'Add Partner (optional)',
+      add_member_btn: '+ Add Partner',
+      member_search_placeholder: 'Search partner name...',
+      no_students_available: 'No students available',
+      name_unknown: 'Unknown Name',
+      select_member_option: '-- Select Project Partner --',
+      already_selected_suffix: ' (Already selected)',
+      leader_suffix: ' (Leader)',
+      tanggal_mulai: 'Start Date',
+      tanggal_selesai: 'End Date (optional)',
+      link_project_opsional: 'Project Link (optional)',
+      link_github_opsional: 'GitHub Link (optional)',
+      link_video_opsional: 'Video Link (YouTube, optional)',
+      cancel: 'Cancel',
+      update_project: 'Update Project',
+    },
     project_detail: {
       detail_project: 'Project Detail',
       desc_detail: 'View details of projects you have created.',
@@ -1112,18 +1196,25 @@ export const translations = {
   function applyTranslations() {
     const langData = translations[currentLang] || translations[DEFAULT_LANG];
 
+    const translateKey = (page, key) => langData?.[page]?.[key] || translations[DEFAULT_LANG]?.[page]?.[key] || key;
+
     translateElements.forEach(el => {
       const page = el.dataset.translatePage || 'sidebar';
       const key  = el.dataset.translate;
 
-      if (!page || !key) return;
+      if (page && key) {
+        const text = translateKey(page, key);
+        if (text !== el.textContent) {
+          el.textContent = text;
+        }
+      }
 
-      const text = langData?.[page]?.[key] 
-                  || translations[DEFAULT_LANG]?.[page]?.[key] 
-                  || key;
-
-      if (text !== el.textContent) {
-        el.textContent = text;
+      const placeholderKey = el.dataset.translatePlaceholder;
+      if (placeholderKey) {
+        const placeholderText = translateKey(el.dataset.translatePage || 'sidebar', placeholderKey);
+        if (placeholderText) {
+          el.setAttribute('placeholder', placeholderText);
+        }
       }
     });
 

@@ -21,91 +21,64 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Hanya mahasiswa yang sudah diterima (status_pengajuan = 'Di Terima')
-        $totalMahasiswa = User::where('role', 'mahasiswa')
-            ->where('status_pengajuan', 'Di Terima')
-            ->count();
 
-        $totalLearning = LearningCorner::whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })->count();
+        // hanya mahasiswa
+        $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
 
-        $totalProject = Project::whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })->count();
+        $totalLearning = LearningCorner::count();
+        $totalProject = Project::count();
+        $totalSertifikat = Sertifikat::count();
 
-        $totalSertifikat = Sertifikat::where('is_active', true)
-            ->where('status_pengajuan', 'Di Terima')
-            ->whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })->count();
-
-        $jurusanList = Jurusan::all();
         $jurusanList = Jurusan::all();
         $keahlianList = Keahlian::all();
         $angkatanList = Angkatan::all();
 
+
         /*
         |--------------------------------------------------------------------------
-        | RANDOM POSTS (hanya dari mahasiswa diterima)
+        | POSTINGAN TERBARU - DIKELOMPOKKAN DENGAN PAGINATION
         |--------------------------------------------------------------------------
         */
-        $randomLearning = LearningCorner::with('mahasiswa')
-            ->whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'learning';
-                return $item;
-            });
 
-        $randomProject = Project::with('mahasiswa')
-            ->whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'project';
-                return $item;
-            });
+        $learningCorners = LearningCorner::with('mahasiswa', 'project')
+            ->latest()
+            ->paginate(6, ['*'], 'learning_page');
+
+        $learningCorners->transform(function ($item) {
+            $item->type = 'learning';
+            return $item;
+        });
+
+        $projects = Project::with('mahasiswa')
+            ->latest()
+            ->paginate(6, ['*'], 'project_page');
+
+        $projects->transform(function ($item) {
+            $item->type = 'project';
+            return $item;
+        });
 
         $projectUsers = Sertifikat::with('mahasiswa')
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
-            ->whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })
-            ->inRandomOrder()
-            ->take(3)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'sertifikat';
-                return $item;
-            });
+            ->latest()
+            ->paginate(6, ['*'], 'sertifikat_page');
+
+        $projectUsers->transform(function ($item) {
+            $item->type = 'sertifikat';
+            return $item;
+        });
 
         return view('views_dashboard', compact(
             'totalMahasiswa',
             'totalLearning',
             'totalProject',
             'totalSertifikat',
-            'randomPosts',
-            'jurusanList',      // jika ingin ditampilkan di view
-            'keahlianList',
-            'angkatanList'
+            'learningCorners',
+            'projects',
+            'projectUsers',
         ));
     }
-
     /**
      * My Dashboard (Dashboard Pribadi Mahasiswa)
      */
