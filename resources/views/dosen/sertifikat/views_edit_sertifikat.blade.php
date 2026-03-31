@@ -45,10 +45,10 @@
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
                         placeholder="Contoh: Sertifikat Kompetensi Programming"
                         class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                    text-gray-700 dark:text-gray-300
-                                    placeholder-gray-500 dark:placeholder-gray-400
-                                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
+                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                        text-gray-700 dark:text-gray-300
+                                        placeholder-gray-500 dark:placeholder-gray-400
+                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -63,10 +63,10 @@
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
                         placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
                         class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                    text-gray-700 dark:text-gray-300
-                                    placeholder-gray-500 dark:placeholder-gray-400
-                                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
+                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                        text-gray-700 dark:text-gray-300
+                                        placeholder-gray-500 dark:placeholder-gray-400
+                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -81,10 +81,10 @@
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
                         required max="{{ date('Y-m-d') }}"
                         class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                    text-gray-700 dark:text-gray-300
-                                    placeholder-gray-500 dark:placeholder-gray-400
-                                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
+                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                        text-gray-700 dark:text-gray-300
+                                        placeholder-gray-500 dark:placeholder-gray-400
+                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -370,7 +370,7 @@
                     toggleFileUpload(replaceCheckbox);
                 }
             @endif
-            });
+                });
     </script>
 
     <!-- CSS Tambahan -->

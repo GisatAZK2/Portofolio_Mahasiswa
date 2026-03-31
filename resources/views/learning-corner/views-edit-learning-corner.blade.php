@@ -2,12 +2,14 @@
 @section('title', 'Edit Catatan Learning Corner')
 @section('content')
     <div class="min-h-screen bg-gray-50 py-10 px-4 dark:bg-gray-900 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-900 dark:border-gray-900 rounded-2xl shadow-sm border border-gray-200 p-8">
+        <div
+            class="max-w-4xl mx-auto bg-white dark:bg-gray-900 dark:border-gray-900 rounded-2xl shadow-sm border border-gray-200 p-8">
 
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
                 <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Catatan</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">Ubah judul atau tambah/ubah/hapus konten yang sudah ada.</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">Ubah judul atau tambah/ubah/hapus konten yang sudah ada.
+                </p>
             </div>
 
             <!-- Error Global -->
@@ -55,7 +57,8 @@
 
                     <div id="items-container" class="space-y-6">
                         @foreach ($items as $idx => $item)
-                            <div class="item bg-gray-50 dark:bg-gray-900 border border-gray-200 rounded-xl p-6 relative" data-index="{{ $idx }}">
+                            <div class="item bg-gray-50 dark:bg-gray-900 border border-gray-200 rounded-xl p-6 relative"
+                                data-index="{{ $idx }}">
 
                                 <div class="flex justify-between items-start mb-4">
                                     <select name="items[{{ $idx }}][type]"
@@ -83,7 +86,8 @@
                                                 <p class="text-sm text-gray-500 dark:text-gray-50 italic">Gambar tidak ditemukan</p>
                                             @endif
                                         </div>
-                                        <label class="block text-sm text-gray-600 dark:text-gray-300 mb-1">Ganti gambar (opsional):</label>
+                                        <label class="block text-sm text-gray-600 dark:text-gray-300 mb-1">Ganti gambar
+                                            (opsional):</label>
                                         <input type="file" name="items[{{ $idx }}][image_file]" accept="image/*"
                                             class="block w-full text-sm text-gray-500 dark:text-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                         <!-- Hidden untuk mempertahankan gambar lama jika tidak upload baru -->
@@ -125,22 +129,22 @@
             newItem.dataset.index = itemIndex;
 
             newItem.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="text">Teks tambahan</option>
-                        <option value="image">Gambar</option>
-                        <option value="link">Link / Referensi</option>
-                    </select>
-                    <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
-                        Hapus
-                    </button>
-                </div>
-                <div class="content-area mt-3">
-                    <input type="text" name="items[${itemIndex}][content]"
-                           class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                           placeholder="Masukkan teks di sini...">
-                </div>
-            `;
+                    <div class="flex justify-between items-start mb-4">
+                        <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
+                            <option value="text">Teks tambahan</option>
+                            <option value="image">Gambar</option>
+                            <option value="link">Link / Referensi</option>
+                        </select>
+                        <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
+                            Hapus
+                        </button>
+                    </div>
+                    <div class="content-area mt-3">
+                        <input type="text" name="items[${itemIndex}][content]"
+                               class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                               placeholder="Masukkan teks di sini...">
+                    </div>
+                `;
 
             container.appendChild(newItem);
             itemIndex++;
@@ -162,17 +166,17 @@
 
                 if (currentType === 'image') {
                     contentArea.innerHTML = `
-                        <label class="block text-sm text-gray-600 mb-1">Upload gambar baru (opsional):</label>
-                        <input type="file" name="items[${index}][image_file]" accept="image/*"
-                               class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                        <input type="hidden" name="items[${index}][content]" value="">
-                    `;
+                            <label class="block text-sm text-gray-600 mb-1">Upload gambar baru (opsional):</label>
+                            <input type="file" name="items[${index}][image_file]" accept="image/*"
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            <input type="hidden" name="items[${index}][content]" value="">
+                        `;
                 } else {
                     contentArea.innerHTML = `
-                        <input type="text" name="items[${index}][content]"
-                               class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                               placeholder="${currentType === 'link' ? 'https://...' : 'Masukkan teks di sini...'}">
-                    `;
+                            <input type="text" name="items[${index}][content]"
+                                   class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                                   placeholder="${currentType === 'link' ? 'https://...' : 'Masukkan teks di sini...'}">
+                        `;
                 }
             });
         }
@@ -197,6 +201,6 @@
             @if ($errors->any())
                 showErrorAlert('{{ $errors->first() }}');
             @endif
-        });
+            });
     </script>
 @endsection

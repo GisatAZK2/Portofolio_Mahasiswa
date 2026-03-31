@@ -39,10 +39,12 @@
                     <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                         <input id="selectAllProjects" type="checkbox"
                             class="w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
-                         <span data-translate="select_all" data-translate-page="admin">Pilih Semua</span>
+                        <span data-translate="select_all" data-translate-page="admin">Pilih Semua</span>
                     </label>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">  <span class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected" data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> /
-                        <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"> <span
+                            class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected"
+                                data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> /
+                            <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <form id="bulkDeleteForm" action="{{ route('admin.projects.bulk-delete') }}" method="POST"
@@ -51,7 +53,7 @@
                         @method('DELETE')
                         <button type="button" onclick="confirmBulkDelete()"
                             class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
-                             <span data-translate="delete_select" data-translate-page="admin">Hapus Terpilih</span>
+                            <span data-translate="delete_select" data-translate-page="admin">Hapus Terpilih</span>
                         </button>
                     </form>
                 </div>
@@ -156,8 +158,9 @@
 
                                     @else
                                         <!-- Kondisi: Tidak ada video embed & tidak ada thumbnail -->
-                                        <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
-                                                                flex flex-col items-center justify-center text-center px-4">
+                                        <div
+                                            class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
+                                                                                flex flex-col items-center justify-center text-center px-4">
                                             <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -344,10 +347,14 @@
                                     </div>
 
                                     <div class="mt-3 flex flex-wrap gap-2">
-                                        <a data-translate="edit_project" data-translate-page="admin" href="{{ route('admin.projects.details', $project->id) }}" class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
+                                        <a data-translate="edit_project" data-translate-page="admin"
+                                            href="{{ route('admin.projects.details', $project->id) }}"
+                                            class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
                                             Edit
                                         </a>
-                                        <button data-translate="delete_project" data-translate-page="admin" type="button" onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')" class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
+                                        <button data-translate="delete_project" data-translate-page="admin" type="button"
+                                            onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')"
+                                            class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
                                             Hapus
                                         </button>
                                     </div>

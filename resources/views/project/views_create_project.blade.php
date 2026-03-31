@@ -32,10 +32,10 @@
                 </label>
                 <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
                     class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror" placeholder="Contoh: Website Portfolio Pribadi">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror" placeholder="Contoh: Website Portfolio Pribadi">
                 @error('nama_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -47,10 +47,10 @@
                 </label>
                 <textarea name="deskripsi" rows="4"
                     class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
                     placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
                 @error('deskripsi')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -85,10 +85,10 @@
                     <div class="relative">
                         <input type="text" id="leader-search-input" placeholder="Cari pemimpin..."
                             class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm outline-none transition">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm outline-none transition">
                         <div class="absolute left-3 top-2.5 text-gray-400">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,9 +100,9 @@
                     <!-- Filter Dropdowns for Leader -->
                     <div class="grid grid-cols-2 gap-2">
                         <select id="leader-filter-angkatan" class="px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
                             <option value="">Semua Angkatan</option>
                             @foreach ($angkatanList as $ank)
                                 <option value="{{ $ank->id }}" {{ $angkatan == $ank->id ? 'selected' : '' }}>
@@ -112,9 +112,9 @@
                         </select>
 
                         <select id="leader-filter-jurusan" class="px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
                             <option value="">Semua Jurusan</option>
                             @foreach ($jurusanList as $jur)
                                 <option value="{{ $jur->id }}" {{ $jurusan == $jur->id ? 'selected' : '' }}>
@@ -126,9 +126,9 @@
 
                     <!-- Leader Select Dropdown -->
                     <select name="leader" id="leader-select" class="w-full px-4 py-2.5 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
                         <option value="">-- Pilih Pemimpin Project --</option>
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}" data-name="{{ $user->nama_mahasiswa }}"
@@ -169,10 +169,10 @@
                         data-translate-page="project_create"></span> <span class="text-red-500">*</span>
                     <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                         class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_mulai') border-red-500 @enderror">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_mulai') border-red-500 @enderror">
                     @error('tanggal_mulai')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -182,10 +182,10 @@
                         data-translate-page="project_create"></span>
                     <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                         class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_akhir') border-red-500 @enderror">
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_akhir') border-red-500 @enderror">
                     @error('tanggal_akhir')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -197,10 +197,10 @@
                     data-translate-page="project_create"></span>
                 <input type="url" name="link_project" value="{{ old('link_project') }}"
                     class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('link_project') border-red-500 @enderror"
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('link_project') border-red-500 @enderror"
                     placeholder="https://github.com/username/project">
                 @error('link_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -214,10 +214,10 @@
                 </label>
                 <input type="url" name="link_github" id="link_github" maxlength="500"
                     class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_github') border-red-500 @enderror"
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_github') border-red-500 @enderror"
                     placeholder="https://github.com/username/repo" value="{{ old('link_github') }}">
                 @error('link_github')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -231,10 +231,10 @@
                 </label>
                 <input type="url" name="link_video" id="link_video" maxlength="500"
                     class="w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_video') border-red-500 @enderror"
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_video') border-red-500 @enderror"
                     placeholder="https://www.youtube.com/watch?v=..." value="{{ old('link_video') }}">
                 @error('link_video')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -275,15 +275,15 @@
                 let photoHtml = selectedUser.photo_profile && selectedUser.photo_profile.includes('storage')
                     ? `<img src="{{ asset('') }}${selectedUser.photo_profile}" class="w-10 h-10 rounded-lg object-cover border border-white dark:border-gray-700 shadow" alt="${selectedUser.nama_mahasiswa}">`
                     : `<div class="w-10 h-10 rounded-lg bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                            ${selectedUser.nama_mahasiswa.charAt(0).toUpperCase()}
-                                       </div>`;
+                                                ${selectedUser.nama_mahasiswa.charAt(0).toUpperCase()}
+                                           </div>`;
 
                 content.innerHTML = `
-                                    ${photoHtml}
-                                    <div>
-                                        <div class="text-sm font-semibold text-gray-900 dark:text-white">${selectedUser.nama_mahasiswa}</div>
-                                    </div>
-                                `;
+                                        ${photoHtml}
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-900 dark:text-white">${selectedUser.nama_mahasiswa}</div>
+                                        </div>
+                                    `;
 
                 display.classList.remove('hidden');
             }
@@ -500,55 +500,55 @@
             });
 
             memberDiv.innerHTML = `
-                                            <div class="space-y-2">
-                                                <div class="relative">
-                                                    <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none member-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                                    </svg>
-                                                    <input type="text" placeholder="Cari mahasiswa..."
-                                                        class="member-search w-full pl-10 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                        text-gray-700 dark:text-gray-300
-                                                        placeholder-gray-500 dark:placeholder-gray-400
-                                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                                <div class="space-y-2">
+                                                    <div class="relative">
+                                                        <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none member-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>
+                                                        <input type="text" placeholder="Cari mahasiswa..."
+                                                            class="member-search w-full pl-10 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                                            text-gray-700 dark:text-gray-300
+                                                            placeholder-gray-500 dark:placeholder-gray-400
+                                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                                    </div>
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <select class="member-filter-angkatan px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                                            text-gray-700 dark:text-gray-300
+                                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                                            <option value="">Semua Angkatan</option>
+                                                            @foreach ($angkatanList as $ank)
+                                                                <option value="{{ $ank->id }}">{{ $ank->tahun_masuk }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <select class="member-filter-jurusan px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                                            text-gray-700 dark:text-gray-300
+                                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                                            <option value="">Semua Jurusan</option>
+                                                            @foreach ($jurusanList as $jur)
+                                                                <option value="{{ $jur->id }}">{{ $jur->nama_jurusan }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="flex gap-2">
+                                                        <select name="members[]" 
+                                                            class="member-select w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
+                                                            ${optionsHtml}
+                                                        </select>
+                                                        <button type="button" 
+                                                            onclick="removeMember(this)"
+                                                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                                            ✕
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div class="grid grid-cols-2 gap-2">
-                                                    <select class="member-filter-angkatan px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                        text-gray-700 dark:text-gray-300
-                                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                                                        <option value="">Semua Angkatan</option>
-                                                        @foreach ($angkatanList as $ank)
-                                                            <option value="{{ $ank->id }}">{{ $ank->tahun_masuk }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <select class="member-filter-jurusan px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                        text-gray-700 dark:text-gray-300
-                                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                                                        <option value="">Semua Jurusan</option>
-                                                        @foreach ($jurusanList as $jur)
-                                                            <option value="{{ $jur->id }}">{{ $jur->nama_jurusan }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="flex gap-2">
-                                                    <select name="members[]" 
-                                                        class="member-select w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
-                                                        ${optionsHtml}
-                                                    </select>
-                                                    <button type="button" 
-                                                        onclick="removeMember(this)"
-                                                        class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                                                        ✕
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        `;
+                                            `;
 
             container.appendChild(memberDiv);
 
@@ -607,35 +607,35 @@
             });
 
             memberDiv.innerHTML = `
-                                            <div class="space-y-2">
-                                                <div class="relative">
-                                                    <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none member-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                                    </svg>
-                                                    <input type="text" placeholder="Cari mahasiswa..."
-                                                        class="member-search w-full pl-10 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                        text-gray-700 dark:text-gray-300
-                                                        placeholder-gray-500 dark:placeholder-gray-400
-                                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                                <div class="space-y-2">
+                                                    <div class="relative">
+                                                        <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none member-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>
+                                                        <input type="text" placeholder="Cari mahasiswa..."
+                                                            class="member-search w-full pl-10 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                                            text-gray-700 dark:text-gray-300
+                                                            placeholder-gray-500 dark:placeholder-gray-400
+                                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                                                    </div>
+                                                    <div class="flex gap-2">
+                                                        <select name="members[]" 
+                                                            class="member-select w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
+                                                            ${optionsHtml}
+                                                        </select>
+                                                        <button type="button" 
+                                                            onclick="removeMember(this)"
+                                                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                                            ✕
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div class="flex gap-2">
-                                                    <select name="members[]" 
-                                                        class="member-select w-full pl-4  py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                        focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                        text-gray-700 dark:text-gray-300
-                                        placeholder-gray-500 dark:placeholder-gray-400
-                                        shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
-                                                        ${optionsHtml}
-                                                    </select>
-                                                    <button type="button" 
-                                                        onclick="removeMember(this)"
-                                                        class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                                                        ✕
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        `;
+                                            `;
 
             container.appendChild(memberDiv);
 

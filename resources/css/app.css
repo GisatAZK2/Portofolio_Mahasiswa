@@ -14,17 +14,17 @@
     .swal2-custom-popup {
         border-radius: 1rem !important;
         padding: 2rem !important;
-        background: #f8f5f2 !important; /* krem sesuai background */
+        background: #f8f5f2 !important;
+        /* krem sesuai background */
         box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2) !important;
     }
 
     .swal2-icon.swal2-success .swal2-success-line-tip,
     .swal2-icon.swal2-success .swal2-success-line-long {
-        background-color: #0d9488 !important; /* teal */
+        background-color: #0d9488 !important;
+        /* teal */
     }
 
     .swal2-icon.swal2-success .swal2-success-ring {
         border: 4px solid rgba(13, 148, 136, 0.3) !important;
     }
-
-

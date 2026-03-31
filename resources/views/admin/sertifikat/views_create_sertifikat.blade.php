@@ -7,21 +7,26 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="title_srtfkt_create" data-translate-page="admin">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="title_srtfkt_create"
+                        data-translate-page="admin">
                         Tambah Sertifikat Baru
                     </h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-400" data-translate="desc_srtfkt_create" data-translate-page="admin">
+                <p class="mt-2 text-gray-600 dark:text-gray-400" data-translate="desc_srtfkt_create"
+                    data-translate-page="admin">
                     Tambahkan sertifikat yang diperoleh mahasiswa untuk melengkapi portofolio mereka.
                 </p>
             </div>
 
             <!-- Error Global -->
             @if ($errors->any())
-                <div class="mb-8 p-5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 rounded-xl">
+                <div
+                    class="mb-8 p-5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 rounded-xl">
                     <div class="flex items-center gap-2 mb-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd"></path>
                         </svg>
                         <span class="font-medium">Terdapat kesalahan pada input:</span>
                     </div>
@@ -33,25 +38,28 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('admin.sertifikat.store') }}" enctype="multipart/form-data" class="space-y-7" id="sertifikatForm">
+            <form method="POST" action="{{ route('admin.sertifikat.store') }}" enctype="multipart/form-data"
+                class="space-y-7" id="sertifikatForm">
                 @csrf
 
                 <!-- Filter Mahasiswa -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter_mhs" data-translate-page="admin">
+                <div
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter_mhs"
+                        data-translate-page="admin">
                         Filter Mahasiswa
                     </h3>
 
                     <!-- Search Bar -->
                     <div class="mb-4">
                         <div class="relative">
-                            <input type="text" id="search-input" name="search"
-                                   placeholder="Cari nama mahasiswa..." 
-                                   value="{{ $search ?? '' }}"
-                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
+                            <input type="text" id="search-input" name="search" placeholder="Cari nama mahasiswa..."
+                                value="{{ $search ?? '' }}"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
                             <div class="absolute left-3 top-3.5 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
                         </div>
@@ -60,12 +68,14 @@
                     <!-- Filter Dropdowns -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="angkatan" data-translate-page="admin">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                data-translate="angkatan" data-translate-page="admin">
                                 Angkatan
                             </label>
                             <select name="angkatan" id="angkatan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
-                                <option data-translate="all_cohorts" data-translate-page="admin" value="">Semua Angkatan</option>
+                                <option data-translate="all_cohorts" data-translate-page="admin" value="">Semua Angkatan
+                                </option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -74,7 +84,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jrs_addusr" data-translate-page="admin">Jurusan</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                data-translate="jrs_addusr" data-translate-page="admin">Jurusan</label>
                             <select name="jurusan" id="jurusan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
                                 <option data-translate="all_jrs" data-translate-page="admin" value="">Semua Jurusan</option>
@@ -86,10 +97,12 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="keahlian" data-translate-page="admin">Keahlian</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                data-translate="keahlian" data-translate-page="admin">Keahlian</label>
                             <select name="keahlian" id="keahlian-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
-                                <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian</option>
+                                <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian
+                                </option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
                                         {{ $keahlianItem->nama_keahlian }}
@@ -101,11 +114,11 @@
 
                     <div class="flex justify-end space-x-3 mt-4">
                         <a href="{{ route('admin.sertifikat.create') }}"
-                           class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                             Reset Filter
                         </a>
                         <button type="button" onclick="applyFilters()"
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                             <span data-translate="trp_filter" data-translate-page="admin">Terapkan Filter</span>
                         </button>
                     </div>
@@ -114,20 +127,24 @@
                 <!-- Pilih Mahasiswa -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        <span data-translate="pilih_mhs" data-translate-page="admin">Pilih Mahasiswa</span> <span class="text-red-500">*</span>
+                        <span data-translate="pilih_mhs" data-translate-page="admin">Pilih Mahasiswa</span> <span
+                            class="text-red-500">*</span>
                     </label>
 
                     <!-- Selected User Display -->
                     <div id="selected-user-display" class="mb-6 hidden">
-                        <div class="p-5 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl">
+                        <div
+                            class="p-5 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4" id="selected-user-content">
                                     <!-- Diisi oleh JavaScript -->
                                 </div>
-                                <button type="button" onclick="clearSelectedUser()" 
-                                        class="text-green-600 dark:text-green-400 hover:text-red-600 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                <button type="button" onclick="clearSelectedUser()"
+                                    class="text-green-600 dark:text-green-400 hover:text-red-600 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
@@ -137,37 +154,47 @@
                     <input type="hidden" name="user_id" id="selected-user-id" value="{{ old('user_id') }}">
 
                     <!-- Table Mahasiswa -->
-                    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div
+                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12" data-translate="tbl_pjt_1" data-translate-page="admin">Pilih</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_foto" data-translate-page="admin">Photo</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="nm_mhs" data-translate-page="admin">Nama Mahasiswa</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_pjt_3" data-translate-page="admin">Angkatan</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_pjt_4" data-translate-page="admin">Jurusan</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_pjt_5" data-translate-page="admin">Keahlian</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32" data-translate-page="admin" data-translate="tbl_pjt_6">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12"
+                                        data-translate="tbl_pjt_1" data-translate-page="admin">Pilih</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        data-translate="tbl_foto" data-translate-page="admin">Photo</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        data-translate="nm_mhs" data-translate-page="admin">Nama Mahasiswa</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        data-translate="tbl_pjt_3" data-translate-page="admin">Angkatan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        data-translate="tbl_pjt_4" data-translate-page="admin">Jurusan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        data-translate="tbl_pjt_5" data-translate-page="admin">Keahlian</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32"
+                                        data-translate-page="admin" data-translate="tbl_pjt_6">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="user-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody id="user-table-body"
+                                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
                                     <tr onclick="selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')"
                                         class="hover:bg-gray-50 dark:hover:bg-gray-700/70 transition cursor-pointer">
                                         <td class="px-6 py-5">
                                             <input type="radio" name="user_radio" value="{{ $user->id }}"
-                                                   class="user-radio w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                                   {{ old('user_id') == $user->id ? 'checked' : '' }}
-                                                   onchange="event.stopImmediatePropagation(); selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
+                                                class="user-radio w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                {{ old('user_id') == $user->id ? 'checked' : '' }}
+                                                onchange="event.stopImmediatePropagation(); selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
                                         </td>
                                         <td class="px-6 py-5">
-                                            <div class="w-11 h-11 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-600">
+                                            <div
+                                                class="w-11 h-11 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-600">
                                                 @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
-                                                    <img src="{{ asset('storage/' . $user->photo_profile) }}" 
-                                                         class="w-full h-full object-cover"
-                                                         alt="{{ $user->nama_mahasiswa }}">
+                                                    <img src="{{ asset('storage/' . $user->photo_profile) }}"
+                                                        class="w-full h-full object-cover" alt="{{ $user->nama_mahasiswa }}">
                                                 @else
-                                                    <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                                    <div
+                                                        class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                                                         <span class="text-white font-semibold text-xl">
                                                             {{ strtoupper(substr($user->nama_mahasiswa, 0, 1)) }}
                                                         </span>
@@ -176,7 +203,8 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-5">
-                                            <div class="font-semibold text-gray-900 dark:text-white">{{ $user->nama_mahasiswa }}</div>
+                                            <div class="font-semibold text-gray-900 dark:text-white">{{ $user->nama_mahasiswa }}
+                                            </div>
                                             <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
                                         </td>
                                         <td class="px-6 py-5 text-sm text-gray-600 dark:text-gray-400">
@@ -187,7 +215,8 @@
                                         </td>
                                         <td class="px-6 py-5">
                                             @if($user->keahlian)
-                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                                                <span
+                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
                                                     {{ $user->keahlian->nama_keahlian }}
                                                 </span>
                                             @else
@@ -196,8 +225,9 @@
                                         </td>
                                         <td class="px-6 py-5">
                                             <a href="{{ route('portfolio.show', $user->id) }}" target="_blank"
-                                               class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium">
-                                                <span data-translate="see_profile" data-translate-page="admin">Lihat Profil →</span>
+                                                class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium">
+                                                <span data-translate="see_profile" data-translate-page="admin">Lihat Profil
+                                                    →</span>
                                             </a>
                                         </td>
                                     </tr>
@@ -205,11 +235,15 @@
                                     <tr>
                                         <td colspan="7" class="px-6 py-16 text-center">
                                             <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
-                                                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 01-5.356-1.857M17 20H7m5-2v2m-5-2v2m5-2v-2m-5 2v-2" />
+                                                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                        d="M17 20h5v-2a3 3 0 01-5.356-1.857M17 20H7m5-2v2m-5-2v2m5-2v-2m-5 2v-2" />
                                                 </svg>
-                                                <p class="text-lg font-medium" data-translate="empty_filter" data-translate-page="admin">Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm mt-1" data-translate="empty_filter_desc" data-translate-page="admin">Coba ubah filter atau kata kunci pencarian</p>
+                                                <p class="text-lg font-medium" data-translate="empty_filter"
+                                                    data-translate-page="admin">Tidak ada mahasiswa ditemukan</p>
+                                                <p class="text-sm mt-1" data-translate="empty_filter_desc"
+                                                    data-translate-page="admin">Coba ubah filter atau kata kunci pencarian</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -231,12 +265,12 @@
                 <!-- Nama Sertifikat -->
                 <div>
                     <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="nm_srtfkt_create" data-translate-page="admin">Nama Sertifikat</span> <span class="text-red-500">*</span>
+                        <span data-translate="nm_srtfkt_create" data-translate-page="admin">Nama Sertifikat</span> <span
+                            class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="nama_sertifikat" id="nama_sertifikat" 
-                           value="{{ old('nama_sertifikat') }}" required
-                           placeholder="Contoh: Sertifikat Kompetensi Web Developer"
-                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('nama_sertifikat') border-red-500 @enderror">
+                    <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
+                        required placeholder="Contoh: Sertifikat Kompetensi Web Developer"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -245,12 +279,12 @@
                 <!-- Lembaga Penerbit -->
                 <div>
                     <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="lembaga_penerbit" data-translate-page="admin">Lembaga Penerbit</span> <span class="text-red-500">*</span>
+                        <span data-translate="lembaga_penerbit" data-translate-page="admin">Lembaga Penerbit</span> <span
+                            class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" 
-                           value="{{ old('lembaga_penerbit') }}" required
-                           placeholder="Contoh: Dicoding, Coursera, Google, Kampus Merdeka"
-                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('lembaga_penerbit') border-red-500 @enderror">
+                    <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
+                        required placeholder="Contoh: Dicoding, Coursera, Google, Kampus Merdeka"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -259,39 +293,47 @@
                 <!-- Tanggal Terbit -->
                 <div>
                     <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="tggl_terbit" data-translate-page="admin">Tanggal Terbit</span> <span class="text-red-500">*</span>
+                        <span data-translate="tggl_terbit" data-translate-page="admin">Tanggal Terbit</span> <span
+                            class="text-red-500">*</span>
                     </label>
-                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" 
-                           value="{{ old('tanggal_terbit') }}" required max="{{ date('Y-m-d') }}"
-                           class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('tanggal_terbit') border-red-500 @enderror">
+                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
+                        required max="{{ date('Y-m-d') }}"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400"><span data-translate="max_tggl" data-translate-page="admin">Maksimal tanggal hari ini</span></p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400"><span data-translate="max_tggl"
+                            data-translate-page="admin">Maksimal tanggal hari ini</span></p>
                 </div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="upload_srtfkt" data-translate-page="admin">Upload File Sertifikat</span> <span class="text-red-500">*</span>
+                        <span data-translate="upload_srtfkt" data-translate-page="admin">Upload File Sertifikat</span> <span
+                            class="text-red-500">*</span>
                     </label>
-                    <div id="drop-zone" 
-                         class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-400 transition cursor-pointer"
-                         onclick="document.getElementById('link_sertifikat').click()">
+                    <div id="drop-zone"
+                        class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-400 transition cursor-pointer"
+                        onclick="document.getElementById('link_sertifikat').click()">
                         <div class="space-y-3 text-center">
-                            <svg class="mx-auto h-14 w-14 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg class="mx-auto h-14 w-14 text-gray-400" stroke="currentColor" fill="none"
+                                viewBox="0 0 48 48">
+                                <path
+                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                             <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
-                                <label class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
+                                <label
+                                    class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
                                     <span data-translate="up_file" data-translate-page="admin">Upload file</span>
-                                    <input id="link_sertifikat" name="link_sertifikat" type="file" 
-                                           accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
-                                           onchange="updateFileLabel(this)">
+                                    <input id="link_sertifikat" name="link_sertifikat" type="file"
+                                        accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
+                                        onchange="updateFileLabel(this)">
                                 </label>
                                 <p class="pl-1" data-translate="or_drag" data-translate-page="admin">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name" data-translate="format_srtfkt" data-translate-page="admin">PNG, JPG, GIF maksimal 5MB</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name"
+                                data-translate="format_srtfkt" data-translate-page="admin">PNG, JPG, GIF maksimal 5MB</p>
                         </div>
                     </div>
                     @error('link_sertifikat')
@@ -300,20 +342,20 @@
                 </div>
 
                 <!-- Preview -->
-                <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+                <div id="image-preview-container"
+                    class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
                     <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Preview Sertifikat:</p>
-                    <img id="image-preview" src="#" alt="Preview" 
-                         class="max-h-64 w-full object-contain rounded-xl shadow">
+                    <img id="image-preview" src="#" alt="Preview" class="max-h-64 w-full object-contain rounded-xl shadow">
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end gap-4 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('admin.sertifikat.index') }}"
-                       class="px-8 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                        class="px-8 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                         <span data-translate="cncl" data-translate-page="admin">Batal</span>
                     </a>
                     <button type="submit"
-                            class="px-10 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-2xl shadow-lg transition">
+                        class="px-10 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-2xl shadow-lg transition">
                         <span data-translate="save_srtfkt" data-translate-page="admin">Simpan Sertifikat</span>
                     </button>
                 </div>
@@ -344,21 +386,21 @@
             const display = document.getElementById('selected-user-display');
             const content = document.getElementById('selected-user-content');
 
-            let photoHtml = photoProfile 
+            let photoHtml = photoProfile
                 ? `<img src="${photoProfile}" class="w-12 h-12 rounded-2xl object-cover border border-white dark:border-gray-700 shadow" alt="${userName}">`
                 : `<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl shadow">
-                        ${userName.charAt(0).toUpperCase()}
-                   </div>`;
+                            ${userName.charAt(0).toUpperCase()}
+                       </div>`;
 
             content.innerHTML = `
-                <div class="flex items-center gap-4">
-                    ${photoHtml}
-                    <div>
-                        <div class="font-semibold text-lg text-green-800 dark:text-green-200">${userName}</div>
-                        <div class="text-sm text-green-700 dark:text-green-300">${email}</div>
+                    <div class="flex items-center gap-4">
+                        ${photoHtml}
+                        <div>
+                            <div class="font-semibold text-lg text-green-800 dark:text-green-200">${userName}</div>
+                            <div class="text-sm text-green-700 dark:text-green-300">${email}</div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
             display.classList.remove('hidden');
         }
@@ -381,7 +423,7 @@
                 fileNameEl.textContent = file.name;
 
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     previewImg.src = e.target.result;
                     previewContainer.classList.remove('hidden');
                 };
@@ -390,7 +432,7 @@
         }
 
         // Drag and Drop
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.getElementById('drop-zone');
             const fileInput = document.getElementById('link_sertifikat');
 
@@ -433,7 +475,7 @@
             // Enter key on search
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
+                searchInput.addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         applyFilters();

@@ -7,9 +7,11 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100" data-translate="sertifikat_create_title" data-translate-page="sertifikat_create"></h1>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100" data-translate="sertifikat_create_title"
+                        data-translate-page="sertifikat_create"></h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-200" data-translate="sertifikat_create_desc" data-translate-page="sertifikat_create"></p>
+                <p class="mt-2 text-gray-600 dark:text-gray-200" data-translate="sertifikat_create_desc"
+                    data-translate-page="sertifikat_create"></p>
             </div>
 
             <!-- Error Global -->
@@ -21,7 +23,8 @@
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        <span class="font-medium" data-translate="error_global_title" data-translate-page="sertifikat_create"></span>
+                        <span class="font-medium" data-translate="error_global_title"
+                            data-translate-page="sertifikat_create"></span>
                     </div>
                     <ul class="list-disc pl-10 space-y-1.5">
                         @foreach ($errors->all() as $error)
@@ -38,15 +41,16 @@
                 <!-- Nama Sertifikat -->
                 <div>
                     <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="nama_sertifikat" data-translate-page="sertifikat_create"></span> <span class="text-red-500">*</span>
+                        <span data-translate="nama_sertifikat" data-translate-page="sertifikat_create"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
                         required placeholder="Contoh: Sertifikat Kompetensi Programming"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                              text-gray-700 dark:text-gray-300
-                              placeholder-gray-500 dark:placeholder-gray-400
-                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
+                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                  text-gray-700 dark:text-gray-300
+                                  placeholder-gray-500 dark:placeholder-gray-400
+                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -55,14 +59,15 @@
                 <!-- Lembaga Penerbit -->
                 <div>
                     <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="lembaga_penerbit" data-translate-page="sertifikat_create"></span> <span class="text-red-500">*</span>
+                        <span data-translate="lembaga_penerbit" data-translate-page="sertifikat_create"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
                         required placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg                   focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                              text-gray-700 dark:text-gray-300
-                              placeholder-gray-500 dark:placeholder-gray-400
-                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
+                                  text-gray-700 dark:text-gray-300
+                                  placeholder-gray-500 dark:placeholder-gray-400
+                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -71,31 +76,34 @@
                 <!-- Tanggal Terbit -->
                 <div>
                     <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_create"></span> <span class="text-red-500">*</span>
+                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_create"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
                         required max="{{ date('Y-m-d') }}"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                              text-gray-700 dark:text-gray-300
-                              placeholder-gray-500 dark:placeholder-gray-400
-                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
+                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                  text-gray-700 dark:text-gray-300
+                                  placeholder-gray-500 dark:placeholder-gray-400
+                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50" data-translate="max_date" data-translate-page="sertifikat_create"></p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50" data-translate="max_date"
+                        data-translate-page="sertifikat_create"></p>
                 </div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
                     <label for="link_sertifikat" class="block text-sm  font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="upload_file_sertifikat" data-translate-page="sertifikat_create"></span> <span class="text-red-500">*</span>
+                        <span data-translate="upload_file_sertifikat" data-translate-page="sertifikat_create"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2   border-dashed rounded-lg hover:border-indigo-400  transition cursor-pointer"
                         onclick="document.getElementById('link_sertifikat').click()">
                         <div class="space-y-2 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400 dark:hover:text-black" stroke="currentColor" fill="none"
-                                viewBox="0 0 48 48">
+                            <svg class="mx-auto h-12 w-12 text-gray-400 dark:hover:text-black" stroke="currentColor"
+                                fill="none" viewBox="0 0 48 48">
                                 <path
                                     d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -247,12 +255,12 @@
         });
     </script>
 
-    
-<!-- Page Info -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    showPageInfo("Tambahkan sertifikat baru dengan mengisi formulir. Pastikan untuk mengunggah file sertifikat yang valid.");
-});
-</script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("Tambahkan sertifikat baru dengan mengisi formulir. Pastikan untuk mengunggah file sertifikat yang valid.");
+        });
+    </script>
 
 @endsection

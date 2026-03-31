@@ -6,10 +6,12 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="ttl_form" data-translate-page="dosen_add_pjt">Tambah Project Baru</h1>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="ttl_form"
+                        data-translate-page="dosen_add_pjt">Tambah Project Baru</h1>
                 </div>
                 <p class="mt-2 text-gray-600 dark:text-gray-200">
-                    <span data-translate="desc_form" data-translate-page="dosen_add_pjt">Tambah Projek Yang Pernah Kamu Buat.</span>
+                    <span data-translate="desc_form" data-translate-page="dosen_add_pjt">Tambah Projek Yang Pernah Kamu
+                        Buat.</span>
                 </p>
             </div>
 
@@ -37,20 +39,21 @@
                 @csrf
 
                 <!-- Search and Filter Section -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter" data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
-                    
+                <div
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter"
+                        data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
+
                     <!-- Search Bar -->
                     <div class="mb-4">
                         <div class="relative">
-                            <input type="text" 
-                                   id="search-input"
-                                   placeholder="Cari nama mahasiswa..." 
-                                   value="{{ $search ?? '' }}"
-                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
+                            <input type="text" id="search-input" placeholder="Cari nama mahasiswa..."
+                                value="{{ $search ?? '' }}"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
                             <div class="absolute left-3 top-3.5 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
                         </div>
@@ -60,12 +63,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Filter Angkatan -->
                         <div>
-                            <label data-translate="agkt" data-translate-page="dosen_add_pjt" for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label data-translate="agkt" data-translate-page="dosen_add_pjt" for="angkatan-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Angkatan
                             </label>
                             <select id="angkatan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_agkt" data-translate-page="dosen_add_pjt" value="">Semua Angkatan</option>
+                                <option data-translate="all_agkt" data-translate-page="dosen_add_pjt" value="">Semua
+                                    Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -76,12 +81,14 @@
 
                         <!-- Filter Jurusan -->
                         <div>
-                            <label data-translate="jrs" data-translate-page="dosen_add_pjt" for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label data-translate="jrs" data-translate-page="dosen_add_pjt" for="jurusan-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Jurusan
                             </label>
                             <select id="jurusan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan</option>
+                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan
+                                </option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
@@ -92,12 +99,14 @@
 
                         <!-- Filter Keahlian -->
                         <div>
-                            <label data-translate="khl" data-translate-page="dosen_add_pjt" for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label data-translate="khl" data-translate-page="dosen_add_pjt" for="keahlian-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Keahlian
                             </label>
                             <select id="keahlian-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian</option>
+                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian
+                                </option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
                                         {{ $keahlianItem->nama_keahlian }}
@@ -109,12 +118,12 @@
 
                     <!-- Filter Buttons -->
                     <div class="flex justify-end space-x-3 mt-4">
-                        <a href="{{ route('dosen.projects.create') }}" 
-                           class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
-                           Reset Filter
+                        <a href="{{ route('dosen.projects.create') }}"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
+                            Reset Filter
                         </a>
                         <button type="button" onclick="applyFilters()"
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                             <span data-translate="trp_filter" data-translate-page="dosen_add_pjt">Terapkan Filter</span>
                         </button>
                     </div>
@@ -123,7 +132,8 @@
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span class="text-red-500">*</span>
+                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
@@ -155,9 +165,12 @@
                         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="font-medium text-blue-800" id="selected-owner-name"></div>
-                                <button type="button" onclick="clearSelectedOwner()" class="text-blue-600 hover:text-blue-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                <button type="button" onclick="clearSelectedOwner()"
+                                    class="text-blue-600 hover:text-blue-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
@@ -172,21 +185,26 @@
                 <!-- Pemimpin Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="select_leader" data-translate-page="dosen_add_pjt">Pilih Mahasiswa (Pemimpin Project)</span> <span class="text-red-500">*</span>
+                        <span data-translate="select_leader" data-translate-page="dosen_add_pjt">Pilih Mahasiswa (Pemimpin
+                            Project)</span> <span class="text-red-500">*</span>
                     </label>
-                    
+
                     <div id="selected-leader-display" class="mb-4 hidden">
                         <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
                                     </svg>
                                     <span class="text-green-800 font-medium" id="selected-leader-name"></span>
                                 </div>
-                                <button type="button" onclick="clearSelectedLeader()" class="text-green-600 hover:text-green-800">
+                                <button type="button" onclick="clearSelectedLeader()"
+                                    class="text-green-600 hover:text-green-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -200,58 +218,63 @@
                     <div class="mb-4">
                         <div class="relative">
                             <input type="text" id="leader-search" placeholder="Cari nama pemimpin project..."
-                                   class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
                         </div>
                     </div>
 
                     <!-- Table of Users for Leader -->
-                    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+                    <div
+                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Owner
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Leader
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        <span data-translate="tbl_nm" data-translate-page="dosen_add_pjt">Nama Mahasiswa</span> 
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <span data-translate="tbl_nm" data-translate-page="dosen_add_pjt">Nama
+                                            Mahasiswa</span>
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         <span data-translate="tbl_agkt" data-translate-page="dosen_add_pjt">Angkatan</span>
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         <span data-translate="tbl_jrs" data-translate-page="dosen_add_pjt">Jurusan</span>
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         <span data-translate="tbl_skill" data-translate-page="dosen_add_pjt">Keahlian</span>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody id="leader-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody id="leader-table-body"
+                                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                                         <td class="px-6 py-4">
-                                            <input type="radio" 
-                                                   name="owner_radio" 
-                                                   value="{{ $user->id }}"
-                                                   class="owner-radio w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                                   {{ old('owner') == $user->id ? 'checked' : '' }}
-                                                   onchange="selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
+                                            <input type="radio" name="owner_radio" value="{{ $user->id }}"
+                                                class="owner-radio w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('owner') == $user->id ? 'checked' : '' }}
+                                                onchange="selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
                                         </td>
                                         <td class="px-6 py-4">
-                                            <input type="radio" 
-                                                   name="leader_radio" 
-                                                   value="{{ $user->id }}"
-                                                   class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                                   {{ old('leader') == $user->id ? 'checked' : '' }}
-                                                   onchange="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
+                                            <input type="radio" name="leader_radio" value="{{ $user->id }}"
+                                                class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                {{ old('leader') == $user->id ? 'checked' : '' }}
+                                                onchange="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
                                             {{ $user->nama_mahasiswa }}
@@ -270,11 +293,18 @@
                                     <tr>
                                         <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                             <div class="flex flex-col items-center justify-center">
-                                                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                                    </path>
                                                 </svg>
-                                                <p class="text-lg font-medium"><span data-translate="empty_filter" data-translate-page="dosen_add_pjt"></span>Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm"><span data-translate="empty_filter_desc" data-translate-page="dosen_add_pjt"></span>Coba ubah filter pencarian Anda</p>
+                                                <p class="text-lg font-medium"><span data-translate="empty_filter"
+                                                        data-translate-page="dosen_add_pjt"></span>Tidak ada mahasiswa ditemukan
+                                                </p>
+                                                <p class="text-sm"><span data-translate="empty_filter_desc"
+                                                        data-translate-page="dosen_add_pjt"></span>Coba ubah filter pencarian
+                                                    Anda</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -295,7 +325,8 @@
 
                 <!-- Rekan Project -->
                 <div id="member-wrapper">
-                    <label data-translate="add_partner" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label data-translate="add_partner" data-translate-page="dosen_add_pjt"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Tambah Rekan (opsional)
                     </label>
 
@@ -303,8 +334,7 @@
                         <!-- Member items will be dynamically added here -->
                     </div>
 
-                    <button type="button"
-                        onclick="addMemberSelect()"
+                    <button type="button" onclick="addMemberSelect()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline">
                         <span data-translate="add_partner_btn" data-translate-page="dosen_add_pjt">+ Tambah Rekan</span>
                     </button>
@@ -314,7 +344,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <span data-translate="date_start" data-translate-page="dosen_add_pjt">Tanggal Mulai</span> <span class="text-red-500">*</span>
+                            <span data-translate="date_start" data-translate-page="dosen_add_pjt">Tanggal Mulai</span> <span
+                                class="text-red-500">*</span>
                         </label>
                         <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
@@ -324,11 +355,11 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-<<<<<<< HEAD
-                            <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span>
-=======
-                            <span data-translate="date_end" data-translate-page="dosen_add_pjt">Tanggal Akhir</span> (opsional)
->>>>>>> 7d6373dded44c5fd933cf8d7c3dba60e33b32deb
+                            <<<<<<< HEAD <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span>
+                                =======
+                                <span data-translate="date_end" data-translate-page="dosen_add_pjt">Tanggal Akhir</span>
+                                (opsional)
+                                >>>>>>> 7d6373dded44c5fd933cf8d7c3dba60e33b32deb
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
@@ -353,7 +384,8 @@
 
                 <!-- Link GitHub -->
                 <div>
-                    <label data-translate="link_github" data-translate-page="dosen_add_pjt" for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label data-translate="link_github" data-translate-page="dosen_add_pjt" for="link_github"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Link GitHub
                     </label>
                     <input type="url" name="link_github" id="link_github" maxlength="500"
@@ -366,7 +398,8 @@
 
                 <!-- Link Video -->
                 <div>
-                    <label data-translate="link_vid" data-translate-page="dosen_add_pjt" for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label data-translate="link_vid" data-translate-page="dosen_add_pjt" for="link_video"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Link Video
                     </label>
                     <input type="url" name="link_video" id="link_video" maxlength="500"
@@ -406,7 +439,7 @@
             currentFilters.angkatan = document.getElementById('angkatan-filter').value;
             currentFilters.jurusan = document.getElementById('jurusan-filter').value;
             currentFilters.keahlian = document.getElementById('keahlian-filter').value;
-            
+
             fetchFilteredUsers();
         }
 
@@ -418,54 +451,54 @@
             url.searchParams.set('jurusan', currentFilters.jurusan);
             url.searchParams.set('keahlian', currentFilters.keahlian);
             url.searchParams.set('page', page);
-            
+
             // Use fetch to get filtered results
             fetch(url.toString(), {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.text())
-            .then(html => {
-                // Parse the HTML response
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // Update leader table
-                const newLeaderBody = doc.querySelector('#leader-table-body');
-                if (newLeaderBody) {
-                    document.getElementById('leader-table-body').innerHTML = newLeaderBody.innerHTML;
-                }
-                
-                // Update pagination
-                const newPagination = doc.querySelector('#pagination-links');
-                if (newPagination) {
-                    document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
-                }
+                .then(response => response.text())
+                .then(html => {
+                    // Parse the HTML response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
 
-                // Restore selected owner if any
-                const selectedOwnerId = document.getElementById('selected-owner-id').value;
-                if (selectedOwnerId) {
-                    const selectedOwnerRadio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
-                    if (selectedOwnerRadio) {
-                        const row = selectedOwnerRadio.closest('tr');
-                        const ownerName = row.querySelector('td:nth-child(3)').textContent.trim();
-                        selectOwner(selectedOwnerId, ownerName);
+                    // Update leader table
+                    const newLeaderBody = doc.querySelector('#leader-table-body');
+                    if (newLeaderBody) {
+                        document.getElementById('leader-table-body').innerHTML = newLeaderBody.innerHTML;
                     }
-                }
 
-                // Restore selected leader if any
-                const selectedLeaderId = document.getElementById('selected-leader-id').value;
-                if (selectedLeaderId) {
-                    const selectedRadio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
-                    if (selectedRadio) {
-                        const row = selectedRadio.closest('tr');
-                        const leaderName = row.querySelector('td:nth-child(3)').textContent.trim();
-                        selectLeader(selectedLeaderId, leaderName);
+                    // Update pagination
+                    const newPagination = doc.querySelector('#pagination-links');
+                    if (newPagination) {
+                        document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
                     }
-                }
-            })
-            .catch(error => console.error('Error:', error));
+
+                    // Restore selected owner if any
+                    const selectedOwnerId = document.getElementById('selected-owner-id').value;
+                    if (selectedOwnerId) {
+                        const selectedOwnerRadio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
+                        if (selectedOwnerRadio) {
+                            const row = selectedOwnerRadio.closest('tr');
+                            const ownerName = row.querySelector('td:nth-child(3)').textContent.trim();
+                            selectOwner(selectedOwnerId, ownerName);
+                        }
+                    }
+
+                    // Restore selected leader if any
+                    const selectedLeaderId = document.getElementById('selected-leader-id').value;
+                    if (selectedLeaderId) {
+                        const selectedRadio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
+                        if (selectedRadio) {
+                            const row = selectedRadio.closest('tr');
+                            const leaderName = row.querySelector('td:nth-child(3)').textContent.trim();
+                            selectLeader(selectedLeaderId, leaderName);
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
 
         // Function to attach click listeners to table rows
@@ -492,19 +525,19 @@
             if (document.getElementById('selected-owner-id').value && document.getElementById('selected-owner-id').value === userId) {
                 clearSelectedOwner();
             }
-            
+
             // Update hidden input
             document.getElementById('selected-leader-id').value = userId;
-            
+
             // Update radio buttons
             document.querySelectorAll('.leader-radio').forEach(radio => {
                 radio.checked = (radio.value == userId);
             });
-            
+
             // Update display
             const display = document.getElementById('selected-leader-display');
             const nameSpan = document.getElementById('selected-leader-name');
-            
+
             if (userId) {
                 nameSpan.textContent = 'Pemimpin: ' + userName;
                 display.classList.remove('hidden');
@@ -514,7 +547,7 @@
 
             // Update disabled options
             updateDisabledOptions();
-            
+
             // Save to localStorage
             saveToLocalStorage();
         }
@@ -526,10 +559,10 @@
                 radio.checked = false;
             });
             document.getElementById('selected-leader-display').classList.add('hidden');
-            
+
             // Update disabled options
             updateDisabledOptions();
-            
+
             // Save to localStorage
             saveToLocalStorage();
         }
@@ -540,7 +573,7 @@
             if (document.getElementById('selected-leader-id').value && document.getElementById('selected-leader-id').value === userId) {
                 clearSelectedLeader();
             }
-            
+
             document.getElementById('selected-owner-id').value = userId;
             document.querySelectorAll('.owner-radio').forEach(radio => {
                 radio.checked = (radio.value == userId);
@@ -566,7 +599,7 @@
                 radio.checked = false;
             });
             document.getElementById('selected-owner-display').classList.add('hidden');
-            
+
             updateDisabledOptions();
             saveToLocalStorage();
         }
@@ -594,17 +627,17 @@
             // If no users in table, use a default message
             if (users.length === 0) {
                 memberDiv.innerHTML = `
-                    <div class="flex gap-2">
-                        <select class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg" disabled>
-                            <option value="">Tidak ada mahasiswa tersedia</option>
-                        </select>
-                        <button type="button" 
-                            onclick="removeMember(this)"
-                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                            ✕
-                        </button>
-                    </div>
-                `;
+                                <div class="flex gap-2">
+                                    <select class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg" disabled>
+                                        <option value="">Tidak ada mahasiswa tersedia</option>
+                                    </select>
+                                    <button type="button" 
+                                        onclick="removeMember(this)"
+                                        class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                        ✕
+                                    </button>
+                                </div>
+                            `;
             } else {
                 let optionsHtml = '<option value="">-- Pilih Mahasiswa --</option>';
                 users.forEach(user => {
@@ -613,28 +646,28 @@
                 });
 
                 memberDiv.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <div class="relative mb-3">
-                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <select name="members[]" 
-                                class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-700 dark:border-gray-700 rounded-lg">
-                                ${optionsHtml}
-                            </select>
-                            <button type="button" 
-                                onclick="removeMember(this)"
-                                class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                                ✕
-                            </button>
-                        </div>
-                    </div>
-                `;
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                                    <div class="relative mb-3">
+                                        <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
+                                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <select name="members[]" 
+                                            class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-700 dark:border-gray-700 rounded-lg">
+                                            ${optionsHtml}
+                                        </select>
+                                        <button type="button" 
+                                            onclick="removeMember(this)"
+                                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                            ✕
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
             }
 
             container.appendChild(memberDiv);
@@ -642,7 +675,7 @@
             // Add change listener to new select
             const newSelect = memberDiv.querySelector('.member-select');
             if (newSelect && !newSelect.disabled) {
-                newSelect.addEventListener('change', function() {
+                newSelect.addEventListener('change', function () {
                     updateDisabledOptions();
                     saveToLocalStorage();
                 });
@@ -650,7 +683,7 @@
             // Add search listener to new member row
             const newSearchInput = memberDiv.querySelector('.member-search');
             if (newSearchInput) {
-                newSearchInput.addEventListener('input', function() {
+                newSearchInput.addEventListener('input', function () {
                     const keyword = this.value.toLowerCase().trim();
                     const select = memberDiv.querySelector('.member-select');
                     Array.from(select.options).forEach(option => {
@@ -669,10 +702,10 @@
         function removeMember(button) {
             const memberDiv = button.closest('.member-item');
             memberDiv.remove();
-            
+
             // Update disabled options after removal
             updateDisabledOptions();
-            
+
             // Save to localStorage
             saveToLocalStorage();
         }
@@ -681,7 +714,7 @@
         function updateDisabledOptions() {
             const leaderId = document.getElementById('selected-leader-id').value;
             const ownerId = document.getElementById('selected-owner-id').value;
-            
+
             // Get all selected member IDs
             const selectedMemberIds = [];
             document.querySelectorAll('.member-select').forEach(select => {
@@ -693,7 +726,7 @@
             // Update all member selects
             document.querySelectorAll('.member-select').forEach(select => {
                 if (select.disabled) return;
-                
+
                 // Enable all options first
                 select.querySelectorAll('option').forEach(option => {
                     option.disabled = false;
@@ -731,11 +764,11 @@
         function saveToLocalStorage() {
             const ownerId = document.getElementById('selected-owner-id').value;
             const leaderId = document.getElementById('selected-leader-id').value;
-            
+
             // Get all member selects
             const memberSelects = document.querySelectorAll('.member-select');
             const memberIds = [];
-            
+
             memberSelects.forEach(select => {
                 if (select.value && !select.disabled) {
                     memberIds.push(select.value);
@@ -754,11 +787,11 @@
         // Function to load saved data from localStorage
         function loadSavedData() {
             const savedData = localStorage.getItem('projectTeamData');
-            
+
             if (savedData) {
                 try {
                     const data = JSON.parse(savedData);
-                    
+
                     // Set owner
                     if (data.owner) {
                         const ownerRadio = document.querySelector(`.owner-radio[value="${data.owner}"]`);
@@ -799,7 +832,7 @@
                     setTimeout(() => {
                         updateDisabledOptions();
                     }, 100);
-                    
+
                 } catch (e) {
                     console.error('Error parsing saved data:', e);
                     // Add one empty member select if error
@@ -817,7 +850,7 @@
         }
 
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Check if there's an old selected owner
             const oldOwnerId = document.getElementById('selected-owner-id').value;
             if (oldOwnerId) {
@@ -844,14 +877,14 @@
             loadSavedData();
 
             // Add submit event listener to form
-            document.getElementById('projectForm').addEventListener('submit', function() {
+            document.getElementById('projectForm').addEventListener('submit', function () {
                 clearLocalStorage();
             });
 
             // Enter key for search
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
+                searchInput.addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         applyFilters();

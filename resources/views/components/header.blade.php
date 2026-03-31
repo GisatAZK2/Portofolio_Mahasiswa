@@ -94,8 +94,8 @@
                     </select>
 
                     <!-- Buttons -->
-                    <div  class="flex gap-2 shrink-0">
-                        <button  type="submit"
+                    <div class="flex gap-2 shrink-0">
+                        <button type="submit"
                             class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition text-sm font-medium flex items-center gap-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -110,111 +110,99 @@
     </div>
 
     <!-- MOBILE Search Dropdown -->
-   <div id="mobile-search-dropdown"
-    class="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 ease-in-out max-h-0">
+    <div id="mobile-search-dropdown"
+        class="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 ease-in-out max-h-0">
 
-    <div class="px-4 py-5 space-y-5 sm:px-6">
-        <form method="GET" action="{{ route('search') }}" class="space-y-4">
+        <div class="px-4 py-5 space-y-5 sm:px-6">
+            <form method="GET" action="{{ route('search') }}" class="space-y-4">
 
-            <!-- Search Input -->
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-500 dark:text-white" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
+                <!-- Search Input -->
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-500 dark:text-white" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
 
-                <input type="text" name="q" value="{{ request('q') }}"
-                    class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    <input type="text" name="q" value="{{ request('q') }}" class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                     focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                     text-gray-700 dark:text-gray-300
                     placeholder-gray-500 dark:placeholder-gray-400
                     shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
-                    placeholder="Cari mahasiswa, proyek, portofolio...">
-            </div>
+                        placeholder="Cari mahasiswa, proyek, portofolio...">
+                </div>
 
-            <!-- Filters -->
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <!-- Filters -->
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 
-                <select name="jurusan"
-                    class="block w-full border border-gray-300/80 dark:border-gray-700/80
+                    <select name="jurusan" class="block w-full border border-gray-300/80 dark:border-gray-700/80
                     rounded-lg py-3 px-3.5 text-sm
                     bg-white/80 dark:bg-gray-700/80
                     text-gray-700 dark:text-gray-300
                     backdrop-blur-sm
                     focus:ring-indigo-400 focus:border-indigo-400">
 
-                    <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Jurusan</option>
+                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Jurusan</option>
 
-                    @foreach($jurusanList ?? [] as $jurusan)
-                        <option class="dark:bg-gray-800 dark:text-gray-200"
-                            value="{{ $jurusan->id_jurusan }}"
-                            {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
-                            {{ $jurusan->nama_jurusan }}
-                        </option>
-                    @endforeach
-                </select>
+                        @foreach($jurusanList ?? [] as $jurusan)
+                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
+                                {{ $jurusan->nama_jurusan }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                <select name="keahlian"
-                    class="block w-full border border-gray-300/80 dark:border-gray-700/80
+                    <select name="keahlian" class="block w-full border border-gray-300/80 dark:border-gray-700/80
                     rounded-lg py-3 px-3.5 text-sm
                     bg-white/80 dark:bg-gray-700/80
                     text-gray-700 dark:text-gray-300
                     backdrop-blur-sm
                     focus:ring-indigo-400 focus:border-indigo-400">
 
-                    <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Keahlian</option>
+                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Keahlian</option>
 
-                    @foreach($keahlianList ?? [] as $keahlian)
-                        <option class="dark:bg-gray-800 dark:text-gray-200"
-                            value="{{ $keahlian->id_keahlian }}"
-                            {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
-                            {{ $keahlian->nama_keahlian }}
-                        </option>
-                    @endforeach
-                </select>
+                        @foreach($keahlianList ?? [] as $keahlian)
+                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
+                                {{ $keahlian->nama_keahlian }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                <select name="angkatan"
-                    class="block w-full border border-gray-300/80 dark:border-gray-700/80
+                    <select name="angkatan" class="block w-full border border-gray-300/80 dark:border-gray-700/80
                     rounded-lg py-3 px-3.5 text-sm
                     bg-white/80 dark:bg-gray-700/80
                     text-gray-700 dark:text-gray-300
                     backdrop-blur-sm
                     focus:ring-indigo-400 focus:border-indigo-400 sm:col-span-2">
 
-                    <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Angkatan</option>
+                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Angkatan</option>
 
-                    @foreach($angkatanList ?? [] as $angkatan)
-                        <option class="dark:bg-gray-800 dark:text-gray-200"
-                            value="{{ $angkatan->id }}"
-                            {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
-                            {{ $angkatan->nama_angkatan }}
-                        </option>
-                    @endforeach
-                </select>
+                        @foreach($angkatanList ?? [] as $angkatan)
+                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
+                                {{ $angkatan->nama_angkatan }}
+                            </option>
+                        @endforeach
+                    </select>
 
-            </div>
+                </div>
 
-            <!-- Buttons -->
-            <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <!-- Buttons -->
+                <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
 
-                <button data-translate="search" data-translate-page="search" type="submit"
-                    class="flex-1 bg-indigo-600 text-white py-3.5 rounded-lg text-sm font-medium
+                    <button data-translate="search" data-translate-page="search" type="submit" class="flex-1 bg-indigo-600 text-white py-3.5 rounded-lg text-sm font-medium
                     hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2
                     transition flex items-center justify-center gap-2 shadow-sm">
 
-                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
 
-                    <span data-translate="search" data-translate-page="search"></span>
-                </button>
+                        <span data-translate="search" data-translate-page="search"></span>
+                    </button>
 
-                <a href="{{ route('search') }}"
-                    class="flex-1 bg-white/60 dark:bg-gray-700/60
+                    <a href="{{ route('search') }}" class="flex-1 bg-white/60 dark:bg-gray-700/60
                     text-gray-700 dark:text-gray-300
                     py-3.5 rounded-lg text-sm font-medium
                     hover:bg-gray-100/80 dark:hover:bg-gray-600
@@ -222,53 +210,53 @@
                     transition flex items-center justify-center
                     border border-gray-300/50 dark:border-gray-700/50 backdrop-blur-sm">
 
-                    Reset Filter
-                </a>
+                        Reset Filter
+                    </a>
 
-            </div>
+                </div>
 
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 </header>
 
 <script>
-const texts = [
-    "Cari Mahasiswa...",
-    "Cari Portofolio...",
-    "Cari Sertifikat..."
-];
+    const texts = [
+        "Cari Mahasiswa...",
+        "Cari Portofolio...",
+        "Cari Sertifikat..."
+    ];
 
-const inputs = document.querySelectorAll('input[name="q"]');
+    const inputs = document.querySelectorAll('input[name="q"]');
 
-let textIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
 
-function typeEffect() {
-    const currentText = texts[textIndex];
-    
-    inputs.forEach(input => {
-        input.setAttribute("placeholder", currentText.substring(0, charIndex));
-    });
+    function typeEffect() {
+        const currentText = texts[textIndex];
 
-    if (!isDeleting) {
-        charIndex++;
-        if (charIndex > currentText.length) {
-            isDeleting = true;
-            setTimeout(typeEffect, 1200);
-            return;
+        inputs.forEach(input => {
+            input.setAttribute("placeholder", currentText.substring(0, charIndex));
+        });
+
+        if (!isDeleting) {
+            charIndex++;
+            if (charIndex > currentText.length) {
+                isDeleting = true;
+                setTimeout(typeEffect, 1200);
+                return;
+            }
+        } else {
+            charIndex--;
+            if (charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+            }
         }
-    } else {
-        charIndex--;
-        if (charIndex === 0) {
-            isDeleting = false;
-            textIndex = (textIndex + 1) % texts.length;
-        }
+
+        setTimeout(typeEffect, isDeleting ? 40 : 80);
     }
 
-    setTimeout(typeEffect, isDeleting ? 40 : 80);
-}
-
-document.addEventListener("DOMContentLoaded", typeEffect);
+    document.addEventListener("DOMContentLoaded", typeEffect);
 </script>

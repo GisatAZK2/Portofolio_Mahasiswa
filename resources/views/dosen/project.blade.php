@@ -19,7 +19,8 @@
             <!-- Header Sederhana -->
             <div class="mb-6 sm:mb-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl_pjt" data-translate-page="dosen_kll_pjt">Project Mahasiswa</h1>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl_pjt"
+                        data-translate-page="dosen_kll_pjt">Project Mahasiswa</h1>
                     <a href="{{ route('dosen.projects.create') }}"
                         class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,7 +30,8 @@
                     </a>
                 </div>
 
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1"><span data-translate="desc_pjt" data-translate-page="dosen_kll_pjt">Beberapa Pameran Project Mahasiswa</span></p>
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1"><span data-translate="desc_pjt"
+                        data-translate-page="dosen_kll_pjt">Beberapa Pameran Project Mahasiswa</span></p>
             </div>
 
             <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -39,7 +41,9 @@
                             class="h-4 w-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                         <span data-translate="select_all" data-translate-page="admin">Pilih Semua</span>
                     </label>
-                    <span class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected" data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> / <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected"
+                            data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> / <strong
+                            id="totalProjectCount">{{ $projects->count() }}</strong></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="confirmBulkDelete()"
@@ -137,8 +141,10 @@
                                 class="relative bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
 
                                 <div class="absolute top-3 left-3 z-10">
-                                    <label class="inline-flex items-center p-2 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-sm">
-                                        <input type="checkbox" class="project-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                    <label
+                                        class="inline-flex items-center p-2 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-sm">
+                                        <input type="checkbox"
+                                            class="project-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                             data-project-id="{{ $project->id }}">
                                     </label>
                                 </div>
@@ -345,7 +351,8 @@
                                             class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg text-xs font-medium hover:bg-indigo-200 transition">
                                             Detail
                                         </a>
-                                        <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST" onsubmit="return confirm('Hapus project ini?')" class="inline">
+                                        <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST"
+                                            onsubmit="return confirm('Hapus project ini?')" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -379,8 +386,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg"><span data-translate="empty_pjt" data-translate-page="dosen_kll_pjt">Belum ada proyek yang ditampilkan.</span></p>
-                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2"><span data-translate="empty_pjt_desc" data-translate-page="dosen_kll_pjt">Silakan tambahkan proyek baru untuk memulai.</span></p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg"><span data-translate="empty_pjt"
+                                data-translate-page="dosen_kll_pjt">Belum ada proyek yang ditampilkan.</span></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2"><span data-translate="empty_pjt_desc"
+                                data-translate-page="dosen_kll_pjt">Silakan tambahkan proyek baru untuk memulai.</span></p>
                     </div>
                 @endif
             </section>

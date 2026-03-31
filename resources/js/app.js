@@ -1,11 +1,12 @@
+
 import './bootstrap';
 import Alpine from 'alpinejs';
-import { showSuccessAlert, showErrorAlert, showLoading, closeLoading,showConfirm  } from './alert.js';
+import { showSuccessAlert, showErrorAlert, showLoading, closeLoading, showConfirm } from './alert.js';
 
 window.showSuccessAlert = showSuccessAlert;
-window.showErrorAlert   = showErrorAlert;
-window.showLoading      = showLoading;
-window.closeLoading     = closeLoading;
+window.showErrorAlert = showErrorAlert;
+window.showLoading = showLoading;
+window.closeLoading = closeLoading;
 window.showConfirmAlert = showConfirm;
 
 
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         img.style.transition = 'transform 0.3s ease';
 
         img.addEventListener('click', (e) => {
-            e.stopPropagation(); 
+            e.stopPropagation();
 
             const modal = document.createElement('div');
             modal.style.position = 'fixed';
@@ -54,36 +55,36 @@ document.addEventListener('DOMContentLoaded', () => {
             modalImg.addEventListener('click', (e) => e.stopPropagation());
 
             document.body.appendChild(modal);
-            document.body.style.overflow = 'hidden'; 
+            document.body.style.overflow = 'hidden';
         });
     });
 });
 
 
 // Show/hide Toggle Password
-    document.addEventListener('click', function (e) {
+document.addEventListener('click', function (e) {
 
-        const toggleBtn = e.target.closest('[data-toggle-password]');
-        if (!toggleBtn) return;
+    const toggleBtn = e.target.closest('[data-toggle-password]');
+    if (!toggleBtn) return;
 
-        const input = toggleBtn.closest('div').querySelector('input[type="password"], input[type="text"]');
-        if (!input) return;
+    const input = toggleBtn.closest('div').querySelector('input[type="password"], input[type="text"]');
+    if (!input) return;
 
-        if (input.type === 'password') {
-            input.type = 'text';
-            toggleBtn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            toggleBtn.textContent = '👁';
-        }
-    });
+    if (input.type === 'password') {
+        input.type = 'text';
+        toggleBtn.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        toggleBtn.textContent = '👁';
+    }
+});
 
 // Show Dropdown Menu on click
 function toggleDropdown(section) {
-    const menuId  = section + 'Menu';
+    const menuId = section + 'Menu';
     const arrowId = section + 'Arrow';
 
-    const menu  = document.getElementById(menuId);
+    const menu = document.getElementById(menuId);
     const arrow = document.getElementById(arrowId);
 
     if (!menu || !arrow) {
@@ -109,10 +110,10 @@ document.addEventListener('turbo:load', () => {
     }
 });
 
-window.toggleDarkMode = function() {
+window.toggleDarkMode = function () {
     const html = document.documentElement;
     const btn = document.getElementById('darkModeBtn');
-    
+
     const isCurrentlyDark = html.classList.contains('dark');
 
     if (isCurrentlyDark) {
@@ -131,9 +132,9 @@ function initDarkMode() {
     const btn = document.getElementById('darkModeBtn');
     const savedTheme = localStorage.getItem('theme');
 
-    if (savedTheme === 'dark' || 
+    if (savedTheme === 'dark' ||
         (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        
+
         html.classList.add('dark');
         if (btn) btn.innerHTML = 'Light Mode';
     } else {
@@ -147,7 +148,7 @@ document.addEventListener('DOMContentLoaded', initDarkMode);
 document.addEventListener('turbo:load', initDarkMode);
 
 // Pilihan Bahasa
-window.changeLanguage = function() {
+window.changeLanguage = function () {
     const lang = document.getElementById('languageSelect').value;
     localStorage.setItem('lang', lang);
     location.reload();

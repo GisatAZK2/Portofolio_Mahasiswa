@@ -1,121 +1,125 @@
 @extends('Layout.Layout')
 @section('title', 'Sertifikat Saya')
 @section('content')
-<div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="title_srtfkt" data-translate-page="admin">Kelola Semua Sertifikat</h1>
-            <p class="text-gray-600 dark:text-gray-200">
-               <span data-translate="desc_srtfkt" data-translate-page="admin">Kelola Semua Sertifikat Milik Mahasiswa</span>
-            </p>
-        </div>
-        <div class="flex gap-3">
-            <button type="button" 
-                    id="bulkDeleteBtn"
+    <div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="title_srtfkt"
+                    data-translate-page="admin">Kelola Semua Sertifikat</h1>
+                <p class="text-gray-600 dark:text-gray-200">
+                    <span data-translate="desc_srtfkt" data-translate-page="admin">Kelola Semua Sertifikat Milik
+                        Mahasiswa</span>
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" id="bulkDeleteBtn"
                     class="inline-flex items-center px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled>
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                <span data-translate="delete_selected" data-translate-page="project_detail">Hapus Terpilih</span> (<span id="selectedCount">0</span>)
-            </button>
-            <a href="{{ route('admin.sertifikat.create') }}"
-               class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span data-translate="add_srtfkt" data-translate-page="admin">Tambah Sertifikat</span>
-            </a>
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span data-translate="delete_selected" data-translate-page="project_detail">Hapus Terpilih</span> (<span
+                        id="selectedCount">0</span>)
+                </button>
+                <a href="{{ route('admin.sertifikat.create') }}"
+                    class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span data-translate="add_srtfkt" data-translate-page="admin">Tambah Sertifikat</span>
+                </a>
+            </div>
         </div>
-    </div>
 
-    {{-- Filter Section --}}
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-8 border border-gray-100 dark:border-gray-800">
-        <form action="{{ route('admin.sertifikat.index') }}" method="GET" id="filterForm">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                {{-- Search Input --}}
-                <div class="lg:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        <span data-translate="srch_usr" data-translate-page="admin">Pencarian</span>
-                    </label>
-                    <div class="relative">
-                        <input type="text" 
-                               name="search" 
-                               value="{{ $search ?? '' }}"
-                               placeholder="Cari mahasiswa atau nama sertifikat..."
-                               class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <div class="absolute left-3 top-2.5">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+        {{-- Filter Section --}}
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-8 border border-gray-100 dark:border-gray-800">
+            <form action="{{ route('admin.sertifikat.index') }}" method="GET" id="filterForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                    {{-- Search Input --}}
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <span data-translate="srch_usr" data-translate-page="admin">Pencarian</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" name="search" value="{{ $search ?? '' }}"
+                                placeholder="Cari mahasiswa atau nama sertifikat..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+                            <div class="absolute left-3 top-2.5">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- Angkatan Filter --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        <span data-translate="agkt_addusr" data-translate-page="admin">Angkatan</span>
-                    </label>
-                    <select name="angkatan" 
+                    {{-- Angkatan Filter --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <span data-translate="agkt_addusr" data-translate-page="admin">Angkatan</span>
+                        </label>
+                        <select name="angkatan"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option data-translate="all_cohorts" data-translate-page="admin" value="">Semua Angkatan</option>
-                        @foreach($angkatans as $angkatanItem)
-                            <option value="{{ $angkatanItem->id }}" {{ $angkatan == $angkatanItem->id ? 'selected' : '' }}>
-                                {{ $angkatanItem->nama_angkatan }}
+                            <option data-translate="all_cohorts" data-translate-page="admin" value="">Semua Angkatan
                             </option>
-                        @endforeach
-                    </select>
-                </div>
+                            @foreach($angkatans as $angkatanItem)
+                                <option value="{{ $angkatanItem->id }}" {{ $angkatan == $angkatanItem->id ? 'selected' : '' }}>
+                                    {{ $angkatanItem->nama_angkatan }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                {{-- Jurusan Filter --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        <span data-translate="jrs_addusr" data-translate-page="admin">Jurusan</span>
-                    </label>
-                    <select name="jurusan" 
+                    {{-- Jurusan Filter --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <span data-translate="jrs_addusr" data-translate-page="admin">Jurusan</span>
+                        </label>
+                        <select name="jurusan"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option data-translate="all_jrs" data-translate-page="admin" value="">Semua Jurusan</option>
-                        @foreach($jurusans as $jurusanItem)
-                            <option value="{{ $jurusanItem->id_jurusan }}" {{ $jurusan == $jurusanItem->id_jurusan ? 'selected' : '' }}>
-                                {{ $jurusanItem->nama_jurusan }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                            <option data-translate="all_jrs" data-translate-page="admin" value="">Semua Jurusan</option>
+                            @foreach($jurusans as $jurusanItem)
+                                <option value="{{ $jurusanItem->id_jurusan }}" {{ $jurusan == $jurusanItem->id_jurusan ? 'selected' : '' }}>
+                                    {{ $jurusanItem->nama_jurusan }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                {{-- Keahlian Filter --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        <span data-translate="exp_addusr" data-translate-page="admin">Keahlian</span>
-                    </label>
-                    <select name="keahlian" 
+                    {{-- Keahlian Filter --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <span data-translate="exp_addusr" data-translate-page="admin">Keahlian</span>
+                        </label>
+                        <select name="keahlian"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian</option>
-                        @foreach($keahlians as $keahlianItem)
-                            <option value="{{ $keahlianItem->id_keahlian }}" {{ $keahlian == $keahlianItem->id_keahlian ? 'selected' : '' }}>
-                                {{ $keahlianItem->nama_keahlian }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                            <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian</option>
+                            @foreach($keahlians as $keahlianItem)
+                                <option value="{{ $keahlianItem->id_keahlian }}" {{ $keahlian == $keahlianItem->id_keahlian ? 'selected' : '' }}>
+                                    {{ $keahlianItem->nama_keahlian }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                {{-- Status Pengajuan Filter --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        <span data-translate="stat_filter" data-translate-page="admin">Status</span>
-                    </label>
-                    <select name="status_pengajuan" 
+                    {{-- Status Pengajuan Filter --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <span data-translate="stat_filter" data-translate-page="admin">Status</span>
+                        </label>
+                        <select name="status_pengajuan"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option data-translate="stat_filter_all" data-translate-page="admin" value="">Semua Status</option>
-                        @foreach($statusOptions as $status)
-                            <option value="{{ $status }}" {{ $status_pengajuan == $status ? 'selected' : '' }}>
-                                {{ $status }}
+                            <option data-translate="stat_filter_all" data-translate-page="admin" value="">Semua Status
                             </option>
-                        @endforeach
-                    </select>
+                            @foreach($statusOptions as $status)
+                                <option value="{{ $status }}" {{ $status_pengajuan == $status ? 'selected' : '' }}>
+                                    {{ $status }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-            </div>
 
                 <div class="flex justify-end mt-4 space-x-3">
                     <a href="{{ route('admin.sertifikat.index') }}"
@@ -124,68 +128,74 @@
                     </a>
                     <button type="submit"
                         class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                    <span data-translate="trp_filter" data-translate-page="admin">Terapkan Filter</span>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    {{-- Select All Bar --}}
-    @if(!$sertifikat->isEmpty())
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 mb-6 border border-gray-100 dark:border-gray-800">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" 
-                           id="selectAllCheckbox"
-                           class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="plh_semua" data-translate-page="admin">Pilih Semua</span>
-                </label>
-                <span class="text-sm text-gray-500 dark:text-gray-400">
-                    <span data-translate="tmplkn" data-translate-page="admin">Menampilkan</span> {{ $sertifikat->firstItem() }} - {{ $sertifikat->lastItem() }} <span data-translate="dr" data-translate-page="admin">dari</span> {{ $sertifikat->total() }} <span data-translate="srtfkt" data-translate-page="admin">sertifikat</span>
-                </span>
-            </div>
-            <span class="text-sm text-gray-500 dark:text-gray-400">
-                <span data-translate="total_dipilih" data-translate-page="admin">Total dipilih:</span> <span id="totalSelected">0</span>
-            </span>
+                        <span data-translate="trp_filter" data-translate-page="admin">Terapkan Filter</span>
+                    </button>
+                </div>
+            </form>
         </div>
-    </div>
-    @endif
 
-    {{-- Data Sertifikat --}}
-    @if ($sertifikat->isEmpty())
-        <div class="text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200">
-            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="empty_srtfkt" data-translate-page="admin">Tidak ada sertifikat yang ditemukan.</p>
-            @if($search || $angkatan || $jurusan || $keahlian || $status_pengajuan)
-                <p class="text-gray-500 dark:text-gray-50 text-sm mt-2">Coba atur ulang filter pencarian Anda.</p>
-                <a href="{{ route('admin.sertifikat.index') }}" 
-                   class="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                    Reset Semua Filter
-                </a>
-            @else
-                <p class="text-gray-500 dark:text-gray-50 text-sm mt-2" data-translate="empty_desc_srtfkt" data-translate-page="admin">Mulai tambahkan sertifikat pertama!</p>
-            @endif
-        </div>
-    @else
-        <form id="bulkDeleteForm" action="{{ route('admin.sertifikat.bulk-destroy') }}" method="POST">
-            @csrf
-            @method('DELETE')
-            <input type="hidden" name="selected_ids" id="selectedIdsInput" value="">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach ($sertifikat as $entry)
-                    <div class="certificate-card bg-white dark:border-gray-900 dark:bg-gray-900 dark:text-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all border-2 relative flex flex-col h-full"
-                         data-id="{{ $entry->id }}">
-                        <!-- Selection Checkbox -->
-                        <div class="absolute top-4 left-4 z-20">
-                            <input type="checkbox" 
-                                   name="certificate_ids[]" 
-                                   value="{{ $entry->id }}"
-                                   class="certificate-checkbox w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
-                        </div>
+        {{-- Select All Bar --}}
+        @if(!$sertifikat->isEmpty())
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 mb-6 border border-gray-100 dark:border-gray-800">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="selectAllCheckbox"
+                                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="plh_semua"
+                                data-translate-page="admin">Pilih Semua</span>
+                        </label>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            <span data-translate="tmplkn" data-translate-page="admin">Menampilkan</span>
+                            {{ $sertifikat->firstItem() }} - {{ $sertifikat->lastItem() }} <span data-translate="dr"
+                                data-translate-page="admin">dari</span> {{ $sertifikat->total() }} <span data-translate="srtfkt"
+                                data-translate-page="admin">sertifikat</span>
+                        </span>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                        <span data-translate="total_dipilih" data-translate-page="admin">Total dipilih:</span> <span
+                            id="totalSelected">0</span>
+                    </span>
+                </div>
+            </div>
+        @endif
+
+        {{-- Data Sertifikat --}}
+        @if ($sertifikat->isEmpty())
+            <div class="text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200">
+                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="empty_srtfkt" data-translate-page="admin">Tidak
+                    ada sertifikat yang ditemukan.</p>
+                @if($search || $angkatan || $jurusan || $keahlian || $status_pengajuan)
+                    <p class="text-gray-500 dark:text-gray-50 text-sm mt-2">Coba atur ulang filter pencarian Anda.</p>
+                    <a href="{{ route('admin.sertifikat.index') }}"
+                        class="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        Reset Semua Filter
+                    </a>
+                @else
+                    <p class="text-gray-500 dark:text-gray-50 text-sm mt-2" data-translate="empty_desc_srtfkt"
+                        data-translate-page="admin">Mulai tambahkan sertifikat pertama!</p>
+                @endif
+            </div>
+        @else
+            <form id="bulkDeleteForm" action="{{ route('admin.sertifikat.bulk-destroy') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="selected_ids" id="selectedIdsInput" value="">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($sertifikat as $entry)
+                        <div class="certificate-card bg-white dark:border-gray-900 dark:bg-gray-900 dark:text-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all border-2 relative flex flex-col h-full"
+                            data-id="{{ $entry->id }}">
+                            <!-- Selection Checkbox -->
+                            <div class="absolute top-4 left-4 z-20">
+                                <input type="checkbox" name="certificate_ids[]" value="{{ $entry->id }}"
+                                    class="certificate-checkbox w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                            </div>
 
                             <!-- Header dengan ikon sertifikat dan status badge -->
                             <div class="bg-gradient-to-r from-blue-700 to-blue-500 p-4">
@@ -225,34 +235,37 @@
                                 </div>
                             </div>
 
-                        <div class="p-6 flex-1 flex flex-col">
-                            <!-- Nama Sertifikat -->
-                            <div class="mb-3">
-                                <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_srtfkt" data-translate-page="admin">Nama Sertifikat:</span>
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
-                                    {{ $entry->nama_sertifikat }}
-                                </h3>
-                            </div>
-                         
-                            <!-- Nama Mahasiswa -->
-                            <div class="mb-3">
-                                <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_mhs_srtfkt" data-translate-page="admin">Nama Mahasiswa:</span>
-                                <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $entry->mahasiswa->nama_mahasiswa }}
-                                </h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {{ $entry->mahasiswa->angkatan->nama_angkatan ?? '-' }} | 
-                                    {{ $entry->mahasiswa->jurusan->nama_jurusan ?? '-' }}
-                                </p>
-                            </div>
-                        
-                            <!-- Lembaga Penerbit -->
-                            <div class="flex items-center text-gray-600 dark:text-gray-200 mb-3">
-                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l14-7 3.5 1.5L21 21z"></path>
-                                </svg>
-                                <span class="text-sm">{{ $entry->lembaga_penerbit }}</span>
-                            </div>
+                            <div class="p-6 flex-1 flex flex-col">
+                                <!-- Nama Sertifikat -->
+                                <div class="mb-3">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_srtfkt"
+                                        data-translate-page="admin">Nama Sertifikat:</span>
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+                                        {{ $entry->nama_sertifikat }}
+                                    </h3>
+                                </div>
+
+                                <!-- Nama Mahasiswa -->
+                                <div class="mb-3">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_mhs_srtfkt"
+                                        data-translate-page="admin">Nama Mahasiswa:</span>
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                        {{ $entry->mahasiswa->nama_mahasiswa }}
+                                    </h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        {{ $entry->mahasiswa->angkatan->nama_angkatan ?? '-' }} |
+                                        {{ $entry->mahasiswa->jurusan->nama_jurusan ?? '-' }}
+                                    </p>
+                                </div>
+
+                                <!-- Lembaga Penerbit -->
+                                <div class="flex items-center text-gray-600 dark:text-gray-200 mb-3">
+                                    <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l14-7 3.5 1.5L21 21z"></path>
+                                    </svg>
+                                    <span class="text-sm">{{ $entry->lembaga_penerbit }}</span>
+                                </div>
 
                                 <!-- Tanggal Terbit -->
                                 <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
@@ -288,26 +301,28 @@
                                     </div>
                                 @endif
 
-                            <!-- Informasi Status Detail -->
-                            <div class="mb-3 space-y-1">
-                                <p class="text-xs">
-                                    <span class="font-semibold" data-translate="stat_pengajuan" data-translate-page="admin">Status Pengajuan:</span> 
-                                    <span class="
-                                        @if($entry->status_pengajuan == 'Di Terima') text-green-600
-                                        @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
-                                        @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
-                                        @endif
-                                    ">
-                                        {{ $entry->status_pengajuan }}
-                                    </span>
-                                </p>
-                                <p class="text-xs">
-                                    <span class="font-semibold" data-translate="stat_active" data-translate-page="admin">Status Aktif:</span> 
-                                    <span class="{{ $entry->is_active ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $entry->is_active ? 'Aktif' : 'Tidak Aktif' }}
-                                    </span>
-                                </p>
-                            </div>
+                                <!-- Informasi Status Detail -->
+                                <div class="mb-3 space-y-1">
+                                    <p class="text-xs">
+                                        <span class="font-semibold" data-translate="stat_pengajuan"
+                                            data-translate-page="admin">Status Pengajuan:</span>
+                                        <span class="
+                                                    @if($entry->status_pengajuan == 'Di Terima') text-green-600
+                                                    @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
+                                                    @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
+                                                    @endif
+                                                ">
+                                            {{ $entry->status_pengajuan }}
+                                        </span>
+                                    </p>
+                                    <p class="text-xs">
+                                        <span class="font-semibold" data-translate="stat_active" data-translate-page="admin">Status
+                                            Aktif:</span>
+                                        <span class="{{ $entry->is_active ? 'text-green-600' : 'text-red-600' }}">
+                                            {{ $entry->is_active ? 'Aktif' : 'Tidak Aktif' }}
+                                        </span>
+                                    </p>
+                                </div>
 
                                 <!-- Tanggal dibuat/diupdate -->
                                 <p class="text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">

@@ -44,13 +44,13 @@ export const translations = {
       pr: 'Perempuan',
       secret: 'Tidak ingin memberi tahu',
       pw: 'Kata Sandi',
-      pw_conf:' Konfirmasi Kata Sandi',
+      pw_conf: ' Konfirmasi Kata Sandi',
       pfp: 'Foto Profil',
       pfp_format: 'Format: JPEG, PNG, JPG. Maks: 2MB',
       add: 'Tambah Mahasiswa',
       cancel: 'Batal',
     },
-    dosen_kll_pjt:{
+    dosen_kll_pjt: {
       ttl_pjt: 'Proyek Mahasiswa',
       desc_pjt: 'Beberapa Pameran Proyek Mahasiswa',
       del_select: 'Hapus Terpilih',
@@ -256,7 +256,7 @@ export const translations = {
       partner_choice: '-- Pilih Rekan Project --',
       add_partner: 'Tambah Rekan',
       date_start: 'Tanggal Mulai',
-      date_end: 'Tanggal Selesai (opsional)', 
+      date_end: 'Tanggal Selesai (opsional)',
       date_end_must: 'Tanggal Selesai',
       //Halaman edit proyek
       title_edit: 'Edit Project',
@@ -315,7 +315,7 @@ export const translations = {
       or_drag: 'atau drag and drop',
       format_srtfkt: 'PNG, JPG, GIF, Maksimal 5MB',
       save_srtfkt: 'Simpan Sertifikat',
-      
+
     },
 
     dashboard: {
@@ -484,10 +484,10 @@ export const translations = {
       dashboard: 'Dashboard',
       dashboard_nonuser: 'Beranda',
       my_dashboard: 'My Dashboard',
-      manajemen_users: 'Manajemen User',    
+      manajemen_users: 'Manajemen User',
       manajemen_projects: 'Manajemen Project',
       manajemen_sertifikat: 'Manajemen Sertifikat',
-      manajemen_angkatan : 'Manajemen Angkatan',
+      manajemen_angkatan: 'Manajemen Angkatan',
       dashboard_dosen: 'Dashboard Dosen',
       mahasiswa_bimbingan: 'Mahasiswa Bimbingan',
       projects_bimbingan: 'Projects Bimbingan',
@@ -508,19 +508,19 @@ export const translations = {
       login_prompt: 'Kamu Mahasiswa? Login Sekarang!',
       register: 'Register',
     },
-     footer: {
+    footer: {
       footer_rights: '© Portofolio Mahasiswa 2026. Semua hak dilindungi undang-undang.',
     },
     project_user: {
       project_user_title: 'Project ',
       project_user_desc: 'Daftar project yang kamu ikuti sebagai anggota.',
       nama_project: 'Nama Project',
-      tanpa_nama_project:      "Tanpa Nama Project",
-      tidak_diketahui:         "Tidak diketahui",
-      selesai:                 "Selesai",
-      sedang_berjalan:         "Sedang Berjalan",
-      akan_datang:             "Akan Datang",
-      sekarang:                "Sekarang",
+      tanpa_nama_project: "Tanpa Nama Project",
+      tidak_diketahui: "Tidak diketahui",
+      selesai: "Selesai",
+      sedang_berjalan: "Sedang Berjalan",
+      akan_datang: "Akan Datang",
+      sekarang: "Sekarang",
       deskripsi_opsional: 'Deskripsi (opsional)',
       tambah_pemimpin: 'Tambah Pemimpin (opsional)',
       tambah_rekan: 'Tambah Anggota (opsional)',
@@ -535,7 +535,7 @@ export const translations = {
       no_thumbnail_text: 'Tidak ada thumbnail tersedia',
       no_thumbnail_description: 'Tambahkan link video dengan benar',
     },
-    sertifikat: { 
+    sertifikat: {
       sertifikat_title: 'Sertifikat Saya',
       sertifikat_desc: 'Kelola semua sertifikat yang kamu miliki di sini.',
       sertifikat_create_button: 'Tambah Sertifikat Baru',
@@ -548,7 +548,7 @@ export const translations = {
       delete_button: 'Hapus',
     },
 
-    sertifikat_user: { 
+    sertifikat_user: {
       sertifikat_title: 'Sertifikat Saya',
       sertifikat_desc: 'Kelola semua sertifikat yang kamu miliki di sini.',
       sertifikat_create_button: 'Tambah Sertifikat Baru',
@@ -574,10 +574,10 @@ export const translations = {
       upload_file_tips: 'File yang diupload akan tersimpan dan dapat diakses melalui link publik.',
       cancel: 'Batal',
       save: 'Simpan Sertifikat'
-    
+
     },
 
-    sertifikat_edit: { 
+    sertifikat_edit: {
       sertifikat_edit_title: 'Edit Sertifikat',
       sertifikat_edit_desc: 'Perbarui informasi sertifikat yang kamu miliki.',
       error_global_title: 'Terdapat kesalahan pada input:',
@@ -597,7 +597,7 @@ export const translations = {
       current_file_preview: 'File Saat Ini:',
       additional_info: 'File yang diupload akan menggantikan file lama. File lama akan otomatis dihapus.',
       cancel: 'Batal',
-      update_sertifikat: 'Update Sertifikat', 
+      update_sertifikat: 'Update Sertifikat',
     },
     kelola_user: {
       kelola_user_title: 'Kelola Users',
@@ -633,7 +633,7 @@ export const translations = {
 
     },
 
-  }, 
+  },
   en: {
     dosen_dashboard: {
       dashboard_dosen: 'Lecturer Dashboard',
@@ -677,13 +677,13 @@ export const translations = {
       pr: 'Female',
       secret: 'Prefer not to say',
       pw: 'Password',
-      pw_conf:' Confirm Password',
+      pw_conf: ' Confirm Password',
       pfp: 'Profile Photo',
       pfp_format: 'Format: JPEG, PNG, JPG. Max: 2MB',
       add: 'Add Student',
       cancel: 'Cancel',
     },
-    dosen_kll_pjt:{
+    dosen_kll_pjt: {
       ttl_pjt: 'Student Projects',
       desc_pjt: 'Some Showcase of Student\'s Projects',
       del_select: 'Delete Selected',
@@ -888,7 +888,7 @@ export const translations = {
       partner_choice: '-- Select Project Partners --',
       add_partner: 'Add Partners',
       date_start: 'Start Date',
-      date_end: 'End Date (optional)', 
+      date_end: 'End Date (optional)',
       date_end_must: 'End Date',
       //Ha;laman edit proyek
       title_edit: 'Edit Project',
@@ -981,7 +981,7 @@ export const translations = {
       oleh: 'by',
       untuk_project: 'for project',
       terakhir_diperbarui: 'Last updated:',
-      
+
     },
     portofolio_user: {
       portfolio: 'Portfolio',
@@ -1111,7 +1111,7 @@ export const translations = {
     },
     sidebar: {
       dashboard: 'Dashboard',
-      dashboard_nonuser:'Home',
+      dashboard_nonuser: 'Home',
       my_dashboard: 'My Dashboard',
       manajemen_users: 'User Management',
       semua_user: 'See All Users',
@@ -1122,7 +1122,7 @@ export const translations = {
       lihat_sertifikat: 'See Certificates',
       manajemen_projects: 'Project Management',
       manajemen_sertifikat: 'Certificate Management',
-      manajemen_angkatan : 'Angkatan Management',
+      manajemen_angkatan: 'Angkatan Management',
       dashboard_dosen: 'Lecturer Dashboard',
       mahasiswa_bimbingan: 'Supervised Students',
       projects_bimbingan: 'Supervised Projects',
@@ -1150,17 +1150,17 @@ export const translations = {
       project_user_title: 'Project',
       project_user_desc: 'List of projects made by our students.',
       nama_project: 'Project Name',
-      tanpa_nama_project:      "Untitled Project",
-      tidak_diketahui:         "Unknown",
-      selesai:                 "Finished",
-      sedang_berjalan:         "Ongoing",
-      akan_datang:             "Upcoming",
-      sekarang:                "Now",
+      tanpa_nama_project: "Untitled Project",
+      tidak_diketahui: "Unknown",
+      selesai: "Finished",
+      sedang_berjalan: "Ongoing",
+      akan_datang: "Upcoming",
+      sekarang: "Now",
       diposting: 'Posted',
       no_thumbnail_text: 'No thumbnail available',
       no_thumbnail_description: 'add a video link correctly',
     },
-    sertifikat: { 
+    sertifikat: {
       sertifikat_title: 'My Certificates',
       sertifikat_desc: 'Manage all the certificates you have here.',
       sertifikat_create_button: 'Add New Certificate',
@@ -1172,17 +1172,17 @@ export const translations = {
       edit_button: 'Edit',
       delete_button: 'Delete',
     },
-    sertifikat_user: { 
+    sertifikat_user: {
       sertifikat_title: 'My Certificates',
       sertifikat_desc: 'Manage all the certificates you have here.',
-      sertifikat_create_button: 'Add New Certificate',  
+      sertifikat_create_button: 'Add New Certificate',
       sertifikat_no_data: 'No certificates yet.',
       sertifikat_no_data_description: 'Start adding your first certificate!',
       sertifikat_link: 'View Certificate',
       sertifikat_dibuat: 'Added',
       sertifikat_diupdate: 'Updated',
     },
-    sertifikat_create: { 
+    sertifikat_create: {
       sertifikat_create_title: 'Add New Certificate',
       sertifikat_create_desc: 'Add the certificates you have earned to complete your portfolio.',
       nama_sertifikat: 'Certificate Name',
@@ -1219,7 +1219,7 @@ export const translations = {
       current_file_preview: 'Current File:',
       additional_info: 'The uploaded file will replace the old file. The old file will be automatically deleted.',
       cancel: 'Cancel',
-      update_sertifikat: 'Update Certificate', 
+      update_sertifikat: 'Update Certificate',
     },
     kelola_user: {
       kelola_user_title: 'Manage Users',
@@ -1255,71 +1255,71 @@ export const translations = {
 
     },
 
-  }   
+  }
 };
 
-  const DEFAULT_LANG = 'id';
-  let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;
+const DEFAULT_LANG = 'id';
+let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;
 
-  let translateElements = [];
+let translateElements = [];
 
-  function cacheTranslateElements() {
-    translateElements = Array.from(document.querySelectorAll('[data-translate]'));
-  }
+function cacheTranslateElements() {
+  translateElements = Array.from(document.querySelectorAll('[data-translate]'));
+}
 
-  function applyTranslations() {
-    const langData = translations[currentLang] || translations[DEFAULT_LANG];
+function applyTranslations() {
+  const langData = translations[currentLang] || translations[DEFAULT_LANG];
 
-    const translateKey = (page, key) => langData?.[page]?.[key] || translations[DEFAULT_LANG]?.[page]?.[key] || key;
+  const translateKey = (page, key) => langData?.[page]?.[key] || translations[DEFAULT_LANG]?.[page]?.[key] || key;
 
-    translateElements.forEach(el => {
-      const page = el.dataset.translatePage || 'sidebar';
-      const key  = el.dataset.translate;
+  translateElements.forEach(el => {
+    const page = el.dataset.translatePage || 'sidebar';
+    const key = el.dataset.translate;
 
-      if (page && key) {
-        const text = translateKey(page, key);
-        if (text !== el.textContent) {
-          el.textContent = text;
-        }
+    if (page && key) {
+      const text = translateKey(page, key);
+      if (text !== el.textContent) {
+        el.textContent = text;
       }
-
-      const placeholderKey = el.dataset.translatePlaceholder;
-      if (placeholderKey) {
-        const placeholderText = translateKey(el.dataset.translatePage || 'sidebar', placeholderKey);
-        if (placeholderText) {
-          el.setAttribute('placeholder', placeholderText);
-        }
-      }
-    });
-
-    const select = document.getElementById('languageSelect');
-    if (select) select.value = currentLang;
-  }
-
-  window.changeLanguage = function () {
-    const select = document.getElementById('languageSelect');
-    if (!select) return;
-
-    const newLang = select.value;
-    if (newLang === currentLang) return;
-
-    currentLang = newLang;
-    localStorage.setItem('lang', newLang);
-    document.documentElement.lang = newLang === 'id' ? 'id-ID' : 'en-US';
-
-    applyTranslations();  
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const select = document.getElementById('languageSelect');
-    if (select) {
-      select.value = currentLang;
     }
 
-    cacheTranslateElements();
-    applyTranslations();
+    const placeholderKey = el.dataset.translatePlaceholder;
+    if (placeholderKey) {
+      const placeholderText = translateKey(el.dataset.translatePage || 'sidebar', placeholderKey);
+      if (placeholderText) {
+        el.setAttribute('placeholder', placeholderText);
+      }
+    }
   });
-  window.refreshTranslations = function () {
-    cacheTranslateElements(); 
-    applyTranslations();
-  };
+
+  const select = document.getElementById('languageSelect');
+  if (select) select.value = currentLang;
+}
+
+window.changeLanguage = function () {
+  const select = document.getElementById('languageSelect');
+  if (!select) return;
+
+  const newLang = select.value;
+  if (newLang === currentLang) return;
+
+  currentLang = newLang;
+  localStorage.setItem('lang', newLang);
+  document.documentElement.lang = newLang === 'id' ? 'id-ID' : 'en-US';
+
+  applyTranslations();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('languageSelect');
+  if (select) {
+    select.value = currentLang;
+  }
+
+  cacheTranslateElements();
+  applyTranslations();
+});
+window.refreshTranslations = function () {
+  cacheTranslateElements();
+  applyTranslations();
+};

@@ -123,6 +123,6 @@
             @if (session('success'))
                 showSuccessAlert('{{ session('success') }}');
             @endif
-    });
+        });
     </script>
 @endsection

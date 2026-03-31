@@ -7,9 +7,11 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="sertifikat_edit_title" data-translate-page="sertifikat_edit"></h1>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="sertifikat_edit_title"
+                        data-translate-page="sertifikat_edit"></h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-300" data-translate="sertifikat_edit_desc" data-translate-page="sertifikat_edit"></p>
+                <p class="mt-2 text-gray-600 dark:text-gray-300" data-translate="sertifikat_edit_desc"
+                    data-translate-page="sertifikat_edit"></p>
             </div>
 
             <!-- Error Global -->
@@ -21,7 +23,8 @@
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        <span class="font-medium" data-translate="error_global_title" data-translate-page="sertifikat_edit"></span>
+                        <span class="font-medium" data-translate="error_global_title"
+                            data-translate-page="sertifikat_edit"></span>
                     </div>
                     <ul class="list-disc pl-10 space-y-1.5">
                         @foreach ($errors->all() as $error)
@@ -40,16 +43,17 @@
                 <!-- Nama Sertifikat -->
                 <div>
                     <label for="nama_sertifikat" class="block text-sm dark:text-gray-100 font-medium text-gray-700 mb-2">
-                        <span data-translate="nama_sertifikat" data-translate-page="sertifikat_edit"></span> <span class="text-red-500">*</span>
+                        <span data-translate="nama_sertifikat" data-translate-page="sertifikat_edit"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
                         placeholder="Contoh: Sertifikat Kompetensi Programming"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                              text-gray-700 dark:text-gray-300
-                              placeholder-gray-500 dark:placeholder-gray-400
-                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
+                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                  text-gray-700 dark:text-gray-300
+                                  placeholder-gray-500 dark:placeholder-gray-400
+                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -58,16 +62,17 @@
                 <!-- Lembaga Penerbit -->
                 <div>
                     <label for="lembaga_penerbit" class="block text-sm dark:text-gray-100 font-medium text-gray-700 mb-2">
-                        <span data-translate="lembaga_penerbit" data-translate-page="sertifikat_edit"></span> <span class="text-red-500">*</span>
+                        <span data-translate="lembaga_penerbit" data-translate-page="sertifikat_edit"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
                         placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                              text-gray-700 dark:text-gray-300
-                              placeholder-gray-500 dark:placeholder-gray-400
-                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
+                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                  text-gray-700 dark:text-gray-300
+                                  placeholder-gray-500 dark:placeholder-gray-400
+                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -76,20 +81,22 @@
                 <!-- Tanggal Terbit -->
                 <div>
                     <label for="tanggal_terbit" class="block text-sm font-medium dark:text-gray-100 text-gray-700 mb-2">
-                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_edit"></span> <span class="text-red-500">*</span>
+                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_edit"></span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
                         required max="{{ date('Y-m-d') }}"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                              focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                              text-gray-700 dark:text-gray-300
-                              placeholder-gray-500 dark:placeholder-gray-400
-                              shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
+                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                  text-gray-700 dark:text-gray-300
+                                  placeholder-gray-500 dark:placeholder-gray-400
+                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="max_date" data-translate-page="sertifikat_edit"></p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="max_date"
+                        data-translate-page="sertifikat_edit"></p>
                 </div>
 
                 <!-- Current File Information -->
@@ -102,7 +109,8 @@
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="current_file" data-translate-page="sertifikat_edit"></p>
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                        data-translate="current_file" data-translate-page="sertifikat_edit"></p>
                                     <a href="{{ Storage::url($sertifikat->link_sertifikat) }}" target="_blank"
                                         class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,14 +183,17 @@
 
                 <!-- Preview Gambar (untuk file baru) -->
                 <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-sm font-medium text-gray-700 mb-2" data-translate="new_file_preview" data-translate-page="sertifikat_edit"></p>
+                    <p class="text-sm font-medium text-gray-700 mb-2" data-translate="new_file_preview"
+                        data-translate-page="sertifikat_edit"></p>
                     <img id="image-preview" src="#" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
                 </div>
 
                 <!-- Preview File Saat Ini (jika ada) -->
                 @if($sertifikat->link_sertifikat && preg_match('/\.(jpg|jpeg|png|gif)$/i', $sertifikat->link_sertifikat))
-                    <div id="current-image-preview" class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-gray-200">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="current_file_preview" data-translate-page="sertifikat_edit"></p>
+                    <div id="current-image-preview"
+                        class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-gray-200">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                            data-translate="current_file_preview" data-translate-page="sertifikat_edit"></p>
                         <img src="{{ Storage::url($sertifikat->link_sertifikat) }}" alt="Current Sertifikat"
                             class="max-h-48 rounded-lg shadow-sm">
                     </div>
@@ -369,14 +380,14 @@
                     toggleFileUpload(replaceCheckbox);
                 }
             @endif
-    });
+        });
     </script>
 
-    
-<!-- Page Info -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    showPageInfo("Edit informasi sertifikat atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.");
-});
-</script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("Edit informasi sertifikat atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.");
+        });
+    </script>
 @endsection

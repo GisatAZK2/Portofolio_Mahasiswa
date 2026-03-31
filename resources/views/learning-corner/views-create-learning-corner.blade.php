@@ -7,7 +7,8 @@
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
                 <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Tambah Catatan Baru</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300 ">Tulis apa yang kamu pelajari hari ini atau bagikan ilmu yang ingin kamu
+                <p class="mt-2 text-gray-600 dark:text-gray-300 ">Tulis apa yang kamu pelajari hari ini atau bagikan ilmu
+                    yang ingin kamu
                     simpan.</p>
             </div>
 
@@ -32,7 +33,8 @@
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Judul Catatan <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="judul" id="judul" value="{{ old('judul') }}" placeholder="Judul Catatan disini.." required
+                    <input type="text" name="judul" id="judul" value="{{ old('judul') }}"
+                        placeholder="Judul Catatan disini.." required
                         class="w-full px-4 py-3 border border-gray-300 dark:placeholder:text-white dark:bg-gray-400 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -79,34 +81,34 @@
             newItem.dataset.index = itemIndex;
 
             newItem.innerHTML = `
-                <div class="flex justify-between items-start mb-4 ">
-                    <select name="items[${itemIndex}][type]" class="type-select border dark:text-white border-gray-300 dark:bg-gray-400 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option class="dark:text-white" value="text">Teks tambahan</option>
-                        <option class="dark:text-white" value="image">Gambar</option>
-                        <option class="dark:text-white" value="link">Link / Referensi</option>
-                    </select>
-                    <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
-                        Hapus
-                    </button>
-                </div>
-
-                <div class="content-area">
-                    <!-- Teks default -->
-                    <input type="text" name="items[${itemIndex}][content]" class="text-input dark:placeholder:text-white w-full px-4 py-3 border border-gray-300 dark:bg-gray-400 rounded-lg focus:border-indigo-500 outline-none transition"
-                           placeholder="Masukkan teks di sini...">
-
-                    <!-- File upload (hidden awal) -->
-                    <div class="file-input hidden mt-2">
-                        <input type="file" name="items[${itemIndex}][file]" accept="image/*"
-                               class="block w-full text-sm text-gray-500 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                        <p class="mt-1 text-xs text-gray-500">Maks 5MB • jpg, png, gif</p>
+                    <div class="flex justify-between items-start mb-4 ">
+                        <select name="items[${itemIndex}][type]" class="type-select border dark:text-white border-gray-300 dark:bg-gray-400 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
+                            <option class="dark:text-white" value="text">Teks tambahan</option>
+                            <option class="dark:text-white" value="image">Gambar</option>
+                            <option class="dark:text-white" value="link">Link / Referensi</option>
+                        </select>
+                        <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
+                            Hapus
+                        </button>
                     </div>
 
-                    <!-- Link (hidden awal) -->
-                    <input type="url" name="items[${itemIndex}][content]" class="link-input hidden w-full px-4 py-3 dark:placeholder:text-white dark:bg-gray-400 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                           placeholder="https://example.com">
-                </div>
-            `;
+                    <div class="content-area">
+                        <!-- Teks default -->
+                        <input type="text" name="items[${itemIndex}][content]" class="text-input dark:placeholder:text-white w-full px-4 py-3 border border-gray-300 dark:bg-gray-400 rounded-lg focus:border-indigo-500 outline-none transition"
+                               placeholder="Masukkan teks di sini...">
+
+                        <!-- File upload (hidden awal) -->
+                        <div class="file-input hidden mt-2">
+                            <input type="file" name="items[${itemIndex}][file]" accept="image/*"
+                                   class="block w-full text-sm text-gray-500 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            <p class="mt-1 text-xs text-gray-500">Maks 5MB • jpg, png, gif</p>
+                        </div>
+
+                        <!-- Link (hidden awal) -->
+                        <input type="url" name="items[${itemIndex}][content]" class="link-input hidden w-full px-4 py-3 dark:placeholder:text-white dark:bg-gray-400 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
+                               placeholder="https://example.com">
+                    </div>
+                `;
 
             container.appendChild(newItem);
             attachTypeListener(newItem);

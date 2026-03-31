@@ -293,11 +293,11 @@
                                     <p class="text-xs">
                                         <span class="font-semibold">Status Pengajuan:</span>
                                         <span class="
-                                                    @if($entry->status_pengajuan == 'Di Terima') text-green-600
-                                                    @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
-                                                    @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
-                                                    @endif
-                                                ">
+                                                                @if($entry->status_pengajuan == 'Di Terima') text-green-600
+                                                                @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
+                                                                @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
+                                                                @endif
+                                                            ">
                                             {{ $entry->status_pengajuan }}
                                         </span>
                                     </p>

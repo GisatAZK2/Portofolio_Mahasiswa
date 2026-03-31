@@ -7,7 +7,7 @@ export function showSuccessAlert(message) {
         text: message,
         position: 'center',
         showConfirmButton: true,
-        confirmButtonColor: '#4f46e5',        
+        confirmButtonColor: '#4f46e5',
         confirmButtonText: 'Oke, Lanjut',
         allowOutsideClick: true,
         backdrop: 'rgba(0,0,0,0.6)',
@@ -18,7 +18,7 @@ export function showSuccessAlert(message) {
             icon: 'text-indigo-600',
             confirmButton: 'px-8 py-3 text-base font-medium rounded-xl'
         },
-        timer: 4000,          
+        timer: 4000,
         timerProgressBar: true
     });
 }
@@ -76,7 +76,7 @@ export async function showConfirm() {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', async function(e) {
+        button.addEventListener('click', async function (e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -137,11 +137,11 @@ function showPageInfo(message, type = "info", duration = 10000) {
     container.appendChild(toast);
 
     requestAnimationFrame(() => {
-        toast.classList.remove("translate-x-10","opacity-0");
+        toast.classList.remove("translate-x-10", "opacity-0");
     });
 
     const removeToast = () => {
-        toast.classList.add("opacity-0","translate-x-10");
+        toast.classList.add("opacity-0", "translate-x-10");
 
         setTimeout(() => {
             toast.remove();

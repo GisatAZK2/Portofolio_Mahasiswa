@@ -9,7 +9,8 @@
                 <div class="flex items-center gap-3 mb-2">
                     <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Tambah Sertifikat Baru</h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-200">Tambahkan sertifikat yang kamu peroleh untuk melengkapi portofoliomu.</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-200">Tambahkan sertifikat yang kamu peroleh untuk melengkapi
+                    portofoliomu.</p>
             </div>
 
             <!-- Error Global -->
@@ -32,25 +33,25 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('dosen.sertifikat.store') }}" enctype="multipart/form-data" class="space-y-7">
+            <form method="POST" action="{{ route('dosen.sertifikat.store') }}" enctype="multipart/form-data"
+                class="space-y-7">
                 @csrf
 
                 <!-- Search and Filter Section -->
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+                <div
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
-                    
+
                     <!-- Search Bar -->
                     <div class="mb-4">
                         <div class="relative">
-                            <input type="text" 
-                                   name="search" 
-                                   id="search-input"
-                                   placeholder="Cari nama mahasiswa..." 
-                                   value="{{ $search ?? '' }}"
-                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
+                            <input type="text" name="search" id="search-input" placeholder="Cari nama mahasiswa..."
+                                value="{{ $search ?? '' }}"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
                             <div class="absolute left-3 top-3.5 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
                         </div>
@@ -60,7 +61,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Filter Angkatan -->
                         <div>
-                            <label for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="angkatan-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Angkatan
                             </label>
                             <select name="angkatan" id="angkatan-filter"
@@ -76,7 +78,8 @@
 
                         <!-- Filter Jurusan -->
                         <div>
-                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="jurusan-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Jurusan
                             </label>
                             <select name="jurusan" id="jurusan-filter"
@@ -92,7 +95,8 @@
 
                         <!-- Filter Keahlian -->
                         <div>
-                            <label for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="keahlian-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Keahlian
                             </label>
                             <select name="keahlian" id="keahlian-filter"
@@ -109,12 +113,12 @@
 
                     <!-- Filter Buttons -->
                     <div class="flex justify-end space-x-3 mt-4">
-                        <a href="{{ route('dosen.sertifikat.create') }}" 
-                           class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
+                        <a href="{{ route('dosen.sertifikat.create') }}"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
                             Reset Filter
                         </a>
                         <button type="button" onclick="applyFilters()"
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                             Terapkan Filter
                         </button>
                     </div>
@@ -124,19 +128,23 @@
                     <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Pilih Mahasiswa <span class="text-red-500">*</span>
                     </label>
-                    
+
                     <div id="selected-user-display" class="mb-4 hidden">
                         <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
                                     </svg>
                                     <span class="text-green-800 font-medium" id="selected-user-name"></span>
                                 </div>
-                                <button type="button" onclick="clearSelectedUser()" class="text-green-600 hover:text-green-800">
+                                <button type="button" onclick="clearSelectedUser()"
+                                    class="text-green-600 hover:text-green-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -147,60 +155,67 @@
                     <input type="hidden" name="user_id" id="selected-user-id" value="{{ old('user_id') }}">
 
                     <!-- Table of Users -->
-                    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div
+                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Pilih
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Nama Mahasiswa
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Angkatan
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Jurusan
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Keahlian
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
-                                
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer" 
-    onclick="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
-    <td class="px-6 py-4">
-        <input type="radio" 
-               name="user_radio" 
-               value="{{ $user->id }}"
-               class="user-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-               {{ old('user_id') == $user->id ? 'checked' : '' }}
-               onchange="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
-        {{ $user->nama_mahasiswa }}
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {{ $user->angkatan->nama_angkatan ?? '-' }}
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {{ $user->jurusan->nama_jurusan ?? '-' }}
-    </td>
-    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {{ $user->keahlian->nama_keahlian ?? '-'}}
-    </td>
-</tr>
-                                
+
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+                                        onclick="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                        <td class="px-6 py-4">
+                                            <input type="radio" name="user_radio" value="{{ $user->id }}"
+                                                class="user-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                {{ old('user_id') == $user->id ? 'checked' : '' }}
+                                                onchange="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
+                                            {{ $user->nama_mahasiswa }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $user->angkatan->nama_angkatan ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $user->jurusan->nama_jurusan ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $user->keahlian->nama_keahlian ?? '-'}}
+                                        </td>
+                                    </tr>
+
                                 @empty
                                     <tr>
                                         <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                             <div class="flex flex-col items-center justify-center">
-                                                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                                    </path>
                                                 </svg>
                                                 <p class="text-lg font-medium">Tidak ada mahasiswa ditemukan</p>
                                                 <p class="text-sm">Coba ubah filter pencarian Anda</p>
@@ -302,7 +317,8 @@
                 </div>
 
                 <!-- Preview Gambar -->
-                <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div id="image-preview-container"
+                    class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                     <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Preview:</p>
                     <img id="image-preview" src="#" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
                 </div>
@@ -348,13 +364,13 @@
             const angkatan = document.getElementById('angkatan-filter').value;
             const jurusan = document.getElementById('jurusan-filter').value;
             const keahlian = document.getElementById('keahlian-filter').value;
-            
+
             const url = new URL(window.location.href);
             url.searchParams.set('search', search);
             url.searchParams.set('angkatan', angkatan);
             url.searchParams.set('jurusan', jurusan);
             url.searchParams.set('keahlian', keahlian);
-            
+
             window.location.href = url.toString();
         }
 
@@ -362,16 +378,16 @@
         function selectUser(userId, userName) {
             // Update hidden input
             document.getElementById('selected-user-id').value = userId;
-            
+
             // Update radio buttons
             document.querySelectorAll('.user-radio').forEach(radio => {
                 radio.checked = (radio.value == userId);
             });
-            
+
             // Update display
             const display = document.getElementById('selected-user-display');
             const nameSpan = document.getElementById('selected-user-name');
-            
+
             if (userId) {
                 nameSpan.textContent = 'Dipilih: ' + userName;
                 display.classList.remove('hidden');
@@ -484,7 +500,7 @@
             // Enter key for search
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
+                searchInput.addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         applyFilters();

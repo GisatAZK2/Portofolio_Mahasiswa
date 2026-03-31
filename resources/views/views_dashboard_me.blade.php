@@ -5,7 +5,8 @@
         <div class="max-w-7xl mx-auto space-y-6 sm:space-y-10">
             <!-- Statistic Cards with Mini Charts -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200"
                             data-translate="semua_learning_corner" data-translate-page="dashboard">Semua Learning Corner
@@ -46,8 +47,8 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
                     onclick="window.location.href = '{{ auth()->check() ? route('sertifikat.index') : route('sertifikat-mahasiswa') }}';">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="total_sertifikat"
-                            data-translate-page="dashboard">Total Semua Sertifikat</h3>
+                        <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200"
+                            data-translate="total_sertifikat" data-translate-page="dashboard">Total Semua Sertifikat</h3>
                         <span class="text-amber-500">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -61,28 +62,32 @@
                     </div>
                 </div>
             </div>
-        
+
             <!-- Postingan Terbaru: Dikelompokkan dan Pagination per Kelompok -->
             <div>
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru" data-translate-page="dashboard">Postingan Terbaru</h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
+                        data-translate-page="dashboard">Postingan Terbaru</h2>
                 </div>
 
                 {{-- LEARNING CORNER --}}
                 <div class="mb-10">
                     <h3 class="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3">Learning Corner</h3>
                     @if($learningCorners->isEmpty())
-                        <div class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+                        <div
+                            class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
                             <p class="text-gray-600 dark:text-gray-200">Belum ada postingan Learning Corner</p>
                         </div>
                     @else
                         <div data-pagination-group="learning_corner">
                             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
-                            @foreach($learningCorners as $post)
-                                @include('components.card_postingan', ['post' => $post])
-                            @endforeach
+                                @foreach($learningCorners as $post)
+                                    @include('components.card_postingan', ['post' => $post])
+                                @endforeach
                             </div>
-                            <div class="mt-4">{{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => 'learning_corner']) }}</div>
+                            <div class="mt-4">
+                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => 'learning_corner']) }}
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -91,17 +96,19 @@
                 <div class="mb-10">
                     <h3 class="text-lg font-bold text-orange-600 dark:text-orange-300 mb-3">Project</h3>
                     @if($projects->isEmpty())
-                        <div class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+                        <div
+                            class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
                             <p class="text-gray-600 dark:text-gray-200">Belum ada postingan Project</p>
                         </div>
                     @else
                         <div data-pagination-group="project">
                             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
-                            @foreach($projects as $post)
-                                @include('components.card_postingan', ['post' => $post])
-                            @endforeach
+                                @foreach($projects as $post)
+                                    @include('components.card_postingan', ['post' => $post])
+                                @endforeach
                             </div>
-                            <div class="mt-4">{{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}</div>
+                            <div class="mt-4">
+                                {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}</div>
                         </div>
                     @endif
                 </div>
@@ -110,24 +117,28 @@
                 <div class="mb-10">
                     <h3 class="text-lg font-bold text-green-700 dark:text-green-300 mb-3">Sertifikat</h3>
                     @if($projectUsers->isEmpty())
-                        <div class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+                        <div
+                            class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
                             <p class="text-gray-600 dark:text-gray-200">Belum ada sertifikat</p>
                         </div>
                     @else
                         <div data-pagination-group="sertifikat">
                             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
-                            @foreach($projectUsers as $post)
-                                @include('components.card_postingan', ['post' => $post])
-                            @endforeach
+                                @foreach($projectUsers as $post)
+                                    @include('components.card_postingan', ['post' => $post])
+                                @endforeach
                             </div>
-                            <div class="mt-4">{{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => 'sertifikat']) }}</div>
+                            <div class="mt-4">
+                                {{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => 'sertifikat']) }}
+                            </div>
                         </div>
                     @endif
                 </div>
 
                 <!-- Update timestamp -->
                 <div class="text-center text-gray-500 dark:text-gray-50 text-sm mt-10">
-                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard">Terakhir diperbarui</span> {{ now()->format('d F Y H:i') }} WIB
+                    <span data-translate="terakhir_diperbarui" data-translate-page="dashboard">Terakhir diperbarui</span>
+                    {{ now()->format('d F Y H:i') }} WIB
                 </div>
             </div>
         </div>
@@ -138,14 +149,14 @@
         function createSparkline(canvasId, borderColor) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
             if (!ctx) return;
-            
+
             // Generate random data for sparkline
             const generateRandomData = () => {
                 return Array.from({ length: 7 }, () => Math.floor(Math.random() * 40) + 10);
             };
-            
+
             const data = generateRandomData();
-            
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -163,16 +174,16 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { display: false }, 
-                        tooltip: { enabled: false } 
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
                     },
-                    scales: { 
-                        x: { display: false }, 
-                        y: { display: false } 
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
                     },
-                    elements: { 
-                        point: { radius: 0 } 
+                    elements: {
+                        point: { radius: 0 }
                     }
                 }
             });
@@ -187,8 +198,8 @@
 
     <!-- Page Info -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
-    });
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+        });
     </script>
 @endsection

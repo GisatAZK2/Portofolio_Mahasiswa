@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="id" class="{{ request()->cookie('theme') === 'dark' || (!request()->hasCookie('theme') && now()->hour >= 18) ? 'dark' : '' }}">
+<html lang="id"
+    class="{{ request()->cookie('theme') === 'dark' || (!request()->hasCookie('theme') && now()->hour >= 18) ? 'dark' : '' }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +15,7 @@
         }
     </script>
 </head>
+
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 
     <!-- Error Content -->
@@ -25,4 +28,5 @@
     @include('components.footer')
 
 </body>
+
 </html>

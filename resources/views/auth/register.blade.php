@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pendaftaran Mahasiswa Baru</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -10,28 +11,35 @@
 
 <body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-10 pb-12 px-5 sm:px-8">
 
-    <div class="fixed inset-0 pointer-events-none opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"n\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"3\"/%3E%3C/filter%3E%3Ccircle cx=\"100\" cy=\"100\" r=\"200\" filter=\"url(%23n)\"/%3E%3C/svg%3E');"></div>
+    <div class="fixed inset-0 pointer-events-none opacity-[0.03]"
+        style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\" 0 0 200 200\"
+        xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"n\"%3E%3CfeTurbulence type=\"fractalNoise\"
+        baseFrequency=\"0.9\" numOctaves=\"3\"/%3E%3C/filter%3E%3Ccircle cx=\"100\" cy=\"100\" r=\"200\"
+        filter=\"url(%23n)\"/%3E%3C/svg%3E');"></div>
 
     <div class="relative w-full max-w-4xl">
 
         <div class="relative mb-8 sm:mb-12">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-2deg] inline-block">
+            <h1
+                class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-2deg] inline-block">
                 Daftar di Sini
             </h1>
             <p class="mt-3 text-base sm:text-lg text-gray-600 max-w-xl rotate-[-1deg]">
                 Isi data kamu dulu ya.
             </p>
-            <div class="absolute -top-3 -left-6 sm:-left-10 w-20 sm:w-28 h-1 bg-blue-400 rotate-[-35deg] rounded-full opacity-80"></div>
+            <div
+                class="absolute -top-3 -left-6 sm:-left-10 w-20 sm:w-28 h-1 bg-blue-400 rotate-[-35deg] rounded-full opacity-80">
+            </div>
         </div>
 
         @php
             $attemptsLeft = 3 - (session('registration_attempts', 0));
             $isBlocked = $attemptsLeft <= 0;
-            
+
             // Cek apakah sudah bisa registrasi lagi (keesokan hari)
             $lastAttemptDate = session('last_attempt_date');
             $canRegisterAgain = false;
-            
+
             if ($isBlocked && $lastAttemptDate) {
                 $today = now()->format('Y-m-d');
                 if ($lastAttemptDate !== $today) {
@@ -47,7 +55,8 @@
         @if($attemptsLeft > 0 && $attemptsLeft < 3)
             <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
                 <p class="text-yellow-800 text-sm">
-                    ⚠️ Anda memiliki <strong>{{ $attemptsLeft }} kali</strong> kesempatan pengajuan tersisa (maksimal 3 kali).
+                    ⚠️ Anda memiliki <strong>{{ $attemptsLeft }} kali</strong> kesempatan pengajuan tersisa (maksimal 3
+                    kali).
                 </p>
             </div>
         @endif
@@ -61,30 +70,37 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="space-y-7 sm:space-y-8">
+        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
+            class="space-y-7 sm:space-y-8">
             @csrf
 
             <!-- Foto Profil -->
             <div class="flex flex-col items-center">
                 <label class="block text-sm font-medium text-gray-700 mb-3">Foto Profil (opsional)</label>
-                
+
                 <div class="relative group cursor-pointer {{ $isBlocked ? 'opacity-60 cursor-not-allowed' : '' }}">
-                    <div class="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-300 group-hover:shadow-blue-300/50 bg-gray-100 flex items-center justify-center">
+                    <div
+                        class="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-white shadow-xl transition-all duration-300 group-hover:shadow-blue-300/50 bg-gray-100 flex items-center justify-center">
                         <img id="profile-preview" src="" alt="Preview" class="w-full h-full object-cover hidden">
-                        <svg id="profile-placeholder" class="w-12 h-12 sm:w-14 sm:h-14 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <svg id="profile-placeholder" class="w-12 h-12 sm:w-14 sm:h-14 text-gray-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </div>
 
                     @if(!$isBlocked)
-                    <div class="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span class="text-white text-xs sm:text-sm font-medium px-3 py-1.5 bg-blue-600/80 rounded-full">Pilih Foto</span>
-                    </div>
+                        <div
+                            class="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span
+                                class="text-white text-xs sm:text-sm font-medium px-3 py-1.5 bg-blue-600/80 rounded-full">Pilih
+                                Foto</span>
+                        </div>
                     @endif
 
-                    <input type="file" name="photo_profile" id="photo_profile" accept="image/*" 
-                           class="absolute inset-0 opacity-0 cursor-pointer {{ $isBlocked ? 'pointer-events-none' : '' }}"
-                           {{ $isBlocked ? 'disabled' : '' }}>
+                    <input type="file" name="photo_profile" id="photo_profile" accept="image/*"
+                        class="absolute inset-0 opacity-0 cursor-pointer {{ $isBlocked ? 'pointer-events-none' : '' }}"
+                        {{ $isBlocked ? 'disabled' : '' }}>
                 </div>
 
                 @error('photo_profile')
@@ -95,26 +111,26 @@
             </div>
 
             @if(!$isBlocked)
-            <script>
-                document.getElementById('photo_profile').addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    const preview = document.getElementById('profile-preview');
-                    const placeholder = document.getElementById('profile-placeholder');
-                    if (file && file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(ev) {
-                            preview.src = ev.target.result;
-                            preview.classList.remove('hidden');
-                            placeholder.classList.add('hidden');
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        preview.classList.add('hidden');
-                        placeholder.classList.remove('hidden');
-                        if (file) alert('Hanya gambar yang diperbolehkan!');
-                    }
-                });
-            </script>
+                <script>
+                    document.getElementById('photo_profile').addEventListener('change', function (e) {
+                        const file = e.target.files[0];
+                        const preview = document.getElementById('profile-preview');
+                        const placeholder = document.getElementById('profile-placeholder');
+                        if (file && file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function (ev) {
+                                preview.src = ev.target.result;
+                                preview.classList.remove('hidden');
+                                placeholder.classList.add('hidden');
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            preview.classList.add('hidden');
+                            placeholder.classList.remove('hidden');
+                            if (file) alert('Hanya gambar yang diperbolehkan!');
+                        }
+                    });
+                </script>
             @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-7 lg:gap-12">
@@ -137,7 +153,9 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5" for="roles">Peran: </label>
-                        <select name="role" class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}" {{ $isBlocked ? 'disabled' : '' }}>
+                        <select name="role"
+                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                            {{ $isBlocked ? 'disabled' : '' }}>
                             <option value="mahasiswa">Mahasiswa</option>
                             <option value="dosen">Dosen/Admin</option>
                         </select>
@@ -157,12 +175,15 @@
                                 class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
                                 {{ $isBlocked ? 'disabled' : '' }}>
                             @if(!$isBlocked)
-                            <button type="button" onclick="togglePasswordVisibility(this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                            </button>
+                                <button type="button" onclick="togglePasswordVisibility(this)"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
                             @endif
                         </div>
                     </div>
@@ -225,14 +246,17 @@
             </div>
 
             <div class="mt-10 flex justify-center lg:justify-end">
-                <button type="submit" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg transition-all duration-300 {{ $isBlocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl hover:scale-105 active:scale-95' }}" {{ $isBlocked ? 'disabled' : '' }}>
+                <button type="submit"
+                    class="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg transition-all duration-300 {{ $isBlocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl hover:scale-105 active:scale-95' }}"
+                    {{ $isBlocked ? 'disabled' : '' }}>
                     Kirim Data →
                 </button>
             </div>
 
             <p class="text-center mt-5 text-gray-600 text-sm sm:text-base">
-                Sudah punya akun? 
-                <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
+                Sudah punya akun?
+                <a href="{{ route('login') }}"
+                    class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
                     Masuk aja
                 </a>
             </p>
@@ -241,18 +265,18 @@
     </div>
 
     @if(!$isBlocked)
-    <script>
-        function togglePasswordVisibility(button) {
-            const input = button.previousElementSibling;
-            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-            input.setAttribute('type', type);
-            
-            // Change icon
-            button.innerHTML = type === 'password' ? 
-                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' :
-                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>';
-        }
-    </script>
+        <script>
+            function togglePasswordVisibility(button) {
+                const input = button.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+
+                // Change icon
+                button.innerHTML = type === 'password' ?
+                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' :
+                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>';
+            }
+        </script>
     @endif
 
     <script>
@@ -299,4 +323,5 @@
     </script>
 
 </body>
+
 </html>
