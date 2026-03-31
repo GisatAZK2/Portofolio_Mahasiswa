@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID'); // Indonesian locale
-        $profilePhotoUrl = 'photo_profile/QhGyOFTOheaFs3eXLcUPOMOASVxAJGoLZ37CH8bJ.png';
+        $profilePhotoUrl = 'photos/Biru Minimalis Pesan Obrolan Logo.png';
 
         // Get all available data
         $jurusans = Jurusan::all();
@@ -30,12 +30,12 @@ class UserSeeder extends Seeder
             return;
         }
 
-        $this->command->info('Membuat 1000 user dummy...');
+        $this->command->info('Membuat 100 user dummy...');
 
         $users = [];
         $batchSize = 100; // Insert in batches to avoid memory issues
 
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $nama = $faker->name;
             $username = 'user_' . ($i + 1) . '_' . strtolower(str_replace(' ', '_', $nama));
             $email = $username . '@example.com';
@@ -50,6 +50,8 @@ class UserSeeder extends Seeder
 
             $role = $faker->randomElement(['mahasiswa', 'dosen']);
 
+            $status_pengajuan = $faker->randomElement(['Di Terima', 'Sedang Di Ajukan', 'Di Tolak']);
+
             $users[] = [
                 'nama_mahasiswa' => $nama,
                 'username' => $username,
@@ -61,7 +63,7 @@ class UserSeeder extends Seeder
                 'role' => $role,
                 'photo_profile' => $profilePhotoUrl,
                 'is_active' => true,
-                'status_pengajuan' => 'Di Terima',
+                'status_pengajuan' => $status_pengajuan,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

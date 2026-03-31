@@ -16,7 +16,7 @@ class SertifikatSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        $users = User::where('role', 'mahasiswa')->get();
+        $users = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->get();
         if ($users->isEmpty()) {
             $this->command->error('Tidak ada user mahasiswa. Jalankan UserSeeder terlebih dahulu.');
             return;
@@ -49,7 +49,7 @@ class SertifikatSeeder extends Seeder
         ];
         
        $links = [
-        'photos/FW4xKXrASgnW2YuTnHeTUUEuhPY0baXdYsEy7pgO.png',
+        'photos/Biru Minimalis Pesan Obrolan Logo (1).png',
         // Tambahkan beberapa link lain kalau mau lebih variatif
         // 'photos/sertifikat-default.jpg',
         ];

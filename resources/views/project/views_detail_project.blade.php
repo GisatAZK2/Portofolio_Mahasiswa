@@ -86,41 +86,79 @@
                         </div>
 
                         <!-- Team Section -->
+                        @php
+                            $owner = $project->mahasiswa;
+                            $leader = $project->leader;
+                            $sameOwnerLeader = $owner && $leader && $owner->id === $leader->id;
+                        @endphp
                         <div class="space-y-4">
-                            <!-- Project Leader -->
+                            <!-- Project Owner -->
                             <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
                                 <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                     </svg>
-                                    Project Leader
+                                    {{ $sameOwnerLeader ? 'Owner Project' : 'Owner' }}
                                 </h3>
-                                
-                                @if($project->leader)
+
+                                @if($owner)
                                     <div class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 max-w-max">
-                                        @if($project->leader->photo_profile)
-                                            <img src="{{ asset('storage/' . ltrim($project->leader->photo_profile, '/')) }}"
-                                                 alt="{{ $project->leader->nama_mahasiswa ?? 'Mahasiswa' }}"
+                                        @if($owner->photo_profile)
+                                            <img src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
+                                                 alt="{{ $owner->nama_mahasiswa ?? 'Mahasiswa' }}"
                                                  class="w-10 h-10 rounded-full object-cover border-2 border-indigo-200 dark:border-indigo-900">
                                         @else
                                             <div class="w-10 h-10 bg-indigo-600 flex items-center justify-center text-white text-sm font-bold rounded-full border-2 border-indigo-200 dark:border-indigo-900">
-                                                {{ strtoupper(mb_substr(trim($project->leader->nama_mahasiswa ?? 'L'), 0, 1)) }}
+                                                {{ strtoupper(mb_substr(trim($owner->nama_mahasiswa ?? 'O'), 0, 1)) }}
                                             </div>
                                         @endif
                                         <div>
-                                            <a href="{{ route('portfolio.show', $project->leader->id) }}" 
+                                            <a href="{{ route('portfolio.show', $owner->id) }}" 
                                                class="text-sm font-medium text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-                                                {{ $project->leader->nama_mahasiswa }}
+                                                {{ $owner->nama_mahasiswa }}
                                             </a>
-                                            @if($project->leader->jurusan)
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $project->leader->jurusan->nama_jurusan }}</p>
+                                            @if($owner->jurusan)
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $owner->jurusan->nama_jurusan }}</p>
                                             @endif
                                         </div>
                                     </div>
                                 @else
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm italic">Belum ada leader yang ditunjuk</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm italic">Belum ada owner project</p>
                                 @endif
                             </div>
+
+                            @if($leader && !$sameOwnerLeader)
+                                <!-- Project Leader -->
+                                <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
+                                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                        Project Leader
+                                    </h3>
+
+                                    <div class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 max-w-max">
+                                        @if($leader->photo_profile)
+                                            <img src="{{ asset('storage/' . ltrim($leader->photo_profile, '/')) }}"
+                                                 alt="{{ $leader->nama_mahasiswa ?? 'Mahasiswa' }}"
+                                                 class="w-10 h-10 rounded-full object-cover border-2 border-indigo-200 dark:border-indigo-900">
+                                        @else
+                                            <div class="w-10 h-10 bg-indigo-600 flex items-center justify-center text-white text-sm font-bold rounded-full border-2 border-indigo-200 dark:border-indigo-900">
+                                                {{ strtoupper(mb_substr(trim($leader->nama_mahasiswa ?? 'L'), 0, 1)) }}
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <a href="{{ route('portfolio.show', $leader->id) }}" 
+                                               class="text-sm font-medium text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                                                {{ $leader->nama_mahasiswa }}
+                                            </a>
+                                            @if($leader->jurusan)
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $leader->jurusan->nama_jurusan }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
 
                             <!-- Team Members -->
                             <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">

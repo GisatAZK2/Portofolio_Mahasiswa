@@ -36,7 +36,45 @@ class AdminController extends Controller
 
     public function index() {
         $this->authorizeAccess();
-        return view('admin.index');
+
+        $totalUsers = User::count();
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $totalAdmin = User::where('role', 'admin')->count();
+        $totalDosen = User::where('role', 'dosen')->count();
+
+        $totalProjects = Project::whereHas('mahasiswa', fn($query) => $query->where('role', 'mahasiswa'))->count();
+        $totalLearningCorners = LearningCorner::whereHas('mahasiswa', fn($query) => $query->where('role', 'mahasiswa'))->count();
+        $totalSertifikats = Sertifikat::whereHas('mahasiswa', fn($query) => $query->where('role', 'mahasiswa'))->count();
+
+        $latestActivities = Project::with('mahasiswa')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
+
+        $pendingMahasiswa = User::where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Sedang Di Ajukan')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
+
+        $rejectedMahasiswa = User::where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Di Tolak')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
+
+        return view('admin.index', compact(
+            'totalUsers',
+            'totalMahasiswa',
+            'totalAdmin',
+            'totalDosen',
+            'totalProjects',
+            'totalLearningCorners',
+            'totalSertifikats',
+            'latestActivities',
+            'pendingMahasiswa',
+            'rejectedMahasiswa'
+        ));
     }
 
     //For Pages User

@@ -16,7 +16,7 @@ class ProjectSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        $users = User::all();
+        $users = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->get();
         if ($users->isEmpty()) {
             $this->command->error('Tidak ada user. Jalankan UserSeeder terlebih dahulu.');
             return;
