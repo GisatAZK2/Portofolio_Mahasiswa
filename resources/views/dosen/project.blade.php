@@ -18,34 +18,34 @@
 
             <!-- Header Sederhana -->
             <div class="mb-6 sm:mb-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl_pjt" data-translate-page="dosen_kll_pjt">Project Mahasiswa</h1>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1"><span data-translate="desc_pjt" data-translate-page="dosen_kll_pjt">Beberapa Pameran Project Mahasiswa</span></p>
-            </div>
-
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                    <input id="selectAllCheckbox" type="checkbox"
-                        class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                    <span>Pilih Semua</span>
-                </label>
-
-                <div class="flex flex-wrap gap-3">
-                    <button type="button" id="bulkDeleteBtn"
-                        class="inline-flex items-center px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        <span data-translate="del_select" data-translate-page="dosen_kll_pjt">Hapus Terpilih</span>
-                        (<span id="selectedCount">0</span>)
-                    </button>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl_pjt" data-translate-page="dosen_kll_pjt">Project Mahasiswa</h1>
                     <a href="{{ route('dosen.projects.create') }}"
-                       class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
+                        class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         <span data-translate="add_pjt" data-translate-page="dosen_kll_pjt">Tambah Proyek</span>
                     </a>
+                </div>
+
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1"><span data-translate="desc_pjt" data-translate-page="dosen_kll_pjt">Beberapa Pameran Project Mahasiswa</span></p>
+            </div>
+
+            <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <input id="selectAllCheckbox" type="checkbox"
+                            class="h-4 w-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                        <span data-translate="select_all" data-translate-page="admin">Pilih Semua</span>
+                    </label>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected" data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> / <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="confirmBulkDelete()"
+                        class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
+                        <span data-translate="delete_select" data-translate-page="admin">Hapus Terpilih</span>
+                    </button>
                 </div>
             </div>
             <form id="bulkDeleteForm" action="{{ route('dosen.projects.bulk-delete') }}" method="POST" class="hidden">
@@ -53,7 +53,7 @@
                 @method('DELETE')
                 <input type="hidden" name="selected_ids" id="selectedProjectIds">
             </form>
-            
+
             <!-- Projects Grid -->
             <section>
                 @if($projects->isNotEmpty())
@@ -141,26 +141,6 @@
                                         <input type="checkbox" class="project-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                             data-project-id="{{ $project->id }}">
                                     </label>
-                                </div>
-                                <div class="absolute top-3 right-3 z-10 flex items-center gap-2">
-                                    <a href="{{ route('dosen.projects.details', $project->id) }}"
-                                        class="inline-flex items-center justify-center h-9 px-3 bg-white/90 dark:bg-gray-900/90 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-semibold hover:bg-indigo-50 dark:hover:bg-gray-800 transition">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15.232 5.232l3.536 3.536M9 11l6 6L21 9l-6-6-6 6z" />
-                                        </svg>
-                                    </a>
-                                    <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST" onsubmit="return confirm('Hapus project ini?')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="inline-flex items-center justify-center h-9 px-3 bg-red-600 text-white rounded-xl text-xs font-semibold hover:bg-red-700 transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </form>
                                 </div>
 
                                 <!-- Media Header -->
@@ -358,6 +338,21 @@
                                                 Video
                                             </a>
                                         @endif
+                                    </div>
+
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        <a href="{{ route('project.show', $project->id) }}"
+                                            class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg text-xs font-medium hover:bg-indigo-200 transition">
+                                            Detail
+                                        </a>
+                                        <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST" onsubmit="return confirm('Hapus project ini?')" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
+                                                Hapus
+                                            </button>
+                                        </form>
                                     </div>
 
                                     <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
