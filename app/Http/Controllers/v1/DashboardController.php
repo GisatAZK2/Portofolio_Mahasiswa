@@ -316,13 +316,15 @@ class DashboardController extends Controller
                 ->when($angkatan, function ($query) use ($angkatan) {
                     $query->where('id_angkatan', $angkatan);
                 })
-                ->get()
-                ->map(function ($item) {
-                    $item->type = 'mahasiswa';
-                    return $item;
-                });
+                ->paginate(9)
+                ->withQueryString();
 
-            $results = $results->concat($users);
+            $users->getCollection()->transform(function ($item) {
+                $item->type = 'mahasiswa';
+                return $item;
+            });
+
+            $results = $results->concat($users->getCollection());
         }
 
         // SEARCH PROJECT
@@ -344,20 +346,20 @@ class DashboardController extends Controller
                 ->when($angkatan, function ($query) use ($angkatan) {
                     $query->whereHas('mahasiswa', fn($q) => $q->where('id_angkatan', $angkatan));
                 })
-                ->get()
-                ->unique('id')
-                ->map(function ($project) {
-                    $content = $project->isi_content ?? [];
-                    $project->nama_project = $content['nama_project'] ?? null;
-                    $project->link_project = $content['link_project'] ?? null;
-                    $project->link_github  = $content['link_github'] ?? null;
-                    $project->link_video   = $content['link_video'] ?? null;
-                    $project->type = 'project';
-                    return $project;
-                })
-                ->values();
+                ->paginate(9)
+                ->withQueryString();
 
-            $results = $results->concat($projects);
+            $projects->getCollection()->transform(function ($project) {
+                $content = $project->isi_content ?? [];
+                $project->nama_project = $content['nama_project'] ?? null;
+                $project->link_project = $content['link_project'] ?? null;
+                $project->link_github  = $content['link_github'] ?? null;
+                $project->link_video   = $content['link_video'] ?? null;
+                $project->type = 'project';
+                return $project;
+            });
+
+            $results = $results->concat($projects->getCollection());
         }
 
         // SEARCH SERTIFIKAT
@@ -381,13 +383,15 @@ class DashboardController extends Controller
                 ->when($angkatan, function ($query) use ($angkatan) {
                     $query->whereHas('mahasiswa', fn($q) => $q->where('id_angkatan', $angkatan));
                 })
-                ->get()
-                ->map(function ($item) {
-                    $item->type = 'sertifikat';
-                    return $item;
-                });
+                ->paginate(9)
+                ->withQueryString();
 
-            $results = $results->concat($sertifikats);
+            $sertifikats->getCollection()->transform(function ($item) {
+                $item->type = 'sertifikat';
+                return $item;
+            });
+
+            $results = $results->concat($sertifikats->getCollection());
         }
 
         // Total untuk ditampilkan di halaman search (sudah difilter)
@@ -412,7 +416,13 @@ class DashboardController extends Controller
                       ->where('status_pengajuan', 'Di Terima');
             })->count();
 
+        $mahasiswa = $users ?? collect();
+        $projects = $projects ?? collect();
+        $sertifikats = $sertifikats ?? collect();
+        $hasResults = $mahasiswa->count() > 0 || $projects->count() > 0 || $sertifikats->count() > 0;
+
         return view('views_result_search', compact(
+            'results',
             'mahasiswa',
             'projects',
             'sertifikats',
@@ -420,7 +430,8 @@ class DashboardController extends Controller
             'totalMahasiswa',
             'totalLearning',
             'totalProject',
-            'totalSertifikat'
+            'totalSertifikat',
+            'hasResults'
         ));
     }
 }
