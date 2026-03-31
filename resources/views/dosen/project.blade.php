@@ -17,8 +17,8 @@
 
             <!-- Header Sederhana -->
             <div class="mb-6 sm:mb-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200">Project Mahasiswa</h1>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">Beberapa Pameran Project Mahasiswa</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl_pjt" data-translate-page="dosen_kll_pjt">Project Mahasiswa</h1>
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1"><span data-translate="desc_pjt" data-translate-page="dosen_kll_pjt">Beberapa Pameran Project Mahasiswa</span></p>
             </div>
 
             <div class="flex gap-3">
@@ -29,14 +29,14 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                Hapus Terpilih (<span id="selectedCount">0</span>)
+                <span data-translate="del_select" data-translate-page="dosen_kll_pjt">Hapus Terpilih</span> (<span id="selectedCount">0</span>)
             </button>
             <a href="{{ route('dosen.projects.create') }}"
                class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                Tambah Sertifikat
+                <span data-translate="add_pjt" data-translate-page="dosen_kll_pjt">Tambah Proyek</span>
             </a>
         </div>
             
@@ -323,8 +323,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg">Belum ada proyek yang ditampilkan.</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Silakan tambahkan proyek baru untuk memulai.</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg"><span data-translate="empty_pjt" data-translate-page="dosen_kll_pjt">Belum ada proyek yang ditampilkan.</span></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2"><span data-translate="empty_pjt_desc" data-translate-page="dosen_kll_pjt">Silakan tambahkan proyek baru untuk memulai.</span></p>
                     </div>
                 @endif
             </section>

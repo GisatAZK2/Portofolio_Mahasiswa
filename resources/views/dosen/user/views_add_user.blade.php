@@ -6,8 +6,8 @@
 <div class="container mx-auto px-4 py-8 dark:bg-gray-900 min-h-screen">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Tambah Mahasiswa Baru</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-2">Form tambah mahasiswa untuk dosen</p>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white" data-translate-page="dosen_add_mhs" data-translate="add_mhs">Tambah Mahasiswa Baru</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2" data-translate-page="dosen_add_mhs" data-translate="add_mhs_desc">Form tambah mahasiswa untuk dosen</p>
     </div>
 
     <!-- Form Container -->
@@ -17,7 +17,7 @@
             
             <!-- Informasi Dasar -->
             <div class="mb-8">
-                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h2 data-translate="info_mhs" data-translate-page="dosen_add_mhs" class="text-xl font-semibold text-gray-800 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
                     Informasi Mahasiswa
                 </h2>
                 
@@ -25,7 +25,7 @@
                     <!-- Nama Lengkap -->
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Nama Lengkap <span class="text-red-500">*</span>
+                            <span data-translate="nm_lgkp" data-translate-page="dosen_add_mhs">Nama Lengkap</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="text" 
                                name="nama_mahasiswa" 
@@ -44,7 +44,7 @@
                     <!-- Username -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Username <span class="text-red-500">*</span>
+                            <span data-translate="usn" data-translate-page="dosen_add_mhs">Username</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="text" 
                                name="username" 
@@ -64,7 +64,7 @@
                     <!-- Email -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Email
+                            <span data-translate="email" data-translate-page="dosen_add_mhs">Email</span>
                         </label>
                         <input type="email" 
                                name="email" 
@@ -82,17 +82,17 @@
                     <!-- Jenis Kelamin -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Jenis Kelamin
+                            <span data-translate="klmn" data-translate-page="dosen_add_mhs">Jenis Kelamin</span>
                         </label>
                         <select name="jenis_kelamin" 
                                 class="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg 
                                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors
                                        text-gray-900 dark:text-white
                                        @error('jenis_kelamin') border-red-500 @enderror">
-                            <option value="">Pilih Jenis Kelamin</option>
-                            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                            <option value="Tidak ingin memberi tahu" {{ old('jenis_kelamin') == 'Tidak ingin memberi tahu' ? 'selected' : '' }}>Tidak ingin memberi tahu</option>
+                            <option data-translate="klmn_choose" data-translate-page="dosen_add_mhs" value="">Pilih Jenis Kelamin</option>
+                            <option data-translate="lk" data-translate-page="dosen_add_mhs" value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option data-translate="pr" data-translate-page="dosen_add_mhs" value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                            <option data-translate="secret" data-translate-page="dosen_add_mhs" value="Tidak ingin memberi tahu" {{ old('jenis_kelamin') == 'Tidak ingin memberi tahu' ? 'selected' : '' }}>Tidak ingin memberi tahu</option>
                         </select>
                         @error('jenis_kelamin')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -102,7 +102,7 @@
                     <!-- Password -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Password <span class="text-red-500">*</span>
+                            <span data-translate="pw" data-translate-page="dosen_add_mhs">Password</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="password" 
                                name="password" 
@@ -120,7 +120,7 @@
                     <!-- Confirm Password -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Konfirmasi Password <span class="text-red-500">*</span>
+                            <span data-translate="pw_conf" data-translate-page="dosen_add_mhs">Konfirmasi Password</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="password" 
                                name="password_confirmation" 
@@ -134,7 +134,7 @@
                     <!-- Photo Profile -->
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Photo Profile
+                            <span data-translate="pfp" data-translate-page="dosen_add_mhs">Foto Profil</span>
                         </label>
                         <div class="flex items-center space-x-6">
                             <div class="flex-shrink-0">
@@ -170,14 +170,14 @@
                           text-gray-700 dark:text-gray-300 
                           hover:bg-gray-50 dark:hover:bg-gray-700 
                           focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors">
-                    Batal
+                    <span data-translate="cancel" data-translate-page="dosen_add_mhs">Batal</span>
                 </a>
                 <button type="submit" 
                         class="px-6 py-2 bg-blue-600 hover:bg-blue-700 
                                text-white rounded-lg 
                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
                                transition-colors">
-                    Tambah Mahasiswa
+                    <span data-translate="add" data-translate-page="dosen_add_mhs">Tambah Mahasiswa</span>
                 </button>
             </div>
         </form>
