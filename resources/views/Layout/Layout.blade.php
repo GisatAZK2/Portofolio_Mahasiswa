@@ -29,12 +29,9 @@
 
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
-
     <!-- Overlay backdrop mobile -->
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
     </div>
-
-
 
     <div class="flex h-screen">
 
