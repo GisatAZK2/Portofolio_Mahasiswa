@@ -188,10 +188,6 @@
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_stat" data-translate-page="admin">Status</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                            data-translate="tbl_jrs" data-translate-page="admin">Jurusan</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                            data-translate="tbl_agkt" data-translate-page="admin">Angkatan</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_act" data-translate-page="admin">Aksi</th>
                     </tr>
                 </thead>
@@ -238,19 +234,19 @@
                                         <span
                                             class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                             <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
-                                            Diterima
+                                                <span data-translate="stat_diterima" data-translate-page="admin">Diterima</span>
                                         </span>
                                     @elseif($user->status_pengajuan == 'Di Tolak')
                                         <span
                                             class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
                                             <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
-                                            Ditolak
+                                            <span data-translate="stat_ditolak" data-translate-page="admin">Ditolak</span>
                                         </span>
                                     @elseif($user->status_pengajuan == 'Sedang Di Ajukan')
                                         <span
                                             class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
                                             <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-1.5 animate-pulse"></span>
-                                            Menunggu
+                                            <span data-translate="pend" data-translate-page="dosen_kll_mhs">Menunggu</span>
                                         </span>
                                     @endif
                                 @else
@@ -468,8 +464,8 @@
 
         <div id="clientPaginationControls" class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p class="text-sm text-gray-600 dark:text-gray-400">
-                Menampilkan <span id="paginationVisibleCount">0</span> dari <span
-                    id="paginationTotalCount">{{ $users->count() }}</span> pengguna.
+                <span data-translate="show" data-translate-page="admin"Menampilkan></span> <span id="paginationVisibleCount">0</span> <span data-translate="from" data-translate-page="admin"dari></span> <span
+                    id="paginationTotalCount">{{ $users->count() }}</span> <span data-translate="user" data-translate-page="admin">pengguna</span>.
             </p>
             <nav id="paginationNumberButtons" class="flex flex-wrap items-center gap-2"></nav>
         </div>

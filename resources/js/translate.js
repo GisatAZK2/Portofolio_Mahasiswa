@@ -103,6 +103,9 @@ export const translations = {
     },
 
     admin: {
+      show: 'Menampilkan',
+      from: 'dari',
+      user: 'pengguna',
       admin_dashboard_title: 'Dashboard Admin',
       admin_dashboard_desc: 'Ringkasan aktivitas sistem dan statistik utama.',
       button_add_user: 'Tambah User',
@@ -733,6 +736,9 @@ export const translations = {
       add_stk: 'Add Certificate',
     },
     admin: {
+      show: 'Showing',
+      from: 'from',
+      user: 'users',
       admin_dashboard_title: 'Admin Dashboard',
       admin_dashboard_desc: 'System activity summary and key statistics.',
       button_add_user: 'Add User',
