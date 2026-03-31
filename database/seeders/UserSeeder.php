@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create('id_ID'); // Indonesian locale
+        $faker = Faker::create('id_ID'); 
         $profilePhotoUrl = 'photos/Biru Minimalis Pesan Obrolan Logo.png';
 
         // Get all available data
@@ -33,9 +33,9 @@ class UserSeeder extends Seeder
         $this->command->info('Membuat 100 user dummy...');
 
         $users = [];
-        $batchSize = 100; // Insert in batches to avoid memory issues
+        $batchSize = 1000; 
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $nama = $faker->name;
             $username = 'user_' . ($i + 1) . '_' . strtolower(str_replace(' ', '_', $nama));
             $email = $username . '@example.com';

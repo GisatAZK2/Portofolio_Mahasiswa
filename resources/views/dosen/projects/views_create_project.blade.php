@@ -146,6 +146,29 @@
                     @enderror
                 </div>
 
+                <!-- Owner Project -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Pilih Owner Project <span class="text-red-500">*</span>
+                    </label>
+                    <div id="selected-owner-display" class="mb-4 hidden">
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="font-medium text-blue-800" id="selected-owner-name"></div>
+                                <button type="button" onclick="clearSelectedOwner()" class="text-blue-600 hover:text-blue-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner') }}">
+                    @error('owner')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Pemimpin Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -192,7 +215,10 @@
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        <span data-translate="tbl_pick" data-translate-page="dosen_add_pjt">Pilih</span>
+                                        Owner
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Leader
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         <span data-translate="tbl_nm" data-translate-page="dosen_add_pjt">Nama Mahasiswa</span> 
@@ -210,15 +236,22 @@
                             </thead>
                             <tbody id="leader-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer" 
-                                        onclick="selectLeader({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                        <td class="px-6 py-4">
+                                            <input type="radio" 
+                                                   name="owner_radio" 
+                                                   value="{{ $user->id }}"
+                                                   class="owner-radio w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                                   {{ old('owner') == $user->id ? 'checked' : '' }}
+                                                   onchange="selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
+                                        </td>
                                         <td class="px-6 py-4">
                                             <input type="radio" 
                                                    name="leader_radio" 
                                                    value="{{ $user->id }}"
                                                    class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
                                                    {{ old('leader') == $user->id ? 'checked' : '' }}
-                                                   onchange="selectLeader({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                                   onchange="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
                                             {{ $user->nama_mahasiswa }}
@@ -235,7 +268,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                             <div class="flex flex-col items-center justify-center">
                                                 <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
@@ -273,7 +306,7 @@
                     <button type="button"
                         onclick="addMemberSelect()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline">
-                        <span data-translate="add_partner_btn" data-translate-page="dosen_add_pjt"></span>
+                        <span data-translate="add_partner_btn" data-translate-page="dosen_add_pjt">+ Tambah Rekan</span>
                     </button>
                 </div>
 
@@ -281,7 +314,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <span data-translate="date_start" data-translate-page="dosen_add_pjt"></span> <span class="text-red-500">*</span>
+                            <span data-translate="date_start" data-translate-page="dosen_add_pjt">Tanggal Mulai</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
@@ -291,7 +324,11 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+<<<<<<< HEAD
                             <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span>
+=======
+                            <span data-translate="date_end" data-translate-page="dosen_add_pjt">Tanggal Akhir</span> (opsional)
+>>>>>>> 7d6373dded44c5fd933cf8d7c3dba60e33b32deb
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
@@ -304,7 +341,7 @@
                 <!-- Link Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="link_pjt" data-translate-page="dosen_add_pjt"></span> (opsional)
+                        <span data-translate="link_pjt" data-translate-page="dosen_add_pjt">Link Project</span> (opsional)
                     </label>
                     <input type="url" name="link_project" value="{{ old('link_project') }}"
                         class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
@@ -406,15 +443,25 @@
                     document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
                 }
 
-                // Re-attach event listeners
-                attachTableRowListeners();
-                
+                // Restore selected owner if any
+                const selectedOwnerId = document.getElementById('selected-owner-id').value;
+                if (selectedOwnerId) {
+                    const selectedOwnerRadio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
+                    if (selectedOwnerRadio) {
+                        const row = selectedOwnerRadio.closest('tr');
+                        const ownerName = row.querySelector('td:nth-child(3)').textContent.trim();
+                        selectOwner(selectedOwnerId, ownerName);
+                    }
+                }
+
                 // Restore selected leader if any
                 const selectedLeaderId = document.getElementById('selected-leader-id').value;
                 if (selectedLeaderId) {
                     const selectedRadio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
                     if (selectedRadio) {
-                        selectedRadio.checked = true;
+                        const row = selectedRadio.closest('tr');
+                        const leaderName = row.querySelector('td:nth-child(3)').textContent.trim();
+                        selectLeader(selectedLeaderId, leaderName);
                     }
                 }
             })
@@ -426,7 +473,7 @@
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
                 const radio = row.querySelector('.leader-radio');
                 if (radio) {
-                    row.onclick = () => selectLeader(radio.value, row.querySelector('td:nth-child(2)').textContent.trim());
+                    row.onclick = () => selectLeader(radio.value, row.querySelector('td:nth-child(3)').textContent.trim());
                 }
             });
         }
@@ -434,13 +481,18 @@
         function filterLeaderTable() {
             const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                const nameCell = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const nameCell = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
                 row.style.display = nameCell.includes(keyword) ? '' : 'none';
             });
         }
 
         // Function to select leader
         function selectLeader(userId, userName) {
+            // Clear owner selection first to prevent conflict
+            if (document.getElementById('selected-owner-id').value && document.getElementById('selected-owner-id').value === userId) {
+                clearSelectedOwner();
+            }
+            
             // Update hidden input
             document.getElementById('selected-leader-id').value = userId;
             
@@ -460,7 +512,7 @@
                 display.classList.add('hidden');
             }
 
-            // Update disabled options in member selects
+            // Update disabled options
             updateDisabledOptions();
             
             // Save to localStorage
@@ -482,6 +534,43 @@
             saveToLocalStorage();
         }
 
+        // Function to select owner
+        function selectOwner(userId, userName) {
+            // Clear leader selection first to prevent conflict
+            if (document.getElementById('selected-leader-id').value && document.getElementById('selected-leader-id').value === userId) {
+                clearSelectedLeader();
+            }
+            
+            document.getElementById('selected-owner-id').value = userId;
+            document.querySelectorAll('.owner-radio').forEach(radio => {
+                radio.checked = (radio.value == userId);
+            });
+
+            const display = document.getElementById('selected-owner-display');
+            const nameSpan = document.getElementById('selected-owner-name');
+            if (userId) {
+                nameSpan.textContent = 'Owner: ' + userName;
+                display.classList.remove('hidden');
+            } else {
+                display.classList.add('hidden');
+            }
+
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
+
+        // Function to clear selected owner
+        function clearSelectedOwner() {
+            document.getElementById('selected-owner-id').value = '';
+            document.querySelectorAll('.owner-radio').forEach(radio => {
+                radio.checked = false;
+            });
+            document.getElementById('selected-owner-display').classList.add('hidden');
+            
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
+
         // Function to add new member select
         function addMemberSelect(savedValue = null) {
             const container = document.getElementById('members-container');
@@ -494,7 +583,7 @@
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
                 const radio = row.querySelector('.leader-radio');
                 if (radio) {
-                    const name = row.querySelector('td:nth-child(2)').textContent.trim();
+                    const name = row.querySelector('td:nth-child(3)').textContent.trim();
                     users.push({
                         id: radio.value,
                         name: name
@@ -535,7 +624,7 @@
                         </div>
                         <div class="flex gap-2">
                             <select name="members[]" 
-                                class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg">
+                                class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-700 dark:border-gray-700 rounded-lg">
                                 ${optionsHtml}
                             </select>
                             <button type="button" 
@@ -588,9 +677,10 @@
             saveToLocalStorage();
         }
 
-        // Function to update disabled options based on selected leader and members
+        // Function to update disabled options based on selected leader, owner and members
         function updateDisabledOptions() {
             const leaderId = document.getElementById('selected-leader-id').value;
+            const ownerId = document.getElementById('selected-owner-id').value;
             
             // Get all selected member IDs
             const selectedMemberIds = [];
@@ -617,6 +707,14 @@
                     }
                 }
 
+                // Disable owner option if owner is selected
+                if (ownerId) {
+                    let ownerOption = select.querySelector(`option[value="${ownerId}"]`);
+                    if (ownerOption) {
+                        ownerOption.disabled = true;
+                    }
+                }
+
                 // Disable options that are selected in other member selects
                 selectedMemberIds.forEach(selectedId => {
                     if (selectedId && select.value !== selectedId) {
@@ -631,6 +729,7 @@
 
         // Function to save form data to localStorage
         function saveToLocalStorage() {
+            const ownerId = document.getElementById('selected-owner-id').value;
             const leaderId = document.getElementById('selected-leader-id').value;
             
             // Get all member selects
@@ -644,6 +743,7 @@
             });
 
             const projectData = {
+                owner: ownerId,
                 leader: leaderId,
                 members: memberIds
             };
@@ -659,12 +759,24 @@
                 try {
                     const data = JSON.parse(savedData);
                     
+                    // Set owner
+                    if (data.owner) {
+                        const ownerRadio = document.querySelector(`.owner-radio[value="${data.owner}"]`);
+                        if (ownerRadio) {
+                            const ownerRow = ownerRadio.closest('tr');
+                            const ownerName = ownerRow.querySelector('td:nth-child(3)').textContent.trim();
+                            selectOwner(data.owner, ownerName);
+                        }
+                    }
+
                     // Set leader
                     if (data.leader) {
-                        // Find the user name from the table
-                        const userRow = document.querySelector(`.leader-radio[value="${data.leader}"]`).closest('tr');
-                        const userName = userRow.querySelector('td:nth-child(2)').textContent.trim();
-                        selectLeader(data.leader, userName);
+                        const leaderRadio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
+                        if (leaderRadio) {
+                            const leaderRow = leaderRadio.closest('tr');
+                            const leaderName = leaderRow.querySelector('td:nth-child(3)').textContent.trim();
+                            selectLeader(data.leader, leaderName);
+                        }
                     }
 
                     // Clear existing members
@@ -706,19 +818,27 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's an old selected owner
+            const oldOwnerId = document.getElementById('selected-owner-id').value;
+            if (oldOwnerId) {
+                const selectedRadio = document.querySelector(`.owner-radio[value="${oldOwnerId}"]`);
+                if (selectedRadio) {
+                    const row = selectedRadio.closest('tr');
+                    const userName = row.querySelector('td:nth-child(3)').textContent.trim();
+                    selectOwner(oldOwnerId, userName);
+                }
+            }
+
             // Check if there's an old selected leader
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             if (oldLeaderId) {
                 const selectedRadio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
                 if (selectedRadio) {
                     const row = selectedRadio.closest('tr');
-                    const userName = row.querySelector('td:nth-child(2)').textContent.trim();
+                    const userName = row.querySelector('td:nth-child(3)').textContent.trim();
                     selectLeader(oldLeaderId, userName);
                 }
             }
-
-            // Attach table row listeners
-            attachTableRowListeners();
 
             // Load saved data from localStorage
             loadSavedData();
@@ -743,6 +863,10 @@
             if (leaderSearch) {
                 leaderSearch.addEventListener('input', filterLeaderTable);
             }
+
+            // Attach table row listeners
+            attachTableRowListeners();
+        });
     </script>
 
     <style>

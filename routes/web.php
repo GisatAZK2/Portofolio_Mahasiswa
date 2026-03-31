@@ -63,11 +63,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         [LearningCornerController::class, 'store']
     )->name('learning-corner.store');
 
-    Route::post(
-        '/learning-corner-mass/mass-destroy',
-        [LearningCornerController::class, 'massDestroy']
-    )->name('learning-corner.mass-destroy');
-
+    
     Route::get(
         '/learning-corner/{learningCorner}/edit',
         [LearningCornerController::class, 'edit']
@@ -78,11 +74,22 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         [LearningCornerController::class, 'update']
     )->name('learning-corner.update');
 
-
-    Route::delete('/learning-corner/{learning_corner}', [LearningCornerController::class, 'destroy'])->name('learning-corner.destroy');
-
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+});
+
+Route::middleware(['auth'])->group(function () {
+
+        Route::post(
+                '/learning-corner-mass/mass-destroy',
+                [LearningCornerController::class, 'massDestroy']
+            )->name('learning-corner.mass-destroy');
+
+    
+    Route::delete('/learning-corner/{learning_corner}', [LearningCornerController::class, 'destroy'])
+        ->name('learning-corner.destroy')
+        ->middleware('role:admin,dosen,mahasiswa');
+
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -167,7 +174,7 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::get('/create', [DosenController::class, 'TambahProjects'])->name('create');
         Route::post('/store', [DosenController::class, 'StoreProject'])->name('store');
         Route::get('/Details/{project}', [DosenController::class, 'EditProjects'])->name('details');
-        Route::post('/EditProject/{project}', [DosenController::class, 'UpdateProject'])->name('update');
+        Route::patch('/EditProject/{project}', [DosenController::class, 'UpdateProject'])->name('update');
         Route::delete('/DeleteProject/{project}', [DosenController::class, 'DestroyProject'])->name('delete');
         Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
     });

@@ -3,6 +3,28 @@
 @section('title', 'Kelola Pengguna - Admin')
 
 @section('content')
+<style>
+@media (max-width: 1919px), (max-height: 1079px) {
+    .responsive-compact-table {
+        font-size: 0.75rem !important;
+    }
+    .responsive-compact-table th,
+    .responsive-compact-table td {
+        padding: 0.5rem 0.75rem !important;
+    }
+    .responsive-compact-table .w-10.h-10 {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
+    .responsive-compact-table svg.h-5.w-5 {
+        width: 1rem !important;
+        height: 1rem !important;
+    }
+    .responsive-compact-table .text-sm {
+        font-size: 0.7rem !important;
+    }
+}
+</style>
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -128,7 +150,7 @@
 
     <!-- Table - Desktop View -->
     <div class="hidden md:block overflow-x-auto">
-        <table class="min-w-full w-full table-auto bg-white dark:bg-gray-800 text-sm">
+        <table class="min-w-full w-full table-auto bg-white dark:bg-gray-800 text-sm responsive-compact-table">
             <thead>
                 <tr class="bg-gray-100 dark:bg-gray-700">
                     <th class="px-4 py-3 text-left">
@@ -154,9 +176,9 @@
                         @if($user->photo_profile && Storage::disk('public')->exists($user->photo_profile))
                             <img src="{{ asset('storage/' . ltrim($user->photo_profile, '/')) }}"
                                  alt="{{ $user->nama_mahasiswa ?? $user->username }}"
-                                 class="w-10 h-10 rounded-lg object-cover">
+                                 class="w-10 h-10 rounded-lg object-cover shadow-md ring-1 ring-gray-200 dark:ring-gray-700">
                         @else
-                            <div class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center shadow-md ring-1 ring-gray-200 dark:ring-gray-700">
                                 <span class="text-sm font-bold text-gray-600 dark:text-gray-300">
                                     {{ strtoupper(substr($user->nama_mahasiswa ?? $user->username ?? 'U', 0, 1)) }}
                                 </span>
@@ -411,14 +433,30 @@
 <script>
 let selectedIds = [];
 
-function updateSelectedIds() {
-    selectedIds = [];
+function getAllCheckboxes() {
+    return Array.from(document.querySelectorAll('.item-checkbox'));
+}
 
-    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-        if (checkbox.checked) {
-            selectedIds.push(checkbox.value);
+function getVisibleCheckboxes() {
+    return getAllCheckboxes().filter(checkbox => checkbox.offsetParent !== null);
+}
+
+function setCheckboxStateByValue(value, checked) {
+    getAllCheckboxes().forEach(checkbox => {
+        if (checkbox.value === value) {
+            checkbox.checked = checked;
         }
     });
+}
+
+function updateSelectedIds() {
+    const selectedSet = new Set();
+    getAllCheckboxes().forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedSet.add(checkbox.value);
+        }
+    });
+    selectedIds = Array.from(selectedSet);
 
     const totalSelectedEl = document.getElementById('totalSelected');
     if (totalSelectedEl) {
@@ -438,41 +476,49 @@ function updateSelectedIds() {
         bulkForm.appendChild(input);
     });
 
-    const allCheckboxes = Array.from(document.querySelectorAll('.item-checkbox')); 
+    const allCheckboxes = getAllCheckboxes();
+    const allUniqueIds = Array.from(new Set(allCheckboxes.map(cb => cb.value)));
+    const visibleCheckboxes = getVisibleCheckboxes();
+    const visibleUniqueIds = Array.from(new Set(visibleCheckboxes.map(cb => cb.value)));
 
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
 
-    if (allCheckboxes.length > 0) {
-        if (selectedIds.length === allCheckboxes.length) {
-            if (selectAllCheckbox) {
-                selectAllCheckbox.checked = true;
-                selectAllCheckbox.indeterminate = false;
-            }
-            if (tableSelectAllCheckbox) {
-                tableSelectAllCheckbox.checked = true;
-                tableSelectAllCheckbox.indeterminate = false;
-            }
+    if (selectAllCheckbox) {
+        if (selectedIds.length === allUniqueIds.length && allUniqueIds.length > 0) {
+            selectAllCheckbox.checked = true;
+            selectAllCheckbox.indeterminate = false;
         } else if (selectedIds.length === 0) {
-            if (selectAllCheckbox) {
-                selectAllCheckbox.checked = false;
-                selectAllCheckbox.indeterminate = false;
-            }
-            if (tableSelectAllCheckbox) {
-                tableSelectAllCheckbox.checked = false;
-                tableSelectAllCheckbox.indeterminate = false;
-            }
+            selectAllCheckbox.checked = false;
+            selectAllCheckbox.indeterminate = false;
         } else {
-            if (selectAllCheckbox) selectAllCheckbox.indeterminate = true;
-            if (tableSelectAllCheckbox) tableSelectAllCheckbox.indeterminate = true;
+            selectAllCheckbox.checked = false;
+            selectAllCheckbox.indeterminate = true;
+        }
+    }
+
+    if (tableSelectAllCheckbox) {
+        const visibleSelectedCount = visibleUniqueIds.filter(id => selectedIds.includes(id)).length;
+        if (visibleSelectedCount === visibleUniqueIds.length && visibleUniqueIds.length > 0) {
+            tableSelectAllCheckbox.checked = true;
+            tableSelectAllCheckbox.indeterminate = false;
+        } else if (visibleSelectedCount === 0) {
+            tableSelectAllCheckbox.checked = false;
+            tableSelectAllCheckbox.indeterminate = false;
+        } else {
+            tableSelectAllCheckbox.checked = false;
+            tableSelectAllCheckbox.indeterminate = true;
         }
     }
 }
 
 // Toggle All Checkboxes (fungsi utama)
-function toggleAll(source) {
-    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-        checkbox.checked = source.checked;
+function toggleAll(source, onlyVisible = false) {
+    const targetCheckboxes = onlyVisible ? getVisibleCheckboxes() : getAllCheckboxes();
+    const targetValues = Array.from(new Set(targetCheckboxes.map(checkbox => checkbox.value)));
+
+    targetValues.forEach(value => {
+        setCheckboxStateByValue(value, source.checked);
     });
     updateSelectedIds();
 }
@@ -706,25 +752,26 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClientPagination();
 
     // Event listener untuk setiap checkbox item
-   document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-        if (checkbox.offsetParent !== null) {
-            checkbox.checked = this.checked;
-        }
+    getAllCheckboxes().forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            setCheckboxStateByValue(checkbox.value, checkbox.checked);
+            updateSelectedIds();
+        });
     });
 
-    // Select All di bar atas (mobile & desktop)
+    // Select All di bar atas (full range select)
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function() {
-            toggleAll(this);   
+            toggleAll(this, false);
         });
     }
 
-    // Select All di header tabel (desktop)
+    // Select All di header tabel (current page only)
     const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
     if (tableSelectAllCheckbox) {
         tableSelectAllCheckbox.addEventListener('change', function() {
-            toggleAll(this);
+            toggleAll(this, true);
         });
     }
 
