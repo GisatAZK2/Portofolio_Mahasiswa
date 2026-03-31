@@ -450,7 +450,7 @@
 
                             <!-- Pagination -->
                             <div class="mt-6">
-                                {{ $projects->appends(['project_tab' => $projectTab])->links() }}
+                                {{ $projects->appends(['project_tab' => $projectTab])->render('vendor.pagination.custom_ajax', ['groupName' => 'portfolio_projects']) }}
                             </div>
                         @else
                             <div class="text-center py-12">
@@ -571,6 +571,12 @@
                         @else
                             <p class="text-sm text-gray-500 text-center py-6">Belum ada sertifikat yang ditambahkan</p>
                         @endif
+
+                        @if(method_exists($user->sertifikats, 'hasPages') && $user->sertifikats->hasPages())
+                            <div class="mt-4">
+                                {!! $user->sertifikats->render('vendor.pagination.custom_ajax', ['groupName' => 'user_sertifikats']) !!}
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Learning Corners  -->
@@ -655,6 +661,12 @@
                             <p class="text-sm text-center text-gray-500  italic">
                                 Belum ada catatan learning corner
                             </p>
+                        @endif
+
+                        @if(method_exists($user->learning_corners, 'hasPages') && $user->learning_corners->hasPages())
+                            <div class="mt-4">
+                                {!! $user->learning_corners->render('vendor.pagination.custom_ajax', ['groupName' => 'user_learning_corners']) !!}
+                            </div>
                         @endif
                     </div>
 

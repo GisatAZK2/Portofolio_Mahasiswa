@@ -32,8 +32,8 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('admin.sertifikat.update', $sertifikat->id) }}" enctype="multipart/form-data"
-                class="space-y-7">
+            <form method="POST" action="{{ route('admin.sertifikat.update', $sertifikat->id) }}"
+                enctype="multipart/form-data" class="space-y-7">
                 @csrf
                 @method('PATCH')
                 <!-- Nama Sertifikat -->
@@ -44,7 +44,11 @@
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
                         placeholder="Contoh: Sertifikat Kompetensi Programming"
-                        class="w-full px-4 py-3 border dark:text-gray-200 dark:bg-gray-700/60 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('nama_sertifikat') border-red-500 @enderror">
+                        class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                    text-gray-700 dark:text-gray-300
+                                    placeholder-gray-500 dark:placeholder-gray-400
+                                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -58,7 +62,11 @@
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
                         placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
-                        class="w-full px-4 py-3 border dark:text-gray-200 dark:bg-gray-700/60 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('lembaga_penerbit') border-red-500 @enderror">
+                        class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                    text-gray-700 dark:text-gray-300
+                                    placeholder-gray-500 dark:placeholder-gray-400
+                                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -72,7 +80,11 @@
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
                         required max="{{ date('Y-m-d') }}"
-                        class="w-full px-4 py-3 border dark:text-gray-200 dark:bg-gray-700/60 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('tanggal_terbit') border-red-500 @enderror">
+                        class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                    text-gray-700 dark:text-gray-300
+                                    placeholder-gray-500 dark:placeholder-gray-400
+                                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -81,17 +93,18 @@
 
                 <!-- Current File Information -->
                 @if($sertifikat->link_sertifikat)
-                    <div class="bg-gray-50 border border-gray-200 dark:bg-gray-700/60 rounded-lg p-4">
+                    <div class="bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
-                                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">File saat ini:</p>
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200">File saat ini:</p>
                                     <a href="{{ Storage::url($sertifikat->link_sertifikat) }}" target="_blank"
-                                        class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1">
+                                        class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline flex items-center gap-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -104,7 +117,7 @@
                                 </div>
                             </div>
                             <button type="button" onclick="document.getElementById('replace-file-checkbox').click()"
-                                class="text-sm px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
+                                class="text-sm px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition">
                                 Ganti File
                             </button>
                         </div>
@@ -116,22 +129,22 @@
 
                 <!-- Upload File Sertifikat (hidden by default if file exists) -->
                 <div id="file-upload-section" class="{{ $sertifikat->link_sertifikat ? 'hidden' : '' }}">
-                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         {{ $sertifikat->link_sertifikat ? 'Upload File Baru (opsional)' : 'Upload File Sertifikat' }}
                         @if(!$sertifikat->link_sertifikat)<span class="text-red-500">*</span>@endif
                     </label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400 transition cursor-pointer"
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg hover:border-indigo-400 dark:hover:border-indigo-400 transition cursor-pointer"
                         onclick="document.getElementById('link_sertifikat').click()">
                         <div class="space-y-2 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                viewBox="0 0 48 48">
+                            <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" stroke="currentColor"
+                                fill="none" viewBox="0 0 48 48">
                                 <path
                                     d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <div class="flex text-sm text-gray-600">
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400">
                                 <label
-                                    class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
+                                    class="relative cursor-pointer rounded-md font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">
                                     <span>Upload file</span>
                                     <input id="link_sertifikat" name="link_sertifikat" type="file"
                                         accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
@@ -139,7 +152,7 @@
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500" id="file-name">
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name">
                                 @if($sertifikat->link_sertifikat)
                                     {{ basename(Storage::url($sertifikat->link_sertifikat)) }}
                                 @else
@@ -149,9 +162,9 @@
                         </div>
                     </div>
                     @error('link_sertifikat')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
-                    <p class="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -161,32 +174,34 @@
                 </div>
 
                 <!-- Preview Gambar (untuk file baru) -->
-                <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-sm font-medium text-gray-700 mb-2">Preview File Baru:</p>
+                <div id="image-preview-container"
+                    class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-700/40 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Preview File Baru:</p>
                     <img id="image-preview" src="#" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
                 </div>
 
                 <!-- Preview File Saat Ini (jika ada) -->
                 @if($sertifikat->link_sertifikat && preg_match('/\.(jpg|jpeg|png|gif)$/i', $sertifikat->link_sertifikat))
-                    <div id="current-image-preview" class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/60 rounded-lg border border-gray-200">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">File Saat Ini:</p>
+                    <div id="current-image-preview"
+                        class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/40 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">File Saat Ini:</p>
                         <img src="{{ Storage::url($sertifikat->link_sertifikat) }}" alt="Current Sertifikat"
                             class="max-h-48 rounded-lg shadow-sm">
                     </div>
                 @endif
 
                 <!-- Informasi Tambahan -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-6">
                     <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                        <div class="shrink-0">
+                            <svg class="h-5 w-5 text-blue-400 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd"
                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                                     clip-rule="evenodd" />
                             </svg>
                         </div>
                         <div class="ml-3 flex-1">
-                            <p class="text-sm text-blue-700">
+                            <p class="text-sm text-blue-700 dark:text-blue-200">
                                 File yang diupload akan menggantikan file lama. File lama akan otomatis dihapus.
                             </p>
                         </div>
@@ -355,7 +370,7 @@
                     toggleFileUpload(replaceCheckbox);
                 }
             @endif
-    });
+            });
     </script>
 
     <!-- CSS Tambahan -->

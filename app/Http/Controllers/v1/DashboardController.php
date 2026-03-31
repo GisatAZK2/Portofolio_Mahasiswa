@@ -275,8 +275,6 @@ class DashboardController extends Controller
         $angkatan = $request->angkatan;
         $type = $request->type;
 
-        $results = collect();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -284,9 +282,11 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $mahasiswa = collect();
+
         if (!$type || $type == 'mahasiswa') {
 
-            $users = User::with(['jurusan', 'keahlian', 'angkatan'])
+            $mahasiswa = User::with(['jurusan', 'keahlian', 'angkatan'])
                 ->withCount([
                     'projects',
                     'learning_corners as learning_count',
@@ -311,18 +311,9 @@ class DashboardController extends Controller
                     $query->where('id_angkatan', $angkatan);
                 })
 
-                ->get()
-
-                ->map(function ($item) {
-
-                    $item->type = 'mahasiswa';
-
-                    return $item;
-
-                });
-
-
-            $results = $results->concat($users);
+                ->latest()
+                ->paginate(9, ['*'], 'mahasiswa_page')
+                ->withQueryString();
         }
 
 
@@ -331,6 +322,8 @@ class DashboardController extends Controller
         | SEARCH PROJECT
         |--------------------------------------------------------------------------
         */
+
+        $projects = collect();
 
         if ($type === null || $type === 'project') {
 
@@ -352,28 +345,18 @@ class DashboardController extends Controller
                     $query->whereHas('mahasiswa', fn($q) => $q->where('id_angkatan', $angkatan));
                 })
 
-                ->get()
+                ->latest()
+                ->paginate(9, ['*'], 'project_page')
+                ->withQueryString();
 
-                ->unique('id')
-
-                ->map(function ($project) {
-
-                    $content = $project->isi_content ?? [];
-
-                    $project->nama_project = $content['nama_project'] ?? null;
-                    $project->link_project = $content['link_project'] ?? null;
-                    $project->link_github = $content['link_github'] ?? null;
-                    $project->link_video = $content['link_video'] ?? null;
-
-                    $project->type = 'project';
-
-                    return $project;
-                })
-
-                ->values();
-
-
-            $results = $results->concat($projects);
+            $projects->transform(function ($project) {
+                $content = $project->isi_content ?? [];
+                $project->nama_project = $content['nama_project'] ?? null;
+                $project->link_project = $content['link_project'] ?? null;
+                $project->link_github = $content['link_github'] ?? null;
+                $project->link_video = $content['link_video'] ?? null;
+                return $project;
+            });
         }
 
 
@@ -383,35 +366,30 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $sertifikats = collect();
+
         if (!$type || $type == 'sertifikat') {
 
-            $sertifikats = Sertifikat::with(['mahasiswa.jurusan', 'mahasiswa.keahlian'])
+            $sertifikats = Sertifikat::with(['mahasiswa.jurusan', 'mahasiswa.keahlian', 'mahasiswa.angkatan'])
 
                 ->when($keyword, function ($query) use ($keyword) {
-
                     $query->where('nama_sertifikat', 'like', "%$keyword%");
                 })
 
                 ->when($jurusan, function ($query) use ($jurusan) {
-
                     $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
-
                         $q->where('id_jurusan', $jurusan);
                     });
                 })
 
                 ->when($keahlian, function ($query) use ($keahlian) {
-
                     $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
-
                         $q->where('id_keahlian', $keahlian);
                     });
                 })
 
                 ->when($angkatan, function ($query) use ($angkatan) {
-
                     $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
-
                         $q->where('id_angkatan', $angkatan);
                     });
                 })
@@ -419,17 +397,9 @@ class DashboardController extends Controller
                 ->where('is_active', true)
                 ->where('status_pengajuan', 'Di Terima')
 
-                ->get()
-
-                ->map(function ($item) {
-
-                    $item->type = 'sertifikat';
-
-                    return $item;
-                });
-
-
-            $results = $results->concat($sertifikats);
+                ->latest()
+                ->paginate(9, ['*'], 'sertifikat_page')
+                ->withQueryString();
         }
 
 
@@ -438,13 +408,17 @@ class DashboardController extends Controller
         $totalSertifikat = Sertifikat::count();
         $totalProject = Project::count();
 
+        $hasResults = ($mahasiswa->count() > 0) || ($projects->count() > 0) || ($sertifikats->count() > 0);
 
         return view('views_result_search', compact(
-            'results',
+            'mahasiswa',
+            'projects',
+            'sertifikats',
             'keyword',
             'totalMahasiswa',
             'totalSertifikat',
-            'totalProject'
+            'totalProject',
+            'hasResults'
         ));
     }
 

@@ -1,10 +1,10 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-6 px-4 sm:px-6 lg:px-8" data-dashboard-type="public">
-        <div class="max-w-7xl mx-auto space-y-10">
+    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="public">
+        <div class="max-w-7xl mx-auto space-y-6 sm:space-y-10">
             <!-- Statistic Cards with Mini Charts -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                     <a href="{{ route('search') }}">
@@ -82,7 +82,7 @@
                         </div>
                     @else
                         <div data-pagination-group="learning_corner">
-                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
                                 @foreach($learningCorners as $post)
                                     @include('components.card_postingan', ['post' => $post])
                                 @endforeach
@@ -102,7 +102,7 @@
                         </div>
                     @else
                         <div data-pagination-group="project">
-                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
                                 @foreach($projects as $post)
                                     @include('components.card_postingan', ['post' => $post])
                                 @endforeach
@@ -122,7 +122,7 @@
                         </div>
                     @else
                         <div data-pagination-group="sertifikat">
-                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
                                 @foreach($projectUsers as $post)
                                     @include('components.card_postingan', ['post' => $post])
                                 @endforeach
