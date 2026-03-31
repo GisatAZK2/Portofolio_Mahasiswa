@@ -24,7 +24,7 @@
             <!-- Projects Grid -->
             <section>
                 @if($projects->isNotEmpty())
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" data-pagination-group="project_user">
                         @foreach($projects as $project)
                             @php
                                 $content = $project->isi_content ?? [];
@@ -312,7 +312,7 @@
                     <!-- Pagination -->
                     @if(method_exists($projects, 'links'))
                         <div class="mt-8 flex justify-center">
-                            {{ $projects->links() }}
+                            {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project_user']) }}
                         </div>
                     @endif
 

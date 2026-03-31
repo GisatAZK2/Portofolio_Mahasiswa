@@ -5,7 +5,8 @@
         <div class="max-w-7xl mx-auto">
 
             @if(session('success'))
-                <div class="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 dark:bg-green-700 border border-green-200 text-green-800 rounded-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
+                <div
+                    class="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 dark:bg-green-700 border border-green-200 text-green-800 rounded-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -18,33 +19,39 @@
             <!-- Header Sederhana -->
             <div class="mb-6 sm:mb-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="kelola_project_title" data-translate-page="kelola_project"></h1>
-                  <a href="{{ route('admin.projects.create') }}"
-               class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span data-translate="tambah_project" data-translate-page="kelola_project"></span>
-            </a>
-            </div>
-            
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1" data-translate="kelola_project_desc" data-translate-page="kelola_project"></p>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200"
+                        data-translate="kelola_project_title" data-translate-page="kelola_project"></h1>
+                    <a href="{{ route('admin.projects.create') }}"
+                        class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span data-translate="tambah_project" data-translate-page="kelola_project"></span>
+                    </a>
+                </div>
+
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1" data-translate="kelola_project_desc"
+                    data-translate-page="kelola_project"></p>
             </div>
 
             <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <label data-translate="select_all" data-translate-page="admin" class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                        <input id="selectAllProjects" type="checkbox" class="w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
-                        <span data-translate="select_all" data-translate-page="admin">Pilih Semua</span>
+                    <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <input id="selectAllProjects" type="checkbox"
+                            class="w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                        Pilih Semua
                     </label>
-                    <span class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected" data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> / <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Terpilih: <strong id="selectedCount">0</strong> /
+                        <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <form id="bulkDeleteForm" action="{{ route('admin.projects.bulk-delete') }}" method="POST" class="inline">
+                    <form id="bulkDeleteForm" action="{{ route('admin.projects.bulk-delete') }}" method="POST"
+                        class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="button" onclick="confirmBulkDelete()" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
-                            <span data-translate="delete_select" data-translate-page="admin">Hapus Terpilih</span>
+                        <button type="button" onclick="confirmBulkDelete()"
+                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
+                            Hapus Terpilih
                         </button>
                     </form>
                 </div>
@@ -54,7 +61,7 @@
             <section>
                 @if($projects->isNotEmpty())
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    
+
                         @foreach($projects as $project)
                             @php
                                 $content = $project->isi_content ?? [];
@@ -130,46 +137,47 @@
                                 $isSameUser = $mahasiswa && $leader && $mahasiswa->id === $leader->id;
                             @endphp
 
-                            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
-                              
-                           
+                            <div
+                                class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
+
+
                                 <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                                @if($embedVideo)
-                                    <div class="relative w-full h-full">
-                                        <iframe class="absolute inset-0 w-full h-full" 
-                                                src="{{ $embedVideo }}?rel=0&modestbranding=1"
-                                                title="Video: {{ $nama }}" 
+                                    @if($embedVideo)
+                                        <div class="relative w-full h-full">
+                                            <iframe class="absolute inset-0 w-full h-full"
+                                                src="{{ $embedVideo }}?rel=0&modestbranding=1" title="Video: {{ $nama }}"
                                                 frameborder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowfullscreen></iframe>
-                                    </div>
+                                        </div>
 
-                                @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
-                                    <img src="{{ Storage::url($thumbnail) }}" 
-                                        alt="{{ $nama }}"
-                                        class="w-full h-full object-cover">
+                                    @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
+                                        <img src="{{ Storage::url($thumbnail) }}" alt="{{ $nama }}" class="w-full h-full object-cover">
 
-                                @else
-                                    <!-- Kondisi: Tidak ada video embed & tidak ada thumbnail -->
-                                    <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
-                                                flex flex-col items-center justify-center text-center px-4">
-                                        <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" 
-                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <p   data-translate="no_thumbnail_text" data-translate-page="project_user"  class="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
-                                            
-                                        </p>
-                                        <p data-translate="no_thumbnail_description" data-translate-page="project_user" class="text-gray-400 dark:text-gray-500 text-xs mt-1">
-                                           
-                                        </p>
-                                    </div>
-                                @endif
-                                    
+                                    @else
+                                        <!-- Kondisi: Tidak ada video embed & tidak ada thumbnail -->
+                                        <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
+                                                                flex flex-col items-center justify-center text-center px-4">
+                                            <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <p data-translate="no_thumbnail_text" data-translate-page="project_user"
+                                                class="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
+
+                                            </p>
+                                            <p data-translate="no_thumbnail_description" data-translate-page="project_user"
+                                                class="text-gray-400 dark:text-gray-500 text-xs mt-1">
+
+                                            </p>
+                                        </div>
+                                    @endif
+
                                     <!-- Status Badge -->
                                     <div class="absolute top-2 right-2">
-                                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
+                                        <span
+                                            class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
                                             {{ $statusText }}
                                         </span>
                                     </div>
@@ -177,47 +185,54 @@
 
                                 <!-- Content -->
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
-                                    
+
                                     <!-- User Info -->
                                     <div class="flex items-center gap-3 mb-3">
                                         <label class="inline-flex items-center mr-2">
-                                            <input type="checkbox" value="{{ $project->id }}" class="project-checkbox w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                                            <input type="checkbox" value="{{ $project->id }}"
+                                                class="project-checkbox w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                                         </label>
-                                        <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                        <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}"
+                                            class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @php
                                                 $displayUser = $leader ?? $mahasiswa;
                                                 $userName = $displayUser->nama_mahasiswa ?? 'User';
                                                 $userInitial = substr($userName, 0, 1);
                                             @endphp
-                                            
+
                                             @if($displayUser && $displayUser->photo_profile && Storage::disk('public')->exists($displayUser->photo_profile))
-                                                <img src="{{ Storage::url($displayUser->photo_profile) }}" 
-                                                     alt="{{ $userName }}"
-                                                     class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700">
+                                                <img src="{{ Storage::url($displayUser->photo_profile) }}" alt="{{ $userName }}"
+                                                    class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700">
                                             @else
-                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                                                <div
+                                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                                                     {{ $userInitial }}
                                                 </div>
                                             @endif
                                         </a>
-                                        
+
                                         <!-- Nama dan Role dengan LINK -->
                                         <div>
                                             <div class="flex items-center gap-2 flex-wrap">
-                                                <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}" 
-                                                   class="font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                                <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}"
+                                                    class="font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                     {{ $userName }}
                                                 </a>
                                                 @if($leader && $mahasiswa)
                                                     @if($isSameUser)
-                                                        <span class="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-full">Owner & Leader</span>
+                                                        <span
+                                                            class="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-full">Owner
+                                                            & Leader</span>
                                                     @else
-                                                        <span class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
+                                                        <span
+                                                            class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
                                                     @endif
                                                 @elseif($leader)
-                                                    <span class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
+                                                    <span
+                                                        class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
                                                 @else
-                                                    <span class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full">Owner</span>
+                                                    <span
+                                                        class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full">Owner</span>
                                                 @endif
                                             </div>
                                             <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -229,21 +244,22 @@
                                     <!-- Jika Owner berbeda dengan Leader -->
                                     @if($mahasiswa && $leader && !$isSameUser)
                                         <div class="flex items-center gap-2 mb-3 pl-2 border-l-2 border-gray-300 dark:border-gray-600">
-                                            <a href="{{ route('portfolio.show', $mahasiswa->id) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                            <a href="{{ route('portfolio.show', $mahasiswa->id) }}"
+                                                class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                                 @if($mahasiswa->photo_profile && Storage::disk('public')->exists($mahasiswa->photo_profile))
-                                                    <img src="{{ Storage::url($mahasiswa->photo_profile) }}" 
-                                                         alt="{{ $mahasiswa->nama_mahasiswa }}"
-                                                         class="w-6 h-6 rounded-full object-cover">
+                                                    <img src="{{ Storage::url($mahasiswa->photo_profile) }}"
+                                                        alt="{{ $mahasiswa->nama_mahasiswa }}" class="w-6 h-6 rounded-full object-cover">
                                                 @else
-                                                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-xs font-bold">
+                                                    <div
+                                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-xs font-bold">
                                                         {{ substr($mahasiswa->nama_mahasiswa ?? 'O', 0, 1) }}
                                                     </div>
                                                 @endif
                                             </a>
                                             <span class="text-xs text-gray-600 dark:text-gray-400">
-                                                <span class="text-gray-500 dark:text-gray-500">Owner:</span> 
-                                                <a href="{{ route('portfolio.show', $mahasiswa->id) }}" 
-                                                   class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                                <span class="text-gray-500 dark:text-gray-500">Owner:</span>
+                                                <a href="{{ route('portfolio.show', $mahasiswa->id) }}"
+                                                    class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                     {{ $mahasiswa->nama_mahasiswa }}
                                                 </a>
                                             </span>
@@ -252,7 +268,8 @@
 
                                     <!-- Project Title -->
                                     <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2">
-                                        <a href="{{ route('project.show', $project->id) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                        <a href="{{ route('project.show', $project->id) }}"
+                                            class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                             {{ $nama }}
                                         </a>
                                     </h3>
@@ -260,7 +277,8 @@
                                     <!-- Periode -->
                                     <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         <span>{{ $mulaiFormatted }} - {{ $akhirFormatted }}</span>
                                     </div>
@@ -276,16 +294,19 @@
                                     @if(!empty($content['tech_stack']) && is_array($content['tech_stack']))
                                         <div class="flex flex-wrap gap-1 mb-3">
                                             @foreach(array_slice($content['tech_stack'], 0, 3) as $tech)
-                                                <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-xs rounded text-gray-700 dark:text-gray-300">{{ $tech }}</span>
+                                                <span
+                                                    class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-xs rounded text-gray-700 dark:text-gray-300">{{ $tech }}</span>
                                             @endforeach
                                             @if(count($content['tech_stack']) > 3)
-                                                <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-xs rounded text-gray-700 dark:text-gray-300">+{{ count($content['tech_stack']) - 3 }}</span>
+                                                <span
+                                                    class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-xs rounded text-gray-700 dark:text-gray-300">+{{ count($content['tech_stack']) - 3 }}</span>
                                             @endif
                                         </div>
                                     @endif
 
                                     <!-- Links - SEPERTI CONTOH SERTIFIKAT -->
-                                    <div class="flex flex-wrap items-center gap-3 mt-auto pt-3 border-t border-gray-100 dark:border-gray-800">
+                                    <div
+                                        class="flex flex-wrap items-center gap-3 mt-auto pt-3 border-t border-gray-100 dark:border-gray-800">
                                         @if($linkProject)
                                             <a href="{{ $linkProject }}" target="_blank" rel="noopener noreferrer"
                                                 class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
@@ -301,7 +322,8 @@
                                             <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
                                                 class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white font-medium">
                                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                                                    <path
+                                                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                                                 </svg>
                                                 GitHub
                                             </a>
@@ -322,17 +344,21 @@
                                     </div>
 
                                     <div class="mt-3 flex flex-wrap gap-2">
-                                        <a data-translate="edit_project" data-translate-page="admin" href="{{ route('admin.projects.details', $project->id) }}" class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
+                                        <a href="{{ route('admin.projects.details', $project->id) }}"
+                                            class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
                                             Edit
                                         </a>
-                                        <button data-translate="delete_project" data-translate-page="admin" type="button" onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')" class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
+                                        <button type="button"
+                                            onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')"
+                                            class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
                                             Hapus
                                         </button>
                                     </div>
 
                                     <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
                                     <div class="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                                        <span data-translate="diposting" data-translate-page="kelola_project"></span> {{ $project->created_at?->format('d M Y H:i') ?? '—' }}
+                                        <span data-translate="diposting" data-translate-page="kelola_project"></span>
+                                        {{ $project->created_at?->format('d M Y H:i') ?? '—' }}
                                     </div>
                                 </div>
                             </div>
@@ -341,19 +367,23 @@
 
                     <!-- Pagination -->
                     @if(method_exists($projects, 'links'))
-                        <div class="mt-8 flex justify-center">
-                            {{ $projects->links() }}
+                        <div class="mt-8 flex justify-center" data-pagination-group="admin_projects">
+                            {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_projects']) }}
                         </div>
                     @endif
 
                 @else
-                    <div class="text-center py-12 sm:py-16 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div
+                        class="text-center py-12 sm:py-16 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 dark:text-gray-600" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg" data-translate="empty_project" data-translate-page="admin">Belum ada proyek yang ditampilkan.</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2" data-translate="desc_empty_project" data-translate-page="admin">Silakan tambahkan proyek baru untuk memulai.</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg">Belum ada proyek yang ditampilkan.
+                        </p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Silakan tambahkan proyek baru untuk memulai.
+                        </p>
                     </div>
                 @endif
 
@@ -364,85 +394,85 @@
             </section>
         </div>
     </div>
-<script>
-    function updateSelectedProjects() {
-        const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
-        const selectedCountEl = document.getElementById('selectedCount');
-        const bulkDeleteForm = document.getElementById('bulkDeleteForm');
-        const selectAllCheckbox = document.getElementById('selectAllProjects');
-        const allCheckboxes = document.querySelectorAll('.project-checkbox');
+    <script>
+        function updateSelectedProjects() {
+            const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
+            const selectedCountEl = document.getElementById('selectedCount');
+            const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+            const selectAllCheckbox = document.getElementById('selectAllProjects');
+            const allCheckboxes = document.querySelectorAll('.project-checkbox');
 
-        if (selectedCountEl) {
-            selectedCountEl.textContent = selectedCheckboxes.length;
-        }
+            if (selectedCountEl) {
+                selectedCountEl.textContent = selectedCheckboxes.length;
+            }
 
-        if (bulkDeleteForm) {
-            bulkDeleteForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
-            selectedCheckboxes.forEach(cb => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'selected_ids[]';
-                input.value = cb.value;
-                bulkDeleteForm.appendChild(input);
-            });
-        }
+            if (bulkDeleteForm) {
+                bulkDeleteForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
+                selectedCheckboxes.forEach(cb => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'selected_ids[]';
+                    input.value = cb.value;
+                    bulkDeleteForm.appendChild(input);
+                });
+            }
 
-        if (selectAllCheckbox) {
-            if (selectedCheckboxes.length === allCheckboxes.length) {
-                selectAllCheckbox.checked = true;
-                selectAllCheckbox.indeterminate = false;
-            } else if (selectedCheckboxes.length === 0) {
-                selectAllCheckbox.checked = false;
-                selectAllCheckbox.indeterminate = false;
-            } else {
-                selectAllCheckbox.indeterminate = true;
+            if (selectAllCheckbox) {
+                if (selectedCheckboxes.length === allCheckboxes.length) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (selectedCheckboxes.length === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.indeterminate = true;
+                }
             }
         }
-    }
 
-    function confirmBulkDelete() {
-        const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
-        if (selectedCheckboxes.length === 0) {
-            alert('Silakan pilih setidaknya satu project sebelum menghapus.');
-            return;
+        function confirmBulkDelete() {
+            const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
+            if (selectedCheckboxes.length === 0) {
+                alert('Silakan pilih setidaknya satu project sebelum menghapus.');
+                return;
+            }
+
+            if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedCheckboxes.length} project terpilih?`)) {
+                return;
+            }
+
+            document.getElementById('bulkDeleteForm').submit();
         }
 
-        if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedCheckboxes.length} project terpilih?`)) {
-            return;
+        function confirmDeleteProject(projectId, projectName) {
+            if (!confirm(`Hapus project "${projectName}"? Tindakan ini tidak dapat dibatalkan.`)) {
+                return;
+            }
+
+            const deleteForm = document.getElementById('deleteProjectForm');
+
+            let url = `{{ route('admin.projects.delete', ':id') }}`;
+            url = url.replace(':id', projectId);
+
+            deleteForm.action = url;
+            deleteForm.submit();
         }
 
-        document.getElementById('bulkDeleteForm').submit();
-    }
+        document.addEventListener('DOMContentLoaded', function () {
+            const projectCheckboxes = document.querySelectorAll('.project-checkbox');
+            projectCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedProjects));
 
-   function confirmDeleteProject(projectId, projectName) {
-    if (!confirm(`Hapus project "${projectName}"? Tindakan ini tidak dapat dibatalkan.`)) {
-        return;
-    }
-
-    const deleteForm = document.getElementById('deleteProjectForm');
-
-    let url = `{{ route('admin.projects.delete', ':id') }}`;
-    url = url.replace(':id', projectId);
-
-    deleteForm.action = url;
-    deleteForm.submit();
-}
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const projectCheckboxes = document.querySelectorAll('.project-checkbox');
-        projectCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedProjects));
-
-        const selectAllProjects = document.getElementById('selectAllProjects');
-        if (selectAllProjects) {
-            selectAllProjects.addEventListener('change', function () {
-                projectCheckboxes.forEach(cb => {
-                    cb.checked = this.checked;
+            const selectAllProjects = document.getElementById('selectAllProjects');
+            if (selectAllProjects) {
+                selectAllProjects.addEventListener('change', function () {
+                    projectCheckboxes.forEach(cb => {
+                        cb.checked = this.checked;
+                    });
+                    updateSelectedProjects();
                 });
-                updateSelectedProjects();
-            });
-        }
+            }
 
-        updateSelectedProjects();
-    });
-</script>
+            updateSelectedProjects();
+        });
+    </script>
 @endsection
