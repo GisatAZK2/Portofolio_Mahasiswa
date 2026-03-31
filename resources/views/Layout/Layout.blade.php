@@ -10,20 +10,20 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    
+
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    if (
-        localStorage.getItem('theme') === 'dark' ||
-        (!localStorage.getItem('theme') &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-        document.documentElement.classList.add('dark');
-    }
-</script>
+        if (
+            localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
 </head>
 
@@ -34,12 +34,11 @@
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
     </div>
 
-    
+
 
     <div class="flex h-screen">
 
-      <div id="toast-container"
-        class="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-4
+        <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-4
         z-[9999] flex flex-col gap-3 w-full max-w-sm px-4 sm:px-0 items-center sm:items-end">
         </div>
 
@@ -47,18 +46,20 @@
         @include('components.sidebar')
 
         <div class="flex-1 flex flex-col">
-            
-        <!-- Header -->
-        @include('components.header')
+
+            <!-- Header -->
+            @include('components.header')
 
             <!-- Page content -->
             <main class="overflow-auto">
                 @yield('content')
             </main>
 
+
             <!-- Footer -->
             @include('components.up-page')
             @include('components.footer')
+
         </div>
     </div>
 
@@ -119,57 +120,57 @@
                 });
             }
 
-                if (toggleSearch && searchDrop) {
-                    toggleSearch.addEventListener('click', () => {
-            
-                        const isClosed = searchDrop.classList.contains('max-h-0');
-            
-                        if (isClosed) {
-            
-                            searchDrop.style.maxHeight = '0px';
-            
-                            searchDrop.classList.remove(
-                                'max-h-0',
-                                'opacity-0',
-                                '-translate-y-2',
-                                'scale-y-95'
-                            );
-            
-                            searchDrop.classList.add(
-                                'opacity-100',
-                                'translate-y-0',
-                                'scale-y-100'
-                            );
-            
-                            requestAnimationFrame(() => {
-                                searchDrop.style.maxHeight =
-                                    searchDrop.scrollHeight + 'px';
-                            });
-            
-                        } else {
-            
+            if (toggleSearch && searchDrop) {
+                toggleSearch.addEventListener('click', () => {
+
+                    const isClosed = searchDrop.classList.contains('max-h-0');
+
+                    if (isClosed) {
+
+                        searchDrop.style.maxHeight = '0px';
+
+                        searchDrop.classList.remove(
+                            'max-h-0',
+                            'opacity-0',
+                            '-translate-y-2',
+                            'scale-y-95'
+                        );
+
+                        searchDrop.classList.add(
+                            'opacity-100',
+                            'translate-y-0',
+                            'scale-y-100'
+                        );
+
+                        requestAnimationFrame(() => {
                             searchDrop.style.maxHeight =
                                 searchDrop.scrollHeight + 'px';
-            
-                            requestAnimationFrame(() => {
-                                searchDrop.style.maxHeight = '0px';
-                            });
-            
-                            searchDrop.classList.add(
-                                'opacity-0',
-                                '-translate-y-2',
-                                'scale-y-95',
-                                'max-h-0'
-                            );
-            
-                            searchDrop.classList.remove(
-                                'opacity-100',
-                                'translate-y-0',
-                                'scale-y-100'
-                            );
-                        }
-                    });
-                }
+                        });
+
+                    } else {
+
+                        searchDrop.style.maxHeight =
+                            searchDrop.scrollHeight + 'px';
+
+                        requestAnimationFrame(() => {
+                            searchDrop.style.maxHeight = '0px';
+                        });
+
+                        searchDrop.classList.add(
+                            'opacity-0',
+                            '-translate-y-2',
+                            'scale-y-95',
+                            'max-h-0'
+                        );
+
+                        searchDrop.classList.remove(
+                            'opacity-100',
+                            'translate-y-0',
+                            'scale-y-100'
+                        );
+                    }
+                });
+            }
 
             document.addEventListener('click', (e) => {
                 if (!searchDrop || !toggleSearch) return;

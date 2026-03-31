@@ -1,6 +1,6 @@
-@extends('Layout.Layout')
+@extends('errors.layout')
 @section('title', 'Unauthorized')
-@section('content')
+@section('error-content')
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="max-w-md w-full space-y-8 text-center">
             <!-- Error Icon -->
@@ -39,9 +39,10 @@
             <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
                     Belum punya akun?
-                    <a href="{{ route('register') }}" class="text-indigo-600 dark:text-indigo-400 hover:underline">
-                        Daftar sekarang
-                    </a>
+                 <a href="mailto:{{ config('support.email') }}" 
+   class="text-indigo-600 dark:text-indigo-400 hover:underline">
+    Hubungi Support
+</a>
                 </p>
             </div>
         </div>
