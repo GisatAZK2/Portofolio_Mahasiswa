@@ -291,7 +291,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span> (opsional)
+                            <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span>
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
@@ -316,8 +316,8 @@
 
                 <!-- Link GitHub -->
                 <div>
-                    <label for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Link GitHub (opsional)
+                    <label data-translate="link_github" data-translate-page="dosen_add_pjt" for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Link GitHub
                     </label>
                     <input type="url" name="link_github" id="link_github" maxlength="500"
                         class="w-full px-4 py-3 border border-gray-300 dark:text-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
@@ -329,8 +329,8 @@
 
                 <!-- Link Video -->
                 <div>
-                    <label for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Link Video (YouTube, opsional)
+                    <label data-translate="link_vid" data-translate-page="dosen_add_pjt" for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Link Video
                     </label>
                     <input type="url" name="link_video" id="link_video" maxlength="500"
                         class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder:text-gray-400 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
@@ -344,11 +344,11 @@
                 <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('dosen.projects.index') }}"
                         class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
-                        Batal
+                        <span data-translate="cancel" data-translate-page="dosen_add_pjt"></span>
                     </a>
                     <button type="submit"
                         class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        Simpan Project
+                        <span data-translate="save_pjt" data-translate-page="dosen_add_pjt"></span>
                     </button>
                 </div>
             </form>
