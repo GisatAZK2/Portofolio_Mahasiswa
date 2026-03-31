@@ -53,6 +53,25 @@ class LearningCorner extends Model
         return $this->id_mahasiswa === $user->id;
     }
 
+    public function canManageDosen(?User $user): bool
+    {
+        if (!$user || $user->role !== 'dosen') {
+            return false;
+        }
+
+        if (!$this->relationLoaded('mahasiswa')) {
+            $this->load('mahasiswa');
+        }
+
+        if (!$this->mahasiswa) {
+            return false;
+        }
+
+        return $user->id_angkatan === $this->mahasiswa->id_angkatan
+            && $user->id_jurusan === $this->mahasiswa->id_jurusan
+            && $user->id_keahlian === $this->mahasiswa->id_keahlian;
+    }
+
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id', 'id');

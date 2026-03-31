@@ -933,11 +933,15 @@ public function UpdateProject(Request $request, $id)
         'deskripsi'      => 'nullable|string|max:255',
         'link_github'    => 'nullable|url|max:500',
         'link_video'     => 'nullable|url|max:500',
+        'owner'          => 'required|exists:users,id',
         'leader'         => 'nullable|exists:users,id',
+        'use_leader'     => 'nullable|boolean',
         'members'        => 'nullable|array',
         'members.*'      => 'nullable|exists:users,id'
     ]);
-    
+
+    $useLeader = $request->boolean('use_leader', false);
+
     // Prepare content array
     $content = [
         'nama_project' => $request->nama_project,
@@ -961,17 +965,17 @@ public function UpdateProject(Request $request, $id)
         'tanggal_mulai' => $request->tanggal_mulai,
         'tanggal_akhir' => $request->tanggal_akhir,
         'isi_content'   => $content,
-        'id_mahasiswa'  => $request->leader,
-        'leader_id'     => $request->leader,
+        'id_mahasiswa'  => $request->owner,
+        'leader_id'     => $useLeader ? $request->leader : null,
     ]);
-    
+
     // =========================
     // HANDLE MEMBERS (FIXED)
     // =========================
     
     $members = collect($request->members ?? [])
         ->filter()
-        ->reject(fn($memberId) => $memberId == $request->leader)
+        ->reject(fn($memberId) => $memberId == $request->owner || ($useLeader && $memberId == $request->leader))
         ->map(fn($id) => (int) $id)
         ->unique()
         ->values()

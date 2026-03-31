@@ -443,7 +443,11 @@
                     <div class="space-y-4 sm:space-y-5 lg:space-y-6">
                         @foreach ($entries as $index => $entry)
                             @php
-                                $canManage = $entry->canManage(auth()->user());
+                                $canManage = auth()->check() && (
+                                    auth()->user()->role === 'admin' ||
+                                    (auth()->user()->role === 'dosen' && $entry->canManageDosen(auth()->user())) ||
+                                    $entry->canManage(auth()->user())
+                                );
                                 $isOwnerOrLeader = auth()->check() && (auth()->id() === $project->id_mahasiswa || auth()->id() === $project->leader_id);
 
                                 // Parse content
@@ -540,10 +544,12 @@
                                         @auth
                                             @if ($canManage)
                                                 <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                                    <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
-                                                        class="flex-1 text-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-                                                        Edit
-                                                    </a>
+                                                    @unless(in_array(auth()->user()->role, ['admin', 'dosen']))
+                                                        <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
+                                                            class="flex-1 text-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                                                            Edit
+                                                        </a>
+                                                    @endunless
 
                                                     <form action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}"
                                                         method="POST" class="flex-1 delete-form">

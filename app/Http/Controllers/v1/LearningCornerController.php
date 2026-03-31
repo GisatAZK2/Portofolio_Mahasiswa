@@ -157,6 +157,16 @@ class LearningCornerController extends Controller
 
         $learningCorner->delete();
 
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.projects.index')
+                ->with('success', 'Learning Corner berhasil dihapus.');
+        }
+
+        if (Auth::user()->role === 'dosen') {
+            return redirect()->route('dosen.projects.index')
+                ->with('success', 'Learning Corner berhasil dihapus.');
+        }
+
         return redirect()->route('project.show', $learningCorner->project_id)
             ->with('success', 'Learning Corner berhasil dihapus.');
     }
@@ -201,9 +211,22 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-learning-corner-user', compact('entries'));
     }
 
-    private function authorizeManage(LearningCorner $entry): void
-    {
-        if (!$entry->canManage(Auth::user())) {
+    private function authorizeManage(LearningCorner $entry): void {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403, 'Anda tidak memiliki izin untuk mengelola entri ini.');
+        }
+
+        if ($user->role === 'admin') {
+            return;
+        }
+
+        if ($user->role === 'dosen' && $entry->canManageDosen($user)) {
+            return;
+        }
+
+        if (!$entry->canManage($user)) {
             abort(403, 'Anda tidak memiliki izin untuk mengelola entri ini.');
         }
     }

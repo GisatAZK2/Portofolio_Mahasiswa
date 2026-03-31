@@ -285,7 +285,7 @@
 
                                     <!-- Project Title -->
                                     <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2">
-                                        <a href="{{ route('dosen.projects.details', $project->id) }}"
+                                        <a href="{{ route('project.show', $project->id) }}"
                                             class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                             {{ $nama }}
                                         </a>

@@ -85,7 +85,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 justify-end mt-6">
-                        <a href="{{ route('project.edit', $project->id) }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
+                        <a href="{{ route('dosen.projects.details', $project->id) }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
                             Reset Filter
                         </a>
                         <button data-translate="trp_filter" data-translate-page="admin" type="button" onclick="applyFilters()" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">
@@ -120,17 +120,56 @@
                     @enderror
                 </div>
 
-                <!-- Pemimpin Project dengan Search -->
+                <!-- Owner & Leader Project dengan Search -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        <span data-translate="leader_project" data-translate-page="admin">Pilih Mahasiswa (Pemimpin Project)</span> <span class="text-red-500">*</span>
+                        <span data-translate="leader_project" data-translate-page="admin">Pilih Owner dan Pemimpin Project</span> <span class="text-red-500">*</span>
                     </label>
 
+                    <!-- Selected Owner Display -->
+                    <div id="selected-owner-display" class="mb-4 {{ old('owner', $project->id_mahasiswa) ? '' : 'hidden' }}">
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-2xl">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3" id="selected-owner-content">
+                                    @if(old('owner', $project->id_mahasiswa) && $project->owner)
+                                        <div class="font-medium text-blue-800">Owner: {{ $project->owner->nama_mahasiswa }}</div>
+                                    @endif
+                                </div>
+                                <button type="button" onclick="clearSelectedOwner()" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 p-1 rounded-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner', $project->id_mahasiswa) }}">
+
+                    @error('owner')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+
+                    <div class="flex items-center justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-2">
+                            <input type="hidden" name="use_leader" value="0">
+                            <input type="checkbox" name="use_leader" id="use-leader-toggle" value="1"
+                                   class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                   {{ old('use_leader', $project->leader_id ? 1 : 0) ? 'checked' : '' }}>
+                            <label for="use-leader-toggle" class="text-sm font-medium text-gray-700 dark:text-gray-300">Aktifkan Pemimpin</label>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Nonaktifkan jika hanya owner.</p>
+                    </div>
+
                     <!-- Selected Leader Display -->
-                    <div id="selected-leader-display" class="mb-4 {{ old('leader', $project->leader_id) ? '' : 'hidden' }}">
+                    <div id="selected-leader-display" class="mb-4 {{ old('use_leader', $project->leader_id ? 1 : 0) && old('leader', $project->leader_id) ? '' : 'hidden' }}">
                         <div class="p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3" id="selected-leader-content"></div>
+                                <div class="flex items-center gap-3" id="selected-leader-content">
+                                    @if(old('use_leader', $project->leader_id ? 1 : 0) && $project->leader)
+                                        <div class="font-medium text-green-800 dark:text-green-200">Pemimpin: {{ $project->leader->nama_mahasiswa }}</div>
+                                    @endif
+                                </div>
                                 <button type="button" onclick="clearSelectedLeader()" class="text-green-600 dark:text-green-400 hover:text-green-800 p-1 rounded-lg">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -145,7 +184,7 @@
                     <!-- Search untuk Pemimpin -->
                     <div class="mb-4">
                         <div class="relative">
-                            <input type="text" id="leader-search" placeholder="Cari nama pemimpin project..." 
+                            <input type="text" id="leader-search" placeholder="Cari nama mahasiswa..." 
                                    class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
                             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,23 +200,29 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10" data-translate="tbl_pjt_1" data-translate-page="admin">Pilih</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_pjt_2" data-translate-page="admin">Mahasiswa</th>
-                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_pjt_3" data-translate-page="admin">Angkatan</th>
-                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_pjt_4" data-translate-page="admin">Jurusan</th>
-                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="tbl_pjt_5" data-translate-page="admin">Keahlian</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20" data-translate="tbl_pjt_6" data-translate-page="admin">Aksi</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">Owner</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">Leader</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="leader-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                     @forelse($users as $user)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group"
-                                            onclick="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                        <tr data-user-id="{{ $user->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                            <td class="px-4 py-4">
+                                                <input type="radio" name="owner_radio" value="{{ $user->id }}"
+                                                       class="owner-radio w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                                       {{ old('owner', $project->id_mahasiswa) == $user->id ? 'checked' : '' }}
+                                                       onchange="event.stopImmediatePropagation(); selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
+                                            </td>
                                             <td class="px-4 py-4">
                                                 <input type="radio" name="leader_radio" value="{{ $user->id }}"
                                                        class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
                                                        {{ old('leader', $project->leader_id) == $user->id ? 'checked' : '' }}
-                                                       onchange="event.stopImmediatePropagation(); selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                                       onchange="event.stopImmediatePropagation(); selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
                                             </td>
                                             <td class="px-4 py-4">
                                                 <div class="flex items-center gap-3">
@@ -222,7 +267,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                                            <td colspan="7" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
                                                 <div class="flex flex-col items-center">
                                                     <svg class="w-14 h-14 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
@@ -356,7 +401,7 @@
         }
 
         function fetchFilteredUsers(page = 1) {
-            const url = new URL('{{ route("project.edit", $project->id) }}');
+            const url = new URL('{{ route("dosen.projects.details", $project->id) }}');
             url.searchParams.set('search', currentFilters.search);
             url.searchParams.set('angkatan', currentFilters.angkatan);
             url.searchParams.set('jurusan', currentFilters.jurusan);
@@ -376,43 +421,84 @@
                     if (newPagination) document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
 
                     attachTableRowListeners();
-                    const selectedId = document.getElementById('selected-leader-id').value;
-                    if (selectedId) {
-                        const radio = document.querySelector(`.leader-radio[value="${selectedId}"]`);
-                        if (radio) radio.checked = true;
+                    const selectedOwnerId = document.getElementById('selected-owner-id').value;
+                    if (selectedOwnerId) {
+                        const ownerRadio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
+                        if (ownerRadio) ownerRadio.checked = true;
                     }
+
+                    const selectedLeaderId = document.getElementById('selected-leader-id').value;
+                    if (selectedLeaderId) {
+                        const leaderRadio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
+                        if (leaderRadio) leaderRadio.checked = true;
+                    }
+
+                    updateLeaderToggleState();
+                    updateDisabledOptions();
                 })
                 .catch(err => console.error('Error:', err));
         }
 
         function attachTableRowListeners() {
-            document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                const radio = row.querySelector('.leader-radio');
-                if (radio) {
-                    row.addEventListener('click', function(e) {
-                        if (e.target.type !== 'radio') {
-                            const nameEl = row.querySelector('td:nth-child(2) .font-medium');
-                            const name = nameEl ? nameEl.textContent.trim() : '';
-                            const img = row.querySelector('img');
-                            const photoSrc = img ? img.src : '';
-                            selectLeader(radio.value, name, photoSrc);
-                        }
-                    });
+            // Selection is handled by radio inputs; no extra row click behavior needed.
+        }
+
+        function isLeaderEnabled() {
+            const toggle = document.getElementById('use-leader-toggle');
+            return toggle ? toggle.checked : true;
+        }
+
+        function updateLeaderToggleState() {
+            const enabled = isLeaderEnabled();
+            document.querySelectorAll('.leader-radio').forEach(radio => {
+                radio.disabled = !enabled;
+            });
+            if (!enabled) {
+                clearSelectedLeader();
+            }
+        }
+
+        function clearConflictingMemberSelection(conflictId) {
+            document.querySelectorAll('.member-select').forEach(select => {
+                if (select.value === String(conflictId)) {
+                    select.value = '';
+                    select.dispatchEvent(new Event('change'));
                 }
             });
         }
 
-        // Search untuk Leader Table
-        function filterLeaderTable() {
-            const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
-            document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                if (!row.querySelector('.leader-radio')) return;
-                const nameText = row.textContent.toLowerCase();
-                row.style.display = nameText.includes(keyword) ? '' : 'none';
-            });
+        function selectOwner(userId, userName) {
+            document.getElementById('selected-owner-id').value = userId;
+            document.querySelectorAll('.owner-radio').forEach(radio => radio.checked = (radio.value == userId));
+
+            const display = document.getElementById('selected-owner-display');
+            const content = document.getElementById('selected-owner-content');
+            content.innerHTML = `<div class="font-medium text-blue-800">Owner: ${userName}</div>`;
+            display.classList.remove('hidden');
+
+            const currentLeader = document.getElementById('selected-leader-id').value;
+            if (currentLeader && currentLeader == userId) {
+                clearSelectedLeader();
+            }
+
+            clearConflictingMemberSelection(userId);
+            updateDisabledOptions();
+            saveToLocalStorage();
+        }
+
+        function clearSelectedOwner() {
+            document.getElementById('selected-owner-id').value = '';
+            document.querySelectorAll('.owner-radio').forEach(radio => radio.checked = false);
+            document.getElementById('selected-owner-display').classList.add('hidden');
+            updateDisabledOptions();
+            saveToLocalStorage();
         }
 
         function selectLeader(userId, userName, photoProfile) {
+            if (!isLeaderEnabled()) {
+                return;
+            }
+
             document.getElementById('selected-leader-id').value = userId;
             document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = (radio.value == userId));
 
@@ -427,6 +513,13 @@
 
             content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">Pemimpin: ${userName}</div>`;
             display.classList.remove('hidden');
+
+            const ownerId = document.getElementById('selected-owner-id').value;
+            if (ownerId && ownerId == userId) {
+                clearSelectedOwner();
+            }
+
+            clearConflictingMemberSelection(userId);
             updateDisabledOptions();
             saveToLocalStorage();
         }
@@ -439,6 +532,16 @@
             saveToLocalStorage();
         }
 
+        // Search untuk Leader Table
+        function filterLeaderTable() {
+            const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                if (!row.querySelector('.leader-radio')) return;
+                const nameText = row.textContent.toLowerCase();
+                row.style.display = nameText.includes(keyword) ? '' : 'none';
+            });
+        }
+
         // ==================== ADD MEMBER SELECT (Dropdown Full) ====================
         function addMemberSelect(savedValue = null) {
             const container = document.getElementById('members-container');
@@ -447,16 +550,15 @@
 
             const users = [];
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                const radio = row.querySelector('.leader-radio');
-                if (radio) {
-                    const nameElement = row.querySelector('td:nth-child(2) .font-medium');
-                    const fullName = nameElement ? nameElement.textContent.trim() : 'Nama Tidak Diketahui';
-                    const img = row.querySelector('img');
-                    const photoProfile = img ? img.src : '';
-                    const initial = fullName.charAt(0).toUpperCase();
+                const userId = row.dataset.userId;
+                if (!userId) return;
+                const nameElement = row.querySelector('td:nth-child(3) .font-medium');
+                const fullName = nameElement ? nameElement.textContent.trim() : 'Nama Tidak Diketahui';
+                const img = row.querySelector('img');
+                const photoProfile = img ? img.src : '';
+                const initial = fullName.charAt(0).toUpperCase();
 
-                    users.push({ id: radio.value, name: fullName, photoProfile: photoProfile, initial: initial });
-                }
+                users.push({ id: userId, name: fullName, photoProfile: photoProfile, initial: initial });
             });
 
             if (users.length === 0) {
@@ -549,8 +651,10 @@
         }
 
         function updateDisabledOptions() {
-            const leaderId = document.getElementById('selected-leader-id').value || '';
+            const ownerId = document.getElementById('selected-owner-id').value || '';
+            const leaderId = isLeaderEnabled() ? (document.getElementById('selected-leader-id').value || '') : '';
             const selectedMemberIds = [];
+
             document.querySelectorAll('.member-select').forEach(select => {
                 if (select.value && !select.disabled) selectedMemberIds.push(select.value);
             });
@@ -558,6 +662,11 @@
             document.querySelectorAll('.member-select').forEach(select => {
                 if (select.disabled) return;
                 select.querySelectorAll('option').forEach(option => option.disabled = false);
+
+                if (ownerId) {
+                    const ownerOption = select.querySelector(`option[value="${ownerId}"]`);
+                    if (ownerOption) ownerOption.disabled = true;
+                }
 
                 if (leaderId) {
                     const leaderOption = select.querySelector(`option[value="${leaderId}"]`);
@@ -571,46 +680,112 @@
                     }
                 });
             });
+
+            document.querySelectorAll('.owner-radio').forEach(radio => {
+                radio.disabled = false;
+                if (leaderId && radio.value === leaderId) {
+                    radio.disabled = true;
+                }
+                if (selectedMemberIds.includes(radio.value)) {
+                    radio.disabled = true;
+                }
+            });
+
+            const leaderEnabled = isLeaderEnabled();
+            document.querySelectorAll('.leader-radio').forEach(radio => {
+                radio.disabled = !leaderEnabled;
+                if (leaderEnabled) {
+                    if (ownerId && radio.value === ownerId) {
+                        radio.disabled = true;
+                    }
+                    if (selectedMemberIds.includes(radio.value)) {
+                        radio.disabled = true;
+                    }
+                }
+            });
         }
 
         function saveToLocalStorage() {
+            const ownerId = document.getElementById('selected-owner-id').value || '';
             const leaderId = document.getElementById('selected-leader-id').value || '';
+            const useLeader = isLeaderEnabled();
+            const ownerName = document.getElementById('selected-owner-content')?.textContent.trim() || '';
+            const leaderName = document.getElementById('selected-leader-content')?.textContent.trim() || '';
             const memberIds = Array.from(document.querySelectorAll('.member-select'))
                 .filter(s => s.value).map(s => s.value);
-            localStorage.setItem('projectTeamData', JSON.stringify({ leader: leaderId, members: memberIds }));
+
+            localStorage.setItem('projectTeamData', JSON.stringify({
+                owner: ownerId,
+                ownerName: ownerName,
+                leader: leaderId,
+                leaderName: leaderName,
+                useLeader: useLeader,
+                members: memberIds
+            }));
         }
 
         function loadSavedData() {
             const savedData = localStorage.getItem('projectTeamData');
-            if (!savedData) { 
-                // Load existing members from database
+            const useLeaderToggle = document.getElementById('use-leader-toggle');
+            if (!savedData) {
+                if (useLeaderToggle) {
+                    updateLeaderToggleState();
+                }
                 const existingMembers = @json($project->members->pluck('id')->toArray());
                 if (existingMembers.length > 0) {
                     existingMembers.forEach(id => addMemberSelect(id));
                 } else {
                     addMemberSelect();
                 }
-                return; 
+                return;
             }
             try {
                 const data = JSON.parse(savedData);
-                if (data.leader) {
-                    const radio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
-                    if (radio) {
-                        const row = radio.closest('tr');
-                        const nameEl = row.querySelector('td:nth-child(2) .font-medium');
-                        const name = nameEl ? nameEl.textContent.trim() : '';
+
+                if (useLeaderToggle) {
+                    useLeaderToggle.checked = data.useLeader !== false;
+                    updateLeaderToggleState();
+                }
+
+                if (data.owner) {
+                    const ownerRadio = document.querySelector(`.owner-radio[value="${data.owner}"]`);
+                    if (ownerRadio) {
+                        const row = ownerRadio.closest('tr');
+                        const nameEl = row.querySelector('td:nth-child(3) .font-medium');
+                        const name = nameEl ? nameEl.textContent.trim() : data.ownerName || '';
+                        selectOwner(data.owner, name);
+                    } else if (data.ownerName) {
+                        const content = document.getElementById('selected-owner-content');
+                        if (content) {
+                            content.innerHTML = `<div class="font-medium text-blue-800">Owner: ${data.ownerName}</div>`;
+                            document.getElementById('selected-owner-display').classList.remove('hidden');
+                        }
+                    }
+                }
+
+                if (data.useLeader !== false && data.leader) {
+                    const leaderRadio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
+                    if (leaderRadio) {
+                        const row = leaderRadio.closest('tr');
+                        const nameEl = row.querySelector('td:nth-child(3) .font-medium');
+                        const name = nameEl ? nameEl.textContent.trim() : data.leaderName || '';
                         const img = row.querySelector('img');
                         const photo = img ? img.src : '';
                         selectLeader(data.leader, name, photo);
+                    } else if (data.leaderName) {
+                        const content = document.getElementById('selected-leader-content');
+                        if (content) {
+                            content.innerHTML = `<div class="font-medium text-green-800 dark:text-green-200">Pemimpin: ${data.leaderName}</div>`;
+                            document.getElementById('selected-leader-display').classList.remove('hidden');
+                        }
                     }
                 }
+
                 const container = document.getElementById('members-container');
                 container.innerHTML = '';
                 if (data.members && data.members.length > 0) {
                     data.members.forEach(id => addMemberSelect(id));
                 } else {
-                    // Load existing members from database if no saved data
                     const existingMembers = @json($project->members->pluck('id')->toArray());
                     if (existingMembers.length > 0) {
                         existingMembers.forEach(id => addMemberSelect(id));
@@ -621,7 +796,9 @@
                 setTimeout(updateDisabledOptions, 150);
             } catch (e) {
                 console.error('Error loading saved data:', e);
-                // Load existing members from database
+                if (useLeaderToggle) {
+                    updateLeaderToggleState();
+                }
                 const existingMembers = @json($project->members->pluck('id')->toArray());
                 if (existingMembers.length > 0) {
                     existingMembers.forEach(id => addMemberSelect(id));
@@ -633,12 +810,32 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            const useLeaderToggle = document.getElementById('use-leader-toggle');
+            if (useLeaderToggle) {
+                useLeaderToggle.addEventListener('change', function() {
+                    updateLeaderToggleState();
+                    updateDisabledOptions();
+                    saveToLocalStorage();
+                });
+            }
+
+            const oldOwnerId = document.getElementById('selected-owner-id').value;
+            if (oldOwnerId) {
+                const radio = document.querySelector(`.owner-radio[value="${oldOwnerId}"]`);
+                if (radio) {
+                    const row = radio.closest('tr');
+                    const nameEl = row.querySelector('td:nth-child(3) .font-medium');
+                    const name = nameEl ? nameEl.textContent.trim() : '';
+                    selectOwner(oldOwnerId, name);
+                }
+            }
+
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             if (oldLeaderId) {
                 const radio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
                 if (radio) {
                     const row = radio.closest('tr');
-                    const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                    const nameEl = row.querySelector('td:nth-child(3) .font-medium');
                     const name = nameEl ? nameEl.textContent.trim() : '';
                     const img = row.querySelector('img');
                     const photo = img ? img.src : '';
@@ -646,6 +843,7 @@
                 }
             }
 
+            updateLeaderToggleState();
             attachTableRowListeners();
             loadSavedData();
 
