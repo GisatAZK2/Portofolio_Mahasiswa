@@ -167,7 +167,7 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::get('/create', [DosenController::class, 'TambahProjects'])->name('create');
         Route::post('/store', [DosenController::class, 'StoreProject'])->name('store');
         Route::get('/Details/{project}', [DosenController::class, 'EditProjects'])->name('details');
-        Route::post('/EditProject/{project}', [DosenController::class, 'UpdateProject'])->name('update');
+        Route::patch('/EditProject/{project}', [DosenController::class, 'UpdateProject'])->name('update');
         Route::delete('/DeleteProject/{project}', [DosenController::class, 'DestroyProject'])->name('delete');
         Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
     });

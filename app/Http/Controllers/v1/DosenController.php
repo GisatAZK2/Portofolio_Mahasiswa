@@ -779,25 +779,57 @@ class DosenController extends Controller
         ));
     }
 
-    public function EditProjects($id){
-        $this->authorizeAccess();
-        
-        // Ensure project is within dosen's scope
-        $project = Project::with(['leader', 'members', 'learningCorners'])
-            ->whereHas('mahasiswa', function($query) {
-                $this->getdosenFilterScope($query);
-            })
-            ->findOrFail($id);
-            
-        $entries = LearningCorner::where('project_id', $project->id)
-            ->whereHas('project.mahasiswa', function($query) {
-                $this->getdosenFilterScope($query);
-            })
-            ->latest()
-            ->get();
-            
-        return view('dosen.projects.views_edit_project', compact('project', 'entries'));
+       public function EditProjects($id)
+{
+    $this->authorizeAccess();
+    
+    // Get search and filter inputs
+    $search = request()->input('search');
+    $angkatan = request()->input('angkatan');
+    $jurusan = request()->input('jurusan');
+    $keahlian = request()->input('keahlian');
+
+    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+
+       $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+                ->where('role', 'mahasiswa');
+        $query = $this->getDosenFilterScope($query);
+    
+    // Filter pencarian berdasarkan nama mahasiswa
+    if ($search) {
+        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
     }
+
+    // Filter berdasarkan angkatan
+    if ($angkatan) {
+        $query->where('id_angkatan', $angkatan);
+    }
+
+    // Filter berdasarkan jurusan
+    if ($jurusan) {
+        $query->where('id_jurusan', $jurusan);
+    }
+
+    // Filter berdasarkan keahlian
+    if ($keahlian) {
+        $query->where('id_keahlian', $keahlian);
+    }
+
+    // Ambil data dengan pagination
+    $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    // Ambil data untuk dropdown filter
+    $angkatans = Angkatan::all();
+    $jurusans = Jurusan::all();
+    $keahlians = Keahlian::all();
+
+    // Get project data
+    $project = Project::with('members')
+        ->where('id', $id)
+        ->firstOrFail();
+
+    return view('dosen.projects.views_edit_project', compact('project', 'users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
+}
 
     public function StoreProject(Request $request) {
         $this->authorizeAccess();
@@ -864,14 +896,14 @@ class DosenController extends Controller
             'tanggal_mulai'  => $request->tanggal_mulai,
             'tanggal_akhir'  => $request->tanggal_akhir,
             'isi_content'    => $content,
-            'id_mahasiswa'   => $request->leader,
+            'id_mahasiswa'   => $request->owner,
             'leader_id'      => $request->leader,
         ]);
 
         // Proses members (rekan project)
         $members = collect($request->members ?? [])
             ->filter()
-            ->reject(fn($id) => $id == $request->leader)
+            ->reject(fn($id) => $id == $request->leader || $id == $request->owner)
             ->map(fn($id) => (int) $id)
             ->unique()
             ->values()
@@ -887,97 +919,83 @@ class DosenController extends Controller
             ->with('clear_local_storage', true);
     }
 
-    public function UpdateProject(Request $request, $id) {
-        $this->authorizeAccess();
-        
-        // Ensure project is within dosen's scope
-        $project = Project::whereHas('mahasiswa', function($query) {
-                $this->getdosenFilterScope($query);
-            })
-            ->findOrFail($id);
-            
-        $request->validate([
-            'nama_project'   => 'required|string|max:255',
-            'tanggal_mulai'  => 'required|date',
-            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
-            'link_project'   => 'nullable|url|max:255',
-            'deskripsi'      => 'nullable|string|max:255',
-            'link_github'    => 'nullable|url|max:500',
-            'link_video'     => 'nullable|url|max:500',
-            'leader'         => 'nullable|exists:users,id',
-            'members'        => 'nullable|array',
-            'members.*'      => 'nullable|exists:users,id|different:leader'
-        ]);
+public function UpdateProject(Request $request, $id) 
+{
+    $this->authorizeAccess();
+    
+    $project = Project::findOrFail($id);
+    
+    $request->validate([
+        'nama_project'   => 'required|string|max:255',
+        'tanggal_mulai'  => 'required|date',
+        'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+        'link_project'   => 'nullable|url|max:255',
+        'deskripsi'      => 'nullable|string|max:255',
+        'link_github'    => 'nullable|url|max:500',
+        'link_video'     => 'nullable|url|max:500',
+        'leader'         => 'nullable|exists:users,id',
+        'members'        => 'nullable|array',
+        'members.*'      => 'nullable|exists:users,id'
+    ]);
+    
+    // Prepare content array
+    $content = [
+        'nama_project' => $request->nama_project,
+        'deskripsi'    => $request->deskripsi,
+        'link_project' => $request->link_project,
+        'link_github'  => $request->link_github,
+        'link_video'   => $request->link_video
+    ];
 
-        // Ensure leader is within dosen's scope if changed
-        if ($request->leader && $request->leader != $project->leader_id) {
-            $leader = User::where('id', $request->leader)
-                ->where('role', 'mahasiswa');
-            $leader = $this->getdosenFilterScope($leader)->firstOrFail();
-        }
+    // Hapus yang kosong/null
+    $content = array_filter($content, fn($value) => !is_null($value) && $value !== '');
 
-        // Ensure all new members are within dosen's scope
-        if ($request->members) {
-            $memberIds = collect($request->members)->filter()->values()->toArray();
-            if (!empty($memberIds)) {
-                $members = User::whereIn('id', $memberIds)
-                    ->where('role', 'mahasiswa');
-                $members = $this->getdosenFilterScope($members)->get();
-                
-                if ($members->count() != count($memberIds)) {
-                    return back()->withInput()->withErrors(['members' => 'Beberapa anggota tidak valid atau tidak dalam cakupan Anda.']);
-                }
-            }
-        }
+    // Minimal 1 field harus ada
+    if (empty($content)) {
+        return back()->withInput()
+            ->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
+    }
+    
+    // Update project
+    $project->update([
+        'tanggal_mulai' => $request->tanggal_mulai,
+        'tanggal_akhir' => $request->tanggal_akhir,
+        'isi_content'   => $content,
+        'id_mahasiswa'  => $request->leader,
+        'leader_id'     => $request->leader,
+    ]);
+    
+    // =========================
+    // HANDLE MEMBERS (FIXED)
+    // =========================
+    
+    $members = collect($request->members ?? [])
+        ->filter()
+        ->reject(fn($memberId) => $memberId == $request->leader)
+        ->map(fn($id) => (int) $id)
+        ->unique()
+        ->values()
+        ->all();
 
-        $content = array_filter($request->only([
-            'nama_project', 'deskripsi', 'link_project', 'link_github', 'link_video'
-        ]), fn($value) => !is_null($value) && $value !== '');
+    // Ini aman walaupun kosong
+    $project->members()->sync($members);
+    
+    return redirect()->route('dosen.projects.index')
+        ->with('success', 'Project berhasil diperbarui!');
+}
 
-        if (empty($content)) {
-            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (deskripsi, link_project, link_github, atau link_video)']);
-        }
-        
-        $project->update([
-            'tanggal_mulai'  => $request->tanggal_mulai,
-            'tanggal_akhir'  => $request->tanggal_akhir,
-            'isi_content'    => $content,
-            'id_mahasiswa'   => $request->leader,
-            'leader_id'      => $request->leader,
-        ]);
+   public function DestroyProject($id)
+{
+    $project = Project::find($id);
 
-        // Update members
-        $project->members()->detach();
-        
-        $members = collect($request->members ?? [])
-            ->filter()
-            ->reject(fn($id) => $id == $request->leader)
-            ->map(fn($id) => (int) $id)
-            ->values()
-            ->all();
-
-        if (!empty($members)) {
-            $project->members()->attach($members);
-        }
-
-        return redirect()->route('dosen.projects.index')
-            ->with('success', 'Project berhasil diperbarui!');
+    if (!$project) {
+        return redirect()->back()->with('error', 'Project tidak ditemukan');
     }
 
-    public function DestroyProject(Project $projects) {
-        $this->authorizeAccess();
-        
-        // Ensure project is within dosen's scope
-        $project = Project::whereHas('mahasiswa', function($query) {
-                $this->getdosenFilterScope($query);
-            })
-            ->findOrFail($projects->id);
-        
-        $project->delete();
+    $project->delete();
 
-        return redirect()->route('dosen.projects.index')
-            ->with('success', 'Project Mahasiswa berhasil dihapus!');
-    }
+    return redirect()->back()->with('success', 'Project berhasil dihapus');
+}
 
     public function bulkDestroyProject(Request $request) {
         $this->authorizeAccess();

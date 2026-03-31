@@ -22,23 +22,37 @@
                 <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1"><span data-translate="desc_pjt" data-translate-page="dosen_kll_pjt">Beberapa Pameran Project Mahasiswa</span></p>
             </div>
 
-            <div class="flex gap-3">
-                <button type="button" id="bulkDeleteBtn"
-                    class="inline-flex items-center px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                <span data-translate="del_select" data-translate-page="dosen_kll_pjt">Hapus Terpilih</span> (<span id="selectedCount">0</span>)
-            </button>
-            <a href="{{ route('dosen.projects.create') }}"
-               class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span data-translate="add_pjt" data-translate-page="dosen_kll_pjt">Tambah Proyek</span>
-            </a>
-        </div>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                    <input id="selectAllCheckbox" type="checkbox"
+                        class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                    <span>Pilih Semua</span>
+                </label>
+
+                <div class="flex flex-wrap gap-3">
+                    <button type="button" id="bulkDeleteBtn"
+                        class="inline-flex items-center px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span data-translate="del_select" data-translate-page="dosen_kll_pjt">Hapus Terpilih</span>
+                        (<span id="selectedCount">0</span>)
+                    </button>
+                    <a href="{{ route('dosen.projects.create') }}"
+                       class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span data-translate="add_pjt" data-translate-page="dosen_kll_pjt">Tambah Proyek</span>
+                    </a>
+                </div>
+            </div>
+            <form id="bulkDeleteForm" action="{{ route('dosen.projects.bulk-delete') }}" method="POST" class="hidden">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="selected_ids" id="selectedProjectIds">
+            </form>
             
             <!-- Projects Grid -->
             <section>
@@ -120,7 +134,34 @@
                             @endphp
 
                             <div
-                                class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
+                                class="relative bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
+
+                                <div class="absolute top-3 left-3 z-10">
+                                    <label class="inline-flex items-center p-2 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-sm">
+                                        <input type="checkbox" class="project-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                            data-project-id="{{ $project->id }}">
+                                    </label>
+                                </div>
+                                <div class="absolute top-3 right-3 z-10 flex items-center gap-2">
+                                    <a href="{{ route('dosen.projects.details', $project->id) }}"
+                                        class="inline-flex items-center justify-center h-9 px-3 bg-white/90 dark:bg-gray-900/90 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-semibold hover:bg-indigo-50 dark:hover:bg-gray-800 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15.232 5.232l3.536 3.536M9 11l6 6L21 9l-6-6-6 6z" />
+                                        </svg>
+                                    </a>
+                                    <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST" onsubmit="return confirm('Hapus project ini?')" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="inline-flex items-center justify-center h-9 px-3 bg-red-600 text-white rounded-xl text-xs font-semibold hover:bg-red-700 transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
 
                                 <!-- Media Header -->
                                 <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
@@ -351,4 +392,65 @@
         </div>
     </div>
 
+    <script>
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+        const selectedCount = document.getElementById('selectedCount');
+        const selectedIdsInput = document.getElementById('selectedProjectIds');
+
+        function getProjectCheckboxes() {
+            return Array.from(document.querySelectorAll('.project-checkbox'));
+        }
+
+        function updateSelectionState() {
+            const checkboxes = getProjectCheckboxes();
+            const checkedBoxes = checkboxes.filter(cb => cb.checked);
+            selectedCount.textContent = checkedBoxes.length;
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.disabled = checkedBoxes.length === 0;
+            }
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = checkboxes.length > 0 && checkedBoxes.length === checkboxes.length;
+                selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < checkboxes.length;
+            }
+        }
+
+        function getSelectedIds() {
+            return getProjectCheckboxes()
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.projectId)
+                .filter(Boolean);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            getProjectCheckboxes().forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectionState);
+            });
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function () {
+                    getProjectCheckboxes().forEach(cb => cb.checked = selectAllCheckbox.checked);
+                    updateSelectionState();
+                });
+            }
+
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.addEventListener('click', function () {
+                    const ids = getSelectedIds();
+                    if (ids.length === 0) {
+                        return;
+                    }
+                    if (!confirm('Hapus project terpilih?')) {
+                        return;
+                    }
+                    if (selectedIdsInput) {
+                        selectedIdsInput.value = ids.join(',');
+                        document.getElementById('bulkDeleteForm').submit();
+                    }
+                });
+            }
+
+            updateSelectionState();
+        });
+    </script>
 @endsection
