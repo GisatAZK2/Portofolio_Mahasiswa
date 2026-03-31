@@ -4,9 +4,9 @@
 <div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50">Kelola Semua Sertifikat</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="title_srtfkt" data-translate-page="admin">Kelola Semua Sertifikat</h1>
             <p class="text-gray-600 dark:text-gray-200">
-               Kelola Semua Sertifikat Milik Mahasiswa
+               <span data-translate="desc_srtfkt" data-translate-page="admin">Kelola Semua Sertifikat Milik Mahasiswa</span>
             </p>
         </div>
         <div class="flex gap-3">
@@ -17,14 +17,14 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                Hapus Terpilih (<span id="selectedCount">0</span>)
+                <span data-translate="delete_selected" data-translate-page="project_detail">Hapus Terpilih</span> (<span id="selectedCount">0</span>)
             </button>
             <a href="{{ route('admin.sertifikat.create') }}"
                class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                Tambah Sertifikat
+                <span data-translate="add_srtfkt" data-translate-page="admin">Tambah Sertifikat</span>
             </a>
         </div>
     </div>
@@ -36,7 +36,7 @@
                 {{-- Search Input --}}
                 <div class="lg:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Pencarian
+                        <span data-translate="srch_usr" data-translate-page="admin">Pencarian</span>
                     </label>
                     <div class="relative">
                         <input type="text" 
@@ -55,11 +55,11 @@
                 {{-- Angkatan Filter --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Angkatan
+                        <span data-translate="agkt_addusr" data-translate-page="admin">Angkatan</span>
                     </label>
                     <select name="angkatan" 
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option value="">Semua Angkatan</option>
+                        <option data-translate="all_cohorts" data-translate-page="admin" value="">Semua Angkatan</option>
                         @foreach($angkatans as $angkatanItem)
                             <option value="{{ $angkatanItem->id }}" {{ $angkatan == $angkatanItem->id ? 'selected' : '' }}>
                                 {{ $angkatanItem->nama_angkatan }}
@@ -71,11 +71,11 @@
                 {{-- Jurusan Filter --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Jurusan
+                        <span data-translate="jrs_addusr" data-translate-page="admin">Jurusan</span>
                     </label>
                     <select name="jurusan" 
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option value="">Semua Jurusan</option>
+                        <option data-translate="all_jrs" data-translate-page="admin" value="">Semua Jurusan</option>
                         @foreach($jurusans as $jurusanItem)
                             <option value="{{ $jurusanItem->id_jurusan }}" {{ $jurusan == $jurusanItem->id_jurusan ? 'selected' : '' }}>
                                 {{ $jurusanItem->nama_jurusan }}
@@ -87,11 +87,11 @@
                 {{-- Keahlian Filter --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Keahlian
+                        <span data-translate="exp_addusr" data-translate-page="admin">Keahlian</span>
                     </label>
                     <select name="keahlian" 
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option value="">Semua Keahlian</option>
+                        <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian</option>
                         @foreach($keahlians as $keahlianItem)
                             <option value="{{ $keahlianItem->id_keahlian }}" {{ $keahlian == $keahlianItem->id_keahlian ? 'selected' : '' }}>
                                 {{ $keahlianItem->nama_keahlian }}
@@ -103,11 +103,11 @@
                 {{-- Status Pengajuan Filter --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Status
+                        <span data-translate="stat_filter" data-translate-page="admin">Status</span>
                     </label>
                     <select name="status_pengajuan" 
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                        <option value="">Semua Status</option>
+                        <option data-translate="stat_filter_all" data-translate-page="admin" value="">Semua Status</option>
                         @foreach($statusOptions as $status)
                             <option value="{{ $status }}" {{ $status_pengajuan == $status ? 'selected' : '' }}>
                                 {{ $status }}
@@ -124,7 +124,7 @@
                 </a>
                 <button type="submit" 
                         class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                    Terapkan Filter
+                    <span data-translate="trp_filter" data-translate-page="admin">Terapkan Filter</span>
                 </button>
             </div>
         </form>
@@ -139,14 +139,14 @@
                     <input type="checkbox" 
                            id="selectAllCheckbox"
                            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Semua</span>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="plh_semua" data-translate-page="admin">Pilih Semua</span>
                 </label>
                 <span class="text-sm text-gray-500 dark:text-gray-400">
-                    Menampilkan {{ $sertifikat->firstItem() }} - {{ $sertifikat->lastItem() }} dari {{ $sertifikat->total() }} sertifikat
+                    <span data-translate="tmplkn" data-translate-page="admin">Menampilkan</span> {{ $sertifikat->firstItem() }} - {{ $sertifikat->lastItem() }} <span data-translate="dr" data-translate-page="admin">dari</span> {{ $sertifikat->total() }} <span data-translate="srtfkt" data-translate-page="admin">sertifikat</span>
                 </span>
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">
-                Total dipilih: <span id="totalSelected">0</span>
+                <span data-translate="total_dipilih" data-translate-page="admin">Total dipilih:</span> <span id="totalSelected">0</span>
             </span>
         </div>
     </div>
@@ -158,7 +158,7 @@
             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p class="mt-4 text-gray-600 dark:text-gray-200">Tidak ada sertifikat yang ditemukan.</p>
+            <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="empty_srtfkt" data-translate-page="admin">Tidak ada sertifikat yang ditemukan.</p>
             @if($search || $angkatan || $jurusan || $keahlian || $status_pengajuan)
                 <p class="text-gray-500 dark:text-gray-50 text-sm mt-2">Coba atur ulang filter pencarian Anda.</p>
                 <a href="{{ route('admin.sertifikat.index') }}" 
@@ -166,7 +166,7 @@
                     Reset Semua Filter
                 </a>
             @else
-                <p class="text-gray-500 dark:text-gray-50 text-sm mt-2">Mulai tambahkan sertifikat pertama!</p>
+                <p class="text-gray-500 dark:text-gray-50 text-sm mt-2" data-translate="empty_desc_srtfkt" data-translate-page="admin">Mulai tambahkan sertifikat pertama!</p>
             @endif
         </div>
     @else
@@ -226,7 +226,7 @@
                         <div class="p-6 flex-1 flex flex-col">
                             <!-- Nama Sertifikat -->
                             <div class="mb-3">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">Nama Sertifikat:</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_srtfkt" data-translate-page="admin">Nama Sertifikat:</span>
                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                                     {{ $entry->nama_sertifikat }}
                                 </h3>
@@ -234,7 +234,7 @@
                          
                             <!-- Nama Mahasiswa -->
                             <div class="mb-3">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">Nama Mahasiswa:</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_mhs_srtfkt" data-translate-page="admin">Nama Mahasiswa:</span>
                                 <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                     {{ $entry->mahasiswa->nama_mahasiswa }}
                                 </h4>
@@ -285,7 +285,7 @@
                             <!-- Informasi Status Detail -->
                             <div class="mb-3 space-y-1">
                                 <p class="text-xs">
-                                    <span class="font-semibold">Status Pengajuan:</span> 
+                                    <span class="font-semibold" data-translate="stat_pengajuan" data-translate-page="admin">Status Pengajuan:</span> 
                                     <span class="
                                         @if($entry->status_pengajuan == 'Di Terima') text-green-600
                                         @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
@@ -296,7 +296,7 @@
                                     </span>
                                 </p>
                                 <p class="text-xs">
-                                    <span class="font-semibold">Status Aktif:</span> 
+                                    <span class="font-semibold" data-translate="stat_active" data-translate-page="admin">Status Aktif:</span> 
                                     <span class="{{ $entry->is_active ? 'text-green-600' : 'text-red-600' }}">
                                         {{ $entry->is_active ? 'Aktif' : 'Tidak Aktif' }}
                                     </span>

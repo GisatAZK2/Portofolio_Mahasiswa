@@ -6,9 +6,9 @@
         <!-- Header -->
         <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Kelola Pengguna</h1>
+                <h1 data-translate="kll_mhs" data-translate-page="dosen_kll_mhs" class="text-2xl font-bold text-gray-900 dark:text-white">Kelola Pengguna</h1>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Kelola semua pengguna yang terdaftar dalam sistem
+                    <span data-translate="kll_desc_mhs" data-translate-page="dosen_kll_mhs">Kelola semua pengguna yang terdaftar dalam sistem</span>
                 </p>
             </div>
             <a href="{{ route('dosen.users.ViewCreate') }}"
@@ -16,7 +16,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                Tambah Pengguna
+                <span data-translate="add_mhs" data-translate-page="dosen_kll_mhs"></span>
             </a>
         </div>
 
@@ -79,17 +79,17 @@
                         @if($user->status_pengajuan == 'Di Terima')
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                 <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
-                                Diterima
+                                <span data-translate="acc" data-translate-page="dosen_kll_mhs"></span>
                             </span>
                         @elseif($user->status_pengajuan == 'Di Tolak')
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
                                 <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
-                                Ditolak
+                                <span data-translate="rej" data-translate-page="dosen_kll_mhs"></span>
                             </span>
                         @elseif($user->status_pengajuan == 'Sedang Di Ajukan')
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
                                 <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-1.5 animate-pulse"></span>
-                                Menunggu
+                                <span data-translate="pend" data-translate-page="dosen_kll_mhs"></span>
                             </span>
                         @endif
                     </div>
@@ -140,15 +140,15 @@
                     <div class="grid grid-cols-3 gap-2 py-3 border-t border-gray-100 dark:border-gray-700">
                         <div class="text-center">
                             <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $user->projects_count ?? 0 }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Project</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400"><span data-translate="pjt" data-translate-page="dosen_kll_mhs"></span></p>
                         </div>
                         <div class="text-center">
                             <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $user->learning_corners_count ?? 0 }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Learning</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400"><span data-translate="lrn" data-translate-page="dosen_kll_mhs"></span></p>
                         </div>
                         <div class="text-center">
                             <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $user->sertifikats_count ?? 0 }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Sertifikat</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400"><span data-translate="stk" data-translate-page="dosen_kll_mhs"></span></p>
                         </div>
                     </div>
 

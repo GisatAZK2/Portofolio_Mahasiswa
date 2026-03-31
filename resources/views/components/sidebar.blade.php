@@ -92,7 +92,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span data-translate="semua_user" data-translate-page="admin">Lihat Semua User</span>
+                            <span data-translate="semua_user" data-translate-page="admin"></span>
                         </a>
                        
                         <a href="{{ route('admin.users.ViewCreate') }}"
@@ -147,7 +147,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Projek</span>
+                            <span data-translate="lihat_proyek" data-translate-page="admin">Lihat Projek</span>
                         </a>
                        
                         <a href="{{ route('admin.projects.create') }}"
@@ -155,7 +155,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Projek</span>
+                            <span data-translate="tambah_proyek" data-translate-page="admin">Tambah Projek</span>
                         </a>
                     </div>
                 </div>
@@ -201,7 +201,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Angkatan</span>
+                            <span data-translate="lihat_angkatan" data-translate-page="admin">Lihat Angkatan</span>
                         </a>
                        
                         <a href="{{ route('admin.angkatan.create') }}"
@@ -209,7 +209,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Angkatan</span>
+                            <span data-translate="tambah_angkatan" data-translate-page="admin">Tambah Angkatan</span>
                         </a>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Sertifikat</span>
+                            <span data-translate="lihat_sertifikat" data-translate-page="admin">Lihat Sertifikat</span>
                         </a>
                        
                         <a href="{{ route('admin.sertifikat.create') }}"
@@ -266,7 +266,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Sertifikat</span>
+                            <span data-translate="tambah_sertifikat" data-translate-page="admin">Tambah Sertifikat</span>
                         </a>
                     </div>
                 </div>
@@ -305,8 +305,8 @@
                             </svg>
 
                             <!-- TEXT -->
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                                Mahasiswa Bimbingan
+                            <span data-translate="mhs_bbg" data-translate-page="dosen_sidebar" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                                <span>Mahasiswa Bimbingan</span>
                             </span>
                         </div>
 
@@ -323,7 +323,7 @@
                     <!-- Tooltip saat sidebar collapse -->
                     @if(session('sidebar_collapsed'))
                         <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Mahasiswa Bimbingan
+                            <span data-translate="mhs_bbg" data-translate-page="dosen_sidebar">Mahasiswa Bimbingan</span>
                         </span>
                     @endif
 
@@ -342,7 +342,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Mahasiswa</span>
+                            <span data-translate="see_mhs" data-translate-page="dosen_sidebar">Lihat Mahasiswa</span>
                         </a>
 
                         <!-- TAMBAH -->
@@ -352,7 +352,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                             </svg>
-                            <span>Tambah Mahasiswa</span>
+                            <span data-translate="add_mhs" data-translate-page="dosen_sidebar">Tambah Mahasiswa</span>
                         </a>
 
                     </div>
@@ -375,7 +375,7 @@
 
                             <!-- TEXT -->
                             <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-                                Projects Bimbingan
+                                <span data-translate="pjt_bbbg" data-translate-page="dosen_sidebar">Projects Bimbingan</span>
                             </span>
                         </div>
 
@@ -392,7 +392,7 @@
                     <!-- Tooltip saat sidebar collapse -->
                     @if(session('sidebar_collapsed'))
                         <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Projects Bimbingan
+                            <span data-translate="pjt_bbbg" data-translate-page="dosen_sidebar">Projects Bimbingan</span>
                         </span>
                     @endif
 
@@ -411,7 +411,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Project</span>
+                            <span data-translate="see_pjt" data-translate-page="dosen_sidebar">Lihat Project</span>
                         </a>
 
                         <!-- TAMBAH -->
@@ -421,7 +421,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Project</span>
+                            <span data-translate="add_pjt" data-translate-page="dosen_sidebar">Tambah Project</span>
                         </a>
 
                     </div>
@@ -442,7 +442,7 @@
                             </svg>
 
                             <!-- TEXT -->
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
+                            <span data-translate="stk_bbg" data-translate-page="dosen_sidebar" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
                                 Sertifikat Bimbingan
                             </span>
                         </div>
@@ -459,7 +459,7 @@
 
                     <!-- Tooltip saat sidebar collapse -->
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                        <span data-translate="stk_bbg" data-translate-page="dosen_sidebar" class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
                             Sertifikat Bimbingan
                         </span>
                     @endif
@@ -479,7 +479,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            <span>Lihat Sertifikat</span>
+                            <span data-translate="see_stk" data-translate-page="dosen_sidebar">Lihat Sertifikat</span>
                         </a>
 
                         <!-- TAMBAH -->
@@ -489,7 +489,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Sertifikat</span>
+                            <span data-translate="add_stk" data-translate-page="dosen_sidebar">Tambah Sertifikat</span>
                         </a>
 
                     </div>

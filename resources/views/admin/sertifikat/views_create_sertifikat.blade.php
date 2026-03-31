@@ -7,11 +7,11 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="title_srtfkt_create" data-translate-page="admin">
                         Tambah Sertifikat Baru
                     </h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">
+                <p class="mt-2 text-gray-600 dark:text-gray-400" data-translate="desc_srtfkt_create" data-translate-page="admin">
                     Tambahkan sertifikat yang diperoleh mahasiswa untuk melengkapi portofolio mereka.
                 </p>
             </div>
@@ -38,8 +38,10 @@
 
                 <!-- Filter Mahasiswa -->
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
-                    
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter_mhs" data-translate-page="admin">
+                        Filter Mahasiswa
+                    </h3>
+
                     <!-- Search Bar -->
                     <div class="mb-4">
                         <div class="relative">
@@ -58,10 +60,12 @@
                     <!-- Filter Dropdowns -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="angkatan" data-translate-page="admin">
+                                Angkatan
+                            </label>
                             <select name="angkatan" id="angkatan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Semua Angkatan</option>
+                                <option data-translate="all_cohorts" data-translate-page="admin" value="">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -70,10 +74,10 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jurusan</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jrs_addusr" data-translate-page="admin">Jurusan</label>
                             <select name="jurusan" id="jurusan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Semua Jurusan</option>
+                                <option data-translate="all_jrs" data-translate-page="admin" value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
@@ -82,10 +86,10 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keahlian</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="keahlian" data-translate-page="admin">Keahlian</label>
                             <select name="keahlian" id="keahlian-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Semua Keahlian</option>
+                                <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
                                         {{ $keahlianItem->nama_keahlian }}
@@ -102,7 +106,7 @@
                         </a>
                         <button type="button" onclick="applyFilters()"
                                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                            Terapkan Filter
+                            <span data-translate="trp_filter" data-translate-page="admin">Terapkan Filter</span>
                         </button>
                     </div>
                 </div>
@@ -110,7 +114,7 @@
                 <!-- Pilih Mahasiswa -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        Pilih Mahasiswa <span class="text-red-500">*</span>
+                        <span data-translate="pilih_mhs" data-translate-page="admin">Pilih Mahasiswa</span> <span class="text-red-500">*</span>
                     </label>
 
                     <!-- Selected User Display -->
@@ -137,13 +141,13 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12">Pilih</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Photo</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Mahasiswa</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Angkatan</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Jurusan</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Keahlian</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12" data-translate="tbl_pjt_1" data-translate-page="admin">Pilih</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_foto" data-translate-page="admin">Photo</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="nm_mhs" data-translate-page="admin">Nama Mahasiswa</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_pjt_3" data-translate-page="admin">Angkatan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_pjt_4" data-translate-page="admin">Jurusan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" data-translate="tbl_pjt_5" data-translate-page="admin">Keahlian</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32" data-translate-page="admin" data-translate="tbl_pjt_6">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="user-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -193,7 +197,7 @@
                                         <td class="px-6 py-5">
                                             <a href="{{ route('portfolio.show', $user->id) }}" target="_blank"
                                                class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium">
-                                                Lihat Profil →
+                                                <span data-translate="see_profile" data-translate-page="admin">Lihat Profil →</span>
                                             </a>
                                         </td>
                                     </tr>
@@ -204,8 +208,8 @@
                                                 <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 01-5.356-1.857M17 20H7m5-2v2m-5-2v2m5-2v-2m-5 2v-2" />
                                                 </svg>
-                                                <p class="text-lg font-medium">Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm mt-1">Coba ubah filter atau kata kunci pencarian</p>
+                                                <p class="text-lg font-medium" data-translate="empty_filter" data-translate-page="admin">Tidak ada mahasiswa ditemukan</p>
+                                                <p class="text-sm mt-1" data-translate="empty_filter_desc" data-translate-page="admin">Coba ubah filter atau kata kunci pencarian</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -227,7 +231,7 @@
                 <!-- Nama Sertifikat -->
                 <div>
                     <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Nama Sertifikat <span class="text-red-500">*</span>
+                        <span data-translate="nm_srtfkt_create" data-translate-page="admin">Nama Sertifikat</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" 
                            value="{{ old('nama_sertifikat') }}" required
@@ -241,7 +245,7 @@
                 <!-- Lembaga Penerbit -->
                 <div>
                     <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Lembaga Penerbit <span class="text-red-500">*</span>
+                        <span data-translate="lembaga_penerbit" data-translate-page="admin">Lembaga Penerbit</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" 
                            value="{{ old('lembaga_penerbit') }}" required
@@ -255,7 +259,7 @@
                 <!-- Tanggal Terbit -->
                 <div>
                     <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Tanggal Terbit <span class="text-red-500">*</span>
+                        <span data-translate="tggl_terbit" data-translate-page="admin">Tanggal Terbit</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit" 
                            value="{{ old('tanggal_terbit') }}" required max="{{ date('Y-m-d') }}"
@@ -263,13 +267,13 @@
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Maksimal tanggal hari ini</p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400"><span data-translate="max_tggl" data-translate-page="admin">Maksimal tanggal hari ini</span></p>
                 </div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Upload File Sertifikat <span class="text-red-500">*</span>
+                        <span data-translate="upload_srtfkt" data-translate-page="admin">Upload File Sertifikat</span> <span class="text-red-500">*</span>
                     </label>
                     <div id="drop-zone" 
                          class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-400 transition cursor-pointer"
@@ -280,14 +284,14 @@
                             </svg>
                             <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
                                 <label class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
-                                    <span>Upload file</span>
+                                    <span data-translate="up_file" data-translate-page="admin">Upload file</span>
                                     <input id="link_sertifikat" name="link_sertifikat" type="file" 
                                            accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
                                            onchange="updateFileLabel(this)">
                                 </label>
-                                <p class="pl-1">atau drag and drop</p>
+                                <p class="pl-1" data-translate="or_drag" data-translate-page="admin">atau drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name">PNG, JPG, GIF maksimal 5MB</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name" data-translate="format_srtfkt" data-translate-page="admin">PNG, JPG, GIF maksimal 5MB</p>
                         </div>
                     </div>
                     @error('link_sertifikat')
@@ -306,11 +310,11 @@
                 <div class="flex justify-end gap-4 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('admin.sertifikat.index') }}"
                        class="px-8 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                        Batal
+                        <span data-translate="cncl" data-translate-page="admin">Batal</span>
                     </a>
                     <button type="submit"
                             class="px-10 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-2xl shadow-lg transition">
-                        Simpan Sertifikat
+                        <span data-translate="save_srtfkt" data-translate-page="admin">Simpan Sertifikat</span>
                     </button>
                 </div>
             </form>

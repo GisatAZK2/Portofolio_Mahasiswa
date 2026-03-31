@@ -6,10 +6,10 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Tambah Project Baru</h1>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="ttl_form" data-translate-page="dosen_add_pjt">Tambah Project Baru</h1>
                 </div>
                 <p class="mt-2 text-gray-600 dark:text-gray-200">
-                    Tambah Projek Yang Pernah Kamu Buat.
+                    <span data-translate="desc_form" data-translate-page="dosen_add_pjt">Tambah Projek Yang Pernah Kamu Buat.</span>
                 </p>
             </div>
 
@@ -38,7 +38,7 @@
 
                 <!-- Search and Filter Section -->
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter" data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
                     
                     <!-- Search Bar -->
                     <div class="mb-4">
@@ -60,12 +60,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Filter Angkatan -->
                         <div>
-                            <label for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label data-translate="agkt" data-translate-page="dosen_add_pjt" for="angkatan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Angkatan
                             </label>
                             <select id="angkatan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option value="">Semua Angkatan</option>
+                                <option data-translate="all_agkt" data-translate-page="dosen_add_pjt" value="">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -76,12 +76,12 @@
 
                         <!-- Filter Jurusan -->
                         <div>
-                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label data-translate="jrs" data-translate-page="dosen_add_pjt" for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Jurusan
                             </label>
                             <select id="jurusan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option value="">Semua Jurusan</option>
+                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
@@ -92,12 +92,12 @@
 
                         <!-- Filter Keahlian -->
                         <div>
-                            <label for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label data-translate="khl" data-translate-page="dosen_add_pjt" for="keahlian-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Keahlian
                             </label>
                             <select id="keahlian-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option value="">Semua Keahlian</option>
+                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
                                         {{ $keahlianItem->nama_keahlian }}
@@ -111,11 +111,11 @@
                     <div class="flex justify-end space-x-3 mt-4">
                         <a href="{{ route('dosen.projects.create') }}" 
                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
-                            Reset Filter
+                           Reset Filter
                         </a>
                         <button type="button" onclick="applyFilters()"
                                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                            Terapkan Filter
+                            <span data-translate="trp_filter" data-translate-page="dosen_add_pjt">Terapkan Filter</span>
                         </button>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Nama Project <span class="text-red-500">*</span>
+                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
@@ -136,7 +136,7 @@
                 <!-- Deskripsi -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Deskripsi (opsional)
+                        <span data-translate="desc_pjt" data-translate-page="dosen_add_pjt">Deskripsi (opsional)</span>
                     </label>
                     <textarea name="deskripsi" rows="4"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
@@ -149,7 +149,7 @@
                 <!-- Pemimpin Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Pilih Mahasiswa (Pemimpin Project) <span class="text-red-500">*</span>
+                        <span data-translate="select_leader" data-translate-page="dosen_add_pjt">Pilih Mahasiswa (Pemimpin Project)</span> <span class="text-red-500">*</span>
                     </label>
                     
                     <div id="selected-leader-display" class="mb-4 hidden">
@@ -192,19 +192,19 @@
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Pilih
+                                        <span data-translate="tbl_pick" data-translate-page="dosen_add_pjt">Pilih</span>
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Nama Mahasiswa
+                                        <span data-translate="tbl_nm" data-translate-page="dosen_add_pjt">Nama Mahasiswa</span> 
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Angkatan
+                                        <span data-translate="tbl_agkt" data-translate-page="dosen_add_pjt">Angkatan</span>
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Jurusan
+                                        <span data-translate="tbl_jrs" data-translate-page="dosen_add_pjt">Jurusan</span>
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Keahlian
+                                        <span data-translate="tbl_skill" data-translate-page="dosen_add_pjt">Keahlian</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -240,8 +240,8 @@
                                                 <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                                                 </svg>
-                                                <p class="text-lg font-medium">Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm">Coba ubah filter pencarian Anda</p>
+                                                <p class="text-lg font-medium"><span data-translate="empty_filter" data-translate-page="dosen_add_pjt"></span>Tidak ada mahasiswa ditemukan</p>
+                                                <p class="text-sm"><span data-translate="empty_filter_desc" data-translate-page="dosen_add_pjt"></span>Coba ubah filter pencarian Anda</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -262,7 +262,7 @@
 
                 <!-- Rekan Project -->
                 <div id="member-wrapper">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label data-translate="add_partner" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Tambah Rekan (opsional)
                     </label>
 
@@ -273,7 +273,7 @@
                     <button type="button"
                         onclick="addMemberSelect()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline">
-                        + Tambah Rekan
+                        <span data-translate="add_partner_btn" data-translate-page="dosen_add_pjt"></span>
                     </button>
                 </div>
 
@@ -281,7 +281,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            Tanggal Mulai <span class="text-red-500">*</span>
+                            <span data-translate="date_start" data-translate-page="dosen_add_pjt"></span> <span class="text-red-500">*</span>
                         </label>
                         <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
@@ -291,7 +291,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            Tanggal Selesai (opsional)
+                            <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span> (opsional)
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
@@ -304,7 +304,7 @@
                 <!-- Link Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Link Project (opsional)
+                        <span data-translate="link_pjt" data-translate-page="dosen_add_pjt"></span> (opsional)
                     </label>
                     <input type="url" name="link_project" value="{{ old('link_project') }}"
                         class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
