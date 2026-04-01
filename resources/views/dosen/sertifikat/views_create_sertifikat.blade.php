@@ -7,9 +7,9 @@
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Tambah Sertifikat Baru</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100" data-translate="ttl_stk" data-translate-page="dosen_stk_add">Tambah Sertifikat Baru</h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-200">Tambahkan sertifikat yang kamu peroleh untuk melengkapi
+                <p class="mt-2 text-gray-600 dark:text-gray-200" data-translate="desc_stk" data-translate-page="dosen_stk_add">Tambahkan sertifikat yang kamu peroleh untuk melengkapi
                     portofoliomu.</p>
             </div>
 
@@ -40,7 +40,7 @@
                 <!-- Search and Filter Section -->
                 <div
                     class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter" data-translate-page="dosen_stk_add">Filter Mahasiswa</h3>
 
                     <!-- Search Bar -->
                     <div class="mb-4">
@@ -61,13 +61,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Filter Angkatan -->
                         <div>
-                            <label for="angkatan-filter"
+                            <label data-translate="agkt" data-translate-page="dosen_stk_add" for="angkatan-filter"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Angkatan
                             </label>
                             <select name="angkatan" id="angkatan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option value="">Semua Angkatan</option>
+                                <option data-translate="all_agkt" data-translate-page="dosen_stk_add" value="">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -78,13 +78,13 @@
 
                         <!-- Filter Jurusan -->
                         <div>
-                            <label for="jurusan-filter"
+                            <label data-translate="jrs" data-translate-page="dosen_stk_add" for="jurusan-filter"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Jurusan
                             </label>
                             <select name="jurusan" id="jurusan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option value="">Semua Jurusan</option>
+                                <option data-translate="all_jrs" data-translate-page="dosen_stk_add" value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
@@ -95,13 +95,13 @@
 
                         <!-- Filter Keahlian -->
                         <div>
-                            <label for="keahlian-filter"
+                            <label data-translate="skill" data-translate-page="dosen_stk_add" for="keahlian-filter"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Keahlian
                             </label>
                             <select name="keahlian" id="keahlian-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option value="">Semua Keahlian</option>
+                                <option data-translate="all_skill" data-translate-page="dosen_stk_add" value="">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
                                         {{ $keahlianItem->nama_keahlian }}
@@ -117,7 +117,7 @@
                             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
                             Reset Filter
                         </a>
-                        <button type="button" onclick="applyFilters()"
+                        <button data-translate="trp_filter" data-translate-page="dosen_stk_add" type="button" onclick="applyFilters()"
                             class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                             Terapkan Filter
                         </button>
@@ -126,7 +126,7 @@
 
                 <div>
                     <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Pilih Mahasiswa <span class="text-red-500">*</span>
+                        <span data-translate="pick_mhs" data-translate-page="dosen_stk_add">Pilih Mahasiswa</span> <span class="text-red-500">*</span>
                     </label>
 
                     <div id="selected-user-display" class="mb-4 hidden">
@@ -160,23 +160,23 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th
+                                    <th data-translate="pick" data-translate-page="dosen_stk_add"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Pilih
                                     </th>
-                                    <th
+                                    <th data-translate="nm_mhs" data-translate-page="dosen_stk_add"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Nama Mahasiswa
                                     </th>
-                                    <th
+                                    <th data-translate="agkt" data-translate-page="dosen_stk_add"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Angkatan
                                     </th>
-                                    <th
+                                    <th data-translate="jrs" data-translate-page="dosen_stk_add"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Jurusan
                                     </th>
-                                    <th
+                                    <th data-translate="skill" data-translate-page="dosen_stk_add"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Keahlian
                                     </th>
@@ -217,8 +217,8 @@
                                                         d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
                                                     </path>
                                                 </svg>
-                                                <p class="text-lg font-medium">Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm">Coba ubah filter pencarian Anda</p>
+                                                <p class="text-lg font-medium" data-translate="empty_filter" data-translate-page="dosen_stk_add">Tidak ada mahasiswa ditemukan</p>
+                                                <p class="text-sm" data-translate="empty_filter_desc" data-translate-page="dosen_stk_add">Coba ubah filter pencarian Anda</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -240,7 +240,7 @@
                 <!-- Nama Sertifikat -->
                 <div>
                     <label for="nama_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Nama Sertifikat <span class="text-red-500">*</span>
+                        <span data-translate="nm_stk" data-translate-page="dosen_stk_add">Nama Sertifikat</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
                         required placeholder="Contoh: Sertifikat Kompetensi Programming"
@@ -253,7 +253,7 @@
                 <!-- Lembaga Penerbit -->
                 <div>
                     <label for="lembaga_penerbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Lembaga Penerbit <span class="text-red-500">*</span>
+                        <span data-translate="lembaga" data-translate-page="dosen_stk_add">Lembaga Penerbit</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
                         required placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
@@ -280,7 +280,7 @@
                 <!-- Upload File Sertifikat -->
                 <div>
                     <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Upload File Sertifikat <span class="text-red-500">*</span>
+                        <span data-translate="ttl_file" data-translate-page="dosen_stk_add">Upload File Sertifikat</span> <span class="text-red-500">*</span>
                     </label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400 transition cursor-pointer"
                         onclick="document.getElementById('link_sertifikat').click()">
@@ -294,12 +294,12 @@
                             <div class="flex text-sm text-gray-600 dark:text-gray-400">
                                 <label
                                     class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
-                                    <span>Upload file</span>
+                                    <span data-translate="up_file" data-translate-page="dosen_stk_add">Upload file</span>
                                     <input id="link_sertifikat" name="link_sertifikat" type="file"
                                         accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
                                         onchange="updateFileLabel(this)">
                                 </label>
-                                <p class="pl-1">atau drag and drop</p>
+                                <p class="pl-1" data-translate="or_drag" data-translate-page="dosen_stk_add">atau drag and drop</p>
                             </div>
                             <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name">PNG, JPG, GIF up to 5MB</p>
                         </div>
@@ -312,7 +312,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB
+                        <span data-translate="format_file" data-translate-page="dosen_stk_add">Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB</span>
                     </p>
                 </div>
 
@@ -334,7 +334,7 @@
                             </svg>
                         </div>
                         <div class="ml-3 flex-1 md:flex md:justify-between">
-                            <p class="text-sm text-blue-700 dark:text-blue-300">
+                            <p data-translate="uped_file" data-translate-page="dosen_stk_add" class="text-sm text-blue-700 dark:text-blue-300">
                                 File yang diupload akan tersimpan dan dapat diakses melalui link publik.
                             </p>
                         </div>
@@ -345,11 +345,11 @@
                 <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('dosen.sertifikat.index') }}"
                         class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
-                        Batal
+                        <span data-translate="cancel" data-translate-page="dosen_stk_add">Batal</span>
                     </a>
                     <button type="submit"
                         class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        Simpan Sertifikat
+                        <span data-translate="sv_stk" data-translate-page="dosen_stk_add">Simpan Sertifikat</span>
                     </button>
                 </div>
             </form>

@@ -349,7 +349,7 @@
                                     <div class="mt-3 flex flex-wrap gap-2">
                                         <a href="{{ route('project.show', $project->id) }}"
                                             class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg text-xs font-medium hover:bg-indigo-200 transition">
-                                            Detail
+                                            <span data-translate="det_pjt" data-translate-page="dosen_kll_pjt"></span>
                                         </a>
                                         <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST"
                                             onsubmit="return confirm('Hapus project ini?')" class="inline">
@@ -357,14 +357,14 @@
                                             @method('DELETE')
                                             <button type="submit"
                                                 class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
-                                                Hapus
+                                                <span data-translate="del_pjt" data-translate-page="dosen_kll_pjt"></span>
                                             </button>
                                         </form>
                                     </div>
 
                                     <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
                                     <div class="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                                        Diposting {{ $project->created_at?->format('d M Y H:i') ?? '—' }} WIB
+                                        <span data-translate="post_at" data-translate-page="dosen_kll_pjt"></span> {{ $project->created_at?->format('d M Y H:i') ?? '—' }} WIB
                                     </div>
                                 </div>
                             </div>

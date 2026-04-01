@@ -355,11 +355,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <<<<<<< HEAD <span data-translate="date_end" data-translate-page="dosen_add_pjt"></span>
-                                =======
-                                <span data-translate="date_end" data-translate-page="dosen_add_pjt">Tanggal Akhir</span>
-                                (opsional)
-                                >>>>>>> 7d6373dded44c5fd933cf8d7c3dba60e33b32deb
+                            <span data-translate="date_end" data-translate-page="dosen_add_pjt">Tanggal Akhir</span>
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                             class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
@@ -372,7 +368,7 @@
                 <!-- Link Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="link_pjt" data-translate-page="dosen_add_pjt">Link Project</span> (opsional)
+                        <span data-translate="link_pjt" data-translate-page="dosen_add_pjt">Link Project</span> 
                     </label>
                     <input type="url" name="link_project" value="{{ old('link_project') }}"
                         class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
@@ -639,7 +635,7 @@
                                 </div>
                             `;
             } else {
-                let optionsHtml = '<option value="">-- Pilih Mahasiswa --</option>';
+                let optionsHtml = '<option data-translate="add_partner_choose" data-translate-page="dosen_add_pjt" value="">-- Pilih Mahasiswa --</option>';
                 users.forEach(user => {
                     const selected = savedValue && savedValue == user.id ? 'selected' : '';
                     optionsHtml += `<option value="${user.id}" ${selected}>${user.name}</option>`;
