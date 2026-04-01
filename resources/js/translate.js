@@ -738,7 +738,7 @@ export const translations = {
   },
   en: {
     popup: {
-      'Manage your dashboard here. Monitor activities and latest projects.'
+      dashboard: 'Manage your dashboard here. Monitor activities and latest projects.'
     },
     dosen_dashboard: {
       dashboard_dosen: 'Lecturer Dashboard',
