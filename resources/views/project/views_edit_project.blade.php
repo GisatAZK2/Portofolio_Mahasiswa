@@ -671,6 +671,20 @@
             });
         }
 
+        function normalizePhotoUrl(photoProfile) {
+            if (!photoProfile) return '';
+            if (/^https?:\/\//i.test(photoProfile)) {
+                return photoProfile;
+            }
+            if (photoProfile.startsWith('/')) {
+                return `${window.location.origin}${photoProfile}`;
+            }
+            if (photoProfile.startsWith('storage/')) {
+                return `${window.location.origin}/${photoProfile}`;
+            }
+            return `${window.location.origin}/storage/${photoProfile}`;
+        }
+
         function selectLeader(userId, userName, photoProfile) {
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             
@@ -680,8 +694,9 @@
             const display = document.getElementById('selected-leader-display');
             const content = document.getElementById('selected-leader-content');
 
-            let photoHtml = photoProfile 
-                ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-green-200" src="${photoProfile}" alt="${userName}">`
+            const normalizedPhoto = normalizePhotoUrl(photoProfile);
+            let photoHtml = normalizedPhoto 
+                ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-green-200" src="${normalizedPhoto}" alt="${userName}">`
                 : `<div class="w-9 h-9 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center">
                      <span class="text-green-700 dark:text-green-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
                    </div>`;

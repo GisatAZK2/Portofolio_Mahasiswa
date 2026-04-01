@@ -46,11 +46,14 @@ class DosenController extends Controller
             ->values()
             ->all();
 
+        $savedTaskIds = [];
+
         foreach ($tasks as $task) {
             if (! isset($task['user_id'], $task['name_task'])) {
                 continue;
             }
 
+            $taskId = isset($task['id']) ? (int) $task['id'] : null;
             $taskUserId = (int) $task['user_id'];
             $taskName = trim($task['name_task']);
 
@@ -62,13 +65,32 @@ class DosenController extends Controller
                 abort(422, 'Beberapa tugas memiliki user yang bukan owner, leader, atau member project.');
             }
 
-            ProjectTask::create([
+            if ($taskId) {
+                $existingTask = ProjectTask::where('project_id', $project->id)
+                    ->where('id', $taskId)
+                    ->first();
+
+                if ($existingTask) {
+                    $existingTask->update([
+                        'user_id' => $taskUserId,
+                        'name_task' => $taskName,
+                    ]);
+                    $savedTaskIds[] = $existingTask->id;
+                    continue;
+                }
+            }
+
+            $newTask = ProjectTask::create([
                 'project_id' => $project->id,
                 'user_id' => $taskUserId,
                 'name_task' => $taskName,
                 'is_done' => false,
             ]);
+
+            $savedTaskIds[] = $newTask->id;
         }
+
+        return $savedTaskIds;
     }
 
     private function getdosenFilterScope($query)
@@ -977,7 +999,11 @@ public function UpdateProject(Request $request, $id)
         'leader'         => 'nullable|exists:users,id',
         'use_leader'     => 'nullable|boolean',
         'members'        => 'nullable|array',
-        'members.*'      => 'nullable|exists:users,id'
+        'members.*'      => 'nullable|exists:users,id',
+        'tasks'          => 'nullable|array',
+        'tasks.*.id'     => 'sometimes|nullable|integer|exists:project_tasks,id',
+        'tasks.*.user_id'=> 'required_with:tasks|exists:users,id',
+        'tasks.*.name_task' => 'required_with:tasks|string|max:255'
     ]);
 
     $useLeader = $request->boolean('use_leader', false);
@@ -1023,6 +1049,38 @@ public function UpdateProject(Request $request, $id)
 
     // Ini aman walaupun kosong
     $project->members()->sync($members);
+
+    $submittedTasks = collect($request->input('tasks', []))
+        ->map(fn($task) => [
+            'id' => $task['id'] ?? null,
+            'user_id' => $task['user_id'] ?? null,
+            'name_task' => trim($task['name_task'] ?? ''),
+        ])
+        ->filter(fn($task) => !empty($task['user_id']) && !empty($task['name_task']))
+        ->values()
+        ->all();
+
+    $savedTaskIds = $this->createProjectTasks($project, $submittedTasks);
+
+    if (!empty($savedTaskIds)) {
+        ProjectTask::where('project_id', $project->id)
+            ->whereNotIn('id', $savedTaskIds)
+            ->delete();
+    } else {
+        ProjectTask::where('project_id', $project->id)->delete();
+    }
+
+    $allowedUserIds = collect([$project->id_mahasiswa])
+        ->when($project->leader_id, fn($collection, $leaderId) => $collection->push($leaderId))
+        ->merge($members)
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
+    ProjectTask::where('project_id', $project->id)
+        ->whereNotIn('user_id', $allowedUserIds)
+        ->delete();
     
     return redirect()->route('dosen.projects.index')
         ->with('success', 'Project berhasil diperbarui!');

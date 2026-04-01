@@ -340,6 +340,27 @@
                     </button>
                 </div>
 
+                <!-- Tambah Tugas -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Tambah Tugas (opsional)
+                    </label>
+                    <div id="tasks-container" class="space-y-4"></div>
+                    <button type="button" onclick="addTaskRow()"
+                        class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
+                        <span class="text-xl">+</span> Tambah Tugas
+                    </button>
+                    @error('tasks')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('tasks.*.user_id')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('tasks.*.name_task')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Tanggal -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -840,6 +861,150 @@
             }
         }
 
+        // Task UI helpers
+        let taskIndex = 0;
+
+        function getUserNameById(userId) {
+            const radio = document.querySelector(`.leader-radio[value="${userId}"], .owner-radio[value="${userId}"]`);
+            if (radio) {
+                const row = radio.closest('tr');
+                const nameEl = row ? row.querySelector('td:nth-child(3) .font-medium') : null;
+                if (nameEl) return nameEl.textContent.trim();
+            }
+
+            const option = document.querySelector(`select[name="members[]"] option[value="${userId}"]`);
+            if (option) {
+                return option.textContent.trim();
+            }
+
+            return null;
+        }
+
+        function getAllowedTaskUsers() {
+            const users = [];
+            const added = new Set();
+            const add = (id) => {
+                if (!id || added.has(id)) return;
+                added.add(id);
+                const name = getUserNameById(id) || `User ${id}`;
+                users.push({ id, name });
+            };
+
+            const ownerRadio = document.querySelector('.owner-radio:checked');
+            if (ownerRadio) add(ownerRadio.value);
+
+            const leaderRadio = document.querySelector('.leader-radio:checked');
+            if (leaderRadio) add(leaderRadio.value);
+
+            document.querySelectorAll('select[name="members[]"]').forEach(select => {
+                if (select.value) add(select.value);
+            });
+
+            return users;
+        }
+
+        function renderTaskUserOptions(selectedId = '') {
+            const users = getAllowedTaskUsers();
+            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            users.forEach(user => {
+                const selected = String(user.id) === String(selectedId) ? ' selected' : '';
+                html += `<option value="${user.id}"${selected}>${user.name}</option>`;
+            });
+            return html;
+        }
+
+        function addTaskRow(taskData = null) {
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+
+            const index = taskIndex++;
+            const userId = taskData?.user_id ?? '';
+            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item p-4 border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800';
+            taskItem.innerHTML = `
+                ${hiddenId}
+                <div class="grid gap-4 md:grid-cols-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                            ${renderTaskUserOptions(userId)}
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
+                    </div>
+                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                </div>
+            `;
+
+            container.appendChild(taskItem);
+            const select = taskItem.querySelector('.task-user-select');
+            if (select) {
+                select.addEventListener('change', updateTaskUserOptions);
+            }
+        }
+
+        function removeTaskRow(button) {
+            const taskItem = button.closest('.task-item');
+            if (taskItem) taskItem.remove();
+            if (document.querySelectorAll('.task-item').length === 0) {
+                addTaskRow();
+            }
+        }
+
+        function cleanupInvalidTaskRows() {
+            const allowedIds = getAllowedTaskUsers().map(user => String(user.id));
+            document.querySelectorAll('.task-item').forEach(taskItem => {
+                const select = taskItem.querySelector('.task-user-select');
+                if (select && select.value && !allowedIds.includes(select.value)) {
+                    taskItem.remove();
+                }
+            });
+            if (document.querySelectorAll('.task-item').length === 0) {
+                addTaskRow();
+            }
+        }
+
+        function updateTaskUserOptions() {
+            document.querySelectorAll('.task-user-select').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = renderTaskUserOptions(currentValue);
+                if (currentValue) {
+                    select.value = currentValue;
+                }
+            });
+            cleanupInvalidTaskRows();
+        }
+
+        function initializeTaskRows(existingTasks = []) {
+            taskIndex = 0;
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (Array.isArray(existingTasks) && existingTasks.length > 0) {
+                existingTasks.forEach(task => {
+                    if (task.user_id || task.name_task) {
+                        addTaskRow(task);
+                    }
+                });
+            } else {
+                addTaskRow();
+            }
+
+            updateTaskUserOptions();
+        }
+
+        document.addEventListener('change', function (event) {
+            if (event.target.matches('.member-select') || event.target.matches('.leader-radio') || event.target.matches('.owner-radio')) {
+                setTimeout(updateTaskUserOptions, 10);
+            }
+        });
+
         // Function to clear localStorage after submit
         function clearLocalStorage() {
             localStorage.removeItem('projectTeamData');
@@ -871,6 +1036,7 @@
 
             // Load saved data from localStorage
             loadSavedData();
+            initializeTaskRows(@json(old('tasks', [])));
 
             // Add submit event listener to form
             document.getElementById('projectForm').addEventListener('submit', function () {
