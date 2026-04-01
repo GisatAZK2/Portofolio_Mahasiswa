@@ -67,9 +67,13 @@
 </head>
 
 <body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+    
+   
+   <audio id="welcomeSound" preload="auto">
+    <source src="audio/welcome_sound.mp3" type="audio/mpeg">
+    </audio>
 
-
-    <!-- Background Noise -->
+    <!-- Background Noise --> 
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
 
     <div class="relative w-full max-w-lg">
@@ -277,7 +281,7 @@
             // Handle custom error messages
             @if ($errors->any())
                 @php
-                    $firstError = $errors->first();
+    $firstError = $errors->first();
                 @endphp
 
                 @if($firstError === 'PENGAJUAN_DIPROSES')
@@ -413,6 +417,19 @@
                 showErrorAlert('Terjadi kesalahan. Silakan coba lagi.');
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('welcomeSound');
+        
+        // Coba play otomatis
+        audio.play().catch(() => {
+            // Jika diblokir, play setelah user klik di mana saja
+            document.body.addEventListener('click', function playOnce() {
+                audio.play();
+                document.body.removeEventListener('click', playOnce);
+            }, { once: true });
+        });
+    });
     </script>
 
 </body>

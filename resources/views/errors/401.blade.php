@@ -39,8 +39,8 @@
             <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
                     Belum punya akun?
-                    <a href="mailto:{{ config('support.email') }}"
-                        class="text-indigo-600 dark:text-indigo-400 hover:underline">
+                 <a href="mailto:{{ config('support.email') }}" 
+                    class="text-indigo-600 dark:text-indigo-400 hover:underline">
                         Hubungi Support
                     </a>
                 </p>
