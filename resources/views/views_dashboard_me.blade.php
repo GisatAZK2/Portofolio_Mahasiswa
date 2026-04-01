@@ -72,11 +72,13 @@
 
                 {{-- LEARNING CORNER --}}
                 <div class="mb-10">
-                    <h3 class="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3" data-translate="ttl_lrn" data-translate-page="dashboard">Learning Corner</h3>
+                    <h3 class="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3" data-translate="ttl_lrn"
+                        data-translate-page="dashboard">Learning Corner</h3>
                     @if($learningCorners->isEmpty())
                         <div
                             class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-                            <p class="text-gray-600 dark:text-gray-200" data-translate="empty_lrn" data-translate-page="dashboard">Belum ada postingan Learning Corner</p>
+                            <p class="text-gray-600 dark:text-gray-200" data-translate="empty_lrn"
+                                data-translate-page="dashboard">Belum ada postingan Learning Corner</p>
                         </div>
                     @else
                         <div data-pagination-group="learning_corner">
@@ -94,11 +96,13 @@
 
                 {{-- PROJECT --}}
                 <div class="mb-10">
-                    <h3 class="text-lg font-bold text-orange-600 dark:text-orange-300 mb-3" data-translate="ttl_pjt" data-translate-page="dashboard">Project</h3>
+                    <h3 class="text-lg font-bold text-orange-600 dark:text-orange-300 mb-3" data-translate="ttl_pjt"
+                        data-translate-page="dashboard">Project</h3>
                     @if($projects->isEmpty())
                         <div
                             class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-                            <p class="text-gray-600 dark:text-gray-200" data-translate="empty_pjt" data-translate-page="dashboard">Belum ada postingan Project</p>
+                            <p class="text-gray-600 dark:text-gray-200" data-translate="empty_pjt"
+                                data-translate-page="dashboard">Belum ada postingan Project</p>
                         </div>
                     @else
                         <div data-pagination-group="project">
@@ -108,18 +112,22 @@
                                 @endforeach
                             </div>
                             <div class="mt-4">
-                                {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}</div>
+                                {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}
+                            </div>
                         </div>
                     @endif
                 </div>
 
                 {{-- SERTIFIKAT --}}
                 <div class="mb-10">
-                    <h3 class="text-lg font-bold text-green-700 dark:text-green-300 mb-3" data-translate="ttl_stk" data-translate-page="dashboard" data-translate="ttl_stk" data-translate-page="dashboard">Sertifikat</h3>
+                    <h3 class="text-lg font-bold text-green-700 dark:text-green-300 mb-3" data-translate="ttl_stk"
+                        data-translate-page="dashboard" data-translate="ttl_stk" data-translate-page="dashboard">Sertifikat
+                    </h3>
                     @if($projectUsers->isEmpty())
                         <div
                             class="text-center py-8 bg-white rounded-xl border border-gray-200 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-                            <p class="text-gray-600 dark:text-gray-200" data-translate="empty_stk" data-translate-page="dashboard">Belum ada sertifikat</p>
+                            <p class="text-gray-600 dark:text-gray-200" data-translate="empty_stk"
+                                data-translate-page="dashboard">Belum ada sertifikat</p>
                         </div>
                     @else
                         <div data-pagination-group="sertifikat">
@@ -144,7 +152,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function createSparkline(canvasId, borderColor) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
@@ -199,7 +206,7 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+            showPageInfo("popup.dashboard");
         });
     </script>
 @endsection

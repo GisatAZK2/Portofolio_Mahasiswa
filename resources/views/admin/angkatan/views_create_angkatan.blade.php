@@ -78,4 +78,11 @@
         });
     </script>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.add_angkatan");
+        });
+    </script>
+
 @endsection

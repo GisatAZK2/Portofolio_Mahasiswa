@@ -180,9 +180,14 @@
                     confirmButtonColor: '#dc2626'
                 });
             @endif
-    });
+        });
     </script>
 
-
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.sertifikat_saya");
+        });
+    </script>
 
 @endsection

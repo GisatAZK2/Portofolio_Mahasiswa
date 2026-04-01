@@ -1,10 +1,18 @@
-import { all } from "axios";
-
 export const translations = {
   id: {
     popup: {
-      dashboard: 'Kelola dashboard anda disini. Pantau aktivitas dan proyek terbaru.'
-      
+      dashboard: 'Kelola dashboard anda disini. Pantau aktivitas dan proyek terbaru.',
+      portofolio_saya: 'Lihat portofolio Anda yang menampilkan semua proyek, sertifikat, dan learning corner yang telah Anda buat.',
+      project_saya: 'Kelola semua proyek Anda di sini. Tambah, edit, atau hapus proyek untuk melengkapi portofolio.',
+      sertifikat_saya: 'Kelola sertifikat Anda di sini. Tambah sertifikat baru dari lembaga yang berbeda untuk meningkatkan kredibilitas.',
+      learning_corner_saya: 'Kelola learning corner Anda di sini. Bagikan pengetahuan dan pengalaman yang Anda pelajari dengan komunitas.',
+      profile_saya: 'Edit profil Anda untuk menampilkan informasi pribadi, bio, dan foto profil yang menarik.',
+      semua_portofolio: 'Jelajahi portofolio dari mahasiswa lain. Lihat berbagai proyek, sertifikat, dan pencapaian mereka.',
+      semua_project: 'Lihat semua proyek yang telah dipublikasikan oleh komunitas. Inspirasi dan kolaborasi dimulai dari sini.',
+      semua_sertifikat: 'Lihat sertifikat dari berbagai mahasiswa. Pelajari dan dapatkan inspirasi dari pencapaian mereka.',
+      semua_learning_corner: 'Akses learning corner dari seluruh komunitas. Bagikan dan pelajari pengalaman berharga dari sesama mahasiswa.',
+      add_angkatan: 'Tambah Angkatan Baru untuk mengelompokkan mahasiswa berdasarkan tahun masuk mereka. Kelola angkatan untuk memudahkan pengelolaan data mahasiswa.',
+      edit_angkatan: 'Edit informasi angkatan yang sudah ada. Perbarui nama, tahun masuk, atau tahun keluar untuk menjaga data angkatan tetap akurat.',
     },
     dosen_dashboard: {
       dashboard_dosen: 'Dashboard Dosen',
@@ -25,7 +33,7 @@ export const translations = {
     },
     dosen_kll_mhs: {
       kll_mhs: 'Kelola Pengguna',
-      kll_desc_mhs: 'Kelola semua mahasiswa yang terdaftar dalam sistem',
+      kll_desc_mhs: 'Kelola semua mahasiswa yang terdaftar',
       add_mhs: 'Tambah Pengguna',
       pjt: 'Proyek',
       lrn: 'Learning',
@@ -276,7 +284,7 @@ export const translations = {
       tambah: 'Tambah User',
       // Halaman lihat semua user
       kll_pengguna: 'Kelola Pengguna',
-      desc_kll_pengguna: 'Kelola semua pengguna yang terdaftar dalam sistem. Anda dapat melihat detail, memperbarui status pengajuan, atau menghapus pengguna sesuai kebutuhan.',
+      desc_kll_pengguna: 'Kelola semua pengguna yang terdaftar.',
       del_user: 'Hapus Terpilih',
       add_user: 'Tambah Pengguna',
       srch_usr: 'Pencarian',
@@ -564,6 +572,9 @@ export const translations = {
     search: {
       search: 'Cari',
       search_placeholder: 'Cari project, sertifikat, atau learning corner...',
+      placeholder_student: 'Cari Mahasiswa...',
+      placeholder_portfolio: 'Cari Portofolio...',
+      placeholder_certificate: 'Cari Sertifikat...',
       filter_jurusan: 'Semua Jurusan',
       filter_keahlian: 'Semua Keahlian',
       filter_angkatan: 'Semua Angkatan',
@@ -587,7 +598,16 @@ export const translations = {
       dashboard: 'Dashboard',
       dashboard_nonuser: 'Beranda',
       my_dashboard: 'My Dashboard',
+      admin_dashboard: 'Admin Dashboard',
       manajemen_users: 'Manajemen User',
+      semua_user: 'Lihat Semua User',
+      tambah_user: 'Tambah User',
+      lihat_proyek: 'Lihat Proyek',
+      tambah_proyek: 'Tambah Proyek',
+      lihat_angkatan: 'Lihat Angkatan',
+      tambah_angkatan: 'Tambah Angkatan',
+      lihat_sertifikat: 'Lihat Sertifikat',
+      tambah_sertifikat: 'Tambah Sertifikat',
       manajemen_projects: 'Manajemen Project',
       manajemen_sertifikat: 'Manajemen Sertifikat',
       manajemen_angkatan: 'Manajemen Angkatan',
@@ -739,7 +759,18 @@ export const translations = {
   },
   en: {
     popup: {
-      dashboard: 'Manage your dashboard here. Monitor activities and latest projects.'
+      dashboard: 'Manage your dashboard here. Monitor activities and latest projects.',
+      portofolio_saya: 'View your portfolio showcasing all projects, certificates, and learning corners you have created.',
+      project_saya: 'Manage all your projects here. Add, edit, or delete projects to complete your portfolio.',
+      sertifikat_saya: 'Manage your certificates here. Add new certificates from various institutions to enhance your credibility.',
+      learning_corner_saya: 'Manage your learning corner here. Share knowledge and experiences you have learned with the community.',
+      profile_saya: 'Edit your profile to display personal information, bio, and an attractive profile picture.',
+      semua_portofolio: 'Explore portfolios from other students. See various projects, certificates, and their achievements.',
+      semua_project: 'View all projects published by the community. Inspiration and collaboration start here.',
+      semua_sertifikat: 'View certificates from various students. Learn and get inspired by their achievements.',
+      semua_learning_corner: 'Access learning corners from across the community. Share and learn valuable experiences from fellow students.',
+      add_angkatan: 'Add new cohort to the system. Manage student cohorts effectively for better organization and tracking.',
+      edit_angkatan: 'Edit existing cohort information. Update details to keep the cohort data accurate and up-to-date.',
     },
     dosen_dashboard: {
       dashboard_dosen: 'Lecturer Dashboard',
@@ -1008,7 +1039,7 @@ export const translations = {
       tambah_user: 'Add New User',
       //Halaman lihat semua user
       kll_pengguna: 'Manage Users',
-      desc_kll_pengguna: 'Manage all users registered in the system. You can view details, update submission status, or delete users as needed.',
+      desc_kll_pengguna: 'Manage all users registered.',
       del_user: 'Delete Selected',
       add_user: 'Add User',
       srch_usr: 'Search',
@@ -1293,6 +1324,9 @@ export const translations = {
     search: {
       search: 'Search',
       search_placeholder: 'Search projects, certificates, or learning corners...',
+      placeholder_student: 'Search Students...',
+      placeholder_portfolio: 'Search Portfolio...',
+      placeholder_certificate: 'Search Certificate...',
       filter_jurusan: 'All Majors',
       filter_keahlian: 'All Skills',
       filter_angkatan: 'All Cohorts',
@@ -1460,6 +1494,7 @@ export const translations = {
 
   }
 };
+
 
 const DEFAULT_LANG = 'id';
 let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;

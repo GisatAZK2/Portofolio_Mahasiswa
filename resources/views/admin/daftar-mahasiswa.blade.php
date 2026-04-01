@@ -187,6 +187,10 @@
                             data-translate="tbl_role" data-translate-page="admin">Role</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_stat" data-translate-page="admin">Status</th>
+                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_jrs" data-translate-page="admin">Prodi</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="agkt" data-translate-page="admin">Angkatan</th>  
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_act" data-translate-page="admin">Aksi</th>
                     </tr>

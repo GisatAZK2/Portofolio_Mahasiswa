@@ -28,7 +28,7 @@
 
                 <!-- Total Semua Project -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
-                    onclick="window.location.href = '{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
+                    onclick="window.location.href = '{{ route('search') }}'">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="total_project"
                             data-translate-page="dashboard">Total Semua Project</h3>
@@ -141,7 +141,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function createSparkline(canvasId, borderColor) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
