@@ -2,6 +2,9 @@ import { all } from "axios";
 
 export const translations = {
   id: {
+    popup: {
+      dashboard: 'Kelola dashboard anda disini. Pantau aktivitas dan proyek terbaru.'
+    },
     dosen_dashboard: {
       dashboard_dosen: 'Dashboard Dosen',
       ttl_mhs_bbg: 'Mahasiswa Bimbingan',
@@ -734,6 +737,9 @@ export const translations = {
 
   },
   en: {
+    popup: {
+      'Manage your dashboard here. Monitor activities and latest projects.'
+    },
     dosen_dashboard: {
       dashboard_dosen: 'Lecturer Dashboard',
       ttl_mhs_bbg: 'Total Advised Students',
