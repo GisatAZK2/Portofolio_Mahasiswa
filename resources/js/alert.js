@@ -1,4 +1,9 @@
 import Swal from 'sweetalert2';
+import { translations } from './translate';
+
+function getTranslation(lang, key) {
+    return key.split('.').reduce((obj, i) => obj?.[i], translations[lang]);
+}
 
 export function showSuccessAlert(message) {
     Swal.fire({
@@ -93,6 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Fungsi untuk menampilkan toast page info
 function showPageInfo(message, type = "info", duration = 10000) {
 
+     const lang = localStorage.getItem("lang") || "id";
+
+    if (message.includes('.') && !message.includes(' ')) {
+        message = getTranslation(lang, message) || message;
+    }
+    
     const container = document.getElementById("toast-container");
     if (!container) return;
 

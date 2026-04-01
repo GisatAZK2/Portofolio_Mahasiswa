@@ -4,6 +4,7 @@ export const translations = {
   id: {
     popup: {
       dashboard: 'Kelola dashboard anda disini. Pantau aktivitas dan proyek terbaru.'
+      
     },
     dosen_dashboard: {
       dashboard_dosen: 'Dashboard Dosen',

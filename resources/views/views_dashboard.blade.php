@@ -196,7 +196,7 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+            showPageInfo("popup.dashboard");
         });
     </script>
 
