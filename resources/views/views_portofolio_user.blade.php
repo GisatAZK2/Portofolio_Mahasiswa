@@ -279,7 +279,6 @@
                                                             <div class="flex-shrink-0">
                                                                 @if($owner && $owner->photo_profile)
                                                                     <img id="logo-zoom" src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
-                                                                       
                                                                         alt="{{ $owner->nama_mahasiswa ?? 'Owner/Leader' }}"
                                                                         class="cursor-pointer w-12 h-12 rounded-full object-cover border-2 border-purple-300">
                                                                 @else
@@ -298,9 +297,9 @@
                                                                 </div>
                                                                 @if($owner)
                                                                     <a href="{{ route('portfolio.show', $owner->id) }}" 
-                                                                       class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-purple-600 dark:hover:text-purple-400 truncate block">
+                                                                    class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-purple-600 dark:hover:text-purple-400 truncate block">
                                                                         {{ $owner->nama_mahasiswa }}
-                                                                        @if($owner->id === $user->id)
+                                                                        @if(auth()->check() && auth()->id() === $owner->id)
                                                                             <span class="ml-1 text-xs text-purple-600">(Anda)</span>
                                                                         @endif
                                                                     </a>
@@ -334,9 +333,9 @@
                                                             <p class="text-xs text-gray-500 dark:text-gray-400">Project Leader</p>
                                                             @if($leader)
                                                                 <a href="{{ route('portfolio.show', $leader->id) }}" 
-                                                                   class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                                     {{ $leader->nama_mahasiswa }}
-                                                                    @if($leader->id === $user->id)
+                                                                    @if(auth()->check() && auth()->id() === $leader->id)
                                                                         <span class="ml-1 text-xs text-blue-600">(Anda)</span>
                                                                     @endif
                                                                 </a>
@@ -353,7 +352,6 @@
                                                         <div class="flex-shrink-0">
                                                             @if($owner && $owner->photo_profile)
                                                                 <img id="logo-zoom" src="{{ asset('storage/' . ltrim($owner->photo_profile, '/')) }}"
-
                                                                     alt="{{ $owner->nama_mahasiswa ?? 'Owner' }}"
                                                                     class="cursor-pointer w-10 h-10 rounded-full object-cover border-2 border-gray-200">
                                                             @else
@@ -368,9 +366,9 @@
                                                             <p class="text-xs text-gray-500 dark:text-gray-400">Project Owner</p>
                                                             @if($owner)
                                                                 <a href="{{ route('portfolio.show', $owner->id) }}" 
-                                                                   class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                                     {{ $owner->nama_mahasiswa }}
-                                                                    @if($owner->id === $user->id)
+                                                                    @if(auth()->check() && auth()->id() === $owner->id)
                                                                         <span class="ml-1 text-xs text-purple-600">(Anda)</span>
                                                                     @endif
                                                                 </a>
@@ -383,7 +381,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-
+                                            
                                             <!-- Members Section (Anggota Tim) -->
                                             @if($project->members->isNotEmpty())
                                                 <div class="mt-2">
@@ -404,7 +402,7 @@
                                                                 @endif
                                                                 <span class="text-xs text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
                                                                     {{ $member->nama_mahasiswa }}
-                                                                    @if($member->id === $user->id)
+                                                                    @if(auth()->check() && auth()->id() === $member->id)
                                                                         <span class="text-green-600">(Anda)</span>
                                                                     @endif
                                                                 </span>

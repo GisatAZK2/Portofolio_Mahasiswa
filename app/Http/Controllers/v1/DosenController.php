@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\ProjectTask;
 use App\Models\Sertifikat;
 use App\Models\Keahlian;
 use App\Models\Jurusan;
@@ -31,6 +32,42 @@ class DosenController extends Controller
 
         if ($user->role !== 'dosen') {
             abort(Response::HTTP_FORBIDDEN, 'Akses hanya untuk dosenistrator.');
+        }
+    }
+
+    private function createProjectTasks(Project $project, array $tasks)
+    {
+        $project->load('members');
+
+        $allowedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
+            ->merge($project->members->pluck('id'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        foreach ($tasks as $task) {
+            if (! isset($task['user_id'], $task['name_task'])) {
+                continue;
+            }
+
+            $taskUserId = (int) $task['user_id'];
+            $taskName = trim($task['name_task']);
+
+            if ($taskUserId === 0 || $taskName === '') {
+                continue;
+            }
+
+            if (! in_array($taskUserId, $allowedUserIds, true)) {
+                abort(422, 'Beberapa tugas memiliki user yang bukan owner, leader, atau member project.');
+            }
+
+            ProjectTask::create([
+                'project_id' => $project->id,
+                'user_id' => $taskUserId,
+                'name_task' => $taskName,
+                'is_done' => false,
+            ]);
         }
     }
 
@@ -779,56 +816,39 @@ class DosenController extends Controller
         ));
     }
 
-       public function EditProjects($id)
+public function EditProjects($id)
 {
     $this->authorizeAccess();
-    
-    // Get search and filter inputs
+
     $search = request()->input('search');
     $angkatan = request()->input('angkatan');
     $jurusan = request()->input('jurusan');
     $keahlian = request()->input('keahlian');
 
-    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
-
-       $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
                 ->where('role', 'mahasiswa');
-        $query = $this->getDosenFilterScope($query);
-    
-    // Filter pencarian berdasarkan nama mahasiswa
-    if ($search) {
-        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
-    }
+    $query = $this->getDosenFilterScope($query);
 
-    // Filter berdasarkan angkatan
-    if ($angkatan) {
-        $query->where('id_angkatan', $angkatan);
-    }
+    if ($search) $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+    if ($angkatan) $query->where('id_angkatan', $angkatan);
+    if ($jurusan) $query->where('id_jurusan', $jurusan);
+    if ($keahlian) $query->where('id_keahlian', $keahlian);
 
-    // Filter berdasarkan jurusan
-    if ($jurusan) {
-        $query->where('id_jurusan', $jurusan);
-    }
-
-    // Filter berdasarkan keahlian
-    if ($keahlian) {
-        $query->where('id_keahlian', $keahlian);
-    }
-
-    // Ambil data dengan pagination
     $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-    // Ambil data untuk dropdown filter
     $angkatans = Angkatan::all();
     $jurusans = Jurusan::all();
     $keahlians = Keahlian::all();
 
-    // Get project data
-    $project = Project::with('members')
+    // Load project dengan relasi yang diperlukan
+    $project = Project::with(['members', 'tasks', 'leader'])
         ->where('id', $id)
         ->firstOrFail();
 
-    return view('dosen.projects.views_edit_project', compact('project', 'users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
+    return view('dosen.projects.views_edit_project', compact(
+        'project', 'users', 'angkatans', 'jurusans', 'keahlians', 
+        'search', 'angkatan', 'jurusan', 'keahlian'
+    ));
 }
 
     public function StoreProject(Request $request) {
@@ -836,6 +856,12 @@ class DosenController extends Controller
         $request->merge([
             'members' => collect($request->members)
                 ->filter(fn ($id) => !empty($id))
+                ->values()
+                ->all(),
+            'tasks' => collect($request->input('tasks', []))
+                ->filter(fn($task) => is_array($task) && (
+                    !empty($task['user_id']) || !empty(trim($task['name_task'] ?? ''))
+                ))
                 ->values()
                 ->all()
         ]);
@@ -850,7 +876,10 @@ class DosenController extends Controller
             'link_video'     => 'nullable|url|max:500',
             'leader' => 'nullable|exists:users,id',
             'members' => 'nullable|array',
-            'members.*' => 'nullable|exists:users,id|different:leader'
+            'members.*' => 'nullable|exists:users,id|different:leader',
+            'tasks' => 'nullable|array',
+            'tasks.*.user_id' => 'required_with:tasks|exists:users,id',
+            'tasks.*.name_task' => 'required_with:tasks|string|max:255'
         ]);
 
         // Ensure leader is within dosen's scope
@@ -912,6 +941,17 @@ class DosenController extends Controller
         // Attach members ke project (jika ada)
         if (!empty($members)) {
             $project->members()->attach($members);
+        }
+
+        // Proses tugas per orang jika dikirim
+        $tasks = collect($request->input('tasks', []))->filter(function ($task) {
+            return is_array($task)
+                && !empty($task['user_id'])
+                && !empty(trim($task['name_task'] ?? ''));
+        })->values()->all();
+
+        if (!empty($tasks)) {
+            $this->createProjectTasks($project, $tasks);
         }
 
         return redirect()->route('dosen.projects.index')

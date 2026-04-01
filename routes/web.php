@@ -81,6 +81,23 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 
         Route::post(
+                '/project/{project}/tasks',
+                [ProjekController::class, 'storeTask']
+            )->name('project.tasks.store');
+        Route::patch(
+                '/project/{project}/tasks/{task}',
+                [ProjekController::class, 'updateTask']
+            )->name('project.tasks.update');
+        Route::patch(
+                '/project/{project}/tasks/{task}/complete',
+                [ProjekController::class, 'completeTask']
+            )->name('project.tasks.complete');
+        Route::delete(
+                '/project/{project}/tasks/{task}',
+                [ProjekController::class, 'destroyTask']
+            )->name('project.tasks.destroy');
+
+        Route::post(
                 '/learning-corner-mass/mass-destroy',
                 [LearningCornerController::class, 'massDestroy']
             )->name('learning-corner.mass-destroy');

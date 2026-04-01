@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\ProjectTask;
 use App\Models\Sertifikat;
 use App\Models\Keahlian;
 use App\Models\Jurusan;
@@ -31,6 +32,42 @@ class AdminController extends Controller
 
         if ($user->role !== 'admin') {
             abort(Response::HTTP_FORBIDDEN, 'Akses hanya untuk Administrator.');
+        }
+    }
+
+    private function createProjectTasks(Project $project, array $tasks)
+    {
+        $project->load('members');
+
+        $allowedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
+            ->merge($project->members->pluck('id'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        foreach ($tasks as $task) {
+            if (! isset($task['user_id'], $task['name_task'])) {
+                continue;
+            }
+
+            $taskUserId = (int) $task['user_id'];
+            $taskName = trim($task['name_task']);
+
+            if ($taskUserId === 0 || $taskName === '') {
+                continue;
+            }
+
+            if (! in_array($taskUserId, $allowedUserIds, true)) {
+                abort(422, 'Beberapa tugas memiliki user yang bukan owner, leader, atau member project.');
+            }
+
+            ProjectTask::create([
+                'project_id' => $project->id,
+                'user_id' => $taskUserId,
+                'name_task' => $taskName,
+                'is_done' => false,
+            ]);
         }
     }
 
@@ -817,6 +854,12 @@ class AdminController extends Controller
             'members' => collect($request->members)
                 ->filter(fn ($id) => !empty($id))
                 ->values()
+                ->all(),
+            'tasks' => collect($request->input('tasks', []))
+                ->filter(fn($task) => is_array($task) && (
+                    !empty($task['user_id']) || !empty(trim($task['name_task'] ?? ''))
+                ))
+                ->values()
                 ->all()
         ]);
         
@@ -830,7 +873,10 @@ class AdminController extends Controller
             'link_video'     => 'nullable|url|max:500',
             'leader' => 'nullable|exists:users,id',
             'members' => 'nullable|array',
-            'members.*' => 'nullable|exists:users,id|different:leader'
+            'members.*' => 'nullable|exists:users,id|different:leader',
+            'tasks' => 'nullable|array',
+            'tasks.*.user_id' => 'required_with:tasks|exists:users,id',
+            'tasks.*.name_task' => 'required_with:tasks|string|max:255'
         ]);
 
         // Siapkan content sebagai JSON
@@ -873,7 +919,17 @@ class AdminController extends Controller
             $project->members()->attach($members);
         }
 
-        // Hapus data sementara dari localStorage (opsional, bisa diarahkan ke frontend)
+        // Proses tugas per orang jika dikirim
+        $tasks = collect($request->input('tasks', []))->filter(function ($task) {
+            return is_array($task)
+                && !empty($task['user_id'])
+                && !empty(trim($task['name_task'] ?? ''));
+        })->values()->all();
+
+        if (!empty($tasks)) {
+            $this->createProjectTasks($project, $tasks);
+        }
+
         return redirect()->route('admin.projects.index') // Perhatikan route-nya, sesuaikan dengan kebutuhan
             ->with('success', 'Project berhasil ditambahkan!')
             ->with('clear_local_storage', true); // Tambahkan flag untuk membersihkan localStorage di frontend

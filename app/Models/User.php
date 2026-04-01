@@ -11,6 +11,7 @@ use App\Models\LearningCorner;
 use App\Models\Sertifikat;
 use App\Models\Angkatan;
 use App\Models\Project;
+use App\Models\ProjectTask;
 use App\Models\Keahlian_Tambahan;
 
 class User extends Authenticatable
@@ -93,6 +94,11 @@ public function memberProjects()
         'user_id',
         'project_id'
     );
+}
+
+public function assignedTasks()
+{
+    return $this->hasMany(ProjectTask::class, 'user_id');
 }
 
 public function sertifikats()

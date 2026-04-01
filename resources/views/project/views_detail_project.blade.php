@@ -11,50 +11,16 @@
 
                 <!-- Project Status Bar -->
                 <div class="mb-6">
-                    @php
-                        $today = now();
-                        $start = \Carbon\Carbon::parse($project->tanggal_mulai);
-                        $end = $project->tanggal_akhir ? \Carbon\Carbon::parse($project->tanggal_akhir) : null;
-
-                        // Determine status
-                        if ($today < $start) {
-                            $status = 'incoming';
-                            $statusText = 'Akan Datang';
-                            $statusColor = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-                            $progress = 0;
-                        } elseif ($end && $today > $end) {
-                            $status = 'past';
-                            $statusText = 'Selesai';
-                            $statusColor = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-                            $progress = 100;
-                        } else {
-                            $status = 'present';
-                            $statusText = 'Sedang Berjalan';
-                            $statusColor = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-
-                            // Calculate progress percentage
-                            if ($end) {
-                                $totalDays = $start->diffInDays($end);
-                                $daysPassed = $start->diffInDays($today);
-                                $progress = min(100, max(0, round(($daysPassed / $totalDays) * 100)));
-                            } else {
-                                $progress = 50; // Default if no end date
-                            }
-                        }
-                    @endphp
-
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-3">
                             <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColor }}"
                                 data-translate="status_{{ $status }}" data-translate-page="project_detail">
                                 {{ $statusText }}
                             </span>
-                            @if($status !== 'past')
-                                <span class="text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $progress }}% <span data-translate="progress_done"
-                                        data-translate-page="project_detail">Selesai</span>
-                                </span>
-                            @endif
+                            <span class="text-sm text-gray-600 dark:text-gray-400">
+                                {{ $projectProgress }}% <span data-translate="progress_done"
+                                    data-translate-page="project_detail">Selesai</span>
+                            </span>
                         </div>
 
                         <!-- Project Title -->
@@ -65,12 +31,10 @@
                     </div>
 
                     <!-- Progress Bar -->
-                    @if($status !== 'past')
-                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                            <div class="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full transition-all duration-500"
-                                style="width: {{ $progress }}%"></div>
-                        </div>
-                    @endif
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        <div class="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full transition-all duration-500"
+                            style="width: {{ $projectProgress }}%"></div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -253,6 +217,73 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if($showTaskSection)
+                            <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
+                                <div class="flex items-center justify-between gap-4 mb-4">
+                                    <div>
+                                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m2 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Task Proyek
+                                        </h3>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $taskDoneCount }} dari {{ $taskTotalCount }} task selesai
+                                        </p>
+                                    </div>
+                                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
+                                        {{ $projectProgress }}% Progress
+                                    </span>
+                                </div>
+
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-4">
+                                    <div class="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full transition-all duration-500"
+                                        style="width: {{ $projectProgress }}%"></div>
+                                </div>
+
+                                @if($visibleTasks->isEmpty())
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Tidak ada task yang dapat ditampilkan.</p>
+                                @else
+                                    <div class="space-y-3">
+                                        @foreach($visibleTasks as $task)
+                                            <div class="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600">
+                                                <div class="flex items-start justify-between gap-4">
+                                                    <div class="min-w-0">
+                                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                            {{ $task->name_task }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                            Penanggung Jawab: {{ $task->user?->nama_mahasiswa ?? 'Belum ditetapkan' }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="text-xs font-semibold px-2 py-1 rounded-full {{ $task->is_done ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' }}">
+                                                            {{ $task->is_done ? 'Selesai' : 'Dalam Proses' }}
+                                                        </span>
+                                                        @auth
+                                                            @if(!$task->is_done && (
+                                                                auth()->user()->role !== 'mahasiswa' ||
+                                                                auth()->id() === $task->user_id
+                                                            ))
+                                                                <form method="POST" action="{{ route('project.tasks.complete', [$project->id, $task->id]) }}">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                                                                        Selesaikan
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                        @endauth
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
 
                         <!-- Links -->
                         <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">

@@ -262,6 +262,19 @@
                     </button>
                 </div>
 
+                <!-- Tugas Project -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Tugas Proyek</label>
+                    <div id="tasks-container" class="space-y-4"></div>
+                    <button type="button" onclick="addTaskRow()"
+                        class="mt-2 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Tugas
+                    </button>
+                </div>
+
                 <!-- Tanggal -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -330,7 +343,162 @@
     </div>
 
     <script>
+        const usersData = @json($users->items());
+        const currentUserData = @json(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa]);
+        const projectParticipants = @json(
+            collect([$project->mahasiswa])
+                ->merge($project->leader ? collect([$project->leader]) : collect())
+                ->merge($project->members)
+                ->unique('id')
+                ->values()
+        );
+        const projectTasks = @json($project->tasks->map(fn($task) => ['id' => $task->id, 'user_id' => $task->user_id, 'name_task' => $task->name_task]));
+
         let currentFilters = { search: '{{ $search ?? '' }}', angkatan: '{{ $angkatan ?? '' }}', jurusan: '{{ $jurusan ?? '' }}', keahlian: '{{ $keahlian ?? '' }}' };
+        let taskIndex = 0;
+
+        function getAvailableTaskUsers() {
+            const leaderId = document.getElementById('selected-leader-id')?.value;
+            const memberIds = Array.from(document.querySelectorAll('select[name="members[]"]'))
+                .map(select => select.value)
+                .filter(value => value);
+
+            const available = [...projectParticipants];
+
+            if (leaderId && !available.some(user => String(user.id) === String(leaderId))) {
+                const leader = usersData.find(user => String(user.id) === String(leaderId));
+                if (leader) available.push(leader);
+            }
+
+            memberIds.forEach(memberId => {
+                if (!available.some(user => String(user.id) === String(memberId))) {
+                    const member = usersData.find(user => String(user.id) === String(memberId));
+                    if (member) available.push(member);
+                }
+            });
+
+            if (!available.some(user => String(user.id) === String(currentUserData.id))) {
+                available.push(currentUserData);
+            }
+
+            return available;
+        }
+
+        function renderTaskUserOptions(selectedId = null) {
+            const availableUsers = getAvailableTaskUsers();
+            let options = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            availableUsers.forEach(user => {
+                const selected = selectedId && String(user.id) === String(selectedId)
+                    ? 'selected'
+                    : '';
+                options += `<option value="${user.id}" ${selected}>${user.nama_mahasiswa}</option>`;
+            });
+            return options;
+        }
+
+        function updateTaskUserOptions() {
+            document.querySelectorAll('select[name^="tasks["][name*="[user_id]"]').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = renderTaskUserOptions(currentValue);
+            });
+        }
+
+        function addTaskRow(taskData = null) {
+            const container = document.getElementById('tasks-container');
+            const index = taskIndex++;
+            const taskNameValue = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+            const taskUserIdValue = taskData?.user_id ?? '';
+            const taskIdValue = taskData?.id ?? '';
+            const userOptions = renderTaskUserOptions(taskUserIdValue);
+
+            const taskDiv = document.createElement('div');
+            taskDiv.classList.add('task-item', 'p-4', 'border', 'border-gray-200', 'dark:border-gray-700', 'rounded-xl', 'bg-gray-50', 'dark:bg-gray-900');
+            taskDiv.innerHTML = `
+                <div class="grid gap-3 md:grid-cols-[1fr_auto] items-start">
+                    <div class="space-y-3">
+                        <input type="hidden" name="tasks[${index}][id]" value="${taskIdValue}">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Penanggung Jawab</label>
+                            <select name="tasks[${index}][user_id]"
+                                class="w-full px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg">
+                                ${userOptions}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nama Tugas</label>
+                            <input type="text"
+                                name="tasks[${index}][name_task]"
+                                value="${taskNameValue}"
+                                class="w-full px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg"
+                                placeholder="Contoh: Buat desain halaman utama" />
+                        </div>
+                    </div>
+                    <div class="pt-6">
+                        <button type="button" onclick="removeTaskRow(this)"
+                            class="w-10 h-10 bg-red-100 text-red-600 rounded-lg">✕</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(taskDiv);
+        }
+
+        function removeTaskRow(button) {
+            const taskDiv = button.closest('.task-item');
+            if (taskDiv) taskDiv.remove();
+            if (document.querySelectorAll('.task-item').length === 0) {
+                addTaskRow();
+            }
+        }
+
+        function loadTaskRows() {
+            const oldTasks = @json(old('tasks', []));
+            if (Array.isArray(oldTasks) && oldTasks.length > 0) {
+                oldTasks.forEach(task => {
+                    if (task.user_id && task.name_task) {
+                        addTaskRow(task);
+                    }
+                });
+                return;
+            }
+
+            const projectTasksData = projectTasks || [];
+            if (projectTasksData.length > 0) {
+                projectTasksData.forEach(task => addTaskRow(task));
+                return;
+            }
+
+            addTaskRow();
+        }
+
+        function syncTaskOptions() {
+            document.querySelectorAll('select[name^="tasks["][name*="[user_id]"]').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = renderTaskUserOptions(currentValue);
+            });
+        }
+
+        function reloadTaskRows() {
+            document.querySelectorAll('select[name^="tasks["][name*="[user_id]"]').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = renderTaskUserOptions(currentValue);
+                select.value = currentValue;
+            });
+        }
+
+        function cleanupInvalidTaskRows() {
+            const allowedIds = getAvailableTaskUsers().map(user => String(user.id));
+            document.querySelectorAll('#tasks-container .task-item').forEach(taskDiv => {
+                const select = taskDiv.querySelector('select[name*="[user_id]"]');
+                if (!select) return;
+                const selectedId = String(select.value || '');
+                if (selectedId && !allowedIds.includes(selectedId)) {
+                    taskDiv.remove();
+                }
+            });
+            if (document.querySelectorAll('.task-item').length === 0) {
+                addTaskRow();
+            }
+        }
 
         function getTranslatedTemplate(id, fallback = '') {
             const el = document.getElementById(id);
@@ -593,6 +761,8 @@
                     }
                 });
             });
+            reloadTaskRows();
+            cleanupInvalidTaskRows();
         }
 
         function saveToLocalStorage() {
@@ -670,6 +840,7 @@
 
             attachTableRowListeners();
             loadSavedData();
+            loadTaskRows();
 
             document.getElementById('projectForm').addEventListener('submit', () => localStorage.removeItem('projectTeamData'));
 
