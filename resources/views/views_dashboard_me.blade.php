@@ -199,7 +199,7 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-        showPageInfo("popup.dashboard");
-    });
+            showPageInfo("Kelola dashboard Anda di sini. Pantau aktivitas dan proyek terbaru.");
+        });
     </script>
 @endsection
