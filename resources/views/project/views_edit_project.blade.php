@@ -195,25 +195,25 @@
                                                         <div class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
                                                     </div>
                                                 </div>
-                                            </td>
+                                             </td>
                                             <td class="hidden md:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $user->angkatan->nama_angkatan ?? '-' }}
-                                            </td>
+                                             </td>
                                             <td class="hidden lg:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $user->jurusan->nama_jurusan ?? '-' }}
-                                            </td>
+                                             </td>
                                             <td class="hidden xl:table-cell px-4 py-4">
                                                 <span class="px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                                     {{ $user->keahlian->nama_keahlian ?? '-' }}
                                                 </span>
-                                            </td>
+                                             </td>
                                             <td class="px-4 py-4 text-center">
                                                 <a href="{{ route('portfolio.show', $user->id) }}" 
                                                    onclick="event.stopImmediatePropagation()"
                                                    class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
                                                     <span data-translate="lihat" data-translate-page="project_edit"></span>
                                                 </a>
-                                            </td>
+                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -246,16 +246,7 @@
                 <!-- Rekan Project -->
                 <div id="member-wrapper">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3"><span data-translate="add_member" data-translate-page="project_edit"></span></label>
-                    <div id="members-container" class="space-y-3">
-                        @php
-                            $oldMembers = old('members', $project->members->pluck('id')->toArray() ?? []);
-                        @endphp
-                        @if(count($oldMembers) > 0)
-                            @foreach($oldMembers as $memberId)
-                                <div class="member-item" data-member-id="{{ $memberId }}"></div>
-                            @endforeach
-                        @endif
-                    </div>
+                    <div id="members-container" class="space-y-3"></div>
                     <button type="button" onclick="addMemberSelect()"
                             class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
                         <span class="text-xl">+</span> <span data-translate="add_member_btn" data-translate-page="project_edit"></span>
@@ -356,6 +347,24 @@
 
         let currentFilters = { search: '{{ $search ?? '' }}', angkatan: '{{ $angkatan ?? '' }}', jurusan: '{{ $jurusan ?? '' }}', keahlian: '{{ $keahlian ?? '' }}' };
         let taskIndex = 0;
+        
+        // Store tasks data untuk setiap user
+        let userTasksMap = new Map(); // key: user_id, value: array of tasks { id, name_task, user_id, taskId }
+
+        function initializeUserTasksMap() {
+            userTasksMap.clear();
+            projectTasks.forEach(task => {
+                if (!userTasksMap.has(task.user_id)) {
+                    userTasksMap.set(task.user_id, []);
+                }
+                userTasksMap.get(task.user_id).push({
+                    id: task.id,
+                    user_id: task.user_id,
+                    name_task: task.name_task,
+                    taskId: task.id
+                });
+            });
+        }
 
         function getAvailableTaskUsers() {
             const leaderId = document.getElementById('selected-leader-id')?.value;
@@ -396,31 +405,32 @@
             return options;
         }
 
-        function updateTaskUserOptions() {
-            document.querySelectorAll('select[name^="tasks["][name*="[user_id]"]').forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = renderTaskUserOptions(currentValue);
-            });
+        function getTasksForUser(userId) {
+            return userTasksMap.get(String(userId)) || [];
         }
 
-        function addTaskRow(taskData = null) {
+        function addTaskRowFromData(taskData = null) {
             const container = document.getElementById('tasks-container');
             const index = taskIndex++;
             const taskNameValue = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
             const taskUserIdValue = taskData?.user_id ?? '';
-            const taskIdValue = taskData?.id ?? '';
+            const taskIdValue = taskData?.taskId ?? taskData?.id ?? '';
             const userOptions = renderTaskUserOptions(taskUserIdValue);
-
+            
+            // Store task data in the DOM element
             const taskDiv = document.createElement('div');
             taskDiv.classList.add('task-item', 'p-4', 'border', 'border-gray-200', 'dark:border-gray-700', 'rounded-xl', 'bg-gray-50', 'dark:bg-gray-900');
+            taskDiv.setAttribute('data-task-id', taskIdValue);
+            taskDiv.setAttribute('data-user-id', taskUserIdValue);
+            taskDiv.setAttribute('data-task-name', taskNameValue);
+            
             taskDiv.innerHTML = `
                 <div class="grid gap-3 md:grid-cols-[1fr_auto] items-start">
                     <div class="space-y-3">
                         <input type="hidden" name="tasks[${index}][id]" value="${taskIdValue}">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Penanggung Jawab</label>
-                            <select name="tasks[${index}][user_id]"
-                                class="w-full px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg">
+                            <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg">
                                 ${userOptions}
                             </select>
                         </div>
@@ -429,74 +439,165 @@
                             <input type="text"
                                 name="tasks[${index}][name_task]"
                                 value="${taskNameValue}"
-                                class="w-full px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg"
+                                class="task-name-input w-full px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg"
                                 placeholder="Contoh: Buat desain halaman utama" />
                         </div>
                     </div>
                     <div class="pt-6">
                         <button type="button" onclick="removeTaskRow(this)"
-                            class="w-10 h-10 bg-red-100 text-red-600 rounded-lg">✕</button>
+                            class="w-10 h-10 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">✕</button>
                     </div>
                 </div>
             `;
+            
+            // Add change event listener to update stored data
+            const userSelect = taskDiv.querySelector('.task-user-select');
+            const taskNameInput = taskDiv.querySelector('.task-name-input');
+            
+            userSelect.addEventListener('change', function() {
+                const newUserId = this.value;
+                const oldUserId = taskDiv.getAttribute('data-user-id');
+                const taskId = taskDiv.getAttribute('data-task-id');
+                const taskName = taskDiv.getAttribute('data-task-name');
+                
+                if (newUserId && newUserId !== oldUserId) {
+                    // Move task data to new user
+                    if (oldUserId) {
+                        removeTaskFromUserMap(oldUserId, taskId);
+                    }
+                    addTaskToUserMap(newUserId, {
+                        id: taskId,
+                        user_id: newUserId,
+                        name_task: taskName,
+                        taskId: taskId
+                    });
+                    taskDiv.setAttribute('data-user-id', newUserId);
+                }
+                updateTaskUserOptionsInContainer();
+            });
+            
+            taskNameInput.addEventListener('input', function() {
+                const taskId = taskDiv.getAttribute('data-task-id');
+                const userId = taskDiv.getAttribute('data-user-id');
+                const newTaskName = this.value;
+                if (userId && newTaskName) {
+                    updateTaskNameInMap(userId, taskId, newTaskName);
+                    taskDiv.setAttribute('data-task-name', newTaskName);
+                }
+            });
+            
             container.appendChild(taskDiv);
+        }
+
+        function addTaskRow(taskData = null) {
+            addTaskRowFromData(taskData);
         }
 
         function removeTaskRow(button) {
             const taskDiv = button.closest('.task-item');
-            if (taskDiv) taskDiv.remove();
+            if (taskDiv) {
+                const userId = taskDiv.getAttribute('data-user-id');
+                const taskId = taskDiv.getAttribute('data-task-id');
+                if (userId && taskId) {
+                    removeTaskFromUserMap(userId, taskId);
+                }
+                taskDiv.remove();
+            }
             if (document.querySelectorAll('.task-item').length === 0) {
-                addTaskRow();
+                addTaskRowFromData(null);
             }
         }
 
-        function loadTaskRows() {
-            const oldTasks = @json(old('tasks', []));
-            if (Array.isArray(oldTasks) && oldTasks.length > 0) {
-                oldTasks.forEach(task => {
-                    if (task.user_id && task.name_task) {
-                        addTaskRow(task);
-                    }
-                });
-                return;
+        function addTaskToUserMap(userId, task) {
+            const userIdStr = String(userId);
+            if (!userTasksMap.has(userIdStr)) {
+                userTasksMap.set(userIdStr, []);
             }
-
-            const projectTasksData = projectTasks || [];
-            if (projectTasksData.length > 0) {
-                projectTasksData.forEach(task => addTaskRow(task));
-                return;
+            const userTasks = userTasksMap.get(userIdStr);
+            if (!userTasks.some(t => String(t.taskId) === String(task.taskId))) {
+                userTasks.push(task);
             }
+        }
 
-            addTaskRow();
+        function removeTaskFromUserMap(userId, taskId) {
+            const userIdStr = String(userId);
+            if (userTasksMap.has(userIdStr)) {
+                const tasks = userTasksMap.get(userIdStr);
+                const filteredTasks = tasks.filter(t => String(t.taskId) !== String(taskId));
+                if (filteredTasks.length > 0) {
+                    userTasksMap.set(userIdStr, filteredTasks);
+                } else {
+                    userTasksMap.delete(userIdStr);
+                }
+            }
+        }
+
+        function updateTaskNameInMap(userId, taskId, newName) {
+            const userIdStr = String(userId);
+            if (userTasksMap.has(userIdStr)) {
+                const tasks = userTasksMap.get(userIdStr);
+                const task = tasks.find(t => String(t.taskId) === String(taskId));
+                if (task) {
+                    task.name_task = newName;
+                }
+            }
+        }
+
+        function restoreTasksForUser(userId) {
+            const userIdStr = String(userId);
+            const tasks = userTasksMap.get(userIdStr) || [];
+            tasks.forEach(task => {
+                // Check if task already exists in DOM
+                const existingTask = document.querySelector(`.task-item[data-task-id="${task.taskId}"]`);
+                if (!existingTask) {
+                    addTaskRowFromData(task);
+                }
+            });
+        }
+
+        function removeTasksForUser(userId) {
+            const userIdStr = String(userId);
+            const tasks = userTasksMap.get(userIdStr) || [];
+            tasks.forEach(task => {
+                const taskElement = document.querySelector(`.task-item[data-task-id="${task.taskId}"]`);
+                if (taskElement) {
+                    taskElement.remove();
+                }
+            });
+            // Don't delete from map, keep for restoration
+        }
+
+        function updateTaskUserOptionsInContainer() {
+            document.querySelectorAll('.task-item').forEach(taskDiv => {
+                const select = taskDiv.querySelector('.task-user-select');
+                if (select) {
+                    const currentValue = select.value;
+                    select.innerHTML = renderTaskUserOptions(currentValue);
+                    select.value = currentValue;
+                }
+            });
         }
 
         function syncTaskOptions() {
-            document.querySelectorAll('select[name^="tasks["][name*="[user_id]"]').forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = renderTaskUserOptions(currentValue);
-            });
+            updateTaskUserOptionsInContainer();
         }
 
         function reloadTaskRows() {
-            document.querySelectorAll('select[name^="tasks["][name*="[user_id]"]').forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = renderTaskUserOptions(currentValue);
-                select.value = currentValue;
-            });
+            updateTaskUserOptionsInContainer();
         }
 
         function cleanupInvalidTaskRows() {
-            const allowedIds = getAvailableTaskUsers().map(user => String(user.id));
+            const allowedUserIds = getAvailableTaskUsers().map(user => String(user.id));
             document.querySelectorAll('#tasks-container .task-item').forEach(taskDiv => {
-                const select = taskDiv.querySelector('select[name*="[user_id]"]');
-                if (!select) return;
-                const selectedId = String(select.value || '');
-                if (selectedId && !allowedIds.includes(selectedId)) {
+                const userId = taskDiv.getAttribute('data-user-id');
+                if (userId && !allowedUserIds.includes(userId)) {
+                    // Remove task if user is no longer in team
+                    removeTaskFromUserMap(userId, taskDiv.getAttribute('data-task-id'));
                     taskDiv.remove();
                 }
             });
             if (document.querySelectorAll('.task-item').length === 0) {
-                addTaskRow();
+                addTaskRowFromData(null);
             }
         }
 
@@ -561,7 +662,6 @@
             });
         }
 
-        // Search untuk Leader Table
         function filterLeaderTable() {
             const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
@@ -572,6 +672,8 @@
         }
 
         function selectLeader(userId, userName, photoProfile) {
+            const oldLeaderId = document.getElementById('selected-leader-id').value;
+            
             document.getElementById('selected-leader-id').value = userId;
             document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = (radio.value == userId));
 
@@ -587,19 +689,37 @@
             const leaderLabel = getTranslatedTemplate('selected-leader-prefix', 'Pemimpin:');
             content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">${leaderLabel} ${userName}</div>`;
             display.classList.remove('hidden');
+            
+            // If leader changed, restore tasks for new leader if they have tasks stored
+            if (oldLeaderId && oldLeaderId !== userId) {
+                // Remove tasks for old leader
+                removeTasksForUser(oldLeaderId);
+                // Restore tasks for new leader
+                restoreTasksForUser(userId);
+            } else if (!oldLeaderId && userId) {
+                // New leader added
+                restoreTasksForUser(userId);
+            }
+            
             updateDisabledOptions();
             saveToLocalStorage();
         }
 
         function clearSelectedLeader() {
+            const oldLeaderId = document.getElementById('selected-leader-id').value;
             document.getElementById('selected-leader-id').value = '';
             document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = false);
             document.getElementById('selected-leader-display').classList.add('hidden');
+            
+            // Remove tasks for old leader when cleared
+            if (oldLeaderId) {
+                removeTasksForUser(oldLeaderId);
+            }
+            
             updateDisabledOptions();
             saveToLocalStorage();
         }
 
-        // ==================== ADD MEMBER SELECT (Dropdown Full) ====================
         function addMemberSelect(savedValue = null) {
             const container = document.getElementById('members-container');
             const memberDiv = document.createElement('div');
@@ -680,6 +800,9 @@
 
                 select.addEventListener('change', function() {
                     const selectedOption = this.options[this.selectedIndex];
+                    const memberId = this.value;
+                    const oldMemberId = memberDiv.getAttribute('data-member-id');
+                    
                     if (this.value) {
                         const photo = selectedOption.dataset.photo;
                         const initial = selectedOption.dataset.initial;
@@ -688,8 +811,24 @@
                         } else {
                             img.classList.add('hidden'); initialSpan.classList.remove('hidden'); initialSpan.textContent = initial;
                         }
+                        
+                        // Restore tasks for new member if they have stored tasks
+                        if (!oldMemberId || oldMemberId !== memberId) {
+                            if (oldMemberId) {
+                                removeTasksForUser(oldMemberId);
+                            }
+                            restoreTasksForUser(memberId);
+                        }
+                        memberDiv.setAttribute('data-member-id', memberId);
                     } else {
-                        img.classList.add('hidden'); initialSpan.classList.remove('hidden'); initialSpan.textContent = '?';
+                        // Member removed
+                        if (oldMemberId) {
+                            removeTasksForUser(oldMemberId);
+                            memberDiv.removeAttribute('data-member-id');
+                        }
+                        img.classList.add('hidden');
+                        initialSpan.classList.remove('hidden');
+                        initialSpan.textContent = '?';
                     }
                     updateDisabledOptions();
                     saveToLocalStorage();
@@ -698,6 +837,9 @@
                 if (savedValue) {
                     select.value = savedValue;
                     select.dispatchEvent(new Event('change'));
+                    memberDiv.setAttribute('data-member-id', savedValue);
+                } else {
+                    memberDiv.setAttribute('data-member-id', '');
                 }
             }
             updateDisabledOptions();
@@ -705,7 +847,13 @@
 
         function removeMember(button) {
             const memberDiv = button.closest('.member-item');
-            if (memberDiv) memberDiv.remove();
+            if (memberDiv) {
+                const memberId = memberDiv.getAttribute('data-member-id');
+                if (memberId) {
+                    removeTasksForUser(memberId);
+                }
+                memberDiv.remove();
+            }
             updateDisabledOptions();
             saveToLocalStorage();
         }
@@ -761,7 +909,7 @@
                     }
                 });
             });
-            reloadTaskRows();
+            syncTaskOptions();
             cleanupInvalidTaskRows();
         }
 
@@ -769,7 +917,20 @@
             const leaderId = document.getElementById('selected-leader-id').value || '';
             const memberIds = Array.from(document.querySelectorAll('.member-select'))
                 .filter(s => s.value).map(s => s.value);
-            localStorage.setItem('projectTeamData', JSON.stringify({ leader: leaderId, members: memberIds }));
+            
+            // Save tasks map as well
+            const tasksData = [];
+            userTasksMap.forEach((tasks, userId) => {
+                tasks.forEach(task => {
+                    tasksData.push(task);
+                });
+            });
+            
+            localStorage.setItem('projectTeamData', JSON.stringify({ 
+                leader: leaderId, 
+                members: memberIds,
+                tasks: tasksData
+            }));
         }
 
         function loadSavedData() {
@@ -786,6 +947,20 @@
             }
             try {
                 const data = JSON.parse(savedData);
+                
+                // Restore tasks map first
+                if (data.tasks && data.tasks.length > 0) {
+                    userTasksMap.clear();
+                    data.tasks.forEach(task => {
+                        if (!userTasksMap.has(String(task.user_id))) {
+                            userTasksMap.set(String(task.user_id), []);
+                        }
+                        userTasksMap.get(String(task.user_id)).push(task);
+                    });
+                } else {
+                    initializeUserTasksMap();
+                }
+                
                 if (data.leader) {
                     const radio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
                     if (radio) {
@@ -795,6 +970,12 @@
                         const img = row.querySelector('img');
                         const photo = img ? img.src : '';
                         selectLeader(data.leader, name, photo);
+                    } else {
+                        // Leader not in current list, but we still need to restore their tasks
+                        const leaderUser = usersData.find(u => String(u.id) === String(data.leader));
+                        if (leaderUser) {
+                            selectLeader(data.leader, leaderUser.nama_mahasiswa, leaderUser.photo_profile || '');
+                        }
                     }
                 }
                 const container = document.getElementById('members-container');
@@ -802,7 +983,6 @@
                 if (data.members && data.members.length > 0) {
                     data.members.forEach(id => addMemberSelect(id));
                 } else {
-                    // Load existing members from database if no saved data
                     const existingMembers = @json($project->members->pluck('id')->toArray());
                     if (existingMembers.length > 0) {
                         existingMembers.forEach(id => addMemberSelect(id));
@@ -810,21 +990,63 @@
                         addMemberSelect();
                     }
                 }
-                setTimeout(updateDisabledOptions, 150);
+                
+                // Load tasks after members are loaded
+                setTimeout(() => {
+                    if (data.tasks && data.tasks.length > 0) {
+                        // Clear existing tasks
+                        const tasksContainer = document.getElementById('tasks-container');
+                        tasksContainer.innerHTML = '';
+                        taskIndex = 0;
+                        // Add all tasks from saved data
+                        data.tasks.forEach(task => {
+                            addTaskRowFromData(task);
+                        });
+                    } else {
+                        loadTaskRows();
+                    }
+                    updateDisabledOptions();
+                }, 150);
             } catch (e) {
                 console.error('Error loading saved data:', e);
-                // Load existing members from database
+                initializeUserTasksMap();
                 const existingMembers = @json($project->members->pluck('id')->toArray());
                 if (existingMembers.length > 0) {
                     existingMembers.forEach(id => addMemberSelect(id));
                 } else {
                     addMemberSelect();
                 }
+                loadTaskRows();
             }
+        }
+
+        function loadTaskRows() {
+            const oldTasks = @json(old('tasks', []));
+            if (Array.isArray(oldTasks) && oldTasks.length > 0) {
+                oldTasks.forEach(task => {
+                    if (task.user_id && task.name_task) {
+                        addTaskRowFromData(task);
+                    }
+                });
+                return;
+            }
+
+            const projectTasksData = projectTasks || [];
+            if (projectTasksData.length > 0) {
+                projectTasksData.forEach(task => {
+                    addTaskRowFromData(task);
+                    addTaskToUserMap(task.user_id, task);
+                });
+                return;
+            }
+
+            addTaskRowFromData(null);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            initializeUserTasksMap();
+            
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             if (oldLeaderId) {
                 const radio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
@@ -835,12 +1057,17 @@
                     const img = row.querySelector('img');
                     const photo = img ? img.src : '';
                     selectLeader(oldLeaderId, name, photo);
+                } else {
+                    // Leader not in table but still need to load from participants
+                    const leaderFromData = projectParticipants.find(p => String(p.id) === String(oldLeaderId));
+                    if (leaderFromData) {
+                        selectLeader(oldLeaderId, leaderFromData.nama_mahasiswa, leaderFromData.photo_profile || '');
+                    }
                 }
             }
 
             attachTableRowListeners();
             loadSavedData();
-            loadTaskRows();
 
             document.getElementById('projectForm').addEventListener('submit', () => localStorage.removeItem('projectTeamData'));
 
@@ -864,14 +1091,5 @@
                 }
             });
         });
-
-        // Filter Leader Table Function
-        function filterLeaderTable() {
-            const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
-            document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                if (!row.querySelector('.leader-radio')) return;
-                row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none';
-            });
-        }
     </script>
 @endsection
