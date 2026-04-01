@@ -133,6 +133,7 @@ class AdminController extends Controller
             'latestActivities',
             'pendingMahasiswa',
             'rejectedMahasiswa'
+            
         ));
     }
 
