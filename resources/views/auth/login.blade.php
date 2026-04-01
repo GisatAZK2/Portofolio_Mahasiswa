@@ -71,9 +71,9 @@
    
    <audio id="welcomeSound" preload="auto">
     <source src="audio/welcome_sound.mp3" type="audio/mpeg">
-</audio>
+    </audio>
 
-    <!-- Background Noise -->
+    <!-- Background Noise --> 
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
 
     <div class="relative w-full max-w-lg">
