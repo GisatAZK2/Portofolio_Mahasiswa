@@ -49,7 +49,7 @@
                         </div>
                         <input type="text" name="q" value="{{ request('q') }}"
                             class="w-full pl-11 pr-4 py-2.5 border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-100 text-sm transition shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
-                            placeholder="Cari...">
+                            placeholder="Cari..." data-translate="placeholder_student" data-translate-page="search">
                     </div>
 
                     <a href="{{ route('search') }}"
@@ -131,7 +131,8 @@
                     text-gray-700 dark:text-gray-300
                     placeholder-gray-500 dark:placeholder-gray-400
                     shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
-                        placeholder="Cari mahasiswa, proyek, portofolio...">
+                        placeholder="Cari mahasiswa, proyek, portofolio..." data-translate="placeholder_student"
+                        data-translate-page="search">
                 </div>
 
                 <!-- Filters -->
@@ -221,42 +222,76 @@
 </header>
 
 <script>
-    const texts = [
-        "Cari Mahasiswa...",
-        "Cari Portofolio...",
-        "Cari Sertifikat..."
-    ];
+    // Get translations dynamically
+    function getPlaceholderTexts() {
+        const currentLang = localStorage.getItem('lang') || 'id';
 
+        // Fallback texts
+        const defaultTexts = {
+            id: ["Cari Mahasiswa...", "Cari Portofolio...", "Cari Sertifikat..."],
+            en: ["Search Students...", "Search Portfolio...", "Search Certificate..."]
+        };
+
+        // Try to get from window.translations if available
+        if (window.translations && window.translations[currentLang]?.search) {
+            const trans = window.translations[currentLang].search;
+            return [
+                trans.placeholder_student || defaultTexts[currentLang][0],
+                trans.placeholder_portfolio || defaultTexts[currentLang][1],
+                trans.placeholder_certificate || defaultTexts[currentLang][2]
+            ];
+        }
+
+        return defaultTexts[currentLang] || defaultTexts['id'];
+    }
+
+    let texts = getPlaceholderTexts();
     const inputs = document.querySelectorAll('input[name="q"]');
 
     let textIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
+    let speed = 80;
 
     function typeEffect() {
         const currentText = texts[textIndex];
+        const displayText = currentText.substring(0, charIndex);
 
         inputs.forEach(input => {
-            input.setAttribute("placeholder", currentText.substring(0, charIndex));
+            input.setAttribute("placeholder", displayText);
         });
 
         if (!isDeleting) {
             charIndex++;
             if (charIndex > currentText.length) {
                 isDeleting = true;
-                setTimeout(typeEffect, 1200);
+                setTimeout(typeEffect, 1500);
                 return;
             }
+            speed = 60 + Math.random() * 40; // Variasi kecepatan typing
         } else {
             charIndex--;
             if (charIndex === 0) {
                 isDeleting = false;
                 textIndex = (textIndex + 1) % texts.length;
+                // Update texts when switching
+                texts = getPlaceholderTexts();
             }
+            speed = 30 + Math.random() * 30; // Variasi kecepatan delete
         }
 
-        setTimeout(typeEffect, isDeleting ? 40 : 80);
+        setTimeout(typeEffect, speed);
     }
 
-    document.addEventListener("DOMContentLoaded", typeEffect);
+    document.addEventListener("DOMContentLoaded", () => {
+        typeEffect();
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            texts = getPlaceholderTexts();
+            charIndex = 0;
+            textIndex = 0;
+            isDeleting = false;
+        });
+    });
 </script>

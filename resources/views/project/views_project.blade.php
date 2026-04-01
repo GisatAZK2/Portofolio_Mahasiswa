@@ -202,7 +202,7 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Kelola project yang sudah Anda buat. Klik pada project untuk melihat detail, atau gunakan tombol edit dan hapus untuk mengelola project Anda.");
+            showPageInfo("popup.semua_project");
         });
     </script>
 @endsection

@@ -146,7 +146,7 @@ class UserController extends Controller
 
  
         if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard')
+            return redirect()->route('admin.index')
                 ->with('success', 'Login berhasil! Selamat datang Admin.');
         }
 

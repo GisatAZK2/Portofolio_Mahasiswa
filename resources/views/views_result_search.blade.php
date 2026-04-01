@@ -17,7 +17,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
-                            Pencarian: "{{ $keyword }}"
+                            <span data-translate="srch" data-translate-page="result_search">Pencarian:</span> "{{ $keyword }}"
                         </span>
                     @endif
 
@@ -31,7 +31,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5" />
                                 </svg>
-                                Jurusan: {{ $jurusanItem->jurusan->nama_jurusan }}
+                                <span data-translate="jrs" data-translate-page="result_search">Jurusan:</span>
+                                {{ $jurusanItem->jurusan->nama_jurusan }}
                             </span>
                         @endif
                     @endif
@@ -46,7 +47,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                 </svg>
-                                Keahlian: {{ $keahlianItem->keahlian->nama_keahlian }}
+                                <span data-translate="khl" data-translate-page="result_search">Keahlian:</span>
+                                {{ $keahlianItem->keahlian->nama_keahlian }}
                             </span>
                         @endif
                     @endif
@@ -83,7 +85,8 @@
             @if($mahasiswa->count() > 0)
                 <div class="mb-12" id="mahasiswa-section" data-pagination-group="mahasiswa">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-50 flex items-center gap-3" data-translate="hasil_pencarian"
+                            data-translate-page="result_search">
                             <span class="inline-flex px-4 py-2 rounded-full bg-blue-100 text-blue-800 font-medium text-base">
                                 <span data-translate="mhs" data-translate-page="result_search">Mahasiswa</span>
                                 <span>({{ $mahasiswa->total() }})</span>
@@ -139,14 +142,14 @@
                                             @if($item->angkatan)
                                                 <span
                                                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                                                    <svg class="w-3.5 h-3.5 mr-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                                    <svg class="w-6 h-3.5 mr-1 flex-shrink-0" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                    <span class="truncate max-w-[100px]"
+                                                    <span class="truncate"
                                                         title="Angkatan {{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}">
-                                                        Angkatan
+                                                        
                                                         {{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}
                                                     </span>
                                                 </span>
@@ -225,7 +228,8 @@
                 <div class="mb-12" id="project-section" data-pagination-group="project">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
-                            <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-800 font-medium text-base">
+                            <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-800 font-medium text-base"
+                                data-translate="tampil" data-translate-page="result_search">
                                 Project ({{ $projects->total() }})
                             </span>
                         </h3>
@@ -409,7 +413,8 @@
                 </p>
                 <div class="mt-6 flex justify-center gap-3">
                     <a href="{{ route('search') }}"
-                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
+                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition"
+                        data-translate="clr_filter" data-translate-page="result_search">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -431,23 +436,30 @@
                     if (hidden.length > 0) {
                         hidden.forEach(item => item.classList.remove('hidden'));
                         button.innerHTML = `
-                        <span data-translate="sembunyi" data-translate-page="result_search">Sembunyikan</span>
-                        <svg class="w-4 h-4 ml-1 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    `;
+                                        <span data-translate="sembunyi" data-translate-page="result_search">Sembunyikan</span>
+                                        <svg class="w-4 h-4 ml-1 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    `;
                     } else {
                         items.forEach((item, index) => {
                             if (index >= 3) item.classList.add('hidden');
                         });
                         button.innerHTML = `
-                        <span data-translate="tampil" data-translate-page="result_search">Lihat semua</span>
-                        <svg class="w-4 h-4 ml-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    `;
+                                        <span data-translate="tampil" data-translate-page="result_search">Lihat semua</span>
+                                        <svg class="w-4 h-4 ml-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    `;
                     }
                 }
             </script>
         @endpush
+
+        <!-- Page Info -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                showPageInfo("popup.semua_portofolio");
+            });
+        </script>
 @endsection

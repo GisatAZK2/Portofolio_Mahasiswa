@@ -705,7 +705,7 @@ class AdminController extends Controller
     public function DetailsAngkatan($id){
             $this->authorizeAccess();
             $angkatan = Angkatan::withCount('mahasiswa')->findorfail($id);
-            return view('admin.angkatan.views_edit_angkatan', compact('angkatan'));
+            return view('admin.angkatan.views_detail_angkatan', compact('angkatan'));
     }
 
     public function TambahAngkatan() {

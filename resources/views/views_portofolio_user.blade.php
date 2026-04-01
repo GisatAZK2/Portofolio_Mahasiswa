@@ -672,4 +672,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.portofolio_saya");
+        });
+    </script>
 @endsection

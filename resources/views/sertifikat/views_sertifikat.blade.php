@@ -218,13 +218,6 @@
 
     <!-- Filter Script -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Kelola sertifikat anda disini, edit atau hapus sertifikat yang sudah anda tambahkan");
-
-            // Set active filter dari localStorage jika ada
-            const savedFilter = localStorage.getItem('sertifikatFilter') || 'all';
-            filterStatus(savedFilter);
-        });
 
         function filterStatus(status) {
             // Update active button style
@@ -272,11 +265,11 @@
                     const message = document.createElement('div');
                     message.className = 'no-data-message col-span-full text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200';
                     message.innerHTML = `
-                    <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p class="mt-4 text-gray-600 dark:text-gray-200">Tidak ada sertifikat dengan status ${status}</p>
-                `;
+                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="mt-4 text-gray-600 dark:text-gray-200">Tidak ada sertifikat dengan status ${status}</p>
+                    `;
                     container.parentNode.insertBefore(message, container.nextSibling);
                 }
             } else {
@@ -316,10 +309,9 @@
 
     <!-- Page Info -->
     <script>
-        function showPageInfo(message) {
-            // Implementasi showPageInfo sesuai kebutuhan
-            console.log(message);
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.semua_sertifikat");
+        });
     </script>
 
 @endsection

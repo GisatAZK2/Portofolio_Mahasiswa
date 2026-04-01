@@ -84,4 +84,11 @@
         </section>
 
     </div>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.learning_corner_saya");
+        });
+    </script>
 @endsection
