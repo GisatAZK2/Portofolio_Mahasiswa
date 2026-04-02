@@ -262,7 +262,7 @@
 
             <!-- Add Tasks -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                <label data-translate="add_task" data-translate-page="msh_project_task" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Tambahkan Tugas
                 </label>
 
@@ -273,7 +273,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Tambah Tugas
+                    <span data-translate="add" data-translate-page="msh_project_task">Tambah Tugas</span>
                 </button>
             </div>
 
@@ -370,7 +370,7 @@
 
         function renderTaskUserOptions(selectedId = null) {
             const availableUsers = getAvailableTaskUsers();
-            let options = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            let options = '<option data-translate="pick_rsp" data-translate-page="msh_project_task" value="">-- Pilih Penanggung Jawab --</option>';
             availableUsers.forEach(user => {
                 const selected = selectedId && String(user.id) === String(selectedId)
                     ? 'selected'
@@ -798,19 +798,19 @@ function addTaskRow(taskData = null) {
         <div class="grid gap-3 md:grid-cols-[1fr_auto] items-start">
             <div class="space-y-3">
                 <div>
-                    <label class="block text-sm font-medium">Penanggung Jawab</label>
+                    <label data-translate="rsp_task" data-translate-page="msh_project_task" class="block text-sm font-medium dark:border-gray-500 dark:text-gray-300">Penanggung Jawab</label>
                     <select name="tasks[${index}][user_id]"
-                        class="w-full px-4 py-3 text-sm border rounded-lg">
+                        class="w-full border dark:border-gray-500 dark:text-gray-200 px-4 py-3 text-sm border rounded-lg">
                         ${userOptions}
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">Nama Tugas</label>
+                    <label class="block text-sm font-medium dark:text-gray-200" data-translate="nm_task" data-translate-page="msh_project_task">Nama Tugas</label>
                     <input type="text"
                         name="tasks[${index}][name_task]"
                         value="${taskNameValue}"
-                        class="w-full px-4 py-3 text-sm border rounded-lg"
+                        class="w-full dark:text-gray-200 px-4 py-3 text-sm border rounded-lg dark:border-gray-500"
                         placeholder="Contoh: Buat desain halaman utama" />
                 </div>
             </div>

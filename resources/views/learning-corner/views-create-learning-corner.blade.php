@@ -6,8 +6,8 @@
         <div class=" p-8">
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Tambah Catatan Baru</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300 ">Tulis apa yang kamu pelajari hari ini atau bagikan ilmu
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl_form" data-translate-page="msh_lrn_add">Tambah Catatan Baru</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300 " data-translate="desc_form" data-translate-page="msh_lrn_add">Tulis apa yang kamu pelajari hari ini atau bagikan ilmu
                     yang ingin kamu
                     simpan.</p>
             </div>
@@ -31,7 +31,7 @@
                 <!-- Judul -->
                 <div>
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Judul Catatan <span class="text-red-500">*</span>
+                        <span data-translate="ttl_lrn" data-translate-page="msh_lrn_add">Judul Catatan</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="judul" value="{{ old('judul') }}"
                         placeholder="Judul Catatan disini.." required
@@ -50,7 +50,7 @@
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            Tambah Item
+                            <span data-translate="add_item" data-translate-page="msh_lrn_add">Tambah Item</span>
                         </button>
                     </div>
 
@@ -61,7 +61,7 @@
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200">
-                    <button type="submit" name="project_id" value="{{$project->id}}"
+                    <button data-translate="sv_lrn" data-translate-page="msh_lrn_add" type="submit" name="project_id" value="{{$project->id}}"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
                         Simpan Catatan
                     </button>
@@ -83,11 +83,11 @@
             newItem.innerHTML = `
                     <div class="flex justify-between items-start mb-4 ">
                         <select name="items[${itemIndex}][type]" class="type-select border dark:text-white border-gray-300 dark:bg-gray-400 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                            <option class="dark:text-white" value="text">Teks tambahan</option>
-                            <option class="dark:text-white" value="image">Gambar</option>
-                            <option class="dark:text-white" value="link">Link / Referensi</option>
+                            <option class="dark:text-white" value="text" data-translate="add_text" data-translate-page="msh_lrn_add">Teks tambahan</option>
+                            <option class="dark:text-white" value="image" data-translate="add_img" data-translate-page="msh_lrn_add">Gambar</option>
+                            <option class="dark:text-white" value="link" data-translate="add_link" data-translate-page="msh_lrn_add">Link / Referensi</option>
                         </select>
-                        <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
+                        <button data-translate="del" data-translate-page="msh_lrn_add" type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
                             Hapus
                         </button>
                     </div>

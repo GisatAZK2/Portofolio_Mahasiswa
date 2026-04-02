@@ -41,7 +41,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5l3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                 </svg>
-                                <span data-translate="edit_project" data-translate-page="project_detail">Edit</span>
+                                <span data-translate="edit_project" data-translate-page="pjt_detail">Edit</span>
                             </a>
                         @endif
                     </div>
@@ -64,10 +64,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 6h16M4 12h16M4 18h7" />
                                 </svg>
-                                Deskripsi Proyek
+                                <span data-translate="desc_pjt" data-translate-page="pjt_detail">Deskripsi Proyek</span>
                             </h3>
                             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                {{ $project->isi_content['deskripsi'] ?? 'Tidak ada deskripsi untuk proyek ini.' }}
+                                @if(isset($project->isi_content['deskripsi']) && $project->isi_content['deskripsi'])
+                                    {{ $project->isi_content['deskripsi'] }}
+                                @else
+                                    <span data-translate="empty_desc" data-translate-page="pjt_detail">Tidak ada deskripsi untuk proyek ini.</span>
+                                @endif
                             </p>
                         </div>
 
@@ -127,7 +131,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                         </svg>
-                                        Project Leader
+                                        <span data-translate="lead_pjt" data-translate-page="pjt_detail">Project Leader</span>
                                     </h3>
 
                                     <div
@@ -164,7 +168,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
-                                    Anggota Tim ({{ $project->members->where('id', '!=', $project->leader_id)->count() }})
+                                    <span data-translate="tim_pjt" data-translate-page="pjt_detail">>Anggota Tim</span> ({{ $project->members->where('id', '!=', $project->leader_id)->count() }})
                                 </h3>
 
                                 <div class="space-y-2">
@@ -189,7 +193,7 @@
                                             </div>
                                         @endif
                                     @empty
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic">Belum ada anggota tim</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic" data-translate="empty_tim" data-translate-page="pjt_detail">Belum ada anggota tim</p>
                                     @endforelse
                                 </div>
                             </div>
@@ -306,7 +310,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                 </svg>
-                                Link Terkait
+                                <span data-translate="link_pjt" data-translate-page="pjt_detail">Link Terkait</span>
                             </h3>
 
                             <div class="space-y-3">
@@ -375,7 +379,7 @@
                                 @endif
 
                                 @if(empty($project->isi_content['link_project']) && empty($project->isi_content['link_github']) && empty($project->isi_content['link_video']))
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4">Belum ada link
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4" data-translate="empty_link" data-translate-page="pjt_detail">Belum ada link
                                         terkait</p>
                                 @endif
                             </div>
@@ -434,8 +438,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Learning Corner</h2>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Catatan dan dokumentasi proyek</p>
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" data-translate="lrn_pjt" data-translate-page="pjt_detail">Learning Corner</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" data-translate="desc_lrn_pjt" data-translate-page="pjt_detail">Catatan dan dokumentasi proyek</p>
                         </div>
                     </div>
 
@@ -464,7 +468,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                            <span>Hapus Terpilih (<span id="selectedCount">0</span>)</span>
+                                            <span><span data-translate="del_sel" data-translate-page="pjt_detail">Hapus Terpilih</span> (<span id="selectedCount">0</span>)</span>
                                         </button>
                                     </form>
                                 @endif
@@ -474,7 +478,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                     </svg>
-                                    <span>Tambah Catatan</span>
+                                    <span data-translate="add_lrn" data-translate-page="pjt_detail">Tambah Catatan</span>
                                 </a>
                             @endif
                         @endauth
@@ -489,8 +493,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
-                        <p class="text-gray-600 dark:text-gray-400 text-lg font-medium">Belum ada catatan learning corner</p>
-                        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">Mulai tambahkan catatan pertama untuk proyek
+                        <p class="text-gray-600 dark:text-gray-400 text-lg font-medium" data-translate="empty_lrn" data-translate-page="pjt_detail">Belum ada catatan learning corner</p>
+                        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2" data-translate="desc_empty_lrn" data-translate-page="pjt_detail">Mulai tambahkan catatan pertama untuk proyek
                             ini</p>
                     </div>
                 @else
@@ -539,7 +543,7 @@
                                         <input type="checkbox"
                                             class="entry-checkbox w-4 h-4 text-indigo-600 bg-white border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                             data-id="{{ $entry->id_learning_corner }}">
-                                        <label class="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
+                                        <label data-translate="sel_del" data-translate-page="pjt_detail" class="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
                                             Pilih untuk dihapus
                                         </label>
                                     </div>
@@ -610,7 +614,7 @@
                                                         method="POST" class="flex-1 delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button"
+                                                        <button type="button" data-translate="del" data-translate-page="pjt_detail"
                                                             class="w-full px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium delete-btn">
                                                             Hapus
                                                         </button>

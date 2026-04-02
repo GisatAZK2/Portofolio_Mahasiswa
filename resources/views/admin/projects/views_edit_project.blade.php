@@ -339,8 +339,8 @@
                 <!-- Collaborative Project Toggle -->
                 <div class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 md:p-5 rounded-2xl border border-gray-200 dark:border-gray-700 mb-4">
                     <div>
-                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200">Mode Kolaboratif</h4>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Off = project owner only, leader + member akan dihapus dan tugas otomatis disesuaikan.</p>
+                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200" data-translate="collab" data-translate-page="dosen_add_pjt">Mode Kolaboratif</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="desc_collab" data-translate-page="dosen_add_pjt">Off = project owner only, leader + member akan dihapus dan tugas otomatis disesuaikan.</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span id="collaborative-status" class="text-sm font-semibold text-green-600 dark:text-green-300">{{ old('is_collaborative', $project->is_collaborative ?? 1) ? 'On' : 'Off' }}</span>
@@ -370,13 +370,13 @@
                 </div>
                 <!-- Tambah Tugas -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Tugas (opsional)
                     </label>
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> Tambah Tugas
+                        <span class="text-xl">+</span> <span data-translate="add_task" data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                     </button>
                     @error('tasks')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -446,12 +446,12 @@
                 <div class="flex flex-col sm:flex-row gap-3 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex-1"></div>
                    
-                    <a href="{{ route('admin.projects.index') }}"
+                    <a href="{{ route('admin.projects.index') }}" data-translate="cancel" data-translate-page="dosen_add_pjt"
                        class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto">
                         Batal
                     </a>
                    
-                    <button type="submit"
+                    <button type="submit" data-translate="upd_pjt" data-translate-page="dosen_add_pjt"
                         class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto">
                         Update Project
                     </button>
@@ -922,7 +922,7 @@ function syncTaskRows() {
         }
         function renderTaskUserOptions(selectedId = '') {
             const users = getAllowedTaskUsers();
-            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            let html = '<option data-translate="pick_rsp" data-translate-page="dosen_add_pjt" value="">-- Pilih Penanggung Jawab --</option>';
             users.forEach(user => {
                 const selected = String(user.id) === String(selectedId) ? ' selected' : '';
                 html += `<option value="${user.id}"${selected}>${user.name}</option>`;
@@ -942,13 +942,13 @@ function syncTaskRows() {
                 ${hiddenId}
                 <div class="grid gap-4 md:grid-cols-3 items-end">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
                         <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
                     </div>
                     <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>

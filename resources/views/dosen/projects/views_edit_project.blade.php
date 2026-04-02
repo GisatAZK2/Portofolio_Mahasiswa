@@ -121,7 +121,7 @@
                 
                 <!-- Pemilik Project dengan Search -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    <label data-translate="own_pjt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Pemilik Project (Owner) <span class="text-red-500">*</span>
                     </label>
                     <!-- Selected Owner Display -->
@@ -157,12 +157,12 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">Pilih</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
-                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
-                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
-                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10" data-translate="pick" data-translate-page="dosen_add_pjt">Pilih</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="mhs" data-translate-page="dosen_add_pjt">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="agkt" data-translate-page="dosen_add_pjt">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="jrs" data-translate-page="dosen_add_pjt">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="khl" data-translate-page="dosen_add_pjt">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20" data-translate="act" data-translate-page="dosen_add_pjt">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="owner-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -360,13 +360,13 @@
                 
                 <!-- Tambah Tugas -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Tugas (opsional)
                     </label>
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> Tambah Tugas
+                        <span class="text-xl">+</span> <span data-translate="add_task" data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                     </button>
                     @error('tasks')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -891,7 +891,7 @@
 
         function renderTaskUserOptions(selectedId = '') {
             const users = getAllowedTaskUsers();
-            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            let html = '<option data-translate="pick_rsp" data-translate-page="dosen_add_pjt" value="">-- Pilih Penanggung Jawab --</option>';
             users.forEach(user => {
                 const selected = String(user.id) === String(selectedId) ? ' selected' : '';
                 html += `<option value="${user.id}"${selected}>${escapeHtml(user.name)}</option>`;
@@ -926,16 +926,16 @@
                 ${hiddenId}
                 <div class="grid gap-4 md:grid-cols-3 items-end">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
                         <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
                     </div>
-                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl" data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
                 </div>
             `;
             container.appendChild(taskItem);
