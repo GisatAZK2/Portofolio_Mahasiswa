@@ -237,6 +237,10 @@ class DashboardController extends Controller
             return redirect()->back()->with('error', 'Halaman portofolio admin atau dosen tidak diperbolehkan dibuka.');
         }
 
+        if (($user->status_pengajuan ?? '') !== 'Di Terima') {
+            return redirect()->back()->with('error', 'Portofolio belum disetujui, akses tidak diizinkan.');
+        }
+
         $user->load([
             'jurusan',
             'angkatan',

@@ -676,7 +676,11 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.portofolio_saya");
+            @if(auth()->check())
+                if (typeof showPageInfo === 'function') {
+                    showPageInfo("popup.portofolio_saya");
+                }
+            @endif
         });
     </script>
 @endsection
