@@ -317,6 +317,8 @@ class DashboardController extends Controller
             $users = User::with(['jurusan', 'keahlian', 'angkatan'])
                 ->withCount([
                     'projects',
+                    'leadingProjects',
+                    'memberProjects',
                     'learning_corners as learning_count',
                     'sertifikats as sertifikats_count',
                 ])
@@ -338,6 +340,14 @@ class DashboardController extends Controller
                 ->withQueryString();
 
             $users->getCollection()->transform(function ($item) {
+                $item->project_total_count = Project::where(function ($query) use ($item) {
+                    $query->where('id_mahasiswa', $item->id)
+                        ->orWhere('leader_id', $item->id)
+                        ->orWhereHas('members', function ($q) use ($item) {
+                            $q->where('user_id', $item->id);
+                        });
+                })->count();
+
                 $item->type = 'mahasiswa';
                 return $item;
             });
@@ -422,10 +432,20 @@ class DashboardController extends Controller
                       ->where('status_pengajuan', 'Di Terima');
             })->count();
 
-        $totalProject = Project::whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })->count();
+           $totalProject = Project::where(function ($query) {
+    $query->whereHas('mahasiswa', function ($q) {
+        $q->where('role', 'mahasiswa')
+          ->where('status_pengajuan', 'Di Terima');
+    })
+    ->orWhereHas('leader', function ($q) {
+        $q->where('role', 'mahasiswa')
+          ->where('status_pengajuan', 'Di Terima');
+    })
+    ->orWhereHas('members', function ($q) {
+        $q->where('role', 'mahasiswa')
+          ->where('status_pengajuan', 'Di Terima');
+    });
+})->count();
 
         $totalSertifikat = Sertifikat::where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')

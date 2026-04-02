@@ -814,7 +814,8 @@ class AdminController extends Controller
 
         // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
         $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-            ->where('role', 'mahasiswa');
+            ->where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Di Terima');
         
         // Filter pencarian berdasarkan nama mahasiswa
         if ($search) {
@@ -868,7 +869,8 @@ class AdminController extends Controller
 
         // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
         $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-            ->where('role', 'mahasiswa');
+            ->where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Di Terima');
         
         // Filter pencarian berdasarkan nama mahasiswa
         if ($search) {
@@ -943,12 +945,12 @@ class AdminController extends Controller
             'link_project'   => 'nullable|url|max:500',
             'link_github'    => 'nullable|url|max:500',
             'link_video'     => 'nullable|url|max:500',
-            'owner'          => 'nullable|exists:users,id', // Owner (id_mahasiswa)
-            'leader'         => 'nullable|exists:users,id', // Leader (leader_id)
+            'owner'          => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima', // Owner (id_mahasiswa)
+            'leader'         => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima', // Leader (leader_id)
             'members'        => 'nullable|array',
-            'members.*'      => 'nullable|exists:users,id',
+            'members.*'      => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
             'tasks'          => 'nullable|array',
-            'tasks.*.user_id' => 'nullable|exists:users,id',
+            'tasks.*.user_id' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
             'tasks.*.name_task' => 'nullable|string|max:255'
         ]);
         
@@ -1046,13 +1048,13 @@ class AdminController extends Controller
             'deskripsi'      => 'nullable|string|max:2000',
             'link_github'    => 'nullable|url|max:500',
             'link_video'     => 'nullable|url|max:500',
-            'owner'          => 'nullable|exists:users,id',
-            'leader'         => 'nullable|exists:users,id',
+            'owner'          => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+            'leader'         => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
             'members'        => 'nullable|array',
-            'members.*'      => 'exists:users,id',
+            'members.*'      => 'exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
             'tasks'          => 'nullable|array',
             'tasks.*.id'     => 'sometimes|nullable|integer|exists:project_tasks,id',
-            'tasks.*.user_id'=> 'nullable|exists:users,id',
+            'tasks.*.user_id'=> 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
             'tasks.*.name_task' => 'nullable|string|max:255',
             'is_collaborative' => 'nullable|boolean'
         ]);

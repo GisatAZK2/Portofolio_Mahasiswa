@@ -130,7 +130,9 @@ class DosenController extends Controller
     {
         $dosen = Auth::user();
         
-        // Jika dosen memiliki filter yang sama dengan mahasiswa
+        // Hanya mahasiswa yang disetujui (status_pengajuan Di Terima), plus filter dosen jika ada
+        $query->where('status_pengajuan', 'Di Terima');
+
         if ($dosen->id_jurusan || $dosen->id_angkatan || $dosen->id_keahlian) {
             $query->where(function($q) use ($dosen) {
                 if ($dosen->id_jurusan) {
@@ -152,20 +154,20 @@ class DosenController extends Controller
     {
         $dosen = Auth::user();
         
-        // Jika dosen memiliki filter yang sama dengan mahasiswa
-        if ($dosen->id_jurusan || $dosen->id_angkatan || $dosen->id_keahlian) {
-            $query->whereHas($relation, function($q) use ($dosen) {
-                if ($dosen->id_jurusan) {
-                    $q->where('id_jurusan', $dosen->id_jurusan);
-                }
-                if ($dosen->id_angkatan) {
-                    $q->where('id_angkatan', $dosen->id_angkatan);
-                }
-                if ($dosen->id_keahlian) {
-                    $q->where('id_keahlian', $dosen->id_keahlian);
-                }
-            });
-        }
+        // Hanya mahasiswa yang disetujui (status_pengajuan Di Terima), plus filter dosen jika ada
+        $query->whereHas($relation, function($q) use ($dosen) {
+            $q->where('status_pengajuan', 'Di Terima');
+
+            if ($dosen->id_jurusan) {
+                $q->where('id_jurusan', $dosen->id_jurusan);
+            }
+            if ($dosen->id_angkatan) {
+                $q->where('id_angkatan', $dosen->id_angkatan);
+            }
+            if ($dosen->id_keahlian) {
+                $q->where('id_keahlian', $dosen->id_keahlian);
+            }
+        });
         
         return $query;
     }

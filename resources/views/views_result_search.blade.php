@@ -184,7 +184,9 @@
                                         <div class="mt-auto">
                                             <div class="text-sm text-gray-600 flex justify-between border-t pt-4">
                                                 <span class="dark:text-gray-50"><strong
-                                                        class="text-gray-900 dark:text-gray-50">{{ $item->projects_count ?? 0 }}</strong>
+                                                        class="text-gray-900 dark:text-gray-50">
+                                                        {{ $item->project_total_count ?? (($item->projects_count ?? 0) + ($item->leading_projects_count ?? 0) + ($item->member_projects_count ?? 0)) }}
+                                                    </strong>
                                                     Project</span>
                                                 <span class="dark:text-gray-50"><strong
                                                         class="text-gray-900 dark:text-gray-50">{{ $item->sertifikats_count ?? 0 }}</strong>

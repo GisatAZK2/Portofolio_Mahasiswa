@@ -96,6 +96,11 @@ public function memberProjects()
     );
 }
 
+public function leadingProjects()
+{
+    return $this->hasMany(Project::class, 'leader_id');
+}
+
 public function assignedTasks()
 {
     return $this->hasMany(ProjectTask::class, 'user_id');
