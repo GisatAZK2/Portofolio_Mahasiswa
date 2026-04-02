@@ -17,11 +17,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
+
     private function authorizeAccess(): void
     {
         $user = Auth::user();
@@ -30,69 +31,101 @@ class AdminController extends Controller
             abort(Response::HTTP_UNAUTHORIZED, 'Silakan login terlebih dahulu.');
         }
 
-        if ($user->role !== 'admin') {
+        // Admin diizinkan mengakses untuk membantu membuat portofolio
+        if ($user->role !== 'admin' && $user->role !== 'superadmin') {
             abort(Response::HTTP_FORBIDDEN, 'Akses hanya untuk Administrator.');
         }
     }
 
     private function createProjectTasks(Project $project, array $tasks)
-    {
-        $project->load('members');
+{
+    // Reload semua relasi biar fresh (IMPORTANT)
+    $project = $project->fresh(['members']);
 
-        $allowedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
-            ->merge($project->members->pluck('id'))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+    // Kumpulkan semua user ID yang diizinkan
+    $allowedUserIds = collect();
 
-        $savedTaskIds = [];
-
-        foreach ($tasks as $task) {
-            if (! isset($task['user_id'], $task['name_task'])) {
-                continue;
-            }
-
-            $taskId = isset($task['id']) ? (int) $task['id'] : null;
-            $taskUserId = (int) $task['user_id'];
-            $taskName = trim($task['name_task']);
-
-            if ($taskUserId === 0 || $taskName === '') {
-                continue;
-            }
-
-            if (! in_array($taskUserId, $allowedUserIds, true)) {
-                abort(422, 'Beberapa tugas memiliki user yang bukan owner, leader, atau member project.');
-            }
-
-            if ($taskId) {
-                $existingTask = ProjectTask::where('project_id', $project->id)
-                    ->where('id', $taskId)
-                    ->first();
-
-                if ($existingTask) {
-                    $existingTask->update([
-                        'user_id' => $taskUserId,
-                        'name_task' => $taskName,
-                    ]);
-                    $savedTaskIds[] = $existingTask->id;
-                    continue;
-                }
-            }
-
-            $newTask = ProjectTask::create([
-                'project_id' => $project->id,
-                'user_id' => $taskUserId,
-                'name_task' => $taskName,
-                'is_done' => false,
-            ]);
-
-            $savedTaskIds[] = $newTask->id;
-        }
-
-        return $savedTaskIds;
+    // Owner
+    if (!empty($project->id_mahasiswa)) {
+        $allowedUserIds->push((int) $project->id_mahasiswa);
     }
 
+    // Leader
+    if (!empty($project->leader_id)) {
+        $allowedUserIds->push((int) $project->leader_id);
+    }
+
+    // Members
+    $allowedUserIds = $allowedUserIds
+        ->merge(
+            $project->members->pluck('id')->map(fn($id) => (int) $id)
+        )
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
+    $savedTaskIds = [];
+
+    foreach ($tasks as $task) {
+
+        if (!isset($task['user_id'], $task['name_task'])) {
+            continue;
+        }
+
+        $taskId     = isset($task['id']) ? (int) $task['id'] : null;
+        $taskUserId = (int) $task['user_id'];
+        $taskName   = trim($task['name_task']);
+
+        if ($taskUserId === 0 || $taskName === '') {
+            continue;
+        }
+
+        // 🔥 DEBUG OPTIONAL (kalau mau cek)
+        // Log::info('Checking task user', [
+        //     'task_user_id' => $taskUserId,
+        //     'allowed' => $allowedUserIds
+        // ]);
+
+        if (!in_array($taskUserId, $allowedUserIds, true)) {
+            Log::warning('Task user not allowed for project', [
+                'project_id' => $project->id,
+                'task_user_id' => $taskUserId,
+                'allowed_users' => $allowedUserIds
+            ]);
+            continue;
+        }
+
+        // UPDATE
+        if ($taskId) {
+            $existingTask = ProjectTask::where('project_id', $project->id)
+                ->where('id', $taskId)
+                ->first();
+
+            if ($existingTask) {
+                $existingTask->update([
+                    'user_id'   => $taskUserId,
+                    'name_task' => $taskName,
+                ]);
+
+                $savedTaskIds[] = $existingTask->id;
+                continue;
+            }
+        }
+
+        // CREATE
+        $newTask = ProjectTask::create([
+            'project_id' => $project->id,
+            'user_id'    => $taskUserId,
+            'name_task'  => $taskName,
+            'is_done'    => false,
+        ]);
+
+        $savedTaskIds[] = $newTask->id;
+    }
+
+    return $savedTaskIds;
+}
     public function index() {
         $this->authorizeAccess();
 
@@ -770,7 +803,9 @@ class AdminController extends Controller
         return view('admin.project', compact('projects'));
     }
 
-    public function TambahProjects(Request $request){
+    
+    public function TambahProjects(Request $request)
+    {
         $this->authorizeAccess();
         $search = $request->input('search');
         $angkatan = $request->input('angkatan');
@@ -822,57 +857,70 @@ class AdminController extends Controller
     }
 
     public function EditProjects($id)
-{
-    $this->authorizeAccess();
-    
-    // Get search and filter inputs
-    $search = request()->input('search');
-    $angkatan = request()->input('angkatan');
-    $jurusan = request()->input('jurusan');
-    $keahlian = request()->input('keahlian');
-
-    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
-    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-        ->where('role', 'mahasiswa');
-    
-    // Filter pencarian berdasarkan nama mahasiswa
-    if ($search) {
-        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
-    }
-
-    // Filter berdasarkan angkatan
-    if ($angkatan) {
-        $query->where('id_angkatan', $angkatan);
-    }
-
-    // Filter berdasarkan jurusan
-    if ($jurusan) {
-        $query->where('id_jurusan', $jurusan);
-    }
-
-    // Filter berdasarkan keahlian
-    if ($keahlian) {
-        $query->where('id_keahlian', $keahlian);
-    }
-
-    // Ambil data dengan pagination
-    $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-    // Ambil data untuk dropdown filter
-    $angkatans = Angkatan::all();
-    $jurusans = Jurusan::all();
-    $keahlians = Keahlian::all();
-
-    // Get project data
-    $project = Project::with('members')
-        ->where('id', $id)
-        ->firstOrFail();
-
-    return view('admin.projects.views_edit_project', compact('project', 'users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
-}
-
-    public function StoreProject(Request $request) {
+    {
         $this->authorizeAccess();
+        
+        // Get search and filter inputs
+        $search = request()->input('search');
+        $angkatan = request()->input('angkatan');
+        $jurusan = request()->input('jurusan');
+        $keahlian = request()->input('keahlian');
+
+        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+            ->where('role', 'mahasiswa');
+        
+        // Filter pencarian berdasarkan nama mahasiswa
+        if ($search) {
+            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        }
+
+        // Filter berdasarkan angkatan
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
+
+        // Filter berdasarkan jurusan
+        if ($jurusan) {
+            $query->where('id_jurusan', $jurusan);
+        }
+
+        // Filter berdasarkan keahlian
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
+
+        // Ambil data dengan pagination
+        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        // Ambil data untuk dropdown filter
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        // Get project data
+        $project = Project::with(['members', 'tasks'])
+            ->where('id', $id)
+            ->firstOrFail();
+
+        return view('admin.projects.views_edit_project', compact(
+            'project', 
+            'users', 
+            'angkatans', 
+            'jurusans', 
+            'keahlians', 
+            'search', 
+            'angkatan', 
+            'jurusan', 
+            'keahlian'
+        ));
+    }
+
+    public function StoreProject(Request $request) 
+    {
+        $this->authorizeAccess();
+        
+        // Merge dan filter members
         $request->merge([
             'members' => collect($request->members)
                 ->filter(fn ($id) => !empty($id))
@@ -880,28 +928,30 @@ class AdminController extends Controller
                 ->all(),
             'tasks' => collect($request->input('tasks', []))
                 ->filter(fn($task) => is_array($task) && (
-                    !empty($task['user_id']) || !empty(trim($task['name_task'] ?? ''))
+                    !empty($task['user_id']) && !empty(trim($task['name_task'] ?? ''))
                 ))
                 ->values()
                 ->all()
         ]);
         
-        $request->validate([
+        // Validasi
+        $validated = $request->validate([
             'nama_project'   => 'required|string|max:255',
-            'deskripsi'      => 'nullable|string|max:2000', // Diperbesar menjadi 2000 karakter
+            'deskripsi'      => 'nullable|string|max:2000',
             'tanggal_mulai'  => 'required|date',
             'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
             'link_project'   => 'nullable|url|max:500',
             'link_github'    => 'nullable|url|max:500',
             'link_video'     => 'nullable|url|max:500',
-            'leader' => 'nullable|exists:users,id',
-            'members' => 'nullable|array',
-            'members.*' => 'nullable|exists:users,id|different:leader',
-            'tasks' => 'nullable|array',
-            'tasks.*.user_id' => 'required_with:tasks|exists:users,id',
-            'tasks.*.name_task' => 'required_with:tasks|string|max:255'
+            'owner'          => 'nullable|exists:users,id', // Owner (id_mahasiswa)
+            'leader'         => 'nullable|exists:users,id', // Leader (leader_id)
+            'members'        => 'nullable|array',
+            'members.*'      => 'nullable|exists:users,id',
+            'tasks'          => 'nullable|array',
+            'tasks.*.user_id' => 'nullable|exists:users,id',
+            'tasks.*.name_task' => 'nullable|string|max:255'
         ]);
-
+        
         // Siapkan content sebagai JSON
         $content = [
             'nama_project' => $request->nama_project,
@@ -910,38 +960,47 @@ class AdminController extends Controller
             'link_github' => $request->link_github,
             'link_video' => $request->link_video
         ];
-
+        
         // Filter out null values
         $content = array_filter($content, fn($value) => !is_null($value) && $value !== '');
-
-        // Validasi minimal ada content yang diisi (opsional, bisa dihapus jika tidak diperlukan)
+        
+        // Validasi minimal ada content yang diisi
         if (empty($content)) {
             return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (deskripsi, link_project, link_github, atau link_video)']);
         }
-
+        
+        // Set owner dan leader
+        $ownerId = $request->owner ?: null;
+        $leaderId = $request->leader ?: null;
+        
+        // Jika leader tidak diisi, gunakan owner sebagai leader
+        if (!$leaderId && $ownerId) {
+            $leaderId = $ownerId;
+        }
+        
         // Buat project baru
         $project = Project::create([
             'tanggal_mulai'  => $request->tanggal_mulai,
             'tanggal_akhir'  => $request->tanggal_akhir,
             'isi_content'    => $content,
-            'id_mahasiswa'   => $request->leader, // id_mahasiswa diisi dengan leader (pemimpin project)
-            'leader_id'      => $request->leader,
+            'id_mahasiswa'   => $ownerId, // Owner project
+            'leader_id'      => $leaderId, // Leader project
         ]);
-
+        
         // Proses members (rekan project)
         $members = collect($request->members ?? [])
             ->filter() // Hapus nilai kosong
-            ->reject(fn($id) => $id == $request->leader) // Pastikan tidak ada duplikasi dengan leader
+            ->reject(fn($id) => $id == $ownerId || $id == $leaderId) // Pastikan tidak duplikasi dengan owner/leader
             ->map(fn($id) => (int) $id)
             ->unique() // Hapus duplikasi ID
             ->values()
             ->all();
-
+        
         // Attach members ke project (jika ada)
         if (!empty($members)) {
             $project->members()->attach($members);
         }
-
+        
         // Proses tugas per orang jika dikirim
         $tasks = collect($request->input('tasks', []))->filter(function ($task) {
             return is_array($task)
@@ -949,135 +1008,149 @@ class AdminController extends Controller
                 && !empty(trim($task['name_task'] ?? ''));
         })->values()->all();
 
+       
+        // Hanya proses tasks jika ada
         if (!empty($tasks)) {
             $this->createProjectTasks($project, $tasks);
         }
-
-        return redirect()->route('admin.projects.index') // Perhatikan route-nya, sesuaikan dengan kebutuhan
+        
+        return redirect()->route('admin.projects.index')
             ->with('success', 'Project berhasil ditambahkan!')
-            ->with('clear_local_storage', true); // Tambahkan flag untuk membersihkan localStorage di frontend
+            ->with('clear_local_storage', true);
     }
+    
+    public function UpdateProject(Request $request, $id) 
+    {
+        $this->authorizeAccess();
+        
+        $project = Project::findOrFail($id);
+        
+        $request->merge([
+            'members' => collect($request->members)
+                ->filter(fn ($id) => !empty($id))
+                ->values()
+                ->all(),
+            'tasks' => collect($request->input('tasks', []))
+                ->filter(fn($task) => is_array($task) && (
+                    !empty($task['user_id']) && !empty(trim($task['name_task'] ?? ''))
+                ))
+                ->values()
+                ->all()
+        ]);
+        
+        $validated = $request->validate([
+            'nama_project'   => 'required|string|max:255',
+            'tanggal_mulai'  => 'required|date',
+            'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
+            'link_project'   => 'nullable|url|max:255',
+            'deskripsi'      => 'nullable|string|max:2000',
+            'link_github'    => 'nullable|url|max:500',
+            'link_video'     => 'nullable|url|max:500',
+            'owner'          => 'nullable|exists:users,id',
+            'leader'         => 'nullable|exists:users,id',
+            'members'        => 'nullable|array',
+            'members.*'      => 'exists:users,id',
+            'tasks'          => 'nullable|array',
+            'tasks.*.id'     => 'sometimes|nullable|integer|exists:project_tasks,id',
+            'tasks.*.user_id'=> 'nullable|exists:users,id',
+            'tasks.*.name_task' => 'nullable|string|max:255',
+            'is_collaborative' => 'nullable|boolean'
+        ]);
+        
+        // Prepare content array
+        $content = [];
+        if ($request->filled('nama_project')) $content['nama_project'] = $request->nama_project;
+        if ($request->filled('deskripsi')) $content['deskripsi'] = $request->deskripsi;
+        if ($request->filled('link_project')) $content['link_project'] = $request->link_project;
+        if ($request->filled('link_github')) $content['link_github'] = $request->link_github;
+        if ($request->filled('link_video')) $content['link_video'] = $request->link_video;
+        
+        if (empty($content)) {
+            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
+        }
+        
+        $ownerId = $request->owner ?: null;
+        $leaderId = $request->leader ?: null;
+        $isCollaborative = $request->boolean('is_collaborative', true);
 
-    
-public function UpdateProject(Request $request, $id) 
-{
-    $this->authorizeAccess();
-    
-    $project = Project::findOrFail($id);
-    
-    $request->merge([
-        'members' => collect($request->members)
-            ->filter(fn ($id) => !empty($id))
+        // Jika leader tidak diisi atau mode non-kolaboratif, gunakan owner sebagai leader
+        if (!$leaderId && $ownerId) {
+            $leaderId = $ownerId;
+        }
+        if (!$isCollaborative && $ownerId) {
+            $leaderId = $ownerId;
+        }
+
+        // Update project
+        $project->update([
+            'tanggal_mulai'  => $request->tanggal_mulai,
+            'tanggal_akhir'  => $request->tanggal_akhir,
+            'isi_content'    => $content,
+            'id_mahasiswa'   => $ownerId,
+            'leader_id'      => $leaderId,
+        ]);
+
+        // Handle members
+        $members = collect($request->members ?? [])
+            ->filter()
+            ->reject(fn($memberId) => $memberId == $ownerId || $memberId == $leaderId)
+            ->map(fn($id) => (int) $id)
             ->values()
-            ->all(),
-        'tasks' => collect($request->input('tasks', []))
-            ->filter(fn($task) => is_array($task) && (
-                !empty($task['user_id']) || !empty(trim($task['name_task'] ?? ''))
-            ))
+            ->all();
+
+        if (!$isCollaborative) {
+            $members = [];
+        }
+        
+        // Handle tasks
+        $submittedTasks = collect($request->input('tasks', []))
+            ->filter(fn($task) => !empty($task['user_id']) && !empty(trim($task['name_task'] ?? '')))
             ->values()
-            ->all()
-    ]);
+            ->all();
+        
+        if (!empty($submittedTasks)) {
+            $savedTaskIds = $this->createProjectTasks($project, $submittedTasks);
+            
+            // Hapus task yang tidak ada dalam list yang disimpan
+            if (!empty($savedTaskIds)) {
+                ProjectTask::where('project_id', $project->id)
+                    ->whereNotIn('id', $savedTaskIds)
+                    ->delete();
+            } else {
+                ProjectTask::where('project_id', $project->id)->delete();
+            }
+        } else {
+            // Jika tidak ada tasks yang disubmit, hapus semua tasks
+            ProjectTask::where('project_id', $project->id)->delete();
+        }
 
-    $request->validate([
-        'nama_project'   => 'required|string|max:255',
-        'tanggal_mulai'  => 'required|date',
-        'tanggal_akhir'  => 'nullable|date|after_or_equal:tanggal_mulai',
-        'link_project'   => 'nullable|url|max:255',
-        'deskripsi'      => 'nullable|string|max:255',
-        'link_github'    => 'nullable|url|max:500',
-        'link_video'     => 'nullable|url|max:500',
-        'leader'         => 'nullable|exists:users,id',
-        'members'        => 'nullable|array',
-        'members.*'      => 'exists:users,id',
-        'tasks'          => 'nullable|array',
-        'tasks.*.id'     => 'sometimes|nullable|integer|exists:project_tasks,id',
-        'tasks.*.user_id'=> 'required_with:tasks|exists:users,id',
-        'tasks.*.name_task' => 'required_with:tasks|string|max:255'
-    ]);
-    
-    // Prepare content array for isi_content JSON field
-    $content = [];
-    
-    if ($request->filled('nama_project')) {
-        $content['nama_project'] = $request->nama_project;
-    }
-    
-    if ($request->filled('deskripsi')) {
-        $content['deskripsi'] = $request->deskripsi;
-    }
-    
-    if ($request->filled('link_project')) {
-        $content['link_project'] = $request->link_project;
-    }
-    
-    if ($request->filled('link_github')) {
-        $content['link_github'] = $request->link_github;
-    }
-    
-    if ($request->filled('link_video')) {
-        $content['link_video'] = $request->link_video;
-    }
-    
-    // Check if at least one content field is filled
-    if (empty($content)) {
-        return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
-    }
-    
-    // Update project
-    $project->update([
-        'tanggal_mulai'  => $request->tanggal_mulai,
-        'tanggal_akhir'  => $request->tanggal_akhir,
-        'isi_content'    => $content,
-        'id_mahasiswa'   => $request->leader,
-        'leader_id'      => $request->leader,
-    ]);
-    
-    // Handle members
-    $members = collect($request->members ?? [])
-        ->filter()
-        ->reject(fn($memberId) => $memberId == $request->leader)
-        ->map(fn($id) => (int) $id)
-        ->values()
-        ->all();
+        // Cleanup tasks yang tidak lagi terkait dengan owner/leader/member saat update
+        $allowedUserIds = collect([$ownerId, $leaderId])
+            ->merge($members)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
 
-    $project->members()->sync($members);
+        if (!empty($allowedUserIds)) {
+            ProjectTask::where('project_id', $project->id)
+                ->whereNotIn('user_id', $allowedUserIds)
+                ->delete();
+        } else {
+            ProjectTask::where('project_id', $project->id)->delete();
+        }
 
-    $submittedTasks = collect($request->input('tasks', []))
-        ->map(fn($task) => [
-            'id' => $task['id'] ?? null,
-            'user_id' => $task['user_id'] ?? null,
-            'name_task' => trim($task['name_task'] ?? ''),
-        ])
-        ->filter(fn($task) => !empty($task['user_id']) && !empty($task['name_task']))
-        ->values()
-        ->all();
+        if (!$isCollaborative && $ownerId) {
+            ProjectTask::where('project_id', $project->id)
+                ->where('user_id', '!=', $ownerId)
+                ->delete();
+        }
 
-    $savedTaskIds = $this->createProjectTasks($project, $submittedTasks);
-    
-    if (!empty($savedTaskIds)) {
-        ProjectTask::where('project_id', $project->id)
-            ->whereNotIn('id', $savedTaskIds)
-            ->delete();
-    } else {
-        ProjectTask::where('project_id', $project->id)->delete();
+        return redirect()->route('admin.projects.index')
+            ->with('success', 'Project berhasil diperbarui!');
     }
 
-    $allowedUserIds = collect([$project->id_mahasiswa])
-        ->when($project->leader_id, fn($collection, $leaderId) => $collection->push($leaderId))
-        ->merge($members)
-        ->filter()
-        ->unique()
-        ->values()
-        ->all();
-
-    ProjectTask::where('project_id', $project->id)
-        ->whereNotIn('user_id', $allowedUserIds)
-        ->delete();
     
-    return redirect()->route('admin.projects.index')
-        ->with('success', 'Project berhasil diperbarui!');
-}
-
 
    public function DestroyProject(Project $project)
     {

@@ -482,13 +482,31 @@ protected function createProjectTasks(Project $project, array $tasks, bool $skip
             $isLeader = $project->leader_id === $user->id;
             $isMember = $project->members->contains('id', $user->id);
 
-            $showTaskSection = $isOwner || $isLeader || $isMember;
-            $canSeeAllTasks = $isOwner || $isLeader;
+            if ($user->role === 'admin') {
+                $showTaskSection = true;
+                $canSeeAllTasks = true;
+                $visibleTasks = $project->tasks;
+            } elseif ($user->role === 'dosen') {
+                $showTaskSection = true;
+                $canSeeAllTasks = false;
+                $visibleTasks = $project->tasks->filter(function ($task) use ($user) {
+                    if (!$task->user) {
+                        return false;
+                    }
 
-            if ($showTaskSection) {
-                $visibleTasks = $canSeeAllTasks
-                    ? $project->tasks
-                    : $project->tasks->where('user_id', $user->id)->values();
+                    return $task->user->id_angkatan === $user->id_angkatan
+                        && $task->user->id_jurusan === $user->id_jurusan
+                        && $task->user->id_keahlian === $user->id_keahlian;
+                })->values();
+            } else {
+                $showTaskSection = $isOwner || $isLeader || $isMember;
+                $canSeeAllTasks = $isOwner || $isLeader;
+
+                if ($showTaskSection) {
+                    $visibleTasks = $canSeeAllTasks
+                        ? $project->tasks
+                        : $project->tasks->where('user_id', $user->id)->values();
+                }
             }
         }
 

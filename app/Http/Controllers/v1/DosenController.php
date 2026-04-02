@@ -35,63 +35,96 @@ class DosenController extends Controller
         }
     }
 
+    
     private function createProjectTasks(Project $project, array $tasks)
-    {
-        $project->load('members');
+{
+    // Reload semua relasi biar fresh (IMPORTANT)
+    $project = $project->fresh(['members']);
 
-        $allowedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
-            ->merge($project->members->pluck('id'))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+    // Kumpulkan semua user ID yang diizinkan
+    $allowedUserIds = collect();
 
-        $savedTaskIds = [];
+    // Owner
+    if (!empty($project->id_mahasiswa)) {
+        $allowedUserIds->push((int) $project->id_mahasiswa);
+    }
 
-        foreach ($tasks as $task) {
-            if (! isset($task['user_id'], $task['name_task'])) {
-                continue;
-            }
+    // Leader
+    if (!empty($project->leader_id)) {
+        $allowedUserIds->push((int) $project->leader_id);
+    }
 
-            $taskId = isset($task['id']) ? (int) $task['id'] : null;
-            $taskUserId = (int) $task['user_id'];
-            $taskName = trim($task['name_task']);
+    // Members
+    $allowedUserIds = $allowedUserIds
+        ->merge(
+            $project->members->pluck('id')->map(fn($id) => (int) $id)
+        )
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
 
-            if ($taskUserId === 0 || $taskName === '') {
-                continue;
-            }
+    $savedTaskIds = [];
 
-            if (! in_array($taskUserId, $allowedUserIds, true)) {
-                abort(422, 'Beberapa tugas memiliki user yang bukan owner, leader, atau member project.');
-            }
+    foreach ($tasks as $task) {
 
-            if ($taskId) {
-                $existingTask = ProjectTask::where('project_id', $project->id)
-                    ->where('id', $taskId)
-                    ->first();
-
-                if ($existingTask) {
-                    $existingTask->update([
-                        'user_id' => $taskUserId,
-                        'name_task' => $taskName,
-                    ]);
-                    $savedTaskIds[] = $existingTask->id;
-                    continue;
-                }
-            }
-
-            $newTask = ProjectTask::create([
-                'project_id' => $project->id,
-                'user_id' => $taskUserId,
-                'name_task' => $taskName,
-                'is_done' => false,
-            ]);
-
-            $savedTaskIds[] = $newTask->id;
+        if (!isset($task['user_id'], $task['name_task'])) {
+            continue;
         }
 
-        return $savedTaskIds;
+        $taskId     = isset($task['id']) ? (int) $task['id'] : null;
+        $taskUserId = (int) $task['user_id'];
+        $taskName   = trim($task['name_task']);
+
+        if ($taskUserId === 0 || $taskName === '') {
+            continue;
+        }
+
+        // 🔥 DEBUG OPTIONAL (kalau mau cek)
+        // Log::info('Checking task user', [
+        //     'task_user_id' => $taskUserId,
+        //     'allowed' => $allowedUserIds
+        // ]);
+
+        if (!in_array($taskUserId, $allowedUserIds, true)) {
+            Log::warning('Task user not allowed for project', [
+                'project_id' => $project->id,
+                'task_user_id' => $taskUserId,
+                'allowed_users' => $allowedUserIds
+            ]);
+            continue;
+        }
+
+        // UPDATE
+        if ($taskId) {
+            $existingTask = ProjectTask::where('project_id', $project->id)
+                ->where('id', $taskId)
+                ->first();
+
+            if ($existingTask) {
+                $existingTask->update([
+                    'user_id'   => $taskUserId,
+                    'name_task' => $taskName,
+                ]);
+
+                $savedTaskIds[] = $existingTask->id;
+                continue;
+            }
+        }
+
+        // CREATE
+        $newTask = ProjectTask::create([
+            'project_id' => $project->id,
+            'user_id'    => $taskUserId,
+            'name_task'  => $taskName,
+            'is_done'    => false,
+        ]);
+
+        $savedTaskIds[] = $newTask->id;
     }
+
+    return $savedTaskIds;
+}
 
     private function getdosenFilterScope($query)
     {
@@ -102,6 +135,9 @@ class DosenController extends Controller
             $query->where(function($q) use ($dosen) {
                 if ($dosen->id_jurusan) {
                     $q->where('id_jurusan', $dosen->id_jurusan);
+                }
+                if ($dosen->id_angkatan) {
+                    $q->where('id_angkatan', $dosen->id_angkatan);
                 }
                 if ($dosen->id_keahlian) {
                     $q->where('id_keahlian', $dosen->id_keahlian);
@@ -121,6 +157,9 @@ class DosenController extends Controller
             $query->whereHas($relation, function($q) use ($dosen) {
                 if ($dosen->id_jurusan) {
                     $q->where('id_jurusan', $dosen->id_jurusan);
+                }
+                if ($dosen->id_angkatan) {
+                    $q->where('id_angkatan', $dosen->id_angkatan);
                 }
                 if ($dosen->id_keahlian) {
                     $q->where('id_keahlian', $dosen->id_keahlian);
@@ -762,9 +801,18 @@ class DosenController extends Controller
     public function projects(){
         $this->authorizeAccess();
         
-        $projects = Project::with(['mahasiswa', 'leader'])
-            ->whereHas('mahasiswa', function($query) {
-                $this->getdosenFilterScope($query);
+        $projects = Project::with(['mahasiswa', 'leader', 'members'])
+            ->where(function($query) {
+                // include projects where owner, leader, or members are in dosen filter scope
+                $query->whereHas('mahasiswa', function($q) {
+                    $this->getdosenFilterScope($q);
+                })
+                ->orWhereHas('leader', function($q) {
+                    $this->getdosenFilterScope($q);
+                })
+                ->orWhereHas('members', function($q) {
+                    $this->getdosenFilterScope($q);
+                });
             })
             ->latest()
             ->paginate(12);
@@ -997,7 +1045,7 @@ public function UpdateProject(Request $request, $id)
         'link_video'     => 'nullable|url|max:500',
         'owner'          => 'required|exists:users,id',
         'leader'         => 'nullable|exists:users,id',
-        'use_leader'     => 'nullable|boolean',
+        'is_collaborative' => 'boolean',
         'members'        => 'nullable|array',
         'members.*'      => 'nullable|exists:users,id',
         'tasks'          => 'nullable|array',
@@ -1005,8 +1053,6 @@ public function UpdateProject(Request $request, $id)
         'tasks.*.user_id'=> 'required_with:tasks|exists:users,id',
         'tasks.*.name_task' => 'required_with:tasks|string|max:255'
     ]);
-
-    $useLeader = $request->boolean('use_leader', false);
 
     // Prepare content array
     $content = [
@@ -1026,66 +1072,118 @@ public function UpdateProject(Request $request, $id)
             ->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
     }
     
+    $isCollaborative = $request->boolean('is_collaborative', true);
+    
     // Update project
     $project->update([
         'tanggal_mulai' => $request->tanggal_mulai,
         'tanggal_akhir' => $request->tanggal_akhir,
         'isi_content'   => $content,
         'id_mahasiswa'  => $request->owner,
-        'leader_id'     => $useLeader ? $request->leader : null,
+        'leader_id'     => $isCollaborative ? $request->leader : null,
+        'is_collaborative' => $isCollaborative,
     ]);
 
-    // =========================
-    // HANDLE MEMBERS (FIXED)
-    // =========================
-    
-    $members = collect($request->members ?? [])
-        ->filter()
-        ->reject(fn($memberId) => $memberId == $request->owner || ($useLeader && $memberId == $request->leader))
-        ->map(fn($id) => (int) $id)
-        ->unique()
-        ->values()
-        ->all();
+    // Handle members berdasarkan mode kolaboratif
+    if ($isCollaborative) {
+        $members = collect($request->members ?? [])
+            ->filter()
+            ->reject(fn($memberId) => $memberId == $request->owner || $memberId == $request->leader)
+            ->map(fn($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
 
-    // Ini aman walaupun kosong
-    $project->members()->sync($members);
-
-    $submittedTasks = collect($request->input('tasks', []))
-        ->map(fn($task) => [
-            'id' => $task['id'] ?? null,
-            'user_id' => $task['user_id'] ?? null,
-            'name_task' => trim($task['name_task'] ?? ''),
-        ])
-        ->filter(fn($task) => !empty($task['user_id']) && !empty($task['name_task']))
-        ->values()
-        ->all();
-
-    $savedTaskIds = $this->createProjectTasks($project, $submittedTasks);
-
-    if (!empty($savedTaskIds)) {
-        ProjectTask::where('project_id', $project->id)
-            ->whereNotIn('id', $savedTaskIds)
-            ->delete();
+        $project->members()->sync($members);
     } else {
-        ProjectTask::where('project_id', $project->id)->delete();
+        // Mode non-kolaboratif: hapus semua members
+        $project->members()->sync([]);
     }
 
-    $allowedUserIds = collect([$project->id_mahasiswa])
-        ->when($project->leader_id, fn($collection, $leaderId) => $collection->push($leaderId))
-        ->merge($members)
-        ->filter()
-        ->unique()
-        ->values()
-        ->all();
-
-    ProjectTask::where('project_id', $project->id)
-        ->whereNotIn('user_id', $allowedUserIds)
-        ->delete();
+    // Handle tasks
+    $this->handleTasks($project, $request->input('tasks', []), $isCollaborative, $request->owner, $request->leader);
     
     return redirect()->route('dosen.projects.index')
         ->with('success', 'Project berhasil diperbarui!');
 }
 
+private function handleTasks($project, array $tasks, bool $isCollaborative, $ownerId, $leaderId = null)
+{
+    $project = $project->fresh(['members', 'tasks']);
+
+    // Kumpulkan semua user yang diizinkan
+    $allowedUserIds = collect([(int) $ownerId]);
+
+    if ($isCollaborative) {
+        if ($leaderId) {
+            $allowedUserIds->push((int) $leaderId);
+        }
+        $allowedUserIds = $allowedUserIds->merge(
+            $project->members->pluck('id')->map(fn($id) => (int) $id)
+        );
+    }
+
+    $allowedUserIds = $allowedUserIds->filter()->unique()->values()->all();
+
+    $keptTaskIds = [];
+
+    foreach ($tasks as $task) {
+        $taskId     = isset($task['id']) && is_numeric($task['id']) ? (int) $task['id'] : null;
+        $userId     = isset($task['user_id']) && is_numeric($task['user_id']) ? (int) $task['user_id'] : null;
+        $nameTask   = isset($task['name_task']) ? trim($task['name_task']) : '';
+
+        // Lewati jika tidak ada user_id atau nama tugas kosong
+        if (!$userId || empty($nameTask)) {
+            continue;
+        }
+
+        // Cek apakah user masih diizinkan
+        if (!in_array($userId, $allowedUserIds, true)) {
+            continue;
+        }
+
+        if ($taskId) {
+            // Update existing task
+            $existing = ProjectTask::where('project_id', $project->id)
+                ->where('id', $taskId)
+                ->first();
+
+            if ($existing) {
+                $existing->update([
+                    'user_id'   => $userId,
+                    'name_task' => $nameTask,
+                ]);
+                $keptTaskIds[] = $existing->id;
+                continue;
+            }
+        }
+
+        // Create new task
+        $newTask = ProjectTask::create([
+            'project_id' => $project->id,
+            'user_id'    => $userId,
+            'name_task'  => $nameTask,
+            'is_done'    => false,
+        ]);
+
+        $keptTaskIds[] = $newTask->id;
+    }
+
+    // Hapus task yang tidak ada di daftar yang dikirim (kecuali yang sudah dihapus di frontend)
+    if (!empty($keptTaskIds)) {
+        ProjectTask::where('project_id', $project->id)
+            ->whereNotIn('id', $keptTaskIds)
+            ->delete();
+    } else {
+        // Tidak ada task yang valid → hapus semua
+        ProjectTask::where('project_id', $project->id)->delete();
+    }
+
+    // Cleanup akhir: hapus task milik user yang sudah tidak boleh (misal leader diubah, member dihapus)
+    ProjectTask::where('project_id', $project->id)
+        ->whereNotIn('user_id', $allowedUserIds)
+        ->delete();
+}
    public function DestroyProject($id)
 {
     $project = Project::find($id);

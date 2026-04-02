@@ -10,6 +10,10 @@
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 hover:shadow-md transition-shadow duration-300">
 
                 <!-- Project Status Bar -->
+                @php
+                    $currentUserId = auth()->id();
+                    $canEdit = $currentUserId && ($project->id_mahasiswa == $currentUserId || $project->leader_id == $currentUserId);
+                @endphp
                 <div class="mb-6">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-3">
@@ -28,6 +32,18 @@
                             class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white order-first sm:order-none w-full sm:w-auto">
                             {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
                         </h1>
+
+                        @if ($canEdit)
+                            <a href="{{ route('project.edit', $project->id) }}"
+                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5l3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                                <span data-translate="edit_project" data-translate-page="project_detail">Edit</span>
+                            </a>
+                        @endif
                     </div>
 
                     <!-- Progress Bar -->
@@ -263,10 +279,7 @@
                                                             {{ $task->is_done ? 'Selesai' : 'Dalam Proses' }}
                                                         </span>
                                                         @auth
-                                                            @if(!$task->is_done && (
-                                                                auth()->user()->role !== 'mahasiswa' ||
-                                                                auth()->id() === $task->user_id
-                                                            ))
+                                                            @if(!$task->is_done && auth()->user()->role === 'mahasiswa' && auth()->id() === $task->user_id)
                                                                 <form method="POST" action="{{ route('project.tasks.complete', [$project->id, $task->id]) }}">
                                                                     @csrf
                                                                     @method('PATCH')

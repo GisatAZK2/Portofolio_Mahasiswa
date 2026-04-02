@@ -135,17 +135,40 @@
                                 $mahasiswa = $project->mahasiswa;
                                 $leader = $project->leader;
                                 $isSameUser = $mahasiswa && $leader && $mahasiswa->id === $leader->id;
+
+                                // Dosen scope check (owner, leader, members harus sama dengan scope dosen agar interactive)
+                                $dosen = auth()->user();
+                                $isMahasiswaInScope = fn($user) => $user && (
+                                    (!$dosen->id_jurusan || $user->id_jurusan === $dosen->id_jurusan) &&
+                                    (!$dosen->id_angkatan || $user->id_angkatan === $dosen->id_angkatan) &&
+                                    (!$dosen->id_keahlian || $user->id_keahlian === $dosen->id_keahlian)
+                                );
+
+                                $membersInScope = true;
+                                foreach ($project->members as $member) {
+                                    if (!$isMahasiswaInScope($member)) {
+                                        $membersInScope = false;
+                                        break;
+                                    }
+                                }
+
+                                $isInteractive = $isMahasiswaInScope($mahasiswa)
+                                    && (!$leader || $isMahasiswaInScope($leader))
+                                    && $membersInScope;
+
+                                $canEdit = $isInteractive && ($dosen->role === 'dosen' || ($mahasiswa && $mahasiswa->id === $dosen->id) || ($leader && $leader->id === $dosen->id));
                             @endphp
 
                             <div
-                                class="relative bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
+                                class="relative bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700 {{ $isInteractive ? '' : 'opacity-70' }}">
 
                                 <div class="absolute top-3 left-3 z-10">
                                     <label
                                         class="inline-flex items-center p-2 bg-white/90 dark:bg-gray-900/90 rounded-full shadow-sm">
                                         <input type="checkbox"
                                             class="project-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                                            data-project-id="{{ $project->id }}">
+                                            data-project-id="{{ $project->id }}"
+                                            {{ $isInteractive ? '' : 'disabled' }}>
                                     </label>
                                 </div>
 
@@ -269,6 +292,17 @@
                                         </div>
                                     @endif
 
+                                    @if($project->members->isNotEmpty())
+                                        <div class="mb-3 text-sm text-gray-600 dark:text-gray-300">
+                                            <span class="font-medium">Members:</span>
+                                            @foreach($project->members as $member)
+                                                <a href="{{ route('portfolio.show', $member->id) }}" class="text-indigo-600 hover:underline">
+                                                    {{ $member->nama_mahasiswa }}
+                                                </a>@if(!$loop->last), @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+
                                     <!-- Project Title -->
                                     <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2">
                                         <a href="{{ route('project.show', $project->id) }}"
@@ -306,6 +340,13 @@
                                             @endif
                                         </div>
                                     @endif
+
+                                    @php
+                                        $currentUser = auth()->user();
+                                        $currentUserId = $currentUser?->id;
+                                        $isDosen = $currentUser?->role === 'dosen';
+                                        $canEdit = $isDosen || ($currentUserId && ($currentUserId === $mahasiswa?->id || $currentUserId === $leader?->id));
+                                    @endphp
 
                                     <!-- Links - SEPERTI CONTOH SERTIFIKAT -->
                                     <div
@@ -347,16 +388,24 @@
                                     </div>
 
                                     <div class="mt-3 flex flex-wrap gap-2">
+                                        @if($canEdit)
+                                            <a href="{{ route('dosen.projects.details', $project->id) }}"
+                                                class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
+                                                <span>Edit</span>
+                                            </a>
+                                        @endif
+
                                         <a href="{{ route('project.show', $project->id) }}"
                                             class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg text-xs font-medium hover:bg-indigo-200 transition">
                                             <span data-translate="det_pjt" data-translate-page="dosen_kll_pjt"></span>
                                         </a>
-                                        <form action="{{ route('dosen.projects.delete', $project->id) }}" method="POST"
-                                            onsubmit="return confirm('Hapus project ini?')" class="inline">
+                                        <form action="{{ $isInteractive ? route('dosen.projects.delete', $project->id) : 'javascript:void(0);' }}" method="POST"
+                                            onsubmit="return {{ $isInteractive ? 'confirm(\'Hapus project ini?\')' : 'false' }}" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
+                                                class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium {{ $isInteractive ? 'hover:bg-red-200' : 'opacity-50 cursor-not-allowed' }} transition"
+                                                {{ $isInteractive ? '' : 'disabled' }}>
                                                 <span data-translate="del_pjt" data-translate-page="dosen_kll_pjt"></span>
                                             </button>
                                         </form>
@@ -403,7 +452,7 @@
         const selectedIdsInput = document.getElementById('selectedProjectIds');
 
         function getProjectCheckboxes() {
-            return Array.from(document.querySelectorAll('.project-checkbox'));
+            return Array.from(document.querySelectorAll('.project-checkbox:not(:disabled)'));
         }
 
         function updateSelectionState() {
@@ -424,6 +473,22 @@
                 .filter(cb => cb.checked)
                 .map(cb => cb.dataset.projectId)
                 .filter(Boolean);
+        }
+
+        function confirmBulkDelete() {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                alert('Pilih minimal satu project terlebih dahulu.');
+                return;
+            }
+            if (!confirm('Hapus project terpilih?')) {
+                return;
+            }
+            const selectedIdsInput = document.getElementById('selectedProjectIds');
+            if (selectedIdsInput) {
+                selectedIdsInput.value = ids.join(',');
+                document.getElementById('bulkDeleteForm').submit();
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {

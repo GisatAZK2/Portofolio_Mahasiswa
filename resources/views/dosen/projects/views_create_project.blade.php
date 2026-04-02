@@ -1,32 +1,33 @@
 @extends('Layout.Layout')
 @section('title', 'Tambah Project Mahasiswa Baru')
 @section('content')
-    <div class="min-h-screen">
-        <div class="p-8">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <div class="p-4 md:p-8 max-w-7xl mx-auto">
+
             <!-- Header -->
-            <div class="mb-8 text-center md:text-left">
-                <div class="flex items-center gap-3 mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100" data-translate="ttl_form"
-                        data-translate-page="dosen_add_pjt">Tambah Project Baru</h1>
+            <div class="mb-6 md:mb-8 text-center md:text-left">
+                <div class="flex items-center gap-3 mb-2 justify-center md:justify-start">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
+                        <span>Tambah Project Mahasiswa Baru</span>
+                    </h1>
                 </div>
-                <p class="mt-2 text-gray-600 dark:text-gray-200">
-                    <span data-translate="desc_form" data-translate-page="dosen_add_pjt">Tambah Projek Yang Pernah Kamu
-                        Buat.</span>
+                <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-md mx-auto md:mx-0">
+                    Admin dapat membantu membuat dan mengisi portofolio project mahasiswa
                 </p>
             </div>
 
             <!-- Error Global -->
             @if ($errors->any())
-                <div class="mb-8 p-5 bg-red-50 border border-red-200 text-red-700 rounded-xl">
+                <div class="mb-6 md:mb-8 p-4 md:p-5 bg-red-50 border border-red-200 text-red-700 rounded-2xl">
                     <div class="flex items-center gap-2 mb-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
                         <span class="font-medium">Terdapat kesalahan pada input:</span>
                     </div>
-                    <ul class="list-disc pl-10 space-y-1.5">
+                    <ul class="list-disc pl-5 md:pl-10 space-y-1 text-sm">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -35,22 +36,21 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('dosen.projects.store') }}" class="space-y-7" id="projectForm">
+            <form method="POST" action="{{ route('dosen.projects.store') }}" class="space-y-6 md:space-y-7"
+                id="projectForm">
                 @csrf
 
-                <!-- Search and Filter Section -->
+                <!-- Filter Section -->
                 <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter"
-                        data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
+                    class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Filter Mahasiswa</h3>
 
-                    <!-- Search Bar -->
-                    <div class="mb-4">
+                    <div class="mb-5">
                         <div class="relative">
                             <input type="text" id="search-input" placeholder="Cari nama mahasiswa..."
                                 value="{{ $search ?? '' }}"
-                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                            <div class="absolute left-3 top-3.5 text-gray-400">
+                                class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm md:text-base">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -59,18 +59,13 @@
                         </div>
                     </div>
 
-                    <!-- Filter Dropdowns -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Filter Angkatan -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label data-translate="agkt" data-translate-page="dosen_add_pjt" for="angkatan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Angkatan
-                            </label>
+                            <label for="angkatan-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
                             <select id="angkatan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_agkt" data-translate-page="dosen_add_pjt" value="">Semua
-                                    Angkatan</option>
+                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                <option value="">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -78,17 +73,12 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Filter Jurusan -->
                         <div>
-                            <label data-translate="jrs" data-translate-page="dosen_add_pjt" for="jurusan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Jurusan
-                            </label>
+                            <label for="jurusan-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jurusan</label>
                             <select id="jurusan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan
-                                </option>
+                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                <option value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
@@ -96,35 +86,27 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Filter Keahlian -->
                         <div>
-                            <label data-translate="khl" data-translate-page="dosen_add_pjt" for="keahlian-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Keahlian
-                            </label>
+                            <label for="keahlian-filter"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keahlian</label>
                             <select id="keahlian-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian
-                                </option>
+                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                                <option value="">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
-                                        {{ $keahlianItem->nama_keahlian }}
-                                    </option>
+                                    <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>{{ $keahlianItem->nama_keahlian }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
 
-                    <!-- Filter Buttons -->
-                    <div class="flex justify-end space-x-3 mt-4">
+                    <div class="flex flex-col sm:flex-row gap-3 justify-end mt-6">
                         <a href="{{ route('dosen.projects.create') }}"
-                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
+                            class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
                             Reset Filter
                         </a>
                         <button type="button" onclick="applyFilters()"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                            <span data-translate="trp_filter" data-translate-page="dosen_add_pjt">Terapkan Filter</span>
+                            class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">
+                            Terapkan Filter
                         </button>
                     </div>
                 </div>
@@ -132,11 +114,10 @@
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span
-                            class="text-red-500">*</span>
+                        Nama Project <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
                         placeholder="Contoh: Website Portfolio Pribadi">
                     @error('nama_project')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -146,10 +127,10 @@
                 <!-- Deskripsi -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="desc_pjt" data-translate-page="dosen_add_pjt">Deskripsi (opsional)</span>
+                        Deskripsi (opsional)
                     </label>
                     <textarea name="deskripsi" rows="4"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
                         placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -158,50 +139,18 @@
 
                 <!-- Owner Project -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Pilih Owner Project <span class="text-red-500">*</span>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                        Pemilik Project (Owner) <span class="text-red-500">*</span>
                     </label>
+
+                    <!-- Selected Owner Display -->
                     <div id="selected-owner-display" class="mb-4 hidden">
-                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="font-medium text-blue-800" id="selected-owner-name"></div>
-                                <button type="button" onclick="clearSelectedOwner()"
-                                    class="text-blue-600 hover:text-blue-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner') }}">
-                    @error('owner')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Pemimpin Project -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="select_leader" data-translate-page="dosen_add_pjt">Pilih Mahasiswa (Pemimpin
-                            Project)</span> <span class="text-red-500">*</span>
-                    </label>
-
-                    <div id="selected-leader-display" class="mb-4 hidden">
-                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div
+                            class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-2xl">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span class="text-green-800 font-medium" id="selected-leader-name"></span>
-                                </div>
-                                <button type="button" onclick="clearSelectedLeader()"
-                                    class="text-green-600 hover:text-green-800">
+                                <div class="flex items-center gap-3" id="selected-owner-content"></div>
+                                <button type="button" onclick="clearSelectedOwner()"
+                                    class="text-blue-600 dark:text-blue-400 hover:text-blue-800 p-1 rounded-lg">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12"></path>
@@ -211,10 +160,152 @@
                         </div>
                     </div>
 
-                    <!-- Hidden Input for Selected Leader ID -->
+                    <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner') }}">
+
+                    <!-- Search untuk Owner -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input type="text" id="owner-search" placeholder="Cari nama pemilik project..."
+                                class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Container untuk Owner -->
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">Pilih</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="owner-table-body"
+                                    class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($users as $user)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group"
+                                            onclick="selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                            <td class="px-4 py-4">
+                                                <input type="radio" name="owner_radio" value="{{ $user->id }}"
+                                                    class="owner-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                    {{ old('owner') == $user->id ? 'checked' : '' }}
+                                                    onchange="event.stopImmediatePropagation(); selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                            </td>
+                                            <td class="px-4 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex-shrink-0">
+                                                        @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
+                                                            <img src="{{ asset('storage/' . $user->photo_profile) }}"
+                                                                class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-700"
+                                                                alt="{{ $user->nama_mahasiswa }}">
+                                                        @else
+                                                            <div
+                                                                class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center ring-2 ring-white dark:ring-gray-700">
+                                                                <span
+                                                                    class="text-indigo-600 dark:text-indigo-300 font-medium text-sm">
+                                                                    {{ strtoupper(substr($user->nama_mahasiswa, 0, 2)) }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                                                            {{ $user->nama_mahasiswa }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="hidden md:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->angkatan->nama_angkatan ?? '-' }}
+                                            </td>
+                                            <td class="hidden lg:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->jurusan->nama_jurusan ?? '-' }}
+                                            </td>
+                                            <td class="hidden xl:table-cell px-4 py-4">
+                                                <span
+                                                    class="px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    {{ $user->keahlian->nama_keahlian ?? '-' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-4 text-center">
+                                                <a href="{{ route('portfolio.show', $user->id) }}"
+                                                    onclick="event.stopImmediatePropagation()"
+                                                    class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
+                                                    Lihat
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                                                <div class="flex flex-col items-center">
+                                                    <svg class="w-14 h-14 text-gray-300 mb-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                                        </path>
+                                                    </svg>
+                                                    <p class="font-medium">Tidak ada mahasiswa ditemukan</p>
+                                                    <p class="text-sm mt-1">Coba ubah filter pencarian anda</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-5" id="pagination-links">
+                        {{ $users->links() }}
+                    </div>
+
+                    @error('owner')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Leader Project (Opsional) -->
+                <div id="leader-section">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                        Pemimpin Project (Leader) - Opsional
+                        <span class="text-xs text-gray-500">(Kosongkan jika sama dengan Owner)</span>
+                    </label>
+
+                    <!-- Selected Leader Display -->
+                    <div id="selected-leader-display" class="mb-4 hidden">
+                        <div
+                            class="p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3" id="selected-leader-content"></div>
+                                <button type="button" onclick="clearSelectedLeader()"
+                                    class="text-green-600 dark:text-green-400 hover:text-green-800 p-1 rounded-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader') }}">
 
-                    <!-- Search untuk Pemimpin -->
+                    <!-- Search untuk Leader -->
                     <div class="mb-4">
                         <div class="relative">
                             <input type="text" id="leader-search" placeholder="Cari nama pemimpin project..."
@@ -228,121 +319,141 @@
                         </div>
                     </div>
 
-                    <!-- Table of Users for Leader -->
+                    <!-- Table Container untuk Leader (sama seperti owner) -->
                     <div
-                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Owner
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Leader
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        <span data-translate="tbl_nm" data-translate-page="dosen_add_pjt">Nama
-                                            Mahasiswa</span>
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        <span data-translate="tbl_agkt" data-translate-page="dosen_add_pjt">Angkatan</span>
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        <span data-translate="tbl_jrs" data-translate-page="dosen_add_pjt">Jurusan</span>
-                                    </th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        <span data-translate="tbl_skill" data-translate-page="dosen_add_pjt">Keahlian</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="leader-table-body"
-                                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                @forelse($users as $user)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                                        <td class="px-6 py-4">
-                                            <input type="radio" name="owner_radio" value="{{ $user->id }}"
-                                                class="owner-radio w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('owner') == $user->id ? 'checked' : '' }}
-                                                onchange="selectOwner({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <input type="radio" name="leader_radio" value="{{ $user->id }}"
-                                                class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                                {{ old('leader') == $user->id ? 'checked' : '' }}
-                                                onchange="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}')">
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
-                                            {{ $user->nama_mahasiswa }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $user->angkatan->nama_angkatan ?? '-' }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $user->jurusan->nama_jurusan ?? '-' }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $user->keahlian->nama_keahlian ?? '-'}}
-                                        </td>
-                                    </tr>
-                                @empty
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                                            <div class="flex flex-col items-center justify-center">
-                                                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
-                                                    </path>
-                                                </svg>
-                                                <p class="text-lg font-medium"><span data-translate="empty_filter"
-                                                        data-translate-page="dosen_add_pjt"></span>Tidak ada mahasiswa ditemukan
-                                                </p>
-                                                <p class="text-sm"><span data-translate="empty_filter_desc"
-                                                        data-translate-page="dosen_add_pjt"></span>Coba ubah filter pencarian
-                                                    Anda</p>
-                                            </div>
-                                        </td>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">Pilih</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
                                     </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="leader-table-body"
+                                    class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($users as $user)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group"
+                                            onclick="selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                            <td class="px-4 py-4">
+                                                <input type="radio" name="leader_radio" value="{{ $user->id }}"
+                                                    class="leader-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                    {{ old('leader') == $user->id ? 'checked' : '' }}
+                                                    onchange="event.stopImmediatePropagation(); selectLeader({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}')">
+                                            </td>
+                                            <td class="px-4 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex-shrink-0">
+                                                        @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
+                                                            <img src="{{ asset('storage/' . $user->photo_profile) }}"
+                                                                class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-700"
+                                                                alt="{{ $user->nama_mahasiswa }}">
+                                                        @else
+                                                            <div
+                                                                class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center ring-2 ring-white dark:ring-gray-700">
+                                                                <span
+                                                                    class="text-indigo-600 dark:text-indigo-300 font-medium text-sm">
+                                                                    {{ strtoupper(substr($user->nama_mahasiswa, 0, 2)) }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                                                            {{ $user->nama_mahasiswa }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="hidden md:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->angkatan->nama_angkatan ?? '-' }}
+                                            </td>
+                                            <td class="hidden lg:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->jurusan->nama_jurusan ?? '-' }}
+                                            </td>
+                                            <td class="hidden xl:table-cell px-4 py-4">
+                                                <span
+                                                    class="px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    {{ $user->keahlian->nama_keahlian ?? '-' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-4 text-center">
+                                                <a href="{{ route('portfolio.show', $user->id) }}"
+                                                    onclick="event.stopImmediatePropagation()"
+                                                    class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
+                                                    Lihat
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                                                <div class="flex flex-col items-center">
+                                                    <svg class="w-14 h-14 text-gray-300 mb-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                                        </path>
+                                                    </svg>
+                                                    <p class="font-medium">Tidak ada mahasiswa ditemukan</p>
+                                                    <p class="text-sm mt-1">Coba ubah filter pencarian anda</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <!-- Pagination -->
-                    <div class="mt-4" id="pagination-links">
+                    <div class="mt-5">
                         {{ $users->links() }}
                     </div>
 
                     @error('leader')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p></p>
                     @enderror
+                </div>
+
+                <!-- Collaborative Project Toggle -->
+                <div class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 md:p-5 rounded-2xl border border-gray-200 dark:border-gray-700 mb-4">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200">Mode Kolaboratif</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Jika dimatikan, rekan project tidak ditampilkan dan tugas hanya mengambil Owner + Leader.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="collaborative-status" class="text-sm font-semibold text-green-600 dark:text-green-300">On</span>
+                        <button type="button" onclick="toggleCollaborativeMode()" id="collaborative-toggle" class="px-3 py-1 rounded-lg bg-indigo-600 text-white text-sm">Switch</button>
+                    </div>
+                </div>
+
+                <input type="hidden" name="is_collaborative" id="collaborative-input" value="0">
+
+                <div class="flex justify-end mb-3">
+                    <button type="button" onclick="resetProjectSelection()" class="px-4 py-2 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl text-sm">Reset Selection User</button>
                 </div>
 
                 <!-- Rekan Project -->
                 <div id="member-wrapper">
-                    <label data-translate="add_partner" data-translate-page="dosen_add_pjt"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Rekan (opsional)
                     </label>
-
-                    <div id="members-container">
-                        <!-- Member items will be dynamically added here -->
-                    </div>
-
-                    <button type="button" onclick="addMemberSelect()"
-                        class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline">
-                        <span data-translate="add_partner_btn" data-translate-page="dosen_add_pjt">+ Tambah Rekan</span>
+                    <div id="members-container" class="space-y-3"></div>
+                    <button id="add-member-btn" type="button" onclick="addMemberSelect()"
+                        class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
+                        <span class="text-xl">+</span> Tambah Rekan
                     </button>
                 </div>
 
                 <!-- Tambah Tugas -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Tugas (opsional)
                     </label>
                     <div id="tasks-container" class="space-y-4"></div>
@@ -350,36 +461,26 @@
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
                         <span class="text-xl">+</span> Tambah Tugas
                     </button>
-                    @error('tasks')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    @error('tasks.*.user_id')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    @error('tasks.*.name_task')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <!-- Tanggal -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <span data-translate="date_start" data-translate-page="dosen_add_pjt">Tanggal Mulai</span> <span
-                                class="text-red-500">*</span>
+                            Tanggal Mulai <span class="text-red-500">*</span>
                         </label>
                         <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
-                            class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
                         @error('tanggal_mulai')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <span data-translate="date_end" data-translate-page="dosen_add_pjt">Tanggal Akhir</span>
+                            Tanggal Selesai (opsional)
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
-                            class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
                         @error('tanggal_akhir')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -389,53 +490,48 @@
                 <!-- Link Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="link_pjt" data-translate-page="dosen_add_pjt">Link Project</span> 
+                        Link Project (opsional)
                     </label>
                     <input type="url" name="link_project" value="{{ old('link_project') }}"
-                        class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 border-gray-300 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
-                        placeholder="https://github.com/username/project">
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
+                        placeholder="https://example.com/project">
                     @error('link_project')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Link GitHub -->
-                <div>
-                    <label data-translate="link_github" data-translate-page="dosen_add_pjt" for="link_github"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Link GitHub
-                    </label>
-                    <input type="url" name="link_github" id="link_github" maxlength="500"
-                        class="w-full px-4 py-3 border border-gray-300 dark:text-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
-                        placeholder="https://github.com/username/repo" value="{{ old('link_github') }}">
-                    @error('link_github')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Link Video -->
-                <div>
-                    <label data-translate="link_vid" data-translate-page="dosen_add_pjt" for="link_video"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Link Video
-                    </label>
-                    <input type="url" name="link_video" id="link_video" maxlength="500"
-                        class="w-full px-4 py-3 border dark:text-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder:text-gray-400 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
-                        placeholder="https://www.youtube.com/watch?v=..." value="{{ old('link_video') }}">
-                    @error('link_video')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                <!-- Link GitHub & Video -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                            Link GitHub (opsional)
+                        </label>
+                        <input type="url" name="link_github" maxlength="500" value="{{ old('link_github') }}"
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
+                            placeholder="https://github.com/username/repo">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                            Link Video (YouTube, opsional)
+                        </label>
+                        <input type="url" name="link_video" maxlength="500" value="{{ old('link_video') }}"
+                            class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
+                            placeholder="https://www.youtube.com/watch?v=...">
+                    </div>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col sm:flex-row gap-3 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex-1"></div>
+
                     <a href="{{ route('dosen.projects.index') }}"
-                        class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
-                        <span data-translate="cancel" data-translate-page="dosen_add_pjt"></span>
+                        class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto">
+                        Batal
                     </a>
+
                     <button type="submit"
-                        class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        <span data-translate="save_pjt" data-translate-page="dosen_add_pjt"></span>
+                        class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto">
+                        Simpan Project
                     </button>
                 </div>
             </form>
@@ -443,24 +539,118 @@
     </div>
 
     <script>
-        let currentFilters = {
-            search: '',
-            angkatan: '',
-            jurusan: '',
-            keahlian: ''
-        };
+        let currentFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+        let isCollaborative = false;
 
-        // Function to apply filters
+        function enforceLeaderIsOwner() {
+            const ownerId = document.getElementById('selected-owner-id').value || '';
+            if (!ownerId) {
+                clearSelectedLeader();
+                return;
+            }
+
+            const leaderRow = document.querySelector(`#leader-table-body .leader-radio[value="${ownerId}"]`);
+            if (leaderRow) {
+                const row = leaderRow.closest('tr');
+                const nameEl = row ? row.querySelector('td:nth-child(2) .font-medium') : null;
+                const name = nameEl ? nameEl.textContent.trim() : '';
+                const img = row ? row.querySelector('img') : null;
+                const photoProfile = img ? img.src : '';
+                selectLeader(ownerId, name, photoProfile);
+            } else {
+                document.getElementById('selected-leader-id').value = ownerId;
+            }
+        }
+
+        function setLeaderInputsDisabled(disabled) {
+            document.querySelectorAll('.leader-radio').forEach(radio => radio.disabled = disabled);
+            document.querySelectorAll('#leader-table-body tr').forEach(row => {
+                row.style.pointerEvents = disabled ? 'none' : '';
+                row.style.opacity = disabled ? '0.7' : '1';
+            });
+        }
+
+        function setCollaborativeMode(enabled) {
+            isCollaborative = enabled;
+            document.getElementById('collaborative-input').value = isCollaborative ? '1' : '0';
+            document.getElementById('collaborative-status').textContent = isCollaborative ? 'On' : 'Off';
+            const memberWrapper = document.getElementById('member-wrapper');
+            const leaderSection = document.getElementById('leader-section');
+            const addButton = document.getElementById('add-member-btn');
+
+            if (!isCollaborative) {
+                if (memberWrapper) memberWrapper.classList.add('hidden');
+                if (leaderSection) leaderSection.classList.add('hidden');
+                if (addButton) addButton.setAttribute('disabled', 'disabled');
+                enforceLeaderIsOwner();
+                setLeaderInputsDisabled(true);
+                document.querySelectorAll('.member-item').forEach(item => item.remove());
+
+                // Reset role selection to owner-only UX when collaborative is off
+                const ownerId = document.getElementById('selected-owner-id').value || '';
+                document.querySelectorAll('#owner-table-body tr').forEach(ownerRow => {
+                    const radio = ownerRow.querySelector('.owner-radio');
+                    if (radio) {
+                        if (radio.value === ownerId) {
+                            ownerRow.classList.add('bg-blue-50', 'dark:bg-blue-950');
+                            ownerRow.classList.remove('opacity-50');
+                            ownerRow.style.pointerEvents = '';
+                            radio.disabled = false;
+                            radio.checked = true;
+                        } else {
+                            ownerRow.classList.add('opacity-50', 'bg-gray-100', 'dark:bg-gray-800');
+                            ownerRow.style.pointerEvents = '';
+                            radio.disabled = false;
+                            radio.checked = false;
+                        }
+                    }
+                });
+
+                document.querySelectorAll('#leader-table-body tr').forEach(leaderRow => {
+                    leaderRow.classList.add('opacity-50', 'bg-gray-100', 'dark:bg-gray-800');
+                    leaderRow.style.pointerEvents = 'none';
+                    const radio = leaderRow.querySelector('.leader-radio');
+                    if (radio) {
+                        radio.disabled = true;
+                        radio.checked = false;
+                    }
+                });
+            } else {
+                if (memberWrapper) memberWrapper.classList.remove('hidden');
+                if (leaderSection) leaderSection.classList.remove('hidden');
+                if (addButton) addButton.removeAttribute('disabled');
+                setLeaderInputsDisabled(false);
+            }
+
+            updateDisabledOptions();
+            updateTaskUserOptions();
+            cleanupInvalidTaskRows();
+            saveToLocalStorage();
+        }
+
+        function toggleCollaborativeMode() {
+            setCollaborativeMode(!isCollaborative);
+        }
+
+        function resetProjectSelection() {
+            clearSelectedOwner();
+            clearSelectedLeader();
+            document.querySelectorAll('.member-item').forEach(item => item.remove());
+            addMemberSelect();
+            updateDisabledOptions();
+            setCollaborativeMode(false);
+            updateTaskUserOptions();
+            saveToLocalStorage();
+        }
+
         function applyFilters() {
-            currentFilters.search = document.getElementById('search-input').value;
+            currentFilters.search = document.getElementById('search-input').value.trim();
             currentFilters.angkatan = document.getElementById('angkatan-filter').value;
             currentFilters.jurusan = document.getElementById('jurusan-filter').value;
             currentFilters.keahlian = document.getElementById('keahlian-filter').value;
-
             fetchFilteredUsers();
         }
 
-        // Function to fetch filtered users
         function fetchFilteredUsers(page = 1) {
             const url = new URL('{{ route("dosen.projects.create") }}');
             url.searchParams.set('search', currentFilters.search);
@@ -469,394 +659,407 @@
             url.searchParams.set('keahlian', currentFilters.keahlian);
             url.searchParams.set('page', page);
 
-            // Use fetch to get filtered results
-            fetch(url.toString(), {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
+            fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                 .then(response => response.text())
                 .then(html => {
-                    // Parse the HTML response
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
 
-                    // Update leader table
+                    const newOwnerBody = doc.querySelector('#owner-table-body');
+                    if (newOwnerBody) document.getElementById('owner-table-body').innerHTML = newOwnerBody.innerHTML;
+
                     const newLeaderBody = doc.querySelector('#leader-table-body');
-                    if (newLeaderBody) {
-                        document.getElementById('leader-table-body').innerHTML = newLeaderBody.innerHTML;
-                    }
+                    if (newLeaderBody) document.getElementById('leader-table-body').innerHTML = newLeaderBody.innerHTML;
 
-                    // Update pagination
                     const newPagination = doc.querySelector('#pagination-links');
-                    if (newPagination) {
-                        document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
-                    }
+                    if (newPagination) document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
 
-                    // Restore selected owner if any
+                    attachTableRowListeners();
+                    
                     const selectedOwnerId = document.getElementById('selected-owner-id').value;
                     if (selectedOwnerId) {
-                        const selectedOwnerRadio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
-                        if (selectedOwnerRadio) {
-                            const row = selectedOwnerRadio.closest('tr');
-                            const ownerName = row.querySelector('td:nth-child(3)').textContent.trim();
-                            selectOwner(selectedOwnerId, ownerName);
-                        }
+                        const radio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
+                        if (radio) radio.checked = true;
                     }
-
-                    // Restore selected leader if any
+                    
                     const selectedLeaderId = document.getElementById('selected-leader-id').value;
                     if (selectedLeaderId) {
-                        const selectedRadio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
-                        if (selectedRadio) {
-                            const row = selectedRadio.closest('tr');
-                            const leaderName = row.querySelector('td:nth-child(3)').textContent.trim();
-                            selectLeader(selectedLeaderId, leaderName);
-                        }
+                        const radio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
+                        if (radio) radio.checked = true;
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(err => console.error('Error:', err));
         }
 
-        // Function to attach click listeners to table rows
         function attachTableRowListeners() {
+            // Owner table
+            document.querySelectorAll('#owner-table-body tr').forEach(row => {
+                const radio = row.querySelector('.owner-radio');
+                if (radio) {
+                    row.addEventListener('click', function (e) {
+                        if (e.target.type !== 'radio') {
+const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                            const name = nameEl ? nameEl.textContent.trim() : '';
+                            const img = row.querySelector('img');
+                            const photoSrc = img ? img.src : '';
+                            selectOwner(radio.value, name, photoSrc);
+                        }
+                    });
+                }
+            });
+            
+            // Leader table
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
                 const radio = row.querySelector('.leader-radio');
                 if (radio) {
-                    row.onclick = () => selectLeader(radio.value, row.querySelector('td:nth-child(3)').textContent.trim());
+                    row.addEventListener('click', function (e) {
+                        if (e.target.type !== 'radio') {
+                            if (!isCollaborative) {
+                                return;
+                            }
+                            const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                            const name = nameEl ? nameEl.textContent.trim() : '';
+                            const img = row.querySelector('img');
+                            const photoSrc = img ? img.src : '';
+                            selectLeader(radio.value, name, photoSrc);
+                        }
+                    });
                 }
+            });
+        }
+
+        function filterOwnerTable() {
+            const keyword = document.getElementById('owner-search').value.toLowerCase().trim();
+            document.querySelectorAll('#owner-table-body tr').forEach(row => {
+                if (!row.querySelector('.owner-radio')) return;
+                row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none';
             });
         }
 
         function filterLeaderTable() {
             const keyword = document.getElementById('leader-search').value.toLowerCase().trim();
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                const nameCell = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                row.style.display = nameCell.includes(keyword) ? '' : 'none';
+                if (!row.querySelector('.leader-radio')) return;
+                row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none';
             });
         }
 
-        // Function to select leader
-        function selectLeader(userId, userName) {
-            // Clear owner selection first to prevent conflict
-            if (document.getElementById('selected-owner-id').value && document.getElementById('selected-owner-id').value === userId) {
-                clearSelectedOwner();
-            }
-
-            // Update hidden input
-            document.getElementById('selected-leader-id').value = userId;
-
-            // Update radio buttons
-            document.querySelectorAll('.leader-radio').forEach(radio => {
-                radio.checked = (radio.value == userId);
-            });
-
-            // Update display
-            const display = document.getElementById('selected-leader-display');
-            const nameSpan = document.getElementById('selected-leader-name');
-
-            if (userId) {
-                nameSpan.textContent = 'Pemimpin: ' + userName;
-                display.classList.remove('hidden');
-            } else {
-                display.classList.add('hidden');
-            }
-
-            // Update disabled options
-            updateDisabledOptions();
-
-            // Save to localStorage
-            saveToLocalStorage();
-        }
-
-        // Function to clear selected leader
-        function clearSelectedLeader() {
-            document.getElementById('selected-leader-id').value = '';
-            document.querySelectorAll('.leader-radio').forEach(radio => {
-                radio.checked = false;
-            });
-            document.getElementById('selected-leader-display').classList.add('hidden');
-
-            // Update disabled options
-            updateDisabledOptions();
-
-            // Save to localStorage
-            saveToLocalStorage();
-        }
-
-        // Function to select owner
-        function selectOwner(userId, userName) {
-            // Clear leader selection first to prevent conflict
-            if (document.getElementById('selected-leader-id').value && document.getElementById('selected-leader-id').value === userId) {
-                clearSelectedLeader();
-            }
-
+        function selectOwner(userId, userName, photoProfile) {
             document.getElementById('selected-owner-id').value = userId;
-            document.querySelectorAll('.owner-radio').forEach(radio => {
-                radio.checked = (radio.value == userId);
-            });
+            document.querySelectorAll('.owner-radio').forEach(radio => radio.checked = (radio.value == userId));
 
             const display = document.getElementById('selected-owner-display');
-            const nameSpan = document.getElementById('selected-owner-name');
-            if (userId) {
-                nameSpan.textContent = 'Owner: ' + userName;
-                display.classList.remove('hidden');
-            } else {
-                display.classList.add('hidden');
+            const content = document.getElementById('selected-owner-content');
+
+            let photoHtml = photoProfile
+                ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-blue-200" src="${photoProfile}" alt="${userName}">`
+                : `<div class="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center">
+                     <span class="text-blue-700 dark:text-blue-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
+                   </div>`;
+
+            content.innerHTML = `${photoHtml}<div class="font-medium text-blue-800 dark:text-blue-200">Pemilik: ${userName}</div>`;
+            display.classList.remove('hidden');
+            updateDisabledOptions();
+
+            if (!isCollaborative) {
+                enforceLeaderIsOwner();
+                setLeaderInputsDisabled(true);
             }
 
-            updateDisabledOptions();
+            updateTaskUserOptions();
             saveToLocalStorage();
         }
 
-        // Function to clear selected owner
         function clearSelectedOwner() {
             document.getElementById('selected-owner-id').value = '';
-            document.querySelectorAll('.owner-radio').forEach(radio => {
-                radio.checked = false;
-            });
+            document.querySelectorAll('.owner-radio').forEach(radio => radio.checked = false);
             document.getElementById('selected-owner-display').classList.add('hidden');
+            updateDisabledOptions();
+            if (!isCollaborative) {
+                clearSelectedLeader();
+            }
+            updateTaskUserOptions();
+            saveToLocalStorage();
+        }
 
+        function selectLeader(userId, userName, photoProfile) {
+            document.getElementById('selected-leader-id').value = userId;
+            document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = (radio.value == userId));
+
+            const display = document.getElementById('selected-leader-display');
+            const content = document.getElementById('selected-leader-content');
+
+            let photoHtml = photoProfile
+                ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-green-200" src="${photoProfile}" alt="${userName}">`
+                : `<div class="w-9 h-9 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center">
+                     <span class="text-green-700 dark:text-green-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
+                   </div>`;
+
+            content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">Pemimpin: ${userName}</div>`;
+            display.classList.remove('hidden');
             updateDisabledOptions();
             saveToLocalStorage();
         }
 
-        // Function to add new member select
+        function clearSelectedLeader() {
+            document.getElementById('selected-leader-id').value = '';
+            document.querySelectorAll('.leader-radio').forEach(radio => radio.checked = false);
+            document.getElementById('selected-leader-display').classList.add('hidden');
+            updateDisabledOptions();
+            updateTaskUserOptions();
+            saveToLocalStorage();
+        }
+
+        // ==================== ADD MEMBER SELECT ====================
         function addMemberSelect(savedValue = null) {
+            if (!isCollaborative) {
+                return;
+            }
             const container = document.getElementById('members-container');
-
             const memberDiv = document.createElement('div');
-            memberDiv.classList.add('member-item', 'mb-3');
+            memberDiv.classList.add('member-item', 'mb-4');
 
-            // Get all users from the current table
-            const users = [];
-            document.querySelectorAll('#leader-table-body tr').forEach(row => {
-                const radio = row.querySelector('.leader-radio');
+            const usersMap = new Map();
+            document.querySelectorAll('#owner-table-body tr, #leader-table-body tr').forEach(row => {
+                const radio = row.querySelector('.owner-radio') || row.querySelector('.leader-radio');
                 if (radio) {
-                    const name = row.querySelector('td:nth-child(3)').textContent.trim();
-                    users.push({
-                        id: radio.value,
-                        name: name
-                    });
+                    const nameElement = row.querySelector('td:nth-child(2) .font-medium');
+                    const fullName = nameElement ? nameElement.textContent.trim() : 'Nama Tidak Diketahui';
+                    const img = row.querySelector('img');
+                    const photoProfile = img ? img.src : '';
+                    const initial = fullName.charAt(0).toUpperCase();
+
+                    if (!usersMap.has(radio.value)) {
+                        usersMap.set(radio.value, { id: radio.value, name: fullName, photoProfile: photoProfile, initial: initial });
+                    }
                 }
             });
+            const users = Array.from(usersMap.values());
 
-            // If no users in table, use a default message
             if (users.length === 0) {
                 memberDiv.innerHTML = `
-                                <div class="flex gap-2">
-                                    <select class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-500 dark:border-gray-700 rounded-lg" disabled>
-                                        <option value="">Tidak ada mahasiswa tersedia</option>
-                                    </select>
-                                    <button type="button" 
-                                        onclick="removeMember(this)"
-                                        class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                                        ✕
-                                    </button>
-                                </div>
-                            `;
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700">
+                        <select class="member-select w-full p-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl" disabled>
+                            <option value="">Tidak ada mahasiswa tersedia</option>
+                        </select>
+                    </div>
+                `;
             } else {
-                let optionsHtml = '<option data-translate="add_partner_choose" data-translate-page="dosen_add_pjt" value="">-- Pilih Mahasiswa --</option>';
+                let optionsHtml = '<option value="">-- Pilih Rekan Project --</option>';
                 users.forEach(user => {
                     const selected = savedValue && savedValue == user.id ? 'selected' : '';
-                    optionsHtml += `<option value="${user.id}" ${selected}>${user.name}</option>`;
+                    optionsHtml += `<option value="${user.id}" data-photo="${user.photoProfile}" data-initial="${user.initial}" ${selected}>${user.name}</option>`;
                 });
 
                 memberDiv.innerHTML = `
-                                <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                    <div class="relative mb-3">
-                                        <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
-                                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <select name="members[]" 
-                                            class="member-select w-full p-3 border border-gray-300 dark:text-white dark:bg-gray-700 dark:border-gray-700 rounded-lg">
-                                            ${optionsHtml}
-                                        </select>
-                                        <button type="button" 
-                                            onclick="removeMember(this)"
-                                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                                            ✕
-                                        </button>
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="relative mb-4">
+                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <div class="relative flex-1 w-full">
+                                <select name="members[]" class="member-select w-full p-4 pl-14 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none transition text-base">
+                                    ${optionsHtml}
+                                </select>
+                                <div class="member-photo absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <div class="w-9 h-9 rounded-2xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center overflow-hidden ring-2 ring-white dark:ring-gray-700">
+                                        <span class="member-initial text-indigo-600 dark:text-indigo-400 font-semibold text-base"></span>
+                                        <img class="member-img hidden w-full h-full object-cover rounded-2xl" src="" alt="">
                                     </div>
                                 </div>
-                            `;
-            }
+                            </div>
+                            <button type="button" onclick="removeMember(this)" class="px-6 py-4 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900 rounded-2xl transition font-medium flex-shrink-0">✕</button>
+                        </div>
+                    </div>
+                `;
 
-            container.appendChild(memberDiv);
+                container.appendChild(memberDiv);
 
-            // Add change listener to new select
-            const newSelect = memberDiv.querySelector('.member-select');
-            if (newSelect && !newSelect.disabled) {
-                newSelect.addEventListener('change', function () {
-                    updateDisabledOptions();
-                    saveToLocalStorage();
-                });
-            }
-            // Add search listener to new member row
-            const newSearchInput = memberDiv.querySelector('.member-search');
-            if (newSearchInput) {
-                newSearchInput.addEventListener('input', function () {
+                const select = memberDiv.querySelector('.member-select');
+                const searchInput = memberDiv.querySelector('.member-search');
+                const initialSpan = memberDiv.querySelector('.member-initial');
+                const img = memberDiv.querySelector('.member-img');
+
+                searchInput.addEventListener('input', function () {
                     const keyword = this.value.toLowerCase().trim();
-                    const select = memberDiv.querySelector('.member-select');
                     Array.from(select.options).forEach(option => {
                         if (option.value === '') return;
                         option.style.display = option.textContent.toLowerCase().includes(keyword) ? '' : 'none';
                     });
                 });
+
+                select.addEventListener('change', function () {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (this.value) {
+                        const photo = selectedOption.dataset.photo;
+                        const initial = selectedOption.dataset.initial;
+                        if (photo && photo !== '') {
+                            img.src = photo; img.classList.remove('hidden'); initialSpan.classList.add('hidden');
+                        } else {
+                            img.classList.add('hidden'); initialSpan.classList.remove('hidden'); initialSpan.textContent = initial;
+                        }
+                    } else {
+                        img.classList.add('hidden'); initialSpan.classList.remove('hidden'); initialSpan.textContent = '?';
+                    }
+                    updateDisabledOptions();
+                    saveToLocalStorage();
+                });
+
+                if (savedValue) {
+                    select.value = savedValue;
+                    select.dispatchEvent(new Event('change'));
+                }
             }
-            // Update disabled options
-            setTimeout(() => {
-                updateDisabledOptions();
-            }, 100);
+            updateDisabledOptions();
         }
 
-        // Function to remove member
         function removeMember(button) {
             const memberDiv = button.closest('.member-item');
-            memberDiv.remove();
-
-            // Update disabled options after removal
+            if (memberDiv) memberDiv.remove();
             updateDisabledOptions();
-
-            // Save to localStorage
+            updateTaskUserOptions();
             saveToLocalStorage();
         }
 
-        // Function to update disabled options based on selected leader, owner and members
         function updateDisabledOptions() {
-            const leaderId = document.getElementById('selected-leader-id').value;
-            const ownerId = document.getElementById('selected-owner-id').value;
-
-            // Get all selected member IDs
+            const ownerId = document.getElementById('selected-owner-id').value || '';
+            const leaderId = document.getElementById('selected-leader-id').value || '';
             const selectedMemberIds = [];
             document.querySelectorAll('.member-select').forEach(select => {
-                if (select.value && !select.disabled) {
-                    selectedMemberIds.push(select.value);
+                if (select.value && !select.disabled) selectedMemberIds.push(select.value);
+            });
+
+            // Highlight selected IDs in owner and leader tables
+            document.querySelectorAll('#owner-table-body tr, #leader-table-body tr').forEach(row => {
+                const rowId = row.querySelector('input[type="radio"]')?.value;
+                row.classList.remove('opacity-50', 'bg-gray-100', 'dark:bg-gray-800', 'bg-blue-50', 'dark:bg-blue-950', 'bg-green-50', 'dark:bg-green-950');
+                row.style.pointerEvents = '';
+                const rowRadio = row.querySelector('input[type="radio"]');
+                if (rowRadio) rowRadio.disabled = false;
+                if (!rowId) return;
+
+                if (!isCollaborative) {
+                    if (rowId === ownerId) {
+                        row.classList.add('bg-blue-50', 'dark:bg-blue-950');
+                        row.classList.remove('opacity-50');
+                        row.style.pointerEvents = '';
+                        if (rowRadio) {
+                            rowRadio.disabled = false;
+                            rowRadio.checked = true;
+                        }
+                    } else {
+                        row.classList.add('opacity-50', 'bg-gray-100', 'dark:bg-gray-800');
+                        row.style.pointerEvents = '';
+                        if (rowRadio) {
+                            rowRadio.disabled = false;
+                        }
+                    }
+                    return;
+                }
+
+                if (rowId === ownerId || rowId === leaderId || selectedMemberIds.includes(rowId)) {
+                    row.classList.add('opacity-50');
+                }
+
+                if (rowId === ownerId) {
+                    row.classList.add('bg-blue-50', 'dark:bg-blue-950');
+                }
+                if (rowId === leaderId) {
+                    row.classList.add('bg-green-50', 'dark:bg-green-950');
                 }
             });
 
-            // Update all member selects
             document.querySelectorAll('.member-select').forEach(select => {
                 if (select.disabled) return;
 
-                // Enable all options first
                 select.querySelectorAll('option').forEach(option => {
                     option.disabled = false;
+                    option.classList.remove('text-gray-400');
                 });
 
-                // Disable leader option if leader is selected
-                if (leaderId) {
-                    let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
-                    if (leaderOption) {
-                        leaderOption.disabled = true;
-                    }
-                }
-
-                // Disable owner option if owner is selected
                 if (ownerId) {
-                    let ownerOption = select.querySelector(`option[value="${ownerId}"]`);
+                    const ownerOption = select.querySelector(`option[value="${ownerId}"]`);
                     if (ownerOption) {
                         ownerOption.disabled = true;
+                        ownerOption.classList.add('text-gray-400');
                     }
                 }
 
-                // Disable options that are selected in other member selects
+                if (leaderId && leaderId !== ownerId) {
+                    const leaderOption = select.querySelector(`option[value="${leaderId}"]`);
+                    if (leaderOption) {
+                        leaderOption.disabled = true;
+                        leaderOption.classList.add('text-gray-400');
+                    }
+                }
+
                 selectedMemberIds.forEach(selectedId => {
-                    if (selectedId && select.value !== selectedId) {
-                        let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
-                        if (selectedOption) {
-                            selectedOption.disabled = true;
-                        }
+                    if (!selectedId || select.value === selectedId) return;
+                    const selectedOption = select.querySelector(`option[value="${selectedId}"]`);
+                    if (selectedOption) {
+                        selectedOption.disabled = true;
+                        selectedOption.classList.add('text-gray-400');
                     }
                 });
             });
+
+            saveToLocalStorage();
         }
 
-        // Function to save form data to localStorage
         function saveToLocalStorage() {
-            const ownerId = document.getElementById('selected-owner-id').value;
-            const leaderId = document.getElementById('selected-leader-id').value;
-
-            // Get all member selects
-            const memberSelects = document.querySelectorAll('.member-select');
-            const memberIds = [];
-
-            memberSelects.forEach(select => {
-                if (select.value && !select.disabled) {
-                    memberIds.push(select.value);
-                }
-            });
-
-            const projectData = {
-                owner: ownerId,
-                leader: leaderId,
-                members: memberIds
-            };
-
-            localStorage.setItem('projectTeamData', JSON.stringify(projectData));
+            const ownerId = document.getElementById('selected-owner-id').value || '';
+            const leaderId = document.getElementById('selected-leader-id').value || '';
+            const memberIds = Array.from(document.querySelectorAll('.member-select'))
+                .filter(s => s.value).map(s => s.value);
+            localStorage.setItem('projectTeamData', JSON.stringify({ owner: ownerId, leader: leaderId, members: memberIds, is_collaborative: isCollaborative }));
         }
 
-        // Function to load saved data from localStorage
         function loadSavedData() {
             const savedData = localStorage.getItem('projectTeamData');
-
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-
-                    // Set owner
-                    if (data.owner) {
-                        const ownerRadio = document.querySelector(`.owner-radio[value="${data.owner}"]`);
-                        if (ownerRadio) {
-                            const ownerRow = ownerRadio.closest('tr');
-                            const ownerName = ownerRow.querySelector('td:nth-child(3)').textContent.trim();
-                            selectOwner(data.owner, ownerName);
-                        }
+            if (!savedData) { addMemberSelect(); return; }
+            try {
+                const data = JSON.parse(savedData);
+                if (data.owner) {
+                    const radio = document.querySelector(`.owner-radio[value="${data.owner}"]`);
+                    if (radio) {
+                        const row = radio.closest('tr');
+                        const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                        const name = nameEl ? nameEl.textContent.trim() : '';
+                        const img = row.querySelector('img');
+                        const photo = img ? img.src : '';
+                        selectOwner(data.owner, name, photo);
                     }
-
-                    // Set leader
-                    if (data.leader) {
-                        const leaderRadio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
-                        if (leaderRadio) {
-                            const leaderRow = leaderRadio.closest('tr');
-                            const leaderName = leaderRow.querySelector('td:nth-child(3)').textContent.trim();
-                            selectLeader(data.leader, leaderName);
-                        }
+                }
+                if (data.leader && data.leader !== data.owner) {
+                    const radio = document.querySelector(`.leader-radio[value="${data.leader}"]`);
+                    if (radio) {
+                        const row = radio.closest('tr');
+                        const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                        const name = nameEl ? nameEl.textContent.trim() : '';
+                        const img = row.querySelector('img');
+                        const photo = img ? img.src : '';
+                        selectLeader(data.leader, name, photo);
                     }
+                }
+                const container = document.getElementById('members-container');
+                container.innerHTML = '';
+                if (typeof data.is_collaborative !== 'undefined') {
+                    setCollaborativeMode(Boolean(data.is_collaborative));
+                }
 
-                    // Clear existing members
-                    const container = document.getElementById('members-container');
-                    container.innerHTML = '';
-
-                    // Add saved members
-                    if (data.members && data.members.length > 0) {
-                        data.members.forEach(memberId => {
-                            if (memberId) {
-                                addMemberSelect(memberId);
-                            }
-                        });
-                    } else {
-                        // Add one empty member select if no saved members
-                        addMemberSelect();
-                    }
-
-                    // Update disabled options
-                    setTimeout(() => {
-                        updateDisabledOptions();
-                    }, 100);
-
-                } catch (e) {
-                    console.error('Error parsing saved data:', e);
-                    // Add one empty member select if error
+                if (data.members && data.members.length > 0) {
+                    data.members.forEach(id => addMemberSelect(id));
+                } else {
                     addMemberSelect();
                 }
-            } else {
-                // Add one empty member select if no saved data
+                setTimeout(updateDisabledOptions, 150);
+            } catch (e) {
+                console.error('Error loading saved data:', e);
                 addMemberSelect();
             }
         }
@@ -865,10 +1068,10 @@
         let taskIndex = 0;
 
         function getUserNameById(userId) {
-            const radio = document.querySelector(`.leader-radio[value="${userId}"], .owner-radio[value="${userId}"]`);
+            const radio = document.querySelector(`.owner-radio[value="${userId}"], .leader-radio[value="${userId}"]`);
             if (radio) {
                 const row = radio.closest('tr');
-                const nameEl = row ? row.querySelector('td:nth-child(3) .font-medium') : null;
+                const nameEl = row ? row.querySelector('.font-medium') : null;
                 if (nameEl) return nameEl.textContent.trim();
             }
 
@@ -893,12 +1096,14 @@
             const ownerRadio = document.querySelector('.owner-radio:checked');
             if (ownerRadio) add(ownerRadio.value);
 
-            const leaderRadio = document.querySelector('.leader-radio:checked');
-            if (leaderRadio) add(leaderRadio.value);
+            if (isCollaborative) {
+                const leaderRadio = document.querySelector('.leader-radio:checked');
+                if (leaderRadio) add(leaderRadio.value);
 
-            document.querySelectorAll('select[name="members[]"]').forEach(select => {
-                if (select.value) add(select.value);
-            });
+                document.querySelectorAll('select[name="members[]"]').forEach(select => {
+                    if (select.value) add(select.value);
+                });
+            }
 
             return users;
         }
@@ -923,7 +1128,7 @@
             const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
 
             const taskItem = document.createElement('div');
-            taskItem.className = 'task-item p-4 border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-800';
+            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
             taskItem.innerHTML = `
                 ${hiddenId}
                 <div class="grid gap-4 md:grid-cols-3 items-end">
@@ -960,10 +1165,13 @@
             const allowedIds = getAllowedTaskUsers().map(user => String(user.id));
             document.querySelectorAll('.task-item').forEach(taskItem => {
                 const select = taskItem.querySelector('.task-user-select');
-                if (select && select.value && !allowedIds.includes(select.value)) {
+                if (!select) return;
+                if (!select.value || !allowedIds.includes(select.value)) {
                     taskItem.remove();
+                    return;
                 }
             });
+
             if (document.querySelectorAll('.task-item').length === 0) {
                 addTaskRow();
             }
@@ -1005,145 +1213,70 @@
             }
         });
 
-        // Function to clear localStorage after submit
-        function clearLocalStorage() {
-            localStorage.removeItem('projectTeamData');
-        }
-
-        // Initialize on page load
+        // Initialize
         document.addEventListener('DOMContentLoaded', function () {
-            // Check if there's an old selected owner
             const oldOwnerId = document.getElementById('selected-owner-id').value;
             if (oldOwnerId) {
-                const selectedRadio = document.querySelector(`.owner-radio[value="${oldOwnerId}"]`);
-                if (selectedRadio) {
-                    const row = selectedRadio.closest('tr');
-                    const userName = row.querySelector('td:nth-child(3)').textContent.trim();
-                    selectOwner(oldOwnerId, userName);
+                const radio = document.querySelector(`.owner-radio[value="${oldOwnerId}"]`);
+                if (radio) {
+                    const row = radio.closest('tr');
+                    const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                    const name = nameEl ? nameEl.textContent.trim() : '';
+                    const img = row.querySelector('img');
+                    const photo = img ? img.src : '';
+                    selectOwner(oldOwnerId, name, photo);
                 }
             }
-
-            // Check if there's an old selected leader
+            
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             if (oldLeaderId) {
-                const selectedRadio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
-                if (selectedRadio) {
-                    const row = selectedRadio.closest('tr');
-                    const userName = row.querySelector('td:nth-child(3)').textContent.trim();
-                    selectLeader(oldLeaderId, userName);
+                const radio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
+                if (radio) {
+                    const row = radio.closest('tr');
+                    const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                    const name = nameEl ? nameEl.textContent.trim() : '';
+                    const img = row.querySelector('img');
+                    const photo = img ? img.src : '';
+                    selectLeader(oldLeaderId, name, photo);
                 }
             }
 
-            // Load saved data from localStorage
+            attachTableRowListeners();
+
+            const oldCollab = document.getElementById('collaborative-input').value;
+            setCollaborativeMode(oldCollab !== '0');
+
             loadSavedData();
             initializeTaskRows(@json(old('tasks', [])));
 
-            // Add submit event listener to form
-            document.getElementById('projectForm').addEventListener('submit', function () {
-                clearLocalStorage();
+            document.getElementById('projectForm').addEventListener('submit', (event) => {
+                cleanupInvalidTaskRows();
+                updateTaskUserOptions();
+                localStorage.removeItem('projectTeamData');
             });
 
-            // Enter key for search
-            const searchInput = document.getElementById('search-input');
-            if (searchInput) {
-                searchInput.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        applyFilters();
-                    }
-                });
-            }
+            // Global Filter Search + Enter
+            document.getElementById('search-input').addEventListener('keypress', e => {
+                if (e.key === 'Enter') { e.preventDefault(); applyFilters(); }
+            });
 
+            // Owner & Leader Search
+            const ownerSearch = document.getElementById('owner-search');
+            if (ownerSearch) ownerSearch.addEventListener('input', filterOwnerTable);
+            
             const leaderSearch = document.getElementById('leader-search');
-            if (leaderSearch) {
-                leaderSearch.addEventListener('input', filterLeaderTable);
-            }
+            if (leaderSearch) leaderSearch.addEventListener('input', filterLeaderTable);
 
-            // Attach table row listeners
-            attachTableRowListeners();
+            // Pagination AJAX
+            document.addEventListener('click', e => {
+                const link = e.target.closest('.pagination a');
+                if (link) {
+                    e.preventDefault();
+                    const url = new URL(link.href);
+                    const page = url.searchParams.get('page') || 1;
+                    fetchFilteredUsers(page);
+                }
+            });
         });
     </script>
-
-    <style>
-        /* Table row hover effect */
-        tbody tr {
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.05);
-        }
-
-        .dark tbody tr:hover {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        /* Select styling */
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
-
-        select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%234F46E5' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        /* Dark mode select */
-        .dark select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23E5E7EB' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        .dark select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238181F2' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        }
-
-        /* Pagination styling */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding: 0;
-        }
-
-        .pagination li {
-            margin: 0 2px;
-        }
-
-        .pagination li a,
-        .pagination li span {
-            display: inline-block;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            color: #374151;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .dark .pagination li a,
-        .dark .pagination li span {
-            border-color: #4b5563;
-            color: #e5e7eb;
-            background-color: #374151;
-        }
-
-        .pagination li.active span {
-            background-color: #4f46e5;
-            border-color: #4f46e5;
-            color: white;
-        }
-
-        .pagination li a:hover {
-            background-color: #f3f4f6;
-        }
-
-        .dark .pagination li a:hover {
-            background-color: #4b5563;
-        }
-    </style>
 @endsection
