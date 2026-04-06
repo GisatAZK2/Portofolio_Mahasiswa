@@ -53,7 +53,7 @@
                     </div>
 
                     <a href="{{ route('search') }}"
-                        class="bg-white/60 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-500 focus:ring-2 focus:ring-gray-300 transition text-sm font-medium backdrop-blur-sm border border-gray-300/50">
+                        class="bg-white/60 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition text-sm font-medium backdrop-blur-sm border border-gray-300/50">
                         Reset
                     </a>
 
