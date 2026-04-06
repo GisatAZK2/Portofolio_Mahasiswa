@@ -630,4 +630,11 @@
             background-color: #4b5563;
         }
     </style>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_add_sertifikat");
+        });
+    </script>
 @endsection

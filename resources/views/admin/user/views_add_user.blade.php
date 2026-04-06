@@ -322,6 +322,13 @@
             @elseif(auth()->check() && auth()->user()->role === 'admin')
                 selectRole('admin');
             @endif
-    });
+        });
+    </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.add_user");
+        });
     </script>
 @endsection

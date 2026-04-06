@@ -38,7 +38,8 @@
                         <div>
                             <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="total_users_title"
                                 data-translate-page="admin">Total Pengguna</p>
-                            <p class="mt-4 text-3xl font-semibold text-gray-900 dark:text-white">{{ number_format($totalUsers) }}
+                            <p class="mt-4 text-3xl font-semibold text-gray-900 dark:text-white">
+                                {{ number_format($totalUsers) }}
                             </p>
                         </div>
                         <div class="w-12 h-12">
@@ -65,7 +66,8 @@
                         <div>
                             <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="total_admin_title"
                                 data-translate-page="admin">Total Admin</p>
-                            <p class="mt-4 text-3xl font-semibold text-gray-900 dark:text-white">{{ number_format($totalAdmin) }}
+                            <p class="mt-4 text-3xl font-semibold text-gray-900 dark:text-white">
+                                {{ number_format($totalAdmin) }}
                             </p>
                         </div>
                         <div class="w-12 h-12">
@@ -78,7 +80,8 @@
                         <div>
                             <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="total_lecturers_title"
                                 data-translate-page="admin">Total Dosen</p>
-                            <p class="mt-4 text-3xl font-semibold text-gray-900 dark:text-white">{{ number_format($totalDosen) }}
+                            <p class="mt-4 text-3xl font-semibold text-gray-900 dark:text-white">
+                                {{ number_format($totalDosen) }}
                             </p>
                         </div>
                         <div class="w-12 h-12">
@@ -149,7 +152,8 @@
                                     @endif
                                 </p>
                                 <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
-                                    {{ $activity->created_at->diffForHumans() }}</p>
+                                    {{ $activity->created_at->diffForHumans() }}
+                                </p>
                             </div>
                         @empty
                             <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="no_recent_activity"
@@ -181,9 +185,11 @@
                                 <div
                                     class="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-3 {{ $loop->index >= 3 ? 'hidden extra-pending' : '' }}">
                                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                                        {{ $mahasiswa->nama_mahasiswa }}</p>
+                                        {{ $mahasiswa->nama_mahasiswa }}
+                                    </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $mahasiswa->email ?? $mahasiswa->username }}</p>
+                                        {{ $mahasiswa->email ?? $mahasiswa->username }}
+                                    </p>
                                 </div>
                             @empty
                                 <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="pending_students_empty"
@@ -214,9 +220,11 @@
                                 <div
                                     class="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-3 {{ $loop->index >= 3 ? 'hidden extra-rejected' : '' }}">
                                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                                        {{ $mahasiswa->nama_mahasiswa }}</p>
+                                        {{ $mahasiswa->nama_mahasiswa }}
+                                    </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $mahasiswa->email ?? $mahasiswa->username }}</p>
+                                        {{ $mahasiswa->email ?? $mahasiswa->username }}
+                                    </p>
                                 </div>
                             @empty
                                 <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="rejected_students_empty"
@@ -270,7 +278,7 @@
             };
 
             const sparklineData = [12, 19, 8, 14, 22, 18, 25];
-            
+
             // Total Users Chart
             new Chart(document.getElementById('chart-users'), {
                 type: 'line',
@@ -345,4 +353,10 @@
         });
     </script>
 
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.admin_dashboard");
+        });
+    </script>
 @endsection

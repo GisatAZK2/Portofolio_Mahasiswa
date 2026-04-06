@@ -731,6 +731,13 @@
         });
     </script>
 
+     <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.admin_sertifikat");
+        });
+    </script>
+
     <style>
         .line-clamp-2 {
             display: -webkit-box;

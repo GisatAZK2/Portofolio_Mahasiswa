@@ -153,4 +153,11 @@
             }
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.user_create_learning_corner");
+        });
+    </script>
 @endsection

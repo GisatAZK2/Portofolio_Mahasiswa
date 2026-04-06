@@ -203,4 +203,11 @@
             @endif
             });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.user_edit_learning_corner");
+         });
+    </script>
 @endsection

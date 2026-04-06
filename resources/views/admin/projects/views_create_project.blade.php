@@ -8,10 +8,12 @@
             <div class="mb-6 md:mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2 justify-center md:justify-start">
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-                        <span data-translate="ttl_form" data-translate-page="dosen_add_pjt">Tambah Project Mahasiswa Baru</span>
+                        <span data-translate="ttl_form" data-translate-page="dosen_add_pjt">Tambah Project Mahasiswa
+                            Baru</span>
                     </h1>
                 </div>
-                <p data-translate="desc_form" data-translate-page="dosen_add_pjt" class="mt-2 text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-md mx-auto md:mx-0">
+                <p data-translate="desc_form" data-translate-page="dosen_add_pjt"
+                    class="mt-2 text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-md mx-auto md:mx-0">
                     Admin dapat membantu membuat dan mengisi portofolio project mahasiswa
                 </p>
             </div>
@@ -43,7 +45,8 @@
                 <!-- Filter Section -->
                 <div
                     class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter" data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter"
+                        data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
 
                     <div class="mb-5">
                         <div class="relative">
@@ -62,10 +65,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
                             <label for="angkatan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="agkt" data-translate-page="dosen_add_pjt">Angkatan</label>
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                data-translate="agkt" data-translate-page="dosen_add_pjt">Angkatan</label>
                             <select id="angkatan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option value="" data-translate="all_agkt" data-translate-page="dosen_add_pjt">Semua Angkatan</option>
+                                <option value="" data-translate="all_agkt" data-translate-page="dosen_add_pjt">Semua
+                                    Angkatan</option>
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
@@ -75,10 +80,12 @@
                         </div>
                         <div>
                             <label for="jurusan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jrs" data-translate-page="dosen_add_pjt">Jurusan</label>
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jrs"
+                                data-translate-page="dosen_add_pjt">Jurusan</label>
                             <select id="jurusan-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan</option>
+                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan
+                                </option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
@@ -88,10 +95,12 @@
                         </div>
                         <div>
                             <label for="keahlian-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="khl" data-translate-page="dosen_add_pjt">Keahlian</label>
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="khl"
+                                data-translate-page="dosen_add_pjt">Keahlian</label>
                             <select id="keahlian-filter"
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian</option>
+                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian
+                                </option>
                                 @foreach($keahlians as $keahlianItem)
                                     <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>{{ $keahlianItem->nama_keahlian }}</option>
                                 @endforeach
@@ -104,7 +113,8 @@
                             class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
                             Reset Filter
                         </a>
-                        <button type="button" onclick="applyFilters()" data-translate="trp_filter" data-translate-page="dosen_add_pjt"
+                        <button type="button" onclick="applyFilters()" data-translate="trp_filter"
+                            data-translate-page="dosen_add_pjt"
                             class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">
                             Terapkan Filter
                         </button>
@@ -114,7 +124,8 @@
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span class="text-red-500">*</span>
+                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span
+                            class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
@@ -126,7 +137,8 @@
 
                 <!-- Deskripsi -->
                 <div>
-                    <label data-translate="desc_pjt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label data-translate="desc_pjt" data-translate-page="dosen_add_pjt"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Deskripsi (opsional)
                     </label>
                     <textarea name="deskripsi" rows="4"
@@ -140,7 +152,8 @@
                 <!-- Owner Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        <span data-translate="own_pjt" data-translate-page="dosen_add_pjt">Pemilik Project (Owner)</span> <span class="text-red-500">*</span>
+                        <span data-translate="own_pjt" data-translate-page="dosen_add_pjt">Pemilik Project (Owner)</span>
+                        <span class="text-red-500">*</span>
                     </label>
 
                     <!-- Selected Owner Display -->
@@ -183,12 +196,18 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10" data-translate="pick" data-translate-page="dosen_add_pjt">Pilih</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="mhs" data-translate-page="dosen_add_pjt">Mahasiswa</th>
-                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="agkt" data-translate-page="dosen_add_pjt">Angkatan</th>
-                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="jrs" data-translate-page="dosen_add_pjt">Jurusan</th>
-                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="khl" data-translate-page="dosen_add_pjt">Keahlian</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20" data-translate="act" data-translate-page="dosen_add_pjt">Aksi</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10"
+                                            data-translate="pick" data-translate-page="dosen_add_pjt">Pilih</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                            data-translate="mhs" data-translate-page="dosen_add_pjt">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                            data-translate="agkt" data-translate-page="dosen_add_pjt">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                            data-translate="jrs" data-translate-page="dosen_add_pjt">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                                            data-translate="khl" data-translate-page="dosen_add_pjt">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20"
+                                            data-translate="act" data-translate-page="dosen_add_pjt">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="owner-table-body"
@@ -245,7 +264,7 @@
                                                     onclick="event.stopImmediatePropagation()"
                                                     class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
                                                     <span data-translate="see" data-translate-page="dosen_add_pjt">>Lihat</span
-                                                </a>
+                                                        </a>
                                             </td>
                                         </tr>
                                     @empty
@@ -326,12 +345,24 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">Pilih</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mahasiswa</th>
-                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
-                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jurusan</th>
-                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">Aksi</th>
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10">
+                                            Pilih</th>
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                            Mahasiswa</th>
+                                        <th
+                                            class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                            Angkatan</th>
+                                        <th
+                                            class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                            Jurusan</th>
+                                        <th
+                                            class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                            Keahlian</th>
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20">
+                                            Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="leader-table-body"
@@ -417,49 +448,62 @@
                     </div>
 
                     @error('leader')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p></p>
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        </p>
                     @enderror
                 </div>
 
                 <!-- Collaborative Project Toggle -->
-                <div class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 md:p-5 rounded-2xl border border-gray-200 dark:border-gray-700 mb-4">
+                <div
+                    class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 md:p-5 rounded-2xl border border-gray-200 dark:border-gray-700 mb-4">
                     <div>
-                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200" data-translate="collab" data-translate-page="dosen_add_pjt">Mode Kolaboratif</h4>
-                        <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="desc_collab" data-translate-page="dosen_add_pjt">Jika dimatikan, rekan project tidak ditampilkan dan tugas hanya mengambil Owner + Leader.</p>
+                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200" data-translate="collab"
+                            data-translate-page="dosen_add_pjt">Mode Kolaboratif</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="desc_collab"
+                            data-translate-page="dosen_add_pjt">Jika dimatikan, rekan project tidak ditampilkan dan tugas
+                            hanya mengambil Owner + Leader.</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span id="collaborative-status" class="text-sm font-semibold text-green-600 dark:text-green-300">On</span>
-                        <button type="button" onclick="toggleCollaborativeMode()" id="collaborative-toggle" class="px-3 py-1 rounded-lg bg-indigo-600 text-white text-sm">Switch</button>
+                        <span id="collaborative-status"
+                            class="text-sm font-semibold text-green-600 dark:text-green-300">On</span>
+                        <button type="button" onclick="toggleCollaborativeMode()" id="collaborative-toggle"
+                            class="px-3 py-1 rounded-lg bg-indigo-600 text-white text-sm">Switch</button>
                     </div>
                 </div>
 
                 <input type="hidden" name="is_collaborative" id="collaborative-input" value="0">
 
                 <div class="flex justify-end mb-3">
-                    <button type="button" onclick="resetProjectSelection()" class="px-4 py-2 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl text-sm">Reset Selection User</button>
+                    <button type="button" onclick="resetProjectSelection()"
+                        class="px-4 py-2 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl text-sm">Reset
+                        Selection User</button>
                 </div>
 
                 <!-- Rekan Project -->
                 <div id="member-wrapper">
-                    <label data-translate="add_partner" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    <label data-translate="add_partner" data-translate-page="dosen_add_pjt"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Rekan (opsional)
                     </label>
                     <div id="members-container" class="space-y-3"></div>
                     <button id="add-member-btn" type="button" onclick="addMemberSelect()"
                         class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
-                        <span class="text-xl">+</span> <span data-translate="add_partner" data-translate-page="dosen_add_pjt">Tambah Rekan</span>
+                        <span class="text-xl">+</span> <span data-translate="add_partner"
+                            data-translate-page="dosen_add_pjt">Tambah Rekan</span>
                     </button>
                 </div>
 
                 <!-- Tambah Tugas -->
                 <div>
-                    <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Tugas (opsional)
                     </label>
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> <span data-translate="add_task_opt" data-translate-page="dosen_add_pjt">Tambah Tugas</span>
+                        <span class="text-xl">+</span> <span data-translate="add_task_opt"
+                            data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                     </button>
                 </div>
 
@@ -467,7 +511,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                            <span data-translate="date_start" data-translate-page="dosen_add_pjt">Tanggal Mulai</span> <span class="text-red-500">*</span>
+                            <span data-translate="date_start" data-translate-page="dosen_add_pjt">Tanggal Mulai</span> <span
+                                class="text-red-500">*</span>
                         </label>
                         <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
@@ -476,7 +521,8 @@
                         @enderror
                     </div>
                     <div>
-                        <label data-translate="date_end" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <label data-translate="date_end" data-translate-page="dosen_add_pjt"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                             Tanggal Selesai (opsional)
                         </label>
                         <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
@@ -489,7 +535,8 @@
 
                 <!-- Link Project -->
                 <div>
-                    <label data-translate="link_pjt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label data-translate="link_pjt" data-translate-page="dosen_add_pjt"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Link Project (opsional)
                     </label>
                     <input type="url" name="link_project" value="{{ old('link_project') }}"
@@ -503,7 +550,8 @@
                 <!-- Link GitHub & Video -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label data-translate="link_github" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <label data-translate="link_github" data-translate-page="dosen_add_pjt"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                             Link GitHub (opsional)
                         </label>
                         <input type="url" name="link_github" maxlength="500" value="{{ old('link_github') }}"
@@ -511,7 +559,8 @@
                             placeholder="https://github.com/username/repo">
                     </div>
                     <div>
-                        <label data-translate="link_vid" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <label data-translate="link_vid" data-translate-page="dosen_add_pjt"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                             Link Video (YouTube, opsional)
                         </label>
                         <input type="url" name="link_video" maxlength="500" value="{{ old('link_video') }}"
@@ -524,7 +573,8 @@
                 <div class="flex flex-col sm:flex-row gap-3 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex-1"></div>
 
-                    <a href="{{ route('admin.projects.index') }}" data-translate="cancel" data-translate-page="dosen_add_pjt"
+                    <a href="{{ route('admin.projects.index') }}" data-translate="cancel"
+                        data-translate-page="dosen_add_pjt"
                         class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto">
                         Batal
                     </a>
@@ -675,13 +725,13 @@
                     if (newPagination) document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
 
                     attachTableRowListeners();
-                    
+
                     const selectedOwnerId = document.getElementById('selected-owner-id').value;
                     if (selectedOwnerId) {
                         const radio = document.querySelector(`.owner-radio[value="${selectedOwnerId}"]`);
                         if (radio) radio.checked = true;
                     }
-                    
+
                     const selectedLeaderId = document.getElementById('selected-leader-id').value;
                     if (selectedLeaderId) {
                         const radio = document.querySelector(`.leader-radio[value="${selectedLeaderId}"]`);
@@ -698,7 +748,7 @@
                 if (radio) {
                     row.addEventListener('click', function (e) {
                         if (e.target.type !== 'radio') {
-const nameEl = row.querySelector('td:nth-child(2) .font-medium');
+                            const nameEl = row.querySelector('td:nth-child(2) .font-medium');
                             const name = nameEl ? nameEl.textContent.trim() : '';
                             const img = row.querySelector('img');
                             const photoSrc = img ? img.src : '';
@@ -707,7 +757,7 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
                     });
                 }
             });
-            
+
             // Leader table
             document.querySelectorAll('#leader-table-body tr').forEach(row => {
                 const radio = row.querySelector('.leader-radio');
@@ -754,8 +804,8 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
             let photoHtml = photoProfile
                 ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-blue-200" src="${photoProfile}" alt="${userName}">`
                 : `<div class="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center">
-                     <span class="text-blue-700 dark:text-blue-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
-                   </div>`;
+                         <span class="text-blue-700 dark:text-blue-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
+                       </div>`;
 
             content.innerHTML = `${photoHtml}<div class="font-medium text-blue-800 dark:text-blue-200">Pemilik: ${userName}</div>`;
             display.classList.remove('hidden');
@@ -792,8 +842,8 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
             let photoHtml = photoProfile
                 ? `<img class="w-9 h-9 rounded-full object-cover ring-2 ring-green-200" src="${photoProfile}" alt="${userName}">`
                 : `<div class="w-9 h-9 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center">
-                     <span class="text-green-700 dark:text-green-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
-                   </div>`;
+                         <span class="text-green-700 dark:text-green-300 font-semibold">${userName.charAt(0).toUpperCase()}</span>
+                       </div>`;
 
             content.innerHTML = `${photoHtml}<div class="font-medium text-green-800 dark:text-green-200">Pemimpin: ${userName}</div>`;
             display.classList.remove('hidden');
@@ -838,12 +888,12 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
 
             if (users.length === 0) {
                 memberDiv.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700">
-                        <select class="member-select w-full p-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl" disabled>
-                            <option value="">Tidak ada mahasiswa tersedia</option>
-                        </select>
-                    </div>
-                `;
+                        <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700">
+                            <select class="member-select w-full p-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl" disabled>
+                                <option value="">Tidak ada mahasiswa tersedia</option>
+                            </select>
+                        </div>
+                    `;
             } else {
                 let optionsHtml = '<option value="">-- Pilih Rekan Project --</option>';
                 users.forEach(user => {
@@ -852,31 +902,31 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
                 });
 
                 memberDiv.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <div class="relative mb-4">
-                            <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="flex gap-3 items-center">
-                            <div class="relative flex-1 w-full">
-                                <select name="members[]" class="member-select w-full p-4 pl-14 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none transition text-base">
-                                    ${optionsHtml}
-                                </select>
-                                <div class="member-photo absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <div class="w-9 h-9 rounded-2xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center overflow-hidden ring-2 ring-white dark:ring-gray-700">
-                                        <span class="member-initial text-indigo-600 dark:text-indigo-400 font-semibold text-base"></span>
-                                        <img class="member-img hidden w-full h-full object-cover rounded-2xl" src="" alt="">
-                                    </div>
+                        <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <div class="relative mb-4">
+                                <input type="text" class="member-search w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm" placeholder="Cari nama rekan...">
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
                                 </div>
                             </div>
-                            <button type="button" onclick="removeMember(this)" class="px-6 py-4 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900 rounded-2xl transition font-medium flex-shrink-0">✕</button>
+                            <div class="flex gap-3 items-center">
+                                <div class="relative flex-1 w-full">
+                                    <select name="members[]" class="member-select w-full p-4 pl-14 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none transition text-base">
+                                        ${optionsHtml}
+                                    </select>
+                                    <div class="member-photo absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        <div class="w-9 h-9 rounded-2xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center overflow-hidden ring-2 ring-white dark:ring-gray-700">
+                                            <span class="member-initial text-indigo-600 dark:text-indigo-400 font-semibold text-base"></span>
+                                            <img class="member-img hidden w-full h-full object-cover rounded-2xl" src="" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="removeMember(this)" class="px-6 py-4 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900 rounded-2xl transition font-medium flex-shrink-0">✕</button>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
                 container.appendChild(memberDiv);
 
@@ -1130,21 +1180,21 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
             const taskItem = document.createElement('div');
             taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
             taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
+                    ${hiddenId}
+                    <div class="grid gap-4 md:grid-cols-3 items-end">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
+                            <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                                ${renderTaskUserOptions(userId)}
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
+                            <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
+                        </div>
+                        <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl" data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
                     </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
-                    </div>
-                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl" data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
-                </div>
-            `;
+                `;
 
             container.appendChild(taskItem);
             const select = taskItem.querySelector('.task-user-select');
@@ -1227,7 +1277,7 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
                     selectOwner(oldOwnerId, name, photo);
                 }
             }
-            
+
             const oldLeaderId = document.getElementById('selected-leader-id').value;
             if (oldLeaderId) {
                 const radio = document.querySelector(`.leader-radio[value="${oldLeaderId}"]`);
@@ -1263,7 +1313,7 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
             // Owner & Leader Search
             const ownerSearch = document.getElementById('owner-search');
             if (ownerSearch) ownerSearch.addEventListener('input', filterOwnerTable);
-            
+
             const leaderSearch = document.getElementById('leader-search');
             if (leaderSearch) leaderSearch.addEventListener('input', filterLeaderTable);
 
@@ -1279,4 +1329,12 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
             });
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.add_project");
+        });
+    </script>
+
 @endsection

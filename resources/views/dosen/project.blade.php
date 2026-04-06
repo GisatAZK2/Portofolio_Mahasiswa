@@ -522,4 +522,11 @@
             updateSelectionState();
         });
     </script>
+
+        <!-- Page Info -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                showPageInfo("popup.dosen_projects");
+            });
+        </script>
 @endsection

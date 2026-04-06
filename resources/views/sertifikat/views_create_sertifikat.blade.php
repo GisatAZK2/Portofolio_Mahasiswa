@@ -259,8 +259,8 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Tambahkan sertifikat baru dengan mengisi formulir. Pastikan untuk mengunggah file sertifikat yang valid.");
+            showPageInfo("popup.user_create_sertifikat");
         });
-    </script>
+     </script>
 
 @endsection

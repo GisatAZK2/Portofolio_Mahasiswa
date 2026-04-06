@@ -484,4 +484,11 @@
             }
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.add_sertifikat");
+        });
+    </script>
 @endsection

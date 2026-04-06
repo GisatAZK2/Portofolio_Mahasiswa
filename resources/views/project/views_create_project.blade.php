@@ -907,9 +907,10 @@ function addTaskRow(taskData = null) {
     </script>
 
     <!-- Page Info -->
-    <script>
+      <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Tambahkan project baru dengan mengisi formulir. Aktifkan projek kolaboratif untuk menambahkan pemimpin dan anggota tim. Jangan lupa untuk menyimpan perubahan setelah selesai.");
+            showPageInfo("popup.user_create_project");
         });
     </script>
+
 @endsection

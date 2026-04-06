@@ -71,7 +71,8 @@
                             <td class="px-6 py-4 dark:text-white">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 dark:text-white font-medium">{{ $angkatan->nama_angkatan }}</td>
                             <td class="px-6 py-4 dark:text-white">
-                                {{ \Carbon\Carbon::parse($angkatan->tahun_masuk)->format('d/m/Y') }}</td>
+                                {{ \Carbon\Carbon::parse($angkatan->tahun_masuk)->format('d/m/Y') }}
+                            </td>
                             <td class="px-6 py-4 dark:text-white">
                                 {{ $angkatan->tahun_keluar ? \Carbon\Carbon::parse($angkatan->tahun_keluar)->format('d/m/Y') : '-' }}
                             </td>
@@ -377,6 +378,13 @@
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateSelectedIds);
             });
+        });
+    </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.manage_angkatan");
         });
     </script>
 @endpush
