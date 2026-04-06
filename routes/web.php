@@ -145,6 +145,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyAngkatan'])->name('bulk-destroy');
     });
 
+      Route::prefix('manageProdi')->name('prodi.')->group(function () {
+        Route::get('/', [AdminController::class, 'ListProdi'])->name('index');
+        Route::get('/AddAngkatan', [AdminController::class, 'TambahProdi'])->name('create');
+        Route::get('/Details/{jurusan}', [AdminController::class, 'DetailsProdi'])->name('details');
+        Route::patch('/edit/{jurusan}', [AdminController::class, 'UpdateProdi'])->name('update');
+        Route::post('/store', [AdminController::class, 'StoreProdi'])->name('store');
+        Route::delete('/DeleteProdi/{jurusan}', [AdminController::class, 'DestroyProdi'])->name('destroy');
+        Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProdi'])->name('bulk-destroy');
+    });
+
     Route::prefix('manageProject')->name('projects.')->group(function () {
         Route::get('/', [AdminController::class, 'projects'])->name('index');
         Route::get('/create', [AdminController::class, 'TambahProjects'])->name('create');

@@ -1058,6 +1058,83 @@ class AdminController extends Controller
         return redirect()->back()->with('success', count($ids) . ' Angkatan berhasil dihapus');
     }
 
+    // For Prodi Pages
+    public function ListProdi()
+    {
+        $this->authorizeAccess();
+        $jurusans = Jurusan::all();
+        return view('admin.list-prodi', compact('jurusans'));
+    }
+
+    public function DetailsProdi($id)
+{
+    $this->authorizeAccess();
+
+    $jurusan = Jurusan::withCount('users')
+        ->with(['users.angkatan'])
+        ->findOrFail($id);
+
+    $angkatans = \App\Models\Angkatan::all();
+
+    return view('admin.prodi.views_detail_prodi', compact('jurusan', 'angkatans'));
+}
+
+    public function TambahProdi()
+    {
+        $this->authorizeAccess();
+        return view('admin.prodi.views_create_prodi');
+    }
+
+    public function StoreProdi(Request $request)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'nama_prodi' => 'required|string|max:255',
+        ]);
+
+        Jurusan::create([
+            'nama_jurusan' => $validated['nama_prodi'],
+            'created_at' => now()
+        ]);
+
+        return redirect()->route('admin.prodi.index')
+            ->with('success', 'Prodi berhasil ditambahkan!');
+    }
+
+    public function UpdateProdi(Request $request, Jurusan $jurusan)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'nama_prodi' => 'required|string|max:255',
+        ]);
+
+        $jurusan->update([
+            'nama_jurusan' => $validated['nama_prodi']
+        ]);
+
+        return redirect()->route('admin.prodi.index')
+            ->with('success', 'Data Prodi berhasil diperbarui!');
+    }
+
+    public function DestroyProdi(Jurusan $jurusan)
+    {
+        $this->authorizeAccess();
+        $jurusan->delete();
+
+        return redirect()->route('admin.prodi.index')
+            ->with('success', 'Prodi berhasil dihapus.');
+    }
+
+    public function bulkDestroyProdi(Request $request)
+    {
+        $this->authorizeAccess();
+        $ids = explode(',', $request->selected_ids);
+
+        Jurusan::whereIn('id_jurusan', $ids)->delete();
+
+        return redirect()->back()->with('success', count($ids) . ' Prodi berhasil dihapus');
+    }
+
     //For Projects Pages
     public function projects()
     {
