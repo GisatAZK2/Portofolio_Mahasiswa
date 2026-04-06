@@ -99,6 +99,8 @@
                         </div>
                     </div>
 
+                    
+
                     <div class="flex flex-col sm:flex-row gap-3 justify-end mt-6">
                         <a href="{{ route('admin.projects.create') }}"
                             class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
@@ -111,32 +113,7 @@
                     </div>
                 </div>
 
-                <!-- Nama Project -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
-                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
-                        placeholder="Contoh: Website Portfolio Pribadi">
-                    @error('nama_project')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Deskripsi -->
-                <div>
-                    <label data-translate="desc_pjt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        Deskripsi (opsional)
-                    </label>
-                    <textarea name="deskripsi" rows="4"
-                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
-                        placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
-                    @error('deskripsi')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
+                
                 <!-- Owner Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
@@ -449,6 +426,32 @@
                         class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
                         <span class="text-xl">+</span> <span data-translate="add_partner" data-translate-page="dosen_add_pjt">Tambah Rekan</span>
                     </button>
+                </div>
+
+                <!-- Nama Project -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="nm_pjt" data-translate-page="dosen_add_pjt">Nama Project</span> <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
+                        placeholder="Contoh: Website Portfolio Pribadi">
+                    @error('nama_project')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Deskripsi -->
+                <div>
+                    <label data-translate="desc_pjt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Deskripsi (opsional)
+                    </label>
+                    <textarea name="deskripsi" rows="4"
+                        class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
+                        placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
+                    @error('deskripsi')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Tambah Tugas -->

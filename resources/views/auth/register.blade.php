@@ -150,17 +150,7 @@
                             placeholder="Username untuk login" {{ $isBlocked ? 'disabled' : '' }}>
                         @error('username') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="roles">Peran: </label>
-                        <select name="role"
-                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
-                            {{ $isBlocked ? 'disabled' : '' }}>
-                            <option value="mahasiswa">Mahasiswa</option>
-                            <option value="dosen">Dosen/Admin</option>
-                        </select>
-                    </div>
-
+                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>

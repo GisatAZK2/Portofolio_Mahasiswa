@@ -52,7 +52,7 @@
 
             <!-- Action Buttons - Versi Terbaik -->
             <div class="pt-8 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
-                <a href="{{ route('admin.projects.index') }}"
+                <a href="{{ route('admin.angkatan.index') }}"
                     class="px-7 py-3.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-2xl transition focus:outline-none focus:ring-2 focus:ring-gray-500">
                     <span data-translate="cncl" data-translate-page="admin">Batal</span>
                 </a>

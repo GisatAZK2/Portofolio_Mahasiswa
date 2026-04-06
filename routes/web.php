@@ -5,13 +5,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\v1\UserController;
-//use App\Http\Controllers\v1\PortofolioController;
 use App\Http\Controllers\v1\ProjekController;
 use App\Http\Controllers\v1\DashboardController;
 use App\Http\Controllers\v1\LearningCornerController;
 use App\Http\Controllers\v1\SertifikatController;
 use App\Http\Controllers\v1\DosenController;
-
 
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -170,7 +168,7 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::get('/AddUser', [DosenController::class, 'ViewAddUser'])->name('ViewCreate');
         Route::post('/StoreUser', [DosenController::class, 'AddUser'])->name('StoreUser');
         Route::delete('/DeleteUser/{user}', [DosenController::class, 'destroyUser'])->name('destroy');
-        Route::patch('/{user}/update-status', [UserController::class, 'updateStatus'])->name('update-status');
+        Route::patch('/{user}/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
     });
 
     Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
