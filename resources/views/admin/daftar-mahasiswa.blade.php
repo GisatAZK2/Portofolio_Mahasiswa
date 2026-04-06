@@ -187,7 +187,9 @@
                             data-translate="tbl_role" data-translate-page="admin">Role</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_stat" data-translate-page="admin">Status</th>
-                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Aktif</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_jrs" data-translate-page="admin">Prodi</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="agkt" data-translate-page="admin">Angkatan</th>  
@@ -255,6 +257,19 @@
                                     @endif
                                 @else
                                     <span class="text-xs text-gray-500">-</span>
+                                @endif
+                            </td>
+                            <td class="px-3 py-3">
+                                @if($user->is_active)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
+                                        Aktif
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
+                                        Tidak Aktif
+                                    </span>
                                 @endif
                             </td>
                             <td class="hidden xl:table-cell px-3 py-3 dark:text-white text-sm">
@@ -379,6 +394,15 @@
                                 @endif
                             </div>
                         @endif
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status Aktif:</span>
+                            @if($user->is_active)
+                                <span class="text-xs text-green-600">✓ Aktif</span>
+                            @else
+                                <span class="text-xs text-red-600">✗ Tidak Aktif</span>
+                            @endif
+                        </div>
 
                         @if($user->jurusan?->nama_jurusan)
                             <div class="flex justify-between items-center">

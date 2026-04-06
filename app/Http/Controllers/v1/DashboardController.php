@@ -87,13 +87,13 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         $totalLearning = LearningCorner::where('id_mahasiswa', $user->id)->count();
-        $totalProject  = Project::where(function ($query) use ($user) {
-                $query->where('id_mahasiswa', $user->id)
-                      ->orWhere('leader_id', $user->id)
-                      ->orWhereHas('members', function ($q) use ($user) {
-                          $q->where('user_id', $user->id);
-                      });
-            })->count();
+        $totalProject = Project::where(function ($query) use ($user) {
+            $query->where('id_mahasiswa', $user->id)
+                ->orWhere('leader_id', $user->id)
+                ->orWhereHas('members', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                });
+        })->count();
         $totalSertifikat = Sertifikat::where('id_mahasiswa', $user->id)
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
@@ -113,10 +113,10 @@ class DashboardController extends Controller
         $project = Project::with('mahasiswa')
             ->where(function ($query) use ($user) {
                 $query->where('id_mahasiswa', $user->id)
-                      ->orWhere('leader_id', $user->id)
-                      ->orWhereHas('members', function ($q) use ($user) {
-                          $q->where('user_id', $user->id);
-                      });
+                    ->orWhere('leader_id', $user->id)
+                    ->orWhereHas('members', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    });
             })
             ->inRandomOrder()
             ->take(3)
@@ -154,10 +154,10 @@ class DashboardController extends Controller
         $projects = Project::with('mahasiswa')
             ->where(function ($query) use ($user) {
                 $query->where('id_mahasiswa', $user->id)
-                      ->orWhere('leader_id', $user->id)
-                      ->orWhereHas('members', function ($q) use ($user) {
-                          $q->where('user_id', $user->id);
-                      });
+                    ->orWhere('leader_id', $user->id)
+                    ->orWhereHas('members', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    });
             })
             ->latest()
             ->paginate(6, ['*'], 'project_page');
@@ -247,7 +247,7 @@ class DashboardController extends Controller
             'keahlian',
             'sertifikats' => function ($q) {
                 $q->where('is_active', true)
-                  ->where('status_pengajuan', 'Di Terima');
+                    ->where('status_pengajuan', 'Di Terima');
             },
             'learning_corners'
         ]);
@@ -281,7 +281,7 @@ class DashboardController extends Controller
                     ->where('tanggal_mulai', '<=', $today)
                     ->where(function ($q) use ($today) {
                         $q->where('tanggal_akhir', '>=', $today)
-                          ->orWhereNull('tanggal_akhir');
+                            ->orWhereNull('tanggal_akhir');
                     });
                 break;
         }
@@ -308,11 +308,11 @@ class DashboardController extends Controller
      */
     public function search(Request $request)
     {
-        $keyword  = $request->q;
-        $jurusan  = $request->jurusan;
+        $keyword = $request->q;
+        $jurusan = $request->jurusan;
         $keahlian = $request->keahlian;
         $angkatan = $request->angkatan;
-        $type     = $request->type;
+        $type = $request->type;
 
         $results = collect();
 
@@ -364,7 +364,7 @@ class DashboardController extends Controller
             $projects = Project::with(['mahasiswa.jurusan', 'mahasiswa.keahlian', 'mahasiswa.angkatan'])
                 ->whereHas('mahasiswa', function ($query) {
                     $query->where('role', 'mahasiswa')
-                          ->where('status_pengajuan', 'Di Terima');
+                        ->where('status_pengajuan', 'Di Terima');
                 })
                 ->when($keyword, function ($query) use ($keyword) {
                     $query->where('isi_content->nama_project', 'like', "%{$keyword}%");
@@ -385,8 +385,8 @@ class DashboardController extends Controller
                 $content = $project->isi_content ?? [];
                 $project->nama_project = $content['nama_project'] ?? null;
                 $project->link_project = $content['link_project'] ?? null;
-                $project->link_github  = $content['link_github'] ?? null;
-                $project->link_video   = $content['link_video'] ?? null;
+                $project->link_github = $content['link_github'] ?? null;
+                $project->link_video = $content['link_video'] ?? null;
                 $project->type = 'project';
                 return $project;
             });
@@ -401,7 +401,7 @@ class DashboardController extends Controller
                 ->where('status_pengajuan', 'Di Terima')
                 ->whereHas('mahasiswa', function ($query) {
                     $query->where('role', 'mahasiswa')
-                          ->where('status_pengajuan', 'Di Terima');
+                        ->where('status_pengajuan', 'Di Terima');
                 })
                 ->when($keyword, function ($query) use ($keyword) {
                     $query->where('nama_sertifikat', 'like', "%$keyword%");
@@ -432,30 +432,30 @@ class DashboardController extends Controller
             ->count();
 
         $totalLearning = LearningCorner::whereHas('mahasiswa', function ($query) {
-                $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
-            })->count();
+            $query->where('role', 'mahasiswa')
+                ->where('status_pengajuan', 'Di Terima');
+        })->count();
 
-           $totalProject = Project::where(function ($query) {
-    $query->whereHas('mahasiswa', function ($q) {
-        $q->where('role', 'mahasiswa')
-          ->where('status_pengajuan', 'Di Terima');
-    })
-    ->orWhereHas('leader', function ($q) {
-        $q->where('role', 'mahasiswa')
-          ->where('status_pengajuan', 'Di Terima');
-    })
-    ->orWhereHas('members', function ($q) {
-        $q->where('role', 'mahasiswa')
-          ->where('status_pengajuan', 'Di Terima');
-    });
-})->count();
+        $totalProject = Project::where(function ($query) {
+            $query->whereHas('mahasiswa', function ($q) {
+                $q->where('role', 'mahasiswa')
+                    ->where('status_pengajuan', 'Di Terima');
+            })
+                ->orWhereHas('leader', function ($q) {
+                    $q->where('role', 'mahasiswa')
+                        ->where('status_pengajuan', 'Di Terima');
+                })
+                ->orWhereHas('members', function ($q) {
+                    $q->where('role', 'mahasiswa')
+                        ->where('status_pengajuan', 'Di Terima');
+                });
+        })->count();
 
         $totalSertifikat = Sertifikat::where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
             ->whereHas('mahasiswa', function ($query) {
                 $query->where('role', 'mahasiswa')
-                      ->where('status_pengajuan', 'Di Terima');
+                    ->where('status_pengajuan', 'Di Terima');
             })->count();
 
         $mahasiswa = $users ?? collect();

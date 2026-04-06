@@ -153,107 +153,115 @@
 
                     <input type="hidden" name="user_id" id="selected-user-id" value="{{ old('user_id') }}">
 
-                    <!-- Table Mahasiswa -->
+                    <!-- Search untuk Mahasiswa -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input type="text" id="user-search" placeholder="Cari nama mahasiswa..."
+                                class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Container untuk Mahasiswa -->
                     <div
-                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-12"
-                                        data-translate="tbl_pjt_1" data-translate-page="admin">Pilih</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                        data-translate="tbl_foto" data-translate-page="admin">Photo</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                        data-translate="nm_mhs" data-translate-page="admin">Nama Mahasiswa</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                        data-translate="tbl_pjt_3" data-translate-page="admin">Angkatan</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                        data-translate="tbl_pjt_4" data-translate-page="admin">Jurusan</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                        data-translate="tbl_pjt_5" data-translate-page="admin">Keahlian</th>
-                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32"
-                                        data-translate-page="admin" data-translate="tbl_pjt_6">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-table-body"
-                                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                @forelse($users as $user)
-                                    <tr onclick="selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')"
-                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/70 transition cursor-pointer">
-                                        <td class="px-6 py-5">
-                                            <input type="radio" name="user_radio" value="{{ $user->id }}"
-                                                class="user-radio w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                                {{ old('user_id') == $user->id ? 'checked' : '' }}
-                                                onchange="event.stopImmediatePropagation(); selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
-                                        </td>
-                                        <td class="px-6 py-5">
-                                            <div
-                                                class="w-11 h-11 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-600">
-                                                @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
-                                                    <img src="{{ asset('storage/' . $user->photo_profile) }}"
-                                                        class="w-full h-full object-cover" alt="{{ $user->nama_mahasiswa }}">
-                                                @else
-                                                    <div
-                                                        class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                                                        <span class="text-white font-semibold text-xl">
-                                                            {{ strtoupper(substr($user->nama_mahasiswa, 0, 1)) }}
-                                                        </span>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-5">
-                                            <div class="font-semibold text-gray-900 dark:text-white">{{ $user->nama_mahasiswa }}
-                                            </div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
-                                        </td>
-                                        <td class="px-6 py-5 text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $user->angkatan->nama_angkatan ?? $user->angkatan->tahun_angkatan ?? '-' }}
-                                        </td>
-                                        <td class="px-6 py-5 text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $user->jurusan->nama_jurusan ?? '-' }}
-                                        </td>
-                                        <td class="px-6 py-5">
-                                            @if($user->keahlian)
-                                                <span
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
-                                                    {{ $user->keahlian->nama_keahlian }}
-                                                </span>
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-5">
-                                            <a href="{{ route('portfolio.show', $user->id) }}" target="_blank"
-                                                class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium">
-                                                <span data-translate="see_profile" data-translate-page="admin">Lihat Profil
-                                                    →</span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                     <tr>
-                                        <td colspan="7" class="px-6 py-16 text-center">
-                                            <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
-                                                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                        d="M17 20h5v-2a3 3 0 01-5.356-1.857M17 20H7m5-2v2m-5-2v2m5-2v-2m-5 2v-2" />
-                                                </svg>
-                                                <p class="text-lg font-medium" data-translate="empty_filter"
-                                                    data-translate-page="admin">Tidak ada mahasiswa ditemukan</p>
-                                                <p class="text-sm mt-1" data-translate="empty_filter_desc"
-                                                    data-translate-page="admin">Coba ubah filter atau kata kunci pencarian</p>
-                                            </div>
-                                        </td>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-10" data-translate="pick" data-translate-page="admin">Pilih</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="mhs" data-translate-page="admin">Mahasiswa</th>
+                                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="agkt" data-translate-page="admin">Angkatan</th>
+                                        <th class="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="jrs" data-translate-page="admin">Jurusan</th>
+                                        <th class="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" data-translate="khl" data-translate-page="admin">Keahlian</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider text-center w-20" data-translate="act" data-translate-page="admin">Aksi</th>
                                     </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="user-table-body"
+                                    class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($users as $user)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group"
+                                            onclick="selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
+                                            <td class="px-4 py-4">
+                                                <input type="radio" name="user_radio" value="{{ $user->id }}"
+                                                    class="user-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                    {{ old('user_id') == $user->id ? 'checked' : '' }}
+                                                    onchange="event.stopImmediatePropagation(); selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
+                                            </td>
+                                            <td class="px-4 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="flex-shrink-0">
+                                                        @if($user->photo_profile && file_exists(public_path('storage/' . $user->photo_profile)))
+                                                            <img src="{{ asset('storage/' . $user->photo_profile) }}"
+                                                                class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-700"
+                                                                alt="{{ $user->nama_mahasiswa }}">
+                                                        @else
+                                                            <div
+                                                                class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center ring-2 ring-white dark:ring-gray-700">
+                                                                <span
+                                                                    class="text-indigo-600 dark:text-indigo-300 font-medium text-sm">
+                                                                    {{ strtoupper(substr($user->nama_mahasiswa, 0, 2)) }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <div class="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                                                            {{ $user->nama_mahasiswa }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="hidden md:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->angkatan->nama_angkatan ?? $user->angkatan->tahun_angkatan ?? '-' }}
+                                            </td>
+                                            <td class="hidden lg:table-cell px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                                {{ $user->jurusan->nama_jurusan ?? '-' }}
+                                            </td>
+                                            <td class="hidden xl:table-cell px-4 py-4">
+                                                <span
+                                                    class="px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    {{ $user->keahlian->nama_keahlian ?? '-' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-4 text-center">
+                                                <a href="{{ route('portfolio.show', $user->id) }}"
+                                                    onclick="event.stopImmediatePropagation()"
+                                                    class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
+                                                    <span data-translate="see" data-translate-page="admin">Lihat</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                                                <div class="flex flex-col items-center">
+                                                    <svg class="w-14 h-14 text-gray-300 mb-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                                        </path>
+                                                    </svg>
+                                                    <p class="font-medium">Tidak ada mahasiswa ditemukan</p>
+                                                    <p class="text-sm mt-1">Coba ubah filter pencarian anda</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Pagination -->
-                    <div class="mt-6">
+                    <div class="mt-5" id="pagination-links">
                         {{ $users->links() }}
                     </div>
 
@@ -301,7 +309,7 @@
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror>
+                    @enderror
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400"><span data-translate="max_tggl"
                             data-translate-page="admin">Maksimal tanggal hari ini</span></p>
                 </div>
@@ -480,6 +488,28 @@
                         e.preventDefault();
                         applyFilters();
                     }
+                });
+            }
+
+            // User search functionality
+            const userSearchInput = document.getElementById('user-search');
+            if (userSearchInput) {
+                userSearchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    const rows = document.querySelectorAll('#user-table-body tr');
+
+                    rows.forEach(row => {
+                        if (row.classList.contains('hidden')) return; // Skip empty state row
+
+                        const name = row.cells[1].querySelector('.font-medium').textContent.toLowerCase();
+                        const email = row.cells[1].querySelector('.text-xs').textContent.toLowerCase();
+
+                        if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
                 });
             }
         });

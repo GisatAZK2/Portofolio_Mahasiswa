@@ -93,7 +93,7 @@
 
         <!-- Daftar Mahasiswa -->
         <div>
-            <h3 class="text-xl font-semibold dark:text-white mb-6" data-translate="dft_mhs" data-translate-page="admin">
+            <h3 class="text-xl font-semibold dark:text-white mb-6" data-translate="list_mhs" data-translate-page="admin">
                 Daftar Mahasiswa</h3>
 
             <!-- Filter Section -->
@@ -118,7 +118,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="filter-jurusan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Filter Jurusan
+                            Filter PRO
                         </label>
                         <select id="filter-jurusan"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
@@ -166,13 +166,13 @@
                     <table id="mahasiswa-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-blue-600 dark:bg-blue-700">
                             <tr>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-white uppercase w-12">No</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-white uppercase">Nama Mahasiswa</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-white uppercase hidden md:table-cell">
+                                <th class="px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-white uppercase w-10">No</th>
+                                <th class="px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-white uppercase">Nama Mahasiswa</th>
+                                <th class="px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-white uppercase  whitespace-nowrap">
                                     Jurusan</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-white uppercase">Email</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-white uppercase w-28">Status</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-white uppercase">Aksi</th>
+                                <th class="px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-white uppercase">Email</th>
+                                <th class="px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-white uppercase w-24 whitespace-nowrap">Status</th>
+                                <th class="px-3 py-2 text-center text-[10px] sm:text-xs font-medium text-white uppercase">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="mahasiswa-tbody"
@@ -312,17 +312,19 @@
 
                 html += `
                                                                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-                                                                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">${index + 1}</td>
-                                                                                <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">${m.nama_mahasiswa}</td>
-                                                                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 hidden md:table-cell">${m.jurusan_nama}</td>
-                                                                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">${m.email || '-'}</td>
-                                                                                <td class="px-6 py-4">
-                                                                                    <span class="px-4 py-1.5 text-xs font-medium ${statusColor} rounded-2xl">
+                                                                                <td class="px-3 py-2 text-[11px] text-gray-900 dark:text-white">${index + 1}</td>
+                                                                                <td class="px-3 py-2 text-[11px] font-medium text-gray-900 dark:text-white">${m.nama_mahasiswa}</td>
+                                                                                <td class="px-3 py-2 text-[11px] text-gray-700 dark:text-gray-300 ">${m.jurusan_nama}</td>
+                                                                                <td class="px-3 py-2 text-[11px] text-gray-700 dark:text-gray-300 max-w-[150px] sm:max-w-[200px] truncate" title="${m.email || '-'}">
+                                                                                    ${m.email || '-'}
+                                                                                </td>
+                                                                                <td class="px-3 py-2">
+                                                                                    <span class="px-2 py-1 text-[10px] font-medium ${statusColor} rounded-full">
                                                                                         ${statusText}
                                                                                     </span>
                                                                                 </td>
-                                                                                <td class="px-6 py-4 text-center">
-                                                                                    <a href="${portfolioUrl}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors">
+                                                                                <td class="px-3 py-2 text-center">
+                                                                                    <a href="${portfolioUrl}" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] sm:text-xs font-medium rounded-lg transition-colors">
                                                                                         Lihat
                                                                                     </a>
                                                                                 </td>
@@ -345,4 +347,31 @@
             showPageInfo("popup.detail_angkatan");
         });
     </script>
+
+    <style>
+        /* Custom scrollbar for table container */
+        .overflow-x-auto::-webkit-scrollbar {
+            height: 8px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark .overflow-x-auto::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        .dark .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        .dark .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
 @endsection

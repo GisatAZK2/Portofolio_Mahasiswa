@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sertifikat;
 use Illuminate\Support\Facades\Auth;
- use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;
 
 class SertifikatController extends Controller
 {
@@ -31,31 +31,31 @@ class SertifikatController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'nama_sertifikat'   => 'required|string|max:255',
-        'lembaga_penerbit'  => 'required|string|max:255',
-        'tanggal_terbit'    => 'required|date',
-        'link_sertifikat'   => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
-    ]);
-    
-    if ($request->hasFile('link_sertifikat')) {
-        $path = $request->file('link_sertifikat')
-                        ->store('sertifikat', 'public');
-        $validated['link_sertifikat'] = $path;
+    {
+        $validated = $request->validate([
+            'nama_sertifikat' => 'required|string|max:255',
+            'lembaga_penerbit' => 'required|string|max:255',
+            'tanggal_terbit' => 'required|date',
+            'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
+        ]);
+
+        if ($request->hasFile('link_sertifikat')) {
+            $path = $request->file('link_sertifikat')
+                ->store('sertifikat', 'public');
+            $validated['link_sertifikat'] = $path;
+        }
+
+        Sertifikat::create([
+            'id_mahasiswa' => Auth::id(),
+            'nama_sertifikat' => $validated['nama_sertifikat'],
+            'lembaga_penerbit' => $validated['lembaga_penerbit'],
+            'tanggal_terbit' => $validated['tanggal_terbit'],
+            'link_sertifikat' => $validated['link_sertifikat'],
+        ]);
+
+        return redirect()->route('sertifikat.index')
+            ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
-
-    Sertifikat::create([
-        'id_mahasiswa'     => Auth::id(),
-        'nama_sertifikat'  => $validated['nama_sertifikat'],
-        'lembaga_penerbit' => $validated['lembaga_penerbit'],
-        'tanggal_terbit'   => $validated['tanggal_terbit'],
-        'link_sertifikat'  => $validated['link_sertifikat'],
-    ]);
-
-    return redirect()->route('sertifikat.index')
-        ->with('success', 'Sertifikat berhasil ditambahkan!');
-}
     public function edit(Sertifikat $sertifikat)
     {
         $this->authorizeEntry($sertifikat);
@@ -67,41 +67,43 @@ class SertifikatController extends Controller
 
         return view('sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
-   
-public function update(Request $request, Sertifikat $sertifikat)
-{
-    $this->authorizeEntry($sertifikat);
 
-    $validated = $request->validate([
-        'nama_sertifikat'   => 'required|string|max:255',
-        'lembaga_penerbit'  => 'required|string|max:255',
-        'tanggal_terbit'    => 'required|date',
-        'link_sertifikat'   => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
-    ]);
+    public function update(Request $request, Sertifikat $sertifikat)
+    {
+        $this->authorizeEntry($sertifikat);
 
-    if ($request->hasFile('link_sertifikat')) {
+        $validated = $request->validate([
+            'nama_sertifikat' => 'required|string|max:255',
+            'lembaga_penerbit' => 'required|string|max:255',
+            'tanggal_terbit' => 'required|date',
+            'link_sertifikat' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
+        ]);
 
-       
-        if ($sertifikat->link_sertifikat && 
-            Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
-            
-            Storage::disk('public')->delete($sertifikat->link_sertifikat);
+        if ($request->hasFile('link_sertifikat')) {
+
+
+            if (
+                $sertifikat->link_sertifikat &&
+                Storage::disk('public')->exists($sertifikat->link_sertifikat)
+            ) {
+
+                Storage::disk('public')->delete($sertifikat->link_sertifikat);
+            }
+
+            $path = $request->file('link_sertifikat')
+                ->store('sertifikat', 'public');
+
+            $validated['link_sertifikat'] = $path;
+        } else {
+
+            $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
         }
 
-        $path = $request->file('link_sertifikat')
-                        ->store('sertifikat', 'public');
+        $sertifikat->update($validated);
 
-        $validated['link_sertifikat'] = $path;
-    } else {
-       
-        $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
+        return redirect()->route('sertifikat.index')
+            ->with('success', 'Sertifikat berhasil diperbarui!');
     }
-
-    $sertifikat->update($validated);
-
-    return redirect()->route('sertifikat.index')
-        ->with('success', 'Sertifikat berhasil diperbarui!');
-}
 
     public function destroy(Sertifikat $sertifikat)
     {
