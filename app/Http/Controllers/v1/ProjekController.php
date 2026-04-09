@@ -159,10 +159,12 @@ class ProjekController extends Controller
         $angkatan = $request->query('angkatan', '');
         $jurusan = $request->query('jurusan', '');
 
-        $usersQuery = User::with(['angkatan', 'jurusan'])
-            ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan')
-            ->whereNotIn('role', ['admin', 'dosen']);
-
+         $usersQuery = User::with(['angkatan', 'jurusan'])
+        ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan')
+        ->whereNotIn('role', ['admin', 'dosen'])
+        ->where('is_active', 1)
+        ->where('status_pengajuan', 'Di Terima');
+        
         if (!empty($search)) {
             $usersQuery->where('nama_mahasiswa', 'like', '%' . $search . '%');
         }
@@ -315,54 +317,57 @@ class ProjekController extends Controller
 
 
     public function edit($id)
-    {
+{
+    $search = request()->input('search');
+    $angkatan = request()->input('angkatan');
+    $jurusan = request()->input('jurusan');
+    $keahlian = request()->input('keahlian');
 
-        // Get search and filter inputs
-        $search = request()->input('search');
-        $angkatan = request()->input('angkatan');
-        $jurusan = request()->input('jurusan');
-        $keahlian = request()->input('keahlian');
+    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+        ->where('role', 'mahasiswa')
+        ->where('is_active', 1)
+        ->where('status_pengajuan', 'Di Terima');
 
-        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
-        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-            ->where('role', 'mahasiswa');
-
-        // Filter pencarian berdasarkan nama mahasiswa
-        if ($search) {
-            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
-        }
-
-        // Filter berdasarkan angkatan
-        if ($angkatan) {
-            $query->where('id_angkatan', $angkatan);
-        }
-
-        // Filter berdasarkan jurusan
-        if ($jurusan) {
-            $query->where('id_jurusan', $jurusan);
-        }
-
-        // Filter berdasarkan keahlian
-        if ($keahlian) {
-            $query->where('id_keahlian', $keahlian);
-        }
-
-        // Ambil data dengan pagination
-        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-        // Ambil data untuk dropdown filter
-        $angkatans = Angkatan::all();
-        $jurusans = Jurusan::all();
-        $keahlians = Keahlian::all();
-
-        // Get project data
-        $project = Project::with(['members', 'leader', 'mahasiswa', 'tasks'])
-            ->where('id', $id)
-            ->firstOrFail();
-
-        return view('project.views_edit_project', compact('project', 'users', 'angkatans', 'jurusans', 'keahlians', 'search', 'angkatan', 'jurusan', 'keahlian'));
+    if ($search) {
+        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
     }
 
+    if ($angkatan) {
+        $query->where('id_angkatan', $angkatan);
+    }
+
+    if ($jurusan) {
+        $query->where('id_jurusan', $jurusan);
+    }
+
+    if ($keahlian) {
+        $query->where('id_keahlian', $keahlian);
+    }
+
+    $users = $query->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
+
+    $angkatans = Angkatan::all();
+    $jurusans = Jurusan::all();
+    $keahlians = Keahlian::all();
+
+    $project = Project::with(['members', 'leader', 'mahasiswa', 'tasks'])
+        ->where('id', $id)
+        ->firstOrFail();
+
+    return view('project.views_edit_project', compact(
+        'project',
+        'users',
+        'angkatans',
+        'jurusans',
+        'keahlians',
+        'search',
+        'angkatan',
+        'jurusan',
+        'keahlian'
+    ));
+}
 
     // UPDATE - FIXED VERSION
     public function update(Request $request, $id)
