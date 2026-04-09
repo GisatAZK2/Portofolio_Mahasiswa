@@ -173,6 +173,8 @@ class AdminController extends Controller
     //For Pages User
     public function ListUser(Request $request)
     {
+    public function ListUser(Request $request)
+    {
         $this->authorizeAccess();
         $users = User::whereIn('role', ['mahasiswa', 'admin', 'dosen'])
             ->where('id', '!=', Auth::id()) // tidak tampilkan user yang sedang login
@@ -191,6 +193,8 @@ class AdminController extends Controller
                 return str_contains(strtolower($user->nama_mahasiswa), strtolower($search)) ||
                     str_contains(strtolower($user->username), strtolower($search)) ||
                     str_contains(strtolower($user->email), strtolower($search));
+                    str_contains(strtolower($user->username), strtolower($search)) ||
+                    str_contains(strtolower($user->email), strtolower($search));
             });
         }
 
@@ -199,16 +203,32 @@ class AdminController extends Controller
 
     public function ViewAddUser()
     {
+    public function ViewAddUser()
+    {
         $this->authorizeAccess();
+        $jurusan = Jurusan::all();
         $jurusan = Jurusan::all();
         $keahlian = Keahlian::all();
         $angkatan = Angkatan::all();
+        return view('admin.user.views_add_user', compact('jurusan', 'keahlian', 'angkatan'));
         return view('admin.user.views_add_user', compact('jurusan', 'keahlian', 'angkatan'));
     }
 
     public function AddUser(Request $request)
     {
+    public function AddUser(Request $request)
+    {
         $this->authorizeAccess();
+        $validated = $request->validate([
+            'nama_mahasiswa' => ['required', 'string', 'max:100'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+            'username' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:users,username',
+                'regex:/^[a-zA-Z0-9_]+$/'
+            ],
         $validated = $request->validate([
             'nama_mahasiswa' => ['required', 'string', 'max:100'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
@@ -225,12 +245,26 @@ class AdminController extends Controller
                 'confirmed',
                 Password::min(8)->mixedCase()
             ],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)->mixedCase()
+            ],
 
             'role' => [
                 'required',
                 'in:mahasiswa,dosen,admin'
             ],
+            'role' => [
+                'required',
+                'in:mahasiswa,dosen,admin'
+            ],
 
+            'id_jurusan' => [
+                'nullable',
+                'required_if:role,mahasiswa,dosen',
+                'exists:jurusan,id_jurusan'
+            ],
             'id_jurusan' => [
                 'nullable',
                 'required_if:role,mahasiswa,dosen',
@@ -242,7 +276,17 @@ class AdminController extends Controller
                 'required_if:role,mahasiswa,dosen',
                 'exists:keahlian,id_keahlian'
             ],
+            'id_keahlian' => [
+                'nullable',
+                'required_if:role,mahasiswa,dosen',
+                'exists:keahlian,id_keahlian'
+            ],
 
+            'id_angkatan' => [
+                'nullable',
+                'required_if:role,mahasiswa,dosen',
+                'exists:angkatan,id'
+            ],
             'id_angkatan' => [
                 'nullable',
                 'required_if:role,mahasiswa,dosen',
@@ -256,10 +300,22 @@ class AdminController extends Controller
                 'max:2048'
             ],
         ]);
+            'photo_profile' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:2048'
+            ],
+        ]);
 
 
         $photoPath = null;
+        $photoPath = null;
 
+        if ($request->hasFile('photo_profile')) {
+            $photoPath = $request->file('photo_profile')
+                ->store('photo_profile', 'public');
+        }
         if ($request->hasFile('photo_profile')) {
             $photoPath = $request->file('photo_profile')
                 ->store('photo_profile', 'public');
@@ -270,11 +326,21 @@ class AdminController extends Controller
             'email' => $validated['email'] ?? null,
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
+        User::create([
+            'nama_mahasiswa' => $validated['nama_mahasiswa'],
+            'email' => $validated['email'] ?? null,
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
 
+            'photo_profile' => $photoPath,
             'photo_profile' => $photoPath,
 
             'role' => $validated['role'],
+            'role' => $validated['role'],
 
+            'id_jurusan' => $validated['id_jurusan'] ?? null,
+            'id_keahlian' => $validated['id_keahlian'] ?? null,
+            'id_angkatan' => $validated['id_angkatan'] ?? null,
             'id_jurusan' => $validated['id_jurusan'] ?? null,
             'id_keahlian' => $validated['id_keahlian'] ?? null,
             'id_angkatan' => $validated['id_angkatan'] ?? null,
@@ -282,7 +348,13 @@ class AdminController extends Controller
             'status_pengajuan' => 'Di Terima',
             'is_active' => 1,
         ]);
+            'status_pengajuan' => 'Di Terima',
+            'is_active' => 1,
+        ]);
 
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil ditambahkan.');
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'User berhasil ditambahkan.');
@@ -301,15 +373,32 @@ class AdminController extends Controller
             'keahlians',
             'angkatans'
         ));
+    public function DetailsUser($id)
+    {
+        $this->authorizeAccess();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+        $angkatans = Angkatan::all();
+        $user = User::with(['jurusan', 'keahlian', 'angkatan'])->findOrFail($id);
+        return view('admin.user.views_edit_user', compact(
+            'user',
+            'jurusans',
+            'keahlians',
+            'angkatans'
+        ));
     }
+    public function UpdateUser(Request $request, $id_user)
+    {
     public function UpdateUser(Request $request, $id_user)
     {
         $this->authorizeAccess();
         $user = User::findOrFail($id_user);
 
 
+
         // Base validation rules
         $rules = [
+            'nama_mahasiswa' => ['sometimes', 'string', 'max:100'],
             'nama_mahasiswa' => ['sometimes', 'string', 'max:100'],
 
             'username' => [
@@ -431,6 +520,8 @@ class AdminController extends Controller
 
     public function updateStatus(Request $request, User $user)
     {
+    public function updateStatus(Request $request, User $user)
+    {
         $this->authorizeAccess();
         $validated = $request->validate([
             'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
@@ -458,6 +549,10 @@ class AdminController extends Controller
     {
         $this->authorizeAccess();
         $user->delete();
+    public function destroyUser(User $user)
+    {
+        $this->authorizeAccess();
+        $user->delete();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil dihapus.');
@@ -466,12 +561,23 @@ class AdminController extends Controller
     public function bulkDestroyUsers(Request $request)
     {
         $ids = $request->input('selected_ids');
+    public function bulkDestroyUsers(Request $request)
+    {
+        $ids = $request->input('selected_ids');
 
         // Handle jika dikirim sebagai JSON string (dari JS)
         if (is_string($ids)) {
             $ids = json_decode($ids, true);
         }
+        // Handle jika dikirim sebagai JSON string (dari JS)
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
 
+        if (empty($ids) || !is_array($ids)) {
+            return redirect()->back()
+                ->with('error', 'Tidak ada pengguna yang dipilih untuk dihapus.');
+        }
         if (empty($ids) || !is_array($ids)) {
             return redirect()->back()
                 ->with('error', 'Tidak ada pengguna yang dipilih untuk dihapus.');
@@ -482,14 +588,24 @@ class AdminController extends Controller
         $ids = array_filter($ids, function ($id) use ($currentUserId) {
             return $id != $currentUserId;
         });
+        // Optional: Tambahkan pengecekan agar admin tidak bisa menghapus dirinya sendiri
+        $currentUserId = Auth::id();
+        $ids = array_filter($ids, function ($id) use ($currentUserId) {
+            return $id != $currentUserId;
+        });
 
         $count = User::whereIn('id', $ids)->delete();
+        $count = User::whereIn('id', $ids)->delete();
 
+        return redirect()->route('admin.users.index')
+            ->with('success', "{$count} pengguna berhasil dihapus secara permanen.");
         return redirect()->route('admin.users.index')
             ->with('success', "{$count} pengguna berhasil dihapus secara permanen.");
     }
 
     //For Pages Sertifikat
+    public function sertifikat(Request $request)
+    {
     public function sertifikat(Request $request)
     {
         $this->authorizeAccess();
@@ -504,7 +620,11 @@ class AdminController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_sertifikat', 'like', '%' . $search . '%')
+                    ->orWhereHas('mahasiswa', function ($subQ) use ($search) {
+                        $subQ->where('nama_mahasiswa', 'like', '%' . $search . '%');
+                    });
                     ->orWhereHas('mahasiswa', function ($subQ) use ($search) {
                         $subQ->where('nama_mahasiswa', 'like', '%' . $search . '%');
                     });
@@ -513,17 +633,20 @@ class AdminController extends Controller
 
         if ($angkatan) {
             $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
+            $query->whereHas('mahasiswa', function ($q) use ($angkatan) {
                 $q->where('id_angkatan', $angkatan);
             });
         }
 
         if ($jurusan) {
             $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
+            $query->whereHas('mahasiswa', function ($q) use ($jurusan) {
                 $q->where('id_jurusan', $jurusan);
             });
         }
 
         if ($keahlian) {
+            $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
             $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
                 $q->where('id_keahlian', $keahlian);
             });
@@ -534,7 +657,9 @@ class AdminController extends Controller
         }
 
 
+
         $sertifikat = $query->orderBy('created_at', 'desc')->paginate(12)->withQueryString();
+
 
 
         $angkatans = Angkatan::all();
@@ -544,6 +669,10 @@ class AdminController extends Controller
         $statusOptions = Sertifikat::distinct()->pluck('status_pengajuan')->filter()->values();
 
         return view('admin.sertifikat', compact(
+            'sertifikat',
+            'angkatans',
+            'jurusans',
+            'keahlians',
             'sertifikat',
             'angkatans',
             'jurusans',
@@ -563,8 +692,15 @@ class AdminController extends Controller
         $this->authorizeAccess();
         $sertifikat = Sertifikat::findorfail($id);
         return view('admin.sertifikat.views_edit_sertifikat', compact('sertifikat'));
+    public function DetailsSertifikat($id)
+    {
+        $this->authorizeAccess();
+        $sertifikat = Sertifikat::findorfail($id);
+        return view('admin.sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
 
+    public function approve($id)
+    {
     public function approve($id)
     {
         $this->authorizeAccess();
@@ -573,13 +709,17 @@ class AdminController extends Controller
         $sertifikat->is_active = true;
         $sertifikat->save();
 
+
         return redirect()->back()->with('success', 'Sertifikat berhasil diterima');
     }
 
     public function reject(Request $request, $id)
     {
+    public function reject(Request $request, $id)
+    {
         $this->authorizeAccess();
         $request->validate(['keterangan' => 'required|string']);
+
 
         $sertifikat = Sertifikat::findOrFail($id);
         $sertifikat->status_pengajuan = 'Di Tolak';
@@ -587,9 +727,12 @@ class AdminController extends Controller
         $sertifikat->keterangan = $request->keterangan;
         $sertifikat->save();
 
+
         return redirect()->back()->with('success', 'Sertifikat ditolak');
     }
 
+    public function TambahSertifikat(Request $request)
+    {
     public function TambahSertifikat(Request $request)
     {
         $this->authorizeAccess();
@@ -601,6 +744,7 @@ class AdminController extends Controller
         // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
         $query = User::with(['jurusan', 'angkatan', 'keahlian'])
             ->where('role', 'mahasiswa');
+
 
         // Filter pencarian berdasarkan nama mahasiswa
         if ($search) {
@@ -644,6 +788,8 @@ class AdminController extends Controller
 
     public function StoreSertifikat(Request $request)
     {
+    public function StoreSertifikat(Request $request)
+    {
         $this->authorizeAccess();
         $validated = $request->validate([
             'nama_sertifikat' => 'required|string|max:255',
@@ -651,10 +797,17 @@ class AdminController extends Controller
             'tanggal_terbit' => 'required|date',
             'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
             'user_id' => 'required|string|max:255'
+            'nama_sertifikat' => 'required|string|max:255',
+            'lembaga_penerbit' => 'required|string|max:255',
+            'tanggal_terbit' => 'required|date',
+            'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
+            'user_id' => 'required|string|max:255'
         ]);
+
 
         if ($request->hasFile('link_sertifikat')) {
             $path = $request->file('link_sertifikat')
+                ->store('sertifikat', 'public');
                 ->store('sertifikat', 'public');
             $validated['link_sertifikat'] = $path;
         }
@@ -662,7 +815,11 @@ class AdminController extends Controller
         Sertifikat::create([
             'id_mahasiswa' => $validated['user_id'],
             'nama_sertifikat' => $validated['nama_sertifikat'],
+            'id_mahasiswa' => $validated['user_id'],
+            'nama_sertifikat' => $validated['nama_sertifikat'],
             'lembaga_penerbit' => $validated['lembaga_penerbit'],
+            'tanggal_terbit' => $validated['tanggal_terbit'],
+            'link_sertifikat' => $validated['link_sertifikat'],
             'tanggal_terbit' => $validated['tanggal_terbit'],
             'link_sertifikat' => $validated['link_sertifikat'],
 
@@ -672,12 +829,19 @@ class AdminController extends Controller
 
         return redirect()->route('admin.sertifikat.index')
             ->with('success', 'Sertifikat berhasil ditambahkan!');
+            ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
 
     public function UpdateSertifikat(Request $request, Sertifikat $sertifikat)
     {
+    public function UpdateSertifikat(Request $request, Sertifikat $sertifikat)
+    {
         $this->authorizeAccess();
         $validated = $request->validate([
+            'nama_sertifikat' => 'required|string|max:255',
+            'lembaga_penerbit' => 'required|string|max:255',
+            'tanggal_terbit' => 'required|date',
+            'link_sertifikat' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
             'tanggal_terbit' => 'required|date',
@@ -692,14 +856,22 @@ class AdminController extends Controller
                 Storage::disk('public')->exists($sertifikat->link_sertifikat)
             ) {
 
+
+            if (
+                $sertifikat->link_sertifikat &&
+                Storage::disk('public')->exists($sertifikat->link_sertifikat)
+            ) {
+
                 Storage::disk('public')->delete($sertifikat->link_sertifikat);
             }
 
             $path = $request->file('link_sertifikat')
                 ->store('sertifikat', 'public');
+                ->store('sertifikat', 'public');
 
             $validated['link_sertifikat'] = $path;
         } else {
+
 
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
         }
@@ -712,6 +884,8 @@ class AdminController extends Controller
 
     public function DestroySertifikat(Sertifikat $sertifikat)
     {
+    public function DestroySertifikat(Sertifikat $sertifikat)
+    {
         $this->authorizeAccess();
         $sertifikat->delete();
 
@@ -719,6 +893,8 @@ class AdminController extends Controller
             ->with('success', 'Sertifikat berhasil dihapus.');
     }
 
+    public function bulkDestroy(Request $request)
+    {
     public function bulkDestroy(Request $request)
     {
         $this->authorizeAccess();
@@ -756,6 +932,8 @@ class AdminController extends Controller
     // For Pages Angkatan
     public function ListAngkatan()
     {
+    public function ListAngkatan()
+    {
         $this->authorizeAccess();
         $angkatans = Angkatan::all();
         return view('admin.list-angkatan', compact('angkatans'));
@@ -773,8 +951,22 @@ class AdminController extends Controller
         $jurusans = \App\Models\Jurusan::all();
         
         return view('admin.angkatan.views_detail_angkatan', compact('angkatan', 'jurusans'));
+    public function DetailsAngkatan($id)
+    {
+        $this->authorizeAccess();
+        $angkatan = Angkatan::withCount('mahasiswa')->with([
+            'mahasiswa' => function ($query) {
+                $query->with('jurusan');
+            }
+        ])->findOrFail($id);
+        
+        $jurusans = \App\Models\Jurusan::all();
+        
+        return view('admin.angkatan.views_detail_angkatan', compact('angkatan', 'jurusans'));
     }
 
+    public function TambahAngkatan()
+    {
     public function TambahAngkatan()
     {
         $this->authorizeAccess();
@@ -788,22 +980,37 @@ class AdminController extends Controller
             'nama_angkatan' => 'required|string|max:255',
             'tahun_masuk' => 'required|date',
             'tahun_keluar' => 'required|date',
+    public function StoreAngkatan(Request $request)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'nama_angkatan' => 'required|string|max:255',
+            'tahun_masuk' => 'required|date',
+            'tahun_keluar' => 'required|date',
         ]);
 
         Angkatan::create([
             'nama_angkatan' => $validated['nama_angkatan'],
             'tahun_masuk' => $validated['tahun_masuk'],
             'tahun_keluar' => $validated['tahun_keluar']
+            'tahun_masuk' => $validated['tahun_masuk'],
+            'tahun_keluar' => $validated['tahun_keluar']
         ]);
 
         return redirect()->route('admin.angkatan.index')
+            ->with('success', 'Angkatan berhasil ditambahkan!');
             ->with('success', 'Angkatan berhasil ditambahkan!');
     }
 
     public function UpdateAngkatan(Request $request, Angkatan $angkatan)
     {
+    public function UpdateAngkatan(Request $request, Angkatan $angkatan)
+    {
         $this->authorizeAccess();
         $validated = $request->validate([
+            'nama_angkatan' => 'required|string|max:255',
+            'tahun_masuk' => 'required|date',
+            'tahun_keluar' => 'required|date',
             'nama_angkatan' => 'required|string|max:255',
             'tahun_masuk' => 'required|date',
             'tahun_keluar' => 'required|date',
@@ -817,6 +1024,8 @@ class AdminController extends Controller
 
     public function DestroyAngkatan(Angkatan $angkatan)
     {
+    public function DestroyAngkatan(Angkatan $angkatan)
+    {
         $this->authorizeAccess();
         $angkatan->delete();
 
@@ -826,15 +1035,20 @@ class AdminController extends Controller
 
     public function bulkDestroyAngkatan(Request $request)
     {
+    public function bulkDestroyAngkatan(Request $request)
+    {
         $this->authorizeAccess();
         $ids = explode(',', $request->selected_ids);
 
         Angkatan::whereIn('id', $ids)->delete();
 
         return redirect()->back()->with('success', count($ids) . ' Angkatan berhasil dihapus');
+        return redirect()->back()->with('success', count($ids) . ' Angkatan berhasil dihapus');
     }
 
     //For Projects Pages
+    public function projects()
+    {
     public function projects()
     {
         $this->authorizeAccess();
@@ -920,7 +1134,15 @@ class AdminController extends Controller
         if ($angkatan) {
             $query->where('id_angkatan', $angkatan);
         }
+        // Filter berdasarkan angkatan
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
 
+        // Filter berdasarkan jurusan
+        if ($jurusan) {
+            $query->where('id_jurusan', $jurusan);
+        }
         // Filter berdasarkan jurusan
         if ($jurusan) {
             $query->where('id_jurusan', $jurusan);
@@ -930,10 +1152,20 @@ class AdminController extends Controller
         if ($keahlian) {
             $query->where('id_keahlian', $keahlian);
         }
+        // Filter berdasarkan keahlian
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
 
         // Ambil data dengan pagination
         $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        // Ambil data dengan pagination
+        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
+        // Ambil data untuk dropdown filter
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
         // Ambil data untuk dropdown filter
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
@@ -964,6 +1196,7 @@ class AdminController extends Controller
         // Merge dan filter members
         $request->merge([
             'members' => collect($request->members)
+                ->filter(fn($id) => !empty($id))
                 ->filter(fn($id) => !empty($id))
                 ->values()
                 ->all(),
@@ -1194,6 +1427,7 @@ class AdminController extends Controller
     
 
     public function DestroyProject(Project $project)
+    public function DestroyProject(Project $project)
     {
         $this->authorizeAccess();
         $project->delete();
@@ -1202,6 +1436,8 @@ class AdminController extends Controller
             ->with('success', 'Project Mahasiswa berhasil dihapus!');
     }
 
+    public function bulkDestroyProject(Request $request)
+    {
     public function bulkDestroyProject(Request $request)
     {
         $this->authorizeAccess();
@@ -1219,6 +1455,7 @@ class AdminController extends Controller
 
         Project::whereIn('id', $ids)->delete();
 
+        return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
         return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
     }
 
