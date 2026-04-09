@@ -12,7 +12,6 @@
         const btn = document.getElementById("backToTop");
         const main = document.querySelector("main.overflow-auto");
 
-
         if (!btn || !main) return;
 
         main.addEventListener("scroll", function () {
