@@ -71,9 +71,9 @@
                             </select>
                         </div>
                         <div>
-                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jurusan" data-translate-page="project_edit"></label>
+                            <label for="jurusan-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jurusan" data-translate-page="project_edit">Prodi</label>
                             <select id="jurusan-filter" class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option value="" data-translate="semua_jurusan" data-translate-page="project_edit"></option>
+                                <option value="" data-translate="semua_jurusan" data-translate-page="project_edit">Semua Prodi</option>
                                 @foreach($jurusans as $jrs)
                                     <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>{{ $jrs->nama_jurusan }}</option>
                                 @endforeach

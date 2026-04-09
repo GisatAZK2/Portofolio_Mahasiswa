@@ -155,6 +155,79 @@ window.changeLanguage = function () {
     location.reload();
 }
 
+function setActionButtonProcessing(button) {
+    if (!button || button.dataset.awaiting === 'true') return;
+    button.dataset.awaiting = 'true';
+    button.dataset.wasDisabled = button.disabled ? 'true' : 'false';
+    button.disabled = true;
+    button.classList.add('cursor-not-allowed', 'opacity-70');
+
+    const label = button.dataset.awaitText || button.getAttribute('data-await-text');
+
+    if (button.tagName === 'INPUT') {
+        button.dataset.originalValue = button.value;
+        button.value = label || 'Memproses...';
+        return;
+    }
+
+    button.dataset.originalHtml = button.innerHTML;
+    const spinner = '<span class="inline-flex items-center justify-center h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden="true"></span>';
+    button.innerHTML = label ? `${spinner}<span>${label}</span>` : `${spinner}${button.dataset.originalHtml}`;
+}
+
+function restoreActionButton(button) {
+    if (!button || button.dataset.awaiting !== 'true') return;
+    button.disabled = button.dataset.wasDisabled === 'true';
+    button.classList.remove('cursor-not-allowed', 'opacity-70');
+
+    if (button.tagName === 'INPUT') {
+        if (button.dataset.originalValue !== undefined) {
+            button.value = button.dataset.originalValue;
+            delete button.dataset.originalValue;
+        }
+    } else if (button.dataset.originalHtml !== undefined) {
+        button.innerHTML = button.dataset.originalHtml;
+        delete button.dataset.originalHtml;
+    }
+
+    delete button.dataset.awaiting;
+    delete button.dataset.wasDisabled;
+}
+
+window.awaitButtonAction = async function (button, action, awaitText = 'Memproses...') {
+    if (!button || typeof action !== 'function') {
+        return await action?.();
+    }
+
+    if (button.dataset.awaiting === 'true') {
+        return;
+    }
+
+    button.dataset.awaitText = awaitText;
+    setActionButtonProcessing(button);
+
+    try {
+        return await action();
+    } finally {
+        restoreActionButton(button);
+    }
+};
+
+function disableFormSubmitButtons(form) {
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const buttons = Array.from(form.querySelectorAll('button[type="submit"], input[type="submit"]'));
+    if (buttons.length === 0) return;
+
+    buttons.forEach(setActionButtonProcessing);
+}
+
+document.addEventListener('submit', function (event) {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    disableFormSubmitButtons(form);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;

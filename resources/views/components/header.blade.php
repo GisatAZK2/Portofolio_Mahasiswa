@@ -61,7 +61,7 @@
                     <select name="jurusan"
                         class="block border border-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
                         <option class="dark:bg-gray-800 dark:text-gray-200" data-translate="filter_jurusan"
-                            data-translate-page="search" value="">Semua Jurusan</option>
+                            data-translate-page="search" value="">Semua Prodi</option>
                         @foreach($jurusanList ?? [] as $jurusan)
                             <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
                                 {{ Str::limit($jurusan->nama_jurusan, 20) }}
