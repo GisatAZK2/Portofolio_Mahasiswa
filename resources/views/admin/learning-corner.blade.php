@@ -144,6 +144,13 @@
             @if (session('success'))
                 showSuccessAlert('{{ session('success') }}');
             @endif
+            });
+    </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.admin_learning_corner");
         });
     </script>
 @endsection

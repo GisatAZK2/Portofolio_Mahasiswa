@@ -339,4 +339,11 @@
             });
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.edit_user");
+        });
+    </script>
 @endpush

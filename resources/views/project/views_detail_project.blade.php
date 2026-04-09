@@ -821,4 +821,11 @@
             }
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.user_detail_project");
+        });
+    </script>
 @endsection

@@ -479,4 +479,11 @@
             updateSelectedProjects();
         });
     </script>
+
+     <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.admin_projects");
+        });
+    </script>
 @endsection

@@ -732,4 +732,10 @@
         }
     </style>
 
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_certificates");
+        });
+    </script>
 @endsection

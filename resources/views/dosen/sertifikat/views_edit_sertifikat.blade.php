@@ -413,4 +413,11 @@
             display: none;
         }
     </style>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_edit_sertifikat");
+         });
+     </script>
 @endsection

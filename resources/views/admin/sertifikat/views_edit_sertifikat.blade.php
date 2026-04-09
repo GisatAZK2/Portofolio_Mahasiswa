@@ -7,10 +7,12 @@
         <div class="max-w-4xl mx-auto">
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white" data-translate="ttl_edit" data-translate-page="stk_admin_edit">Edit Sertifikat</h1>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white" data-translate="ttl_edit"
+                    data-translate-page="stk_admin_edit">Edit Sertifikat</h1>
                 <a href="{{ route('admin.sertifikat.index') }}"
                     class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                    <i class="fas fa-arrow-left mr-2"></i><span data-translate="back" data-translate-page="stk_admin_edit">Kembali</span>
+                    <i class="fas fa-arrow-left mr-2"></i><span data-translate="back"
+                        data-translate-page="stk_admin_edit">Kembali</span>
                 </a>
             </div>
 
@@ -26,7 +28,8 @@
                         <div class="col-span-2 md:col-span-1">
                             <label for="nama_sertifikat"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="nm_stk" data-translate-page="stk_admin_edit">Nama Sertifikat</span> <span class="text-red-500">*</span>
+                                <span data-translate="nm_stk" data-translate-page="stk_admin_edit">Nama Sertifikat</span>
+                                <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                                 value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
@@ -41,7 +44,8 @@
                         <div class="col-span-2 md:col-span-1">
                             <label for="lembaga_penerbit"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="lembaga" data-translate-page="stk_admin_edit">Lembaga Penerbit</span> <span class="text-red-500">*</span>
+                                <span data-translate="lembaga" data-translate-page="stk_admin_edit">Lembaga Penerbit</span>
+                                <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                                 value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
@@ -56,7 +60,8 @@
                         <div class="col-span-2 md:col-span-1">
                             <label for="tanggal_terbit"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="launch_date" data-translate-page="stk_admin_edit">Tanggal Terbit</span> <span class="text-red-500">*</span>
+                                <span data-translate="launch_date" data-translate-page="stk_admin_edit">Tanggal
+                                    Terbit</span> <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                                 value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
@@ -65,7 +70,8 @@
                             @error('tanggal_terbit')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="desc_launch" data-translate-page="stk_admin_edit">Maksimal tanggal hari ini</p>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="desc_launch"
+                                data-translate-page="stk_admin_edit">Maksimal tanggal hari ini</p>
                         </div>
 
                         <!-- File Sertifikat -->
@@ -87,7 +93,9 @@
                                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
                                             <div>
-                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="curr_file" data-translate-page="stk_admin_edit">File saat ini:
+                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                                    data-translate="curr_file" data-translate-page="stk_admin_edit">File saat
+                                                    ini:
                                                 </p>
                                                 <a href="{{ Storage::url($sertifikat->link_sertifikat) }}" target="_blank"
                                                     class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 hover:underline flex items-center gap-1">
@@ -98,11 +106,13 @@
                                                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                                         </path>
                                                     </svg>
-                                                    <span data-translate="see_file" data-translate-page="stk_admin_edit">Lihat file saat ini</span>
+                                                    <span data-translate="see_file" data-translate-page="stk_admin_edit">Lihat
+                                                        file saat ini</span>
                                                 </a>
                                             </div>
                                         </div>
-                                        <button data-translate="gnt_stk" data-translate-page="stk_admin_edit" type="button" onclick="document.getElementById('replace-file-checkbox').click()"
+                                        <button data-translate="gnt_stk" data-translate-page="stk_admin_edit" type="button"
+                                            onclick="document.getElementById('replace-file-checkbox').click()"
                                             class="text-sm px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition">
                                             Ganti File
                                         </button>
@@ -126,18 +136,21 @@
                                         <div class="flex text-sm text-gray-600 dark:text-gray-400">
                                             <label
                                                 class="relative cursor-pointer rounded-md font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500">
-                                                <span data-translate="up_file" data-translate-page="stk_admin_edit">Upload file</span>
+                                                <span data-translate="up_file" data-translate-page="stk_admin_edit">Upload
+                                                    file</span>
                                                 <input id="link_sertifikat_input" name="link_sertifikat" type="file"
                                                     accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
                                                     onchange="updateFileLabel(this)">
                                             </label>
-                                            <p class="pl-1" data-translate="or_drag" data-translate-page="stk_admin_edit">atau drag and drop</p>
+                                            <p class="pl-1" data-translate="or_drag" data-translate-page="stk_admin_edit">
+                                                atau drag and drop</p>
                                         </div>
                                         <p class="text-xs text-gray-500 dark:text-gray-400" id="file-name">
                                             @if($sertifikat->link_sertifikat)
                                                 {{ basename(Storage::url($sertifikat->link_sertifikat)) }}
                                             @else
-                                                <span data-translate="format_file" data-translate-page="stk_admin_edit">PNG, JPG, GIF up to 5MB</span>
+                                                <span data-translate="format_file" data-translate-page="stk_admin_edit">PNG,
+                                                    JPG, GIF up to 5MB</span>
                                             @endif
                                         </p>
                                     </div>
@@ -150,7 +163,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <span data-translate="allowed_format" data-translate-page="stk_admin_edit">Format yang diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB</span>
+                                    <span data-translate="allowed_format" data-translate-page="stk_admin_edit">Format yang
+                                        diperbolehkan: JPG, JPEG, PNG, GIF. Maksimal ukuran: 5MB</span>
                                 </p>
                             </div>
 
@@ -164,7 +178,8 @@
                             <!-- Preview File Saat Ini -->
                             @if($sertifikat->link_sertifikat && preg_match('/\.(jpg|jpeg|png|gif)$/i', $sertifikat->link_sertifikat))
                                 <div id="current-image-preview" class="mt-4">
-                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="curr_file" data-translate-page="stk_admin_edit">File Saat Ini:</p>
+                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                        data-translate="curr_file" data-translate-page="stk_admin_edit">File Saat Ini:</p>
                                     <img src="{{ Storage::url($sertifikat->link_sertifikat) }}" alt="Current Sertifikat"
                                         class="max-h-48 rounded-lg shadow-sm">
                                 </div>
@@ -184,7 +199,8 @@
                                         </svg>
                                     </div>
                                     <div class="ml-3 flex-1">
-                                        <p data-translate="uped_file" data-translate-page="stk_admin_edit" class="text-sm text-blue-700 dark:text-blue-300">
+                                        <p data-translate="uped_file" data-translate-page="stk_admin_edit"
+                                            class="text-sm text-blue-700 dark:text-blue-300">
                                             File yang diupload akan menggantikan file lama. File lama akan otomatis dihapus.
                                         </p>
                                     </div>
@@ -195,13 +211,15 @@
 
                     <!-- Submit Button -->
                     <div class="mt-8 flex justify-end space-x-4">
-                        <a data-translate="cancel" data-translate-page="stk_admin_edit" href="{{ route('admin.sertifikat.index') }}"
+                        <a data-translate="cancel" data-translate-page="stk_admin_edit"
+                            href="{{ route('admin.sertifikat.index') }}"
                             class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition duration-200">
                             Batal
                         </a>
                         <button type="submit"
                             class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200">
-                            <i class="fas fa-save mr-2"></i><span data-translate="upd_stk" data-translate-page="stk_admin_edit">Update Sertifikat</span>
+                            <i class="fas fa-save mr-2"></i><span data-translate="upd_stk"
+                                data-translate-page="stk_admin_edit">Update Sertifikat</span>
                         </button>
                     </div>
                 </form>
@@ -341,6 +359,13 @@
                     fileInput.dispatchEvent(event);
                 }
             }
+        });
+    </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.edit_sertifikat");
         });
     </script>
 @endpush

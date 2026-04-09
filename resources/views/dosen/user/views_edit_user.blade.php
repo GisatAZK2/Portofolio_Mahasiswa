@@ -328,4 +328,11 @@
             });
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_edit_user");
+         });
+     </script>
 @endpush

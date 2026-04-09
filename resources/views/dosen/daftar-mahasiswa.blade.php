@@ -516,4 +516,10 @@
         }
     </script>
 
+    <!-- Page Info -->
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_daftar_mahasiswa");
+         });
+     </script>
 @endsection

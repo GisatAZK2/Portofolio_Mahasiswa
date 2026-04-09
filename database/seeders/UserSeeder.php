@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID'); 
-        $profilePhotoUrl = 'photos/Biru Minimalis Pesan Obrolan Logo.png';
+        $profilePhotoUrl = 'photo_profile/cNzqdtT6TA9kr3TWw3poFw09ZpQbBY3bGbZ6Ekpm.jpg';
 
         // Get all available data
         $jurusans = Jurusan::all();

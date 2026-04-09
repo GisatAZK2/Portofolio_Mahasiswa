@@ -8,7 +8,7 @@ function getTranslation(lang, key) {
 export function showSuccessAlert(message) {
     Swal.fire({
         icon: 'success',
-        title: 'Berhasil!',
+        title: showPageInfo('Berhasil!', 'success', 3000),
         text: message,
         position: 'center',
         showConfirmButton: true,
@@ -31,7 +31,7 @@ export function showSuccessAlert(message) {
 export function showErrorAlert(message) {
     Swal.fire({
         icon: 'error',
-        title: 'Ada Masalah...',
+        title: showPageInfo('Ada Masalah...', 'error', 3000),
         text: message,
         position: 'center',
         showConfirmButton: true,
@@ -66,7 +66,7 @@ export function closeLoading() {
 export async function showConfirm() {
     const result = await Swal.fire({
         title: 'Ingin menghapus ini?',
-        text: 'Tindakan ini tidak dapat dibatalkan!',
+        text: showPageInfo('Aksi ini tidak bisa dikembalikan!', 'warning', 3000),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
@@ -95,8 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
 // Fungsi untuk menampilkan toast page info
-function showPageInfo(message, type = "info", duration = 10000) {
+function showPageInfo(message, type = "info", duration = 2000) {
 
      const lang = localStorage.getItem("lang") || "id";
 
@@ -135,7 +136,7 @@ function showPageInfo(message, type = "info", duration = 10000) {
     const toast = document.createElement("div");
 
     toast.className =
-        `flex pointer-events-auto mt-5 items-start gap-3 rounded-xl shadow-lg px-4 py-3 text-sm
+        `flex pointer-events-auto mt-15 items-start gap-3 rounded-xl shadow-lg px-4 py-3 text-sm
         transition-all duration-300 transform -translate-y-6 opacity-0
         ${colors[type]}`;
 

@@ -1190,4 +1190,11 @@ document.getElementById('projectForm').addEventListener('submit', function(e) {
             });
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_edit_project");
+        });
+    </script>
 @endsection

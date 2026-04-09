@@ -1107,4 +1107,11 @@ function syncTaskRows() {
             });
         }
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.edit_project");
+        });
+    </script>
 @endsection

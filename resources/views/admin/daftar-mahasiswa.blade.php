@@ -891,4 +891,11 @@
             @endif
     });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.manage_users");
+        });
+    </script>
 @endpush

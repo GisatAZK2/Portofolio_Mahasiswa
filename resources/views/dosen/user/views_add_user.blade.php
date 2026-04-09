@@ -184,4 +184,11 @@
         });
     </script>
 
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_add_user");
+         });
+     </script>
+
 @endsection

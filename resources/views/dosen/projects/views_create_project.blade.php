@@ -1279,4 +1279,11 @@ const nameEl = row.querySelector('td:nth-child(2) .font-medium');
             });
         });
     </script>
+
+    <!-- Page Info -->
+     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_add_project");
+        });
+    </script>
 @endsection

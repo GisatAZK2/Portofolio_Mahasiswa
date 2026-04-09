@@ -387,7 +387,8 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("Edit informasi sertifikat atau ganti file jika diperlukan. Pastikan untuk menyimpan perubahan setelah selesai.");
+            showPageInfo("popup.user_edit_sertifikat");
         });
     </script>
+    
 @endsection

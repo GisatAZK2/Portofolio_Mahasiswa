@@ -68,10 +68,10 @@
 
 <body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
     
-   
+<!--    
    <audio id="welcomeSound" preload="auto">
     <source src="audio/welcome_sound.mp3" type="audio/mpeg">
-    </audio>
+    </audio> -->
 
     <!-- Background Noise --> 
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>

@@ -146,4 +146,11 @@
             @endif
         });
     </script>
+
+    <!-- Page Info -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            showPageInfo("popup.dosen_learning_corner");
+         });
+     </script>
 @endsection
