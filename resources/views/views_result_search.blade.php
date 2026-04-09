@@ -31,7 +31,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5" />
                                 </svg>
-                                <span data-translate="jrs" data-translate-page="result_search">Jurusan:</span>
+                                <span data-translate="jrs" data-translate-page="result_search">Prodi:</span>
                                 {{ $jurusanItem->jurusan->nama_jurusan }}
                             </span>
                         @endif

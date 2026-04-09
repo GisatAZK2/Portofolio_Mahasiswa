@@ -133,7 +133,7 @@
                                                 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                                 text-gray-700 dark:text-gray-300
                                                 shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                                <option value="">Semua Jurusan</option>
+                                <option value="">Semua Prodi</option>
                                 @foreach ($jurusanList as $jur)
                                     <option value="{{ $jur->id }}" {{ $jurusan == $jur->id ? 'selected' : '' }}>
                                         {{ $jur->nama_jurusan }}
