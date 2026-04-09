@@ -49,7 +49,8 @@ class SertifikatSeeder extends Seeder
         ];
         
        $links = [
-        'photos/Biru Minimalis Pesan Obrolan Logo (1).png',
+        'sertifikat/6uu6HOjjqFmJjQ8DbDz33lx4AFxAS3SvdDRhJ2QS.jpg',
+        'sertifikat/HBE7RJkfu0EFYAYIEIrCd3OwMHGEST65vgzekWxH.jpg',
         // Tambahkan beberapa link lain kalau mau lebih variatif
         // 'photos/sertifikat-default.jpg',
         ];
