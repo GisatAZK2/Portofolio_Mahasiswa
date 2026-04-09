@@ -845,17 +845,17 @@ class AdminController extends Controller
     }
 
     public function DetailsProdi($id)
-{
-    $this->authorizeAccess();
+    {
+            $this->authorizeAccess();
 
-    $prodi = Jurusan::withCount('users')
-        ->with(['users.angkatan'])
-        ->findOrFail($id);
+            $prodi = Jurusan::withCount('users')
+                ->with(['users.angkatan'])
+                ->findOrFail($id);
 
-    $angkatans = \App\Models\Angkatan::all();
+            $angkatans = \App\Models\Angkatan::all();
 
-    return view('admin.prodi.views_detail_prodi', compact('prodi', 'angkatans'));
-}
+            return view('admin.prodi.views_detail_prodi', compact('prodi', 'angkatans'));
+    }
 
     public function TambahProdi()
     {
@@ -911,6 +911,83 @@ class AdminController extends Controller
         Jurusan::whereIn('id_jurusan', $ids)->delete();
 
         return redirect()->back()->with('success', count($ids) . ' Prodi berhasil dihapus');
+    }
+
+    // For Keahlian Pages
+    public function ListKeahlian()
+    {
+        $this->authorizeAccess();
+        $keahlians = Keahlian::all();
+        return view('admin.list-keahlian', compact('keahlians'));
+    }
+
+    public function DetailsKeahlian($id)
+    {
+            $this->authorizeAccess();
+
+            $keahlian = Keahlian::withCount('users')
+                ->with(['users.angkatan'])
+                ->findOrFail($id);
+
+            $angkatans = \App\Models\Angkatan::all();
+
+            return view('admin.keahlian.views_detail_keahlian', compact('keahlian', 'angkatans'));
+    }
+
+    public function TambahKeahlian()
+    {
+        $this->authorizeAccess();
+        return view('admin.keahlian.views_create_keahlian');
+    }
+
+    public function StoreKeahlian(Request $request)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'nama_keahlian' => 'required|string|max:255',
+        ]);
+
+        Keahlian::create([
+            'nama_keahlian' => $validated['nama_keahlian'],
+            'created_at' => now()
+        ]);
+
+        return redirect()->route('admin.keahlian.index')
+            ->with('success', 'Keahlian berhasil ditambahkan!');
+    }
+
+    public function UpdateKeahlian(Request $request, Keahlian $keahlian)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'nama_keahlian' => 'required|string|max:255',
+        ]);
+
+        $keahlian->update([
+            'nama_keahlian' => $validated['nama_keahlian']
+        ]);
+
+        return redirect()->route('admin.keahlian.index')
+            ->with('success', 'Data Keahlian berhasil diperbarui!');
+    }
+
+    public function DestroyKeahlian(Keahlian $keahlian)
+    {
+        $this->authorizeAccess();
+        $keahlian->delete();
+
+        return redirect()->route('admin.keahlian.index')
+            ->with('success', 'Keahlian berhasil dihapus.');
+    }
+
+    public function bulkDestroyKeahlian(Request $request)
+    {
+        $this->authorizeAccess();
+        $ids = explode(',', $request->selected_ids);
+
+        Keahlian::whereIn('id_keahlian', $ids)->delete();
+
+        return redirect()->back()->with('success', count($ids) . ' Keahlian berhasil dihapus');
     }
 
     //For Projects Pages

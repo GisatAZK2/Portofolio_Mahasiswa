@@ -138,6 +138,66 @@
                     </div>
                 </div>
 
+                <!-- Manajemen Angkatan Dropdown -->
+                <div x-data="{ open: {{ request()->routeIs('admin.angkatan.*') ? 'true' : 'false' }} }" class="relative">
+                    <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
+                                                        {{ request()->routeIs('admin.angkatan.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m8-6a4 4 0 11-8 0 4 4 0 018 0zM5 8a3 3 0 106 0 3 3 0 00-6 0z" />
+                            </svg>
+                            <span data-translate="manajemen_angkatan"
+                                class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+                                Manajemen Angkatan
+                            </span>
+                        </div>
+                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
+                            class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <!-- Tooltip saat sidebar collapse -->
+                    @if(session('sidebar_collapsed'))
+                        <span
+                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
+                            Manajemen Angkatan
+                        </span>
+                    @endif
+                    <!-- Sub Menu (Dropdown Content) -->
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        class="mt-2 space-y-1 pl-4 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+
+                        <a href="{{ route('admin.angkatan.index') }}"
+                            class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.angkatan.index') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                            <span data-translate="lihat_angkatan" data-translate-page="admin">Lihat Angkatan</span>
+                        </a>
+
+                        <a href="{{ route('admin.angkatan.create') }}"
+                            class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.angkatan.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span data-translate="tambah_angkatan" data-translate-page="admin">Tambah Angkatan</span>
+                        </a>
+                    </div>
+                </div>
+                
+
                 <!-- Manage Prodi Dropdown -->
                 <div x-data="{ open: {{ request()->routeIs('admin.prodi.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"
@@ -147,7 +207,7 @@
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                    d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
                                 </path>
                             </svg>
                             <span data-translate="manajemen_prodi" data-translate-page="sidebar" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
@@ -197,6 +257,68 @@
                         </a>
                     </div>
                 </div>
+
+                
+                <!-- Manage Keahlian Dropdown -->
+                <div x-data="{ open: {{ request()->routeIs('admin.keahlian.*') ? 'true' : 'false' }} }" class="relative">
+                    <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
+                                                        {{ request()->routeIs('admin.keahlian.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                </path>
+                            </svg>
+                            <span data-translate="manajemen_keahlian" data-translate-page="sidebar" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+                            </span>
+                        </div>
+                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
+                            class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <!-- Tooltip saat sidebar collapse -->
+                    @if(session('sidebar_collapsed'))
+                        <span
+                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_keahlian" data-translate-page="sidebar">
+                        </span>
+                    @endif
+                    <!-- Sub Menu (Dropdown Content) - hanya tampil saat sidebar tidak collapsed atau saat open di mobile -->
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        class="mt-2 space-y-1 pl-4 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+
+                        <a href="{{ route('admin.keahlian.index') }}"
+                            class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.keahlian.index') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                            <span data-translate="lihat_keahlian" data-translate-page="admin"></span>
+                        </a>
+
+                        <a href="{{ route('admin.keahlian.create') }}"
+                            class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.keahlian.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
+                            </svg>
+                            <span data-translate="tambah_keahlian" data-translate-page="admin"></span>
+                        </a>
+                    </div>
+                </div>
+
 
                 <!-- Manajemen Project -->
                 <div x-data="{ open: {{ request()->routeIs('admin.projects.*') ? 'true' : 'false' }} }" class="relative">
@@ -256,64 +378,8 @@
                         </a>
                     </div>
                 </div>
-                <!-- Manajemen Angkatan Dropdown -->
-                <div x-data="{ open: {{ request()->routeIs('admin.angkatan.*') ? 'true' : 'false' }} }" class="relative">
-                    <button @click="open = !open"
-                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
-                                                        {{ request()->routeIs('admin.angkatan.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
 
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m8-6a4 4 0 11-8 0 4 4 0 018 0zM5 8a3 3 0 106 0 3 3 0 00-6 0z" />
-                            </svg>
-                            <span data-translate="manajemen_angkatan"
-                                class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
-                                Manajemen Angkatan
-                            </span>
-                        </div>
-                        <!-- Arrow Icon - hanya tampil saat sidebar tidak collapsed -->
-                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
-                            class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <!-- Tooltip saat sidebar collapse -->
-                    @if(session('sidebar_collapsed'))
-                        <span
-                            class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Angkatan
-                        </span>
-                    @endif
-                    <!-- Sub Menu (Dropdown Content) -->
-                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
-                        x-transition:enter="transition ease-out duration-100"
-                        x-transition:enter-start="transform opacity-0 scale-95"
-                        x-transition:enter-end="transform opacity-100 scale-100"
-                        class="mt-2 space-y-1 pl-4 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
-
-                        <a href="{{ route('admin.angkatan.index') }}"
-                            class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.angkatan.index') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                </path>
-                            </svg>
-                            <span data-translate="lihat_angkatan" data-translate-page="admin">Lihat Angkatan</span>
-                        </a>
-
-                        <a href="{{ route('admin.angkatan.create') }}"
-                            class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.angkatan.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            <span data-translate="tambah_angkatan" data-translate-page="admin">Tambah Angkatan</span>
-                        </a>
-                    </div>
-                </div>
+                
                 <!-- Manajemen Sertifikat Dropdown -->
                 <div x-data="{ open: {{ request()->routeIs('admin.sertifikat.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"

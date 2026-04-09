@@ -10,5 +10,9 @@ class Keahlian extends Model
     protected $primaryKey = 'id_keahlian';
     protected $fillable = ['nama_keahlian'];
 
+      public function users()
+    {
+        return $this->hasMany(User::class, 'id_keahlian');
+    }
     
 }

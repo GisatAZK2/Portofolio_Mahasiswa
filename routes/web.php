@@ -155,6 +155,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProdi'])->name('bulk-destroy');
     });
 
+      Route::prefix('manageKeahlian')->name('keahlian.')->group(function () {
+        Route::get('/', [AdminController::class, 'ListKeahlian'])->name('index');
+        Route::get('/AddAngkatan', [AdminController::class, 'TambahKeahlian'])->name('create');
+        Route::get('/Details/{keahlian}', [AdminController::class, 'DetailsKeahlian'])->name('details');
+        Route::patch('/edit/{keahlian}', [AdminController::class, 'UpdateKeahlian'])->name('update');
+        Route::post('/store', [AdminController::class, 'StoreKeahlian'])->name('store');
+        Route::delete('/DeleteKeahlian/{keahlian}', [AdminController::class, 'DestroyKeahlian'])->name('destroy');
+        Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyKeahlian'])->name('bulk-destroy');
+    });
+
     Route::prefix('manageProject')->name('projects.')->group(function () {
         Route::get('/', [AdminController::class, 'projects'])->name('index');
         Route::get('/create', [AdminController::class, 'TambahProjects'])->name('create');
@@ -166,7 +176,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     });
 
 });
-
 
 Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
     Route::get('/dashboard', [DosenController::class, 'index'])->name('dashboard');
