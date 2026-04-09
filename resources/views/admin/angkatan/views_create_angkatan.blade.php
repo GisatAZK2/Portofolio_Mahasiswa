@@ -42,9 +42,6 @@
                 </label>
                 <input type="date" name="tahun_keluar" id="tahun_keluar" value="{{ old('tahun_keluar') }}"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 @error('tahun_keluar') border-red-500 @enderror">
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    <span data-translate="desc_agkt_exit" data-translate-page="admin">Kosongkan jika belum lulus</span>
-                </p>
                 @error('tahun_keluar')
                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                 @enderror

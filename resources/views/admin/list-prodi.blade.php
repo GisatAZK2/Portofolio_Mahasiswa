@@ -85,7 +85,7 @@
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
-                                    <button onclick="openDeleteModal({{ $jurusan->id_jurusan }}, '{{ $jurusan->nama_jurusan }}')"
+                                    <button onclick="openDeleteModal({{ $jurusan->id_jurusan }}, '{{ addslashes($jurusan->nama_jurusan) }}')"
                                         class="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -204,8 +204,8 @@
                 </div>
                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-2" data-translate="hapus_jurusan" data-translate-page="admin"></h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-4" data-translate="hapus_jurusan_prompt" data-translate-page="admin">
-                    <span id="deleteName" class="font-bold"></span>?
-                </p>
+    Apakah Anda yakin ingin menghapus <span id="deleteName" class="font-bold"></span>?
+</p>
                 <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
                     <button onclick="closeDeleteModal()"
                         class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
@@ -275,7 +275,10 @@
         // Open Delete Modal
         function openDeleteModal(id, name) {
             deleteId = id;
-            document.getElementById('deleteName').textContent = name;
+            const deleteNameElement = document.getElementById('deleteName');
+            if (deleteNameElement) {
+                deleteNameElement.textContent = name;
+            }
 
             let form = document.getElementById('deleteForm');
             let url = `{{ route('admin.prodi.destroy', ':id') }}`.replace(':id', id);
