@@ -122,6 +122,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::patch('/{user}/update-status', [UserController::class, 'updateStatus'])->name('update-status');
     });
 
+    Route::prefix('manageUserKeahlianTambahan')->name('users.keahlian-tambahan.')->group(function () {
+        Route::get('/', [AdminController::class, 'ListUserKeahlianTambahan'])->name('index');
+        Route::patch('/{id}/approve', [AdminController::class, 'approveKeahlianTambahan'])->name('approve');
+        Route::patch('/{id}/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
+    });
+
     Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
         Route::get('/', [AdminController::class, 'sertifikat'])->name('index');
         Route::get('/AddSertifikat', [AdminController::class, 'TambahSertifikat'])->name('create');

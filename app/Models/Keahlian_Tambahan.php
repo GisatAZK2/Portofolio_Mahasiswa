@@ -21,6 +21,6 @@ class Keahlian_Tambahan extends Model
     }
 
     public function keahlian() {
-        return $this->belongsTo(Keahlian::class, 'id_keahlian');
+        return $this->belongsTo(Keahlian::class, 'id_keahlian', 'id_keahlian');
     }
 }

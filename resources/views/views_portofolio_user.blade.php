@@ -117,27 +117,27 @@
                             </div>
                         @endif
 
-                        @if(!empty($user->keahlian_tambahan))
+                        @php
+                            $acceptedTambahan = $user->keahlianTambahan->filter(function ($item) {
+                                return optional($item->pivot)->status_pengajuan === 'Di Terima';
+                            });
+                        @endphp
+
+                        @if($acceptedTambahan->isNotEmpty())
                             <div>
-                                <p class="text-sm font-medium text-gray-700 dark:gray-300 mb-2">Tambahan:</p>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tambahan:</p>
                                 <div class="flex flex-wrap gap-2">
-                                    @php
-                                        $keahlianTambahan = \App\Models\Keahlian::whereIn(
-                                            'id_keahlian',
-                                            $user->keahlian_tambahan
-                                        )->pluck('nama_keahlian');
-                                    @endphp
-                                    @foreach($keahlianTambahan as $nama)
+                                    @foreach($acceptedTambahan as $kt)
                                         <span
                                             class="px-3 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-full border border-blue-100">
-                                            {{ $nama }}
+                                            {{ $kt->nama_keahlian }}
                                         </span>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
 
-                        @if(!$user->keahlian && empty($user->keahlian_tambahan))
+                        @if(!$user->keahlian && $acceptedTambahan->isEmpty())
                             <p class="text-sm text-gray-500 italic text-center py-2">Belum ada keahlian ditambahkan</p>
                         @endif
                     </div>

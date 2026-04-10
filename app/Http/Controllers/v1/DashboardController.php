@@ -245,6 +245,9 @@ class DashboardController extends Controller
             'jurusan',
             'angkatan',
             'keahlian',
+            'keahlianTambahan' => function ($q) {
+                $q->wherePivot('status_pengajuan', 'Di Terima');
+            },
             'sertifikats' => function ($q) {
                 $q->where('is_active', true)
                     ->where('status_pengajuan', 'Di Terima');
