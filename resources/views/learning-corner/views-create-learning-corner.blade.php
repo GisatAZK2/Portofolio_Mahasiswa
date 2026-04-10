@@ -61,7 +61,7 @@
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200">
-                    <button data-translate="sv_lrn" data-translate-page="msh_lrn_add" type="submit" name="project_id" value="{{$project->id}}"
+                    <button data-translate="sv_lrn" data-translate-page="msh_lrn_add" type="submit"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
                         Simpan Catatan
                     </button>

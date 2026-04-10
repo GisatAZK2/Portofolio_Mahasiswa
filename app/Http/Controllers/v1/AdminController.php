@@ -368,6 +368,13 @@ class AdminController extends Controller
                 'mimes:jpeg,png,jpg',
                 'max:2048'
             ],
+
+            'background_url' => [
+                'sometimes',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:4096'
+            ],
         ];
 
         $validated = $request->validate($rules);
@@ -415,6 +422,18 @@ class AdminController extends Controller
             $updateData['photo_profile'] = $photoPath;
         }
 
+        // Background upload
+        if ($request->hasFile('background_url')) {
+
+            if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+                Storage::disk('public')->delete($user->background_url);
+            }
+
+            $backgroundPath = $request->file('background_url')->store('backgrounds', 'public');
+
+            $updateData['background_url'] = $backgroundPath;
+        }
+
         // Update user
         $user->update($updateData);
 
@@ -451,6 +470,15 @@ class AdminController extends Controller
     public function destroyUser(User $user)
     {
         $this->authorizeAccess();
+
+        // Hapus gambar dari storage jika ada
+        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+            Storage::disk('public')->delete($user->photo_profile);
+        }
+        if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+            Storage::disk('public')->delete($user->background_url);
+        }
+
         $user->delete();
 
         return redirect()->route('admin.users.index')
@@ -476,6 +504,17 @@ class AdminController extends Controller
         $ids = array_filter($ids, function ($id) use ($currentUserId) {
             return $id != $currentUserId;
         });
+
+        // Hapus gambar dari storage untuk user yang akan dihapus
+        $users = User::whereIn('id', $ids)->get();
+        foreach ($users as $user) {
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+                Storage::disk('public')->delete($user->background_url);
+            }
+        }
 
         $count = User::whereIn('id', $ids)->delete();
 
@@ -779,6 +818,12 @@ class AdminController extends Controller
     public function DestroySertifikat(Sertifikat $sertifikat)
     {
         $this->authorizeAccess();
+
+        // Hapus gambar sertifikat dari storage jika ada
+        if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
+            Storage::disk('public')->delete($sertifikat->link_sertifikat);
+        }
+
         $sertifikat->delete();
 
         return redirect()->route('admin.sertifikat.index')
@@ -799,8 +844,8 @@ class AdminController extends Controller
 
             // Delete files from storage
             foreach ($sertifikats as $sertifikat) {
-                if ($sertifikat->link_sertifikat && Storage::exists($sertifikat->link_sertifikat)) {
-                    Storage::delete($sertifikat->link_sertifikat);
+                if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
+                    Storage::disk('public')->delete($sertifikat->link_sertifikat);
                 }
             }
 

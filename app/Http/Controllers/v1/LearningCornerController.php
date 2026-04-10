@@ -39,19 +39,8 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-create-learning-corner', compact('project'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
-        $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'judul' => 'required|string|max:255',
-            'items' => 'nullable|array',
-            'items.*.type' => 'required|in:text,image,link',
-            'items.*.content' => 'nullable|string',
-            'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
-        ]);
-
-        $project = Project::findOrFail($request->project_id);
-
         // Cek apakah user boleh create di project ini
         $userId = Auth::id();
         if (
@@ -59,8 +48,16 @@ class LearningCornerController extends Controller
             $project->leader_id !== $userId &&
             !$project->members()->where('user_id', $userId)->exists()
         ) {
-            abort(403);
+            abort(403, 'Anda tidak terlibat dalam project ini.');
         }
+
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'items' => 'nullable|array',
+            'items.*.type' => 'required|in:text,image,link',
+            'items.*.content' => 'nullable|string',
+            'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+        ]);
 
         $content = [
             ['type' => 'title', 'content' => $validated['judul']],
@@ -118,6 +115,14 @@ class LearningCornerController extends Controller
             'items.*.image_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
+        // Kumpulkan path gambar dari content lama
+        $oldImages = [];
+        foreach ($learningCorner->content ?? [] as $item) {
+            if (($item['type'] ?? '') === 'image' && !empty($item['content'])) {
+                $oldImages[] = $item['content'];
+            }
+        }
+
         $content = [
             ['type' => 'title', 'content' => $validated['judul']],
         ];
@@ -136,6 +141,22 @@ class LearningCornerController extends Controller
                 }
 
                 $content[] = $processed;
+            }
+        }
+
+        // Kumpulkan path gambar dari content baru
+        $newImages = [];
+        foreach ($content as $item) {
+            if (($item['type'] ?? '') === 'image' && !empty($item['content'])) {
+                $newImages[] = $item['content'];
+            }
+        }
+
+        // Hapus gambar yang tidak lagi digunakan
+        $imagesToDelete = array_diff($oldImages, $newImages);
+        foreach ($imagesToDelete as $imagePath) {
+            if (Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
             }
         }
 

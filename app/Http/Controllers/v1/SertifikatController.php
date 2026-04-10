@@ -109,6 +109,11 @@ class SertifikatController extends Controller
     {
         $this->authorizeEntry($sertifikat);
 
+        // Hapus gambar sertifikat dari storage jika ada
+        if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
+            Storage::disk('public')->delete($sertifikat->link_sertifikat);
+        }
+
         $sertifikat->delete();
 
         return redirect()->route('sertifikat.index')
