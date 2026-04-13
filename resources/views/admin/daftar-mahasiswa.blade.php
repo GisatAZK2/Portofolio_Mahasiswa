@@ -414,6 +414,15 @@
                             @endif
                         </div>
 
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status Aktif:</span>
+                            @if($user->is_active)
+                                <span class="text-xs text-green-600">✓ Aktif</span>
+                            @else
+                                <span class="text-xs text-red-600">✗ Tidak Aktif</span>
+                            @endif
+                        </div>
+
                         @if($user->jurusan?->nama_jurusan)
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Jurusan:</span>

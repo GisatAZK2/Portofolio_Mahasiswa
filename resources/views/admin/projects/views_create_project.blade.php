@@ -123,6 +123,7 @@
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -151,6 +152,9 @@
                     @enderror
                 </div>
 
+=======
+                
+>>>>>>> b623e71 (Add Validation User)
                 <!-- Owner Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">

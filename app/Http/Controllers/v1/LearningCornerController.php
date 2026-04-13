@@ -32,7 +32,11 @@ class LearningCornerController extends Controller
         $userId = Auth::id();
         if (
             $project->id_mahasiswa !== $userId &&
+        if (
+            $project->id_mahasiswa !== $userId &&
             $project->leader_id !== $userId &&
+            !$project->members()->where('user_id', $userId)->exists()
+        ) {
             !$project->members()->where('user_id', $userId)->exists()
         ) {
             abort(403, 'Anda tidak terlibat dalam project ini.');
@@ -45,6 +49,8 @@ class LearningCornerController extends Controller
     {
         // Cek apakah user boleh create di project ini
         $userId = Auth::id();
+        if (
+            $project->id_mahasiswa !== $userId &&
         if (
             $project->id_mahasiswa !== $userId &&
             $project->leader_id !== $userId &&
@@ -69,6 +75,7 @@ class LearningCornerController extends Controller
             foreach ($validated['items'] as $index => $item) {
                 $processed = [
                     'type' => $item['type'],
+                    'type' => $item['type'],
                     'content' => $item['content'] ?? null,
                 ];
 
@@ -83,6 +90,9 @@ class LearningCornerController extends Controller
 
         LearningCorner::create([
             'id_mahasiswa' => Auth::id(),
+            'project_id' => $project->id,
+            'content' => $content,
+            'tanggal' => now(),
             'project_id' => $project->id,
             'content' => $content,
             'tanggal' => now(),
@@ -110,6 +120,11 @@ class LearningCornerController extends Controller
         $this->authorizeManage($learningCorner);
 
         $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'items' => 'nullable|array',
+            'items.*.type' => 'required|in:text,image,link',
+            'items.*.content' => 'nullable|string',
+            'items.*.image_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
             'judul' => 'required|string|max:255',
             'items' => 'nullable|array',
             'items.*.type' => 'required|in:text,image,link',
@@ -238,6 +253,8 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-learning-corner-user', compact('entries'));
     }
 
+    private function authorizeManage(LearningCorner $entry): void
+    {
     private function authorizeManage(LearningCorner $entry): void
     {
         $user = Auth::user();

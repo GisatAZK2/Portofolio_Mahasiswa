@@ -194,6 +194,7 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::post('/StoreUser', [DosenController::class, 'AddUser'])->name('StoreUser');
         Route::delete('/DeleteUser/{user}', [DosenController::class, 'destroyUser'])->name('destroy');
         Route::patch('/{user}/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
+        Route::patch('/{user}/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
     });
 
     Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {

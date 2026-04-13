@@ -117,14 +117,12 @@
 
                                 <!-- Media Header -->
                                 <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                                    @if($embedVideo)
-                                        <div class="relative w-full h-full">
-                                            <iframe class="absolute inset-0 w-full h-full"
-                                                src="{{ $embedVideo }}?rel=0&modestbranding=1" title="Video: {{ $nama }}"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen></iframe>
-                                        </div>
+                                    @if($youtube_id)
+                                        @include('components.video_preview', [
+                                            'link_video' => $linkVideo,
+                                            'alt' => 'Video ' . $nama,
+                                            'class' => 'w-full h-full'
+                                        ])
 
                                     @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
                                         <img src="{{ Storage::url($thumbnail) }}" alt="{{ $nama }}" class="w-full h-full object-cover">

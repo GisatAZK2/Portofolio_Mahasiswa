@@ -124,12 +124,11 @@
                             <!-- Video Embed -->
                             @if ($youtube_id)
                                 <div class="mb-5 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
-                                    <div class="aspect-video w-full">
-                                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $youtube_id }}?rel=0"
-                                            title="Video project: {{ $nama_project }}" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen></iframe>
-                                    </div>
+                                    @include('components.video_preview', [
+                                        'link_video' => $link_video,
+                                        'alt' => 'Video ' . $nama_project,
+                                        'class' => 'w-full'
+                                    ])
                                 </div>
                             @endif
 
