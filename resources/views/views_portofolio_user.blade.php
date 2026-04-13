@@ -69,35 +69,6 @@
                                         @endif
                                     </div>
                                 </div>
-
-                                <!-- Share Button -->
-                                <div class="flex flex-col gap-2 pt-1">
-                                    @php
-                                        $shareUrl = route('portfolio.show', ['user' => $user->username]) . '?utm_source=share&utm_medium=portfolio';
-                                        $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
-                                    @endphp
-                                    
-                                    <!-- Share Button with Dropdown -->
-                                    <div class="relative group">
-                                        <button class="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600/50 hover:bg-indigo-700/50 text-white rounded-lg text-sm font-medium transition-colors"
-                                            onclick="toggleShareMenu()">
-                                            <img src="{{ asset('assets/share_icon.svg') }}" alt="Share" class="w-4 h-4">
-                                            <span class="hidden sm:inline">Share</span>
-                                        </button>
-
-                                        <!-- Share Menu Dropdown -->
-                                        <div id="shareMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
-                                            <!-- Copy Link -->
-                                            <button onclick="copyLink('{{ $shareUrl }}')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-lg flex items-center gap-2 transition">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                                </svg>
-                                                <span>Copy Link</span>
-                                            </button>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             <!-- Email Section -->
@@ -144,6 +115,37 @@
                                     </div>
                                 </div>
                             @endif
+
+                            
+                                <!-- Share Button -->
+                                <div class="mt-4 flex flex-col gap-2 pt-1">
+                                    @php
+                                        $shareUrl = route('portfolio.show', ['user' => $user->username]) . '?utm_source=share&utm_medium=portfolio';
+                                        $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
+                                    @endphp
+                                    
+                                    <!-- Share Button with Dropdown -->
+                                    <div class="relative group">
+                                        <button class="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700/50 text-white rounded-lg text-sm font-medium transition-colors"
+                                            onclick="toggleShareMenu()">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                                    </svg>
+                                        </button>
+
+                                        <!-- Share Menu Dropdown -->
+                                        <div id="shareMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
+                                            <!-- Copy Link -->
+                                            <button onclick="copyLink('{{ $shareUrl }}')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-lg flex items-center gap-2 transition">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                                </svg>
+                                                <span>Copy Link</span>
+                                            </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
 
@@ -305,7 +307,6 @@
                                                        class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                                                         {{ $namaProject }}
                                                     </a>
-                                                    <!-- Badge peran user (jika ada) -->
                                                     {!! $userRoleBadge !!}
                                                 </div>
                                             </div>

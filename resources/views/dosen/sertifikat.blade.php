@@ -4,9 +4,11 @@
     <div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl_stk" data-translate-page="dosen_stk">Kelola Semua Sertifikat</h1>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl_stk"
+                    data-translate-page="dosen_stk">Kelola Semua Sertifikat</h1>
                 <p class="text-gray-600 dark:text-gray-200">
-                    <span data-translate="desc_stk" data-translate-page="dosen_stk">Kelola Semua Sertifikat Milik Mahasiswa</span>
+                    <span data-translate="desc_stk" data-translate-page="dosen_stk">Kelola Semua Sertifikat Milik
+                        Mahasiswa</span>
                 </p>
             </div>
             <div class="flex gap-3">
@@ -17,7 +19,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    <span data-translate="del_sel" data-translate-page="dosen_stk">Hapus Terpilih</span> (<span id="selectedCount">0</span>)
+                    <span data-translate="del_sel" data-translate-page="dosen_stk">Hapus Terpilih</span> (<span
+                        id="selectedCount">0</span>)
                 </button>
                 <a href="{{ route('dosen.sertifikat.create') }}"
                     class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
@@ -35,7 +38,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                     {{-- Search Input --}}
                     <div class="lg:col-span-2">
-                        <label data-translate="srch" data-translate-page="dosen_stk" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="srch" data-translate-page="dosen_stk"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Pencarian
                         </label>
                         <div class="relative">
@@ -53,12 +57,14 @@
 
                     {{-- Angkatan Filter --}}
                     <div>
-                        <label data-translate="agkt" data-translate-page="dosen_stk" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="agkt" data-translate-page="dosen_stk"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Angkatan
                         </label>
                         <select name="angkatan"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                            <option data-translate="all_agkt" data-translate-page="dosen_stk" value="">Semua Angkatan</option>
+                            <option data-translate="all_agkt" data-translate-page="dosen_stk" value="">Semua Angkatan
+                            </option>
                             @foreach($angkatans as $angkatanItem)
                                 <option value="{{ $angkatanItem->id }}" {{ $angkatan == $angkatanItem->id ? 'selected' : '' }}>
                                     {{ $angkatanItem->nama_angkatan }}
@@ -69,7 +75,8 @@
 
                     {{-- Jurusan Filter --}}
                     <div>
-                        <label data-translate="jrs" data-translate-page="dosen_stk" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="jrs" data-translate-page="dosen_stk"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Jurusan
                         </label>
                         <select name="jurusan"
@@ -85,12 +92,14 @@
 
                     {{-- Keahlian Filter --}}
                     <div>
-                        <label data-translate="skill" data-translate-page="dosen_stk" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="skill" data-translate-page="dosen_stk"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Keahlian
                         </label>
                         <select name="keahlian"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                            <option data-translate="all_skill" data-translate-page="dosen_stk" value="">Semua Keahlian</option>
+                            <option data-translate="all_skill" data-translate-page="dosen_stk" value="">Semua Keahlian
+                            </option>
                             @foreach($keahlians as $keahlianItem)
                                 <option value="{{ $keahlianItem->id_keahlian }}" {{ $keahlian == $keahlianItem->id_keahlian ? 'selected' : '' }}>
                                     {{ $keahlianItem->nama_keahlian }}
@@ -101,7 +110,8 @@
 
                     {{-- Status Pengajuan Filter --}}
                     <div>
-                        <label data-translate="stat" data-translate-page="dosen_stk" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label data-translate="stat" data-translate-page="dosen_stk"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Status
                         </label>
                         <select name="status_pengajuan"
@@ -137,15 +147,20 @@
                         <label class="flex items-center space-x-2">
                             <input type="checkbox" id="selectAllCheckbox"
                                 class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="sel_all" data-translate-page="dosen_stk">Pilih Semua</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="sel_all"
+                                data-translate-page="dosen_stk">Pilih Semua</span>
                         </label>
                         <span class="text-sm text-gray-500 dark:text-gray-400">
-                            <span data-translate="show" data-translate-page="dosen_stk">Menampilkan</span> {{ $sertifikat->firstItem() }} - {{ $sertifikat->lastItem() }} <span data-translate="from" data-translate-page="dosen_stk">dari</span>
-                            {{ $sertifikat->total() }} <span data-translate="stk" data-translate-page="dosen_stk">sertifikat</span>
+                            <span data-translate="show" data-translate-page="dosen_stk">Menampilkan</span>
+                            {{ $sertifikat->firstItem() }} - {{ $sertifikat->lastItem() }} <span data-translate="from"
+                                data-translate-page="dosen_stk">dari</span>
+                            {{ $sertifikat->total() }} <span data-translate="stk"
+                                data-translate-page="dosen_stk">sertifikat</span>
                         </span>
                     </div>
                     <span class="text-sm text-gray-500 dark:text-gray-400">
-                        <span data-translate="total_pick" data-translate-page="dosen_stk">Total dipilih:</span> <span id="totalSelected">0</span>
+                        <span data-translate="total_pick" data-translate-page="dosen_stk">Total dipilih:</span> <span
+                            id="totalSelected">0</span>
                     </span>
                 </div>
             </div>
@@ -159,15 +174,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600 dark:text-gray-200"><span data-translate="empty_stk" data-translate-page="dosen_stk">Tidak ada sertifikat yang ditemukan.</span></p>
+                <p class="mt-4 text-gray-600 dark:text-gray-200"><span data-translate="empty_stk"
+                        data-translate-page="dosen_stk">Tidak ada sertifikat yang ditemukan.</span></p>
                 @if($search || $angkatan || $jurusan || $keahlian || $status_pengajuan)
-                    <p class="text-gray-500 dark:text-gray-50 text-sm mt-2"><span data-translate="empty_filter" data-translate-page="dosen_stk">Coba atur ulang filter pencarian Anda.</span></p>
+                    <p class="text-gray-500 dark:text-gray-50 text-sm mt-2"><span data-translate="empty_filter"
+                            data-translate-page="dosen_stk">Coba atur ulang filter pencarian Anda.</span></p>
                     <a href="{{ route('dosen.sertifikat.index') }}"
                         class="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                         <span data-translate="reset_all" data-translate-page="dosen_stk">Reset Semua Filter</span>
                     </a>
                 @else
-                    <p class="text-gray-500 dark:text-gray-50 text-sm mt-2"><span data-translate="desc_empty_stk" data-translate-page="dosen_stk">Mulai tambahkan sertifikat pertama!</span></p>
+                    <p class="text-gray-500 dark:text-gray-50 text-sm mt-2"><span data-translate="desc_empty_stk"
+                            data-translate-page="dosen_stk">Mulai tambahkan sertifikat pertama!</span></p>
                 @endif
             </div>
         @else
@@ -227,7 +245,8 @@
                             <div class="p-6 flex-1 flex flex-col">
                                 <!-- Nama Sertifikat -->
                                 <div class="mb-3">
-                                    <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_stk" data-translate-page="dosen_stk">Nama Sertifikat:</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_stk"
+                                        data-translate-page="dosen_stk">Nama Sertifikat:</span>
                                     <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
                                         {{ $entry->nama_sertifikat }}
                                     </h3>
@@ -235,7 +254,8 @@
 
                                 <!-- Nama Mahasiswa -->
                                 <div class="mb-3">
-                                    <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_mhs" data-translate-page="dosen_stk">Nama Mahasiswa:</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_mhs"
+                                        data-translate-page="dosen_stk">Nama Mahasiswa:</span>
                                     <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                         {{ $entry->mahasiswa->nama_mahasiswa }}
                                     </h4>
@@ -283,7 +303,8 @@
                                 <!-- Keterangan (Jika ada) -->
                                 @if($entry->keterangan)
                                     <div class="mb-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border-l-4 border-gray-400">
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold" data-translate="desc" data-translate-page="dosen_stk">Keterangan:</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1 font-semibold" data-translate="desc"
+                                            data-translate-page="dosen_stk">Keterangan:</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300">{{ $entry->keterangan }}</p>
                                     </div>
                                 @endif
@@ -291,18 +312,20 @@
                                 <!-- Informasi Status Detail -->
                                 <div class="mb-3 space-y-1">
                                     <p class="text-xs">
-                                        <span class="font-semibold" data-translate="stat_ajuan" data-translate-page="dosen_stk">Status Pengajuan:</span>
+                                        <span class="font-semibold" data-translate="stat_ajuan"
+                                            data-translate-page="dosen_stk">Status Pengajuan:</span>
                                         <span class="
-                                                                @if($entry->status_pengajuan == 'Di Terima') text-green-600
-                                                                @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
-                                                                @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
-                                                                @endif
-                                                            ">
+                                                                            @if($entry->status_pengajuan == 'Di Terima') text-green-600
+                                                                            @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
+                                                                            @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
+                                                                            @endif
+                                                                        ">
                                             {{ $entry->status_pengajuan }}
                                         </span>
                                     </p>
                                     <p class="text-xs">
-                                        <span class="font-semibold" data-translate="stat_active" data-translate-page="dosen_stk">Status Aktif:</span>
+                                        <span class="font-semibold" data-translate="stat_active"
+                                            data-translate-page="dosen_stk">Status Aktif:</span>
                                         <span class="{{ $entry->is_active ? 'text-green-600' : 'text-red-600' }}">
                                             {{ $entry->is_active ? 'Aktif' : 'Tidak Aktif' }}
                                         </span>
@@ -311,7 +334,8 @@
 
                                 <!-- Tanggal dibuat/diupdate -->
                                 <p class="text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
-                                    <span data-translate="added" data-translate-page="dosen_stk">Ditambahkan:</span> {{ $entry->created_at ? $entry->created_at->format('d M Y') : '-' }}
+                                    <span data-translate="added" data-translate-page="dosen_stk">Ditambahkan:</span>
+                                    {{ $entry->created_at ? $entry->created_at->format('d M Y') : '-' }}
                                     @if($entry->created_at != $entry->updated_at)
                                         <br>Diupdate: {{ $entry->updated_at->format('d M Y') }}
                                     @endif
@@ -324,11 +348,15 @@
                                             $entry->status_pengajuan == 'Sedang Di Ajukan';
                                     @endphp
 
-                                    <div class="flex space-x-3">
+                                    <div class="flex gap-3">
                                         @if($canEdit)
                                             <a href="{{ route('dosen.sertifikat.details', $entry->id) }}"
-                                                class="flex-1 text-center py-2.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-800">
-                                                Edit
+                                                class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition font-medium shadow-sm hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-800">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9" />
+                                                </svg>
+                                                <span data-translate="edit" data-translate-page="dosen_stk">Edit</span>
                                             </a>
                                         @endif
 
@@ -337,8 +365,12 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" data-translate="del" data-translate-page="dosen_stk"
-                                                class="delete-btn w-full py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition font-medium border border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-800">
-                                                Hapus
+                                                class="delete-btn w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 active:bg-red-800 transition font-medium shadow-sm hover:shadow-md dark:bg-red-600 dark:hover:bg-red-700 dark:active:bg-red-800">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                <span data-translate="hapus" data-translate-page="dosen_stk">Hapus</span>
                                             </button>
                                         </form>
                                     </div>

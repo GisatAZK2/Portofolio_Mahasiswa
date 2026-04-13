@@ -50,10 +50,10 @@
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
                         placeholder="Contoh: Sertifikat Kompetensi Programming"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                  text-gray-700 dark:text-gray-300
-                                  placeholder-gray-500 dark:placeholder-gray-400
-                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
+                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                      text-gray-700 dark:text-gray-300
+                                      placeholder-gray-500 dark:placeholder-gray-400
+                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -69,10 +69,10 @@
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
                         placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                  text-gray-700 dark:text-gray-300
-                                  placeholder-gray-500 dark:placeholder-gray-400
-                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
+                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                      text-gray-700 dark:text-gray-300
+                                      placeholder-gray-500 dark:placeholder-gray-400
+                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -88,10 +88,10 @@
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
                         required max="{{ date('Y-m-d') }}"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                  text-gray-700 dark:text-gray-300
-                                  placeholder-gray-500 dark:placeholder-gray-400
-                                  shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
+                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                      text-gray-700 dark:text-gray-300
+                                      placeholder-gray-500 dark:placeholder-gray-400
+                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -218,13 +218,20 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200">
+                <div class="flex justify-end gap-4 pt-8 border-t border-gray-200">
                     <a href="{{ route('sertifikat.index') }}"
-                        class="px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
+                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white rounded-lg transition duration-200 font-medium shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                         <span data-translate="cancel" data-translate-page="sertifikat_edit"></span>
                     </a>
                     <button type="submit"
-                        class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
+                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg transition duration-200 font-medium shadow-md hover:shadow-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
                         <span data-translate="update_sertifikat" data-translate-page="sertifikat_edit"></span>
                     </button>
                 </div>
@@ -380,7 +387,7 @@
                     toggleFileUpload(replaceCheckbox);
                 }
             @endif
-        });
+            });
     </script>
 
 
@@ -390,5 +397,5 @@
             showPageInfo("popup.user_edit_sertifikat");
         });
     </script>
-    
+
 @endsection

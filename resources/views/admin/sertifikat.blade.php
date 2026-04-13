@@ -307,11 +307,11 @@
                                         <span class="font-semibold" data-translate="stat_pengajuan"
                                             data-translate-page="admin">Status Pengajuan:</span>
                                         <span class="
-                                                    @if($entry->status_pengajuan == 'Di Terima') text-green-600
-                                                    @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
-                                                    @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
-                                                    @endif
-                                                ">
+                                                                @if($entry->status_pengajuan == 'Di Terima') text-green-600
+                                                                @elseif($entry->status_pengajuan == 'Sedang Di Ajukan') text-yellow-600
+                                                                @elseif($entry->status_pengajuan == 'Di Tolak') text-red-600
+                                                                @endif
+                                                            ">
                                             {{ $entry->status_pengajuan }}
                                         </span>
                                     </p>
@@ -341,27 +341,25 @@
 
                                         @if($canEdit)
                                             <a href="{{ route('admin.sertifikat.details', $entry->id) }}"
-                                                class="flex items-center justify-center gap-2 py-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-2xl font-medium transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                                    stroke="currentColor">
+                                                class="flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-2xl font-medium transition-all shadow-md hover:shadow-lg">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                        d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9" />
                                                 </svg>
-                                                Edit
+                                                <span data-translate="edit_srtfkt" data-translate-page="admin">Edit</span>
                                             </a>
                                         @endif
 
                                         <form action="{{ route('admin.sertifikat.destroy', $entry->id) }}" method="POST"
-                                            class="delete-form">
+                                            class="delete-form {{ $canEdit ? '' : '' }}">
                                             @csrf @method('DELETE')
                                             <button type="button"
-                                                class="delete-btn w-full flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900 text-red-700 dark:text-red-300 rounded-2xl font-medium transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                class="delete-btn w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700 text-white rounded-2xl font-medium transition-all shadow-md hover:shadow-lg">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
-                                                Hapus
+                                                <span data-translate="hapus_srtfkt" data-translate-page="admin">Hapus</span>
                                             </button>
                                         </form>
                                     </div>
@@ -731,7 +729,7 @@
         });
     </script>
 
-     <!-- Page Info -->
+    <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             showPageInfo("popup.admin_sertifikat");
