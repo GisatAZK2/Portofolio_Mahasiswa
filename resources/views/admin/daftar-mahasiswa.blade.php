@@ -67,6 +67,11 @@
                     </svg>
                     <span class="hidden sm:inline">Keahlian Tambahan</span>
                     <span class="sm:hidden">Keahlian</span>
+                    @if($pendingKeahlianTambahanCount > 0)
+                        <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                            {{ $pendingKeahlianTambahanCount }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('admin.users.ViewCreate') }}"
                     class="bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">

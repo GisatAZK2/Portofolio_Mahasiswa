@@ -189,7 +189,9 @@ class AdminController extends Controller
             });
         }
 
-        return view('admin.daftar-mahasiswa', compact('users'));
+        $pendingKeahlianTambahanCount = \App\Models\Keahlian_Tambahan::where('status_pengajuan', 'Sedang Di Ajukan')->count();
+
+        return view('admin.daftar-mahasiswa', compact('users', 'pendingKeahlianTambahanCount'));
     }
 
     public function ViewAddUser()
