@@ -124,30 +124,19 @@
                                         $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
                                     @endphp
                                     
-                                    <!-- Share Button with Dropdown -->
+                                    <!-- Share Button -->
                                     <div class="relative group">
                                         <button class="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700/50 text-white rounded-lg text-sm font-medium transition-colors"
-                                            onclick="toggleShareMenu()">
+                                            onclick="copyLink('{{ $shareUrl }}')">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                                     </svg>
-                                        </button>
-
-                                        <!-- Share Menu Dropdown -->
-                                        <div id="shareMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
-                                            <!-- Copy Link -->
-                                            <button onclick="copyLink('{{ $shareUrl }}')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-lg flex items-center gap-2 transition">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                                </svg>
-                                                <span>Copy Link</span>
-                                            </button>
-                                            </a>
-                                        </div>
+                                    </button>
+                                    </div>
+                    
+                                    </div>
                                     </div>
                                 </div>
-                        </div>
-                    </div>
 
                     <!-- Keahlian -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5">
@@ -774,40 +763,12 @@
             @endif
         });
 
-        // Share Menu Toggle
-        function toggleShareMenu() {
-            const shareMenu = document.getElementById('shareMenu');
-            shareMenu.classList.toggle('hidden');
-        }
-
-        // Close share menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const shareMenu = document.getElementById('shareMenu');
-            const shareButton = event.target.closest('button[onclick*="toggleShareMenu"]');
-            
-            if (!shareButton && !shareMenu.contains(event.target)) {
-                shareMenu.classList.add('hidden');
-            }
-        });
-
-        // Copy Link to Clipboard
-        function copyLink(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                // Show notification
-                const notification = document.createElement('div');
-                notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-                notification.textContent = 'Link disalin ke clipboard!';
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.remove();
-                }, 3000);
-
-                // Close menu
-                document.getElementById('shareMenu').classList.add('hidden');
+        function copyLink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                showPageInfo('Link proyek berhasil disalin ke clipboard!');
             }).catch(err => {
-                console.error('Gagal menyalin link:', err);
-                alert('Gagal menyalin link');
+                console.error('Gagal menyalin link: ', err);
+                showPageInfo('Gagal menyalin link. Silakan coba lagi.');
             });
         }
     </script>
