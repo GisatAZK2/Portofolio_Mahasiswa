@@ -42,7 +42,8 @@ class User extends Authenticatable
     'deskripsi',
     'is_active',
     'status_pengajuan',
-    'role'
+    'role',
+    'video_url'
     ];
     
     protected $casts = [

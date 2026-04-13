@@ -235,7 +235,7 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
 Route::get('/project/{id}', [ProjekController::class, 'show'])->name('project.show');
-Route::get('/portfolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
+Route::get('/Portofolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
 
 
 

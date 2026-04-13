@@ -231,8 +231,19 @@ class DashboardController extends Controller
     /**
      * Show Portofolio User
      */
-    public function show(User $user, Request $request)
+    public function show($userParam, Request $request)
     {
+        $user = User::where('id', $userParam)->orWhere('username', $userParam)->first();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        // If accessed by ID, redirect to username URL
+        if (is_numeric($userParam)) {
+            return redirect()->route('portfolio.show', $user->username);
+        }
+
         if (in_array($user->role, ['admin', 'dosen'])) {
             return redirect()->back()->with('error', 'Halaman portofolio admin atau dosen tidak diperbolehkan dibuka.');
         }
@@ -255,7 +266,6 @@ class DashboardController extends Controller
             'learning_corners'
         ]);
 
-        $isOwner = Auth::check() && Auth::id() === $user->id;
         $isOwner = Auth::check() && Auth::id() === $user->id;
 
         $projectTab = $request->get('project_tab', 'completed');
@@ -289,10 +299,6 @@ class DashboardController extends Controller
                 break;
         }
 
-        $projects = $projectsQuery
-            ->latest()
-            ->paginate(5)
-            ->withQueryString();
         $projects = $projectsQuery
             ->latest()
             ->paginate(5)

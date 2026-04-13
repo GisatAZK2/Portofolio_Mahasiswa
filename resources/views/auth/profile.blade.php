@@ -122,6 +122,34 @@
                             </div>
                         </div>
 
+                        <!-- Portfolio Buttons -->
+                            <div class="flex justify-end gap-2 mt-1">
+                                @php
+                                    $portfolioUrl = route('portfolio.show', ['user' => Auth::user()->username]);
+                                    $shareUrl = $portfolioUrl . '?utm_source=share&utm_medium=portfolio';
+                                    $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
+                                @endphp
+
+                                <!-- View Portfolio Button -->
+                                <a href="{{ $portfolioUrl }}" target="_blank"
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Lihat Portfolio
+                                </a>
+
+                                <!-- Share Portfolio Button -->
+                                <button type="button" onclick="copyLink('{{ $shareUrl }}')"
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600/50 hover:bg-indigo-700/50 text-white text-sm font-medium rounded-lg transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                                    </svg>
+                                    Share Portfolio
+                                </button>
+                            </div>
+
                         <!-- Name and Username -->
                         <div class="mt-4">
                             <div class="relative group inline-block">
@@ -143,6 +171,8 @@
                                     class="hidden dark:bg-gray-800 dark:text-white text-2xl md:text-3xl font-bold border-b-2 border-indigo-500 focus:outline-none bg-transparent px-2 py-1"
                                     value="{{ old('nama_mahasiswa', Auth::user()->nama_mahasiswa) }}">
                             </div>
+
+                            
 
                             <div class="text-gray-500 dark:text-gray-400 text-sm mb-8 relative group">
                                 <div id="username-container">
@@ -448,6 +478,55 @@
                                         Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah
                                         keahlian baru.
                                     </p>
+                                </div>
+                            </div>
+
+
+                            <!-- Video Perkenalan Diri -->
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group sm:col-span-2"
+                                onclick="toggleEdit('video')">
+
+                                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <rect x="3" y="6" width="18" height="12" rx="4" stroke-width="2"/>
+                                        <polygon points="10,9 10,15 15,12" stroke-width="2"/>
+                                    </svg>
+                                    Video Perkenalan
+                                </p>
+
+                                <!-- DISPLAY MODE -->
+                                <div class="flex items-center justify-between">
+                                    <p id="video-display" class="text-base text-gray-800 dark:text-gray-200 break-all flex-1">
+                                        {{ $user->video_url ?? 'Klik untuk menambahkan video...' }}
+                                    </p>
+
+                                    <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition ml-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                    </svg>
+                                </div>
+
+                                <!-- INPUT MODE -->
+                                <input 
+                                    type="text"
+                                    id="video-input"
+                                    name="video_url"
+                                    value="{{ old('video_url', $user->video_url) }}"
+                                    placeholder="https://www.youtube.com/watch?v=xxxx"
+                                    class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent mt-2"
+                                    oninput="updatePreview()"
+                                >
+
+                                <!-- PREVIEW -->
+                                <div id="videoPreview" class="hidden mt-4">
+                                    <iframe 
+                                        id="previewFrame"
+                                        class="w-full h-64 rounded-xl"
+                                        src=""
+                                        frameborder="0"
+                                        allowfullscreen>
+                                    </iframe>
                                 </div>
                             </div>
 
@@ -1150,5 +1229,82 @@
             }
         });
     </script>
+    <!-- Vid Prev-->
+    <script>
+        function convertToEmbed(url) {
+            if (!url) return '';
 
+            if (url.includes('watch?v=')) {
+                return url.replace('watch?v=', 'embed/');
+            }
+
+            if (url.includes('youtu.be/')) {
+                return url.replace('youtu.be/', 'youtube.com/embed/');
+            }
+
+            return url;
+        }
+
+        function updatePreview() {
+            const input = document.getElementById('video-input').value;
+            const preview = document.getElementById('videoPreview');
+            const iframe = document.getElementById('previewFrame');
+
+            const embedUrl = convertToEmbed(input);
+
+            if (embedUrl) {
+                iframe.src = embedUrl;
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+                iframe.src = '';
+            }
+        }
+
+        // Auto load kalau sudah ada value (edit mode)
+        document.addEventListener('DOMContentLoaded', updatePreview);
+    </script>
+
+    <!-- Share Functions -->
+    <script>
+        // Copy Link to Clipboard
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                // Show success notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-pulse';
+                notification.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Link portfolio berhasil disalin!</span>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }).catch(err => {
+                console.error('Gagal menyalin link:', err);
+                // Show error notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-pulse';
+                notification.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Gagal menyalin link</span>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            });
+        }
+    </script>
 @endsection
