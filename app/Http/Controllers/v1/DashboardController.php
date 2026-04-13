@@ -94,13 +94,6 @@ class DashboardController extends Controller
                     $q->where('user_id', $user->id);
                 });
         })->count();
-        $totalProject = Project::where(function ($query) use ($user) {
-            $query->where('id_mahasiswa', $user->id)
-                ->orWhere('leader_id', $user->id)
-                ->orWhereHas('members', function ($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                });
-        })->count();
         $totalSertifikat = Sertifikat::where('id_mahasiswa', $user->id)
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
@@ -120,10 +113,6 @@ class DashboardController extends Controller
         $project = Project::with('mahasiswa')
             ->where(function ($query) use ($user) {
                 $query->where('id_mahasiswa', $user->id)
-                    ->orWhere('leader_id', $user->id)
-                    ->orWhereHas('members', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
-                    });
                     ->orWhere('leader_id', $user->id)
                     ->orWhereHas('members', function ($q) use ($user) {
                         $q->where('user_id', $user->id);
@@ -165,10 +154,6 @@ class DashboardController extends Controller
         $projects = Project::with('mahasiswa')
             ->where(function ($query) use ($user) {
                 $query->where('id_mahasiswa', $user->id)
-                    ->orWhere('leader_id', $user->id)
-                    ->orWhereHas('members', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
-                    });
                     ->orWhere('leader_id', $user->id)
                     ->orWhereHas('members', function ($q) use ($user) {
                         $q->where('user_id', $user->id);
@@ -266,7 +251,6 @@ class DashboardController extends Controller
             'sertifikats' => function ($q) {
                 $q->where('is_active', true)
                     ->where('status_pengajuan', 'Di Terima');
-                    ->where('status_pengajuan', 'Di Terima');
             },
             'learning_corners'
         ]);
@@ -274,7 +258,7 @@ class DashboardController extends Controller
         $isOwner = Auth::check() && Auth::id() === $user->id;
         $isOwner = Auth::check() && Auth::id() === $user->id;
 
-        $projectTab = $request->get('project_tab', 'completed');
+        $projectTab = $request->get('project_tab', 'now');
         $today = Carbon::today();
 
         $projectsQuery = Project::with(['owner', 'leader', 'members'])
@@ -300,7 +284,6 @@ class DashboardController extends Controller
                     ->where('tanggal_mulai', '<=', $today)
                     ->where(function ($q) use ($today) {
                         $q->where('tanggal_akhir', '>=', $today)
-                            ->orWhereNull('tanggal_akhir');
                             ->orWhereNull('tanggal_akhir');
                     });
                 break;

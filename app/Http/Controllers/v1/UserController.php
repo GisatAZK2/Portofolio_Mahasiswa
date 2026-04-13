@@ -25,12 +25,8 @@ class UserController extends Controller
     public function showRegister()
     {
         $jurusans = Jurusan::all();
-    public function showRegister()
-    {
-        $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
-
 
         return view('auth.register', compact('jurusans', 'keahlians', 'angkatans'));
     }
@@ -43,28 +39,7 @@ class UserController extends Controller
         $sessionId = $request->session()->getId();
 
         $guestIdentifier = md5($ipAddress . $userAgent . $sessionId);
-    public function register(Request $request)
-    {
-        $ipAddress = $request->ip();
-        $userAgent = $request->userAgent();
-        $sessionId = $request->session()->getId();
 
-        $guestIdentifier = md5($ipAddress . $userAgent . $sessionId);
-
-        $registrationCount = Cache::remember("registration_count_{$guestIdentifier}", 3600, function () {
-            return 0;
-        });
-
-        // Cek di session juga sebagai backup
-        $sessionCount = $request->session()->get('registration_attempts', 0);
-
-        $totalAttempts = max($registrationCount, $sessionCount);
-
-        if ($totalAttempts >= 3) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Anda telah mencapai batas maksimal 3 kali pengajuan registrasi. Silakan hubungi admin untuk bantuan lebih lanjut.');
-        }
         $registrationCount = Cache::remember("registration_count_{$guestIdentifier}", 3600, function () {
             return 0;
         });
@@ -100,11 +75,7 @@ class UserController extends Controller
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_active'] = true;
         $validated['status_pengajuan'] = 'Sedang Di Ajukan';
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = true;
-        $validated['status_pengajuan'] = 'Sedang Di Ajukan';
 
-        User::create($validated);
         User::create($validated);
 
         $newCount = $totalAttempts + 1;
@@ -114,17 +85,7 @@ class UserController extends Controller
         // Simpan di session
         $request->session()->put('registration_attempts', $newCount);
         $request->session()->put('last_registration_time', now());
-        $newCount = $totalAttempts + 1;
 
-        Cache::put("registration_count_{$guestIdentifier}", $newCount, now()->addHours(24));
-
-        // Simpan di session
-        $request->session()->put('registration_attempts', $newCount);
-        $request->session()->put('last_registration_time', now());
-
-        return redirect()->route('login')
-            ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');
-    }
         return redirect()->route('login')
             ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');
     }
@@ -141,24 +102,11 @@ class UserController extends Controller
             'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
-    public function login(Request $request)
-    {
-        $request->validate([
-            'login' => ['required', 'string'],
-            'password' => ['required', 'string'],
-        ]);
 
-        $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $user = User::where($fieldType, $request->login)->first();
-        $user = User::where($fieldType, $request->login)->first();
 
-        if (!$user) {
-            return back()->withErrors([
-                'login' => 'Akun tidak ditemukan.',
-            ])->onlyInput('login');
-        }
         if (!$user) {
             return back()->withErrors([
                 'login' => 'Akun tidak ditemukan.',
@@ -170,17 +118,7 @@ class UserController extends Controller
                 'login' => 'AKUN_DIBLOKIR',
             ])->onlyInput('login');
         }
-        if ($user->is_active == 0 && empty($user->status_pengajuan)) {
-            return back()->withErrors([
-                'login' => 'AKUN_DIBLOKIR',
-            ])->onlyInput('login');
-        }
 
-        if ($user->status_pengajuan === 'Sedang Di Ajukan') {
-            return back()->withErrors([
-                'login' => 'PENGAJUAN_DIPROSES',
-            ])->onlyInput('login');
-        }
         if ($user->status_pengajuan === 'Sedang Di Ajukan') {
             return back()->withErrors([
                 'login' => 'PENGAJUAN_DIPROSES',
@@ -192,17 +130,7 @@ class UserController extends Controller
                 'login' => 'PENGAJUAN_DITOLAK',
             ])->onlyInput('login');
         }
-        if ($user->status_pengajuan === 'Di Tolak') {
-            return back()->withErrors([
-                'login' => 'PENGAJUAN_DITOLAK',
-            ])->onlyInput('login');
-        }
 
-        if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
-            return back()->withErrors([
-                'login' => 'AKUN_DIBLOKIR',
-            ])->onlyInput('login');
-        }
         if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
             return back()->withErrors([
                 'login' => 'AKUN_DIBLOKIR',
@@ -213,25 +141,13 @@ class UserController extends Controller
             $fieldType => $request->login,
             'password' => $request->password,
         ];
-        $credentials = [
-            $fieldType => $request->login,
-            'password' => $request->password,
-        ];
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
 
             $request->session()->regenerate();
-            $request->session()->regenerate();
 
             $user = Auth::user();
-            $user = Auth::user();
 
-
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.index')
-                    ->with('success', 'Login berhasil! Selamat datang Admin.');
-            }
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.index')
@@ -242,15 +158,7 @@ class UserController extends Controller
                 return redirect()->route('dosen.dashboard')
                     ->with('success', 'Login berhasil! Selamat datang Dosen.');
             }
-            if ($user->role === 'dosen') {
-                return redirect()->route('dosen.dashboard')
-                    ->with('success', 'Login berhasil! Selamat datang Dosen.');
-            }
 
-            // Default mahasiswa
-            return redirect()->route('dashboard.me')
-                ->with('success', 'Login berhasil! Selamat datang kembali.');
-        }
             // Default mahasiswa
             return redirect()->route('dashboard.me')
                 ->with('success', 'Login berhasil! Selamat datang kembali.');
@@ -260,32 +168,12 @@ class UserController extends Controller
             'login' => 'Password yang Anda masukkan salah.',
         ])->onlyInput('login');
     }
-        return back()->withErrors([
-            'login' => 'Password yang Anda masukkan salah.',
-        ])->onlyInput('login');
-    }
 
     public function updateStatusPengajuan(Request $request, $id)
     {
         $currentUser = Auth::user();
         $user = User::findOrFail($id);
-    public function updateStatusPengajuan(Request $request, $id)
-    {
-        $currentUser = Auth::user();
-        $user = User::findOrFail($id);
 
-        // 1. Cek Otorisasi
-        if ($currentUser->role === 'dosen') {
-            if (
-                $currentUser->id_jurusan != $user->id_jurusan ||
-                $currentUser->id_angkatan != $user->id_angkatan ||
-                $currentUser->id_keahlian != $user->id_keahlian
-            ) {
-                return redirect()->back()->with('error', 'Anda hanya dapat menyetujui mahasiswa dengan jurusan, angkatan, dan keahlian yang sama.');
-            }
-        } elseif ($currentUser->role !== 'admin') {
-            return redirect()->back()->with('error', 'Akses ditolak.');
-        }
         // 1. Cek Otorisasi
         if ($currentUser->role === 'dosen') {
             if (
@@ -304,16 +192,7 @@ class UserController extends Controller
             'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
             'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:500',
         ]);
-        // 2. Validasi Input (sesuaikan dengan nama yang dikirim dari form)
-        $request->validate([
-            'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
-            'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:500',
-        ]);
 
-        try {
-            $updateData = [
-                'status_pengajuan' => $request->status_pengajuan,
-            ];
         try {
             $updateData = [
                 'status_pengajuan' => $request->status_pengajuan,
@@ -326,34 +205,16 @@ class UserController extends Controller
                 $updateData['is_active'] = false;
                 $updateData['keterangan'] = $request->keterangan_tolak;   // Ambil dari form, simpan ke kolom 'keterangan'
             }
-            if ($request->status_pengajuan === 'Di Terima') {
-                $updateData['is_active'] = true;
-                $updateData['keterangan'] = null;           // Kosongkan di database
-            } else {
-                $updateData['is_active'] = false;
-                $updateData['keterangan'] = $request->keterangan_tolak;   // Ambil dari form, simpan ke kolom 'keterangan'
-            }
 
             // Update ke database
             $user->update($updateData);
-            // Update ke database
-            $user->update($updateData);
 
-            $statusText = $request->status_pengajuan === 'Di Terima' ? 'diterima' : 'ditolak';
             $statusText = $request->status_pengajuan === 'Di Terima' ? 'diterima' : 'ditolak';
 
             return redirect()->route(
                 $currentUser->role === 'admin' ? 'admin.users.index' : 'dosen.users.index'
             )->with('success', "Status pengajuan mahasiswa {$user->name} berhasil {$statusText}.");
-            return redirect()->route(
-                $currentUser->role === 'admin' ? 'admin.users.index' : 'dosen.users.index'
-            )->with('success', "Status pengajuan mahasiswa {$user->name} berhasil {$statusText}.");
 
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -370,7 +231,6 @@ class UserController extends Controller
     }
 
     public function profile()
-    public function profile()
     {
         $user = Auth::user()->load([
             'jurusan',
@@ -379,7 +239,6 @@ class UserController extends Controller
             'keahlianTambahan' // Load relasi many-to-many
         ]);
 
-        $jurusans = Jurusan::all();
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
@@ -393,15 +252,7 @@ class UserController extends Controller
         $exists = Keahlian_Tambahan::where('id_user', $user->id)
             ->where('id_keahlian', $id_keahlian)
             ->exists();
-    {
-        // Cek sudah ada
-        $exists = Keahlian_Tambahan::where('id_user', $user->id)
-            ->where('id_keahlian', $id_keahlian)
-            ->exists();
 
-        if ($exists) {
-            return 'Keahlian ini sudah ditambahkan sebelumnya';
-        }
         if ($exists) {
             return 'Keahlian ini sudah ditambahkan sebelumnya';
         }
@@ -410,19 +261,10 @@ class UserController extends Controller
         if ($user->id_keahlian == $id_keahlian) {
             return 'Tidak dapat menambahkan keahlian utama';
         }
-        // Cek bukan keahlian utama
-        if ($user->id_keahlian == $id_keahlian) {
-            return 'Tidak dapat menambahkan keahlian utama';
-        }
 
         // Cek maksimal 3
         $currentCount = Keahlian_Tambahan::where('id_user', $user->id)->count();
-        // Cek maksimal 3
-        $currentCount = Keahlian_Tambahan::where('id_user', $user->id)->count();
 
-        if ($currentCount >= 3) {
-            return 'Maksimal 3 keahlian tambahan';
-        }
         if ($currentCount >= 3) {
             return 'Maksimal 3 keahlian tambahan';
         }
@@ -434,16 +276,7 @@ class UserController extends Controller
             'status_pengajuan' => 'Sedang Di Ajukan',
             'keterangan' => null
         ]);
-        Keahlian_Tambahan::create([
-            'id_user' => $user->id,
-            'id_keahlian' => $id_keahlian,
-            'is_active' => false,
-            'status_pengajuan' => 'Sedang Di Ajukan',
-            'keterangan' => null
-        ]);
 
-        return null;
-    }
         return null;
     }
 
@@ -513,12 +346,7 @@ class UserController extends Controller
         if ($request->filled('id_keahlian_tambahan')) {
 
             $error = $this->addKeahlianTambahan($user, $request->id_keahlian_tambahan);
-            $error = $this->addKeahlianTambahan($user, $request->id_keahlian_tambahan);
 
-            if ($error) {
-                return back()->with('error', $error);
-            }
-        }
             if ($error) {
                 return back()->with('error', $error);
             }
@@ -534,40 +362,26 @@ class UserController extends Controller
     public function storeKeahlianTambahan(Request $request)
     {
         $user = Auth::user();
-    public function storeKeahlianTambahan(Request $request)
-    {
-        $user = Auth::user();
 
-        $request->validate([
-            'id_keahlian' => 'required|exists:keahlian,id_keahlian'
-        ]);
         $request->validate([
             'id_keahlian' => 'required|exists:keahlian,id_keahlian'
         ]);
 
         $error = $this->addKeahlianTambahan($user, $request->id_keahlian);
-        $error = $this->addKeahlianTambahan($user, $request->id_keahlian);
 
         if ($error) {
             return redirect()->back()->with('error', $error);
         }
-        if ($error) {
-            return redirect()->back()->with('error', $error);
-        }
 
-        return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
-    }
         return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
     }
     public function destroyKeahlianTambahan($id)
     {
         $user = Auth::user();
 
-
         try {
             $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
                 ->findOrFail($id);
-
 
             // Cek apakah boleh dihapus
             if (!in_array($keahlianTambahan->status_pengajuan, ['Sedang Di Ajukan', 'Di Tolak'])) {
@@ -577,15 +391,12 @@ class UserController extends Controller
                 ], 403);
             }
 
-
             $keahlianTambahan->delete();
-
 
             return response()->json([
                 'success' => true,
                 'message' => 'Keahlian tambahan berhasil dihapus'
             ]);
-
 
         } catch (\Exception $e) {
             return response()->json([
@@ -600,19 +411,16 @@ class UserController extends Controller
         try {
             $user = Auth::user();
 
-
             // Ambil data keahlian tambahan dengan relasi keahlian
             $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
                 ->with('keahlian')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-
             return response()->json([
                 'success' => true,
                 'data' => $keahlianTambahan
             ]);
-
 
         } catch (\Exception $e) {
             return response()->json([

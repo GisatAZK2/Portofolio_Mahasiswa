@@ -54,7 +54,6 @@ class ProjekController extends Controller
     protected function authorizeProjectManager(Project $project): void
     {
         if (!$this->userIsProjectManager($project)) {
-        if (!$this->userIsProjectManager($project)) {
             abort(403, 'Akses hanya untuk owner atau leader project.');
         }
     }
@@ -69,7 +68,6 @@ class ProjekController extends Controller
             'user_id' => 'required|exists:users,id',
         ]);
 
-        if (!$this->userIsProjectParticipant($project, $validated['user_id'])) {
         if (!$this->userIsProjectParticipant($project, $validated['user_id'])) {
             return back()->withInput()->withErrors(['user_id' => 'User harus menjadi owner, leader, atau member project.']);
         }
@@ -98,11 +96,9 @@ class ProjekController extends Controller
             ]);
 
             if (isset($validated['user_id']) && !$this->userIsProjectParticipant($project, $validated['user_id'])) {
-            if (isset($validated['user_id']) && !$this->userIsProjectParticipant($project, $validated['user_id'])) {
                 return back()->withInput()->withErrors(['user_id' => 'User harus menjadi owner, leader, atau member project.']);
             }
 
-            $task->fill(array_filter($validated, fn($value) => $value !== null));
             $task->fill(array_filter($validated, fn($value) => $value !== null));
             $task->save();
         } elseif ($task->user_id === $userId) {
@@ -126,7 +122,6 @@ class ProjekController extends Controller
         $userId = Auth::id();
 
         if (!$this->userIsProjectManager($project) && $task->user_id !== $userId) {
-        if (!$this->userIsProjectManager($project) && $task->user_id !== $userId) {
             abort(403, 'Anda tidak dapat menyelesaikan tugas ini.');
         }
 
@@ -142,7 +137,6 @@ class ProjekController extends Controller
         $task = ProjectTask::where('project_id', $projectId)->findOrFail($taskId);
         $userId = Auth::id();
 
-        if (!$this->userIsProjectManager($project) && $task->user_id !== $userId) {
         if (!$this->userIsProjectManager($project) && $task->user_id !== $userId) {
             abort(403, 'Anda tidak dapat menghapus tugas ini.');
         }
@@ -196,17 +190,7 @@ class ProjekController extends Controller
     {
         $allowedUsers = collect();
         $savedTaskIds = [];
-    protected function createProjectTasks(Project $project, array $tasks, bool $skipValidation = false)
-    {
-        $allowedUsers = collect();
-        $savedTaskIds = [];
 
-        if (!$skipValidation) {
-            $allowedUsers = collect([$project->id_mahasiswa, $project->leader_id])
-                ->merge($project->members()->pluck('project_user.user_id'))
-                ->filter()
-                ->unique();
-        }
         if (!$skipValidation) {
             $allowedUsers = collect([$project->id_mahasiswa, $project->leader_id])
                 ->merge($project->members()->pluck('project_user.user_id'))
@@ -218,21 +202,11 @@ class ProjekController extends Controller
             $taskId = $task['id'] ?? null;
             $userId = $task['user_id'] ?? null;
             $name = trim($task['name_task'] ?? '');
-        foreach ($tasks as $task) {
-            $taskId = $task['id'] ?? null;
-            $userId = $task['user_id'] ?? null;
-            $name = trim($task['name_task'] ?? '');
 
             if (empty($userId) || empty($name)) {
                 continue;
             }
-            if (empty($userId) || empty($name)) {
-                continue;
-            }
 
-            if (!$skipValidation && !$allowedUsers->contains($userId)) {
-                continue;
-            }
             if (!$skipValidation && !$allowedUsers->contains($userId)) {
                 continue;
             }
@@ -241,20 +215,7 @@ class ProjekController extends Controller
                 $existingTask = ProjectTask::where('project_id', $project->id)
                     ->where('id', $taskId)
                     ->first();
-            if ($taskId) {
-                $existingTask = ProjectTask::where('project_id', $project->id)
-                    ->where('id', $taskId)
-                    ->first();
 
-                if ($existingTask) {
-                    $existingTask->update([
-                        'user_id' => $userId,
-                        'name_task' => $name,
-                    ]);
-                    $savedTaskIds[] = $existingTask->id;
-                    continue;
-                }
-            }
                 if ($existingTask) {
                     $existingTask->update([
                         'user_id' => $userId,
@@ -271,20 +232,10 @@ class ProjekController extends Controller
                 'name_task' => $name,
                 'is_done' => false,
             ]);
-            $newTask = ProjectTask::create([
-                'project_id' => $project->id,
-                'user_id' => $userId,
-                'name_task' => $name,
-                'is_done' => false,
-            ]);
 
             $savedTaskIds[] = $newTask->id;
         }
-            $savedTaskIds[] = $newTask->id;
-        }
 
-        return $savedTaskIds;
-    }
         return $savedTaskIds;
     }
     // SIMPAN BARU
@@ -301,21 +252,7 @@ class ProjekController extends Controller
             })
             ->values()
             ->all();
-    public function store(Request $request)
-    {
-        // Filter tasks yang incomplete (hanya simpan yang punya kedua field)
-        $filteredTasks = collect($request->input('tasks', []))
-            ->filter(function ($task) {
-                if (!is_array($task))
-                    return false;
-                $userId = trim($task['user_id'] ?? '');
-                $nameTask = trim($task['name_task'] ?? '');
-                return !empty($userId) && !empty($nameTask);
-            })
-            ->values()
-            ->all();
 
-        $request->merge(['tasks' => $filteredTasks]);
         $request->merge(['tasks' => $filteredTasks]);
 
         $request->validate([
@@ -335,16 +272,7 @@ class ProjekController extends Controller
         ]);
 
         // ... (bagian content, Project::create, attach members tetap sama)
-        // ... (bagian content, Project::create, attach members tetap sama)
 
-        $content = array_filter($request->only([
-            'nama_project',
-            'judul',
-            'deskripsi',
-            'link_project',
-            'link_github',
-            'link_video'
-        ]), fn($value) => !is_null($value) && $value !== '');
         $content = array_filter($request->only([
             'nama_project',
             'judul',
@@ -357,17 +285,7 @@ class ProjekController extends Controller
         if (empty($content)) {
             return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
         }
-        if (empty($content)) {
-            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
-        }
 
-        $project = Project::create([
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'isi_content' => $content,
-            'id_mahasiswa' => Auth::id(),
-            'leader_id' => $request->leader,
-        ]);
         $project = Project::create([
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
@@ -382,16 +300,7 @@ class ProjekController extends Controller
             ->reject(fn($id) => $id == $request->leader)
             ->map(fn($id) => (int) $id)
             ->all();
-        // Attach members
-        $members = collect($request->members ?? [])
-            ->filter()
-            ->reject(fn($id) => $id == $request->leader)
-            ->map(fn($id) => (int) $id)
-            ->all();
 
-        if (!empty($members)) {
-            $project->members()->attach($members);
-        }
         if (!empty($members)) {
             $project->members()->attach($members);
         }
@@ -400,14 +309,7 @@ class ProjekController extends Controller
         if (!empty($request->tasks)) {
             $this->createProjectTasks($project, $request->tasks, $skipValidation = true);
         }
-        // Create tasks (lewati pengecekan ketat untuk saat create)
-        if (!empty($request->tasks)) {
-            $this->createProjectTasks($project, $request->tasks, $skipValidation = true);
-        }
 
-        return redirect()->route('project.index')
-            ->with('success', 'Project berhasil ditambahkan!');
-    }
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil ditambahkan!');
     }
@@ -680,7 +582,6 @@ class ProjekController extends Controller
             'statusColor'
         ));
     }
-
 
 
 }

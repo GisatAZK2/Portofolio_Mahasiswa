@@ -51,17 +51,7 @@ class SertifikatController extends Controller
             'tanggal_terbit' => $validated['tanggal_terbit'],
             'link_sertifikat' => $validated['link_sertifikat'],
         ]);
-        Sertifikat::create([
-            'id_mahasiswa' => Auth::id(),
-            'nama_sertifikat' => $validated['nama_sertifikat'],
-            'lembaga_penerbit' => $validated['lembaga_penerbit'],
-            'tanggal_terbit' => $validated['tanggal_terbit'],
-            'link_sertifikat' => $validated['link_sertifikat'],
-        ]);
 
-        return redirect()->route('sertifikat.index')
-            ->with('success', 'Sertifikat berhasil ditambahkan!');
-    }
         return redirect()->route('sertifikat.index')
             ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
@@ -81,10 +71,6 @@ class SertifikatController extends Controller
     {
         $this->authorizeEntry($sertifikat);
 
-    public function update(Request $request, Sertifikat $sertifikat)
-    {
-        $this->authorizeEntry($sertifikat);
-
         $validated = $request->validate([
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
@@ -93,16 +79,7 @@ class SertifikatController extends Controller
         ]);
 
         if ($request->hasFile('link_sertifikat')) {
-        if ($request->hasFile('link_sertifikat')) {
 
-
-            if (
-                $sertifikat->link_sertifikat &&
-                Storage::disk('public')->exists($sertifikat->link_sertifikat)
-            ) {
-
-                Storage::disk('public')->delete($sertifikat->link_sertifikat);
-            }
 
             if (
                 $sertifikat->link_sertifikat &&
@@ -119,11 +96,7 @@ class SertifikatController extends Controller
         }
 
         $sertifikat->update($validated);
-        $sertifikat->update($validated);
 
-        return redirect()->route('sertifikat.index')
-            ->with('success', 'Sertifikat berhasil diperbarui!');
-    }
         return redirect()->route('sertifikat.index')
             ->with('success', 'Sertifikat berhasil diperbarui!');
     }
