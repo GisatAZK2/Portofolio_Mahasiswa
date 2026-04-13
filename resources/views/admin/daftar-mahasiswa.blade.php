@@ -199,9 +199,9 @@
                             data-translate="tbl_stat" data-translate-page="admin">Status</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Aktif</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_jrs" data-translate-page="admin">Prodi</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                        <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="agkt" data-translate-page="admin">Angkatan</th>  
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_act" data-translate-page="admin">Aksi</th>
@@ -282,9 +282,9 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="hidden xl:table-cell px-3 py-3 dark:text-white text-sm">
+                            <td class="hidden md:table-cell px-3 py-3 dark:text-white text-sm">
                                 {{ $user->jurusan?->nama_jurusan ?? '-' }}</td>
-                            <td class="hidden xl:table-cell px-3 py-3 dark:text-white text-sm">
+                            <td class="hidden md:table-cell px-3 py-3 dark:text-white text-sm">
                                 {{ $user->angkatan?->nama_angkatan ?? '-' }}</td>
                             <td class="px-3 py-3">
                                 <div class="flex space-x-2">

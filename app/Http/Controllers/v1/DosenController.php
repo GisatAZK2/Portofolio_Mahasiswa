@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\ImageConversionService;
 
 class DosenController extends Controller
 {
@@ -236,7 +237,7 @@ class DosenController extends Controller
             'photo_profile' => [
                 'nullable',
                 'image',
-                'mimes:jpeg,png,jpg',
+                'mimes:jpeg,png,jpg,webp',
                 'max:2048'
             ],
             'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
@@ -245,8 +246,7 @@ class DosenController extends Controller
         $photoPath = null;
 
         if ($request->hasFile('photo_profile')) {
-            $photoPath = $request->file('photo_profile')
-                ->store('photo_profile', 'public');
+            $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
         }
 
         User::create([
@@ -358,7 +358,7 @@ class DosenController extends Controller
             'background_url' => [
                 'sometimes',
                 'image',
-                'mimes:jpeg,png,jpg',
+                'mimes:jpeg,png,jpg,webp',
                 'max:4096'
             ],
         ];
@@ -437,7 +437,7 @@ class DosenController extends Controller
                 Storage::disk('public')->delete($user->photo_profile);
             }
 
-            $photoPath = $request->file('photo_profile')->store('photo_profile', 'public');
+            $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
             $updateData['photo_profile'] = $photoPath;
         }
 
@@ -448,7 +448,7 @@ class DosenController extends Controller
                 Storage::disk('public')->delete($user->background_url);
             }
 
-            $backgroundPath = $request->file('background_url')->store('backgrounds', 'public');
+            $backgroundPath = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
 
             $updateData['background_url'] = $backgroundPath;
         }
@@ -729,9 +729,7 @@ class DosenController extends Controller
         $user = $this->getdosenFilterScope($user)->firstOrFail();
 
         if ($request->hasFile('link_sertifikat')) {
-            $path = $request->file('link_sertifikat')
-                ->store('sertifikat', 'public');
-            $validated['link_sertifikat'] = $path;
+            $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         }
 
         Sertifikat::create([
@@ -774,10 +772,7 @@ class DosenController extends Controller
                 Storage::disk('public')->delete($sertifikat->link_sertifikat);
             }
 
-            $path = $request->file('link_sertifikat')
-                ->store('sertifikat', 'public');
-
-            $validated['link_sertifikat'] = $path;
+            $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         } else {
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
         }

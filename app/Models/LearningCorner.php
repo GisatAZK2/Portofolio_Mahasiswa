@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class LearningCorner extends Model
@@ -75,6 +76,17 @@ class LearningCorner extends Model
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id', 'id');
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (LearningCorner $learningCorner) {
+            foreach ($learningCorner->content ?? [] as $item) {
+                if (($item['type'] ?? '') === 'image' && !empty($item['content'])) {
+                    Storage::disk('public')->delete($item['content']);
+                }
+            }
+        });
     }
 
     public function getJudulAttribute()

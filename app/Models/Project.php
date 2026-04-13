@@ -74,6 +74,15 @@ class Project extends Model
     }
 
     public function learningCorners() {
-    return $this->hasMany(LearningCorner::class, 'project_id', 'id');
+        return $this->hasMany(LearningCorner::class, 'project_id', 'id');
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Project $project) {
+            $project->learningCorners()->get()->each->delete();
+            $project->tasks()->delete();
+            $project->members()->detach();
+        });
     }
 }

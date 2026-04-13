@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\LearningCorner;
@@ -111,6 +112,27 @@ public function sertifikats()
     return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
 }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+
+            if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+                Storage::disk('public')->delete($user->background_url);
+            }
+
+            $user->sertifikats()->get()->each->delete();
+            $user->learning_corners()->get()->each->delete();
+            $user->assignedTasks()->delete();
+            $user->keahlianTambahan()->detach();
+            $user->memberProjects()->detach();
+
+            $projects = $user->projects()->get()->merge($user->leadingProjects()->get())->unique('id');
+            $projects->each->delete();
+        });
+    }
 
 
     /**

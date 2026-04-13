@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Sertifikat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ImageConversionService;
 
 class SertifikatController extends Controller
 {
@@ -36,13 +37,11 @@ class SertifikatController extends Controller
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
             'tanggal_terbit' => 'required|date',
-            'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
+            'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         if ($request->hasFile('link_sertifikat')) {
-            $path = $request->file('link_sertifikat')
-                ->store('sertifikat', 'public');
-            $validated['link_sertifikat'] = $path;
+            $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         }
 
         Sertifikat::create([
@@ -76,7 +75,7 @@ class SertifikatController extends Controller
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
             'tanggal_terbit' => 'required|date',
-            'link_sertifikat' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
+            'link_sertifikat' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         if ($request->hasFile('link_sertifikat')) {
@@ -90,10 +89,7 @@ class SertifikatController extends Controller
                 Storage::disk('public')->delete($sertifikat->link_sertifikat);
             }
 
-            $path = $request->file('link_sertifikat')
-                ->store('sertifikat', 'public');
-
-            $validated['link_sertifikat'] = $path;
+            $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         } else {
 
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;

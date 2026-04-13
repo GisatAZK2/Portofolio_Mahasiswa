@@ -260,7 +260,7 @@ class ProjekController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
             'link_project' => 'nullable|url|max:255',
-            'deskripsi' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
             'link_github' => 'nullable|url|max:500',
             'link_video' => 'nullable|url|max:500',
             'leader' => 'nullable|exists:users,id',

@@ -20,4 +20,11 @@ class Angkatan extends Model
     {
         return $this->hasMany(User::class, 'id_angkatan', 'id');
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Angkatan $angkatan) {
+            $angkatan->mahasiswa()->get()->each->delete();
+        });
+    }
 }

@@ -15,4 +15,10 @@ class Keahlian extends Model
         return $this->hasMany(User::class, 'id_keahlian');
     }
     
+    protected static function booted(): void
+    {
+        static::deleting(function (Keahlian $keahlian) {
+            $keahlian->users()->get()->each->delete();
+        });
+    }
 }

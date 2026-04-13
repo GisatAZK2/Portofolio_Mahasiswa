@@ -14,4 +14,11 @@ class Jurusan extends Model
     {
         return $this->hasMany(User::class, 'id_jurusan');
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Jurusan $jurusan) {
+            $jurusan->users()->get()->each->delete();
+        });
+    }
 }

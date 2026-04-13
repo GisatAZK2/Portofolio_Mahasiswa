@@ -8,6 +8,8 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ImageConversionService;
+
 
 class LearningCornerController extends Controller
 {
@@ -71,7 +73,7 @@ class LearningCornerController extends Controller
                 ];
 
                 if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
-                    $path = $request->file("items.$index.file")->store('learning-corner/images', 'public');
+                    $path = ImageConversionService::storeWebp($request->file("items.$index.file"), 'learning-corner/images');
                     $processed['content'] = $path;
                 }
 
@@ -136,7 +138,7 @@ class LearningCornerController extends Controller
                     if (!empty($item['content']) && Storage::disk('public')->exists($item['content'])) {
                         Storage::disk('public')->delete($item['content']);
                     }
-                    $path = $request->file("items.$idx.image_file")->store('learning-corner/images', 'public');
+                    $path = ImageConversionService::storeWebp($request->file("items.$idx.image_file"), 'learning-corner/images');
                     $processed['content'] = $path;
                 }
 

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use App\Services\ImageConversionService;
 
 class UserController extends Controller
 {
@@ -62,14 +63,13 @@ class UserController extends Controller
             'id_jurusan' => ['required', 'exists:jurusan,id_jurusan'],
             'id_keahlian' => ['required', 'exists:keahlian,id_keahlian'],
             'id_angkatan' => ['required', 'exists:angkatan,id'],
-            'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048']
+            'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048']
         ]);
 
         $validated['role'] = 'mahasiswa';
 
         if ($request->hasFile('photo_profile')) {
-            $path = $request->file('photo_profile')->store('photos', 'public');
-            $validated['photo_profile'] = $path;
+            $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
         }
 
         $validated['password'] = Hash::make($validated['password']);
@@ -291,7 +291,7 @@ class UserController extends Controller
             if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
                 Storage::disk('public')->delete($user->photo_profile);
             }
-            $path = $request->file('photo_profile')->store('photos', 'public');
+            $path = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
             $user->update(['photo_profile' => $path]);
 
             return back()->with('success', 'Foto profil berhasil diperbarui!');
@@ -310,7 +310,7 @@ class UserController extends Controller
             'deskripsi' => ['nullable', 'string', 'max:1500'],
             'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
             'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-            'background_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'background_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
             'id_keahlian_tambahan' => ['nullable', 'exists:keahlian,id_keahlian'],
         ];
 
@@ -325,7 +325,7 @@ class UserController extends Controller
             if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
                 Storage::disk('public')->delete($user->background_url);
             }
-            $validated['background_url'] = $request->file('background_url')->store('covers', 'public');
+            $validated['background_url'] = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
         }
 
         // Handle upload photo
@@ -333,7 +333,7 @@ class UserController extends Controller
             if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
                 Storage::disk('public')->delete($user->photo_profile);
             }
-            $validated['photo_profile'] = $request->file('photo_profile')->store('photos', 'public');
+            $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
         }
 
         // Handle password
