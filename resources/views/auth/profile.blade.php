@@ -451,6 +451,55 @@
                                 </div>
                             </div>
 
+
+                            <!-- Video Perkenalan Diri -->
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group sm:col-span-2"
+                                onclick="toggleEdit('video')">
+
+                                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <rect x="3" y="6" width="18" height="12" rx="4" stroke-width="2"/>
+                                        <polygon points="10,9 10,15 15,12" stroke-width="2"/>
+                                    </svg>
+                                    Video Perkenalan
+                                </p>
+
+                                <!-- DISPLAY MODE -->
+                                <div class="flex items-center justify-between">
+                                    <p id="video-display" class="text-base text-gray-800 dark:text-gray-200 break-all flex-1">
+                                        {{ $user->video_url ?? 'Klik untuk menambahkan video...' }}
+                                    </p>
+
+                                    <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition ml-2"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                    </svg>
+                                </div>
+
+                                <!-- INPUT MODE -->
+                                <input 
+                                    type="text"
+                                    id="video-input"
+                                    name="video_url"
+                                    value="{{ old('video_url', $user->video_url) }}"
+                                    placeholder="https://www.youtube.com/watch?v=xxxx"
+                                    class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent mt-2"
+                                    oninput="updatePreview()"
+                                >
+
+                                <!-- PREVIEW -->
+                                <div id="videoPreview" class="hidden mt-4">
+                                    <iframe 
+                                        id="previewFrame"
+                                        class="w-full h-64 rounded-xl"
+                                        src=""
+                                        frameborder="0"
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+
                             <!-- Status Akun -->
                             <div
                                 class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
@@ -1150,5 +1199,39 @@
             }
         });
     </script>
+    <!-- Vid Prev-->
+    <script>
+        function convertToEmbed(url) {
+            if (!url) return '';
 
+            if (url.includes('watch?v=')) {
+                return url.replace('watch?v=', 'embed/');
+            }
+
+            if (url.includes('youtu.be/')) {
+                return url.replace('youtu.be/', 'youtube.com/embed/');
+            }
+
+            return url;
+        }
+
+        function updatePreview() {
+            const input = document.getElementById('video-input').value;
+            const preview = document.getElementById('videoPreview');
+            const iframe = document.getElementById('previewFrame');
+
+            const embedUrl = convertToEmbed(input);
+
+            if (embedUrl) {
+                iframe.src = embedUrl;
+                preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+                iframe.src = '';
+            }
+        }
+
+        // Auto load kalau sudah ada value (edit mode)
+        document.addEventListener('DOMContentLoaded', updatePreview);
+    </script>
 @endsection

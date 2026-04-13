@@ -312,6 +312,7 @@ class UserController extends Controller
             'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'background_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
             'id_keahlian_tambahan' => ['nullable', 'exists:keahlian,id_keahlian'],
+            'video_url' => ['nullable', 'url'],
         ];
 
         if ($request->filled('password')) {

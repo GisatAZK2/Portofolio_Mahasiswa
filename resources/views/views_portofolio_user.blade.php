@@ -131,11 +131,19 @@
                                 {{ !empty(trim($user->deskripsi)) ? $user->deskripsi : 'Tidak ada deskripsi.' }}
                             </p>
 
-                            <a href="https://www.polmind.ac.id/" target="_blank">
-                                <p class="mt-4 text-xs text-blue-600 font-medium cursor-pointer hover:underline">
-                                    Politeknik Mitra Industri
-                                </p>
-                            </a>
+                            @if($user->video_url)
+                                <div class="mt-4">
+                                    <div class="relative w-full h-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                                        <iframe 
+                                            class="w-full h-full"
+                                            src="{{ str_replace('watch?v=', 'embed/', str_replace('youtu.be/', 'youtube.com/embed/', $user->video_url)) }}"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
