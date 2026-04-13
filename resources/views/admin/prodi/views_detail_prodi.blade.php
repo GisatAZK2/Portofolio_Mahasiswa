@@ -1,13 +1,13 @@
 @extends('Layout.Layout')
-@section('title', 'Detail Jurusan - ' . ($jurusan->nama_jurusan ?? ''))
+@section('title', 'Detail Prodi - ' . ($prodi->nama_jurusan ?? ''))
 
 @section('content')
     <div class="max-w-7xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-8">
 
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <h2 class="text-2xl md:text-3xl font-bold dark:text-white">
-                Detail Jurusan
+            <h2 class="text-2xl md:text-3xl font-bold dark:text-white" data-translate="detail_prodi_title" data-translate-page="admin">
+                Detail Prodi
             </h2>
             <a href="{{ route('admin.prodi.index') }}"
                 class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-colors">
@@ -16,15 +16,15 @@
             </a>
         </div>
 
-        <!-- Info Jurusan -->
+        <!-- Info Prodi -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
             <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-3xl">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Nama Jurusan</p>
-                <p class="text-xl font-semibold dark:text-white mt-2">{{ $jurusan->nama_jurusan }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="nama_prodi_label" data-translate-page="admin">Nama Prodi</p>
+                <p class="text-xl font-semibold dark:text-white mt-2">{{ $prodi->nama_jurusan }}</p>
             </div>
             <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-3xl">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Total Mahasiswa</p>
-                <p class="text-4xl font-bold dark:text-white mt-2">{{ $jurusan->users_count ?? 0 }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="total_mahasiswa" data-translate-page="admin">Total Mahasiswa</p>
+                <p class="text-4xl font-bold dark:text-white mt-2">{{ $prodi->users_count ?? 0 }}</p>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
 
             <!-- Statistik Cards -->
             <div class="xl:col-span-5">
-                <h3 class="text-xl font-semibold dark:text-white mb-6">Statistik Mahasiswa</h3>
+                <h3 class="text-xl font-semibold dark:text-white mb-6" data-translate="statistik_mahasiswa" data-translate-page="admin">Statistik Mahasiswa</h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
 
@@ -41,7 +41,7 @@
                     <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-6 rounded-3xl text-center">
                         <i class="fas fa-users text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Total Mahasiswa</p>
-                        <p class="text-4xl font-bold dark:text-white mt-2">{{ $jurusan->users_count ?? 0 }}</p>
+                        <p class="text-4xl font-bold dark:text-white mt-2">{{ $prodi->users_count ?? 0 }}</p>
                     </div>
 
                     <!-- Aktif -->
@@ -49,7 +49,7 @@
                         <i class="fas fa-user-check text-4xl text-green-600 dark:text-green-400 mb-4"></i>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Aktif</p>
                         <p class="text-4xl font-bold text-green-600 dark:text-green-400 mt-2">
-                            {{ $jurusan->users->where('is_active', true)->count() }}
+                            {{ $prodi->users->where('is_active', true)->count() }}
                         </p>
                     </div>
 
@@ -58,7 +58,7 @@
                         <i class="fas fa-user-times text-4xl text-red-600 dark:text-red-400 mb-4"></i>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Tidak Aktif</p>
                         <p class="text-4xl font-bold text-red-600 dark:text-red-400 mt-2">
-                            {{ $jurusan->users->where('is_active', false)->count() }}
+                            {{ $prodi->users->where('is_active', false)->count() }}
                         </p>
                     </div>
 
@@ -67,7 +67,7 @@
 
             <!-- Grafik -->
             <div class="xl:col-span-7 bg-white dark:bg-gray-700 p-6 md:p-8 rounded-3xl border border-gray-200 dark:border-gray-600">
-                <h3 class="text-lg font-semibold dark:text-white mb-6">Grafik Status Mahasiswa</h3>
+                <h3 class="text-lg font-semibold dark:text-white mb-6" data-translate="grafik_status_mahasiswa" data-translate-page="admin">Grafik Status Mahasiswa</h3>
                 <div class="relative" style="height: 320px;">
                     <canvas id="statusChart"></canvas>
                 </div>
@@ -76,7 +76,7 @@
 
         <!-- Daftar Mahasiswa -->
         <div>
-            <h3 class="text-xl font-semibold dark:text-white mb-6">Daftar Mahasiswa</h3>
+            <h3 class="text-xl font-semibold dark:text-white mb-6" data-translate="daftar_mahasiswa" data-translate-page="admin">Daftar Mahasiswa</h3>
 
             <!-- Filter Section -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 md:p-6 mb-6 border border-black dark:border-gray-700">
@@ -86,7 +86,7 @@
                 <div class="mb-4">
                     <div class="relative">
                         <input type="text" id="search-mahasiswa" placeholder="Cari nama mahasiswa..."
-                            class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" data-translate-placeholder="cari_nama_mahasiswa" data-translate-page="admin">
                         <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -111,7 +111,7 @@
                 <span>Menampilkan <strong id="results-count">0</strong> mahasiswa</span>
             </div>
 
-            @if($jurusan->users->count() > 0)
+            @if($prodi->users->count() > 0)
                 <div class="overflow-x-auto rounded-xl border border-black dark:border-gray-700">
                     <table id="mahasiswa-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-blue-600 dark:bg-blue-700">
@@ -139,7 +139,7 @@
                 </div>
             @else
                 <div class="text-center py-16 bg-gray-50 dark:bg-gray-700 rounded-3xl">
-                    <p class="text-gray-500 dark:text-gray-400">Tidak ada mahasiswa dalam jurusan ini.</p>
+                    <p class="text-gray-500 dark:text-gray-400" data-translate="tidak_ada_mahasiswa_prodi" data-translate-page="admin">Tidak ada mahasiswa dalam prodi ini.</p>
                 </div>
             @endif
         </div>
@@ -149,7 +149,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
-        const allMahasiswa = {!! json_encode($jurusan->users->map(function ($m) {
+        const allMahasiswa = {!! json_encode($prodi->users->map(function ($m) {
             return [
                 'id' => $m->id,
                 'nama_mahasiswa' => $m->nama_mahasiswa,
@@ -161,8 +161,8 @@
         let filteredMahasiswa = [];
 
         document.addEventListener("DOMContentLoaded", () => {
-            const aktif = {{ $jurusan->users->where('is_active', true)->count() }};
-            const tidakAktif = {{ $jurusan->users->where('is_active', false)->count() }};
+            const aktif = {{ $prodi->users->where('is_active', true)->count() }};
+            const tidakAktif = {{ $prodi->users->where('is_active', false)->count() }};
 
             new Chart(document.getElementById('statusChart'), {
                 type: 'doughnut',

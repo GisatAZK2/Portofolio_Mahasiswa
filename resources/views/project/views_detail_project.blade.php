@@ -393,31 +393,23 @@
                         @endphp
 
                         @if($video)
-                            @php
-                                $embed = null;
-                                if (str_contains($video, 'watch?v=')) {
-                                    $embed = str_replace('watch?v=', 'embed/', $video);
-                                } elseif (str_contains($video, 'youtu.be/')) {
-                                    $embed = str_replace('youtu.be/', 'youtube.com/embed/', $video);
-                                }
-                            @endphp
-
-                            @if($embed)
-                                <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
-                                    <h3
-                                        class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                        Preview Video
-                                    </h3>
-                                    <div class="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-600">
-                                        <iframe class="w-full aspect-video" src="{{ $embed }}" frameborder="0" allowfullscreen>
-                                        </iframe>
-                                    </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
+                                <h3
+                                    class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    Preview Video
+                                </h3>
+                                <div class="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-600">
+                                    @include('components.video_preview', [
+                                        'link_video' => $video,
+                                        'alt' => 'Video ' . $project->nama_project,
+                                        'class' => 'w-full'
+                                    ])
                                 </div>
-                            @endif
+                            </div>
                         @endif
                     </div>
                 </div>

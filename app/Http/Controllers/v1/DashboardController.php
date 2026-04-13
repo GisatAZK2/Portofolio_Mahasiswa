@@ -255,7 +255,7 @@ class DashboardController extends Controller
         $isOwner = Auth::check() && Auth::id() === $user->id;
         $isOwner = Auth::check() && Auth::id() === $user->id;
 
-        $projectTab = $request->get('project_tab', 'now');
+        $projectTab = $request->get('project_tab', 'completed');
         $today = Carbon::today();
 
         $projectsQuery = Project::with(['owner', 'leader', 'members'])

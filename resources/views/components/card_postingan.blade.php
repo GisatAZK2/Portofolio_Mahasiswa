@@ -271,16 +271,11 @@
 
             <!-- YouTube Video -->
             @if($youtube_id)
-                <div
-                    class="rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-3 sm:mt-4">
-                    <div class="aspect-video">
-                        <iframe class="w-full h-full"
-                            src="https://www.youtube.com/embed/{{ $youtube_id }}?rel=0&modestbranding=1"
-                            title="Video {{ $nama_project }}" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                </div>
+                @include('components.video_preview', [
+                    'link_video' => $link_video,
+                    'alt' => 'Video ' . $nama_project,
+                    'class' => 'rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-3 sm:mt-4'
+                ])
             @endif
 
             <!-- Links -->
