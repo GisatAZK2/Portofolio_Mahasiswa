@@ -447,22 +447,27 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             const user = allUsers.find(u => u.id == userId);
             if (!user) return;
 
+            // Hanya Owner yang tidak boleh duplikat
             if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id != userId) {
-                alert('Owner sudah dipilih. Hapus owner yang ada terlebih dahulu.');
+                alert('Owner sudah dipilih. Hapus owner yang ada terlebih dahulu jika ingin mengganti.');
                 selectElement.value = '';
                 return;
             }
 
+            // Leader boleh diganti (tidak wajib)
             if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id != userId) {
-                alert('Leader sudah dipilih. Hapus leader yang ada terlebih dahulu.');
-                selectElement.value = '';
-                return;
+                if (!confirm('Leader sudah ada. Ganti leader?')) {
+                    selectElement.value = '';
+                    return;
+                }
             }
 
+            // Reset dulu user ini dari semua role
             if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
 
+            // Assign role baru
             if (role === 'owner') {
                 selectedUsers.owner = user;
             } else if (role === 'leader') {
@@ -474,12 +479,11 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateFormInputs();
             renderSelectedUsers();
             loadUsersToModal();
-            // Refresh task UI
             updateTaskSectionVisibility();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
         }
-
+        
         function confirmUserSelection() {
             updateFormInputs();
             renderSelectedUsers();
@@ -694,11 +698,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 event.preventDefault();
                 return;
             }
-            if (!selectedUsers.leader) {
-                alert('Leader harus dipilih.');
-                event.preventDefault();
-                return;
-            }
+         
             updateFormInputs();
             cleanupInvalidTaskRows();
             updateTaskUserOptions();
