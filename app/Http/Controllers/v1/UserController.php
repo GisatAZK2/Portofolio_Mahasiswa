@@ -384,14 +384,6 @@ class UserController extends Controller
             $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
                 ->findOrFail($id);
 
-            // Cek apakah boleh dihapus
-            if (!in_array($keahlianTambahan->status_pengajuan, ['Sedang Di Ajukan', 'Di Tolak'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Hanya dapat menghapus keahlian dengan status Diajukan atau Ditolak'
-                ], 403);
-            }
-
             $keahlianTambahan->delete();
 
             return response()->json([

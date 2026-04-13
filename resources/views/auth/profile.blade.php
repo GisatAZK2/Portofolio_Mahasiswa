@@ -315,7 +315,11 @@
                                     class="hidden w-full text-base font-medium dark:bg-gray-700 dark:text-white border-b border-indigo-500 focus:outline-none bg-white">
                                     <option class="dark:bg-gray-700 dark:text-white" value="">-- Pilih Keahlian --</option>
                                     @foreach($keahlians ?? [] as $keahlian)
-                                        <option class="dark:bg-gray-700 dark:text-white" value="{{ $keahlian->id_keahlian }}" {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}>
+                                        <option class="dark:bg-gray-700 dark:text-white"
+                                            value="{{ $keahlian->id_keahlian }}"
+                                            {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}
+                                            :disabled="isKeahlianSelectedInTambahan({{ $keahlian->id_keahlian }}) && {{ Auth::user()->id_keahlian }} != {{ $keahlian->id_keahlian }}"
+                                            :class="isKeahlianSelectedInTambahan({{ $keahlian->id_keahlian }}) && {{ Auth::user()->id_keahlian }} != {{ $keahlian->id_keahlian }} ? 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-gray-800' : ''">
                                             {{ $keahlian->nama_keahlian }}
                                         </option>
                                     @endforeach
@@ -386,7 +390,6 @@
 
                                                 <!-- Tombol Hapus (hanya jika status Diajukan atau Ditolak) -->
                                                 <button type="button"
-                                                    x-show="item.status_pengajuan === 'Sedang Di Ajukan' || item.status_pengajuan === 'Di Tolak'"
                                                     @click="deleteKeahlian(item.id, index)"
                                                     class="ml-2 p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition"
                                                     :disabled="loading">
@@ -421,30 +424,16 @@
                                     <form action="{{ route('keahlian-tambahan.store') }}" method="POST">
                                         @csrf
                                         <div class="flex flex-col sm:flex-row gap-3">
-                                            <select name="id_keahlian_tambahan"
+                                            <select x-model="selectedKeahlian" name="id_keahlian_tambahan"
                                                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white">
                                                 <option value="">-- Pilih Keahlian Tambahan --</option>
-
-                                                @foreach($keahlians as $keahlian)
-                                                    @php
-                                                        $isMainSkill = (Auth::user()->id_keahlian == $keahlian->id_keahlian);
-                                                        $isInTambahan = collect($user->keahlianTambahan ?? [])->contains('id_keahlian', $keahlian->id_keahlian);
-                                                        $isDisabled = $isMainSkill || $isInTambahan;
-                                                    @endphp
-
-                                                    <option value="{{ $keahlian->id_keahlian }}" {{ $isDisabled ? 'disabled' : '' }}
-                                                        class="{{ $isDisabled ? 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-gray-800' : '' }}">
-
-                                                        {{ $keahlian->nama_keahlian }}
-
-                                                        @if($isMainSkill)
-                                                            (Keahlian Utama)
-                                                        @elseif($isInTambahan)
-                                                            (Sudah Diajukan)
-                                                        @endif
-
+                                                <template x-for="keahlian in keahlianOptions" :key="keahlian.id_keahlian">
+                                                    <option :value="keahlian.id_keahlian"
+                                                        :disabled="isKeahlianDisabled(keahlian)"
+                                                        :class="isKeahlianDisabled(keahlian) ? 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-gray-800' : ''"
+                                                        x-text="keahlian.nama_keahlian + (keahlian.id_keahlian === mainSkillId ? ' (Keahlian Utama)' : isKeahlianExists(keahlian.id_keahlian) ? ' (Sudah Diajukan)' : '')">
                                                     </option>
-                                                @endforeach
+                                                </template>
                                             </select>
 
                                             <button type="submit"
@@ -1033,8 +1022,10 @@
     <script>
         function keahlianTambahan() {
             return {
+                keahlianOptions: @json($keahlians),
+                mainSkillId: @json(Auth::user()->id_keahlian),
                 keahlianList: @json($user->keahlianTambahan ?? []),
-                selectedKeahlian: '',
+                selectedKeahlian: @json(old('id_keahlian_tambahan', '')),
                 loading: false,
                 showAlert: false,
                 alertMessage: '',
@@ -1042,6 +1033,13 @@
 
                 get keahlianCount() {
                     return this.keahlianList ? this.keahlianList.length : 0;
+                },
+                isKeahlianDisabled(keahlian) {
+                    return keahlian.id_keahlian === this.mainSkillId || this.isKeahlianExists(keahlian.id_keahlian);
+                },
+
+                isKeahlianSelectedInTambahan(id) {
+                    return this.keahlianList.some(item => item.id_keahlian == id);
                 },
 
                 init() {
