@@ -41,88 +41,6 @@
             <form method="POST" action="{{ route('admin.projects.store') }}" class="space-y-6 md:space-y-7"
                 id="projectForm">
                 @csrf
-
-                <!-- Filter Section -->
-                <div
-                    class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4" data-translate="filter"
-                        data-translate-page="dosen_add_pjt">Filter Mahasiswa</h3>
-
-                    <div class="mb-5">
-                        <div class="relative">
-                            <input type="text" id="search-input" placeholder="Cari nama mahasiswa..."
-                                value="{{ $search ?? '' }}"
-                                class="w-full pl-11 pr-4 py-3.5 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm md:text-base">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <label for="angkatan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                                data-translate="agkt" data-translate-page="dosen_add_pjt">Angkatan</label>
-                            <select id="angkatan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option value="" data-translate="all_agkt" data-translate-page="dosen_add_pjt">Semua
-                                    Angkatan</option>
-                                @foreach($angkatans as $angk)
-                                    <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
-                                        {{ $angk->nama_angkatan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label for="jurusan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="jrs"
-                                data-translate-page="dosen_add_pjt">Jurusan</label>
-                            <select id="jurusan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option data-translate="all_jrs" data-translate-page="dosen_add_pjt" value="">Semua Jurusan
-                                </option>
-                                @foreach($jurusans as $jrs)
-                                    <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
-                                        {{ $jrs->nama_jurusan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label for="keahlian-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="khl"
-                                data-translate-page="dosen_add_pjt">Keahlian</label>
-                            <select id="keahlian-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 outline-none transition text-sm">
-                                <option data-translate="all_khl" data-translate-page="dosen_add_pjt" value="">Semua Keahlian
-                                </option>
-                                @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>{{ $keahlianItem->nama_keahlian }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    
-
-                    <div class="flex flex-col sm:flex-row gap-3 justify-end mt-6">
-                        <a href="{{ route('admin.projects.create') }}"
-                            class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center">
-                            Reset Filter
-                        </a>
-                        <button type="button" onclick="applyFilters()" data-translate="trp_filter"
-                            data-translate-page="dosen_add_pjt"
-                            class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">
-                            Terapkan Filter
-                        </button>
-                    </div>
-                </div>
-
                 <!-- User Selection Section -->
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
@@ -180,7 +98,7 @@
                 </div>
 
                 <!-- Tambah Tugas -->
-                <div>
+                <div id="task-section" class="hidden">
                     <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt"
                         class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Tugas (opsional)
@@ -311,13 +229,13 @@
                             <select id="modal-jurusan" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
                                 <option value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
-                                    <option value="{{ $jrs->id }}">{{ $jrs->nama_jurusan }}</option>
+                                    <option value="{{ $jrs->id_jurusan }}">{{ $jrs->nama_jurusan }}</option>
                                 @endforeach
                             </select>
                             <select id="modal-keahlian" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
                                 <option value="">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id }}">{{ $keahlianItem->nama_keahlian }}</option>
+                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -350,6 +268,41 @@
         let selectedUsers = { owner: null, leader: null, members: [] };
         let taskIndex = 0;
 
+        function updateSelectedUsersBadge() {
+            const badge = document.getElementById('selected-users-badge');
+            if (!badge) return;
+
+            let count = 0;
+            if (selectedUsers.owner) count++;
+            if (selectedUsers.leader) count++;
+            count += selectedUsers.members.length;
+
+            if (count === 0) {
+                badge.innerHTML = '';
+            } else {
+                badge.innerHTML = `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
+            }
+        }
+
+        function updateTaskSectionVisibility() {
+            const taskSection = document.getElementById('task-section');
+            if (!taskSection) return;
+
+            let hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
+
+            if (hasUsers) {
+                taskSection.classList.remove('hidden');
+            } else {
+                taskSection.classList.add('hidden');
+                // Clear tasks saat tidak ada users
+                const container = document.getElementById('tasks-container');
+                if (container) {
+                    container.innerHTML = '';
+                    taskIndex = 0;
+                }
+            }
+        }
+
         function openUserModal() {
             document.getElementById('userModal').classList.remove('hidden');
             loadUsersToModal();
@@ -358,17 +311,36 @@
         function closeUserModal() {
             document.getElementById('userModal').classList.add('hidden');
         }
+        
 
         function filterUsersForModal() {
-            return allUsers.filter(user => {
-                const keyword = currentModalFilters.search.toLowerCase();
-                const matchesSearch = !keyword || user.nama_mahasiswa.toLowerCase().includes(keyword) || user.email.toLowerCase().includes(keyword);
-                const matchesAngkatan = !currentModalFilters.angkatan || String(user.id_angkatan) === String(currentModalFilters.angkatan);
-                const matchesJurusan = !currentModalFilters.jurusan || String(user.id_jurusan) === String(currentModalFilters.jurusan);
-                const matchesKeahlian = !currentModalFilters.keahlian || String(user.id_keahlian) === String(currentModalFilters.keahlian);
-                return matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
-            });
-        }
+            console.log('Filtering with:', currentModalFilters);
+console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUsers[0]?.id_jurusan);
+    return allUsers.filter(user => {
+        const keyword = currentModalFilters.search.toLowerCase().trim();
+
+        // Search (nama atau email)
+        const matchesSearch = !keyword || 
+            user.nama_mahasiswa.toLowerCase().includes(keyword) || 
+            (user.email && user.email.toLowerCase().includes(keyword));
+
+        // Angkatan
+        const matchesAngkatan = !currentModalFilters.angkatan || 
+            String(user.id_angkatan) === String(currentModalFilters.angkatan);
+
+        // Jurusan - lebih aman (bisa dari relation atau field langsung)
+        const userJurusanId = user.jurusan?.id_jurusan ?? user.id_jurusan;
+        const matchesJurusan = !currentModalFilters.jurusan || 
+            String(userJurusanId) === String(currentModalFilters.jurusan);
+
+        // Keahlian - lebih aman
+        const userKeahlianId = user.keahlian?.id_keahlian ?? user.id_keahlian;
+        const matchesKeahlian = !currentModalFilters.keahlian || 
+            String(userKeahlianId) === String(currentModalFilters.keahlian);
+
+        return matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
+    });
+}
 
         function loadUsersToModal() {
             const userList = document.getElementById('modal-user-list');
@@ -448,11 +420,19 @@
             updateFormInputs();
             renderSelectedUsers();
             loadUsersToModal();
+            // Refresh task UI
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
         }
 
         function confirmUserSelection() {
             updateFormInputs();
             renderSelectedUsers();
+            // Refresh task UI
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
             closeUserModal();
         }
 
@@ -516,6 +496,10 @@
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
             updateFormInputs();
             renderSelectedUsers();
+            // Refresh task UI
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
         }
 
         function loadSelectedUsersFromForm() {
@@ -670,6 +654,8 @@
             loadSelectedUsersFromForm();
             renderSelectedUsers();
             setupModalFilters();
+            updateTaskSectionVisibility();
+            updateSelectedUsersBadge();
             initializeTaskRows(@json(old('tasks', [])));
             document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
         });

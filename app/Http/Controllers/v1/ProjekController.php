@@ -561,12 +561,19 @@ class ProjekController extends Controller
             }
         }
 
-        $timelineContribution = min(10, max(0, $timelinePercent * 0.1));
         $taskTotalCount = $project->tasks->count();
         $taskDoneCount = $project->tasks->where('is_done', true)->count();
-        $taskRatio = $taskTotalCount ? ($taskDoneCount / $taskTotalCount) * 100 : 0;
-        $taskContribution = round($taskRatio * 0.9);
-        $projectProgress = min(100, round($timelineContribution + $taskContribution));
+
+        if ($taskTotalCount === 0 || $taskDoneCount === 0) {
+            // Kalau tidak ada task atau tidak ada task yang selesai,
+            // progress tetap 0% meskipun timeline sudah berjalan.
+            $projectProgress = 0;
+        } else {
+            $timelineContribution = min(10, max(0, $timelinePercent * 0.1));
+            $taskRatio = ($taskDoneCount / $taskTotalCount) * 100;
+            $taskContribution = round($taskRatio * 0.9);
+            $projectProgress = min(100, round($timelineContribution + $taskContribution));
+        }
 
         return view('project.views_detail_project', compact(
             'project',
