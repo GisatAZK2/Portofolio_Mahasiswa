@@ -342,13 +342,19 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-end gap-4 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('dosen.sertifikat.index') }}"
-                        class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition">
+                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white rounded-lg transition duration-200 font-medium shadow-sm hover:shadow-md dark:bg-gray-600 dark:hover:bg-gray-700 dark:active:bg-gray-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
                         <span data-translate="cancel" data-translate-page="dosen_stk_add">Batal</span>
                     </a>
                     <button type="submit"
-                        class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
+                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg transition duration-200 font-medium shadow-md hover:shadow-lg dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:active:bg-indigo-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
                         <span data-translate="sv_stk" data-translate-page="dosen_stk_add">Simpan Sertifikat</span>
                     </button>
                 </div>

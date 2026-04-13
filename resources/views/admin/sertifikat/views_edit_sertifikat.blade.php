@@ -210,16 +210,22 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <div class="mt-8 flex justify-end space-x-4">
+                    <div class="mt-8 flex justify-end gap-4">
                         <a data-translate="cancel" data-translate-page="stk_admin_edit"
                             href="{{ route('admin.sertifikat.index') }}"
-                            class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition duration-200">
-                            Batal
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white rounded-lg transition duration-200 font-medium shadow-sm hover:shadow-md">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span>Batal</span>
                         </a>
                         <button type="submit"
-                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200">
-                            <i class="fas fa-save mr-2"></i><span data-translate="upd_stk"
-                                data-translate-page="stk_admin_edit">Update Sertifikat</span>
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg transition duration-200 font-medium shadow-md hover:shadow-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span data-translate="upd_stk" data-translate-page="stk_admin_edit">Update Sertifikat</span>
                         </button>
                     </div>
                 </form>

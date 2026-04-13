@@ -35,11 +35,9 @@
 
                         @if ($canEdit)
                             <a href="{{ route('project.edit', $project->id) }}"
-                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5l3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition shadow-md hover:shadow-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>
                                 </svg>
                                 <span data-translate="edit_project" data-translate-page="pjt_detail">Edit</span>
                             </a>
@@ -197,6 +195,89 @@
                                     @endforelse
                                 </div>
                             </div>
+
+                            <!-- Links -->
+                            <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
+                                <h3
+                                    class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                    </svg>
+                                    <span data-translate="link_pjt" data-translate-page="pjt_detail">Link Terkait</span>
+                                </h3>
+
+                                <div class="space-y-3">
+                                    @if(!empty($project->isi_content['link_project']))
+                                        <a href="{{ $project->isi_content['link_project'] }}" target="_blank"
+                                            class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-600 transition group">
+                                            <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+                                                <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p
+                                                    class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                                                    Website Proyek</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                    {{ $project->isi_content['link_project'] }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    @endif
+
+                                    @if(!empty($project->isi_content['link_github']))
+                                        <a href="{{ $project->isi_content['link_github'] }}" target="_blank"
+                                            class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition group">
+                                            <div class="p-2 bg-gray-800 dark:bg-gray-700 rounded-lg">
+                                                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path
+                                                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p
+                                                    class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300">
+                                                    GitHub Repository</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                    {{ $project->isi_content['link_github'] }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    @endif
+
+                                    @if(!empty($project->isi_content['link_video']))
+                                        <a href="{{ $project->isi_content['link_video'] }}" target="_blank"
+                                            class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-red-300 dark:hover:border-red-600 transition group">
+                                            <div class="p-2 bg-red-100 dark:bg-red-900 rounded-lg">
+                                                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p
+                                                    class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400">
+                                                    Video Demo</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                    {{ $project->isi_content['link_video'] }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    @endif
+
+                                    @if(empty($project->isi_content['link_project']) && empty($project->isi_content['link_github']) && empty($project->isi_content['link_video']))
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4" data-translate="empty_link" data-translate-page="pjt_detail">Belum ada link
+                                            terkait</p>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -301,89 +382,6 @@
                                 @endif
                             </div>
                         @endif
-
-                        <!-- Links -->
-                        <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
-                            <h3
-                                class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                </svg>
-                                <span data-translate="link_pjt" data-translate-page="pjt_detail">Link Terkait</span>
-                            </h3>
-
-                            <div class="space-y-3">
-                                @if(!empty($project->isi_content['link_project']))
-                                    <a href="{{ $project->isi_content['link_project'] }}" target="_blank"
-                                        class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-600 transition group">
-                                        <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
-                                            <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p
-                                                class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                                                Website Proyek</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                                {{ $project->isi_content['link_project'] }}
-                                            </p>
-                                        </div>
-                                    </a>
-                                @endif
-
-                                @if(!empty($project->isi_content['link_github']))
-                                    <a href="{{ $project->isi_content['link_github'] }}" target="_blank"
-                                        class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition group">
-                                        <div class="p-2 bg-gray-800 dark:bg-gray-700 rounded-lg">
-                                            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                                <path
-                                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p
-                                                class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300">
-                                                GitHub Repository</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                                {{ $project->isi_content['link_github'] }}
-                                            </p>
-                                        </div>
-                                    </a>
-                                @endif
-
-                                @if(!empty($project->isi_content['link_video']))
-                                    <a href="{{ $project->isi_content['link_video'] }}" target="_blank"
-                                        class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-red-300 dark:hover:border-red-600 transition group">
-                                        <div class="p-2 bg-red-100 dark:bg-red-900 rounded-lg">
-                                            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p
-                                                class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400">
-                                                Video Demo</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                                {{ $project->isi_content['link_video'] }}
-                                            </p>
-                                        </div>
-                                    </a>
-                                @endif
-
-                                @if(empty($project->isi_content['link_project']) && empty($project->isi_content['link_github']) && empty($project->isi_content['link_video']))
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4" data-translate="empty_link" data-translate-page="pjt_detail">Belum ada link
-                                        terkait</p>
-                                @endif
-                            </div>
-                        </div>
 
                         <!-- Embed Box -->
                         @php
@@ -597,8 +595,11 @@
                                                 <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                                                     @unless(in_array(auth()->user()->role, ['admin', 'dosen']))
                                                         <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
-                                                            class="flex-1 text-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-                                                            Edit
+                                                            class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition text-sm font-medium shadow-sm hover:shadow-md">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>
+                                                            </svg>
+                                                            <span data-translate="edit" data-translate-page="pjt_detail">Edit</span>
                                                         </a>
                                                     @endunless
 
@@ -607,8 +608,11 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" data-translate="del" data-translate-page="pjt_detail"
-                                                            class="w-full px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium delete-btn">
-                                                            Hapus
+                                                            class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 active:bg-red-800 transition text-sm font-medium delete-btn shadow-sm hover:shadow-md">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                            </svg>
+                                                            <span data-translate="hapus" data-translate-page="pjt_detail">Hapus</span>
                                                         </button>
                                                     </form>
                                                 </div>
