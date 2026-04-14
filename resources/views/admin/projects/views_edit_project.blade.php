@@ -64,38 +64,6 @@
                 <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner', $project->id_mahasiswa) }}">
                 <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader', $project->leader_id) }}">
                 <input type="hidden" name="members" id="selected-members-ids" value="{{ old('members') ? implode(',', old('members')) : implode(',', $project->members->pluck('id')->toArray()) }}">
-                <!-- Collaborative Project Toggle -->
-                <div class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 md:p-5 rounded-2xl border border-gray-200 dark:border-gray-700 mb-4">
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200" data-translate="collab" data-translate-page="dosen_add_pjt">Mode Kolaboratif</h4>
-                        <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="desc_collab" data-translate-page="dosen_add_pjt">Off = project owner only, leader + member akan dihapus dan tugas otomatis disesuaikan.</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span id="collaborative-status" class="text-sm font-semibold text-green-600 dark:text-green-300">{{ old('is_collaborative', $project->is_collaborative ?? 1) ? 'On' : 'Off' }}</span>
-                        <button type="button" onclick="toggleCollaborativeMode()" id="collaborative-toggle" class="px-3 py-1 rounded-lg bg-indigo-600 text-white text-sm">Switch</button>
-                    </div>
-                </div>
-                <input type="hidden" name="is_collaborative" id="collaborative-input" value="{{ old('is_collaborative', $project->is_collaborative ?? 1) ? 1 : 0 }}">
-                <!-- Rekan Project -->
-                <div id="member-wrapper">
-                    <label data-translate="partner_project" data-translate-page="admin" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
-                        Tambah Rekan (opsional)
-                    </label>
-                    <div id="members-container" class="space-y-3">
-                        @php
-                            $oldMembers = old('members', $project->members->pluck('id')->toArray() ?? []);
-                        @endphp
-                        @if(count($oldMembers) > 0)
-                            @foreach($oldMembers as $memberId)
-                                <div class="member-item" data-member-id="{{ $memberId }}"></div>
-                            @endforeach
-                        @endif
-                    </div>
-                    <button type="button" onclick="addMemberSelect()"
-                            class="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium flex items-center gap-1">
-                        <span class="text-xl">+</span> <span data-translate="add_partner" data-translate-page="admin">Tambah Rekan</span>
-                    </button>
-                </div>
                 
                 <!-- Nama Project -->
                 <div>

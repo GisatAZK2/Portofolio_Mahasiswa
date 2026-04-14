@@ -11,13 +11,11 @@ use App\Models\Sertifikat;
 use App\Models\Keahlian;
 use App\Models\Jurusan;
 use App\Models\Angkatan;
-use App\Models\LearningCorner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\ImageConversionService;
 
@@ -39,23 +37,18 @@ class DosenController extends Controller
 
     private function createProjectTasks(Project $project, array $tasks)
     {
-        // Reload semua relasi biar fresh (IMPORTANT)
         $project = $project->fresh(['members']);
 
-        // Kumpulkan semua user ID yang diizinkan
         $allowedUserIds = collect();
 
-        // Owner
         if (!empty($project->id_mahasiswa)) {
             $allowedUserIds->push((int) $project->id_mahasiswa);
         }
 
-        // Leader
         if (!empty($project->leader_id)) {
             $allowedUserIds->push((int) $project->leader_id);
         }
 
-        // Members
         $allowedUserIds = $allowedUserIds
             ->merge(
                 $project->members->pluck('id')->map(fn($id) => (int) $id)
@@ -81,22 +74,6 @@ class DosenController extends Controller
                 continue;
             }
 
-            // 🔥 DEBUG OPTIONAL (kalau mau cek)
-            // Log::info('Checking task user', [
-            //     'task_user_id' => $taskUserId,
-            //     'allowed' => $allowedUserIds
-            // ]);
-
-            if (!in_array($taskUserId, $allowedUserIds, true)) {
-                Log::warning('Task user not allowed for project', [
-                    'project_id' => $project->id,
-                    'task_user_id' => $taskUserId,
-                    'allowed_users' => $allowedUserIds
-                ]);
-                continue;
-            }
-
-            // UPDATE
             if ($taskId) {
                 $existingTask = ProjectTask::where('project_id', $project->id)
                     ->where('id', $taskId)
@@ -113,7 +90,6 @@ class DosenController extends Controller
                 }
             }
 
-            // CREATE
             $newTask = ProjectTask::create([
                 'project_id' => $project->id,
                 'user_id' => $taskUserId,
@@ -131,7 +107,6 @@ class DosenController extends Controller
     {
         $dosen = Auth::user();
 
-        // Hanya mahasiswa yang disetujui (status_pengajuan Di Terima), plus filter dosen jika ada
         $query->where('status_pengajuan', 'Di Terima');
 
         if ($dosen->id_jurusan || $dosen->id_angkatan || $dosen->id_keahlian) {
@@ -155,7 +130,6 @@ class DosenController extends Controller
     {
         $dosen = Auth::user();
 
-        // Hanya mahasiswa yang disetujui (status_pengajuan Di Terima), plus filter dosen jika ada
         $query->whereHas($relation, function ($q) use ($dosen) {
             $q->where('status_pengajuan', 'Di Terima');
 
@@ -193,7 +167,6 @@ class DosenController extends Controller
             ])
             ->orderBy('created_at', 'desc');
 
-        // Apply filter based on dosen's own attributes
         $users = $this->getdosenFilterScope($users)->get();
 
         return view('dosen.daftar-mahasiswa', compact('users'));
@@ -278,7 +251,6 @@ class DosenController extends Controller
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
 
-        // Filter berdasarkan dosen attributes
         $dosen = Auth::user();
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
@@ -293,7 +265,6 @@ class DosenController extends Controller
         $user = User::with(['jurusan', 'keahlian', 'angkatan'])
             ->where('id', $id);
 
-        // Apply filter to ensure user is within dosen's scope
         $user = $this->getdosenFilterScope($user)->firstOrFail();
 
         return view('dosen.user.views_edit_user', compact(
@@ -309,11 +280,9 @@ class DosenController extends Controller
         $this->authorizeAccess();
         $dosen = Auth::user();
 
-        // Get user with filter to ensure it's within dosen's scope
         $user = User::where('id', $id_user);
         $user = $this->getdosenFilterScope($user)->firstOrFail();
 
-        // Base validation rules
         $rules = [
             'nama_mahasiswa' => ['sometimes', 'string', 'max:100'],
             'username' => [
@@ -363,8 +332,7 @@ class DosenController extends Controller
             ],
         ];
 
-        // Add validation for jurusan, keahlian, angkatan if dosen doesn't have them fixed
-        if (!$dosen->id_jurusan) {
+       if (!$dosen->id_jurusan) {
             $rules['id_jurusan'] = [
                 'sometimes',
                 'nullable',
@@ -392,7 +360,6 @@ class DosenController extends Controller
 
         $updateData = [];
 
-        // Update basic fields
         foreach ([
             'nama_mahasiswa',
             'username',
@@ -406,8 +373,7 @@ class DosenController extends Controller
             }
         }
 
-        // Update jurusan, keahlian, angkatan only if dosen doesn't have them fixed
-        if (!$dosen->id_jurusan && $request->has('id_jurusan')) {
+      if (!$dosen->id_jurusan && $request->has('id_jurusan')) {
             $updateData['id_jurusan'] = $validated['id_jurusan'] ?? null;
         }
 
@@ -419,19 +385,16 @@ class DosenController extends Controller
             $updateData['id_angkatan'] = $validated['id_angkatan'] ?? null;
         }
 
-        // Password update
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($validated['password']);
         }
 
-        // Role logic
         if ($request->has('role') && $validated['role'] === 'dosen') {
             $updateData['id_jurusan'] = null;
             $updateData['id_keahlian'] = null;
             $updateData['id_angkatan'] = null;
         }
 
-        // Photo upload
         if ($request->hasFile('photo_profile')) {
             if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
                 Storage::disk('public')->delete($user->photo_profile);
@@ -441,7 +404,6 @@ class DosenController extends Controller
             $updateData['photo_profile'] = $photoPath;
         }
 
-        // Background upload
         if ($request->hasFile('background_url')) {
 
             if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
@@ -453,7 +415,6 @@ class DosenController extends Controller
             $updateData['background_url'] = $backgroundPath;
         }
 
-        // Update user
         $user->update($updateData);
 
         return redirect()
@@ -465,7 +426,6 @@ class DosenController extends Controller
     {
         $this->authorizeAccess();
 
-        // Ensure user is within dosen's scope
         $userQuery = User::where('id', $user->id);
         $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
 
@@ -495,11 +455,9 @@ class DosenController extends Controller
     {
         $this->authorizeAccess();
 
-        // Ensure user is within dosen's scope
         $userQuery = User::where('id', $user->id);
         $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
 
-        // Hapus gambar dari storage jika ada
         if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
             Storage::disk('public')->delete($user->photo_profile);
         }
@@ -526,7 +484,6 @@ class DosenController extends Controller
 
         $query = Sertifikat::with('mahasiswa.jurusan', 'mahasiswa.angkatan', 'mahasiswa.keahlian');
 
-        // Apply dosen filter scope
         $query = $this->getdosenFilterScopeForRelated($query, 'mahasiswa');
 
         if ($search) {
@@ -566,7 +523,6 @@ class DosenController extends Controller
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
 
-        // Filter dropdown options based on dosen's attributes
         $dosen = Auth::user();
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
@@ -599,7 +555,6 @@ class DosenController extends Controller
     {
         $this->authorizeAccess();
 
-        // Ensure sertifikat is within dosen's scope
         $sertifikat = Sertifikat::with('mahasiswa')
             ->whereHas('mahasiswa', function ($query) {
                 $this->getdosenFilterScope($query);
@@ -613,7 +568,6 @@ class DosenController extends Controller
     {
         $this->authorizeAccess();
 
-        // Ensure sertifikat is within dosen's scope
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
         })
@@ -631,7 +585,6 @@ class DosenController extends Controller
         $this->authorizeAccess();
         $request->validate(['keterangan' => 'required|string']);
 
-        // Ensure sertifikat is within dosen's scope
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
         })
@@ -653,42 +606,33 @@ class DosenController extends Controller
         $jurusan = $request->input('jurusan');
         $keahlian = $request->input('keahlian');
 
-        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
         $query = User::with(['jurusan', 'angkatan', 'keahlian'])
             ->where('role', 'mahasiswa');
 
-        // Apply dosen filter scope
         $query = $this->getdosenFilterScope($query);
 
-        // Filter pencarian berdasarkan nama mahasiswa
-        if ($search) {
+       if ($search) {
             $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
         }
 
-        // Filter berdasarkan angkatan
-        if ($angkatan) {
+       if ($angkatan) {
             $query->where('id_angkatan', $angkatan);
         }
 
-        // Filter berdasarkan jurusan
         if ($jurusan) {
             $query->where('id_jurusan', $jurusan);
         }
 
-        // Filter berdasarkan keahlian
         if ($keahlian) {
             $query->where('id_keahlian', $keahlian);
         }
 
-        // Ambil data dengan pagination
-        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+         $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        // Ambil data untuk dropdown filter
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
 
-        // Filter dropdown options based on dosen's attributes
         $dosen = Auth::user();
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
@@ -723,7 +667,6 @@ class DosenController extends Controller
             'user_id' => 'required|string|max:255'
         ]);
 
-        // Ensure user is within dosen's scope
         $user = User::where('id', $validated['user_id'])
             ->where('role', 'mahasiswa');
         $user = $this->getdosenFilterScope($user)->firstOrFail();
@@ -750,7 +693,6 @@ class DosenController extends Controller
     {
         $this->authorizeAccess();
 
-        // Ensure sertifikat is within dosen's scope
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
         })
@@ -787,13 +729,11 @@ class DosenController extends Controller
     {
         $this->authorizeAccess();
 
-        // Ensure sertifikat is within dosen's scope
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
         })
             ->findOrFail($sertifikat->id);
 
-        // Hapus gambar sertifikat dari storage jika ada
         if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
             Storage::disk('public')->delete($sertifikat->link_sertifikat);
         }
@@ -815,22 +755,19 @@ class DosenController extends Controller
         try {
             $ids = $request->selected_ids;
 
-            // Get sertifikats within dosen's scope
             $sertifikats = Sertifikat::whereIn('id', $ids)
                 ->whereHas('mahasiswa', function ($query) {
                     $this->getdosenFilterScope($query);
                 })
                 ->get();
 
-            // Delete files from storage
             foreach ($sertifikats as $sertifikat) {
                 if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
                     Storage::disk('public')->delete($sertifikat->link_sertifikat);
                 }
             }
 
-            // Delete records
-            Sertifikat::whereIn('id', $sertifikats->pluck('id'))->delete();
+           Sertifikat::whereIn('id', $sertifikats->pluck('id'))->delete();
 
             return response()->json([
                 'success' => true,
@@ -851,7 +788,6 @@ class DosenController extends Controller
 
         $projects = Project::with(['mahasiswa', 'leader', 'members'])
             ->where(function ($query) {
-                // include projects where owner, leader, or members are in dosen filter scope
                 $query->whereHas('mahasiswa', function ($q) {
                     $this->getdosenFilterScope($q);
                 })
@@ -1135,13 +1071,37 @@ class DosenController extends Controller
 
         $isCollaborative = $request->boolean('is_collaborative', true);
 
+        // Logika khusus: jika owner diubah dan ada leader yang berbeda jurusan/angkatan/keahlian dari dosen, maka leader naik tingkat
+        $dosen = Auth::user();
+        $newOwnerId = $request->owner;
+        $newLeaderId = $isCollaborative ? $request->leader : null;
+
+        if ($project->id_mahasiswa != $newOwnerId && $newLeaderId) {
+            // Cek apakah leader berbeda dari dosen dalam jurusan/angkatan/keahlian
+            $leader = User::find($newLeaderId);
+            $isDifferent = ($leader->id_jurusan != $dosen->id_jurusan) ||
+                           ($leader->id_angkatan != $dosen->id_angkatan) ||
+                           ($leader->id_keahlian != $dosen->id_keahlian);
+
+            if ($isDifferent) {
+                // Leader naik tingkat menjadi owner
+                $newOwnerId = $newLeaderId;
+                $newLeaderId = null; // Leader kosong karena sudah naik
+
+                // Hapus tugas owner lama yang dimiliki dosen
+                ProjectTask::where('project_id', $project->id)
+                    ->where('user_id', $dosen->id)
+                    ->delete();
+            }
+        }
+
         // Update project
         $project->update([
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
             'isi_content' => $content,
-            'id_mahasiswa' => $request->owner,
-            'leader_id' => $isCollaborative ? $request->leader : null,
+            'id_mahasiswa' => $newOwnerId,
+            'leader_id' => $newLeaderId,
             'is_collaborative' => $isCollaborative,
         ]);
 
@@ -1149,7 +1109,7 @@ class DosenController extends Controller
         if ($isCollaborative) {
             $members = collect($request->members ?? [])
                 ->filter()
-                ->reject(fn($memberId) => $memberId == $request->owner || $memberId == $request->leader)
+                ->reject(fn($memberId) => $memberId == $newOwnerId || $memberId == $newLeaderId)
                 ->map(fn($id) => (int) $id)
                 ->unique()
                 ->values()
@@ -1162,7 +1122,7 @@ class DosenController extends Controller
         }
 
         // Handle tasks
-        $this->handleTasks($project, $request->input('tasks', []), $isCollaborative, $request->owner, $request->leader);
+        $this->handleTasks($project, $request->input('tasks', []), $isCollaborative, $newOwnerId, $newLeaderId);
 
         return redirect()->route('dosen.projects.index')
             ->with('success', 'Project berhasil diperbarui!');
