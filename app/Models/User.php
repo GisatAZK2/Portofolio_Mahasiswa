@@ -113,6 +113,11 @@ public function sertifikats()
     return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
 }
 
+public function likedPostings()
+{
+    return $this->hasMany(LikedPostingan::class, 'id_user', 'id');
+}
+
     protected static function booted(): void
     {
         static::deleting(function (User $user) {

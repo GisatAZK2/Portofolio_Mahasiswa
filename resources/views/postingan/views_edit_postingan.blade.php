@@ -48,6 +48,23 @@
                     @enderror
                 </div>
 
+                <!-- Deskripsi -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <span data-translate="deskripsi_opsional" data-translate-page="project_create">Deskripsi (opsional)</span>
+                    </label>
+                    <textarea name="deskripsi" rows="4"
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                                focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                                text-gray-700 dark:text-gray-300
+                                                placeholder-gray-500 dark:placeholder-gray-400
+                                                shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
+                        placeholder="Deskripsikan postingan Anda...">{{ old('deskripsi', $postingan->content[1]['content'] ?? '') }}</textarea>
+                    @error('deskripsi')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Dynamic Items -->
                 <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-5">
@@ -64,13 +81,12 @@
                     <div id="items-container" class="space-y-6">
                         <!-- Existing items -->
                         @php
-                            $existingItems = array_slice($postingan->content, 1); // Skip title
+                            $existingItems = array_slice($postingan->content, 2); // Skip title and description
                         @endphp
                         @foreach($existingItems as $index => $item)
                             <div class="item bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 relative" data-index="{{ $index }}">
                                 <div class="flex justify-between items-start mb-4">
                                     <select name="items[{{ $index }}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                                        <option value="text" {{ (isset($item['type']) && $item['type'] === 'text') ? 'selected' : '' }}>Teks tambahan</option>
                                         <option value="image" {{ (isset($item['type']) && $item['type'] === 'image') ? 'selected' : '' }}>Gambar</option>
                                         <option value="link" {{ (isset($item['type']) && $item['type'] === 'link') ? 'selected' : '' }}>Link / Referensi</option>
                                     </select>
@@ -80,10 +96,6 @@
                                 </div>
 
                                 <div class="content-area">
-                                    <!-- Teks -->
-                                    <textarea name="items[{{ $index }}][content]" rows="3" class="text-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:border-indigo-500 outline-none transition {{ (isset($item['type']) && $item['type'] !== 'text') ? 'hidden' : '' }}"
-                                           placeholder="Masukkan teks di sini...">{{ isset($item['type']) && $item['type'] === 'text' ? ($item['content'] ?? '') : '' }}</textarea>
-
                                     <!-- File upload -->
                                     <div class="file-input {{ (isset($item['type']) && $item['type'] !== 'image') ? 'hidden' : '' }} mt-2">
                                         @if(isset($item['type']) && $item['type'] === 'image' && isset($item['content']))
@@ -133,7 +145,6 @@
             newItem.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="text">Teks tambahan</option>
                         <option value="image">Gambar</option>
                         <option value="link">Link / Referensi</option>
                     </select>
@@ -143,10 +154,6 @@
                 </div>
 
                 <div class="content-area">
-                    <!-- Teks default -->
-                    <textarea name="items[${itemIndex}][content]" rows="3" class="text-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:border-indigo-500 outline-none transition"
-                           placeholder="Masukkan teks di sini..."></textarea>
-
                     <!-- File upload (hidden awal) -->
                     <div class="file-input hidden mt-2">
                         <input type="file" name="items[${itemIndex}][file]" accept="image/*"
@@ -167,24 +174,16 @@
 
         function attachTypeListener(itemElement) {
             const select = itemElement.querySelector('.type-select');
-            const textInput = itemElement.querySelector('.text-input');
             const fileDiv = itemElement.querySelector('.file-input');
             const linkInput = itemElement.querySelector('.link-input');
 
             function toggleFields() {
                 const type = select.value;
-                textInput.classList.toggle('hidden', type !== 'text');
                 fileDiv.classList.toggle('hidden', type !== 'image');
                 linkInput.classList.toggle('hidden', type !== 'link');
 
                 // Pastikan hanya satu input content yang aktif (untuk validasi)
-                textInput.disabled = type !== 'text';
                 linkInput.disabled = type !== 'link';
-                if (type === 'image') {
-                    textInput.name = `items[${itemElement.dataset.index}][dummy]`; // hindari kirim kosong
-                } else {
-                    textInput.name = `items[${itemElement.dataset.index}][content]`;
-                }
             }
 
             select.addEventListener('change', toggleFields);

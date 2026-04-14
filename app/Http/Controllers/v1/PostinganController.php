@@ -16,13 +16,16 @@ class PostinganController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
-    $postingan = Postingan::with('user')
+    $postingan = Postingan::with('user', 'komentar.user', 'likes')
         ->where('id_user', auth()->id())
         ->latest()
         ->paginate(10);
 
     return view('postingan.postingan_card', compact('postingan'));
 }
+
+  
+
 
     /**
      * Show the form for creating a new resource.
@@ -39,14 +42,16 @@ class PostinganController extends Controller
     {
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
             'items' => 'nullable|array',
-            'items.*.type' => 'required|in:text,image,link',
+            'items.*.type' => 'required|in:image,link',
             'items.*.content' => 'nullable|string',
             'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         $content = [
             ['type' => 'title', 'content' => $validated['judul']],
+            ['type' => 'description', 'content' => $validated['deskripsi']],
         ];
 
         if (!empty($validated['items'])) {
@@ -79,7 +84,11 @@ class PostinganController extends Controller
      */
     public function show(string $id)
     {
-        
+        $postingan = Postingan::with(['user', 'komentar.user', 'likes'])
+            ->where('id_postingan', $id)
+            ->firstOrFail();
+
+        return view('postingan.views_detail_postingan', compact('postingan'));
     }
 
     /**
@@ -105,14 +114,16 @@ class PostinganController extends Controller
 
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
             'items' => 'nullable|array',
-            'items.*.type' => 'required|in:text,image,link',
+            'items.*.type' => 'required|in:image,link',
             'items.*.content' => 'nullable|string',
             'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         $content = [
             ['type' => 'title', 'content' => $validated['judul']],
+            ['type' => 'description', 'content' => $validated['deskripsi']],
         ];
 
         if (!empty($validated['items'])) {
@@ -124,14 +135,14 @@ class PostinganController extends Controller
 
                 if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
                     // Delete old image if exists
-                    if (isset($postingan->content[$index + 1]['content']) && $postingan->content[$index + 1]['type'] === 'image') {
-                        Storage::disk('public')->delete($postingan->content[$index + 1]['content']);
+                    if (isset($postingan->content[$index + 2]['content']) && $postingan->content[$index + 2]['type'] === 'image') {
+                        Storage::disk('public')->delete($postingan->content[$index + 2]['content']);
                     }
                     $path = ImageConversionService::storeWebp($request->file("items.$index.file"), 'postingan/images');
                     $processed['content'] = $path;
-                } elseif ($item['type'] === 'image' && isset($postingan->content[$index + 1]['content'])) {
+                } elseif ($item['type'] === 'image' && isset($postingan->content[$index + 2]['content'])) {
                     // Keep existing image if no new file uploaded
-                    $processed['content'] = $postingan->content[$index + 1]['content'];
+                    $processed['content'] = $postingan->content[$index + 2]['content'];
                 }
 
                 $content[] = $processed;

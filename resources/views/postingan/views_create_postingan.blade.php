@@ -47,6 +47,22 @@
                     @enderror
                 </div>
 
+                <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <span data-translate="deskripsi_opsional" data-translate-page="project_create"></span>
+                </label>
+                <textarea name="deskripsi" rows="4"
+                    class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
+                    placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
+                @error('deskripsi')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
                 <!-- Dynamic Items -->
                 <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-5">
@@ -89,7 +105,6 @@
             newItem.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="text">Teks tambahan</option>
                         <option value="image">Gambar</option>
                         <option value="link">Link / Referensi</option>
                     </select>

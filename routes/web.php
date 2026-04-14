@@ -11,13 +11,14 @@ use App\Http\Controllers\v1\LearningCornerController;
 use App\Http\Controllers\v1\SertifikatController;
 use App\Http\Controllers\v1\DosenController;
 use App\Http\Controllers\v1\PostinganController;
+use App\Http\Controllers\v1\LikedPostinganController;
 use App\Http\Controllers\v1\KomentarController;
 
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
 Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
-
+Route::get('/postingan/{id}', [PostinganController::class, 'show'])->name('postingan.show');
 // Semua route yang butuh login
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
@@ -69,7 +70,10 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
             'update',
             'destroy'
     ]);
-    
+
+    // Like/Unlike Postingan
+    Route::post('/postingan/{postingan}/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
+
     //CRUD Sertifikat
     Route::resource('sertifikat', SertifikatController::class)->only([
         'index',

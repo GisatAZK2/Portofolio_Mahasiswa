@@ -13,6 +13,7 @@ use App\Models\Jurusan;
 use App\Models\Angkatan;
 use App\Models\Keahlian;
 use App\Models\Sertifikat;
+use App\Models\Postingan;
 
 class DashboardController extends Controller
 {
@@ -49,6 +50,17 @@ class DashboardController extends Controller
             return $item;
         });
 
+        /*
+        |--------------------------------------------------------------------------
+        | POSTINGAN TERBARU
+        |--------------------------------------------------------------------------
+        */
+
+        $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes'])
+            ->latest()
+            ->take(6)
+            ->get();
+
         $projects = Project::with('mahasiswa')
             ->latest()
             ->paginate(6, ['*'], 'project_page');
@@ -77,6 +89,7 @@ class DashboardController extends Controller
             'learningCorners',
             'projects',
             'projectUsers',
+            'postinganTerbaru',
         ));
     }
     /**
