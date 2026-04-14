@@ -150,31 +150,68 @@
                             placeholder="Username untuk login" {{ $isBlocked ? 'disabled' : '' }}>
                         @error('username') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
-                    
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-                            <input type="password" name="password" required
-                                class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('password') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
-                                {{ $isBlocked ? 'disabled' : '' }}>
+                            <div class="relative">
+                                <input type="password" name="password" id="password-reg" required
+                                    class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('password') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                                    {{ $isBlocked ? 'disabled' : '' }}>
+                                @if(!$isBlocked)
+                                    <button type="button"
+                                        class="toggle-password-btn absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition"
+                                        onclick="togglePasswordVisibility('password-reg')">
+                                        <!-- Eye Icon (Show) -->
+                                        <svg class="eye-icon-show w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                            </path>
+                                        </svg>
+                                        <!-- Eye Off Icon (Hide) -->
+                                        <svg class="eye-icon-hide w-5 h-5 hidden" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                @endif
+                            </div>
                             @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div class="relative w-full">
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" required
-                                class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
-                                {{ $isBlocked ? 'disabled' : '' }}>
-                            @if(!$isBlocked)
-                                <button type="button" onclick="togglePasswordVisibility(this)"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                            @endif
+                            <div class="relative">
+                                <input type="password" name="password_confirmation" id="password-confirm-reg" required
+                                    class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                                    {{ $isBlocked ? 'disabled' : '' }}>
+                                @if(!$isBlocked)
+                                    <button type="button"
+                                        class="toggle-password-btn absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition"
+                                        onclick="togglePasswordVisibility('password-confirm-reg')">
+                                        <!-- Eye Icon (Show) -->
+                                        <svg class="eye-icon-show w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                            </path>
+                                        </svg>
+                                        <!-- Eye Off Icon (Hide) -->
+                                        <svg class="eye-icon-hide w-5 h-5 hidden" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -256,15 +293,21 @@
 
     @if(!$isBlocked)
         <script>
-            function togglePasswordVisibility(button) {
-                const input = button.previousElementSibling;
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
+            function togglePasswordVisibility(inputId) {
+                const input = document.getElementById(inputId);
+                const button = input.parentElement.querySelector('.toggle-password-btn');
+                const eyeShowIcon = button.querySelector('.eye-icon-show');
+                const eyeHideIcon = button.querySelector('.eye-icon-hide');
 
-                // Change icon
-                button.innerHTML = type === 'password' ?
-                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' :
-                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>';
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    eyeShowIcon.classList.add('hidden');
+                    eyeHideIcon.classList.remove('hidden');
+                } else {
+                    input.type = 'password';
+                    eyeShowIcon.classList.remove('hidden');
+                    eyeHideIcon.classList.add('hidden');
+                }
             }
         </script>
     @endif
