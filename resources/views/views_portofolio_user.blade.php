@@ -73,7 +73,7 @@
                                 <!-- Share Button -->
                                 <div class="flex flex-col gap-2 pt-1">
                                     @php
-                                        $shareUrl = route('portfolio.show', ['user' => $user->id]) . '?utm_source=share&utm_medium=portfolio';
+                                        $shareUrl = route('portfolio.show', ['user' => $user->username]) . '?utm_source=share&utm_medium=portfolio';
                                         $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
                                     @endphp
                                     
@@ -81,7 +81,9 @@
                                     <div class="relative group">
                                         <button class="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600/50 hover:bg-indigo-700/50 text-white rounded-lg text-sm font-medium transition-colors"
                                             onclick="toggleShareMenu()">
-                                            <img src="{{ asset('assets/share_icon.svg') }}" alt="Share" class="w-4 h-4">
+                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                                    </svg>
                                             <span class="hidden sm:inline">Share</span>
                                         </button>
 
@@ -340,10 +342,10 @@
                                                                     </span>
                                                                 </div>
                                                                 @if($owner)
-                                                                    <a href="{{ route('portfolio.show', $owner->id) }}" 
+                                                                    <a href="{{ route('portfolio.show', $owner->username) }}" 
                                                                     class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-purple-600 dark:hover:text-purple-400 truncate block">
                                                                         {{ $owner->nama_mahasiswa }}
-                                                                        @if(auth()->check() && auth()->id() === $owner->id)
+                                                                        @if(auth()->check() && auth()->id() === $owner->username)
                                                                             <span class="ml-1 text-xs text-purple-600">(Anda)</span>
                                                                         @endif
                                                                     </a>
@@ -409,10 +411,10 @@
                                                         <div class="flex-1 min-w-0">
                                                             <p class="text-xs text-gray-500 dark:text-gray-400">Project Owner</p>
                                                             @if($owner)
-                                                                <a href="{{ route('portfolio.show', $owner->id) }}" 
+                                                                <a href="{{ route('portfolio.show', $owner->username) }}" 
                                                                 class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                                     {{ $owner->nama_mahasiswa }}
-                                                                    @if(auth()->check() && auth()->id() === $owner->id)
+                                                                    @if(auth()->check() && auth()->id() === $owner->username)
                                                                         <span class="ml-1 text-xs text-purple-600">(Anda)</span>
                                                                     @endif
                                                                 </a>
