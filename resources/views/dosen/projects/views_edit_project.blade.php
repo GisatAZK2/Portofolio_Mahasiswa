@@ -34,7 +34,8 @@
             <!-- Form -->
             <form method="POST" action="{{ route('dosen.projects.update', $project->id) }}" class="space-y-6 md:space-y-7" id="projectForm">
                 @csrf
-                @method('PATCH')   
+                @method('PATCH')
+                
                 <!-- User Selection Section -->
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
@@ -63,8 +64,18 @@
                 <!-- Hidden inputs for selected users -->
                 <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner', $project->id_mahasiswa) }}">
                 <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader', $project->leader_id) }}">
-                <input type="hidden" name="members" id="selected-members-ids" value="{{ old('members') ? implode(',', old('members')) : implode(',', $project->members->pluck('id')->toArray()) }}">
-         
+                <div id="members-hidden-container">
+                    @php
+                        $memberIds = old('members', $project->members->pluck('id')->toArray());
+                        if (!is_array($memberIds)) {
+                            $memberIds = explode(',', $memberIds);
+                        }
+                    @endphp
+                    @foreach($memberIds as $id)
+                        <input type="hidden" name="members[]" value="{{ $id }}">
+                    @endforeach
+                </div>
+                
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -465,7 +476,15 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         function updateFormInputs() {
             document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
             document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
-            document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
+            const container = document.getElementById('members-hidden-container');
+            container.innerHTML = '';
+            selectedUsers.members.forEach(member => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'members[]';
+                input.value = member.id;
+                container.appendChild(input);
+            });
         }
 
         function renderSelectedUsers() {
@@ -531,7 +550,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         function loadSelectedUsersFromForm() {
             const ownerId = document.getElementById('selected-owner-id')?.value;
             const leaderId = document.getElementById('selected-leader-id')?.value;
-            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
+            const memberInputs = document.querySelectorAll('input[name="members[]"]');
+            const memberIds = Array.from(memberInputs).map(input => input.value).filter(id => id);
 
             if (ownerId) selectedUsers.owner = getUserById(ownerId);
             if (leaderId) selectedUsers.leader = getUserById(leaderId);
