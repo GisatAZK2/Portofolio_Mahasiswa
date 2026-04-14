@@ -23,11 +23,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" />
             </svg>
-            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Dashboard</span>
+            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                data-translate="dashboard_nonuser">Dashboard</span>
             @if(session('sidebar_collapsed', false))
-                <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                    Dashboard
-                </span>
+                <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                    data-translate="dashboard_nonuser">Dashboard</span>
             @endif
         </a>
 
@@ -41,11 +41,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
                     </svg>
-                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">My Dashboard</span>
+                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                        data-translate="my_dashboard">My Dashboard</span>
                     @if(session('sidebar_collapsed', false))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            My Dashboard
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="my_dashboard">My Dashboard</span>
                     @endif
                 </a>
             @endif
@@ -62,11 +62,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
                     </svg>
-                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Admin Dashboard</span>
+                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                        data-translate="admin_dashboard">Admin Dashboard</span>
                     @if(session('sidebar_collapsed', false))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Admin Dashboard
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="admin_dashboard">Admin Dashboard</span>
                     @endif
                 </a>
 
@@ -81,7 +81,7 @@
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                                 </path>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Users</span>
+                            <span data-translate="manajemen_users" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Users</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,9 +89,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Users
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_users">Manajemen Users</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-100"
@@ -104,17 +103,19 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat User</span>
+                            <span data-translate="semua_user">Lihat User</span>
                         </a>
                         <a href="{{ route('admin.users.ViewCreate') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.users.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
                             </svg>
-                            <span>Tambah User</span>
+                            <span data-translate="tambah_user">Tambah User</span>
                         </a>
                     </div>
                 </div>
@@ -127,9 +128,10 @@
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Angkatan</span>
+                            <span data-translate="manajemen_angkatan" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Angkatan</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,9 +139,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Angkatan
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_angkatan">Manajemen Angkatan</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-100"
@@ -152,17 +153,19 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Angkatan</span>
+                            <span data-translate="lihat_angkatan">Lihat Angkatan</span>
                         </a>
                         <a href="{{ route('admin.angkatan.create') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.angkatan.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
                             </svg>
-                            <span>Tambah Angkatan</span>
+                            <span data-translate="tambah_angkatan">Tambah Angkatan</span>
                         </a>
                     </div>
                 </div>
@@ -175,9 +178,10 @@
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                                    d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
+                                </path>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Prodi</span>
+                            <span data-translate="manajemen_prodi" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Prodi</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,9 +189,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Prodi
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_prodi">Manajemen Prodi</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-100"
@@ -200,17 +203,19 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Prodi</span>
+                            <span data-translate="lihat_prodi">Lihat Prodi</span>
                         </a>
                         <a href="{{ route('admin.prodi.create') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.prodi.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
                             </svg>
-                            <span>Tambah Prodi</span>
+                            <span data-translate="tambah_prodi">Tambah Prodi</span>
                         </a>
                     </div>
                 </div>
@@ -223,9 +228,10 @@
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                </path>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Keahlian</span>
+                            <span data-translate="manajemen_keahlian" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Keahlian</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,9 +239,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Keahlian
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_keahlian">Manajemen Keahlian</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-100"
@@ -248,17 +253,19 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Keahlian</span>
+                            <span data-translate="lihat_keahlian">Lihat Keahlian</span>
                         </a>
                         <a href="{{ route('admin.keahlian.create') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.keahlian.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
                             </svg>
-                            <span>Tambah Keahlian</span>
+                            <span data-translate="tambah_keahlian">Tambah Keahlian</span>
                         </a>
                     </div>
                 </div>
@@ -273,7 +280,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m8-6a4 4 0 11-8 0 4 4 0 018 0zM5 8a3 3 0 106 0 3 3 0 00-6 0z" />
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Project</span>
+                            <span data-translate="manajemen_projects" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Project</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -281,9 +288,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Project
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_projects">Manajemen Project</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-100"
@@ -296,16 +302,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Projek</span>
+                            <span data-translate="lihat_proyek">Lihat Projek</span>
                         </a>
                         <a href="{{ route('admin.projects.create') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.projects.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Projek</span>
+                            <span data-translate="tambah_proyek">Tambah Projek</span>
                         </a>
                     </div>
                 </div>
@@ -323,7 +330,7 @@
                                 <path d="M3 10h18"></path>
                                 <circle cx="12" cy="14" r="2"></circle>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Sertifikat</span>
+                            <span data-translate="manajemen_sertifikat" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Sertifikat</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -331,9 +338,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Manajemen Sertifikat
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="manajemen_sertifikat">Manajemen Sertifikat</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-100"
@@ -346,16 +352,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Sertifikat</span>
+                            <span data-translate="lihat_sertifikat">Lihat Sertifikat</span>
                         </a>
                         <a href="{{ route('admin.sertifikat.create') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.sertifikat.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Sertifikat</span>
+                            <span data-translate="tambah_sertifikat">Tambah Sertifikat</span>
                         </a>
                     </div>
                 </div>
@@ -372,11 +379,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M8 8h8M8 12h8M8 16h4" />
                     </svg>
-                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Dashboard Dosen</span>
+                    <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                        data-translate="dashboard_dosen">Dashboard Dosen</span>
                     @if(session('sidebar_collapsed', false))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Dashboard Dosen
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="dashboard_dosen">Dashboard Dosen</span>
                     @endif
                 </a>
 
@@ -390,7 +397,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Mahasiswa Bimbingan</span>
+                            <span data-translate="mhs_bbg" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Mahasiswa Bimbingan</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -398,9 +405,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Mahasiswa Bimbingan
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="mhs_bbg">Mahasiswa Bimbingan</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
@@ -414,18 +420,20 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Mahasiswa</span>
+                            <span data-translate="see_mhs">Lihat Mahasiswa</span>
                         </a>
                         <a href="{{ route('dosen.users.ViewCreate') }}"
                             class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
                                    {{ request()->routeIs('dosen.users.ViewCreate') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                                </path>
                             </svg>
-                            <span>Tambah Mahasiswa</span>
+                            <span data-translate="add_mhs">Tambah Mahasiswa</span>
                         </a>
                     </div>
                 </div>
@@ -438,9 +446,9 @@
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m8-6a4 4 0 11-8 0 4 4 0 018 0zM5 8a3 3 0 106 0 3 3 0 00-6 0z" />
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z" />
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Projects Bimbingan</span>
+                            <span data-translate="pjt_bbbg" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Projects Bimbingan</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -448,9 +456,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Projects Bimbingan
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="pjt_bbbg">Projects Bimbingan</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
@@ -464,9 +471,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Project</span>
+                            <span data-translate="see_pjt">Lihat Project</span>
                         </a>
                         <a href="{{ route('dosen.projects.create') }}"
                             class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
@@ -474,7 +482,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Project</span>
+                            <span data-translate="add_pjt">Tambah Project</span>
                         </a>
                     </div>
                 </div>
@@ -492,7 +500,7 @@
                                 <path d="M3 10h18"></path>
                                 <circle cx="12" cy="14" r="2"></circle>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat Bimbingan</span>
+                            <span data-translate="stk_bbg" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat Bimbingan</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -500,9 +508,8 @@
                         </svg>
                     </button>
                     @if(session('sidebar_collapsed'))
-                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                            Sertifikat Bimbingan
-                        </span>
+                        <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                            data-translate="stk_bbg">Sertifikat Bimbingan</span>
                     @endif
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
@@ -516,9 +523,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
                             </svg>
-                            <span>Lihat Sertifikat</span>
+                            <span data-translate="see_stk">Lihat Sertifikat</span>
                         </a>
                         <a href="{{ route('dosen.sertifikat.create') }}"
                             class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
@@ -526,7 +534,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Tambah Sertifikat</span>
+                            <span data-translate="add_stk">Tambah Sertifikat</span>
                         </a>
                     </div>
                 </div>
@@ -542,11 +550,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project Mahasiswa</span>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                    data-translate="project_mahasiswa">Project Mahasiswa</span>
                 @if(session('sidebar_collapsed', false))
-                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                        Project Mahasiswa
-                    </span>
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                        data-translate="project_mahasiswa">Project Mahasiswa</span>
                 @endif
             </a>
         @else
@@ -560,16 +568,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project</span>
+                            <span data-translate="project_mahasiswa" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Project</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                         @if(session('sidebar_collapsed', false))
-                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                                Project
-                            </span>
+                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                                data-translate="project_mahasiswa">Project</span>
                         @endif
                     </button>
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
@@ -583,7 +590,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
-                            <span>Project Saya</span>
+                            <span data-translate="project_mahasiswa_saya">Project Saya</span>
                         </a>
                         <a href="{{ route('project.create') }}"
                             class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
@@ -591,7 +598,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            <span>Tambah Project Baru</span>
+                            <span data-translate="project_mahasiswa_saya_tambah">Tambah Project Baru</span>
                         </a>
                     </div>
                 </div>
@@ -613,16 +620,15 @@
                                 <path d="M3 10h18"></path>
                                 <circle cx="12" cy="14" r="2"></circle>
                             </svg>
-                            <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat</span>
+                            <span data-translate="sertifikat_mahasiswa" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Sertifikat</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                         @if(session('sidebar_collapsed', false))
-                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                                Sertifikat
-                            </span>
+                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                                data-translate="sertifikat_mahasiswa">Sertifikat</span>
                         @endif
                     </button>
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
@@ -636,7 +642,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
-                            <span>Sertifikat Saya</span>
+                            <span data-translate="sertifikat_mahasiswa_saya">Sertifikat Saya</span>
                         </a>
                         <a href="{{ route('sertifikat.create') }}"
                             class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
@@ -644,7 +650,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            <span>Tambah Sertifikat</span>
+                            <span data-translate="sertifikat_mahasiswa_saya_tambah">Tambah Sertifikat</span>
                         </a>
                     </div>
                 </div>
@@ -661,24 +667,24 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11.983 5.5c-.47 0-.93.05-1.372.146l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648a6.987 6.987 0 00-1.186.688L4.69 5.5a.5.5 0 00-.607.06L3.04 6.603a.5.5 0 00-.06.607l.834 1.186a6.987 6.987 0 00-.688 1.186l-1.648.388a.5.5 0 00-.398.487v1.472c0 .232.158.433.388.487l1.648.388c.162.42.393.816.688 1.186l-.834 1.186a.5.5 0 00.06.607l1.043 1.043a.5.5 0 00.607.06l1.186-.834c.37.295.766.526 1.186.688l.388 1.648a.5.5 0 00.487.398h1.472a.5.5 0 00.487-.398l.388-1.648a6.987 6.987 0 001.186-.688l1.186.834a.5.5 0 00.607-.06l1.043-1.043a.5.5 0 00.06-.607l-.834-1.186c.295-.37.526-.766.688-1.186l1.648-.388a.5.5 0 00.398-.487v-1.472a.5.5 0 00-.398-.487l-1.648-.388a6.987 6.987 0 00-.688-1.186l.834-1.186a.5.5 0 00-.06-.607L19.277 5.56a.5.5 0 00-.607-.06l-1.186.834a6.987 6.987 0 00-1.186-.688l-.388-1.648a.5.5 0 00-.487-.398h-1.472a.5.5 0 00-.487.398l-.388 1.648A7.02 7.02 0 0011.983 5.5zM12 15a3 3 0 100-6 3 3 0 000 6z" />
                 </svg>
-                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Setting</span>
+                <span class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+                    data-translate="setting">Setting</span>
             </div>
             <svg id="settingArrow" class="w-4 h-4 transition-transform {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
             @if(session('sidebar_collapsed', false))
-                <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                    Setting
-                </span>
+                <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                    data-translate="setting">Setting</span>
             @endif
         </button>
         <div id="settingMenu" class="hidden bg-white dark:bg-gray-800 rounded-xl shadow-md mt-2 p-4 border border-gray-200 dark:border-gray-700 absolute left-0 right-0 w-full lg:w-60 z-50">
             <div class="flex items-center justify-between mb-4">
-                <span class="text-gray-700 dark:text-gray-200">Mode</span>
+                <span class="text-gray-700 dark:text-gray-200" data-translate="mode">Mode</span>
                 <button id="darkModeBtn" class="px-3 py-1 rounded-lg text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200" onclick="toggleDarkMode()">Dark Mode</button>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-gray-700 dark:text-gray-200">Bahasa</span>
+                <span class="text-gray-700 dark:text-gray-200" data-translate="bahasa">Bahasa</span>
                 <select id="languageSelect" class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200" onchange="changeLanguage()">
                     <option value="id">Indonesia</option>
                     <option value="en">English</option>
@@ -740,9 +746,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
                 @if(session('sidebar_collapsed', false))
-                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                        {{ Auth::user()->name ?? 'Profile' }}
-                    </span>
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                        data-translate="profile">{{ Auth::user()->name ?? 'Profile' }}</span>
                 @endif
             </button>
             
@@ -753,7 +758,7 @@
                     <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    <span class="text-sm text-gray-700 dark:text-gray-200">Lihat Profil</span>
+                    <span class="text-sm text-gray-700 dark:text-gray-200" data-translate="lihat_profil">Lihat Profil</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf
@@ -761,7 +766,7 @@
                         <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span class="text-sm text-red-700 dark:text-red-200">Logout</span>
+                        <span class="text-sm text-red-600 dark:text-red-400" data-translate="logout">Logout</span>
                     </button>
                 </form>
             </div>
@@ -770,16 +775,14 @@
     @else
     <!-- Guest Section -->
     <div class="px-2 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 shrink-0">
-        <div class="text-center text-sm text-gray-500 dark:text-gray-400 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">
-            Silakan login untuk mengakses fitur
-        </div>
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
+            data-translate="login_prompt">Silakan login untuk mengakses fitur</div>
         <div class="mt-3 flex {{ session('sidebar_collapsed', false) ? 'lg:flex-col lg:space-y-2' : 'space-x-2' }}">
             <a href="{{ route('login') }}" class="flex-1 px-4 py-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition font-medium text-sm text-center group relative">
-                <span class="{{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Masuk</span>
+                <span class="{{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" data-translate="login">Masuk</span>
                 @if(session('sidebar_collapsed', false))
-                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block">
-                        Masuk
-                    </span>
+                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                        data-translate="login">Masuk</span>
                 @endif
             </a>
         </div>
@@ -889,6 +892,7 @@
         const isSidebarCollapsed = {{ session('sidebar_collapsed', false) ? 'true' : 'false' }};
 
         if (isMobile && isSidebarCollapsed) {
+            // Dropdown akan bekerja dengan baik
         }
     }
 

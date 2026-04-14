@@ -816,7 +816,7 @@ export const translations = {
       see_project: 'Lihat Project →'
     },
     sidebar: {
-      dashboard: 'Dashboard',
+      dashboard: 'Beranda',
       dashboard_nonuser: 'Beranda',
       my_dashboard: 'My Dashboard',
       admin_dashboard: 'Admin Dashboard',
@@ -1799,7 +1799,7 @@ export const translations = {
       see_project: 'See Project →'
     },
     sidebar: {
-      dashboard: 'Dashboard',
+      dashboard: 'Home',
       dashboard_nonuser: 'Home',
       my_dashboard: 'My Dashboard',
       manajemen_users: 'User Management',
