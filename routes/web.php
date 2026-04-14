@@ -10,6 +10,8 @@ use App\Http\Controllers\v1\DashboardController;
 use App\Http\Controllers\v1\LearningCornerController;
 use App\Http\Controllers\v1\SertifikatController;
 use App\Http\Controllers\v1\DosenController;
+use App\Http\Controllers\v1\PostinganController;
+use App\Http\Controllers\v1\KomentarController;
 
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -41,6 +43,33 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         'destroy'
     ]);
 
+     Route::resource('postingan', PostinganController::class)->only([
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+        'destroy'
+    ]);
+
+     Route::resource('postingan', PostinganController::class)->only([
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+        'destroy'
+    ]);
+
+    Route::resource('komentar', KomentarController::class)->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy'
+    ]);
+    
     //CRUD Sertifikat
     Route::resource('sertifikat', SertifikatController::class)->only([
         'index',

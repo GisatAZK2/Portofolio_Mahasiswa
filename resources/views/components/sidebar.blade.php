@@ -654,6 +654,53 @@
                         </a>
                     </div>
                 </div>
+
+                <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }" class="relative">
+                    <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
+                               {{ request()->routeIs('postingan.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 min-w-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                                <path d="M8 2v4"></path>
+                                <path d="M16 2v4"></path>
+                                <path d="M3 10h18"></path>
+                                <circle cx="12" cy="14" r="2"></circle>
+                            </svg>
+                            <span data-translate="postingan" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}">Postingan</span>
+                        </div>
+                        <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
+                            class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                        @if(session('sidebar_collapsed', false))
+                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
+                                data-translate="postingan">Postingan</span>
+                        @endif
+                    </button>
+                    <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        class="pl-5 space-y-1 mt-1 {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">
+                        <a href="{{ route('postingan.index') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                                   {{ request()->routeIs('postingan.index') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                            </svg>
+                            <span data-translate="postingan">Postingan</span>
+                        </a>
+                        <a href="{{ route('postingan.create') }}"
+                            class="flex items-center space-x-3 px-5 py-2.5 rounded-lg text-sm
+                                   {{ request()->routeIs('postingan.create') ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span data-translate="postingan_tambah">Tambah Postingan</span>
+                        </a>
+                    </div>
+                </div>
             @endif
         @endauth
     </nav>
