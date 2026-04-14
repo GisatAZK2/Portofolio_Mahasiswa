@@ -552,6 +552,8 @@ export const translations = {
       nm_srtfkt: 'Nama Sertifikat:',
       nm_mhs_srtfkt: 'Nama Mahasiswa:',
       stat_active: 'Status Aktif',
+      edit_srtfkt : 'Edit Sertifikat',
+      hapus_srtfkt: 'Hapus Sertifikat',
       //halaman menambah sertifikat baru
       title_srtfkt_create: 'Tambah Sertifikat Baru',
       desc_srtfkt_create: 'Tambahkan sertifikat yang diperoleh mahasiswa untuk melengkapi portofolio mereka.',
@@ -931,6 +933,8 @@ export const translations = {
     sertifikat_user: {
       sertifikat_title: 'Sertifikat Saya',
       sertifikat_desc: 'Kelola semua sertifikat yang kamu miliki di sini.',
+      sertifikat_mahasiswa_title: 'Sertifikat Mahasiswa',
+      sertifikat_mahasiswa_desc: 'Lihat sertifikat mahasiswa',
       sertifikat_create_button: 'Tambah Sertifikat Baru',
       sertifikat_no_data: 'Belum ada sertifikat.',
       sertifikat_no_data_description: 'Mulai tambahkan sertifikat pertama kamu!',
@@ -1580,6 +1584,8 @@ export const translations = {
       or_drag: 'or drag and drop',
       format_srtfkt: 'Allowed formats: PNG, JPG, GIF, Max size: 5MB',
       save_srtfkt: 'Save Certificate',
+      edit_srtfkt : 'Edit Certificate',
+      hapus_srtfkt: 'Delete Certificate',
       // Keahlian management
       title_keahlian: 'Skills List',
       nama_keahlian: 'Skill Name',
@@ -1929,6 +1935,8 @@ export const translations = {
     sertifikat_user: {
       sertifikat_title: 'My Certificates',
       sertifikat_desc: 'Manage all the certificates you have here.',
+      sertifikat_mahasiswa_title: 'Student Certificates',
+      sertifikat_mahasiswa_desc: 'View student certificates',
       sertifikat_create_button: 'Add New Certificate',
       sertifikat_no_data: 'No certificates yet.',
       sertifikat_no_data_description: 'Start adding your first certificate!',

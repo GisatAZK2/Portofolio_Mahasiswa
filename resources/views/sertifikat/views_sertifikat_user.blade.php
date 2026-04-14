@@ -4,31 +4,31 @@
     <div class="p-6 lg:p-8">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900" data-translate="sertifikat_title"
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white" data-translate="sertifikat_mahasiswa_title"
                     data-translate-page="sertifikat_user"></h1>
-                <p class="text-gray-600">
-                    <span data-translate="sertifikat_desc" data-translate-page="sertifikat_user"></span>
+                <p class="text-gray-600 dark:text-gray-400">
+                    <span data-translate="sertifikat_mahasiswa_desc" data-translate-page="sertifikat_user"></span>
                 </p>
             </div>
         </div>
 
         {{-- Data Sertifikat --}}
         @if ($sertifikat->isEmpty())
-            <div class="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+            <div class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
                 <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600" data-translate="sertifikat_no_data" data-translate-page="sertifikat_user"></p>
-                <p class="text-gray-500 text-sm mt-2" data-translate="sertifikat_no_data_description"
+                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="sertifikat_no_data" data-translate-page="sertifikat_user"></p>
+                <p class="text-gray-500 dark:text-gray-500 text-sm mt-2" data-translate="sertifikat_no_data_description"
                     data-translate-page="sertifikat_user"></p>
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($sertifikat as $entry)
                     <div
-                        class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700 flex flex-col h-full">
                         <!-- Header -->
                         <div class="bg-gradient-to-r from-blue-700 to-blue-500 p-4">
                             <div class="flex items-center justify-between">
@@ -45,12 +45,12 @@
 
                         <div class="p-6 flex-1 flex flex-col">
                             <!-- Nama Sertifikat -->
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
                                 {{ $entry->nama_sertifikat }}
                             </h3>
 
                             <!-- Lembaga Penerbit -->
-                            <div class="flex items-center text-gray-600 mb-3">
+                            <div class="flex items-center text-gray-600 dark:text-gray-400 mb-3">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l14-7 3.5 1.5L21 21z"></path>
@@ -59,7 +59,7 @@
                             </div>
 
                             <!-- Tanggal Terbit -->
-                            <div class="flex items-center text-gray-600 mb-4">
+                            <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -88,17 +88,17 @@
                                 @endphp
 
                                 @if(is_array($content) && count($content) > 0)
-                                    <div class="mb-4 bg-gray-50 p-3 rounded-lg">
-                                        <p class="text-xs text-gray-500 mb-2 font-semibold" data-translate="sertifikat_deskripsi_tambahan"
+                                    <div class="mb-4 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold" data-translate="sertifikat_deskripsi_tambahan"
                                             data-translate-page="sertifikat_user"></p>
                                         @foreach($content as $item)
                                             @if(is_array($item))
                                                 @if(isset($item['type']) && $item['type'] === 'text' && isset($item['content']))
-                                                    <p class="text-sm text-gray-700 line-clamp-3">{{ $item['content'] }}</p>
+                                                    <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{{ $item['content'] }}</p>
                                                 @elseif(isset($item['text']))
-                                                    <p class="text-sm text-gray-700 line-clamp-3">{{ $item['text'] }}</p>
+                                                    <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{{ $item['text'] }}</p>
                                                 @elseif(is_string($item))
-                                                    <p class="text-sm text-gray-700 line-clamp-3">{{ $item }}</p>
+                                                    <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{{ $item }}</p>
                                                 @endif
                                             @endif
                                         @endforeach
@@ -107,7 +107,7 @@
                             @endif
 
                             <!-- Tanggal dibuat/diupdate -->
-                            <p class="text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100">
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
                                 <span data-translate="sertifikat_dibuat" data-translate-page="sertifikat"></span>:
                                 {{ $entry->created_at ? $entry->created_at->format('d M Y') : '-' }}
                                 @if($entry->created_at != $entry->updated_at)

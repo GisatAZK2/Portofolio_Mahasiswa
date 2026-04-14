@@ -182,12 +182,13 @@
                 @endif
             </div>
         @else
-            <form id="bulkDeleteForm" action="{{ route('admin.sertifikat.bulk-destroy') }}" method="POST">
+            <form id="bulkDeleteForm" action="{{ route('admin.sertifikat.bulk-destroy') }}" method="POST" style="display: none;">
                 @csrf
                 @method('DELETE')
                 <input type="hidden" name="selected_ids" id="selectedIdsInput" value="">
+            </form>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($sertifikat as $entry)
                         <div class="certificate-card bg-white dark:border-gray-900 dark:bg-gray-900 dark:text-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all border-2 relative flex flex-col h-full"
                             data-id="{{ $entry->id }}">
@@ -353,8 +354,8 @@
                                         <form action="{{ route('admin.sertifikat.destroy', $entry->id) }}" method="POST"
                                             class="delete-form {{ $canEdit ? '' : '' }}">
                                             @csrf @method('DELETE')
-                                            <button type="button"
-                                                class="delete-btn w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700 text-white rounded-2xl font-medium transition-all shadow-md hover:shadow-lg">
+                                            <button type="submit" onclick="return confirm('Hapus Sertifikat? Sertifikat ini akan dihapus permanen dan tidak bisa dikembalikan.')"
+                                                class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700 text-white rounded-2xl font-medium transition-all shadow-md hover:shadow-lg">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -398,12 +399,11 @@
                         </div>
                     @endforeach
                 </div>
-            </form>
 
-            {{-- Pagination --}}
-            <div class="mt-8" data-pagination-group="admin_sertifikats">
-                {{ $sertifikat->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_sertifikats']) }}
-            </div>
+                {{-- Pagination --}}
+                <div class="mt-8" data-pagination-group="admin_sertifikats">
+                    {{ $sertifikat->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_sertifikats']) }}
+                </div>
 
         @endif
     </div>
@@ -606,39 +606,6 @@
                     }
                 });
             }
-
-            // ============== SINGLE DELETE FUNCTIONALITY ==============
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
-
-                    const confirmed = await Swal.fire({
-                        title: 'Hapus Sertifikat?',
-                        text: 'Sertifikat ini akan dihapus permanen dan tidak bisa dikembalikan.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal',
-                        reverseButtons: true
-                    });
-
-                    if (confirmed.isConfirmed) {
-                        Swal.fire({
-                            title: 'Menghapus...',
-                            text: 'Mohon tunggu sebentar',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        this.closest('form').submit();
-                    }
-                });
-            });
 
             // ============== APPROVE FUNCTIONALITY ==============
             document.querySelectorAll('.approve-btn').forEach(button => {
