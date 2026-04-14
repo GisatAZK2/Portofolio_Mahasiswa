@@ -106,9 +106,17 @@
 
         // Ekstrak youtube_id jika link_video adalah YouTube
         $youtube_id = '';
-        if ($link_video) {
+        $isValidVideo = false;
+        
+        if ($link_video && !empty(trim($link_video))) {
+            // Cek apakah link adalah YouTube
             if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link_video, $matches)) {
                 $youtube_id = $matches[1];
+                $isValidVideo = true;
+            } 
+            // Cek apakah link adalah video langsung (mp4, etc)
+            elseif (preg_match('/\.(mp4|webm|ogg)$/i', $link_video)) {
+                $isValidVideo = true;
             }
         }
 
@@ -129,12 +137,12 @@
                     class="w-full h-full object-cover" loading="lazy"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div
-                    class="absolute inset-0 hidden bg-linear-to-br from-indigo-500 to-purple-600 items-center justify-center text-white font-bold text-lg">
+                    class="absolute inset-0 hidden bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center text-white font-bold text-lg">
                     {{ substr($userName, 0, 1) }}
                 </div>
             @else
                 <div
-                    class="w-full h-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                    class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                     {{ substr($userName, 0, 1) }}
                 </div>
             @endif
@@ -269,13 +277,39 @@
                 </div>
             @endif
 
-            <!-- YouTube Video -->
-            @if($youtube_id)
+            <!-- YouTube Video atau Preview Kosong -->
+            @if($isValidVideo && $youtube_id)
+                <!-- Video Preview untuk YouTube -->
                 @include('components.video_preview', [
                     'link_video' => $link_video,
                     'alt' => 'Video ' . $nama_project,
                     'class' => 'rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-3 sm:mt-4'
                 ])
+            @elseif($isValidVideo && !$youtube_id)
+                <!-- Video Preview untuk video langsung (mp4, etc) -->
+                <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm bg-gray-100 dark:bg-gray-800">
+                    <video class="w-full h-32 sm:h-40 md:h-48 object-cover" controls>
+                        <source src="{{ $link_video }}" type="video/mp4">
+                        Browser Anda tidak mendukung video.
+                    </video>
+                </div>
+            @else
+                <!-- Preview Kosong ketika tidak ada video -->
+                <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50">
+                    <div class="flex flex-col items-center justify-center py-6 sm:py-8 px-4 text-center">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Tidak ada video preview</p>
+                        @if($link_video && !empty(trim($link_video)))
+                            <a href="{{ $link_video }}" target="_blank" 
+                                class="mt-2 text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
+                                Lihat Video →
+                            </a>
+                        @endif
+                    </div>
+                </div>
             @endif
 
             <!-- Links -->
