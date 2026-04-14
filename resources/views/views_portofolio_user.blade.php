@@ -111,7 +111,7 @@
                                 {{ trim($user->nama_mahasiswa ?? 'Mahasiswa') }}
                             </h1>
                             <p class="text-sm text-gray-600 dark:text-gray-300">
-                               Prodi :  {{ $user->jurusan?->nama_jurusan ?? 'Mahasiswa' }}
+                               <span data-translate="prodi" data-translate-page="portofolio_user"> Prodi :</span>  {{ $user->jurusan?->nama_jurusan ?? 'Mahasiswa' }}
                             </p>
 
                             <div class="text-xs text-gray-600 dark:text-gray-300 mt-3 flex flex-col gap-2">
@@ -122,7 +122,7 @@
                                     <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
                                     </svg>
-                                    <span>Angkatan :</span>
+                                    <span data-translate="agkt" data-translate-page="portofolio_user">Cohort :</span>
                                     <span class="font-medium">{{ $user->angkatan?->nama_angkatan ?? '-' }}</span>
                                 </span>
                             </div>
@@ -149,11 +149,11 @@
 
                     <!-- Keahlian -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5">
-                        <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-4">Keahlian</h3>
+                        <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-4" data-translate="khl" data-translate-page="portofolio_user">Keahlian</h3>
 
                         @if($user->keahlian)
                             <div class="mb-5">
-                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Utama:</p>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="Utama" data-translate-page="portofolio_user">Utama:</p>
                                 <div class="flex flex-wrap gap-2">
                                     <span
                                         class="px-3 py-1 text-xs font-medium bg-red-50 text-red-700 rounded-full border border-red-100">
@@ -196,7 +196,7 @@
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
                         
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-0">Projects</h3>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-0" data-translate="pjt" data-translate-page="portofolio_user">Projects</h3>
             
                             <div class="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
                                 <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'completed']) }}" 
@@ -204,21 +204,21 @@
                                           {{ $projectTab == 'completed' 
                                              ? 'bg-white dark:bg-gray-900 text-indigo-600 shadow-sm' 
                                              : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
-                                    Selesai
+                                    <span data-translate="done" data-translate-page="portofolio_user">Selesai</span>
                                 </a>
                                 <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'now']) }}" 
                                    class="px-4 py-2 text-sm font-medium rounded-md transition-all
                                           {{ $projectTab == 'now' 
                                              ? 'bg-white dark:bg-gray-900 text-indigo-600 shadow-sm' 
                                              : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
-                                    Sedang Dikerjakan
+                                    <span data-translate="ongoing" data-translate-page="portofolio_user">Sedang Dikerjakan</span>
                                 </a>
                                 <a href="{{ request()->fullUrlWithQuery(['project_tab' => 'upcoming']) }}" 
                                    class="px-4 py-2 text-sm font-medium rounded-md transition-all
                                           {{ $projectTab == 'upcoming' 
                                              ? 'bg-white dark:bg-gray-900 text-indigo-600 shadow-sm' 
                                              : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
-                                    Akan Datang
+                                    <span data-translate="soon" data-translate-page="portofolio_user">Akan Datang</span>
                                 </a>
                             </div>
                         </div>
@@ -227,20 +227,20 @@
                             <span class="text-sm text-gray-500 dark:text-gray-400">
                                 @switch($projectTab)
                                     @case('completed')
-                                        Menampilkan proyek yang telah selesai
+                                        <span data-translate="show_done" data-translate-page="portofolio_user">Menampilkan proyek yang telah selesai</span>
                                         @break
                                     @case('now')
-                                        Menampilkan proyek yang sedang dikerjakan
+                                        <span data-translate="show_ongoing" data-translate-page="portofolio_user">Menampilkan proyek yang sedang dikerjakan</span>
                                         @break
                                     @case('upcoming')
-                                        Menampilkan proyek yang akan datang
+                                        <span data-translate="show_soon" data-translate-page="portofolio_user">Menampilkan proyek yang akan datang</span>
                                         @break
                                     @default
-                                        Menampilkan semua proyek
+                                        <span data-translate="show_all" data-translate-page="portofolio_user"></span>Menampilkan semua proyek</span>
                                 @endswitch
                             </span>
                             <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                                {{ $projects->total() }} proyek
+                                {{ $projects->total() }} <span data-translate="pjt" data-translate-page="portofolio_user">proyek</span>
                             </span>
                         </div>
 
@@ -348,7 +348,7 @@
                                                                         @endif
                                                                     </a>
                                                                 @else
-                                                                    <p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                    <p data-translate="pjt_noneownlead" data-translate-page="portofolio_user" class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
                                                                         Tidak ada owner/leader
                                                                     </p>
                                                                 @endif
@@ -384,7 +384,7 @@
                                                                     @endif
                                                                 </a>
                                                             @else
-                                                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                <p data-translate="pjt_nolead" data-translate-page="portofolio_user" class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                                                                     Tidak ada leader
                                                                 </p>
                                                             @endif
@@ -417,8 +417,8 @@
                                                                     @endif
                                                                 </a>
                                                             @else
-                                                                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                                                    Tidak ada owner
+                                                                <p data-translate="pjt_ownnone" data-translate-page="portofolio_user" class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                    No owner
                                                                 </p>
                                                             @endif
                                                         </div>
@@ -441,7 +441,7 @@
                                                 <!-- Preview Video/Project -->
                                                 @if(!empty($linkVideo))
                                                     <div class="mt-2">
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">PREVIEW VIDEO</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Pratinjau Video</p>
                                                         <a href="{{ $linkVideo }}" target="_blank" rel="noopener noreferrer" class="block group">
                                                             @php
                                                                 // Extract YouTube video ID
@@ -509,7 +509,7 @@
                                                     </div>
                                                 </div>
                                             @else
-                                                <p class="text-xs text-gray-400 dark:text-gray-500 italic mt-2">
+                                                <p data-translate="pjt_noteam" data-translate-page="portofolio_user" class="text-xs text-gray-400 dark:text-gray-500 italic mt-2">
                                                     Belum ada anggota tim
                                                 </p>
                                             @endif
@@ -520,14 +520,14 @@
                                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
-                                                    Mulai: {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}
+                                                    <span data-translate="start" data-translate-page="portofolio_user">Mulai</span>: {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}
                                                 </span>
                                                 @if($project->tanggal_akhir)
                                                     <span class="flex items-center">
                                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>
-                                                        Selesai: {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y') }}
+                                                        <span data-translate="end" data-translate-page="portofolio_user">Selesai</span></span>: {{ \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y') }}
                                                     </span>
                                                 @endif
                                             </div>
@@ -565,8 +565,8 @@
                     <!-- Sertifikat -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Sertifikat</h3>
-                            <span class="text-sm text-indigo-600 dark:text-indigo-400">{{ $user->sertifikats->count() }} sertifikat</span>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100" data-translate="stk" data-translate-page="portofolio_user">Sertifikat</h3>
+                            <span class="text-sm text-indigo-600 dark:text-indigo-400">{{ $user->sertifikats->count() }} <span data-translate="stk" data-translate-page="portofolio_user">sertifikat</span></span>
                         </div>
 
                         @if($user->sertifikats->isNotEmpty())
@@ -671,7 +671,7 @@
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
                      <div class="flex justify-between items-center mb-5">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Learning Corners</h3>
-                        <span class="text-sm text-indigo-600 dark:text-indigo-400 ">{{ $user->learning_corners->count() }} catatan</span>
+                        <span class="text-sm text-indigo-600 dark:text-indigo-400 ">{{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="portofolio_user">catatan</span></span>
                      </div>
 
                         @if($user->learning_corners->isNotEmpty())
@@ -721,7 +721,7 @@
                                                     @endif
                                                 @endforeach
                                             @else
-                                                <p class="text-sm text-gray-600 italic">
+                                                <p data-translate="empty_content" data-translate-page="portofolio_user" class="text-sm text-gray-600 italic">
                                                     Tidak ada konten yang dapat ditampilkan
                                                 </p>
                                             @endif
@@ -730,7 +730,7 @@
                                             @if($entry->project)
                                                 <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                        Dari project: 
+                                                        <span data-translate="lrn_origin" data-translate-page="portofolio_user">Dari project:</span> 
                                                         <a href="{{ route('project.show', $entry->project->id) }}" class="text-indigo-600 hover:underline">
                                                             {{ $entry->project->isi_content['nama_project'] ?? 'Project' }}
                                                         </a>
@@ -746,7 +746,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-sm text-center text-gray-500  italic">
+                            <p data-translate="empty_lrn" data-translate-page="portofolio_user" class="text-sm text-center text-gray-500  italic">
                                 Belum ada catatan learning corner
                             </p>
                         @endif
