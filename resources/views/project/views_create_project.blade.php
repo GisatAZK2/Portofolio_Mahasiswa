@@ -35,7 +35,7 @@
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                             text-gray-700 dark:text-gray-300
                                             placeholder-gray-500 dark:placeholder-gray-400
-                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror" 
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror"
                     placeholder="Contoh: Website Portfolio Pribadi">
                 @error('nama_project')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -73,114 +73,73 @@
                 </label>
             </div>
 
-            <!-- Collaborative Section (Hidden by default) -->
-            <div id="collaborative-section" style="display: none;">
-                <!-- Add Pemimpin Project -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="tambah_pemimpin" data-translate-page="project_create"></span>
-                    </label>
-
-                    <!-- Selected Leader Display -->
-                    <div id="selected-leader-display" class="mb-3 hidden">
-                        <div class="p-3 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2" id="selected-leader-content"></div>
-                                <button type="button" onclick="clearSelectedLeader()"
-                                    class="text-blue-600 dark:text-blue-400 hover:text-red-600 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <!-- Search Input for Leader -->
-                        <div class="relative">
-                            <input type="text" id="leader-search-input" placeholder="Cari pemimpin..."
-                                class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                text-gray-700 dark:text-gray-300
-                                                placeholder-gray-500 dark:placeholder-gray-400
-                                                shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm outline-none transition">
-                            <div class="absolute left-3 top-2.5 text-gray-400">
+            <!-- User Selection Section -->
+            <div id="user-selection-section" style="display: none;">
+                <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Pemilihan User Project</h3>
+                        <button type="button" onclick="openUserModal()" 
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
+                            <span class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
-                            </div>
-                        </div>
-
-                        <!-- Filter Dropdowns for Leader -->
-                        <div class="grid grid-cols-2 gap-2">
-                            <select id="leader-filter-angkatan" class="px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                text-gray-700 dark:text-gray-300
-                                                shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                                <option value="">Semua Angkatan</option>
-                                @foreach ($angkatanList as $ank)
-                                    <option value="{{ $ank->id }}" {{ $angkatan == $ank->id ? 'selected' : '' }}>
-                                        {{ $ank->tahun_masuk }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            <select id="leader-filter-jurusan" class="px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                text-gray-700 dark:text-gray-300
-                                                shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                                <option value="">Semua Prodi</option>
-                                @foreach ($jurusanList as $jur)
-                                    <option value="{{ $jur->id }}" {{ $jurusan == $jur->id ? 'selected' : '' }}>
-                                        {{ $jur->nama_jurusan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Leader Select Dropdown -->
-                        <select name="leader" id="leader-select" class="w-full px-4 py-2.5 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                                focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                                text-gray-700 dark:text-gray-300
-                                                shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                            <option value="">-- Pilih Pemimpin Project --</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" data-name="{{ $user->nama_mahasiswa }}"
-                                    data-angkatan="{{ $user->id_angkatan ?? '' }}" data-jurusan="{{ $user->id_jurusan ?? '' }}">
-                                    {{ $user->nama_mahasiswa }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Add Members -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="tambah_rekan" data-translate-page="project_create"></span>
-                    </label>
-
-                    <div id="members-container" class="space-y-2">
+                                Tambah User
+                            </span>
+                        </button>
                     </div>
 
-                    <button type="button" onclick="addMemberSelect()"
-                        class="mt-2 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span data-translate="tambah_rekan_btn" data-translate-page="project_create"></span>
-                    </button>
+                    <!-- Selected Users Display -->
+                    <div id="selected-users-container" class="space-y-3">
+                        <!-- Users will be displayed here -->
+                    </div>
+
+                    <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                        Belum ada leader atau member yang dipilih. Klik "Tambah User" untuk memulai.
+                    </div>
                 </div>
             </div>
 
-            <!-- Hidden inputs for leader -->
-            <input type="hidden" name="leader_name" id="leader-name">
-            <input type="hidden" name="leader_photo" id="leader-photo">
-            <input type="hidden" name="leader_email" id="leader-email">
+            <input type="hidden" id="selected-owner-id" value="{{ Auth::id() }}">
+            <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader') }}">
+            <input type="hidden" id="selected-members-ids" value="{{ old('members') ? implode(',', old('members')) : '' }}">
+            <div id="selected-members-inputs" class="hidden"></div>
+
+            <!-- User selection modal -->
+            <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+                <div class="absolute inset-0 bg-black/40" onclick="closeUserModal()"></div>
+                <div class="relative w-full max-w-3xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih Leader / Member</h2>
+                        <button type="button" onclick="closeUserModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">Tutup</button>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <input id="modal-search" type="text" placeholder="Cari nama atau email..."
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                            <select id="modal-angkatan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                                <option value="">Semua Angkatan</option>
+                                @foreach($angkatanList as $angkatanItem)
+                                    <option value="{{ $angkatanItem->id }}">{{ $angkatanItem->nama_angkatan }}</option>
+                                @endforeach
+                            </select>
+                            <select id="modal-jurusan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                                <option value="">Semua Jurusan</option>
+                                @foreach($jurusanList as $jurusanItem)
+                                    <option value="{{ $jurusanItem->id }}">{{ $jurusanItem->nama_jurusan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div id="modal-user-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
+
+                        <div class="flex justify-end gap-3 pt-4">
+                            <button type="button" onclick="closeUserModal()" class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">Batal</button>
+                            <button type="button" onclick="confirmUserSelection()" class="px-4 py-3 bg-indigo-600 text-white rounded-xl">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -260,20 +219,17 @@
                 @enderror
             </div>
 
-            <!-- Add Tasks -->
-            <div>
-                <label data-translate="add_task" data-translate-page="msh_project_task" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                    Tambahkan Tugas
+            <!-- Tambah Tugas -->
+            <div id="task-section">
+                <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    Tambah Tugas (opsional)
                 </label>
-
                 <div id="tasks-container" class="space-y-4"></div>
-
                 <button type="button" onclick="addTaskRow()"
-                    class="mt-2 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span data-translate="add" data-translate-page="msh_project_task">Tambah Tugas</span>
+                    class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
+                    <span class="text-xl">+</span> <span data-translate="add_task_opt"
+                        data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                 </button>
             </div>
 
@@ -287,627 +243,431 @@
     </div>
 
     <script>
-        const usersData = @json($users);
-        const currentUserData = @json(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa]);
+        @php
+            $currentUserData = Auth::check() 
+                ? Auth::user()->only(['id', 'nama_mahasiswa', 'photo_profile', 'email']) 
+                : null;
+        @endphp
+        const allUsers = @json($users);
+        const currentUser = @json($currentUserData);
+        
+        let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+        let selectedUsers = { owner: null, leader: null, members: [] };
         let taskIndex = 0;
 
-        // Update leader display when selected
-        function updateLeaderDisplay(userId) {
-            if (!userId) {
-                document.getElementById('selected-leader-display').classList.add('hidden');
-                document.getElementById('leader-name').value = '';
-                document.getElementById('leader-photo').value = '';
-                document.getElementById('leader-email').value = '';
+        function updateSelectedUsersBadge() {
+            const badge = document.getElementById('selected-users-badge');
+            if (!badge) return;
+
+            const count = (selectedUsers.leader ? 1 : 0) + selectedUsers.members.length;
+
+            if (count === 0) {
+                badge.innerHTML = '';
+            } else {
+                badge.innerHTML = `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} terpilih</span>`;
+            }
+        }
+
+        function updateTaskSectionVisibility() {
+            const taskSection = document.getElementById('task-section');
+            if (!taskSection) return;
+            taskSection.classList.remove('hidden');
+        }
+
+        function openUserModal() {
+            // Cek apakah toggle aktif sebelum membuka modal
+            const toggle = document.getElementById('project-collaborative-toggle');
+            if (!toggle || !toggle.checked) {
+                alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
+                return;
+            }
+            document.getElementById('userModal').classList.remove('hidden');
+            loadUsersToModal();
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+        
+        function filterUsersForModal() {
+            return allUsers.filter(user => {
+                if (currentUser && String(user.id) === String(currentUser.id)) {
+                    return false;
+                }
+                const keyword = currentModalFilters.search.toLowerCase().trim();
+
+                // Search (nama atau email)
+                const matchesSearch = !keyword || 
+                    user.nama_mahasiswa.toLowerCase().includes(keyword) || 
+                    (user.email && user.email.toLowerCase().includes(keyword));
+
+                // Angkatan
+                const matchesAngkatan = !currentModalFilters.angkatan || 
+                    String(user.id_angkatan) === String(currentModalFilters.angkatan);
+
+                // Jurusan - lebih aman (bisa dari relation atau field langsung)
+                const userJurusanId = (user.jurusan && user.jurusan.id_jurusan) 
+                              ? user.jurusan.id_jurusan 
+                              : user.id_jurusan;
+                const matchesJurusan = !currentModalFilters.jurusan || 
+                    String(userJurusanId) === String(currentModalFilters.jurusan);
+
+                // Keahlian - lebih aman
+                const userKeahlianId = (user.keahlian && user.keahlian.id_keahlian) 
+                               ? user.keahlian.id_keahlian 
+                               : user.id_keahlian;
+                const matchesKeahlian = !currentModalFilters.keahlian || 
+                    String(userKeahlianId) === String(currentModalFilters.keahlian);
+
+                return matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
+            });
+        }
+
+        function loadUsersToModal() {
+            const userList = document.getElementById('modal-user-list');
+            const filteredUsers = filterUsersForModal();
+            if (!userList) return;
+
+            if (filteredUsers.length === 0) {
+                userList.innerHTML = `
+                    <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+                        Tidak ada mahasiswa yang sesuai filter.
+                    </div>
+                `;
                 return;
             }
 
-            const selectedUser = usersData.find(u => u.id == userId);
+            userList.innerHTML = filteredUsers.map(user => {
+                const isLeader = selectedUsers.leader?.id == user.id;
+                const isMember = selectedUsers.members.some(m => m.id == user.id);
+                const memberDisabled = isLeader;
 
-            if (selectedUser) {
-                document.getElementById('leader-name').value = selectedUser.nama_mahasiswa;
-                document.getElementById('leader-photo').value = selectedUser.photo_profile || '';
-                document.getElementById('leader-email').value = selectedUser.email || '';
-
-                const display = document.getElementById('selected-leader-display');
-                const content = document.getElementById('selected-leader-content');
-
-                let photoHtml = selectedUser.photo_profile && selectedUser.photo_profile.includes('storage')
-                    ? `<img src="{{ asset('') }}${selectedUser.photo_profile}" class="w-10 h-10 rounded-lg object-cover border border-white dark:border-gray-700 shadow" alt="${selectedUser.nama_mahasiswa}">`
-                    : `<div class="w-10 h-10 rounded-lg bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                                ${selectedUser.nama_mahasiswa.charAt(0).toUpperCase()}
-                                           </div>`;
-
-                content.innerHTML = `
-                                        ${photoHtml}
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-900 dark:text-white">${selectedUser.nama_mahasiswa}</div>
-                                        </div>
-                                    `;
-
-                display.classList.remove('hidden');
-            }
-
-            updateDisabledOptions();
-            saveToLocalStorage();
-        }
-
-        function isCollaborative() {
-            return document.getElementById('project-collaborative-toggle').checked;
-        }
-
-        function getAvailableTaskUsers() {
-            if (!isCollaborative()) {
-                return [currentUserData];
-            }
-
-            const leaderId = document.getElementById('leader-select').value;
-            const memberIds = Array.from(document.querySelectorAll('.member-select'))
-                .map(select => select.value)
-                .filter(value => value);
-
-            const ids = [String(currentUserData.id)];
-            if (leaderId && leaderId !== String(currentUserData.id)) {
-                ids.push(leaderId);
-            }
-
-            memberIds.forEach(id => {
-                if (!ids.includes(id)) {
-                    ids.push(id);
-                }
-            });
-
-            return ids.map(id => {
-                const user = usersData.find(u => String(u.id) === String(id));
-                if (user) {
-                    return user;
-                }
-                if (String(currentUserData.id) === String(id)) {
-                    return currentUserData;
-                }
-                return null;
-            }).filter(Boolean);
-        }
-
-        function renderTaskUserOptions(selectedId = null) {
-            const availableUsers = getAvailableTaskUsers();
-            let options = '<option data-translate="pick_rsp" data-translate-page="msh_project_task" value="">-- Pilih Penanggung Jawab --</option>';
-            availableUsers.forEach(user => {
-                const selected = selectedId && String(user.id) === String(selectedId)
-                    ? 'selected'
-                    : (!selectedId && String(user.id) === String(currentUserData.id) ? 'selected' : '');
-                options += `<option value="${user.id}" ${selected}>${user.nama_mahasiswa}</option>`;
-            });
-            return options;
-        }
-
-        function updateTaskUserOptions() {
-            const availableUsers = getAvailableTaskUsers();
-            document.querySelectorAll('select[name="tasks[][user_id]"]').forEach(select => {
-                const currentValue = select.value;
-                const stillAvailable = availableUsers.some(user => String(user.id) === String(currentValue));
-                select.innerHTML = renderTaskUserOptions(stillAvailable ? currentValue : null);
-            });
-        }
-
-        function renderCollaborativeToggle() {
-            const on = isCollaborative();
-            const toggle = document.getElementById('project-collaborative-toggle');
-            const label = document.getElementById('toggle-label');
-            
-            if (on) {
-                label.textContent = 'Aktif';
-                document.getElementById('collaborative-section').style.display = 'block';
-            } else {
-                label.textContent = 'Nonaktif';
-                document.getElementById('collaborative-section').style.display = 'none';
-                // Clear leader and members when collaborative is off
-                clearSelectedLeader();
-                document.getElementById('members-container').innerHTML = '';
-            }
-        }
-
-        // Clear selected leader
-        function clearSelectedLeader() {
-            document.getElementById('leader-select').value = '';
-            updateLeaderDisplay('');
-            updateDisabledOptions();
-            saveToLocalStorage();
-        }
-
-        // Filter leader options based on search and filters
-        function filterLeaderDropdown(searchValue) {
-            const leaderSelect = document.getElementById('leader-select');
-            const filterAngkatan = document.getElementById('leader-filter-angkatan').value;
-            const filterJurusan = document.getElementById('leader-filter-jurusan').value;
-            const options = leaderSelect.querySelectorAll('option');
-            const searchLower = searchValue.toLowerCase();
-
-            options.forEach(option => {
-                if (option.value === '') {
-                    option.style.display = '';
-                } else {
-                    const name = option.getAttribute('data-name').toLowerCase();
-                    const angkatan = option.getAttribute('data-angkatan');
-                    const jurusan = option.getAttribute('data-jurusan');
-
-                    let show = name.includes(searchLower);
-                    if (filterAngkatan && show) {
-                        show = angkatan === filterAngkatan;
-                    }
-                    if (filterJurusan && show) {
-                        show = jurusan === filterJurusan;
-                    }
-
-                    option.style.display = show ? '' : 'none';
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
-            @endif
-
-            @if ($errors->any())
-                showErrorAlert('{{ $errors->first() }}');
-            @endif
-
-            // Set collaborative toggle to off by default
-            const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-            collaborativeToggle.checked = false;
-            renderCollaborativeToggle();
-            
-            loadSavedData();
-            initializeMemberSelects();
-            updateTaskUserOptions();
-
-            const oldTasks = @json(old('tasks', []));
-            if (Array.isArray(oldTasks) && oldTasks.length > 0) {
-                oldTasks.forEach(task => {
-                    if (task.user_id && task.name_task) {
-                        addTaskRow(task);
-                    }
-                });
-            }
-            
-            if (document.querySelectorAll('.task-item').length === 0) {
-                addTaskRow();
-            }
-
-            // Leader select change event
-            const leaderSelect = document.getElementById('leader-select');
-            leaderSelect.addEventListener('change', function () {
-                updateLeaderDisplay(this.value);
-            });
-
-            // Leader search input
-            const leaderSearchInput = document.getElementById('leader-search-input');
-            leaderSearchInput.addEventListener('input', function () {
-                filterLeaderDropdown(this.value);
-            });
-
-            // Leader filter dropdowns
-            const leaderFilterAngkatan = document.getElementById('leader-filter-angkatan');
-            const leaderFilterJurusan = document.getElementById('leader-filter-jurusan');
-
-            leaderFilterAngkatan.addEventListener('change', function () {
-                filterLeaderDropdown(leaderSearchInput.value);
-            });
-
-            leaderFilterJurusan.addEventListener('change', function () {
-                filterLeaderDropdown(leaderSearchInput.value);
-            });
-
-            collaborativeToggle.addEventListener('change', function () {
-                updateTaskUserOptions();
-                renderCollaborativeToggle();
-                
-                // Re-render semua task row agar user_id otomatis terisi jika non-kolaboratif
-                setTimeout(() => {
-                    const taskItems = document.querySelectorAll('.task-item');
-                    if (!isCollaborative()) {
-                        taskItems.forEach(item => {
-                            const select = item.querySelector('select[name="tasks[][user_id]"]');
-                            if (select) {
-                                select.value = currentUserData.id;
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            ${user.photo_profile ?
+                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover">` :
+                                `<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                                </div>`
                             }
-                        });
-                    } else {
-                        // Re-render all task rows to update available users
-                        const tasks = [];
-                        taskItems.forEach(item => {
-                            const select = item.querySelector('select[name="tasks[][user_id]"]');
-                            const input = item.querySelector('input[name="tasks[][name_task]"]');
-                            if (select && input) {
-                                tasks.push({
-                                    user_id: select.value,
-                                    name_task: input.value
-                                });
-                            }
-                        });
-                        
-                        // Clear container and re-add tasks
-                        const container = document.getElementById('tasks-container');
-                        container.innerHTML = '';
-                        if (tasks.length === 0) {
-                            addTaskRow();
-                        } else {
-                            tasks.forEach(task => addTaskRow(task));
-                        }
-                    }
-                }, 100);
-            });
-
-            document.getElementById('projectForm').addEventListener('submit', function () {
-                removeBlankTaskRows();
-                clearLocalStorage();
-            });
-
-            // Load saved leader data
-            const oldLeaderId = document.getElementById('leader-select').value;
-            if (oldLeaderId) {
-                updateLeaderDisplay(oldLeaderId);
-            }
-        });
-
-        function saveToLocalStorage() {
-            if (!isCollaborative()) return;
-            
-            const leaderId = document.getElementById("leader-select").value;
-
-            // Get all member selects
-            const memberSelects = document.querySelectorAll('.member-select');
-            const memberIds = [];
-
-            memberSelects.forEach(select => {
-                if (select.value) {
-                    memberIds.push(select.value);
-                }
-            });
-
-            const projectData = {
-                leader: leaderId,
-                members: memberIds
-            };
-
-            localStorage.setItem('projectTeamData', JSON.stringify(projectData));
-        }
-
-        function loadSavedData() {
-            const savedData = localStorage.getItem('projectTeamData');
-
-            if (savedData && isCollaborative()) {
-                try {
-                    const data = JSON.parse(savedData);
-
-                    // Set leader
-                    if (data.leader) {
-                        document.getElementById("leader-select").value = data.leader;
-                        updateLeaderDisplay(data.leader);
-                    }
-
-                    const container = document.getElementById('members-container');
-                    container.innerHTML = '';
-
-                    if (data.members && data.members.length > 0) {
-                        data.members.forEach(memberId => {
-                            if (memberId) {
-                                addMemberSelect(memberId);
-                            }
-                        });
-                    } else {
-                        addMemberSelect();
-                    }
-
-                    setTimeout(() => {
-                        updateDisabledOptions();
-                    }, 100);
-
-                } catch (e) {
-                    console.error('Error parsing saved data:', e);
-                    addMemberSelect();
-                }
-            } else {
-                addMemberSelect();
-            }
-        }
-
-        function clearLocalStorage() {
-            localStorage.removeItem('projectTeamData');
-        }
-
-        function updateDisabledOptions() {
-            if (!isCollaborative()) return;
-            
-            const leaderId = document.getElementById("leader-select").value;
-
-            // Get all selected member IDs
-            const selectedMemberIds = [];
-            document.querySelectorAll(".member-select").forEach(select => {
-                if (select.value) {
-                    selectedMemberIds.push(select.value);
-                }
-            });
-
-            // Update all member selects
-            document.querySelectorAll(".member-select").forEach(select => {
-                select.querySelectorAll("option").forEach(option => {
-                    option.disabled = false;
-                });
-
-                if (leaderId) {
-                    let leaderOption = select.querySelector(`option[value="${leaderId}"]`);
-                    if (leaderOption) {
-                        leaderOption.disabled = true;
-                    }
-                }
-
-                selectedMemberIds.forEach(selectedId => {
-                    if (selectedId && select.value !== selectedId) {
-                        let selectedOption = select.querySelector(`option[value="${selectedId}"]`);
-                        if (selectedOption) {
-                            selectedOption.disabled = true;
-                        }
-                    }
-                });
-            });
-            updateTaskUserOptions();
-        }
-
-        // Function to initialize member selects
-        function initializeMemberSelects() {
-            document.querySelectorAll(".member-select").forEach(select => {
-                select.addEventListener("change", function () {
-                    updateDisabledOptions();
-                    saveToLocalStorage();
-                });
-            });
-        }
-
-        function addMemberSelect(savedValue = null) {
-            if (!isCollaborative()) return;
-            
-            const container = document.getElementById('members-container');
-
-            const memberDiv = document.createElement('div');
-            memberDiv.classList.add('member-item', 'mb-4');
-
-            let optionsHtml = '<option value="">-- Pilih Mahasiswa --</option>';
-            usersData.forEach(user => {
-                const selected = savedValue && savedValue == user.id ? 'selected' : '';
-                optionsHtml += `<option value="${user.id}" data-name="${user.nama_mahasiswa}" data-angkatan="${user.id_angkatan ?? ''}" data-jurusan="${user.id_jurusan ?? ''}" ${selected}>${user.nama_mahasiswa}</option>`;
-            });
-
-            memberDiv.innerHTML = `
-                <div class="space-y-2">
-                    <div class="relative">
-                        <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400 pointer-events-none member-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input type="text" placeholder="Cari mahasiswa..."
-                            class="member-search w-full pl-10 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                            text-gray-700 dark:text-gray-300
-                            placeholder-gray-500 dark:placeholder-gray-400
-                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
+                            <div>
+                                <div class="font-medium text-gray-900 dark:text-gray-100">${user.nama_mahasiswa}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
+                                <option value="">-- Pilih Role --</option>
+                                <option value="leader" ${isLeader ? 'selected' : ''}>Leader</option>
+                                <option value="member" ${isMember ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <select class="member-filter-angkatan px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                            text-gray-700 dark:text-gray-300
-                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                            <option value="">Semua Angkatan</option>
-                            @foreach ($angkatanList as $ank)
-                                <option value="{{ $ank->id }}">{{ $ank->tahun_masuk }}</option>
-                            @endforeach
-                        </select>
-                        <select class="member-filter-jurusan px-3 py-2 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                            text-gray-700 dark:text-gray-300
-                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm">
-                            <option value="">Semua Jurusan</option>
-                            @foreach ($jurusanList as $jur)
-                                <option value="{{ $jur->id }}">{{ $jur->nama_jurusan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex gap-2">
-                        <select name="members[]" 
-                            class="member-select w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                            text-gray-700 dark:text-gray-300
-                            placeholder-gray-500 dark:placeholder-gray-400
-                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-lg">
-                            ${optionsHtml}
-                        </select>
-                        <button type="button" 
-                            onclick="removeMember(this)"
-                            class="px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
-                            ✕
+                `;
+            }).join('');
+        }
+
+        function updateUserRole(selectElement, userId, role) {
+            const user = allUsers.find(u => u.id == userId);
+            if (!user) return;
+
+            if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id != userId) {
+                if (!confirm('Leader sudah ada. Ganti leader?')) {
+                    selectElement.value = '';
+                    return;
+                }
+            }
+
+            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
+            selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
+
+            if (role === 'leader') {
+                selectedUsers.leader = user;
+            } else if (role === 'member') {
+                selectedUsers.members.push(user);
+            }
+
+            updateFormInputs();
+            renderSelectedUsers();
+            loadUsersToModal();
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+        }
+        
+        function confirmUserSelection() {
+            updateFormInputs();
+            renderSelectedUsers();
+            // Refresh task UI
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            closeUserModal();
+        }
+
+        function updateFormInputs() {
+            document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
+            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+            document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
+
+            const memberInputs = document.getElementById('selected-members-inputs');
+            if (memberInputs) {
+                memberInputs.innerHTML = selectedUsers.members
+                    .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
+                    .join('');
+            }
+        }
+
+        function renderSelectedUsers() {
+            const container = document.getElementById('selected-users-container');
+            const noUsersMsg = document.getElementById('no-users-message');
+            if (!container || !noUsersMsg) return;
+
+            const selected = [];
+            if (selectedUsers.leader) selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
+
+            if (!selected.length) {
+                container.innerHTML = '';
+                noUsersMsg.classList.remove('hidden');
+                return;
+            }
+
+            noUsersMsg.classList.add('hidden');
+            container.innerHTML = selected.map(user => {
+                const styles = {
+                    Leader: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    Member: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                }[user.role];
+
+                return `
+                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                        <div class="flex items-center gap-3">
+                            ${user.photo_profile ?
+                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
+                                `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                                </div>`
+                            }
+                            <div>
+                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
                         </button>
                     </div>
+                `;
+            }).join('');
+        }
+
+        function removeUser(userId) {
+            if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
+            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
+            selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
+            updateFormInputs();
+            renderSelectedUsers();
+            // Refresh task UI
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+        }
+
+        function loadSelectedUsersFromForm() {
+            selectedUsers.owner = currentUser || null;
+            const leaderId = document.getElementById('selected-leader-id')?.value;
+            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
+
+            if (leaderId) selectedUsers.leader = getUserById(leaderId);
+            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+        }
+
+        function getUserById(id) {
+            return allUsers.find(u => String(u.id) === String(id)) || null;
+        }
+
+        function getAllowedTaskUsers() {
+            const users = [];
+            const added = new Set();
+            const add = user => {
+                if (!user || added.has(user.id)) return;
+                added.add(user.id);
+                users.push({ id: user.id, name: user.nama_mahasiswa });
+            };
+
+            add(selectedUsers.owner);
+            add(selectedUsers.leader);
+            selectedUsers.members.forEach(add);
+            return users;
+        }
+
+        function renderTaskUserOptions(selectedId = '') {
+            const users = getAllowedTaskUsers();
+            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            users.forEach(user => {
+                html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+            });
+            return html;
+        }
+
+        function addTaskRow(taskData = null) {
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+
+            const index = taskIndex++;
+            const userId = taskData?.user_id ?? '';
+            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+            taskItem.innerHTML = `
+                ${hiddenId}
+                <div class="grid gap-4 md:grid-cols-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                            ${renderTaskUserOptions(userId)}
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
+                    </div>
+                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
                 </div>
             `;
 
-            container.appendChild(memberDiv);
-
-            // Add change listener to new select
-            const newSelect = memberDiv.querySelector('.member-select');
-            const searchInput = memberDiv.querySelector('.member-search');
-            const filterAngkatan = memberDiv.querySelector('.member-filter-angkatan');
-            const filterJurusan = memberDiv.querySelector('.member-filter-jurusan');
-
-            newSelect.addEventListener('change', function () {
-                updateDisabledOptions();
-                saveToLocalStorage();
-            });
-
-            // Add search functionality
-            searchInput.addEventListener('input', function () {
-                filterMemberOptions(newSelect, this.value, filterAngkatan.value, filterJurusan.value);
-            });
-
-            // Add filter change listeners
-            filterAngkatan.addEventListener('change', function () {
-                filterMemberOptions(newSelect, searchInput.value, this.value, filterJurusan.value);
-            });
-
-            filterJurusan.addEventListener('change', function () {
-                filterMemberOptions(newSelect, searchInput.value, filterAngkatan.value, this.value);
-            });
-
-            // Update disabled options
-            setTimeout(() => {
-                updateDisabledOptions();
-            }, 100);
+            container.appendChild(taskItem);
+            const select = taskItem.querySelector('.task-user-select');
+            if (select) select.addEventListener('change', updateTaskUserOptions);
         }
 
-        // Function to remove member
-        function removeMember(button) {
-            const memberDiv = button.closest('.member-item');
-            memberDiv.remove();
-
-            updateDisabledOptions();
-            saveToLocalStorage();
-        }
-
-function addTaskRow(taskData = null) {
-    const container = document.getElementById('tasks-container');
-    const index = taskIndex++; // ⬅️ WAJIB
-
-    const taskDiv = document.createElement('div');
-    taskDiv.classList.add(
-        'task-item', 'p-4', 'border', 'border-gray-200',
-        'dark:border-gray-700', 'rounded-xl',
-        'bg-gray-50', 'dark:bg-gray-900'
-    );
-
-    const isCollaborativeMode = isCollaborative();
-
-    const defaultUserId = !isCollaborativeMode ? currentUserData.id : null;
-
-    const taskNameValue = taskData?.name_task
-        ? taskData.name_task.replace(/"/g, '&quot;')
-        : '';
-
-    const taskUserIdValue = taskData?.user_id ?? defaultUserId ?? '';
-
-    let userOptions = renderTaskUserOptions(taskUserIdValue);
-
-    taskDiv.innerHTML = `
-        <div class="grid gap-3 md:grid-cols-[1fr_auto] items-start">
-            <div class="space-y-3">
-                <div>
-                    <label data-translate="rsp_task" data-translate-page="msh_project_task" class="block text-sm font-medium dark:border-gray-500 dark:text-gray-300">Penanggung Jawab</label>
-                    <select name="tasks[${index}][user_id]"
-                        class="w-full border dark:border-gray-500 dark:text-gray-200 px-4 py-3 text-sm border rounded-lg">
-                        ${userOptions}
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium dark:text-gray-200" data-translate="nm_task" data-translate-page="msh_project_task">Nama Tugas</label>
-                    <input type="text"
-                        name="tasks[${index}][name_task]"
-                        value="${taskNameValue}"
-                        class="w-full dark:text-gray-200 px-4 py-3 text-sm border rounded-lg dark:border-gray-500"
-                        placeholder="Contoh: Buat desain halaman utama" />
-                </div>
-            </div>
-
-            <div class="pt-6">
-                <button type="button" onclick="removeTaskRow(this)"
-                    class="w-10 h-10 bg-red-100 text-red-600 rounded-lg">
-                    ✕
-                </button>
-            </div>
-        </div>
-    `;
-
-    container.appendChild(taskDiv);
-
-    // ✅ Set selected user
-    const select = taskDiv.querySelector(`select[name="tasks[${index}][user_id]"]`);
-    if (select && taskUserIdValue) {
-        select.value = taskUserIdValue;
-    }
-}
         function removeTaskRow(button) {
-            const taskDiv = button.closest('.task-item');
-            if (taskDiv) {
-                taskDiv.remove();
-                // If no tasks left, add an empty one
-                if (document.querySelectorAll('.task-item').length === 0) {
-                    addTaskRow();
-                }
-            }
+            const taskItem = button.closest('.task-item');
+            if (taskItem) taskItem.remove();
+            if (!document.querySelectorAll('.task-item').length) addTaskRow();
         }
 
-        function removeBlankTaskRows() {
-            const taskRows = document.querySelectorAll('.task-item');
-            const rowsToRemove = [];
-            
-            taskRows.forEach(taskRow => {
-                const userSelect = taskRow.querySelector('select[name="tasks[][user_id]"]');
-                const taskInput = taskRow.querySelector('input[name="tasks[][name_task]"]');
-
-                if (!userSelect || !taskInput) return;
-
-                const userValue = userSelect.value.trim();
-                const taskValue = taskInput.value.trim();
-
-                // Hapus row jika SALAH SATU saja kosong (kecuali keduanya kosong)
-                if ((!userValue && taskValue) || (userValue && !taskValue)) {
-                    rowsToRemove.push(taskRow);
-                } 
-                else if (!userValue && !taskValue) {
-                    rowsToRemove.push(taskRow);
+        function cleanupInvalidTaskRows() {
+            const allowedIds = getAllowedTaskUsers().map(user => String(user.id));
+            document.querySelectorAll('.task-item').forEach(taskItem => {
+                const select = taskItem.querySelector('.task-user-select');
+                if (!select || !select.value || !allowedIds.includes(select.value)) {
+                    taskItem.remove();
                 }
             });
-            
-            rowsToRemove.forEach(row => row.remove());
-            
-            // If all tasks were removed, add one empty task
-            if (document.querySelectorAll('.task-item').length === 0) {
+            if (!document.querySelectorAll('.task-item').length) addTaskRow();
+        }
+
+        function updateTaskUserOptions() {
+            document.querySelectorAll('.task-user-select').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = renderTaskUserOptions(currentValue);
+                if (currentValue) select.value = currentValue;
+            });
+            cleanupInvalidTaskRows();
+        }
+
+        function initializeTaskRows(existingTasks = []) {
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+            container.innerHTML = '';
+            taskIndex = 0;
+
+            if (Array.isArray(existingTasks) && existingTasks.length) {
+                existingTasks.forEach(task => {
+                    if (task.user_id || task.name_task) addTaskRow(task);
+                });
+            } else {
                 addTaskRow();
             }
+            updateTaskUserOptions();
         }
 
-        // Function to filter member options
-        function filterMemberOptions(selectElement, searchValue, filterAngkatan = '', filterJurusan = '') {
-            const options = selectElement.querySelectorAll('option');
-            const searchLower = searchValue.toLowerCase();
-
-            options.forEach(option => {
-                if (option.value === '') {
-                    option.style.display = '';
-                } else {
-                    const name = option.getAttribute('data-name').toLowerCase();
-                    const angkatan = option.getAttribute('data-angkatan');
-                    const jurusan = option.getAttribute('data-jurusan');
-
-                    let show = name.includes(searchLower);
-                    if (filterAngkatan && show) {
-                        show = angkatan === filterAngkatan;
-                    }
-                    if (filterJurusan && show) {
-                        show = jurusan === filterJurusan;
-                    }
-
-                    option.style.display = show ? '' : 'none';
-                }
+        function setupModalFilters() {
+            document.getElementById('modal-search')?.addEventListener('input', function() {
+                currentModalFilters.search = this.value;
+                loadUsersToModal();
+            });
+            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
+                currentModalFilters.angkatan = this.value;
+                loadUsersToModal();
+            });
+            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
+                currentModalFilters.jurusan = this.value;
+                loadUsersToModal();
+            });
+            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
+                currentModalFilters.keahlian = this.value;
+                loadUsersToModal();
             });
         }
 
-        window.addMemberSelect = addMemberSelect;
-        window.removeMember = removeMember;
-        window.addTaskRow = addTaskRow;
-        window.removeTaskRow = removeTaskRow;
-        window.clearSelectedLeader = clearSelectedLeader;
+        function onSubmitProjectForm(event) {
+            selectedUsers.owner = currentUser;
+            updateFormInputs();
+            cleanupInvalidTaskRows();
+            updateTaskUserOptions();
+        }
+
+        // Fungsi untuk mengontrol visibilitas section user selection
+        function toggleUserSelectionSection() {
+            const toggle = document.getElementById('project-collaborative-toggle');
+            const userSelectionSection = document.getElementById('user-selection-section');
+            const leaderInput = document.getElementById('selected-leader-id');
+            
+            if (toggle && userSelectionSection) {
+                if (toggle.checked) {
+                    userSelectionSection.style.display = 'block';
+                    // Jika toggle diaktifkan, pastikan leader input tidak required (opsional)
+                    if (leaderInput) leaderInput.removeAttribute('required');
+                } else {
+                    userSelectionSection.style.display = 'none';
+                    // Reset selected users ketika toggle dimatikan
+                    selectedUsers.leader = null;
+                    selectedUsers.members = [];
+                    updateFormInputs();
+                    renderSelectedUsers();
+                    updateTaskUserOptions();
+                    updateSelectedUsersBadge();
+                    // Leader menjadi tidak required karena tidak ada selection user
+                    if (leaderInput) leaderInput.removeAttribute('required');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSelectedUsersFromForm();
+            renderSelectedUsers();
+            setupModalFilters();
+            updateTaskSectionVisibility();
+            updateSelectedUsersBadge();
+            initializeTaskRows(@json(old('tasks', [])));
+            document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+
+            const collaborativeToggle = document.getElementById('project-collaborative-toggle');
+            const toggleLabel = document.getElementById('toggle-label');
+            if (collaborativeToggle && toggleLabel) {
+                toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
+                
+                // Panggil fungsi toggle saat halaman dimuat untuk menyembunyikan section jika perlu
+                toggleUserSelectionSection();
+                
+                collaborativeToggle.addEventListener('change', function () {
+                    toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
+                    toggleUserSelectionSection();
+                });
+            }
+        });
     </script>
 
     <!-- Page Info -->
-      <script>
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
             showPageInfo("popup.user_create_project");
         });
