@@ -680,23 +680,24 @@ class DashboardController extends Controller
             ];
         }
 
-        $postingans = Postingan::with('user')
-            ->where('content->title', 'like', "%{$keyword}%")
-            ->limit(5)
-            ->get();
+       $postingans = Postingan::with('user')->limit(20)->get();
 
-        foreach ($postingans as $postingan) {
-            $content = $postingan->content ?? [];
-            $title = $content['title'] ?? 'Postingan tanpa judul';
-            $suggestions[] = [
-                'type' => 'postingan',
-                'id' => $postingan->id_postingan,
-                'name' => $title,
-                'url' => route('postingan.show', $postingan->id_postingan),
-                'label' => 'Postingan'
-            ];
-        }
+foreach ($postingans as $postingan) {
+    $content = $postingan->content ?? [];
 
+    $title = collect($content)
+        ->firstWhere('type', 'title')['content'] ?? null;
+
+    if ($title && str_contains(strtolower($title), strtolower($keyword))) {
+        $suggestions[] = [
+            'type' => 'postingan',
+            'id' => $postingan->id_postingan,
+            'name' => $title,
+            'url' => route('postingan.show', $postingan->id_postingan),
+            'label' => 'Postingan'
+        ];
+    }
+}
         return response()->json($suggestions);
     }
 }

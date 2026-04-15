@@ -21,6 +21,17 @@ Route::get('/search', [DashboardController::class, 'search'])->name('search');
 Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
 Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
 Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
+Route::resource('komentar', KomentarController::class)->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy'
+    ]);
+
+Route::post('/postingan/{postingan}/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
+
 // Semua route yang butuh login
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
@@ -54,18 +65,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         'destroy'
     ]);
 
-    Route::resource('komentar', KomentarController::class)->only([
-            'index',
-            'create',
-            'store',
-            'edit',
-            'update',
-            'destroy'
-    ]);
-
-    // Like/Unlike Postingan
-    Route::post('/postingan/{postingan}/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
-
+    
 
      
     //CRUD Sertifikat

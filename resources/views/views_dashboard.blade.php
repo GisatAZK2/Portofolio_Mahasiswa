@@ -129,7 +129,7 @@
                                                     <span class="text-sm">{{ $post->komentar->count() }}</span>
                                                 </button>
                                             </div>
-                                            <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan) }}'" 
+                                            <span onclick="window.location.href='{{ route('postingan.show', $post->id_postingan) }}'" 
                                                   class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
                                                 Lihat detail
                                             </span>
