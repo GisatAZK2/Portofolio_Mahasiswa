@@ -18,7 +18,7 @@ use App\Http\Controllers\v1\KomentarController;
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
 Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
-Route::get('/postingan/{id}', [PostinganController::class, 'show'])->name('postingan.show');
+Route::get('/postingan', [PostinganController::class, 'show'])->name('postingan.show');
 // Semua route yang butuh login
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
@@ -36,15 +36,6 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
     // CRUD Project
     Route::resource('project', ProjekController::class)->only([
-        'index',
-        'create',
-        'store',
-        'edit',
-        'update',
-        'destroy'
-    ]);
-
-     Route::resource('postingan', PostinganController::class)->only([
         'index',
         'create',
         'store',
