@@ -46,6 +46,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
      Route::resource('postingan', PostinganController::class)->only([
         'index',
+        'show',
         'create',
         'store',
         'edit',
