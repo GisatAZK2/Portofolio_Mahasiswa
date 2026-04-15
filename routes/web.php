@@ -12,13 +12,14 @@ use App\Http\Controllers\v1\SertifikatController;
 use App\Http\Controllers\v1\DosenController;
 use App\Http\Controllers\v1\PostinganController;
 use App\Http\Controllers\v1\LikedPostinganController;
+
 use App\Http\Controllers\v1\KomentarController;
 
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
 Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
-Route::get('/postingan/{id}', [PostinganController::class, 'show'])->name('postingan.show');
+Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
 // Semua route yang butuh login
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
@@ -43,17 +44,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         'update',
         'destroy'
     ]);
-
-     Route::resource('postingan', PostinganController::class)->only([
-        'index',
-        'create',
-        'store',
-        'edit',
-        'update',
-        'destroy'
-    ]);
-
-     Route::resource('postingan', PostinganController::class)->only([
+    Route::resource('postingan', PostinganController::class)->only([
         'index',
         'create',
         'store',
@@ -74,6 +65,8 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     // Like/Unlike Postingan
     Route::post('/postingan/{postingan}/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
 
+
+     
     //CRUD Sertifikat
     Route::resource('sertifikat', SertifikatController::class)->only([
         'index',
@@ -288,6 +281,3 @@ Route::post('/register', [UserController::class, 'register']);
 
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
-
-
-
