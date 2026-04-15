@@ -1,4 +1,37 @@
 {{-- Component untuk menampilkan card postingan dalam grid --}}
+<style>
+    .comment-section {
+        display: none;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgb(229 231 235);
+    }
+    .dark .comment-section {
+        border-top-color: rgb(55 65 81);
+    }
+
+    .comment-section.active {
+        display: block;
+    }
+
+    .user-comment {
+        background-color: rgb(229 231 235);
+    }
+    .dark .user-comment {
+        background-color: rgb(75 85 99);
+    }
+
+    .user-comment-badge {
+        display: inline-block;
+        background-color: rgb(99 102 241);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+</style>
 <div
     class="flex flex-col rounded-lg sm:rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-all duration-300 p-2 sm:p-3 md:p-4 lg:p-6 h-full">
     @php
@@ -171,6 +204,9 @@
         @elseif($post->type === 'project' || $post->type === 'project_user')
             <span
                 class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 w-fit">Project</span>
+        @elseif($post->type === 'postingan')
+            <span
+                class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 w-fit">Postingan</span>
         @endif
     </div>
 
@@ -351,6 +387,139 @@
                     @endif
                 </div>
             @endif
+
+        @elseif($post->type === 'postingan')
+            @php
+                $content = $post->content ?? $post->isi_content ?? [];
+                $title = '';
+                $deskripsi = '';
+                if (is_array($content)) {
+                    foreach ($content as $item) {
+                        if (isset($item['type']) && $item['type'] === 'title') $title = $item['content'] ?? '';
+                        if (isset($item['type']) && $item['type'] === 'description') $deskripsi = $item['content'] ?? '';
+                    }
+                } else if (is_string($content)) {
+                    $decoded = json_decode($content, true);
+                    if (is_array($decoded)) {
+                        foreach ($decoded as $item) {
+                            if (isset($item['type']) && $item['type'] === 'title') $title = $item['content'] ?? '';
+                            if (isset($item['type']) && $item['type'] === 'description') $deskripsi = $item['content'] ?? '';
+                        }
+                    }
+                }
+            @endphp
+
+            @if($title)
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 text-sm sm:text-base md:text-lg">{{ $title }}</h3>
+            @endif
+            @if($deskripsi)
+                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ Str::limit($deskripsi, 150) }}</p>
+            @endif
+
+            <!-- Footer Actions -->
+            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex items-center justify-between -mx-4 -mb-4 mt-4 rounded-b-lg sm:rounded-b-xl">
+                <div class="flex items-center gap-6">
+                    <!-- Like -->
+                    @auth
+                        <button class="like-btn flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-red-500 transition"
+                                data-postingan-id="{{ $post->id_postingan ?? $post->id }}">
+                            <svg class="w-5 h-5 {{ $post->likes && $post->likes->where('id_user', auth()->id())->count() > 0 ? 'fill-current text-red-500' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span class="like-count text-sm">{{ $post->likes ? $post->likes->count() : 0 }}</span>
+                        </button>
+                    @else
+                        <button onclick="window.location.href='{{ route('login') }}'" class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span class="text-sm">{{ $post->likes ? $post->likes->count() : 0 }}</span>
+                        </button>
+                    @endauth
+
+                    <!-- Comment Button -->
+                    <button onclick="toggleComments(this)"
+                            class="comment-toggle flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        <span class="text-sm">{{ $post->komentar ? $post->komentar->count() : 0 }}</span>
+                    </button>
+                </div>
+                <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan ?? $post->id) }}'" 
+                      class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
+                    Lihat detail
+                </span>
+            </div>
+
+            <!-- Comments Section (Hidden by default) -->
+            <div class="comment-section px-4 pb-4 bg-white dark:bg-gray-800" id="comments-{{ $post->id_postingan ?? $post->id }}">
+                @auth
+                    <form class="comment-form mb-4" data-postingan-id="{{ $post->id_postingan ?? $post->id }}">
+                        @csrf
+                        <div class="flex gap-3">
+                            @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
+                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1">
+                            @else
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
+                                    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">
+                                        {{ strtoupper(substr(auth()->user()->nama_mahasiswa ?? auth()->user()->name ?? 'U', 0, 1)) }}
+                                    </span>
+                                </div>
+                            @endif
+                            <div class="flex-1">
+                                <textarea name="komentar" rows="2" 
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y text-sm"
+                                    placeholder="Tulis komentar..."></textarea>
+                                <div class="flex justify-end mt-2">
+                                    <button type="submit" 
+                                        class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition submit-btn"
+                                        data-current-user-id="{{ auth()->id() }}">
+                                        Kirim
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                @else
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
+                        <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">Masuk</a> untuk berkomentar
+                    </p>
+                @endauth
+
+                <!-- List Komentar -->
+                <div class="comment-list space-y-4 max-h-96 overflow-y-auto pr-2">
+                    @if($post->komentar && $post->komentar->count() > 0)
+                        @foreach($post->komentar->sortByDesc('tanggal') as $komentar)
+                            <div class="flex gap-3 comment-item {{ auth()->check() && auth()->id() === $komentar->id_user ? 'user-comment p-3 rounded-lg' : '' }}"
+                                 data-comment-id="{{ $komentar->id_komentar }}"
+                                 data-user-id="{{ $komentar->id_user }}">
+                                @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
+                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5">
+                                @else
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mt-0.5">
+                                        <span class="text-gray-600 dark:text-gray-400 text-sm">
+                                            {{ strtoupper(substr($komentar->user->nama_mahasiswa ?? $komentar->user->name ?? 'U', 0, 1)) }}
+                                        </span>
+                                    </div>
+                                @endif
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium text-sm">{{ $komentar->user->nama_mahasiswa ?? $komentar->user->name }}</span>
+                                        @if(auth()->check() && auth()->id() === $komentar->id_user)
+                                            <span class="user-comment-badge">Anda</span>
+                                        @endif
+                                        <span class="text-xs text-gray-500">{{ $komentar->tanggal ? $komentar->tanggal->format('d M Y') : 'Baru' }}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-0.5">{{ $komentar->komentar }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">Belum ada komentar</p>
+                    @endif
+                </div>
+            </div>
 
         @elseif($post->type === 'sertifikat')
             <!-- Sertifikat Title -->

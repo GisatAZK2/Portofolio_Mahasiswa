@@ -24,17 +24,10 @@ class PostinganController extends Controller
     return view('postingan.postingan_card', compact('postingan'));
 }
 
+public function create() {
+    return view('postingan.views_create_postingan');
+}
   
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('postingan.views_create_postingan');
-    }
-
     /**
      * Store a newly created resource in storage.
      */

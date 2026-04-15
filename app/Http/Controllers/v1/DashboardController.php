@@ -58,8 +58,7 @@ class DashboardController extends Controller
 
         $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes'])
             ->latest()
-            ->take(6)
-            ->get();
+            ->paginate(6, ['*'], 'postingan_page');
 
         $projects = Project::with('mahasiswa')
             ->latest()
@@ -154,6 +153,11 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes'])
+            ->latest()
+            ->paginate(6, ['*'], 'postingan_page');
+
+
         $learningCorners = LearningCorner::with('mahasiswa', 'project')
             ->where('id_mahasiswa', $user->id)
             ->latest()
@@ -198,7 +202,9 @@ class DashboardController extends Controller
             'totalSertifikat',
             'learningCorners',
             'projects',
-            'projectUsers'
+            'projectUsers',
+            'postinganTerbaru'
+
         ));
     }
 
@@ -329,236 +335,272 @@ class DashboardController extends Controller
      * Search Mahasiswa / Project / Sertifikat
      */
     public function search(Request $request)
-{
-    $keyword = $request->q;
-    $jurusan = $request->jurusan;
-    $keahlian = $request->keahlian;
-    $angkatan = $request->angkatan;
-    $type = $request->type;
+    {
+        $keyword = $request->q;
+        $jurusan = $request->jurusan;
+        $keahlian = $request->keahlian;
+        $angkatan = $request->angkatan;
+        $type = $request->type;
 
-    $results = collect();
+        $results = collect();
 
-    // ========================
-    // SEARCH MAHASISWA
-    // ========================
-    if (!$type || $type == 'mahasiswa') {
+        // ========================
+        // SEARCH MAHASISWA
+        // ========================
+        if (!$type || $type == 'mahasiswa') {
 
-        $users = User::with([
-            'jurusan',
-            'keahlian',
-            'angkatan',
-            'keahlianTambahan' => function ($q) {
-                $q->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-            }
-        ])
-            ->withCount([
-                'projects',
-                'leadingProjects',
-                'memberProjects',
-                'learning_corners as learning_count',
-                'sertifikats as sertifikats_count',
+            $users = User::with([
+                'jurusan',
+                'keahlian',
+                'angkatan',
+                'keahlianTambahan' => function ($q) {
+                    $q->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                }
             ])
-            ->where('role', 'mahasiswa')
-            ->where('status_pengajuan', 'Di Terima')
+                ->withCount([
+                    'projects',
+                    'leadingProjects',
+                    'memberProjects',
+                    'learning_corners as learning_count',
+                    'sertifikats as sertifikats_count',
+                ])
+                ->where('role', 'mahasiswa')
+                ->where('status_pengajuan', 'Di Terima')
 
-            ->when($keyword, fn($q) =>
-                $q->where('nama_mahasiswa', 'like', "%$keyword%")
-            )
+                ->when(
+                    $keyword,
+                    fn($q) =>
+                    $q->where('nama_mahasiswa', 'like', "%$keyword%")
+                )
 
-            ->when($jurusan, fn($q) =>
-                $q->where('id_jurusan', $jurusan)
-            )
+                ->when(
+                    $jurusan,
+                    fn($q) =>
+                    $q->where('id_jurusan', $jurusan)
+                )
 
-            ->when($keahlian, function ($query) use ($keahlian) {
-                $query->where(function ($q) use ($keahlian) {
-                    $q->where('id_keahlian', $keahlian)
-                        ->orWhereHas('keahlianTambahan', function ($qq) use ($keahlian) {
-                            $qq->where('keahlian.id_keahlian', $keahlian)
-                                ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->where(function ($q) use ($keahlian) {
+                        $q->where('id_keahlian', $keahlian)
+                            ->orWhereHas('keahlianTambahan', function ($qq) use ($keahlian) {
+                                $qq->where('keahlian.id_keahlian', $keahlian)
+                                    ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                            });
+                    });
+                })
+
+                ->when(
+                    $angkatan,
+                    fn($q) =>
+                    $q->where('id_angkatan', $angkatan)
+                )
+
+                ->paginate(9)
+                ->withQueryString();
+
+            $users->getCollection()->transform(function ($item) {
+                $item->project_total_count = Project::where(function ($q) use ($item) {
+                    $q->where('id_mahasiswa', $item->id)
+                        ->orWhere('leader_id', $item->id)
+                        ->orWhereHas(
+                            'members',
+                            fn($qq) =>
+                            $qq->where('user_id', $item->id)
+                        );
+                })->count();
+
+                $item->type = 'mahasiswa';
+                return $item;
+            });
+
+            $results = $results->concat($users->getCollection());
+        }
+
+        // ========================
+        // SEARCH PROJECT
+        // ========================
+        if (!$type || $type === 'project') {
+
+            $projects = Project::with([
+                'mahasiswa.jurusan',
+                'mahasiswa.keahlian',
+                'mahasiswa.angkatan'
+            ])
+                ->whereHas('mahasiswa', function ($q) {
+                    $q->where('role', 'mahasiswa')
+                        ->where('status_pengajuan', 'Di Terima');
+                })
+
+                ->when(
+                    $keyword,
+                    fn($q) =>
+                    $q->where('isi_content->nama_project', 'like', "%{$keyword}%")
+                )
+
+                ->when(
+                    $jurusan,
+                    fn($q) =>
+                    $q->whereHas(
+                        'mahasiswa',
+                        fn($qq) =>
+                        $qq->where('id_jurusan', $jurusan)
+                    )
+                )
+
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
+                        $q->where(function ($qq) use ($keahlian) {
+                            $qq->where('id_keahlian', $keahlian)
+                                ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
+                                    $qqq->where('keahlian.id_keahlian', $keahlian)
+                                        ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                                });
                         });
-                });
-            })
-
-            ->when($angkatan, fn($q) =>
-                $q->where('id_angkatan', $angkatan)
-            )
-
-            ->paginate(9)
-            ->withQueryString();
-
-        $users->getCollection()->transform(function ($item) {
-            $item->project_total_count = Project::where(function ($q) use ($item) {
-                $q->where('id_mahasiswa', $item->id)
-                    ->orWhere('leader_id', $item->id)
-                    ->orWhereHas('members', fn($qq) =>
-                        $qq->where('user_id', $item->id)
-                    );
-            })->count();
-
-            $item->type = 'mahasiswa';
-            return $item;
-        });
-
-        $results = $results->concat($users->getCollection());
-    }
-
-    // ========================
-    // SEARCH PROJECT
-    // ========================
-    if (!$type || $type === 'project') {
-
-        $projects = Project::with([
-            'mahasiswa.jurusan',
-            'mahasiswa.keahlian',
-            'mahasiswa.angkatan'
-        ])
-            ->whereHas('mahasiswa', function ($q) {
-                $q->where('role', 'mahasiswa')
-                    ->where('status_pengajuan', 'Di Terima');
-            })
-
-            ->when($keyword, fn($q) =>
-                $q->where('isi_content->nama_project', 'like', "%{$keyword}%")
-            )
-
-            ->when($jurusan, fn($q) =>
-                $q->whereHas('mahasiswa', fn($qq) =>
-                    $qq->where('id_jurusan', $jurusan)
-                )
-            )
-
-            ->when($keahlian, function ($query) use ($keahlian) {
-                $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
-                    $q->where(function ($qq) use ($keahlian) {
-                        $qq->where('id_keahlian', $keahlian)
-                            ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
-                                $qqq->where('keahlian.id_keahlian', $keahlian)
-                                    ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-                            });
                     });
-                });
-            })
+                })
 
-            ->when($angkatan, fn($q) =>
-                $q->whereHas('mahasiswa', fn($qq) =>
-                    $qq->where('id_angkatan', $angkatan)
+                ->when(
+                    $angkatan,
+                    fn($q) =>
+                    $q->whereHas(
+                        'mahasiswa',
+                        fn($qq) =>
+                        $qq->where('id_angkatan', $angkatan)
+                    )
                 )
-            )
 
-            ->paginate(9)
-            ->withQueryString();
+                ->paginate(9)
+                ->withQueryString();
 
-        $projects->getCollection()->transform(function ($project) {
-            $content = $project->isi_content ?? [];
+            $projects->getCollection()->transform(function ($project) {
+                $content = $project->isi_content ?? [];
 
-            $project->nama_project = $content['nama_project'] ?? null;
-            $project->link_project = $content['link_project'] ?? null;
-            $project->link_github = $content['link_github'] ?? null;
-            $project->link_video = $content['link_video'] ?? null;
-            $project->type = 'project';
+                $project->nama_project = $content['nama_project'] ?? null;
+                $project->link_project = $content['link_project'] ?? null;
+                $project->link_github = $content['link_github'] ?? null;
+                $project->link_video = $content['link_video'] ?? null;
+                $project->type = 'project';
 
-            return $project;
-        });
+                return $project;
+            });
 
-        $results = $results->concat($projects->getCollection());
-    }
+            $results = $results->concat($projects->getCollection());
+        }
 
-    // ========================
-    // SEARCH SERTIFIKAT
-    // ========================
-    if (!$type || $type == 'sertifikat') {
+        // ========================
+        // SEARCH SERTIFIKAT
+        // ========================
+        if (!$type || $type == 'sertifikat') {
 
-        $sertifikats = Sertifikat::with([
-            'mahasiswa.jurusan',
-            'mahasiswa.keahlian',
-            'mahasiswa.angkatan'
-        ])
-            ->where('is_active', true)
+            $sertifikats = Sertifikat::with([
+                'mahasiswa.jurusan',
+                'mahasiswa.keahlian',
+                'mahasiswa.angkatan'
+            ])
+                ->where('is_active', true)
+                ->where('status_pengajuan', 'Di Terima')
+
+                ->whereHas('mahasiswa', function ($q) {
+                    $q->where('role', 'mahasiswa')
+                        ->where('status_pengajuan', 'Di Terima');
+                })
+
+                ->when(
+                    $keyword,
+                    fn($q) =>
+                    $q->where('nama_sertifikat', 'like', "%$keyword%")
+                )
+
+                ->when(
+                    $jurusan,
+                    fn($q) =>
+                    $q->whereHas(
+                        'mahasiswa',
+                        fn($qq) =>
+                        $qq->where('id_jurusan', $jurusan)
+                    )
+                )
+
+                ->when($keahlian, function ($query) use ($keahlian) {
+                    $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
+                        $q->where(function ($qq) use ($keahlian) {
+                            $qq->where('id_keahlian', $keahlian)
+                                ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
+                                    $qqq->where('keahlian.id_keahlian', $keahlian)
+                                        ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                                });
+                        });
+                    });
+                })
+
+                ->when(
+                    $angkatan,
+                    fn($q) =>
+                    $q->whereHas(
+                        'mahasiswa',
+                        fn($qq) =>
+                        $qq->where('id_angkatan', $angkatan)
+                    )
+                )
+
+                ->paginate(9)
+                ->withQueryString();
+
+            $sertifikats->getCollection()->transform(function ($item) {
+                $item->type = 'sertifikat';
+                return $item;
+            });
+
+            $results = $results->concat($sertifikats->getCollection());
+        }
+
+        // ========================
+        // TOTAL COUNT
+        // ========================
+        $totalMahasiswa = User::where('role', 'mahasiswa')
             ->where('status_pengajuan', 'Di Terima')
+            ->count();
 
-            ->whereHas('mahasiswa', function ($q) {
-                $q->where('role', 'mahasiswa')
-                    ->where('status_pengajuan', 'Di Terima');
-            })
+        $totalLearning = LearningCorner::whereHas('mahasiswa', function ($q) {
+            $q->where('role', 'mahasiswa')
+                ->where('status_pengajuan', 'Di Terima');
+        })->count();
 
-            ->when($keyword, fn($q) =>
-                $q->where('nama_sertifikat', 'like', "%$keyword%")
-            )
-
-            ->when($jurusan, fn($q) =>
-                $q->whereHas('mahasiswa', fn($qq) =>
-                    $qq->where('id_jurusan', $jurusan)
-                )
-            )
-
-            ->when($keahlian, function ($query) use ($keahlian) {
-                $query->whereHas('mahasiswa', function ($q) use ($keahlian) {
-                    $q->where(function ($qq) use ($keahlian) {
-                        $qq->where('id_keahlian', $keahlian)
-                            ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
-                                $qqq->where('keahlian.id_keahlian', $keahlian)
-                                    ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-                            });
-                    });
-                });
-            })
-
-            ->when($angkatan, fn($q) =>
-                $q->whereHas('mahasiswa', fn($qq) =>
-                    $qq->where('id_angkatan', $angkatan)
-                )
-            )
-
-            ->paginate(9)
-            ->withQueryString();
-
-        $sertifikats->getCollection()->transform(function ($item) {
-            $item->type = 'sertifikat';
-            return $item;
-        });
-
-        $results = $results->concat($sertifikats->getCollection());
-    }
-
-    // ========================
-    // TOTAL COUNT
-    // ========================
-    $totalMahasiswa = User::where('role', 'mahasiswa')
-        ->where('status_pengajuan', 'Di Terima')
-        ->count();
-
-    $totalLearning = LearningCorner::whereHas('mahasiswa', function ($q) {
-        $q->where('role', 'mahasiswa')
-            ->where('status_pengajuan', 'Di Terima');
-    })->count();
-
-    $totalProject = Project::where(function ($q) {
-        $q->whereHas('mahasiswa', fn($qq) =>
-            $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
-        )
-            ->orWhereHas('leader', fn($qq) =>
+        $totalProject = Project::where(function ($q) {
+            $q->whereHas(
+                'mahasiswa',
+                fn($qq) =>
                 $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
             )
-            ->orWhereHas('members', fn($qq) =>
-                $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
-            );
-    })->count();
+                ->orWhereHas(
+                    'leader',
+                    fn($qq) =>
+                    $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
+                )
+                ->orWhereHas(
+                    'members',
+                    fn($qq) =>
+                    $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
+                );
+        })->count();
 
-    $totalSertifikat = Sertifikat::where('is_active', true)
-        ->where('status_pengajuan', 'Di Terima')
-        ->whereHas('mahasiswa', fn($q) =>
-            $q->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
-        )
-        ->count();
+        $totalSertifikat = Sertifikat::where('is_active', true)
+            ->where('status_pengajuan', 'Di Terima')
+            ->whereHas(
+                'mahasiswa',
+                fn($q) =>
+                $q->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
+            )
+            ->count();
 
-    $mahasiswa = $users ?? collect();
-    $projects = $projects ?? collect();
-    $sertifikats = $sertifikats ?? collect();
+        $mahasiswa = $users ?? collect();
+        $projects = $projects ?? collect();
+        $sertifikats = $sertifikats ?? collect();
 
-    $hasResults =
-        $mahasiswa->count() > 0 ||
-        $projects->count() > 0 ||
-        $sertifikats->count() > 0;
+        $hasResults =
+            $mahasiswa->count() > 0 ||
+            $projects->count() > 0 ||
+            $sertifikats->count() > 0;
 
     return view('views_result_search', compact(
         'results',

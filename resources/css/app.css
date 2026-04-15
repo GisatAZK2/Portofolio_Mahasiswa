@@ -11,6 +11,51 @@
             'Segoe UI Symbol', 'Noto Color Emoji';
     }
 
+    /* Independent scroll for dashboard layout */
+    .dashboard-left-column {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .dashboard-right-column {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    /* Custom scrollbar styling */
+    .dashboard-left-column::-webkit-scrollbar,
+    .dashboard-right-column::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .dashboard-left-column::-webkit-scrollbar-track,
+    .dashboard-right-column::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .dashboard-left-column::-webkit-scrollbar-thumb,
+    .dashboard-right-column::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .dashboard-left-column::-webkit-scrollbar-thumb:hover,
+    .dashboard-right-column::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    .dark .dashboard-left-column::-webkit-scrollbar-thumb,
+    .dark .dashboard-right-column::-webkit-scrollbar-thumb {
+        background: #475569;
+    }
+
+    .dark .dashboard-left-column::-webkit-scrollbar-thumb:hover,
+    .dark .dashboard-right-column::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+
     .swal2-custom-popup {
         border-radius: 1rem !important;
         padding: 2rem !important;

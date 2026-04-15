@@ -14,7 +14,32 @@
         </div>
     </div>
 
+    <!-- Search Menu -->
+    <div class="px-4 py-4 border-b border-gray-200 dark:border-gray-800">
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input 
+                type="text" 
+                id="sidebarSearch"
+                placeholder="Cari menu..." 
+                class="w-full bg-white dark:bg-gray-800 border dark:text-white text-black border-gray-300 dark:border-gray-700 pl-10 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                autocomplete="off"
+            >
+            
+            <!-- Search Results -->
+            <div id="searchResults" 
+                 class="hidden absolute mt-2 w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 max-h-[340px] overflow-y-auto z-50">
+                <!-- Results filled by JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <nav class="flex-1 px-2 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
+        
         <!-- Home - Semua user -->
         <a href="{{ route('dashboard') }}"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
@@ -220,7 +245,7 @@
                     </div>
                 </div>
 
-                <!-- Manage Keahlian Dropdown -->
+                <!-- Manajemen Keahlian Dropdown -->
                 <div x-data="{ open: {{ request()->routeIs('admin.keahlian.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"
                         class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
@@ -574,10 +599,6 @@
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                        @if(session('sidebar_collapsed', false))
-                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
-                                data-translate="project_mahasiswa">Project</span>
-                        @endif
                     </button>
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
@@ -626,10 +647,6 @@
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                        @if(session('sidebar_collapsed', false))
-                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
-                                data-translate="sertifikat_mahasiswa">Sertifikat</span>
-                        @endif
                     </button>
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
@@ -655,6 +672,7 @@
                     </div>
                 </div>
 
+                <!-- Postingan -->
                 <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"
                         class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group
@@ -673,10 +691,6 @@
                             class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                        @if(session('sidebar_collapsed', false))
-                            <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
-                                data-translate="postingan">Postingan</span>
-                        @endif
                     </button>
                     <div x-show="open && (!{{ session('sidebar_collapsed') ? 'true' : 'false' }} || window.innerWidth < 1024)"
                         x-transition:enter="transition ease-out duration-200"
@@ -703,6 +717,7 @@
                 </div>
             @endif
         @endauth
+
     </nav>
 
     <!-- Setting Dropdown -->
@@ -740,27 +755,19 @@
         </div>
     </div>
 
-    <!-- Profile Dropdown - User Info -->
+    <!-- Profile Dropdown -->
     @auth
     <div class="px-2 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 shrink-0">
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" @click.away="open = false"
                 class="w-full flex items-center space-x-3 rounded-lg transition p-2 -mx-2 hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-900 shadow-sm shrink-0">
-                    @if(Auth::user()->role === 'admin')
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'dosen')
                         @if(Auth::user()->photo_profile)
-                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="{{ Auth::user()->name ?? 'Admin' }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                                 {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
-                            </div>
-                        @endif
-                    @elseif(Auth::user()->role === 'dosen')
-                        @if(Auth::user()->photo_profile)
-                            <img src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="{{ Auth::user()->name ?? 'Dosen' }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                                {{ substr(Auth::user()->name ?? 'D', 0, 1) }}
                             </div>
                         @endif
                     @else
@@ -787,18 +794,13 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ Auth::user()->email }}</p>
                     @endif
                 </div>
-                <svg x-show="!{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}" :class="{ 'rotate-180': open }" 
-                    class="w-4 h-4 text-gray-500 transition-transform duration-200 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}" 
+                <svg x-show="!{{ session('sidebar_collapsed', false) ? 'true' : 'false' }}" :class="{ 'rotate-180': open }"
+                    class="w-4 h-4 text-gray-500 transition-transform duration-200 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }}"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
-                @if(session('sidebar_collapsed', false))
-                    <span class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block"
-                        data-translate="profile">{{ Auth::user()->name ?? 'Profile' }}</span>
-                @endif
             </button>
-            
-            <!-- Dropdown Menu -->
+           
             <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
                 class="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
                 <a href="{{ route('profile') }}" class="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -837,12 +839,83 @@
     @endauth
 </aside>
 
-<!-- JavaScript -->
+<!-- JavaScript untuk Search Menu + Existing Scripts -->
 <script>
+    // ================== SEARCH MENU FUNCTIONALITY ==================
+    const searchInput = document.getElementById('sidebarSearch');
+    const searchResults = document.getElementById('searchResults');
+
+    // Daftar semua menu yang bisa dicari
+    const allMenus = [
+        { name: "Dashboard", url: "{{ route('dashboard') }}", keyword: "dashboard" },
+        { name: "My Dashboard", url: "{{ route('dashboard.me') }}", keyword: "my dashboard" },
+        { name: "Admin Dashboard", url: "{{ route('admin.index') }}", keyword: "admin dashboard", role: "admin" },
+        { name: "Manajemen Users", url: "{{ route('admin.users.index') }}", keyword: "users manajemen user", role: "admin" },
+        { name: "Lihat User", url: "{{ route('admin.users.index') }}", keyword: "lihat user semua user", role: "admin" },
+        { name: "Tambah User", url: "{{ route('admin.users.ViewCreate') }}", keyword: "tambah user", role: "admin" },
+        { name: "Manajemen Angkatan", url: "{{ route('admin.angkatan.index') }}", keyword: "angkatan", role: "admin" },
+        { name: "Manajemen Prodi", url: "{{ route('admin.prodi.index') }}", keyword: "prodi program studi", role: "admin" },
+        { name: "Manajemen Keahlian", url: "{{ route('admin.keahlian.index') }}", keyword: "keahlian skill", role: "admin" },
+        { name: "Manajemen Project", url: "{{ route('admin.projects.index') }}", keyword: "project proyek", role: "admin" },
+        { name: "Manajemen Sertifikat", url: "{{ route('admin.sertifikat.index') }}", keyword: "sertifikat", role: "admin" },
+        { name: "Dashboard Dosen", url: "{{ route('dosen.dashboard') }}", keyword: "dosen dashboard", role: "dosen" },
+        { name: "Mahasiswa Bimbingan", url: "{{ route('dosen.users.index') }}", keyword: "mahasiswa bimbingan", role: "dosen" },
+        { name: "Projects Bimbingan", url: "{{ route('dosen.projects.index') }}", keyword: "project bimbingan", role: "dosen" },
+        { name: "Sertifikat Bimbingan", url: "{{ route('dosen.sertifikat.index') }}", keyword: "sertifikat bimbingan", role: "dosen" },
+        { name: "Project Saya", url: "{{ route('project.index') }}", keyword: "project saya", role: "mahasiswa" },
+        { name: "Tambah Project Baru", url: "{{ route('project.create') }}", keyword: "tambah project", role: "mahasiswa" },
+        { name: "Sertifikat Saya", url: "{{ route('sertifikat.index') }}", keyword: "sertifikat saya", role: "mahasiswa" },
+        { name: "Tambah Sertifikat", url: "{{ route('sertifikat.create') }}", keyword: "tambah sertifikat", role: "mahasiswa" },
+        { name: "Postingan", url: "{{ route('postingan.index') }}", keyword: "postingan post", role: "mahasiswa" },
+        { name: "Tambah Postingan", url: "{{ route('postingan.create') }}", keyword: "tambah postingan", role: "mahasiswa" },
+    ];
+
+    function filterMenus(query) {
+        if (!query) {
+            searchResults.classList.add('hidden');
+            return;
+        }
+
+        const filtered = allMenus.filter(menu => {
+            const match = menu.name.toLowerCase().includes(query.toLowerCase()) || 
+                         menu.keyword.toLowerCase().includes(query.toLowerCase());
+            return match;
+        });
+
+        if (filtered.length === 0) {
+            searchResults.innerHTML = `<div class="px-4 py-3 text-gray-500 text-sm">Tidak ditemukan menu yang cocok</div>`;
+        } else {
+            let html = '';
+            filtered.forEach(menu => {
+                html += `
+                    <a href="${menu.url}" 
+                       class="flex items-center px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        <span class="font-medium text-gray-700 dark:text-gray-200">${menu.name}</span>
+                    </a>
+                `;
+            });
+            searchResults.innerHTML = html;
+        }
+
+        searchResults.classList.remove('hidden');
+    }
+
+    // Event Listener untuk Search
+    searchInput.addEventListener('input', (e) => {
+        filterMenus(e.target.value.trim());
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.add('hidden');
+        }
+    });
+
+    // ================== EXISTING SCRIPTS (dari kode lama) ==================
     function toggleDropdown(menu) {
         const settingMenu = document.getElementById('settingMenu');
         const settingArrow = document.getElementById('settingArrow');
-
         if (settingMenu.classList.contains('hidden')) {
             settingMenu.classList.remove('hidden');
             settingArrow.classList.add('rotate-180');
@@ -869,25 +942,22 @@
     function changeLanguage() {
         const select = document.getElementById('languageSelect');
         if (!select) return;
-
         const newLang = select.value;
-        if (typeof window.changeLanguage === 'function') {
-            window.changeLanguage();
-        }
+        // Tambahkan logic change language jika ada
+        console.log('Language changed to:', newLang);
     }
 
-    // Initialize dark mode from localStorage
+    // Initialize dark mode
     if (localStorage.getItem('darkMode') === 'true') {
         document.documentElement.classList.add('dark');
         const btn = document.getElementById('darkModeBtn');
         if (btn) btn.innerHTML = 'Light Mode';
     }
 
-    // Close dropdown when clicking outside
+    // Close setting dropdown when clicking outside
     document.addEventListener('click', function (event) {
         const settingMenu = document.getElementById('settingMenu');
         const settingButton = event.target.closest('button[onclick*="toggleDropdown"]');
-
         if (!settingButton && settingMenu && !settingMenu.contains(event.target)) {
             if (!settingMenu.classList.contains('hidden')) {
                 settingMenu.classList.add('hidden');
@@ -897,52 +967,18 @@
         }
     });
 
-    // Toggle sidebar collapse
+    // Sidebar collapse script (jika ada tombol toggle)
     const toggleBtn = document.getElementById('toggle-desktop-sidebar');
     if (toggleBtn) {
         toggleBtn.addEventListener('click', function () {
             const sidebar = document.getElementById('sidebar');
-            const icon = document.getElementById('toggleCollapseIcon');
-
             if (sidebar.classList.contains('lg:w-62')) {
                 sidebar.classList.remove('lg:w-62');
                 sidebar.classList.add('lg:w-20');
-                if (icon) icon.classList.add('rotate-180');
-
-                fetch('/toggle-sidebar', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ collapsed: true })
-                });
             } else {
                 sidebar.classList.remove('lg:w-20');
                 sidebar.classList.add('lg:w-62');
-                if (icon) icon.classList.remove('rotate-180');
-
-                fetch('/toggle-sidebar', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ collapsed: false })
-                });
             }
         });
     }
-
-    function initMobileDropdownBehavior() {
-        const isMobile = window.innerWidth < 1024;
-        const isSidebarCollapsed = {{ session('sidebar_collapsed', false) ? 'true' : 'false' }};
-
-        if (isMobile && isSidebarCollapsed) {
-            // Dropdown akan bekerja dengan baik
-        }
-    }
-
-    window.addEventListener('load', initMobileDropdownBehavior);
-    window.addEventListener('resize', initMobileDropdownBehavior);
 </script>

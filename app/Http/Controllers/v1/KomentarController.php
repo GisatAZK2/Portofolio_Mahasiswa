@@ -30,19 +30,51 @@ class KomentarController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'id_postingan' => 'required|exists:postingan,id_postingan',
-            'komentar' => 'required|string|max:1000',
-        ]);
+        try {
+            $request->validate([
+                'id_postingan' => 'required|exists:postingan,id_postingan',
+                'komentar' => 'required|string|max:1000',
+            ]);
 
-        Komentar::create([
-            'id_user' => Auth::id(),
-            'id_postingan' => $request->id_postingan,
-            'komentar' => $request->komentar,
-            'tanggal' => now(),
-        ]);
+            $komentar = Komentar::create([
+                'id_user' => Auth::id(),
+                'id_postingan' => $request->id_postingan,
+                'komentar' => $request->komentar,
+                'tanggal' => now(),
+            ]);
 
-        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
+            // Load user relation
+            $komentar->load('user');
+
+            // Check if request wants JSON (AJAX)
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Komentar berhasil ditambahkan!',
+                    'comment' => $komentar,
+                    'user' => $komentar->user,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ], 500);
+            }
+            throw $e;
+        }
     }
 
     /**
