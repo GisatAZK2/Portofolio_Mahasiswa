@@ -602,19 +602,19 @@ class DashboardController extends Controller
             $projects->count() > 0 ||
             $sertifikats->count() > 0;
 
-    return view('views_result_search', compact(
-        'results',
-        'mahasiswa',
-        'projects',
-        'sertifikats',
-        'keyword',
-        'totalMahasiswa',
-        'totalLearning',
-        'totalProject',
-        'totalSertifikat',
-        'hasResults'
-    ));
-}
+        return view('views_result_search', compact(
+            'results',
+            'mahasiswa',
+            'projects',
+            'sertifikats',
+            'keyword',
+            'totalMahasiswa',
+            'totalLearning',
+            'totalProject',
+            'totalSertifikat',
+            'hasResults'
+        ));
+    }
 
     /**
      * Search Suggestions API
@@ -680,24 +680,24 @@ class DashboardController extends Controller
             ];
         }
 
-       $postingans = Postingan::with('user')->limit(20)->get();
+        $postingans = Postingan::with('user')->limit(20)->get();
 
-foreach ($postingans as $postingan) {
-    $content = $postingan->content ?? [];
+        foreach ($postingans as $postingan) {
+            $content = $postingan->content ?? [];
 
-    $title = collect($content)
-        ->firstWhere('type', 'title')['content'] ?? null;
+            $title = collect($content)
+                ->firstWhere('type', 'title')['content'] ?? null;
 
-    if ($title && str_contains(strtolower($title), strtolower($keyword))) {
-        $suggestions[] = [
-            'type' => 'postingan',
-            'id' => $postingan->id_postingan,
-            'name' => $title,
-            'url' => route('postingan.show', $postingan->id_postingan),
-            'label' => 'Postingan'
-        ];
-    }
-}
+            if ($title && str_contains(strtolower($title), strtolower($keyword))) {
+                $suggestions[] = [
+                    'type' => 'postingan',
+                    'id' => $postingan->id_postingan,
+                    'name' => $title,
+                    'url' => route('postingan.show', $postingan->id_postingan),
+                    'label' => 'Postingan'
+                ];
+            }
+        }
         return response()->json($suggestions);
     }
 }
