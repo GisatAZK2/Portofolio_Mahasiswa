@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\Angkatan;
+use App\Models\User;
+use App\Models\Project;
+use App\Models\Sertifikat;
+use App\Models\Postingan;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 

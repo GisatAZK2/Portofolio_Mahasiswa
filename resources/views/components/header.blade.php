@@ -47,9 +47,10 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" name="q" value="{{ request('q') }}"
+                        <input id="search-input" type="text" name="q" value="{{ request('q') }}"
                             class="w-full pl-11 pr-4 py-2.5 border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-100 text-sm transition shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
-                            placeholder="Cari..." data-translate="placeholder_student" data-translate-page="search">
+                            placeholder="Cari..." data-translate="placeholder_student" data-translate-page="search" autocomplete="off">
+                        <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl overflow-hidden z-50 max-h-72 overflow-y-auto"></div>
                     </div>
 
                     <a href="{{ route('search') }}"
@@ -126,13 +127,14 @@
                         </svg>
                     </div>
 
-                    <input type="text" name="q" value="{{ request('q') }}" class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                    <input id="search-input-mobile" type="text" name="q" value="{{ request('q') }}" class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                     focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                     text-gray-700 dark:text-gray-300
                     placeholder-gray-500 dark:placeholder-gray-400
                     shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
                         placeholder="Cari mahasiswa, proyek, portofolio..." data-translate="placeholder_student"
-                        data-translate-page="search">
+                        data-translate-page="search" autocomplete="off">
+                        <div id="search-suggestions-mobile" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl overflow-hidden z-50 max-h-72 overflow-y-auto"></div>
                 </div>
 
                 <!-- Filters -->
@@ -293,5 +295,105 @@
             textIndex = 0;
             isDeleting = false;
         });
+
+        const searchInputs = [
+            document.getElementById('search-input'),
+            document.getElementById('search-input-mobile')
+        ].filter(Boolean);
+
+        searchInputs.forEach(input => {
+            const suggestionsContainer = input.id === 'search-input'
+                ? document.getElementById('search-suggestions')
+                : document.getElementById('search-suggestions-mobile');
+            let debounceTimer;
+
+            input.addEventListener('input', function () {
+                const query = this.value.trim();
+                clearTimeout(debounceTimer);
+
+                if (query.length < 2) {
+                    suggestionsContainer.classList.add('hidden');
+                    suggestionsContainer.innerHTML = '';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetchSuggestions(query, suggestionsContainer);
+                }, 250);
+            });
+
+            input.addEventListener('focus', function () {
+                if (this.value.trim().length >= 2 && suggestionsContainer.innerHTML.trim() !== '') {
+                    suggestionsContainer.classList.remove('hidden');
+                }
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('#search-input') && !event.target.closest('#search-suggestions') &&
+                !event.target.closest('#search-input-mobile') && !event.target.closest('#search-suggestions-mobile')) {
+                document.querySelectorAll('#search-suggestions, #search-suggestions-mobile').forEach(box => {
+                    box.classList.add('hidden');
+                });
+            }
+        });
+
+        function fetchSuggestions(query, container) {
+            fetch(`{{ route('search.suggestions') }}?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => displaySuggestions(data, container, query))
+                .catch(error => {
+                    console.error('Error fetching suggestions:', error);
+                    container.classList.add('hidden');
+                });
+        }
+
+        function displaySuggestions(suggestions, container, query) {
+            if (!Array.isArray(suggestions) || suggestions.length === 0) {
+                container.innerHTML = `<div class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300">Tidak ada hasil untuk "${query}"</div>`;
+                container.classList.remove('hidden');
+                return;
+            }
+
+            const grouped = suggestions.reduce((acc, item) => {
+                acc[item.type] = acc[item.type] || [];
+                acc[item.type].push(item);
+                return acc;
+            }, {});
+
+            const titles = {
+                mahasiswa: 'Mahasiswa',
+                project: 'Project',
+                sertifikat: 'Sertifikat',
+                postingan: 'Postingan'
+            };
+
+            const html = Object.keys(titles).map(type => {
+                const items = grouped[type] || [];
+                if (!items.length) return '';
+
+                return `
+                    <div class="border-b border-gray-100 dark:border-gray-700">
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">${titles[type]}</div>
+                        ${items.map(item => `
+                            <a href="${item.url}"
+                                class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 transition">
+                                <div class="font-medium">${item.name}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">${item.label}</div>
+                            </a>
+                        `).join('')}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `${html}
+                <div class="px-4 py-3 bg-white dark:bg-gray-900">
+                    <a href="{{ route('search') }}?q=${encodeURIComponent(query)}"
+                        class="block text-center text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 font-medium">
+                        Lihat semua hasil untuk "${query}"
+                    </a>
+                </div>`;
+            container.classList.remove('hidden');
+        }
     });
 </script>

@@ -573,4 +573,88 @@ class DashboardController extends Controller
         'hasResults'
     ));
 }
+
+    /**
+     * Search Suggestions API
+     */
+    public function searchSuggestions(Request $request)
+    {
+        $keyword = $request->query('q');
+        if (!$keyword || strlen($keyword) < 2) {
+            return response()->json([]);
+        }
+
+        $suggestions = [];
+
+        $users = User::where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Di Terima')
+            ->where('nama_mahasiswa', 'like', "%{$keyword}%")
+            ->limit(5)
+            ->get(['id', 'nama_mahasiswa', 'username']);
+
+        foreach ($users as $user) {
+            $suggestions[] = [
+                'type' => 'mahasiswa',
+                'id' => $user->id,
+                'name' => $user->nama_mahasiswa,
+                'url' => route('portfolio.show', $user->username),
+                'label' => 'Mahasiswa'
+            ];
+        }
+
+        $projects = Project::with('mahasiswa')
+            ->where('isi_content->nama_project', 'like', "%{$keyword}%")
+            ->whereHas('mahasiswa', function ($q) {
+                $q->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima');
+            })
+            ->limit(5)
+            ->get();
+
+        foreach ($projects as $project) {
+            $content = $project->isi_content ?? [];
+            $name = $content['nama_project'] ?? 'Project tanpa judul';
+            $suggestions[] = [
+                'type' => 'project',
+                'id' => $project->id,
+                'name' => $name,
+                'url' => route('project.show', $project->id),
+                'label' => 'Project'
+            ];
+        }
+
+        $sertifikats = Sertifikat::where('is_active', true)
+            ->where('status_pengajuan', 'Di Terima')
+            ->where('nama_sertifikat', 'like', "%{$keyword}%")
+            ->limit(5)
+            ->get();
+
+        foreach ($sertifikats as $sertifikat) {
+            $suggestions[] = [
+                'type' => 'sertifikat',
+                'id' => $sertifikat->id,
+                'name' => $sertifikat->nama_sertifikat,
+                'url' => '#',
+                'label' => 'Sertifikat'
+            ];
+        }
+
+        $postingans = Postingan::with('user')
+            ->where('content->title', 'like', "%{$keyword}%")
+            ->limit(5)
+            ->get();
+
+        foreach ($postingans as $postingan) {
+            $content = $postingan->content ?? [];
+            $title = $content['title'] ?? 'Postingan tanpa judul';
+            $suggestions[] = [
+                'type' => 'postingan',
+                'id' => $postingan->id_postingan,
+                'name' => $title,
+                'url' => route('postingan.show', $postingan->id_postingan),
+                'label' => 'Postingan'
+            ];
+        }
+
+        return response()->json($suggestions);
+    }
 }
