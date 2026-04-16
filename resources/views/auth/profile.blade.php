@@ -79,7 +79,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            Ganti Cover
+                            <span data-translate="bg_cov" data-translate-page="profile"></span>
                         </label>
                         <input type="file" name="background_url" id="background_input" class="hidden" accept="image/*" />
                     </div>
@@ -193,7 +193,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 6h16M4 12h16M4 18h7" />
                                     </svg>
-                                    Deskripsi
+                                    <span data-translate="desc" data-translate-page="profile">Deskripsi</span>
                                 </p>
                                 <div class="flex items-center justify-between">
                                     <p id="deskripsi-display"
@@ -250,7 +250,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                                     </svg>
-                                    Jurusan
+                                    <span data-translate="jrs" data-translate-page="profile">Jurusan</span>
                                 </p>
                                 <div class="flex items-center justify-between">
                                     <p id="jurusan-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
@@ -283,7 +283,7 @@
                                         <path
                                             d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                                     </svg>
-                                    Angkatan
+                                    <span data-translate="agkt" data-translate-page="profile">Angkatan</span>
                                 </p>
                                 <p class="text-base font-medium text-gray-800 dark:text-gray-200">
                                     {{ Auth::user()->angkatan->nama_angkatan ?? 'Angkatan 2026' }}
@@ -299,7 +299,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                     </svg>
-                                    Keahlian Utama
+                                    <span data-translate="khl_main" data-translate-page="profile">Keahlian Utama</span>
                                 </p>
                                 <div class="flex items-center justify-between">
                                     <p id="keahlian-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
@@ -336,7 +336,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                         </svg>
-                                        Keahlian Tambahan
+                                        <span data-translate="khl_add" data-translate-page="profile">Keahlian Tambahan</span>
                                     </p>
                                     <span
                                         class="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 px-2 py-1 rounded-full">
@@ -383,7 +383,7 @@
 
                                                     <!-- Info tambahan -->
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        Diajukan: <span
+                                                        <span data-translate="reqed" data-translate-page="profile">Diajukan: <span
                                                             x-text="new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })"></span>
                                                     </p>
                                                 </div>
@@ -411,8 +411,8 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                             </svg>
-                                            <p class="text-base font-medium">Belum ada keahlian tambahan</p>
-                                            <p class="text-sm mt-1 text-gray-500 dark:text-gray-500">Tambahkan keahlian baru
+                                            <p class="text-base font-medium" data-translate="empty_khl" data-translate-page="profile">Belum ada keahlian tambahan</p>
+                                            <p class="text-sm mt-1 text-gray-500 dark:text-gray-500" data-translate="empty_khl1" data-translate-page="profile">Tambahkan keahlian baru
                                                 di bawah</p>
                                         </div>
                                     </div>
@@ -426,7 +426,7 @@
                                         <div class="flex flex-col sm:flex-row gap-3">
                                             <select x-model="selectedKeahlian" name="id_keahlian_tambahan"
                                                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white">
-                                                <option value="">-- Pilih Keahlian Tambahan --</option>
+                                                <option data-translate="pick_khl" data-translate-page="profile" value="">-- Pilih Keahlian Tambahan --</option>
                                                 <template x-for="keahlian in keahlianOptions" :key="keahlian.id_keahlian">
                                                     <option :value="keahlian.id_keahlian"
                                                         :disabled="isKeahlianDisabled(keahlian)"
@@ -436,7 +436,7 @@
                                                 </template>
                                             </select>
 
-                                            <button type="submit"
+                                            <button type="submit" data-translate="req" data-translate-page="profile"
                                                 class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                                                 Ajukan
                                             </button>
@@ -453,8 +453,8 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                         </svg>
-                                        Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah
-                                        keahlian baru.
+                                        <span data-translate="max_req" data-translate-page="profile">Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah
+                                        keahlian baru.</span>
                                     </p>
                                 </div>
                             </div>
@@ -469,7 +469,7 @@
                                         <rect x="3" y="6" width="18" height="12" rx="4" stroke-width="2"/>
                                         <polygon points="10,9 10,15 15,12" stroke-width="2"/>
                                     </svg>
-                                    Video Perkenalan
+                                    <span data-translate="vid_intro" data-translate-page="profile">Video Perkenalan</span>
                                 </p>
 
                                 <!-- DISPLAY MODE -->
@@ -517,7 +517,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
                                     </svg>
-                                    Status Akun
+                                    <span data-translate="stat_acc" data-translate-page="profile">Status Akun</span>
                                 </p>
                                 <div class="flex items-center gap-2">
                                     <span
@@ -533,13 +533,13 @@
 
                         <!-- Save Button -->
                         <div id="save-button-container" class="mt-8 text-center hidden">
-                            <button type="submit"
+                            <button type="submit" data-translate="save" data-translate-page="profile"
                                 class="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition shadow-md">
                                 Simpan Perubahan
                             </button>
-                            <button type="button" onclick="window.location.reload()"
+                            <button type="button" onclick="window.location.reload()" data-translate="cancel" data-translate-page="profile" 
                                 class="ml-4 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                                Batal
+                                <span data-translate="cancel" data-translate-page="profile">Batal</span>
                             </button>
                         </div>
                     </div>
@@ -565,12 +565,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                                 </svg>
-                                Projects
+                                <span data-translate="pjt" data-translate-page="profile">Projects</span>
                             </h2>
                             <div class="flex items-center gap-3">
                                 <span
                                     class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                                    {{ $user->projects->count() }} proyek
+                                    {{ $user->projects->count() }} <span data-translate="pjt" data-translate-page="profile">proyek</span>
                                 </span>
                                 @if($user->projects->count() > 3)
                                     <button @click="showAllProjects = !showAllProjects"
@@ -708,9 +708,9 @@
 
                                             <div
                                                 class="text-sm text-gray-600 dark:text-gray-300 mb-3 flex items-center gap-2 flex-wrap">
-                                                <span>Mulai: {{ $mulaiFormatted }}</span>
+                                                <span><span data-translate="start" data-translate-page="profile">Mulai:</span> {{ $mulaiFormatted }}</span>
                                                 <span class="text-gray-400">→</span>
-                                                <span>Selesai: {{ $akhirFormatted }}</span>
+                                                <span><span data-translate="finish" data-translate-page="profile">Selesai:</span> {{ $akhirFormatted }}</span>
                                             </div>
 
                                             @if($deskripsi)
@@ -718,7 +718,7 @@
                                                     {{ $deskripsi }}
                                                 </p>
                                             @else
-                                                <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 italic flex-1">Tidak ada deskripsi
+                                                <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 italic flex-1"><span data-translate="empty_desc" data-translate-page="profile">Tidak ada deskripsi</span>
                                                 </p>
                                             @endif
 
@@ -769,7 +769,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400">Belum ada proyek yang ditambahkan.</p>
+                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="profile">Belum ada proyek yang ditambahkan.</p>
                             </div>
                         @endif
                     </section>
@@ -785,12 +785,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                 </svg>
-                                Sertifikat
+                                <span data-translate="stk" data-translate-page="profile">Sertifikat</span>
                             </h2>
                             <div class="flex items-center gap-3">
                                 <span
                                     class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                                    {{ $user->sertifikats?->count() ?? 0 }} sertifikat
+                                    {{ $user->sertifikats?->count() ?? 0 }} <span data-translate="stk" data-translate-page="profile">sertifikat</span>
                                 </span>
                                 @if(($user->sertifikats?->count() ?? 0) > 3)
                                     <button @click="showAllSertifikat = !showAllSertifikat"
@@ -827,7 +827,7 @@
                                             <div class="flex items-center gap-2 mb-3 flex-wrap">
                                                 <span
                                                     class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $isInactive ? 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' }} w-fit">
-                                                    Sertifikat
+                                                    <span data-translate="stk" data-translate-page="profile">Sertifikat</span>
                                                 </span>
                                                 @if($sertifikat->status_pengajuan)
                                                     <span class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">
@@ -877,21 +877,21 @@
                                                 <a href="{{ asset('storage/' . $sertifikat->link_sertifikat) }}" target="_blank"
                                                     rel="noopener noreferrer"
                                                     class="mt-auto inline-flex items-center {{ $isInactive ? 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300' : 'text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300' }} font-medium">
-                                                    Lihat Sertifikat
+                                                    <span data-translate="see_stk" data-translate-page="profile">Lihat Sertifikat</span>
                                                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                     </svg>
                                                 </a>
                                             @else
-                                                <p
+                                                <p data-translate="empty_stk" data-translate-page="profile"
                                                     class="mt-auto text-sm {{ $isInactive ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400' }} italic">
                                                     Tidak ada link sertifikat</p>
                                             @endif
 
                                             <p
                                                 class="text-xs text-gray-500 dark:text-gray-400 mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-                                                Ditambahkan: {{ $sertifikat->created_at?->format('d M Y') ?? '—' }}
+                                                <span data-translate="added" data-translate-page="profile">Ditambahkan:</span> {{ $sertifikat->created_at?->format('d M Y') ?? '—' }}
                                             </p>
                                         </div>
                                     </div>
@@ -905,7 +905,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400">Belum ada sertifikat yang ditambahkan.</p>
+                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_stk1" data-translate-page="profile">Belum ada sertifikat yang ditambahkan.</p>
                             </div>
                         @endif
                     </section>
@@ -926,7 +926,7 @@
                             <div class="flex items-center gap-3">
                                 <span
                                     class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                                    {{ $user->learning_corners->count() }} catatan
+                                    {{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="profile">catatan</span>
                                 </span>
                                 @if($user->learning_corners->count() > 3)
                                     <button @click="showAllLearning = !showAllLearning"
@@ -988,7 +988,7 @@
 
                                             <p
                                                 class="text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                                                Diposting pada:
+                                                <span data-translate="posted" data-translate-page="profile">Diposting pada:</span>
                                                 {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
                                             </p>
                                         </div>
@@ -1011,7 +1011,7 @@
 
                 <!-- Footer -->
                 <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-                    Terakhir diperbarui: {{ now()->format('d F Y H:i') }} WIB
+                    <span data-translate="last_upd" data-translate-page="profile">Terakhir diperbarui:</span> {{ now()->format('d F Y H:i') }} WIB
                 </div>
 
             </div> <!-- penutup x-data -->

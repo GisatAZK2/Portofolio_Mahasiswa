@@ -6,8 +6,8 @@
         <div class="p-8">
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Buat Postingan Baru</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Bagikan pemikiran, cerita, atau pengalaman Anda dengan komunitas.</p>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl" data-translate-page="add_post">Buat Postingan Baru</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300" data-translate="desc" data-translate-page="add_post">Bagikan pemikiran, cerita, atau pengalaman Anda dengan komunitas.</p>
             </div>
 
             <!-- Error Global -->
@@ -37,7 +37,7 @@
                 <!-- Judul -->
                 <div>
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Judul Postingan <span class="text-red-500">*</span>
+                        <span data-translate="jdl" data-translate-page="add_post">Judul Postingan</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="judul" value="{{ old('judul') }}"
                         placeholder="Judul postingan Anda..." required
@@ -57,7 +57,7 @@
                                             text-gray-700 dark:text-gray-300
                                             placeholder-gray-500 dark:placeholder-gray-400
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
-                    placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
+                    placeholder="Deskripsikan postingan Anda...">{{ old('deskripsi') }}</textarea>
                 @error('deskripsi')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -66,13 +66,13 @@
                 <!-- Dynamic Items -->
                 <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Konten Tambahan (opsional)</h3>
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200" data-translate="addition" data-translate-page="add_post">Konten Tambahan (opsional)</h3>
                         <button type="button" id="add-item"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            Tambah Item
+                            <span data-translate="add" data-translate-page="add_post">Tambah Item</span>
                         </button>
                     </div>
 
@@ -85,7 +85,7 @@
                 <div class="flex justify-end pt-8 border-t border-gray-200 dark:border-gray-700">
                     <button type="submit"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        Buat Postingan
+                        <span data-translate="make" data-translate-page="add_post">Buat Postingan</span>
                     </button>
                 </div>
             </form>
@@ -105,11 +105,11 @@
             newItem.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="image">Gambar</option>
-                        <option value="link">Link / Referensi</option>
+                        <option value="image" data-translate="pic" data-translate-page="add_post">Gambar</option>
+                        <option value="link" data-translate="link" data-translate-page="add_post">Link / Referensi</option>
                     </select>
-                    <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
-                        Hapus
+                    <button class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
+                        <span data-translate="del" data-translate-page="add_post">Hapus</span>
                     </button>
                 </div>
 
@@ -122,7 +122,7 @@
                     <div class="file-input hidden mt-2">
                         <input type="file" name="items[${itemIndex}][file]" accept="image/*"
                                class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Maks 5MB • jpg, png, gif, webp</p>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="max" data-translate-page="add_post">Maks 5MB • jpg, png, gif, webp</p>
                     </div>
 
                     <!-- Link (hidden awal) -->

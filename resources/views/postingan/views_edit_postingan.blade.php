@@ -6,8 +6,8 @@
         <div class="p-8">
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Postingan</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Perbarui konten postingan Anda.</p>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="ttl" data-translate-page="edit_post">Edit Postingan</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300" data-translate="desc" data-translate-page="edit_post">Perbarui konten postingan Anda.</p>
             </div>
 
             <!-- Error Global -->
@@ -38,7 +38,7 @@
                 <!-- Judul -->
                 <div>
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Judul Postingan <span class="text-red-500">*</span>
+                        <span data-translate="jdl" data-translate-page="add_post">Judul Postingan</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="judul" value="{{ old('judul', $postingan->content[0]['content'] ?? '') }}"
                         placeholder="Judul postingan Anda..." required
@@ -68,13 +68,13 @@
                 <!-- Dynamic Items -->
                 <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Konten Tambahan (opsional)</h3>
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200" data-translate="addition" data-translate-page="add_post">Konten Tambahan (opsional)</h3>
                         <button type="button" id="add-item"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            Tambah Item
+                            <span data-translate="add" data-translate-page="add_post">Tambah Item</span>
                         </button>
                     </div>
 
@@ -87,10 +87,10 @@
                             <div class="item bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 relative" data-index="{{ $index }}">
                                 <div class="flex justify-between items-start mb-4">
                                     <select name="items[{{ $index }}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                                        <option value="image" {{ (isset($item['type']) && $item['type'] === 'image') ? 'selected' : '' }}>Gambar</option>
-                                        <option value="link" {{ (isset($item['type']) && $item['type'] === 'link') ? 'selected' : '' }}>Link / Referensi</option>
+                                        <option data-translate-page="add_post" data-translate="pic" value="image" {{ (isset($item['type']) && $item['type'] === 'image') ? 'selected' : '' }}>Gambar</option>
+                                        <option data-translate-page="add_post" data-translate="link" value="link" {{ (isset($item['type']) && $item['type'] === 'link') ? 'selected' : '' }}>Link / Referensi</option>
                                     </select>
-                                    <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
+                                    <button data-translate="del" data-translate-page="add_post" type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
                                         Hapus
                                     </button>
                                 </div>
@@ -101,7 +101,7 @@
                                         @if(isset($item['type']) && $item['type'] === 'image' && isset($item['content']))
                                             <div class="mb-2">
                                                 <img src="{{ asset('storage/' . $item['content']) }}" class="max-w-xs h-auto rounded-lg" alt="Current image">
-                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Gambar saat ini</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" data-translate="curr_pic" data-translate-page="edit_post">Gambar saat ini</p>
                                             </div>
                                         @endif
                                         <input type="file" name="items[{{ $index }}][file]" accept="image/*"
@@ -120,12 +120,12 @@
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200 dark:border-gray-700">
-                    <a href="{{ route('postingan.index') }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition mr-4">
+                    <a href="{{ route('postingan.index') }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition mr-4" data-translate="cancel" data-translate-page="add_post">
                         Batal
                     </a>
                     <button type="submit"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        Update Postingan
+                        <span data-translate="upd" data-translate-page="edit_post">Update Postingan</span>
                     </button>
                 </div>
             </form>
@@ -145,10 +145,10 @@
             newItem.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="image">Gambar</option>
-                        <option value="link">Link / Referensi</option>
+                        <option data-translate="pic" data-translate-page="add_post" value="image">Gambar</option>
+                        <option data-translate="link" data-translate-page="add_post" value="link">Link / Referensi</option>
                     </select>
-                    <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
+                    <button data-translate="del" data-translate-page="add_post" type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
                         Hapus
                     </button>
                 </div>

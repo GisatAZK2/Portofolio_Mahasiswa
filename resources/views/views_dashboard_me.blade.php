@@ -95,7 +95,7 @@
                         <div
                             class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Semua Learning Corner
+                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="all_lrn" data-translate-page="dashboard_me">Semua Learning Corner
                                 </h3>
                                 <span class="text-purple-500">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -135,8 +135,7 @@
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
                             onclick="window.location.href = '{{ auth()->check() ? route('sertifikat.index') : route('sertifikat-mahasiswa') }}';">
                             <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Semua Sertifikat
-                                </h3>
+                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="all_stk" data-translate-page="dashboard_me">Total Semua Sertifikat</h3>
                                 <span class="text-amber-500">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                         stroke-width="2">
@@ -179,7 +178,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span class="text-sm font-medium">Foto</span>
+                                <span class="text-sm font-medium" data-translate="foto" data-translate-page="dashboard_me">Foto</span>
                             </button>
                             <button onclick="openCreatePostModal()"
                                 class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-red-600 transition">
@@ -187,14 +186,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
-                                <span class="text-sm font-medium">Tulis artikel</span>
+                                <span class="text-sm font-medium" data-translate="write" data-translate-page="dashboard_me">Tulis artikel</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Konten Saya Title -->
                     <div class="mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Konten Saya</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="my_content" data-translate-page="dashboard_me">Konten Saya</h2>
                     </div>
 
 
@@ -202,12 +201,12 @@
                     <div class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">Postingan Anda</h3>
+                            <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300" data-translate="ur_post" data-translate-page="dashboard_me">Postingan Anda</h3>
                         </div>
 
                         @if($postinganTerbaru->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada postingan mahasiswa</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_post" data-translate-page="dashboard_me">Belum ada postingan mahasiswa</p>
                             </div>
                         @else
                             <div id="postingan-container" class="space-y-6">
@@ -286,7 +285,7 @@
                                                     <span class="text-sm">{{ $post->komentar->count() }}</span>
                                                 </button>
                                             </div>
-                                            <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan) }}'" 
+                                            <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan) }}'"  data-translate="see_dtl" data-translate-page="dashboard_me"
                                                   class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
                                                 Lihat detail
                                             </span>
@@ -313,7 +312,7 @@
                                                                 class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y"
                                                                 placeholder="Tulis komentar..."></textarea>
                                                             <div class="flex justify-end mt-2">
-                                                                <button type="submit" 
+                                                                <button type="submit" data-translate="send" data-translate-page="dashboard_me"
                                                                     class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
                                                                     Kirim
                                                                 </button>
@@ -370,7 +369,7 @@
                         <div class="flex items-center gap-2 mb-6">
                             <div class="w-1 h-6 bg-purple-600 rounded-full"></div>
                             <h3 class="text-xl font-bold text-purple-700 dark:text-purple-300">Learning Corner</h3>
-                            <span class="ml-auto text-sm text-gray-600 dark:text-gray-400 font-medium">{{ $learningCorners->total() ?? 0 }} konten</span>
+                            <span class="ml-auto text-sm text-gray-600 dark:text-gray-400 font-medium">{{ $learningCorners->total() ?? 0 }} <span data-translate="content" data-translate-page="dashboard_me">konten</span></span>
                         </div>
 
                         @if($learningCorners->isEmpty())
@@ -381,7 +380,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada Learning Corner</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_lrn" data-translate="dahboard_me">Belum ada Learning Corner</p>
                             </div>
                         @else
                             <div data-pagination-group="learning_corner">
@@ -401,7 +400,7 @@
                     <div class="mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300">Project</h3>
+                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300" data-translate="pjt" data-translate-page="dashboard_me">Project</h3>
                         </div>
 
                         @if($projects->isEmpty())
@@ -412,7 +411,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                 </svg>
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada Project</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="dashboard_me">Belum ada Project</p>
                             </div>
                         @else
                             <div data-pagination-group="project">
@@ -432,7 +431,7 @@
                     <div class="mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-green-700 dark:text-green-300">Sertifikat</h3>
+                            <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="stk" data-translate-page="dashboard_me">Sertifikat</h3>
                         </div>
 
                         @if($projectUsers->isEmpty())
@@ -462,7 +461,7 @@
                     <!-- Timestamp -->
                     <div
                         class="text-center text-gray-500 dark:text-gray-400 text-sm mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        Terakhir diperbarui {{ now()->format('d F Y H:i') }} WIB
+                        <span data-translate="terakhir_diperbarui" data-translate-page="dashboard_me">Terakhir diperbarui</span> {{ now()->format('d F Y H:i') }}
                     </div>
 
                 </div>
