@@ -9,7 +9,7 @@
                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
-                    Sebelumnya
+                    <span data-translate="prev" data-translate-page="dashboard_me">Sebelumnya</span>
                 </span>
             @else
                 <a href="{{ $paginator->previousPageUrl() }}"
@@ -18,7 +18,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
-                    Sebelumnya
+                    <span data-translate="prev" data-translate-page="dashboard_me">Sebelumnya</span>
                 </a>
             @endif
 
@@ -53,7 +53,7 @@
                 <a href="{{ $paginator->nextPageUrl() }}"
                     class="pagination-link px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-indigo-400 dark:hover:border-indigo-500 text-sm font-medium transition-all duration-200 flex items-center gap-1"
                     data-group="{{ $groupName }}">
-                    Selanjutnya
+                    <span data-translate-page="dashboard_me" data-translate="next">Selanjutnya</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -61,7 +61,7 @@
             @else
                 <span
                     class="px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed text-sm font-medium transition-all flex items-center gap-1">
-                    Selanjutnya
+                    <span data-translate="next" data-translate-page="dashboard_me">Selanjutnya</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -72,7 +72,7 @@
 
     {{-- Info Pagination --}}
     <div class="text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Halaman <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $paginator->currentPage() }}</span> dari
+        <span data-translate="page" data-translate-page="dashboard_me">Halaman</span> <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $paginator->currentPage() }}</span> <span data-translate="of" data-translate-page="dashboard_me">dari</span>
         <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $paginator->lastPage() }}</span>
     </div>
 @endif

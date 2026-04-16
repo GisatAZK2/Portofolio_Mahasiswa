@@ -116,8 +116,8 @@
                 <!-- Engagement Stats -->
                 <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                     <div class="flex items-center gap-4">
-                        <span class="like-count-text">{{ $postingan->likes->count() }} <span class="hidden sm:inline">suka</span></span>
-                        <span>{{ $postingan->komentar->count() }} <span class="hidden sm:inline">komentar</span></span>
+                        <span class="like-count-text">{{ $postingan->likes->count() }} <span class="hidden sm:inline" data-translate="likes" data-translate-page="post">suka</span></span>
+                        <span>{{ $postingan->komentar->count() }} <span class="hidden sm:inline" data-translate="comment" data-translate-page="post">komentar</span></span>
                     </div>
                 </div>
 
@@ -125,7 +125,7 @@
                 <!-- Comments Section -->
                 <div id="comments" class="px-5 py-5 space-y-5">
                     <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-5">
-                        Komentar ({{ $postingan->komentar->count() }})
+                        <span data-translate="comment" data-translate-page="post">Komentar</span> ({{ $postingan->komentar->count() }})
                     </h3>
 
                     <!-- Add Comment Form -->
@@ -153,11 +153,11 @@
                                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                     @enderror
                                     <div class="flex justify-end gap-2 mt-2">
-                                        <button type="reset"
+                                        <button type="reset" data-translate="cancel" data-translate-page="post"
                                             class="px-4 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition">
                                             Batal
                                         </button>
-                                        <button type="submit"
+                                        <button type="submit" data-translate="send" data-translate-page="post"
                                             class="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition font-medium">
                                             Kirim
                                         </button>
@@ -168,8 +168,8 @@
                     @else
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/30 rounded-lg p-4 text-center">
                             <p class="text-sm text-blue-900 dark:text-blue-300">
-                                <a href="{{ route('login') }}" class="font-semibold hover:underline">Masuk</a>
-                                untuk menambahkan komentar.
+                                <a href="{{ route('login') }}" class="font-semibold hover:underline" data-translate="signin" data-translate-page="post">Masuk</a>
+                                <span data-translate="for" data-translate-page="post">untuk menambahkan komentar.</span>
                             </p>
                         </div>
                     @endauth
@@ -207,11 +207,11 @@
                                                 @csrf @method('PUT')
                                                 <textarea name="komentar" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg text-sm outline-none focus:border-indigo-500">{{ $komentar->komentar }}</textarea>
                                                 <div class="flex justify-end gap-2 mt-2">
-                                                    <button type="button" onclick="cancelEdit({{ $komentar->id_komentar }})"
+                                                    <button type="button" onclick="cancelEdit({{ $komentar->id_komentar }})" data-translate="cancel" data-translate-page="post"
                                                         class="px-3 py-1 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
                                                         Batal
                                                     </button>
-                                                    <button type="submit"
+                                                    <button type="submit" data-translate="save" data-translate-page="post"
                                                         class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700">
                                                         Simpan
                                                     </button>
@@ -223,14 +223,13 @@
                                         @auth
                                             @if(auth()->id() == $komentar->id_user)
                                                 <div class="flex items-center gap-3 mt-1 opacity-0 group-hover:opacity-100 transition">
-                                                    <button onclick="editComment({{ $komentar->id_komentar }}, '{{ $komentar->komentar }}')"
-                                                        class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium">
+                                                    <button onclick="editComment({{ $komentar->id_komentar }}, '{{ $komentar->komentar }}')"                                                        class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium">
                                                         Edit
                                                     </button>
                                                     <span class="text-gray-300 dark:text-gray-600">•</span>
                                                     <form action="{{ route('komentar.destroy', $komentar->id_komentar) }}" method="POST" class="inline">
                                                         @csrf @method('DELETE')
-                                                        <button type="button" onclick="if(confirm('Hapus komentar ini?')) this.form.submit();"
+                                                        <button type="button" onclick="if(confirm('Hapus komentar ini?')) this.form.submit();" data-translate="del" data-translate-page="post"
                                                             class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium">
                                                             Hapus
                                                         </button>
@@ -247,7 +246,7 @@
                             <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                             </svg>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">Belum ada komentar</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_comment" data-translate-page="post">Belum ada komentar</p>
                         </div>
                     @endif
                 </div>
