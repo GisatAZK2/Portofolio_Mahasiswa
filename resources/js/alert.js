@@ -96,15 +96,45 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+const DISMISSED_PAGE_INFO_KEY = 'dismissedPageInfo';
+
+function getDismissedPageInfo() {
+    const raw = localStorage.getItem(DISMISSED_PAGE_INFO_KEY);
+    try {
+        return raw ? JSON.parse(raw) : {};
+    } catch (error) {
+        localStorage.removeItem(DISMISSED_PAGE_INFO_KEY);
+        return {};
+    }
+}
+
+function setDismissedPageInfo(key) {
+    const dismissed = getDismissedPageInfo();
+    dismissed[key] = true;
+    localStorage.setItem(DISMISSED_PAGE_INFO_KEY, JSON.stringify(dismissed));
+}
+
 // Fungsi untuk menampilkan toast page info
 function showPageInfo(message, type = "info", duration = 2000) {
+    const lang = localStorage.getItem("lang") || "id";
+    let messageKey = null;
+    const originalMessage = message;
 
-     const lang = localStorage.getItem("lang") || "id";
-
-    if (message.includes('.') && !message.includes(' ')) {
-        message = getTranslation(lang, message) || message;
+    if (typeof message === 'string' && message.includes('.') && !message.includes(' ')) {
+        const translated = getTranslation(lang, message);
+        if (translated) {
+            message = translated;
+        }
+        messageKey = originalMessage;
     }
-    
+
+    if (messageKey) {
+        const dismissed = getDismissedPageInfo();
+        if (dismissed[messageKey]) {
+            return;
+        }
+    }
+
     const container = document.getElementById("toast-container");
     if (!container) return;
 
@@ -152,17 +182,24 @@ function showPageInfo(message, type = "info", duration = 2000) {
         toast.classList.remove("translate-x-10", "opacity-0");
     });
 
-    const removeToast = () => {
+    const removeToast = (userClicked = false) => {
         toast.classList.add("opacity-0", "translate-x-10");
 
         setTimeout(() => {
             toast.remove();
         }, 300);
+
+        if (userClicked && messageKey) {
+            setDismissedPageInfo(messageKey);
+        }
     };
 
-    toast.querySelector("button").onclick = removeToast;
+    const closeBtn = toast.querySelector("button");
+    if (closeBtn) {
+        closeBtn.onclick = () => removeToast(true);
+    }
 
-    setTimeout(removeToast, duration);
+    setTimeout(() => removeToast(false), duration);
 }
 
 window.showPageInfo = showPageInfo;

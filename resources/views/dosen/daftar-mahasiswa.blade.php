@@ -478,15 +478,6 @@
         @endif
     </script>
 
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof showPageInfo === 'function') {
-                showPageInfo("Kelola semua pengguna yang terdaftar dalam sistem. Anda dapat melihat detail, memperbarui status pengajuan, atau menghapus pengguna sesuai kebutuhan.");
-            }
-        });
-    </script>
-
     <!-- Loading Indicator -->
     <div id="loadingOverlay"
         class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80 hidden items-center justify-center z-[100]">
