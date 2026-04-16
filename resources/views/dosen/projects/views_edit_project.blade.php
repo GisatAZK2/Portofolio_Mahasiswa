@@ -395,6 +395,9 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 const isMember = selectedUsers.members.some(m => m.id == user.id);
                 const memberDisabled = isOwner || isLeader;
 
+                // Disable leader option hanya jika sudah ada leader BERBEDA dari owner
+                const leaderDisabled = selectedUsers.leader && selectedUsers.leader.id != user.id && selectedUsers.leader.id != selectedUsers.owner?.id;
+
                 return `
                     <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <div class="flex items-center gap-3">
@@ -413,7 +416,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                             <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
                                 <option value="">-- Pilih Role --</option>
                                 <option value="owner" ${isOwner ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''} ${selectedUsers.leader && !isLeader ? 'disabled' : ''}>Leader</option>
+                                <option value="leader" ${isLeader ? 'selected' : ''} ${leaderDisabled ? 'disabled' : ''}>Leader</option>
                                 <option value="member" ${isMember ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
                             </select>
                         </div>
@@ -475,7 +478,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         function updateFormInputs() {
             document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
-            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+            const effectiveLeaderId = selectedUsers.leader?.id || (selectedUsers.owner && selectedUsers.members.length > 0 ? selectedUsers.owner.id : null);
+            document.getElementById('selected-leader-id').value = effectiveLeaderId || '';
             const container = document.getElementById('members-hidden-container');
             container.innerHTML = '';
             selectedUsers.members.forEach(member => {
@@ -493,8 +497,19 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             if (!container || !noUsersMsg) return;
 
             const selected = [];
-            if (selectedUsers.owner) selected.push({ ...selectedUsers.owner, role: 'Owner' });
-            if (selectedUsers.leader) selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            if (selectedUsers.owner) {
+                // Jika leader null dan ada member, tampilkan owner sebagai Owner & Leader (indikasi visual saja)
+                if (!selectedUsers.leader && selectedUsers.members.length > 0) {
+                    selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
+                } else if (selectedUsers.leader && selectedUsers.owner.id === selectedUsers.leader.id) {
+                    selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
+                } else {
+                    selected.push({ ...selectedUsers.owner, role: 'Owner' });
+                }
+            }
+            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+                selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            }
             selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
 
             if (!selected.length) {
@@ -506,9 +521,10 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             noUsersMsg.classList.add('hidden');
             container.innerHTML = selected.map(user => {
                 const styles = {
-                    Owner: 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    Leader: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    Member: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200',
+                    'Owner & Leader': 'bg-indigo-50 dark:bg-indigo-950 border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200'
                 }[user.role];
 
                 return `
@@ -536,9 +552,24 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         }
 
         function removeUser(userId) {
+            const wasOwner = selectedUsers.owner?.id == userId;
+            
             if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
+
+            // Jika owner yang dihapus, auto-assign owner baru dengan prioritas: Leader → Member
+            if (wasOwner) {
+                if (selectedUsers.leader) {
+                    // Leader menjadi owner baru
+                    selectedUsers.owner = selectedUsers.leader;
+                    selectedUsers.leader = null;
+                } else if (selectedUsers.members.length > 0) {
+                    // Member pertama menjadi owner, dan sisanya tetap member
+                    selectedUsers.owner = selectedUsers.members.shift();
+                }
+            }
+
             updateFormInputs();
             renderSelectedUsers();
             // Refresh task UI
@@ -556,6 +587,11 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             if (ownerId) selectedUsers.owner = getUserById(ownerId);
             if (leaderId) selectedUsers.leader = getUserById(leaderId);
             selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+
+            // Sinkronisasi: jika leader belum di-set tapi ada members, set leader = owner
+            if (!selectedUsers.leader && selectedUsers.owner && selectedUsers.members.length > 0) {
+                selectedUsers.leader = selectedUsers.owner;
+            }
         }
 
         function getUserById(id) {
