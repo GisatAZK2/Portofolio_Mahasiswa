@@ -158,9 +158,10 @@ class ProjekController extends Controller
         $search = $request->query('search', '');
         $angkatan = $request->query('angkatan', '');
         $jurusan = $request->query('jurusan', '');
+        $keahlian = $request->query('keahlian', '');
 
-         $usersQuery = User::with(['angkatan', 'jurusan'])
-        ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan')
+         $usersQuery = User::with(['angkatan', 'jurusan', 'keahlian'])
+        ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan', 'id_keahlian')
         ->whereNotIn('role', ['admin', 'dosen'])
         ->where('is_active', 1)
         ->where('status_pengajuan', 'Di Terima');
@@ -177,13 +178,18 @@ class ProjekController extends Controller
             $usersQuery->where('id_jurusan', $jurusan);
         }
 
+        if (!empty($keahlian)) {
+            $usersQuery->where('id_keahlian', $keahlian);
+        }
+
         $users = $usersQuery->get();
 
         // Get all angkatan and jurusan for filter dropdowns
         $angkatanList = Angkatan::orderBy('tahun_masuk', 'desc')->get();
         $jurusanList = Jurusan::orderBy('nama_jurusan')->get();
+        $keahlianList = Keahlian::orderBy('nama_keahlian')->get();
 
-        return view('project.views_create_project', compact('users', 'search', 'angkatan', 'jurusan', 'angkatanList', 'jurusanList'));
+        return view('project.views_create_project', compact('users', 'search', 'angkatan', 'jurusan', 'keahlian', 'angkatanList', 'jurusanList', 'keahlianList'));
     }
 
     protected function createProjectTasks(Project $project, array $tasks, bool $skipValidation = false)

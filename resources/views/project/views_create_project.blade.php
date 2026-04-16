@@ -124,9 +124,15 @@
                                 @endforeach
                             </select>
                             <select id="modal-jurusan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                                <option value="">Semua Jurusan</option>
+                                <option value="">Semua Prodi</option>
                                 @foreach($jurusanList as $jurusanItem)
-                                    <option value="{{ $jurusanItem->id }}">{{ $jurusanItem->nama_jurusan }}</option>
+                                    <option value="{{ $jurusanItem->id_jurusan }}">{{ $jurusanItem->nama_jurusan }}</option>
+                                @endforeach
+                            </select>
+                            <select id="modal-keahlian" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                                <option value="">Semua Keahlian</option>
+                                @foreach($keahlianList as $keahlianItem)
+                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -340,7 +346,7 @@
             userList.innerHTML = filteredUsers.map(user => {
                 const isLeader = selectedUsers.leader?.id == user.id;
                 const isMember = selectedUsers.members.some(m => m.id == user.id);
-                const memberDisabled = isLeader;
+                const hasOtherLeader = selectedUsers.leader && !isLeader;
 
                 return `
                     <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -359,8 +365,8 @@
                         <div class="flex items-center gap-2">
                             <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
                                 <option value="">-- Pilih Role --</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''}>Leader</option>
-                                <option value="member" ${isMember ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
+                                <option value="leader" ${isLeader ? 'selected' : ''} ${hasOtherLeader ? 'disabled' : ''}>Leader</option>
+                                <option value="member" ${isMember ? 'selected' : ''}>Member</option>
                             </select>
                         </div>
                     </div>
