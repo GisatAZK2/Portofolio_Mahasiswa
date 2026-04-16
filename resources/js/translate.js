@@ -657,6 +657,14 @@ export const translations = {
       total_project: 'Total Semua Project',
       total_sertifikat: 'Total Semua Sertifikat',
       perihal_terbaru: 'Postingan Terbaru',
+      ur_post: 'Postingan Anda',
+      empty_post: 'Belum ada postingan mahasiswa',
+      send: 'Kirim',
+      signin: 'Masuk',
+      comment_for: 'untuk menambahkan komentar',
+      comment_placeholder: 'Tulis komentar...',
+      empty_comment: 'Belum ada komentar',
+      see_dtl: 'Lihat detail',
       lihat_semua: 'Lihat Semua →',
       tampilkan_lagi: 'tampilkan lagi',
       sembunyikan: 'Sembunyikan',
@@ -2213,7 +2221,7 @@ let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;
 let translateElements = [];
 
 function cacheTranslateElements() {
-  translateElements = Array.from(document.querySelectorAll('[data-translate]'));
+  translateElements = Array.from(document.querySelectorAll('[data-translate], [data-translate-placeholder]'));
 }
 
 function applyTranslations() {

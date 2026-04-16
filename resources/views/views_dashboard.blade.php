@@ -38,19 +38,19 @@
                 <div class="feed-column">
 
                     <div class="mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Postingan Terbaru</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru" data-translate-page="dashboard">Postingan Terbaru</h2>
                     </div>
 
                     <!-- Postingan Mahasiswa -->
                     <div class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">Postingan Anda</h3>
+                            <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300" data-translate="ur_post" data-translate-page="dashboard">Postingan Anda</h3>
                         </div>
 
                         @if($postinganTerbaru->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada postingan mahasiswa</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_post" data-translate-page="dashboard">Belum ada postingan mahasiswa</p>
                             </div>
                         @else
                             <div id="postingan-container" class="space-y-6">
@@ -130,7 +130,7 @@
                                                 </button>
                                             </div>
                                             <span onclick="window.location.href='{{ route('postingan.show', $post->id_postingan) }}'" 
-                                                  class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
+                                                  class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600" data-translate="see_dtl" data-translate-page="dashboard">
                                                 Lihat detail
                                             </span>
                                         </div>
@@ -154,10 +154,10 @@
                                                         <div class="flex-1">
                                                             <textarea name="komentar" rows="2" 
                                                                 class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y"
-                                                                placeholder="Tulis komentar..."></textarea>
+                                                                placeholder="Tulis komentar..." data-translate-placeholder="comment_placeholder" data-translate-page="dashboard"></textarea>
                                                             <div class="flex justify-end mt-2">
                                                                 <button type="submit" 
-                                                                    class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
+                                                                    class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700" data-translate="send" data-translate-page="dashboard">
                                                                     Kirim
                                                                 </button>
                                                             </div>
@@ -166,7 +166,7 @@
                                                 </form>
                                             @else
                                                 <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
-                                                    <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">Masuk</a> untuk berkomentar
+                                                    <a href="{{ route('login') }}" class="text-indigo-600 hover:underline" data-translate="signin" data-translate-page="dashboard">Masuk</a> <span data-translate="comment_for" data-translate-page="dashboard">untuk berkomentar</span>
                                                 </p>
                                             @endauth
 
@@ -195,7 +195,7 @@
                                                     @endforeach
                                                 </div>
                                             @else
-                                                <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">Belum ada komentar</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4" data-translate="empty_comment" data-translate-page="dashboard">Belum ada komentar</p>
                                             @endif
                                         </div>
                                     </div>
@@ -213,11 +213,11 @@
                     <div class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300">Project</h3>
+                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300" data-translate="ttl_pjt" data-translate-page="dashboard">Project</h3>
                         </div>
                         @if($projects->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada project</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="dashboard">Belum ada project</p>
                             </div>
                         @else
                             <div id="project-container" class="space-y-4">
@@ -237,11 +237,11 @@
                     <div class="feed-section">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-green-700 dark:text-green-300">Sertifikat</h3>
+                            <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="ttl_stk" data-translate-page="dashboard">Sertifikat</h3>
                         </div>
                         @if($projectUsers->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada sertifikat</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_stk" data-translate-page="dashboard">Belum ada sertifikat</p>
                             </div>
                         @else
                             <div id="sertifikat-container" class="space-y-4">
@@ -265,10 +265,10 @@
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
-                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300">Learning Corner</h3>
+                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">Learning Corner</h3>
                         </div>
                         @if($learningCorners->isEmpty())
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">Belum ada Learning Corner</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn" data-translate-page="dashboard">Belum ada Learning Corner</p>
                         @else
                             <div id="learning-corner-list" class="space-y-4">
                                 @foreach($learningCorners->take(5) as $learning)

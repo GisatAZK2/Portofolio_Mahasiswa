@@ -692,6 +692,31 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateTaskUserOptions();
         }
 
+        function setupDateConstraints() {
+            const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
+            const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
+            if (!tanggalMulai || !tanggalAkhir) return;
+
+            const updateMinAkhir = () => {
+                if (tanggalMulai.value) {
+                    const startDate = new Date(tanggalMulai.value);
+                    const minDate = new Date(startDate);
+                    minDate.setDate(startDate.getDate() + 1);
+                    const minDateStr = minDate.toISOString().split('T')[0];
+                    tanggalAkhir.min = minDateStr;
+
+                    if (tanggalAkhir.value && tanggalAkhir.value < minDateStr) {
+                        tanggalAkhir.value = '';
+                    }
+                } else {
+                    tanggalAkhir.min = '';
+                }
+            };
+
+            tanggalMulai.addEventListener('change', updateMinAkhir);
+            updateMinAkhir();
+        }
+
         // Initialize modal functions
         document.addEventListener('DOMContentLoaded', function () {
             loadSelectedUsersFromForm();
@@ -701,6 +726,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateSelectedUsersBadge();
             initializeTaskRows(@json($existingTasks));
             document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+            setupDateConstraints();
         });
     </script>
     <script>
