@@ -158,6 +158,9 @@
                             <input type="password" name="password"
                                 class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                 required>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Minimal 8 karakter, harus ada huruf besar dan kecil, tidak boleh spasi.
+                            </p>
                             @error('password')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror

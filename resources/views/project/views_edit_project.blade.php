@@ -142,7 +142,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="tanggal_mulai" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
-                        <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $project->tanggal_mulai->format('Y-m-d')) }}" required
+                        <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ old('tanggal_mulai', $project->tanggal_mulai->format('Y-m-d')) }}" required
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
                         @error('tanggal_mulai')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -150,7 +150,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="tanggal_selesai" data-translate-page="project_edit"></span></label>
-                        <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir', $project->tanggal_akhir?->format('Y-m-d') ?? '') }}"
+                        <input type="date" id="tanggal_akhir" name="tanggal_akhir" value="{{ old('tanggal_akhir', $project->tanggal_akhir?->format('Y-m-d') ?? '') }}"
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
                         @error('tanggal_akhir')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -227,7 +227,7 @@
             ->values()
     );
      const existingTasks = @json($existingTasks);
-    let selectedUsers = { leader: null, members: [] };
+    let selectedUsers = { owner: null, leader: null, members: [] };
     let taskIndex = 0;
 
     // ====================== TASK FUNCTIONS ======================
@@ -240,7 +240,7 @@
             users.push({ id: user.id, name: user.nama_mahasiswa });
         };
 
-        add(currentUserData);
+        add(selectedUsers.owner);
         add(selectedUsers.leader);
         selectedUsers.members.forEach(add);
         return users;
@@ -440,7 +440,10 @@
         if (!container || !noMsg) return;
 
         const selected = [];
-        if (selectedUsers.leader) selected.push({ ...selectedUsers.leader, role: 'Leader' });
+        if (selectedUsers.leader && (String(selectedUsers.leader.id) !== String(selectedUsers.owner?.id) || selectedUsers.members.length > 0)) {
+            const leaderRole = selectedUsers.leader.id === selectedUsers.owner?.id ? 'Owner & Leader' : 'Leader';
+            selected.push({ ...selectedUsers.leader, role: leaderRole });
+        }
         selectedUsers.members.forEach(m => selected.push({ ...m, role: 'Member' }));
 
         if (!selected.length) {
@@ -451,9 +454,13 @@
 
         noMsg.classList.add('hidden');
         container.innerHTML = selected.map(user => {
-            const style = user.role === 'Leader' 
+            const style = user.role === 'Leader'
                 ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
-                : 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200';
+                : user.role === 'Owner'
+                    ? 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200'
+                    : user.role === 'Owner & Leader'
+                        ? 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200'
+                        : 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200';
 
             return `
                 <div class="flex items-center justify-between p-4 border rounded-2xl ${style}">
@@ -506,6 +513,8 @@
     }
 
     function loadSelectedUsersFromForm() {
+        selectedUsers.owner = projectParticipants[0] || null;
+
         const leaderId = document.getElementById('selected-leader-id').value;
         if (leaderId) {
             selectedUsers.leader = usersData.find(u => String(u.id) === String(leaderId)) || null;
@@ -530,11 +539,12 @@
             // Refresh task user options
             updateTaskUserOptions();
         } else {
-            // Toggle OFF: hide user section, keep tasks
+            // Toggle OFF: hide user section, user auth menjadi owner + leader
             userSection.style.display = 'none';
             label.textContent = 'Nonaktif';
-            // Clear selected users but keep tasks
-            selectedUsers.leader = null;
+            // Ketika toggle dimatikan, user auth menjadi owner + leader
+            selectedUsers.owner = currentUserData;
+            selectedUsers.leader = currentUserData;
             selectedUsers.members = [];
             updateFormInputs();
             renderSelectedUsers();
@@ -543,17 +553,51 @@
         }
     }
 
+    // ====================== DATE VALIDATION ======================
+    function setupDateValidation() {
+        const tanggalMulaiInput = document.getElementById('tanggal_mulai');
+        const tanggalAkhirInput = document.getElementById('tanggal_akhir');
+
+        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
+
+        // Set minimum date pada tanggal_akhir saat halaman dimuat (jika tanggal_mulai sudah ada)
+        if (tanggalMulaiInput.value) {
+            tanggalAkhirInput.min = tanggalMulaiInput.value;
+        }
+
+        // Update minimum date ketika tanggal_mulai berubah
+        tanggalMulaiInput.addEventListener('change', function () {
+            if (this.value) {
+                tanggalAkhirInput.min = this.value;
+                // Reset tanggal_akhir jika lebih kecil dari tanggal_mulai
+                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
+                    tanggalAkhirInput.value = '';
+                }
+            } else {
+                tanggalAkhirInput.min = '';
+            }
+        });
+
+        // Optional: Validasi saat tanggal_akhir berubah
+        tanggalAkhirInput.addEventListener('change', function () {
+            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
+                this.value = '';
+                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
+            }
+        });
+    }
+
     // ====================== INIT ======================
     document.addEventListener('DOMContentLoaded', function() {
         const toggle = document.getElementById('project-collaborative-toggle');
         const userSection = document.getElementById('user-selection-section');
-        const leaderId = document.getElementById('selected-leader-id').value;
         const currentUserId = currentUserData.id;
 
-        // Check if collaborative: leader_id is not null and not equal to owner (id_mahasiswa)
-        const isCollaborative = leaderId && String(leaderId) !== String(currentUserId);
+        loadSelectedUsersFromForm();
 
-        // Set initial toggle state
+        const isCollaborative = selectedUsers.members.length > 0 ||
+            (selectedUsers.leader && String(selectedUsers.leader.id) !== String(currentUserId));
+
         toggle.checked = isCollaborative;
         if (isCollaborative) {
             userSection.style.display = '';
@@ -563,9 +607,9 @@
             document.getElementById('toggle-label').textContent = 'Nonaktif';
         }
 
-        loadSelectedUsersFromForm();
         renderSelectedUsers();
         initializeTaskRows(existingTasks);
+        setupDateValidation();
 
         // Add toggle listener
         toggle.addEventListener('change', handleCollaborativeToggle);

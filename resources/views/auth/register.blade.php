@@ -156,6 +156,9 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
                             <div class="relative">
                                 <input type="password" name="password" id="password-reg" required
+                                    minlength="8"
+                                    pattern="^(?=.*[A-Z])(?!.*\s).{8,}$"
+                                    title="Password harus minimal 8 karakter, mengandung minimal 1 huruf besar, dan tidak boleh ada spasi"
                                     class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('password') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
                                     {{ $isBlocked ? 'disabled' : '' }}>
                                 @if(!$isBlocked)
@@ -181,7 +184,24 @@
                                     </button>
                                 @endif
                             </div>
-                            @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                            <div class="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                <p class="text-xs font-semibold text-blue-900 mb-2">Syarat Password:</p>
+                                <ul class="text-xs text-blue-800 space-y-1">
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-4 h-4 rounded-full bg-blue-200 flex items-center justify-center text-xs">✓</span>
+                                        Minimal 8 karakter
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-4 h-4 rounded-full bg-blue-200 flex items-center justify-center text-xs">✓</span>
+                                        Harus mengandung minimal 1 huruf besar (A-Z)
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-4 h-4 rounded-full bg-blue-200 flex items-center justify-center text-xs">✓</span>
+                                        Tidak boleh ada spasi
+                                    </li>
+                                </ul>
+                            </div>
+                            @error('password') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div class="relative w-full">
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password</label>

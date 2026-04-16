@@ -205,7 +205,8 @@ class DosenController extends Controller
             'password' => [
                 'required',
                 'confirmed',
-                Password::min(8)->mixedCase()
+                Password::min(8)->mixedCase(),
+                'regex:/^\S+$/'
             ],
             'photo_profile' => [
                 'nullable',
@@ -315,7 +316,8 @@ class DosenController extends Controller
                 'nullable',
                 'string',
                 'confirmed',
-                Password::min(8)->mixedCase()
+                Password::min(8)->mixedCase(),
+                'regex:/^\S+$/'
             ],
             'photo_profile' => [
                 'sometimes',

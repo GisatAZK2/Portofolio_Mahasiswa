@@ -151,7 +151,7 @@
                 <div>
                     <span class="text-black dark:text-white" data-translate="tanggal_mulai"
                         data-translate-page="project_create"></span> <span class="text-red-500">*</span>
-                    <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
+                    <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                             text-gray-700 dark:text-gray-300
@@ -164,7 +164,7 @@
                 <div>
                     <span class="text-black dark:text-white" data-translate="tanggal_selesai"
                         data-translate-page="project_create"></span>
-                    <input type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
+                    <input type="date" id="tanggal_akhir" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                             text-gray-700 dark:text-gray-300
@@ -431,7 +431,9 @@
             if (!container || !noUsersMsg) return;
 
             const selected = [];
-            if (selectedUsers.leader) selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            if (selectedUsers.leader) {
+                selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            }
             selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
 
             if (!selected.length) {
@@ -443,10 +445,11 @@
             noUsersMsg.classList.add('hidden');
             container.innerHTML = selected.map(user => {
                 const styles = {
-                    Leader: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    Member: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-                }[user.role];
-
+                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
                 return `
                     <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
                         <div class="flex items-center gap-3">
@@ -472,7 +475,7 @@
         }
 
         function removeUser(userId) {
-            if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
+            // Keep owner intact. If owner is also leader and removed, only clear leader.
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
             updateFormInputs();
@@ -634,23 +637,59 @@
                     if (leaderInput) leaderInput.removeAttribute('required');
                 } else {
                     userSelectionSection.style.display = 'none';
-                    // Reset selected users ketika toggle dimatikan
-                    selectedUsers.leader = null;
+                    // Ketika toggle dimatikan, user auth menjadi owner + leader
+                    selectedUsers.owner = currentUser;
+                    selectedUsers.leader = currentUser;
                     selectedUsers.members = [];
                     updateFormInputs();
                     renderSelectedUsers();
                     updateTaskUserOptions();
                     updateSelectedUsersBadge();
-                    // Leader menjadi tidak required karena tidak ada selection user
+                    // Leader menjadi tidak required karena sudah terisi sebagai currentUser
                     if (leaderInput) leaderInput.removeAttribute('required');
                 }
             }
+        }
+
+        // Fungsi untuk update min date pada tanggal_akhir berdasarkan tanggal_mulai
+        function setupDateValidation() {
+            const tanggalMulaiInput = document.getElementById('tanggal_mulai');
+            const tanggalAkhirInput = document.getElementById('tanggal_akhir');
+
+            if (!tanggalMulaiInput || !tanggalAkhirInput) return;
+
+            // Set minimum date pada tanggal_akhir saat halaman dimuat (jika tanggal_mulai sudah ada)
+            if (tanggalMulaiInput.value) {
+                tanggalAkhirInput.min = tanggalMulaiInput.value;
+            }
+
+            // Update minimum date ketika tanggal_mulai berubah
+            tanggalMulaiInput.addEventListener('change', function () {
+                if (this.value) {
+                    tanggalAkhirInput.min = this.value;
+                    // Reset tanggal_akhir jika lebih kecil dari tanggal_mulai
+                    if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
+                        tanggalAkhirInput.value = '';
+                    }
+                } else {
+                    tanggalAkhirInput.min = '';
+                }
+            });
+
+            // Optional: Validasi saat tanggal_akhir berubah
+            tanggalAkhirInput.addEventListener('change', function () {
+                if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
+                    this.value = '';
+                    alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             loadSelectedUsersFromForm();
             renderSelectedUsers();
             setupModalFilters();
+            setupDateValidation();
             updateTaskSectionVisibility();
             updateSelectedUsersBadge();
             initializeTaskRows(@json(old('tasks', [])));
