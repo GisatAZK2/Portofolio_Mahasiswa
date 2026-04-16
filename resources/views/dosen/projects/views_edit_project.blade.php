@@ -101,7 +101,7 @@
                     @enderror
                 </div>
                 <!-- Tambah Tugas -->
-                <div>
+                <div id="task-section">
                     <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                         Tambah Tugas (opsional)
                     </label>
@@ -296,7 +296,17 @@
         }
     @endphp
     <script>
-        const allUsers = @json($users->items());
+        const projectUsers = @json($selectedUsers ?? []);
+        const dosenAttrs = @json(Auth::user()->only(['id_jurusan', 'id_angkatan', 'id_keahlian']));
+        function mergeUsers(users) {
+            const map = new Map();
+            users.forEach(user => {
+                if (!user || user.id == null) return;
+                map.set(String(user.id), user);
+            });
+            return Array.from(map.values());
+        }
+        const allUsers = mergeUsers([...(projectUsers || []), ...@json($users->items())]);
         let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
         let selectedUsers = { owner: null, leader: null, members: [] };
         let taskIndex = 0;
@@ -397,9 +407,15 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
                 // Disable leader option hanya jika sudah ada leader BERBEDA dari owner
                 const leaderDisabled = selectedUsers.leader && selectedUsers.leader.id != user.id && selectedUsers.leader.id != selectedUsers.owner?.id;
+                
+                // Check if user belongs to the same dosen
+                const isSameDosen = isSimilarToDosen(user);
+                const cardOpacity = isSameDosen ? '' : 'opacity-50';
+
+                const selectedRole = isOwner ? 'owner' : isLeader ? 'leader' : isMember ? 'member' : '';
 
                 return `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg ${cardOpacity}">
                         <div class="flex items-center gap-3">
                             ${user.photo_profile ?
                                 `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover">` :
@@ -413,11 +429,11 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
+                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)" ${!isSameDosen ? 'disabled' : ''}>
                                 <option value="">-- Pilih Role --</option>
-                                <option value="owner" ${isOwner ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''} ${leaderDisabled ? 'disabled' : ''}>Leader</option>
-                                <option value="member" ${isMember ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
+                                <option value="owner" ${selectedRole === 'owner' ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
+                                <option value="leader" ${selectedRole === 'leader' ? 'selected' : ''} ${leaderDisabled ? 'disabled' : ''}>Leader</option>
+                                <option value="member" ${selectedRole === 'member' ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
                             </select>
                         </div>
                     </div>
@@ -428,6 +444,13 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         function updateUserRole(selectElement, userId, role) {
             const user = allUsers.find(u => u.id == userId);
             if (!user) return;
+
+            // Check if user belongs to the same dosen
+            if (!isSimilarToDosen(user)) {
+                alert('Mahasiswa ini tidak sesuai dengan data dosen Anda. Hanya mahasiswa dengan data dosen yang sama yang dapat dipilih.');
+                selectElement.value = '';
+                return;
+            }
 
             // Hanya Owner yang tidak boleh duplikat
             if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id != userId) {
@@ -498,10 +521,13 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
             const selected = [];
             if (selectedUsers.owner) {
-                // Jika leader null dan ada member, tampilkan owner sebagai Owner & Leader (indikasi visual saja)
-                if (!selectedUsers.leader && selectedUsers.members.length > 0) {
+                // Tampilkan sebagai "Owner & Leader" hanya jika:
+                // 1. Owner sama dengan Leader (ID-nya sama)
+                // 2. Dan ada members (members.length > 0)
+                if (selectedUsers.leader && selectedUsers.owner.id === selectedUsers.leader.id && selectedUsers.members.length > 0) {
                     selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
-                } else if (selectedUsers.leader && selectedUsers.owner.id === selectedUsers.leader.id) {
+                } else if (!selectedUsers.leader && selectedUsers.members.length > 0) {
+                    // Backup: jika tidak ada leader yang ditetapkan tapi ada members, tampilkan sebagai Owner & Leader
                     selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
                 } else {
                     selected.push({ ...selectedUsers.owner, role: 'Owner' });
@@ -527,8 +553,12 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                     'Owner & Leader': 'bg-indigo-50 dark:bg-indigo-950 border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200'
                 }[user.role];
 
+                // Check if user belongs to the same dosen
+                const isSameDosen = isSimilarToDosen(user);
+                const showRemoveButton = isSameDosen;
+
                 return `
-                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles} ${!isSameDosen ? 'opacity-60' : ''}">
                         <div class="flex items-center gap-3">
                             ${user.photo_profile ?
                                 `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
@@ -541,11 +571,13 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                                 <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
                             </div>
                         </div>
-                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+                        ${showRemoveButton ? `
+                            <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -553,20 +585,20 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         function removeUser(userId) {
             const wasOwner = selectedUsers.owner?.id == userId;
-            
+
             if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
 
-            // Jika owner yang dihapus, auto-assign owner baru dengan prioritas: Leader → Member
+            // Jika owner yang dihapus, auto-assign owner baru dengan prioritas: Similar dosen → Leader → Member
             if (wasOwner) {
-                if (selectedUsers.leader) {
-                    // Leader menjadi owner baru
-                    selectedUsers.owner = selectedUsers.leader;
-                    selectedUsers.leader = null;
-                } else if (selectedUsers.members.length > 0) {
-                    // Member pertama menjadi owner, dan sisanya tetap member
-                    selectedUsers.owner = selectedUsers.members.shift();
+                const replacement = findBestReplacementUser();
+                if (replacement) {
+                    selectedUsers.owner = replacement;
+                    if (selectedUsers.leader?.id == replacement.id) {
+                        selectedUsers.leader = null;
+                    }
+                    selectedUsers.members = selectedUsers.members.filter(m => m.id != replacement.id);
                 }
             }
 
@@ -598,11 +630,35 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             return allUsers.find(u => String(u.id) === String(id)) || null;
         }
 
+        function isSimilarToDosen(user) {
+            if (!user) return false;
+            return String(user.id_jurusan) === String(dosenAttrs.id_jurusan)
+                && String(user.id_angkatan) === String(dosenAttrs.id_angkatan)
+                && String(user.id_keahlian) === String(dosenAttrs.id_keahlian);
+        }
+
+        function findBestReplacementUser() {
+            const candidates = [];
+            if (selectedUsers.leader) candidates.push(selectedUsers.leader);
+            selectedUsers.members.forEach(m => candidates.push(m));
+
+            const matched = candidates.find(u => isSimilarToDosen(u));
+            if (matched) return matched;
+            if (selectedUsers.leader) return selectedUsers.leader;
+            return selectedUsers.members.length > 0 ? selectedUsers.members[0] : null;
+        }
+
+        function isTaskUserSameDosen(userId) {
+            if (!userId) return false;
+            const user = getUserById(userId);
+            return user ? isSimilarToDosen(user) : false;
+        }
+
         function getAllowedTaskUsers() {
             const users = [];
             const added = new Set();
             const add = user => {
-                if (!user || added.has(user.id)) return;
+                if (!user || added.has(user.id) || !isSimilarToDosen(user)) return;
                 added.add(user.id);
                 users.push({ id: user.id, name: user.nama_mahasiswa });
             };
@@ -630,6 +686,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             const userId = taskData?.user_id ?? '';
             const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
             const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+            const canDelete = !userId || isTaskUserSameDosen(userId);
+            const deleteButtonHtml = canDelete ? `<button type="button" onclick="removeTaskRow(this)" class="task-delete-btn self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>` : '';
 
             const taskItem = document.createElement('div');
             taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
@@ -646,13 +704,22 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
                     </div>
-                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                    ${deleteButtonHtml}
                 </div>
             `;
 
             container.appendChild(taskItem);
             const select = taskItem.querySelector('.task-user-select');
-            if (select) select.addEventListener('change', updateTaskUserOptions);
+            const deleteBtn = taskItem.querySelector('.task-delete-btn');
+            
+            if (select) {
+                select.addEventListener('change', function() {
+                    if (deleteBtn) {
+                        deleteBtn.style.display = this.value && !isTaskUserSameDosen(this.value) ? 'none' : '';
+                    }
+                    updateTaskUserOptions();
+                });
+            }
         }
 
         function removeTaskRow(button) {
@@ -718,11 +785,20 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         function onSubmitProjectForm(event) {
             if (!selectedUsers.owner) {
+                const replacement = findBestReplacementUser();
+                if (replacement) {
+                    selectedUsers.owner = replacement;
+                    if (selectedUsers.leader?.id == replacement.id) selectedUsers.leader = null;
+                    selectedUsers.members = selectedUsers.members.filter(m => m.id != replacement.id);
+                }
+            }
+
+            if (!selectedUsers.owner) {
                 alert('Owner harus dipilih.');
                 event.preventDefault();
                 return;
             }
-         
+
             updateFormInputs();
             cleanupInvalidTaskRows();
             updateTaskUserOptions();

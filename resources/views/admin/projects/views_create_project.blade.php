@@ -207,7 +207,7 @@
                 </div>
 
                 <!-- Modal Body -->
-                <div class="space-y-4">
+               <div class="space-y-4">
                     <!-- Search and Filters -->
                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -448,7 +448,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         function updateFormInputs() {
             document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
-            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+            const effectiveLeaderId = selectedUsers.leader?.id || (selectedUsers.owner && selectedUsers.members.length > 0 ? selectedUsers.owner.id : null);
+            document.getElementById('selected-leader-id').value = effectiveLeaderId || '';
             document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
         }
 
@@ -458,8 +459,19 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             if (!container || !noUsersMsg) return;
 
             const selected = [];
-            if (selectedUsers.owner) selected.push({ ...selectedUsers.owner, role: 'Owner' });
-            if (selectedUsers.leader) selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            if (selectedUsers.owner) {
+                // Jika leader null dan ada member, tampilkan owner sebagai Owner & Leader (indikasi visual saja)
+                if (!selectedUsers.leader && selectedUsers.members.length > 0) {
+                    selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
+                } else if (selectedUsers.leader && selectedUsers.owner.id === selectedUsers.leader.id) {
+                    selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
+                } else {
+                    selected.push({ ...selectedUsers.owner, role: 'Owner' });
+                }
+            }
+            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+                selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            }
             selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
 
             if (!selected.length) {
@@ -471,9 +483,10 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             noUsersMsg.classList.add('hidden');
             container.innerHTML = selected.map(user => {
                 const styles = {
-                    Owner: 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    Leader: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    Member: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200',
+                    'Owner & Leader': 'bg-indigo-50 dark:bg-indigo-950 border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200'
                 }[user.role];
 
                 return `
@@ -663,6 +676,31 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateSelectedUsersBadge();
             initializeTaskRows(@json(old('tasks', [])));
             document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+            
+            // Setup date validation
+            const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
+            const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
+            
+            if (tanggalMulai && tanggalAkhir) {
+                tanggalMulai.addEventListener('change', function() {
+                    if (this.value) {
+                        // Set min date for tanggal_akhir to the day after tanggal_mulai
+                        const startDate = new Date(this.value);
+                        const minEndDate = new Date(startDate);
+                        minEndDate.setDate(startDate.getDate() + 1);
+                        const minEndDateStr = minEndDate.toISOString().split('T')[0];
+                        tanggalAkhir.min = minEndDateStr;
+                        
+                        // If current tanggal_akhir is before the new min, clear it
+                        if (tanggalAkhir.value && tanggalAkhir.value < minEndDateStr) {
+                            tanggalAkhir.value = '';
+                        }
+                    } else {
+                        // If tanggal_mulai is cleared, remove min constraint
+                        tanggalAkhir.min = '';
+                    }
+                });
+            }
         });
     </script>
 

@@ -906,9 +906,19 @@ class DosenController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
+        $selectedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
+            ->merge($project->members->pluck('id'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $selectedUsers = User::whereIn('id', $selectedUserIds)->get();
+
         return view('dosen.projects.views_edit_project', compact(
             'project',
             'users',
+            'selectedUsers',
             'angkatans',
             'jurusans',
             'keahlians',
