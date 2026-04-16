@@ -8,7 +8,12 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    @hasSection('title')
+        <title>@yield('title') - {{ config('app.name', 'Laravel') }}</title>
+    @else
+        <title>{{ config('app.name', 'Laravel') }}</title>
+    @endif
+    @yield('meta')
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     <!-- SweetAlert2 JS -->

@@ -2,6 +2,43 @@
 
 @section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
 
+@section('meta')
+    @php
+        $portfolioTitle = trim($user->nama_mahasiswa ?? 'Mahasiswa');
+        $portfolioProdi = $user->jurusan?->nama_jurusan ?? 'Mahasiswa';
+        $portfolioAngkatan = $user->angkatan?->nama_angkatan ?? '-';
+        $acceptedTambahan = $user->keahlianTambahan->filter(function ($item) {
+            return optional($item->pivot)->status_pengajuan === 'Di Terima';
+        });
+        $portfolioKeahlian = collect([$user->keahlian?->nama_keahlian])
+            ->merge($acceptedTambahan->pluck('nama_keahlian')->toArray())
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+        $portfolioKeahlianText = !empty($portfolioKeahlian)
+            ? implode(', ', $portfolioKeahlian)
+            : 'Belum ada keahlian terdaftar';
+        $portfolioDescription = "Portfolio {$portfolioTitle} — {$portfolioProdi}, Angkatan {$portfolioAngkatan}. Keahlian: {$portfolioKeahlianText}.";
+        $portfolioImage = $user->photo_profile
+            ? asset('storage/' . ltrim($user->photo_profile, '/'))
+            : asset('assets/Logo.svg');
+        $portfolioUrl = route('portfolio.show', ['user' => $user->username]);
+    @endphp
+
+    <meta name="description" content="{{ $portfolioDescription }}">
+    <meta property="og:title" content="{{ $portfolioTitle }} | Portfolio">
+    <meta property="og:description" content="{{ $portfolioDescription }}">
+    <meta property="og:image" content="{{ $portfolioImage }}">
+    <meta property="og:image:alt" content="Foto profil {{ $portfolioTitle }} - {{ $portfolioProdi }}">
+    <meta property="og:url" content="{{ $portfolioUrl }}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $portfolioTitle }} | Portfolio">
+    <meta name="twitter:description" content="{{ $portfolioDescription }}">
+    <meta name="twitter:image" content="{{ $portfolioImage }}">
+@endsection
+
 @section('content')
     <div class="min-h-screen bg-gray-100 dark:bg-gray-800 py-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,7 +91,7 @@
                         <!-- Avatar -->
                         <div class="px-5 pb-6 relative">
                             <div class="flex justify-between items-start gap-3">
-                                <div class="-mt-12 mb-3">
+                                <div class="-mt-12 mb-3 relative">
                                     <div class="w-24 h-24 rounded-full border-4 border-white bg-white dark:border-gray-900 dark:bg-gray-900 shadow-lg overflow-hidden">
                                         @if($user->photo_profile)
                                             <img id="logo-zoom" 
@@ -96,7 +133,6 @@
                                                 </svg>
                                                 <span>Copy Link</span>
                                             </button>
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
