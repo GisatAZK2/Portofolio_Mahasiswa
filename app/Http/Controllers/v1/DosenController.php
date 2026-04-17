@@ -157,6 +157,8 @@ class DosenController extends Controller
     public function ListUser(Request $request)
     {
         $this->authorizeAccess();
+        $dosen = Auth::user();
+
         $users = User::whereIn('role', ['mahasiswa'])
             ->where('id', '!=', Auth::id())
             ->with(['jurusan', 'angkatan', 'keahlian'])
@@ -167,7 +169,21 @@ class DosenController extends Controller
             ])
             ->orderBy('created_at', 'desc');
 
-        $users = $this->getdosenFilterScope($users)->get();
+        if ($dosen->id_jurusan || $dosen->id_angkatan || $dosen->id_keahlian) {
+            $users->where(function ($q) use ($dosen) {
+                if ($dosen->id_jurusan) {
+                    $q->where('id_jurusan', $dosen->id_jurusan);
+                }
+                if ($dosen->id_angkatan) {
+                    $q->where('id_angkatan', $dosen->id_angkatan);
+                }
+                if ($dosen->id_keahlian) {
+                    $q->where('id_keahlian', $dosen->id_keahlian);
+                }
+            });
+        }
+
+        $users = $users->get();
 
         return view('dosen.daftar-mahasiswa', compact('users'));
     }
@@ -317,7 +333,7 @@ class DosenController extends Controller
                 'string',
                 'confirmed',
                 Password::min(8)->mixedCase(),
-                'regex:/^\S+$/'
+                'regex:/^\S*$/'
             ],
             'photo_profile' => [
                 'sometimes',

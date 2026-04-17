@@ -119,6 +119,13 @@ public function create() {
             ['type' => 'description', 'content' => $validated['deskripsi']],
         ];
 
+        $oldImagePaths = collect($postingan->content ?? [])
+            ->where('type', 'image')
+            ->pluck('content')
+            ->filter()
+            ->values()
+            ->all();
+
         if (!empty($validated['items'])) {
             foreach ($validated['items'] as $index => $item) {
                 $processed = [
@@ -127,19 +134,25 @@ public function create() {
                 ];
 
                 if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
-                    // Delete old image if exists
-                    if (isset($postingan->content[$index + 2]['content']) && $postingan->content[$index + 2]['type'] === 'image') {
-                        Storage::disk('public')->delete($postingan->content[$index + 2]['content']);
-                    }
                     $path = ImageConversionService::storeWebp($request->file("items.$index.file"), 'postingan/images');
                     $processed['content'] = $path;
-                } elseif ($item['type'] === 'image' && isset($postingan->content[$index + 2]['content'])) {
-                    // Keep existing image if no new file uploaded
-                    $processed['content'] = $postingan->content[$index + 2]['content'];
                 }
 
                 $content[] = $processed;
             }
+        }
+
+        $newImagePaths = collect($content)
+            ->where('type', 'image')
+            ->pluck('content')
+            ->filter()
+            ->values()
+            ->all();
+
+        $removedImagePaths = array_diff($oldImagePaths, $newImagePaths);
+
+        foreach ($removedImagePaths as $removedPath) {
+            Storage::disk('public')->delete($removedPath);
         }
 
         $postingan->update([

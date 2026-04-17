@@ -132,6 +132,9 @@ public function likedPostings()
             $user->sertifikats()->get()->each->delete();
             $user->learning_corners()->get()->each->delete();
             $user->assignedTasks()->delete();
+            $user->postingans()->delete();
+            $user->likedPostings()->delete();
+            $user->komentars()->delete();
             $user->keahlianTambahan()->detach();
             $user->memberProjects()->detach();
 

@@ -214,7 +214,7 @@ export const translations = {
       empty_pjt: 'Belum ada proyek yang ditampilkan.',
       empty_pjt_desc: 'Silahkan tambahkan proyek baru untuk memulai.',
       det_pjt: 'Detail',
-      del_pjt: 'Hpus',
+      del_pjt: 'Hapus',
       post_at: 'Diposting',
     },
     dosen_add_pjt: {
