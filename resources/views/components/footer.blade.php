@@ -3,7 +3,6 @@
         <div class="flex justify-between items-center flex-wrap gap-4">
             <p class="text-gray-600 text-center dark:text-gray-200 text-sm" data-translate="footer_rights"
                 data-translate-page="footer">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
-
         </div>
     </div>
 </footer>
