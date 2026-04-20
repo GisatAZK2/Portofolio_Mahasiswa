@@ -1,3 +1,4 @@
+
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-70 bg-gray-100 dark:bg-gray-900 dark:border-gray-800 border-r border-gray-200 shadow-xl
              transform -translate-x-full lg:translate-x-0 transition-all duration-300 ease-in-out
              lg:static lg:inset-auto lg:shadow-sm
@@ -15,24 +16,25 @@
     </div>
 
     <!-- Search Menu -->
+   
+    <!-- Search Menu -->
     <div class="px-4 py-4 border-b border-gray-200 dark:border-gray-800">
         <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input 
-                type="text" 
-                id="sidebarSearch"
-                placeholder="Cari menu..." 
+            <input type="text" id="sidebarSearch" placeholder="{{ __('menu.search_placeholder') }}"
+                data-translate-placeholder="search_placeholder"
                 class="w-full bg-white dark:bg-gray-800 border dark:text-white text-black border-gray-300 dark:border-gray-700 pl-10 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-                autocomplete="off"
-            >
-            
+                autocomplete="off">
+
             <!-- Search Results -->
-            <div id="searchResults" 
-                 class="hidden absolute mt-2 w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 max-h-[340px] overflow-y-auto z-50">
+            <div id="searchResults"
+                class="hidden absolute mt-2 w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 max-h-[340px] overflow-y-auto z-50">
                 <!-- Results filled by JavaScript -->
             </div>
         </div>

@@ -6,13 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\Angkatan;
-use App\Models\User;
-use App\Models\Project;
-use App\Models\Sertifikat;
-use App\Models\Postingan;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
-
+use Illuminate\Support\Facades\URL; 
+use Illuminate\Http\Request;  
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,10 +24,18 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Request $request): void // Tambahkan Request $request di sini
     {
-         Schema::defaultStringLength(191);
-        View::composer('components.header', function ($view) {   // <-- ganti 'layouts.header' dengan nama view header kamu
+        Schema::defaultStringLength(191);
+
+        /**
+         * Solusi Otomatis Locale untuk Route
+         * Ini akan memaksa semua fungsi route() menggunakan locale dari URL saat ini.
+         */
+        URL::defaults(['locale' => $request->segment(1)]);
+
+        // View Composer untuk Header
+        View::composer('components.header', function ($view) {
             $jurusanList = Jurusan::select('id_jurusan', 'nama_jurusan')
                 ->orderBy('nama_jurusan')
                 ->get();
