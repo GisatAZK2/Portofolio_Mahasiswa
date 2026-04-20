@@ -89,6 +89,9 @@ class DashboardController extends Controller
             'projects',
             'projectUsers',
             'postinganTerbaru',
+            'jurusanList',
+            'keahlianList',
+            'angkatanList',
         ));
     }
     /**
