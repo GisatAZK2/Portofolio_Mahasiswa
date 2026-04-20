@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Dashboard')
+@section('title', autoTranslate('Dashboard'))
 
 @section('content')
     <style>
@@ -38,7 +38,7 @@
                 <div class="feed-column">
 
                     <div class="mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru" data-translate-page="dashboard">Postingan Terbaru</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru" data-translate-page="dashboard">{{ autoTranslate('Postingan Terbaru') }}</h2>
                     </div>
 
                    <!-- Postingan Mahasiswa -->
@@ -46,14 +46,14 @@
     <div class="flex items-center gap-2 mb-4">
         <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
         <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300" data-translate="ur_post" data-translate-page="dashboard">
-            Postingan Mahasiswa
+            {{ autoTranslate('Postingan Mahasiswa') }}
         </h3>
     </div>
 
     @if($postinganTerbaru->isEmpty())
         <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <p class="text-gray-500 dark:text-gray-400" data-translate="empty_post" data-translate-page="dashboard">
-                Belum ada postingan mahasiswa
+                {{ autoTranslate('Belum ada postingan mahasiswa') }}
             </p>
         </div>
     @else
@@ -66,7 +66,7 @@
                         <div class="flex items-center gap-3">
                             @if($post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile)))
                                 <img src="{{ asset('storage/' . $post->user->photo_profile) }}" 
-                                     class="w-10 h-10 rounded-full object-cover" alt="">
+                                     class="w-10 h-10 rounded-full object-cover" alt="{{ autoTranslate('Foto Profil') }}">
                             @else
                                 <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
                                     <span class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm">
@@ -75,8 +75,8 @@
                                 </div>
                             @endif
                             <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">{{ $post->user->nama_mahasiswa }}</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $post->tanggal?->format('d M Y') ?? $post->created_at?->format('d M Y') }}</p>
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">{{ autoTranslate($post->user->nama_mahasiswa) }}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $post->tanggal?->translatedFormat('d M Y') ?? $post->created_at?->translatedFormat('d M Y') }}</p>
                             </div>
                         </div>
                     </div>
@@ -105,24 +105,24 @@
                         @endphp
 
                         @if($title)
-                            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">{{ $title }}</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">{{ autoTranslate($title) }}</h3>
                         @endif
 
                         <!-- Gambar Preview -->
                         @if($imageUrl)
                             <div class="mb-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm">
                                 <img src="{{ $imageUrl }}" 
-                                     alt="Gambar postingan"
+                                     alt="{{ autoTranslate('Gambar postingan') }}"
                                      id="logo-zoom"
                                      class="w-full h-auto max-h-[220px] object-cover hover:scale-105 transition-transform duration-300"
                                      loading="lazy"
-                                     onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-64 bg-gray-100 dark:bg-gray-800 flex items-center justify-center\'><span class=\'text-gray-400\'>Gambar tidak dapat dimuat</span></div>'">
+                                     onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-64 bg-gray-100 dark:bg-gray-800 flex items-center justify-center\'><span class=\'text-gray-400\'>{{ autoTranslate('Gambar tidak dapat dimuat') }}</span></div>'">
                             </div>
                         @endif
 
                         @if($deskripsi)
                             <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-4 leading-relaxed">
-                                {{ Str::limit(strip_tags($deskripsi), 180) }}
+                                {{ autoTranslate(Str::limit(strip_tags($deskripsi), 180)) }}
                             </p>
                         @endif
                     </div>
@@ -160,7 +160,7 @@
 
                         <span onclick="window.location.href='{{ route('postingan.show', $post->id_postingan) }}'" 
                               class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600 transition">
-                            Lihat detail →
+                            {{ autoTranslate('Lihat detail') }} →
                         </span>
                     </div>
 
@@ -172,7 +172,7 @@
                                 <input type="hidden" name="id_postingan" value="{{ $post->id_postingan }}">
                                 <div class="flex gap-3">
                                     @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
-                                        <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1">
+                                        <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1" alt="{{ autoTranslate('Foto Profil') }}">
                                     @else
                                         <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
                                             <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">
@@ -183,10 +183,10 @@
                                     <div class="flex-1">
                                         <textarea name="komentar" rows="2" 
                                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y"
-                                            placeholder="Tulis komentar..."></textarea>
+                                            placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
                                         <div class="flex justify-end mt-2">
                                             <button type="submit" class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
-                                                Kirim
+                                                {{ autoTranslate('Kirim') }}
                                             </button>
                                         </div>
                                     </div>
@@ -194,7 +194,7 @@
                             </form>
                         @else
                             <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
-                                <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">Masuk</a> untuk berkomentar
+                                <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}
                             </p>
                         @endauth
 
@@ -204,7 +204,7 @@
                                 @foreach($post->komentar->sortByDesc('tanggal') as $komentar)
                                     <div class="flex gap-3">
                                         @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
-                                            <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5">
+                                            <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5" alt="{{ autoTranslate('Foto Profil') }}">
                                         @else
                                             <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mt-0.5">
                                                 <span class="text-gray-600 dark:text-gray-400 text-sm">
@@ -214,16 +214,16 @@
                                         @endif
                                         <div class="flex-1">
                                             <div class="flex items-center gap-2">
-                                                <span class="font-medium text-sm">{{ $komentar->user->nama_mahasiswa }}</span>
-                                                <span class="text-xs text-gray-500">{{ $komentar->tanggal?->format('d M Y') }}</span>
+                                                <span class="font-medium text-sm">{{ autoTranslate($komentar->user->nama_mahasiswa) }}</span>
+                                                <span class="text-xs text-gray-500">{{ $komentar->tanggal?->translatedFormat('d M Y') }}</span>
                                             </div>
-                                            <p class="text-sm text-gray-700 dark:text-gray-300 mt-0.5">{{ $komentar->komentar }}</p>
+                                            <p class="text-sm text-gray-700 dark:text-gray-300 mt-0.5">{{ autoTranslate($komentar->komentar) }}</p>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">Belum ada komentar</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">{{ autoTranslate('Belum ada komentar') }}</p>
                         @endif
                     </div>
                 </div>
@@ -232,7 +232,7 @@
 
         <!-- Pagination -->
         <div id="postingan-pagination" class="mt-8">
-            {{ $postinganTerbaru->render('vendor.pagination.custom_ajax', ['groupName' => 'postingan']) }}
+            {{ $postinganTerbaru->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('postingan')]) }}
         </div>
     @endif
 </div>
@@ -241,11 +241,11 @@
                     <div class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300" data-translate="ttl_pjt" data-translate-page="dashboard">Project</h3>
+                            <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300" data-translate="ttl_pjt" data-translate-page="dashboard">{{ autoTranslate('Project') }}</h3>
                         </div>
                         @if($projects->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="dashboard">Belum ada project</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="dashboard">{{ autoTranslate('Belum ada project') }}</p>
                             </div>
                         @else
                             <div id="project-container" class="space-y-4">
@@ -256,7 +256,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}
+                                {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('project')]) }}
                             </div>
                         @endif
                     </div>
@@ -265,11 +265,11 @@
                     <div class="feed-section">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
-                            <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="ttl_stk" data-translate-page="dashboard">Sertifikat</h3>
+                            <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="ttl_stk" data-translate-page="dashboard">{{ autoTranslate('Sertifikat') }}</h3>
                         </div>
                         @if($projectUsers->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_stk" data-translate-page="dashboard">Belum ada sertifikat</p>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_stk" data-translate-page="dashboard">{{ autoTranslate('Belum ada sertifikat') }}</p>
                             </div>
                         @else
                             <div id="sertifikat-container" class="space-y-4">
@@ -280,7 +280,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => 'sertifikat']) }}
+                                {{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('sertifikat')]) }}
                             </div>
                         @endif
                     </div>
@@ -292,22 +292,22 @@
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
-                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">Learning Corner</h3>
+                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">{{ autoTranslate('Learning Corner') }}</h3>
                         </div>
                         @if($learningCorners->isEmpty())
-                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn" data-translate-page="dashboard">Belum ada Learning Corner</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn" data-translate-page="dashboard">{{ autoTranslate('Belum ada Learning Corner') }}</p>
                         @else
                             <div id="learning-corner-list" class="space-y-4">
                                 @foreach($learningCorners->take(5) as $learning)
                                     <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'" 
                                          class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
-                                        <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ $learning->content[0]['content'] ?? 'Learning Content' }}</h4>
-                                        <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->format('d M Y') }}</p>
+                                        <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ autoTranslate($learning->content[0]['content'] ?? 'Learning Content') }}</h4>
+                                        <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->translatedFormat('d M Y') }}</p>
                                     </div>
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => 'learning_corner']) }}
+                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('learning_corner')]) }}
                             </div>
                         @endif
                     </div>

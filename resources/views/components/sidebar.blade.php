@@ -750,8 +750,8 @@
             <div class="flex items-center justify-between">
                 <span class="text-gray-700 dark:text-gray-200" data-translate="bahasa">Bahasa</span>
                 <select id="languageSelect" class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200" onchange="changeLanguage()">
-                    <option value="id">Indonesia</option>
-                    <option value="en">English</option>
+                    <option value="id" {{ app()->getLocale() === 'id' ? 'selected' : '' }}>Indonesia</option>
+                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>English</option>
                 </select>
             </div>
         </div>
@@ -947,8 +947,13 @@
         const select = document.getElementById('languageSelect');
         if (!select) return;
         const newLang = select.value;
-        // Tambahkan logic change language jika ada
-        console.log('Language changed to:', newLang);
+
+        // Simpan preferensi bahasa ke localStorage bila diperlukan
+        localStorage.setItem('lang', newLang);
+
+        // Redirect otomatis ke halaman home locale baru
+        const homeUrl = `${window.location.origin}/${newLang}`;
+        window.location.href = homeUrl;
     }
 
     // Initialize dark mode

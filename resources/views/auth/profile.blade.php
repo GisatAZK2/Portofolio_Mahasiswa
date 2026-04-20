@@ -94,7 +94,7 @@
                                     class="relative w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white dark:bg-gray-700 shadow-xl overflow-hidden">
                                     @if (Auth::user()->photo_profile)
                                         <img id="profile-preview" src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
-                                            alt="Profile" class="w-full h-full object-cover">
+                                            alt="{{ autoTranslate('Foto Profil') }}" class="w-full h-full object-cover">
                                     @else
                                         <div id="profile-preview-placeholder"
                                             class="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-5xl font-semibold">
@@ -127,7 +127,7 @@
                                 @php
                                     $portfolioUrl = route('portfolio.show', ['user' => Auth::user()->username]);
                                     $shareUrl = $portfolioUrl . '?utm_source=share&utm_medium=portfolio';
-                                    $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
+                                    $shareText = autoTranslate('Lihat portfolio saya di Politeknik Mitra Industri!');
                                 @endphp
 
                                 <!-- Share Portfolio Button -->
@@ -136,6 +136,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                                     </svg>
+                                    <span data-translate="share_portfolio" data-translate-page="profile">{{ autoTranslate('Bagikan Portfolio') }}</span>
                                 </button>
                             </div>
 
@@ -146,7 +147,7 @@
                                     <h2 id="nama-display"
                                         class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white inline-block cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
                                         onclick="toggleEdit('nama')">
-                                        {{ Auth::user()->nama_mahasiswa ?? 'Mahasiswa' }}
+                                        {{ autoTranslate(Auth::user()->nama_mahasiswa ?? 'Mahasiswa') }}
                                     </h2>
                                     <button type="button" onclick="toggleEdit('nama')"
                                         class="ml-2 opacity-0 group-hover:opacity-100 transition text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400">
@@ -161,18 +162,16 @@
                                     value="{{ old('nama_mahasiswa', Auth::user()->nama_mahasiswa) }}">
                             </div>
 
-                            
-
                             <div class="text-gray-500 dark:text-gray-400 text-sm mb-8 relative group">
                                 <div id="username-container">
                                     <span id="username-display"
                                         class="cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
                                         onclick="toggleEdit('username')">
-                                        {{ Auth::user()->username ? '@' . Auth::user()->username : '(belum ada username)' }}
+                                        {{ Auth::user()->username ? '@' . autoTranslate(Auth::user()->username) : autoTranslate('(belum ada username)') }}
                                     </span>
                                     <button type="button" onclick="toggleEdit('username')"
                                         class="ml-2 opacity-0 group-hover:opacity-100 transition text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400">
-                                        edit
+                                        {{ autoTranslate('edit') }}
                                     </button>
                                 </div>
                                 <input type="text" id="username-input" name="username"
@@ -193,7 +192,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 6h16M4 12h16M4 18h7" />
                                     </svg>
-                                    <span data-translate="desc" data-translate-page="profile">Deskripsi</span>
+                                    <span data-translate="desc" data-translate-page="profile">{{ autoTranslate('Deskripsi') }}</span>
                                 </p>
                                 <div class="flex items-center justify-between">
                                   <p id="deskripsi-display"
@@ -220,12 +219,12 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
-                                    Email
+                                    {{ autoTranslate('Email') }}
                                 </p>
                                 <div class="flex items-center justify-between">
                                     <p id="email-display"
                                         class="text-base font-medium dark:text-gray-200 text-gray-800 break-all">
-                                        {{ Auth::user()->email ?? '-' }}
+                                        {{ autoTranslate(Auth::user()->email ?? '-') }}
                                     </p>
                                     <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,11 +249,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                                     </svg>
-                                    <span data-translate="jrs" data-translate-page="profile">Jurusan</span>
+                                    <span data-translate="jrs" data-translate-page="profile">{{ autoTranslate('Jurusan') }}</span>
                                 </p>
                                 <div class="flex items-center justify-between">
                                     <p id="jurusan-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
-                                        {{ Auth::user()->jurusan->nama_jurusan ?? '-' }}
+                                        {{ autoTranslate(Auth::user()->jurusan->nama_jurusan ?? '-') }}
                                     </p>
                                     <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,10 +263,10 @@
                                 </div>
                                 <select id="jurusan-input" name="id_jurusan"
                                     class="hidden w-full text-base font-medium dark:bg-gray-700 dark:text-white border-b border-indigo-500 focus:outline-none bg-white">
-                                    <option class="dark:bg-gray-700 dark:text-white" value="">-- Pilih Jurusan --</option>
+                                    <option class="dark:bg-gray-700 dark:text-white" value="">{{ autoTranslate('-- Pilih Jurusan --') }}</option>
                                     @foreach($jurusans ?? [] as $jurusan)
                                         <option class="dark:bg-gray-700 dark:text-white" value="{{ $jurusan->id_jurusan }}" {{ (Auth::user()->id_jurusan == $jurusan->id_jurusan) ? 'selected' : '' }}>
-                                            {{ $jurusan->nama_jurusan }}
+                                            {{ autoTranslate($jurusan->nama_jurusan) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -283,10 +282,10 @@
                                         <path
                                             d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                                     </svg>
-                                    <span data-translate="agkt" data-translate-page="profile">Angkatan</span>
+                                    <span data-translate="agkt" data-translate-page="profile">{{ autoTranslate('Angkatan') }}</span>
                                 </p>
                                 <p class="text-base font-medium text-gray-800 dark:text-gray-200">
-                                    {{ Auth::user()->angkatan->nama_angkatan ?? 'Angkatan 2026' }}
+                                    {{ autoTranslate(Auth::user()->angkatan->nama_angkatan ?? 'Angkatan 2026') }}
                                 </p>
                             </div>
 
@@ -299,11 +298,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                     </svg>
-                                    <span data-translate="khl_main" data-translate-page="profile">Keahlian Utama</span>
+                                    <span data-translate="khl_main" data-translate-page="profile">{{ autoTranslate('Keahlian Utama') }}</span>
                                 </p>
                                 <div class="flex items-center justify-between">
                                     <p id="keahlian-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
-                                        {{ Auth::user()->keahlian->nama_keahlian ?? '-' }}
+                                        {{ autoTranslate(Auth::user()->keahlian->nama_keahlian ?? '-') }}
                                     </p>
                                     <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,14 +312,14 @@
                                 </div>
                                 <select id="keahlian-input" name="id_keahlian"
                                     class="hidden w-full text-base font-medium dark:bg-gray-700 dark:text-white border-b border-indigo-500 focus:outline-none bg-white">
-                                    <option class="dark:bg-gray-700 dark:text-white" value="">-- Pilih Keahlian --</option>
+                                    <option class="dark:bg-gray-700 dark:text-white" value="">{{ autoTranslate('-- Pilih Keahlian --') }}</option>
                                     @foreach($keahlians ?? [] as $keahlian)
                                         <option class="dark:bg-gray-700 dark:text-white"
                                             value="{{ $keahlian->id_keahlian }}"
                                             {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}
                                             :disabled="isKeahlianSelectedInTambahan({{ $keahlian->id_keahlian }}) && {{ Auth::user()->id_keahlian }} != {{ $keahlian->id_keahlian }}"
                                             :class="isKeahlianSelectedInTambahan({{ $keahlian->id_keahlian }}) && {{ Auth::user()->id_keahlian }} != {{ $keahlian->id_keahlian }} ? 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-gray-800' : ''">
-                                            {{ $keahlian->nama_keahlian }}
+                                            {{ autoTranslate($keahlian->nama_keahlian) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -336,7 +335,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                         </svg>
-                                        <span data-translate="khl_add" data-translate-page="profile">Keahlian Tambahan</span>
+                                        <span data-translate="khl_add" data-translate-page="profile">{{ autoTranslate('Keahlian Tambahan') }}</span>
                                     </p>
                                     <span
                                         class="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 px-2 py-1 rounded-full">
@@ -379,11 +378,11 @@
                                                     <!-- Keterangan untuk yang ditolak -->
                                                     <p x-show="item.keterangan"
                                                         class="text-xs text-red-600 dark:text-red-400 mt-1"
-                                                        x-text="'Alasan: ' + item.keterangan"></p>
+                                                        x-text="'{{ autoTranslate('Alasan: ') }}' + item.keterangan"></p>
 
                                                     <!-- Info tambahan -->
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        <span data-translate="reqed" data-translate-page="profile">Diajukan: <span
+                                                        {{ autoTranslate('Diajukan:') }} <span
                                                             x-text="new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })"></span>
                                                     </p>
                                                 </div>
@@ -411,9 +410,8 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                             </svg>
-                                            <p class="text-base font-medium" data-translate="empty_khl" data-translate-page="profile">Belum ada keahlian tambahan</p>
-                                            <p class="text-sm mt-1 text-gray-500 dark:text-gray-500" data-translate="empty_khl1" data-translate-page="profile">Tambahkan keahlian baru
-                                                di bawah</p>
+                                            <p class="text-base font-medium" data-translate="empty_khl" data-translate-page="profile">{{ autoTranslate('Belum ada keahlian tambahan') }}</p>
+                                            <p class="text-sm mt-1 text-gray-500 dark:text-gray-500" data-translate="empty_khl1" data-translate-page="profile">{{ autoTranslate('Tambahkan keahlian baru di bawah') }}</p>
                                         </div>
                                     </div>
                                 </template>
@@ -426,19 +424,19 @@
                                         <div class="flex flex-col sm:flex-row gap-3">
                                             <select x-model="selectedKeahlian" name="id_keahlian_tambahan"
                                                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white">
-                                                <option data-translate="pick_khl" data-translate-page="profile" value="">-- Pilih Keahlian Tambahan --</option>
+                                                <option data-translate="pick_khl" data-translate-page="profile" value="">{{ autoTranslate('-- Pilih Keahlian Tambahan --') }}</option>
                                                 <template x-for="keahlian in keahlianOptions" :key="keahlian.id_keahlian">
                                                     <option :value="keahlian.id_keahlian"
                                                         :disabled="isKeahlianDisabled(keahlian)"
                                                         :class="isKeahlianDisabled(keahlian) ? 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-gray-800' : ''"
-                                                        x-text="keahlian.nama_keahlian + (keahlian.id_keahlian === mainSkillId ? ' (Keahlian Utama)' : isKeahlianExists(keahlian.id_keahlian) ? ' (Sudah Diajukan)' : '')">
+                                                        x-text="keahlian.nama_keahlian + (keahlian.id_keahlian === mainSkillId ? ' ({{ autoTranslate('Keahlian Utama') }})' : isKeahlianExists(keahlian.id_keahlian) ? ' ({{ autoTranslate('Sudah Diajukan') }})' : '')">
                                                     </option>
                                                 </template>
                                             </select>
 
                                             <button type="submit" data-translate="req" data-translate-page="profile"
                                                 class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                                                Ajukan
+                                                {{ autoTranslate('Ajukan') }}
                                             </button>
 
                                         </div>
@@ -453,8 +451,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                         </svg>
-                                        <span data-translate="max_req" data-translate-page="profile">Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah
-                                        keahlian baru.</span>
+                                        <span data-translate="max_req" data-translate-page="profile">{{ autoTranslate('Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah keahlian baru.') }}</span>
                                     </p>
                                 </div>
                             </div>
@@ -469,13 +466,13 @@
                                         <rect x="3" y="6" width="18" height="12" rx="4" stroke-width="2"/>
                                         <polygon points="10,9 10,15 15,12" stroke-width="2"/>
                                     </svg>
-                                    <span data-translate="vid_intro" data-translate-page="profile">Video Perkenalan</span>
+                                    <span data-translate="vid_intro" data-translate-page="profile">{{ autoTranslate('Video Perkenalan') }}</span>
                                 </p>
 
                                 <!-- DISPLAY MODE -->
                                 <div class="flex items-center justify-between">
                                     <p id="video-display" class="text-base text-gray-800 dark:text-gray-200 break-all flex-1">
-                                        {{ $user->video_url ?? 'Klik untuk menambahkan video...' }}
+                                        {{ autoTranslate($user->video_url ?? 'Klik untuk menambahkan video...') }}
                                     </p>
 
                                     <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition ml-2"
@@ -491,7 +488,7 @@
                                     id="video-input"
                                     name="video_url"
                                     value="{{ old('video_url', $user->video_url) }}"
-                                    placeholder="https://www.youtube.com/watch?v=xxxx"
+                                    placeholder="{{ autoTranslate('https://www.youtube.com/watch?v=xxxx') }}"
                                     class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent mt-2"
                                     oninput="updatePreview()"
                                 >
@@ -517,14 +514,14 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
                                     </svg>
-                                    <span data-translate="stat_acc" data-translate-page="profile">Status Akun</span>
+                                    <span data-translate="stat_acc" data-translate-page="profile">{{ autoTranslate('Status Akun') }}</span>
                                 </p>
                                 <div class="flex items-center gap-2">
                                     <span
                                         class="inline-block w-3 h-3 rounded-full {{ Auth::user()->is_active ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500' }}"></span>
                                     <p
                                         class="text-base font-medium {{ Auth::user()->is_active ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">
-                                        {{ Auth::user()->is_active ? 'Aktif' : 'Nonaktif' }}
+                                        {{ autoTranslate(Auth::user()->is_active ? 'Aktif' : 'Nonaktif') }}
                                     </p>
                                 </div>
                             </div>
@@ -535,11 +532,11 @@
                         <div id="save-button-container" class="mt-8 text-center hidden">
                             <button type="submit" data-translate="save" data-translate-page="profile"
                                 class="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition shadow-md">
-                                Simpan Perubahan
+                                {{ autoTranslate('Simpan Perubahan') }}
                             </button>
                             <button type="button" onclick="window.location.reload()" data-translate="cancel" data-translate-page="profile" 
                                 class="ml-4 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                                <span data-translate="cancel" data-translate-page="profile">Batal</span>
+                                <span data-translate="cancel" data-translate-page="profile">{{ autoTranslate('Batal') }}</span>
                             </button>
                         </div>
                     </div>
@@ -548,7 +545,7 @@
                 @if (session('success'))
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            showSuccessAlert('{{ session('success') }}');
+                            showSuccessAlert('{{ autoTranslate(session('success')) }}');
                         });
                     </script>
                 @endif
@@ -565,18 +562,18 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                                 </svg>
-                                <span data-translate="pjt" data-translate-page="profile">Projects</span>
+                                <span data-translate="pjt" data-translate-page="profile">{{ autoTranslate('Projects') }}</span>
                             </h2>
                             <div class="flex items-center gap-3">
                                 <span
                                     class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                                    {{ $user->projects->count() }} <span data-translate="pjt" data-translate-page="profile">proyek</span>
+                                    {{ $user->projects->count() }} <span data-translate="pjt" data-translate-page="profile">{{ autoTranslate('proyek') }}</span>
                                 </span>
                                 @if($user->projects->count() > 3)
                                     <button @click="showAllProjects = !showAllProjects"
                                         class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium flex items-center gap-1">
                                         <span
-                                            x-text="showAllProjects ? 'Tampilkan lebih sedikit' : 'Lihat semua ({{ $user->projects->count() }})'"></span>
+                                            x-text="showAllProjects ? '{{ autoTranslate('Tampilkan lebih sedikit') }}' : '{{ autoTranslate('Lihat semua') }} ({{ $user->projects->count() }})'"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllProjects }"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -609,25 +606,25 @@
                                         if ($mulai && $akhir) {
                                             if ($akhir < $today) {
                                                 $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-                                                $statusText = 'Selesai';
+                                                $statusText = autoTranslate('Selesai');
                                             } elseif ($mulai <= $today && $today <= $akhir) {
                                                 $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-                                                $statusText = 'Sedang Berjalan';
+                                                $statusText = autoTranslate('Sedang Berjalan');
                                             } elseif ($mulai > $today) {
                                                 $statusClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-                                                $statusText = 'Akan Datang';
+                                                $statusText = autoTranslate('Akan Datang');
                                             }
                                         } elseif ($mulai && !$akhir) {
                                             if ($mulai <= $today) {
                                                 $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-                                                $statusText = 'Sedang Berjalan';
+                                                $statusText = autoTranslate('Sedang Berjalan');
                                             } else {
                                                 $statusClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-                                                $statusText = 'Akan Datang';
+                                                $statusText = autoTranslate('Akan Datang');
                                             }
                                         } else {
                                             $statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-                                            $statusText = 'Tidak diketahui';
+                                            $statusText = autoTranslate('Tidak diketahui');
                                         }
 
                                         // YouTube
@@ -653,7 +650,7 @@
                                             @if($youtubeEmbedUrl)
                                                 <div class="relative w-full pb-[56.25%] bg-gray-900 cursor-pointer"
                                                     onclick="playVideo(this, '{{ $youtubeEmbedUrl }}')">
-                                                    <img src="{{ $youtubeThumbnail }}" alt="YouTube thumbnail"
+                                                    <img src="{{ $youtubeThumbnail }}" alt="{{ autoTranslate('YouTube thumbnail') }}"
                                                         class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                                                         onerror="this.src='https://via.placeholder.com/480x360?text=Video+Tidak+Tersedia'">
                                                     <div class="absolute inset-0 flex items-center justify-center">
@@ -698,7 +695,7 @@
                                         <div class="p-5 flex flex-col flex-1">
                                             <div class="flex items-start justify-between mb-2 gap-2">
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1">
-                                                    {{ $nama }}
+                                                    {{ autoTranslate($nama) }}
                                                 </h3>
                                                 <span
                                                     class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }} whitespace-nowrap">
@@ -708,17 +705,17 @@
 
                                             <div
                                                 class="text-sm text-gray-600 dark:text-gray-300 mb-3 flex items-center gap-2 flex-wrap">
-                                                <span><span data-translate="start" data-translate-page="profile">Mulai:</span> {{ $mulaiFormatted }}</span>
+                                                <span>{{ autoTranslate('Mulai:') }} {{ autoTranslate($mulaiFormatted) }}</span>
                                                 <span class="text-gray-400">→</span>
-                                                <span><span data-translate="finish" data-translate-page="profile">Selesai:</span> {{ $akhirFormatted }}</span>
+                                                <span>{{ autoTranslate('Selesai:') }} {{ autoTranslate($akhirFormatted) }}</span>
                                             </div>
 
                                             @if($deskripsi)
                                                 <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3 flex-1">
-                                                    {{ $deskripsi }}
+                                                    {{ autoTranslate($deskripsi) }}
                                                 </p>
                                             @else
-                                                <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 italic flex-1"><span data-translate="empty_desc" data-translate-page="profile">Tidak ada deskripsi</span>
+                                                <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 italic flex-1">{{ autoTranslate('Tidak ada deskripsi') }}
                                                 </p>
                                             @endif
 
@@ -731,7 +728,7 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                 d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                         </svg>
-                                                        Website
+                                                        {{ autoTranslate('Website') }}
                                                     </a>
                                                 @endif
                                                 @if($linkGithub)
@@ -753,7 +750,7 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                 d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                         </svg>
-                                                        Video
+                                                        {{ autoTranslate('Video') }}
                                                     </a>
                                                 @endif
                                             </div>
@@ -769,7 +766,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="profile">Belum ada proyek yang ditambahkan.</p>
+                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="profile">{{ autoTranslate('Belum ada proyek yang ditambahkan.') }}</p>
                             </div>
                         @endif
                     </section>
@@ -785,18 +782,18 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                 </svg>
-                                <span data-translate="stk" data-translate-page="profile">Sertifikat</span>
+                                <span data-translate="stk" data-translate-page="profile">{{ autoTranslate('Sertifikat') }}</span>
                             </h2>
                             <div class="flex items-center gap-3">
                                 <span
                                     class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                                    {{ $user->sertifikats?->count() ?? 0 }} <span data-translate="stk" data-translate-page="profile">sertifikat</span>
+                                    {{ $user->sertifikats?->count() ?? 0 }} <span data-translate="stk" data-translate-page="profile">{{ autoTranslate('sertifikat') }}</span>
                                 </span>
                                 @if(($user->sertifikats?->count() ?? 0) > 3)
                                     <button @click="showAllSertifikat = !showAllSertifikat"
                                         class="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium flex items-center gap-1">
                                         <span
-                                            x-text="showAllSertifikat ? 'Tampilkan lebih sedikit' : 'Lihat semua ({{ $user->sertifikats->count() }})'"></span>
+                                            x-text="showAllSertifikat ? '{{ autoTranslate('Tampilkan lebih sedikit') }}' : '{{ autoTranslate('Lihat semua') }} ({{ $user->sertifikats->count() }})'"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllSertifikat }"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -827,18 +824,18 @@
                                             <div class="flex items-center gap-2 mb-3 flex-wrap">
                                                 <span
                                                     class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $isInactive ? 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' }} w-fit">
-                                                    <span data-translate="stk" data-translate-page="profile">Sertifikat</span>
+                                                    <span data-translate="stk" data-translate-page="profile">{{ autoTranslate('Sertifikat') }}</span>
                                                 </span>
                                                 @if($sertifikat->status_pengajuan)
                                                     <span class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">
-                                                        {{ $sertifikat->status_pengajuan }}
+                                                        {{ autoTranslate($sertifikat->status_pengajuan) }}
                                                     </span>
                                                 @endif
                                             </div>
 
                                             <h3
                                                 class="text-lg font-semibold {{ $isInactive ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white' }} mb-3 line-clamp-2">
-                                                {{ $sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}
+                                                {{ autoTranslate($sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul') }}
                                             </h3>
 
                                             @if($sertifikat->lembaga_penerbit)
@@ -849,7 +846,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                                                     </svg>
-                                                    <span class="line-clamp-1">{{ $sertifikat->lembaga_penerbit }}</span>
+                                                    <span class="line-clamp-1">{{ autoTranslate($sertifikat->lembaga_penerbit) }}</span>
                                                 </div>
                                             @endif
 
@@ -860,16 +857,16 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
-                                                {{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('d M Y') : 'Tanggal tidak tersedia' }}
+                                                {{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->translatedFormat('d M Y') : autoTranslate('Tanggal tidak tersedia') }}
                                             </div>
 
                                             {{-- Keterangan untuk sertifikat ditolak --}}
                                             @if($sertifikat->status_pengajuan === 'Di Tolak' && $sertifikat->keterangan)
                                                 <div class="mb-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded">
                                                     <p class="text-xs text-red-800 dark:text-red-300 font-semibold mb-1">
-                                                        Alasan Penolakan:
+                                                        {{ autoTranslate('Alasan Penolakan:') }}
                                                     </p>
-                                                    <p class="text-sm text-red-700 dark:text-red-200">{{ $sertifikat->keterangan }}</p>
+                                                    <p class="text-sm text-red-700 dark:text-red-200">{{ autoTranslate($sertifikat->keterangan) }}</p>
                                                 </div>
                                             @endif
 
@@ -877,7 +874,7 @@
                                                 <a href="{{ asset('storage/' . $sertifikat->link_sertifikat) }}" target="_blank"
                                                     rel="noopener noreferrer"
                                                     class="mt-auto inline-flex items-center {{ $isInactive ? 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300' : 'text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300' }} font-medium">
-                                                    <span data-translate="see_stk" data-translate-page="profile">Lihat Sertifikat</span>
+                                                    <span data-translate="see_stk" data-translate-page="profile">{{ autoTranslate('Lihat Sertifikat') }}</span>
                                                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -886,12 +883,12 @@
                                             @else
                                                 <p data-translate="empty_stk" data-translate-page="profile"
                                                     class="mt-auto text-sm {{ $isInactive ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400' }} italic">
-                                                    Tidak ada link sertifikat</p>
+                                                    {{ autoTranslate('Tidak ada link sertifikat') }}</p>
                                             @endif
 
                                             <p
                                                 class="text-xs text-gray-500 dark:text-gray-400 mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-                                                <span data-translate="added" data-translate-page="profile">Ditambahkan:</span> {{ $sertifikat->created_at?->format('d M Y') ?? '—' }}
+                                                <span data-translate="added" data-translate-page="profile">{{ autoTranslate('Ditambahkan:') }}</span> {{ $sertifikat->created_at?->translatedFormat('d M Y') ?? '—' }}
                                             </p>
                                         </div>
                                     </div>
@@ -905,7 +902,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_stk1" data-translate-page="profile">Belum ada sertifikat yang ditambahkan.</p>
+                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_stk1" data-translate-page="profile">{{ autoTranslate('Belum ada sertifikat yang ditambahkan.') }}</p>
                             </div>
                         @endif
                     </section>
@@ -921,18 +918,18 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
-                                Learning Corners
+                                {{ autoTranslate('Learning Corners') }}
                             </h2>
                             <div class="flex items-center gap-3">
                                 <span
                                     class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">
-                                    {{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="profile">catatan</span>
+                                    {{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="profile">{{ autoTranslate('catatan') }}</span>
                                 </span>
                                 @if($user->learning_corners->count() > 3)
                                     <button @click="showAllLearning = !showAllLearning"
                                         class="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium flex items-center gap-1">
                                         <span
-                                            x-text="showAllLearning ? 'Tampilkan lebih sedikit' : 'Lihat semua ({{ $user->learning_corners->count() }})'"></span>
+                                            x-text="showAllLearning ? '{{ autoTranslate('Tampilkan lebih sedikit') }}' : '{{ autoTranslate('Lihat semua') }} ({{ $user->learning_corners->count() }})'"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllLearning }"
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -955,11 +952,11 @@
                                                 @foreach ($entry->content as $item)
                                                     @if ($item['type'] === 'title')
                                                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2">
-                                                            {{ $item['content'] ?? '(Tanpa Judul)' }}
+                                                            {{ autoTranslate($item['content'] ?? '(Tanpa Judul)') }}
                                                         </h3>
                                                     @elseif ($item['type'] === 'text')
                                                         <p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
-                                                            {{ $item['content'] }}
+                                                            {{ autoTranslate($item['content']) }}
                                                         </p>
                                                     @elseif ($item['type'] === 'image')
                                                         @php
@@ -967,7 +964,7 @@
                                                         @endphp
                                                         <div class="mb-4">
                                                             <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}"
-                                                                alt="{{ $item['alt'] ?? 'Gambar konten' }}"
+                                                                alt="{{ autoTranslate($item['alt'] ?? 'Gambar konten') }}"
                                                                 class="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm"
                                                                 loading="lazy"
                                                                 onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
@@ -975,21 +972,21 @@
                                                     @elseif ($item['type'] === 'link')
                                                         <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
                                                             class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline mb-4 block line-clamp-1 break-all">
-                                                            {{ Str::limit($item['content'], 70) }}
+                                                            {{ Str::limit(autoTranslate($item['content']), 70) }}
                                                         </a>
                                                     @endif
                                                 @endforeach
                                             @else
                                                 <p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
-                                                    {{ Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150) }}
+                                                    {{ autoTranslate(Str::limit(strip_tags($entry->isi_learning_corner ?? ''), 150)) }}
                                                 </p>
 
                                             @endif
 
                                             <p
                                                 class="text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                                                <span data-translate="posted" data-translate-page="profile">Diposting pada:</span>
-                                                {{ $entry->created_at?->format('d M Y H:i') ?? ($entry->tanggal?->format('d M Y') ?? 'Tanggal tidak tersedia') }}
+                                                <span data-translate="posted" data-translate-page="profile">{{ autoTranslate('Diposting pada:') }}</span>
+                                                {{ $entry->created_at?->translatedFormat('d M Y H:i') ?? ($entry->tanggal?->translatedFormat('d M Y') ?? autoTranslate('Tanggal tidak tersedia')) }}
                                             </p>
                                         </div>
                                     </div>
@@ -1003,7 +1000,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400">Belum ada catatan learning corner.</p>
+                                <p class="mt-4 text-gray-600 dark:text-gray-400">{{ autoTranslate('Belum ada catatan learning corner.') }}</p>
                             </div>
                         @endif
                     </section>
@@ -1011,7 +1008,7 @@
 
                 <!-- Footer -->
                 <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-                    <span data-translate="last_upd" data-translate-page="profile">Terakhir diperbarui:</span> {{ now()->format('d F Y H:i') }} WIB
+                    <span data-translate="last_upd" data-translate-page="profile">{{ autoTranslate('Terakhir diperbarui:') }}</span> {{ now()->translatedFormat('d F Y H:i') }} WIB
                 </div>
 
             </div> <!-- penutup x-data -->
@@ -1067,7 +1064,7 @@
                     }, 5000);
                 },
                 async deleteKeahlian(id, index) {
-                    if (!confirm('Apakah Anda yakin ingin menghapus keahlian tambahan ini?')) return;
+                    if (!confirm('{{ autoTranslate('Apakah Anda yakin ingin menghapus keahlian tambahan ini?') }}')) return;
 
                     this.loading = true;
 
@@ -1087,11 +1084,11 @@
                             await this.refreshKeahlianList();
                             this.showNotification(data.message, 'success');
                         } else {
-                            this.showNotification(data.message || 'Gagal menghapus keahlian', 'error');
+                            this.showNotification(data.message || '{{ autoTranslate('Gagal menghapus keahlian') }}', 'error');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        this.showNotification('Terjadi kesalahan jaringan', 'error');
+                        this.showNotification('{{ autoTranslate('Terjadi kesalahan jaringan') }}', 'error');
                     } finally {
                         this.loading = false;
                     }
@@ -1212,7 +1209,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof showPageInfo === 'function') {
-                showPageInfo("Kelola profile diri anda. Klik pada bagian yang ingin diedit, lalu tekan tombol simpan untuk menyimpan perubahan.");
+                showPageInfo("{{ autoTranslate('Kelola profile diri anda. Klik pada bagian yang ingin diedit, lalu tekan tombol simpan untuk menyimpan perubahan.') }}");
             }
         });
     </script>
@@ -1265,7 +1262,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Link portfolio berhasil disalin!</span>
+                        <span>{{ autoTranslate('Link portfolio berhasil disalin!') }}</span>
                     </div>
                 `;
                 document.body.appendChild(notification);
@@ -1283,7 +1280,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Gagal menyalin link</span>
+                        <span>{{ autoTranslate('Gagal menyalin link') }}</span>
                     </div>
                 `;
                 document.body.appendChild(notification);

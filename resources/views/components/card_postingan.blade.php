@@ -87,7 +87,7 @@
             // Data user pembuat learning corner
             if (isset($post->mahasiswa)) {
                 $userPhoto = $post->mahasiswa->photo_profile;
-                $userName = $post->mahasiswa->nama_mahasiswa ?? 'Pengguna';
+                $userName = $post->mahasiswa->nama_mahasiswa ?? autoTranslate('Pengguna');
                 $userId = $post->mahasiswa->id;
             }
 
@@ -103,7 +103,7 @@
                 // Ambil data leader dari project jika ada
                 if ($relatedProject && isset($relatedProject->leader) && $relatedProject->leader) {
                     $leaderPhoto = $relatedProject->leader->photo_profile;
-                    $leaderName = $relatedProject->leader->nama_mahasiswa ?? 'Leader';
+                    $leaderName = $relatedProject->leader->nama_mahasiswa ?? autoTranslate('Leader');
                     $leaderId = $relatedProject->leader->id;
                     $isLeaderAvailable = true;
                 }
@@ -111,7 +111,7 @@
                 // Ambil data owner (pembuat project) dari id_mahasiswa
                 if ($relatedProject && isset($relatedProject->mahasiswa) && $relatedProject->mahasiswa) {
                     $ownerPhoto = $relatedProject->mahasiswa->photo_profile;
-                    $ownerName = $relatedProject->mahasiswa->nama_mahasiswa ?? 'Owner';
+                    $ownerName = $relatedProject->mahasiswa->nama_mahasiswa ?? autoTranslate('Owner');
                     $ownerId = $relatedProject->mahasiswa->id;
                 }
             }
@@ -119,20 +119,20 @@
             // Data untuk project
             if ($post->mahasiswa) {
                 $userPhoto = $post->mahasiswa->photo_profile;
-                $userName = $post->mahasiswa->nama_mahasiswa ?? 'Pengguna';
+                $userName = $post->mahasiswa->nama_mahasiswa ?? autoTranslate('Pengguna');
                 $userId = $post->mahasiswa->id;
             }
         } elseif ($post->type === 'sertifikat') {
             // Data untuk sertifikat
             if ($post->mahasiswa) {
                 $userPhoto = $post->mahasiswa->photo_profile;
-                $userName = $post->mahasiswa->nama_mahasiswa ?? 'Pengguna';
+                $userName = $post->mahasiswa->nama_mahasiswa ?? autoTranslate('Pengguna');
                 $userId = $post->mahasiswa->id;
             }
         }
 
         // Data untuk project card
-        $nama_project = $projectData['nama_project'] ?? ($relatedProjectData['nama_project'] ?? '(Nama Project Tidak Tersedia)');
+        $nama_project = $projectData['nama_project'] ?? ($relatedProjectData['nama_project'] ?? autoTranslate('(Nama Project Tidak Tersedia)'));
         $link_project = $projectData['link_project'] ?? $relatedProjectData['link_project'] ?? '';
         $link_github = $projectData['link_github'] ?? $relatedProjectData['link_github'] ?? '';
         $link_video = $projectData['link_video'] ?? $relatedProjectData['link_video'] ?? '';
@@ -157,7 +157,7 @@
         $displayPhoto = $isLeaderAvailable ? $leaderPhoto : $ownerPhoto;
         $displayName = $isLeaderAvailable ? $leaderName : $ownerName;
         $displayId = $isLeaderAvailable ? $leaderId : $ownerId;
-        $displayRole = $isLeaderAvailable ? 'Leader' : 'Owner';
+        $displayRole = $isLeaderAvailable ? autoTranslate('Leader') : autoTranslate('Owner');
     @endphp
 
     <!-- User Info -->
@@ -166,7 +166,7 @@
         <div
             class="w-7 h-7 sm:w-8 md:w-9 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm shrink-0 relative">
             @if($userPhoto)
-                <img src="{{ asset('storage/' . ltrim($userPhoto, '/')) }}" alt="{{ $userName }}"
+                <img src="{{ asset('storage/' . ltrim($userPhoto, '/')) }}" alt="{{ autoTranslate($userName) }}"
                     class="w-full h-full object-cover" loading="lazy"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div
@@ -182,10 +182,10 @@
         </div>
         <div class="min-w-0 flex-1">
             <p class="font-semibold text-xs sm:text-sm md:text-base text-gray-900 dark:text-gray-300 truncate">
-                {{ $userName }}
+                {{ autoTranslate($userName) }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-200 truncate">
-                {{ $post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru saja' }}
+                {{ autoTranslate($post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru saja') }}
             </p>
         </div>
     </a>
@@ -195,18 +195,18 @@
         @if($post->type === 'learning')
             <span
                 class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 w-fit">
-                Learning Corner
+                {{ autoTranslate('Learning Corner') }}
                 @if($relatedProject)
                     <span
-                        class="ml-1 text-purple-600">({{ Str::limit($relatedProjectData['nama_project'] ?? 'Project', 20) }})</span>
+                        class="ml-1 text-purple-600">({{ autoTranslate(Str::limit($relatedProjectData['nama_project'] ?? 'Project', 20)) }})</span>
                 @endif
             </span>
         @elseif($post->type === 'project' || $post->type === 'project_user')
             <span
-                class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 w-fit">Project</span>
+                class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 w-fit">{{ autoTranslate('Project') }}</span>
         @elseif($post->type === 'postingan')
             <span
-                class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 w-fit">Postingan</span>
+                class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 w-fit">{{ autoTranslate('Postingan') }}</span>
         @endif
     </div>
 
@@ -219,13 +219,13 @@
                     class="block hover:text-indigo-700 transition-colors">
                     <h3
                         class="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2 line-clamp-2 leading-tight">
-                        {{ $learningTitle ?: ($relatedProjectData['nama_project'] ?? 'Learning Corner') }}
+                        {{ autoTranslate($learningTitle ?: ($relatedProjectData['nama_project'] ?? 'Learning Corner')) }}
                     </h3>
                 </a>
             @else
                 <h3
                     class="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2 line-clamp-2 leading-tight">
-                    {{ $learningTitle ?: 'Learning Corner' }}
+                    {{ autoTranslate($learningTitle ?: 'Learning Corner') }}
                 </h3>
             @endif
 
@@ -233,7 +233,7 @@
             @if($learningText)
                 <div class="relative">
                     <p class="text-gray-700 dark:text-gray-300 mb-1 sm:mb-2 text-xs sm:text-sm line-clamp-3">
-                        {{ $learningText }}
+                        {{ autoTranslate($learningText) }}
                     </p>
                 </div>
             @endif
@@ -243,10 +243,10 @@
                 <div class="space-y-1.5 sm:space-y-2 mt-1.5 sm:mt-2">
                     @php $firstImage = $learningImages[0]; @endphp
                     @php $imagePath = str_replace(['\\', '/'], '/', $firstImage['content'] ?? ''); @endphp
-                    <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}" alt="{{ $firstImage['alt'] ?? 'Gambar' }}"
+                    <img src="{{ asset('storage/' . ltrim($imagePath, '/')) }}" alt="{{ autoTranslate($firstImage['alt'] ?? 'Gambar') }}"
                         class="w-full h-24 sm:h-32 md:h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
                         loading="lazy"
-                        onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Ditemukan';this.onerror=null;">
+                        onerror="this.src='https://via.placeholder.com/400x200?text={{ urlencode(autoTranslate('Gambar Tidak Ditemukan')) }}';this.onerror=null;">
                 </div>
             @endif
 
@@ -256,7 +256,7 @@
                     @foreach($learningLinks as $link)
                         <a href="{{ $link['content'] }}" target="_blank"
                             class="text-indigo-600 hover:text-indigo-800 text-xs sm:text-sm block underline line-clamp-1 break-all">
-                            {{ Str::limit($link['content'], 50) }}
+                            {{ autoTranslate(Str::limit($link['content'], 50)) }}
                         </a>
                     @endforeach
                 </div>
@@ -265,10 +265,10 @@
             <!-- Related Project Info -->
             @if($relatedProject)
                 <div class="mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-gray-100 dark:border-gray-800">
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">Terkait:</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">{{ autoTranslate('Terkait:') }}</p>
                     <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
                         class="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 hover:text-indigo-600 transition-colors line-clamp-1">
-                        {{ Str::limit($relatedProjectData['nama_project'] ?? $relatedProject->nama_project ?? 'Project', 25) }}
+                        {{ autoTranslate(Str::limit($relatedProjectData['nama_project'] ?? $relatedProject->nama_project ?? 'Project', 25)) }}
                     </a>
                 </div>
             @endif
@@ -279,34 +279,34 @@
                 class="block hover:text-indigo-700 transition-colors">
                 <h3
                     class="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">
-                    {{ $nama_project }}
+                    {{ autoTranslate($nama_project) }}
                 </h3>
             </a>
 
             <!-- Deskripsi Project -->
             @if(!empty($projectData['deskripsi']))
                 <p class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-1 sm:mt-2 line-clamp-2">
-                    {{ $projectData['deskripsi'] }}
+                    {{ autoTranslate($projectData['deskripsi']) }}
                 </p>
             @endif
 
             <!-- Periode -->
             @if(!empty($projectData['tanggal_mulai']) || $post->tanggal_mulai)
                 <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-200 mt-1 sm:mt-2">
-                    <p><span class="font-medium">Periode:</span>
+                    <p><span class="font-medium">{{ autoTranslate('Periode:') }}</span>
                         @if(!empty($projectData['tanggal_mulai']))
-                            {{ \Carbon\Carbon::parse($projectData['tanggal_mulai'])->format('M Y') }}
+                            {{ autoTranslate(\Carbon\Carbon::parse($projectData['tanggal_mulai'])->translatedFormat('M Y')) }}
                             @if(!empty($projectData['tanggal_akhir']))
-                                → {{ \Carbon\Carbon::parse($projectData['tanggal_akhir'])->format('M Y') }}
+                                → {{ autoTranslate(\Carbon\Carbon::parse($projectData['tanggal_akhir'])->translatedFormat('M Y')) }}
                             @else
-                                → Sekarang
+                                → {{ autoTranslate('Sekarang') }}
                             @endif
                         @elseif($post->tanggal_mulai)
-                            {{ \Carbon\Carbon::parse($post->tanggal_mulai)->format('M Y') }}
+                            {{ autoTranslate(\Carbon\Carbon::parse($post->tanggal_mulai)->translatedFormat('M Y')) }}
                             @if($post->tanggal_akhir)
-                                → {{ \Carbon\Carbon::parse($post->tanggal_akhir)->format('M Y') }}
+                                → {{ autoTranslate(\Carbon\Carbon::parse($post->tanggal_akhir)->translatedFormat('M Y')) }}
                             @else
-                                → Sekarang
+                                → {{ autoTranslate('Sekarang') }}
                             @endif
                         @endif
                     </p>
@@ -318,7 +318,7 @@
                 <!-- Video Preview untuk YouTube -->
                 @include('components.video_preview', [
                     'link_video' => $link_video,
-                    'alt' => 'Video ' . $nama_project,
+                    'alt' => autoTranslate('Video ') . autoTranslate($nama_project),
                     'class' => 'rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-3 sm:mt-4'
                 ])
             @elseif($isValidVideo && !$youtube_id)
@@ -326,7 +326,7 @@
                 <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm bg-gray-100 dark:bg-gray-800">
                     <video class="w-full h-32 sm:h-40 md:h-48 object-cover" controls>
                         <source src="{{ $link_video }}" type="video/mp4">
-                        Browser Anda tidak mendukung video.
+                        {{ autoTranslate('Browser Anda tidak mendukung video.') }}
                     </video>
                 </div>
             @else
@@ -337,11 +337,11 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Tidak ada video preview</p>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Tidak ada video preview') }}</p>
                         @if($link_video && !empty(trim($link_video)))
                             <a href="{{ $link_video }}" target="_blank" 
                                 class="mt-2 text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
-                                Lihat Video →
+                                {{ autoTranslate('Lihat Video') }} →
                             </a>
                         @endif
                     </div>
@@ -358,7 +358,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                             </svg>
-                            Demo
+                            {{ autoTranslate('Demo') }}
                         </a>
                     @endif
 
@@ -382,7 +382,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            Video
+                            {{ autoTranslate('Video') }}
                         </a>
                     @endif
                 </div>
@@ -410,10 +410,10 @@
             @endphp
 
             @if($title)
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 text-sm sm:text-base md:text-lg">{{ $title }}</h3>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 text-sm sm:text-base md:text-lg">{{ autoTranslate($title) }}</h3>
             @endif
             @if($deskripsi)
-                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ Str::limit($deskripsi, 150) }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ autoTranslate(Str::limit($deskripsi, 150)) }}</p>
             @endif
 
             <!-- Footer Actions -->
@@ -448,7 +448,7 @@
                 </div>
                 <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan ?? $post->id) }}'" 
                       class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
-                    Lihat detail
+                    {{ autoTranslate('Lihat detail') }}
                 </span>
             </div>
 
@@ -459,7 +459,7 @@
                         @csrf
                         <div class="flex gap-3">
                             @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
-                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1">
+                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1" alt="{{ autoTranslate('Foto Profil') }}">
                             @else
                                 <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
                                     <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">
@@ -470,12 +470,12 @@
                             <div class="flex-1">
                                 <textarea name="komentar" rows="2" 
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y text-sm"
-                                    placeholder="Tulis komentar..."></textarea>
+                                    placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
                                 <div class="flex justify-end mt-2">
                                     <button type="submit" 
                                         class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition submit-btn"
                                         data-current-user-id="{{ auth()->id() }}">
-                                        Kirim
+                                        {{ autoTranslate('Kirim') }}
                                     </button>
                                 </div>
                             </div>
@@ -483,7 +483,7 @@
                     </form>
                 @else
                     <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
-                        <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">Masuk</a> untuk berkomentar
+                        <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}
                     </p>
                 @endauth
 
@@ -495,7 +495,7 @@
                                  data-comment-id="{{ $komentar->id_komentar }}"
                                  data-user-id="{{ $komentar->id_user }}">
                                 @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
-                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5">
+                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5" alt="{{ autoTranslate('Foto Profil') }}">
                                 @else
                                     <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mt-0.5">
                                         <span class="text-gray-600 dark:text-gray-400 text-sm">
@@ -505,18 +505,18 @@
                                 @endif
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
-                                        <span class="font-medium text-sm">{{ $komentar->user->nama_mahasiswa ?? $komentar->user->name }}</span>
+                                        <span class="font-medium text-sm">{{ autoTranslate($komentar->user->nama_mahasiswa ?? $komentar->user->name) }}</span>
                                         @if(auth()->check() && auth()->id() === $komentar->id_user)
-                                            <span class="user-comment-badge">Anda</span>
+                                            <span class="user-comment-badge">{{ autoTranslate('Anda') }}</span>
                                         @endif
-                                        <span class="text-xs text-gray-500">{{ $komentar->tanggal ? $komentar->tanggal->format('d M Y') : 'Baru' }}</span>
+                                        <span class="text-xs text-gray-500">{{ autoTranslate($komentar->tanggal ? $komentar->tanggal->translatedFormat('d M Y') : 'Baru') }}</span>
                                     </div>
-                                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-0.5">{{ $komentar->komentar }}</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-0.5">{{ autoTranslate($komentar->komentar) }}</p>
                                 </div>
                             </div>
                         @endforeach
                     @else
-                        <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">Belum ada komentar</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">{{ autoTranslate('Belum ada komentar') }}</p>
                     @endif
                 </div>
             </div>
@@ -525,20 +525,20 @@
             <!-- Sertifikat Title -->
             <h3
                 class="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight mb-1 sm:mb-2">
-                {{ $post->nama_sertifikat }}
+                {{ autoTranslate($post->nama_sertifikat) }}
             </h3>
 
             <!-- Lembaga Penerbit -->
             @if($post->lembaga_penerbit)
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2">
-                    <span class="font-medium">Lembaga:</span> {{ $post->lembaga_penerbit }}
+                    <span class="font-medium">{{ autoTranslate('Lembaga:') }}</span> {{ autoTranslate($post->lembaga_penerbit) }}
                 </p>
             @endif
 
             <!-- Tanggal Terbit -->
             @if($post->tanggal_terbit)
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2 sm:mb-3">
-                    <span class="font-medium">Terbit:</span> {{ \Carbon\Carbon::parse($post->tanggal_terbit)->format('d M Y') }}
+                    <span class="font-medium">{{ autoTranslate('Terbit:') }}</span> {{ autoTranslate(\Carbon\Carbon::parse($post->tanggal_terbit)->translatedFormat('d M Y')) }}
                 </p>
             @endif
 
@@ -547,16 +547,16 @@
                 @if($post->status_pengajuan === 'Di Terima')
                     <span
                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        ✓ Diterima
+                        ✓ {{ autoTranslate('Diterima') }}
                     </span>
                 @elseif($post->status_pengajuan === 'Ditolak')
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                        ✗ Ditolak
+                        ✗ {{ autoTranslate('Ditolak') }}
                     </span>
                 @else
                     <span
                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        ⊙ Pengajuan
+                        ⊙ {{ autoTranslate('Pengajuan') }}
                     </span>
                 @endif
             </div>
@@ -570,7 +570,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
-                        Lihat Sertifikat
+                        {{ autoTranslate('Lihat Sertifikat') }}
                     </a>
                 </div>
             @endif
@@ -580,15 +580,15 @@
     <!-- Footer -->
     <div class="mt-3 sm:mt-4 pt-2 sm:pt-4 border-t border-gray-100 dark:border-gray-900">
         <p class="text-xs text-gray-500 dark:text-gray-50 line-clamp-2">
-            <span>Diposting</span>
-            {{ $post->created_at?->format('d M Y H:i') ?? $post->tanggal?->format('d M Y') ?? '—' }}
-            <span>oleh</span>
-            {{ $userName }}
+            <span>{{ autoTranslate('Diposting') }}</span>
+            {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
+            <span>{{ autoTranslate('oleh') }}</span>
+            {{ autoTranslate($userName) }}
             @if($relatedProject)
-                <span>untuk project</span>
+                <span>{{ autoTranslate('untuk project') }}</span>
                 <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
                     class="text-indigo-600 hover:text-indigo-800 transition-colors font-medium">
-                    {{ Str::limit($relatedProjectData['nama_project'] ?? 'Project', 30) }}
+                    {{ autoTranslate(Str::limit($relatedProjectData['nama_project'] ?? 'Project', 30)) }}
                 </a>
             @endif
         </p>

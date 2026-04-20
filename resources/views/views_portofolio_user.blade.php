@@ -604,6 +604,9 @@
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
+                                </svg>
                                 Postingannya
                             </h3>
                             <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">
@@ -648,7 +651,6 @@
                                                     @if(isset($item['type']) && $item['type'] === 'image' && !empty($item['content']))
                                                         <img src="{{ asset('storage/' . $item['content']) }}" 
                                                              alt="Preview postingan"
-                                                             id="logo-zoom"
                                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                              onerror="this.src='https://via.placeholder.com/600x400?text=Postingan'">
                                                         @break
