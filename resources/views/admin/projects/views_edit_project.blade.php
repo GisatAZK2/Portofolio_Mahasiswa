@@ -238,10 +238,53 @@
                     </div>
 
                     <!-- User List -->
+                    @php
+                        $modalSelectedOwnerId = old('owner', $project->id_mahasiswa);
+                        $modalSelectedLeaderId = old('leader', $project->leader_id);
+                        $modalSelectedMemberIds = old('members') ? old('members') : $project->members->pluck('id')->toArray();
+                    @endphp
                     <div class="max-h-96 overflow-y-auto">
                         <div id="modal-user-list" class="space-y-2">
-                            <!-- Users will be loaded here -->
+                            @forelse ($users as $user)
+                                @php
+                                    $isOwner = $modalSelectedOwnerId == $user->id;
+                                    $isLeader = $modalSelectedLeaderId == $user->id;
+                                    $isMember = in_array($user->id, (array) $modalSelectedMemberIds);
+                                    $selectedRole = $isOwner ? 'owner' : ($isLeader ? 'leader' : ($isMember ? 'member' : ''));
+                                    $memberDisabled = $isOwner || $isLeader;
+                                @endphp
+                                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        @if ($user->photo_profile)
+                                            <img src="/storage/{{ $user->photo_profile }}" class="w-10 h-10 rounded-full object-cover">
+                                        @else
+                                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold">{{ strtoupper(substr($user->nama_mahasiswa, 0, 1)) }}</span>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <div class="font-medium text-gray-900 dark:text-gray-100">{{ $user->nama_mahasiswa }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <select data-user-id="{{ $user->id }}" class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, {{ $user->id }}, this.value)">
+                                            <option value="" {{ $selectedRole === '' ? 'selected' : '' }}>-- Pilih Role --</option>
+                                            <option value="owner" {{ $selectedRole === 'owner' ? 'selected' : '' }}>Owner</option>
+                                            <option value="leader" {{ $selectedRole === 'leader' ? 'selected' : '' }}>Leader</option>
+                                            <option value="member" {{ $selectedRole === 'member' ? 'selected' : '' }} {{ $memberDisabled ? 'disabled' : '' }}>Member</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+                                    Tidak ada mahasiswa yang sesuai filter.
+                                </div>
+                            @endforelse
                         </div>
+                    </div>
+                    <div id="modal-pagination-links" data-pagination-group="modal_users" class="mt-4">
+                        {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'modal_users']) }}
                     </div>
                 </div>
 
@@ -284,11 +327,45 @@
             })->toArray();
         }
     @endphp
+    @php
+        $selectedOwner = old('owner') ? App\Models\User::find(old('owner')) : $project->mahasiswa;
+        $selectedLeader = old('leader') ? App\Models\User::find(old('leader')) : $project->leader;
+        $selectedMemberIds = old('members') ? old('members') : $project->members->pluck('id')->toArray();
+        $selectedMembers = App\Models\User::whereIn('id', (array) $selectedMemberIds)->get();
+        $selectedUsersData = [
+            'owner' => $selectedOwner ? [
+                'id' => $selectedOwner->id,
+                'nama_mahasiswa' => $selectedOwner->nama_mahasiswa,
+                'email' => $selectedOwner->email,
+                'photo_profile' => $selectedOwner->photo_profile,
+            ] : null,
+            'leader' => $selectedLeader ? [
+                'id' => $selectedLeader->id,
+                'nama_mahasiswa' => $selectedLeader->nama_mahasiswa,
+                'email' => $selectedLeader->email,
+                'photo_profile' => $selectedLeader->photo_profile,
+            ] : null,
+            'members' => $selectedMembers->map(function($member) {
+                return [
+                    'id' => $member->id,
+                    'nama_mahasiswa' => $member->nama_mahasiswa,
+                    'email' => $member->email,
+                    'photo_profile' => $member->photo_profile,
+                ];
+            })->toArray(),
+        ];
+    @endphp
     <script>
         const allUsers = @json($users->items());
         let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
-        let selectedUsers = { owner: null, leader: null, members: [] };
+        let selectedUsers = @json($selectedUsersData);
         let taskIndex = 0;
+
+        function normalizeSelectedUsers() {
+            if (selectedUsers.owner && selectedUsers.leader && selectedUsers.owner.id == selectedUsers.leader.id) {
+                selectedUsers.leader = null;
+            }
+        }
 
         function updateSelectedUsersBadge() {
             const badge = document.getElementById('selected-users-badge');
@@ -327,13 +404,68 @@
 
         function openUserModal() {
             document.getElementById('userModal').classList.remove('hidden');
-            loadUsersToModal();
+            fetchModalUsers();
         }
 
         function closeUserModal() {
             document.getElementById('userModal').classList.add('hidden');
         }
         
+        function fetchModalUsers(page = 1) {
+            const url = new URL('{{ route("project.edit", $project->id) }}');
+            url.searchParams.set('search', currentModalFilters.search);
+            url.searchParams.set('angkatan', currentModalFilters.angkatan);
+            url.searchParams.set('jurusan', currentModalFilters.jurusan);
+            url.searchParams.set('keahlian', currentModalFilters.keahlian);
+            url.searchParams.set('page', page);
+
+            fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    const modalList = doc.querySelector('#modal-user-list');
+                    if (modalList) document.getElementById('modal-user-list').innerHTML = modalList.innerHTML;
+
+                    const modalPagination = doc.querySelector('#modal-pagination-links');
+                    if (modalPagination) document.getElementById('modal-pagination-links').innerHTML = modalPagination.innerHTML;
+                    syncModalUserSelects();
+                })
+                .catch(err => console.error('Error fetching modal users:', err));
+        }
+
+        function syncModalUserSelects() {
+            normalizeSelectedUsers();
+            const leaderSelected = !!selectedUsers.leader;
+
+            document.querySelectorAll('#modal-user-list select.user-role-select').forEach(select => {
+                const userId = select.dataset.userId;
+                const isOwner = selectedUsers.owner?.id == userId;
+                const isLeader = selectedUsers.leader?.id == userId;
+                const isMember = selectedUsers.members.some(m => String(m.id) === String(userId));
+
+                if (isOwner) select.value = 'owner';
+                else if (isLeader) select.value = 'leader';
+                else if (isMember) select.value = 'member';
+                else select.value = '';
+
+                Array.from(select.options).forEach(option => {
+                    if (option.value === 'member') {
+                        option.disabled = isOwner || isLeader;
+                    }
+                    if (option.value === 'owner') {
+                        option.disabled = !isOwner && selectedUsers.owner ? true : false;
+                    }
+                    if (option.value === 'leader') {
+                        option.disabled = leaderSelected && !isLeader;
+                        if (isOwner) {
+                            option.disabled = true;
+                        }
+                    }
+                });
+            });
+        }
 
         function filterUsersForModal() {
             console.log('Filtering with:', currentModalFilters);
@@ -383,6 +515,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 const isLeader = selectedUsers.leader?.id == user.id;
                 const isMember = selectedUsers.members.some(m => m.id == user.id);
                 const memberDisabled = isOwner || isLeader;
+                const leaderDisabled = selectedUsers.leader && !isLeader;
                 const selectedRole = isOwner ? 'owner' : isLeader ? 'leader' : isMember ? 'member' : '';
 
                 return `
@@ -403,7 +536,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                             <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
                                 <option value="" ${selectedRole === '' ? 'selected' : ''}>-- Pilih Role --</option>
                                 <option value="owner" ${selectedRole === 'owner' ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
-                                <option value="leader" ${selectedRole === 'leader' ? 'selected' : ''}>Leader</option>
+                                <option value="leader" ${selectedRole === 'leader' ? 'selected' : ''} ${leaderDisabled ? 'disabled' : ''}>Leader</option>
                                 <option value="member" ${selectedRole === 'member' ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
                             </select>
                         </div>
@@ -431,6 +564,12 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 }
             }
 
+            if (role === 'leader' && selectedUsers.owner?.id == userId) {
+                alert('Owner dan leader tidak boleh sama. User ini akan dianggap owner.');
+                selectElement.value = 'owner';
+                return;
+            }
+
             // Reset dulu user ini dari semua role
             if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
@@ -447,15 +586,18 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
             updateFormInputs();
             renderSelectedUsers();
-            loadUsersToModal();
+            syncTaskRows();
+            syncModalUserSelects();
             updateTaskSectionVisibility();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
         }
         
         function confirmUserSelection() {
+            normalizeSelectedUsers();
             updateFormInputs();
             renderSelectedUsers();
+            syncTaskRows();
             // Refresh task UI
             updateTaskSectionVisibility();
             updateTaskUserOptions();
@@ -470,12 +612,20 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         }
 
         function renderSelectedUsers() {
+            normalizeSelectedUsers();
             const container = document.getElementById('selected-users-container');
             const noUsersMsg = document.getElementById('no-users-message');
             if (!container || !noUsersMsg) return;
 
             const selected = [];
-            if (selectedUsers.owner) selected.push({ ...selectedUsers.owner, role: 'Owner' });
+            const ownerIsAlsoLeader = selectedUsers.owner && !selectedUsers.leader;
+
+            if (selectedUsers.owner) {
+                selected.push({
+                    ...selectedUsers.owner,
+                    role: ownerIsAlsoLeader ? 'Leader dan Owner' : 'Owner'
+                });
+            }
             if (selectedUsers.leader) selected.push({ ...selectedUsers.leader, role: 'Leader' });
             selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
 
@@ -549,6 +699,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
             updateFormInputs();
             renderSelectedUsers();
+            syncTaskRows();
+            syncModalUserSelects();
             // Refresh task UI
             updateTaskSectionVisibility();
             updateTaskUserOptions();
@@ -563,6 +715,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             if (ownerId) selectedUsers.owner = getUserById(ownerId);
             if (leaderId) selectedUsers.leader = getUserById(leaderId);
             selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+            normalizeSelectedUsers();
         }
 
         function getUserById(id) {
@@ -671,19 +824,19 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         function setupModalFilters() {
             document.getElementById('modal-search')?.addEventListener('input', function() {
                 currentModalFilters.search = this.value;
-                loadUsersToModal();
+                fetchModalUsers();
             });
             document.getElementById('modal-angkatan')?.addEventListener('change', function() {
                 currentModalFilters.angkatan = this.value;
-                loadUsersToModal();
+                fetchModalUsers();
             });
             document.getElementById('modal-jurusan')?.addEventListener('change', function() {
                 currentModalFilters.jurusan = this.value;
-                loadUsersToModal();
+                fetchModalUsers();
             });
             document.getElementById('modal-keahlian')?.addEventListener('change', function() {
                 currentModalFilters.keahlian = this.value;
-                loadUsersToModal();
+                fetchModalUsers();
             });
         }
 
@@ -722,7 +875,6 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         // Initialize modal functions
         document.addEventListener('DOMContentLoaded', function () {
-            loadSelectedUsersFromForm();
             renderSelectedUsers();
             setupModalFilters();
             updateTaskSectionVisibility();
@@ -759,6 +911,10 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                     if (newBody) document.getElementById('leader-table-body').innerHTML = newBody.innerHTML;
                     const newPagination = doc.querySelector('#pagination-links');
                     if (newPagination) document.getElementById('pagination-links').innerHTML = newPagination.innerHTML;
+                    const newModalList = doc.querySelector('#modal-user-list');
+                    if (newModalList) document.getElementById('modal-user-list').innerHTML = newModalList.innerHTML;
+                    const newModalPagination = doc.querySelector('#modal-pagination-links');
+                    if (newModalPagination) document.getElementById('modal-pagination-links').innerHTML = newModalPagination.innerHTML;
                     attachTableRowListeners();
                     const selectedId = document.getElementById('selected-leader-id').value;
                     if (selectedId) {
@@ -1019,7 +1175,6 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             }
         }
         // Task UI helpers
-        let taskIndex = 0;
         let removedTaskIds = new Set();
         function getRemovedTasksFromStorage() {
     try {
@@ -1062,24 +1217,8 @@ function syncTaskRows() {
         }
     });
 
-    // 2. Tambahkan tugas untuk user yang belum punya tugas
-    allowedUsers.forEach(user => {
-        const userIdStr = String(user.id);
-        
-        const alreadyHasTask = Array.from(document.querySelectorAll('.task-item')).some(item => {
-            const sel = item.querySelector('.task-user-select');
-            return sel && sel.value === userIdStr;
-        });
-
-        if (!alreadyHasTask) {
-            addTaskRow({ user_id: user.id, name_task: '' });
-        }
-    });
-
-    // Jika setelah semua tidak ada task, tambahkan 1 baris kosong
-    if (document.querySelectorAll('.task-item').length === 0) {
-        addTaskRow();
-    }
+    // 2. Hanya perbarui opsi task yang valid.
+    // Tidak otomatis menambahkan task baru setelah konfirmasi user selection.
 
     updateTaskUserOptions();
 }
@@ -1152,19 +1291,15 @@ function syncTaskRows() {
         function getAllowedTaskUsers() {
             const users = [];
             const added = new Set();
-            const add = (id) => {
-                if (!id || added.has(id)) return;
-                added.add(id);
-                const name = getUserNameById(id) || `User ${id}`;
-                users.push({ id, name });
+            const add = user => {
+                if (!user || added.has(String(user.id))) return;
+                added.add(String(user.id));
+                users.push({ id: user.id, name: user.nama_mahasiswa });
             };
-            const ownerRadio = document.querySelector('.owner-radio:checked');
-            if (ownerRadio) add(ownerRadio.value);
-            const leaderRadio = document.querySelector('.leader-radio:checked');
-            if (leaderRadio) add(leaderRadio.value);
-            document.querySelectorAll('select[name="members[]"]').forEach(select => {
-                if (select.value) add(select.value);
-            });
+
+            add(selectedUsers.owner);
+            add(selectedUsers.leader);
+            selectedUsers.members.forEach(add);
             return users;
         }
         function renderTaskUserOptions(selectedId = '') {
@@ -1330,12 +1465,17 @@ function syncTaskRows() {
             if (ownerSearch) ownerSearch.addEventListener('input', filterLeaderTable);
             // Pagination AJAX
             document.addEventListener('click', e => {
-                const link = e.target.closest('.pagination a');
+                const link = e.target.closest('.pagination a, .pagination-link');
                 if (link) {
                     e.preventDefault();
                     const url = new URL(link.href);
                     const page = url.searchParams.get('page') || 1;
-                    fetchFilteredUsers(page);
+                    const group = link.dataset.group;
+                    if (group === 'modal_users') {
+                        fetchModalUsers(page);
+                    } else {
+                        fetchFilteredUsers(page);
+                    }
                 }
             });
         });

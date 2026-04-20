@@ -75,7 +75,8 @@ export function closeLoading() {
 export async function showConfirm() {
     const result = await Swal.fire({
         title: translate('confirm_delete_title'),
-        text: translate('confirm_delete_text'),
+        text: showPageInfo('confirm_delete_text', 'warning', 3000),
+      
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
@@ -129,12 +130,12 @@ function showPageInfo(message, type = "info", duration = 2000) {
     let messageKey = null;
     const originalMessage = message;
 
-    if (typeof message === 'string' && message.includes('.') && !message.includes(' ')) {
+    if (typeof message === 'string' && !message.includes(' ')) {
         const translated = getTranslation(lang, message);
         if (translated) {
             message = translated;
+            messageKey = originalMessage;
         }
-        messageKey = originalMessage;
     }
 
     if (messageKey) {
