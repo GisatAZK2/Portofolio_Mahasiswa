@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
 class LocalizationService
@@ -19,7 +22,7 @@ class LocalizationService
      */
     public static function getCurrentLocale(): string
     {
-        return app()->getLocale();
+        return App::getLocale();
     }
 
     /**
@@ -39,10 +42,9 @@ class LocalizationService
     }
 
     /**
-     * Get URL with specific locale prefix
-     * Example: locale_url('portfolio', 'en') -> /en/portfolio
+     * Generate URL with locale prefix (untuk link biasa)
      */
-    public static function url(string $path = '', string $locale = null): string
+    public static function url(string $path = '', ?string $locale = null): string
     {
         $locale = $locale ?? self::getCurrentLocale();
 
@@ -50,23 +52,14 @@ class LocalizationService
             $locale = self::getDefaultLocale();
         }
 
-        // Remove leading slash from path
         $path = ltrim($path, '/');
-
-        // Build full URL
-        $url = '/' . $locale;
-        if ($path !== '') {
-            $url .= '/' . $path;
-        }
-
-        return $url;
+        return '/' . $locale . ($path ? '/' . $path : '');
     }
 
     /**
-     * Generate localized route URL
-     * Example: locale_route('portfolio.index', [], 'en') -> /en/portfolio
+     * Generate localized route (INI YANG PALING PENTING & SUDAH DIPERBAIKI)
      */
-    public static function route(string $name, array $parameters = [], string $locale = null): string
+    public static function route(string $name, array $parameters = [], ?string $locale = null): string
     {
         $locale = $locale ?? self::getCurrentLocale();
 
@@ -74,34 +67,29 @@ class LocalizationService
             $locale = self::getDefaultLocale();
         }
 
-        // Generate the route without locale
-        $route = route($name, $parameters, false);
+        // Tambahkan locale sebagai parameter (ini yang bikin otomatis)
+        $parameters = array_merge(['locale' => $locale], $parameters);
 
-        // Remove leading slash
-        $route = ltrim($route, '/');
-
-        // Add locale prefix
-        return '/' . $locale . '/' . $route;
+        // Gunakan route() Laravel biasa (tidak perlu manual tambah prefix lagi)
+        return route($name, $parameters);
     }
 
     /**
-     * Get URL for switching to different locale
-     * Example: locale_switch('en') -> /en/current-page
+     * Get URL for switching locale (switch bahasa)
      */
-    public static function switchUrl(string $locale = null): string
+    public static function switchUrl(?string $locale = null): string
     {
         $locale = $locale ?? self::getDefaultLocale();
 
         if (!self::isLocaleSupported($locale)) {
-            return self::url();
+            $locale = self::getDefaultLocale();
         }
 
-        // Get current path without locale prefix
-        $path = request()->path();
-        $segments = explode('/', $path);
+        $currentPath = Request::path();
+        $segments = explode('/', ltrim($currentPath, '/'));
 
-        // Remove locale prefix from path if exists
-        if (self::isLocaleSupported($segments[0])) {
+        // Hapus locale lama jika ada
+        if (!empty($segments[0]) && self::isLocaleSupported($segments[0])) {
             array_shift($segments);
         }
 
@@ -111,7 +99,7 @@ class LocalizationService
     }
 
     /**
-     * Get all available locales with their URLs
+     * Get all available locales with their URLs (untuk dropdown switcher)
      */
     public static function getAllLocaleUrls(): array
     {
@@ -125,7 +113,7 @@ class LocalizationService
     }
 
     /**
-     * Get locale name in Indonesian and English
+     * Get locale name
      */
     public static function getLocaleName(string $locale): string
     {
@@ -134,7 +122,7 @@ class LocalizationService
             'en' => 'English',
         ];
 
-        return $names[$locale] ?? $locale;
+        return $names[$locale] ?? ucfirst($locale);
     }
 
     /**

@@ -12,14 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(
-            append: [
-                \App\Http\Middleware\LocalizationMiddleware::class,
-            ]
-        );
+        
         $middleware->alias([
-            'role' => \App\Http\Middleware\AdminMiddleware::class,
+            'setlocale' => \App\Http\Middleware\SetLocale::class,
+            'role'      => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        // TAMBAHKAN INI (paling penting)
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

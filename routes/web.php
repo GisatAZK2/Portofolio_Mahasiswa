@@ -15,21 +15,21 @@ use App\Http\Controllers\v1\LikedPostinganController;
 
 use App\Http\Controllers\v1\KomentarController;
 
-// ========== LOCALIZATION ROUTES GROUP ==========
-// Semua route di bawah akan otomatis support localization prefix (/id/, /en/)
-// Localization middleware akan mendeteksi dan set locale dari URL prefix
+
 
 // ========== LOCALE PREFIX ROUTES ==========
 // Routes dengan locale prefix untuk SEO dan proper multilingual support
-Route::prefix('{locale}')->where(['locale' => 'id|en'])->group(function () {
-    // Guest routes
+Route::prefix('{locale}')
+    ->where(['locale' => 'id|en'])           // hanya id atau en yang boleh
+    ->middleware(['web', 'setlocale'])       // middleware penting!
+    ->group(function () {
+
 
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
 Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
 Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
-Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
 Route::resource('komentar', KomentarController::class)->only([
     'index',
     'create',
@@ -61,10 +61,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::resource('project', ProjekController::class)->only([
         'index',
         'create',
-        'store',
-        'edit',
-        'update',
-        'destroy'
+        'store'
     ]);
     Route::resource('postingan', PostinganController::class)->only([
         'index',
@@ -263,6 +260,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:admin,dosen');
 });
 
+});
+
+// Outside of locale prefix group
+
+
 
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
@@ -271,6 +273,7 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
 Route::get('/project/{id}', [ProjekController::class, 'show'])->name('project.show');
+Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
 Route::get('/Portofolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
 
 
@@ -290,5 +293,13 @@ Route::post('/register', [UserController::class, 'register']);
 
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
+
+Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
+
+    Route::resource('project', ProjekController::class)->only([
+        'edit',
+        'update',
+        'destroy'
+    ]);
 
 });

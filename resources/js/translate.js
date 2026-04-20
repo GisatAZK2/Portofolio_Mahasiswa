@@ -2282,29 +2282,25 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
 });
 
-window.changeLanguage = function () {
-  const select = document.getElementById('languageSelect');
-  if (!select) return;
+window.changeLanguage = function() {
+    const select = document.getElementById('languageSelect');
+    if (!select) return;
 
-  const newLocale = select.value;
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  
-  // Remove old locale prefix if exists
-  if (['id', 'en'].includes(pathSegments[0])) {
-    pathSegments.shift();
-  }
-  
-  // Build new URL with new locale prefix
-  let newPath = '/' + newLocale;
-  if (pathSegments.length > 0) {
-    newPath += '/' + pathSegments.join('/');
-  }
-  
-  // Update currentLang and localStorage before redirect
-  currentLang = newLocale;
-  localStorage.setItem('lang', newLocale);
-  
-  // Add query string if exists
-  const search = window.location.search;
-  window.location.href = newPath + search;
+    const newLocale = select.value;
+    let pathSegments = window.location.pathname.split('/').filter(Boolean);
+
+    if (['id', 'en'].includes(pathSegments[0])) {
+        pathSegments.shift();
+    }
+
+    let newPath = '/' + newLocale;
+    if (pathSegments.length > 0) {
+        newPath += '/' + pathSegments.join('/');
+    }
+
+    currentLang = newLocale;
+    localStorage.setItem('lang', newLocale);
+
+    const search = window.location.search;
+    window.location.href = newPath + search;
 };

@@ -43,7 +43,7 @@
     <nav class="flex-1 px-2 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
         
         <!-- Home - Semua user -->
-        <a href="{{ route('dashboard') }}"
+        <a href="{{ route('dashboard', ['locale' => app()->getLocale()]) }}"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
            {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@
         <!-- My Dashboard - Hanya mahasiswa biasa -->
         @auth
             @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
-                <a href="{{ route('dashboard.me') }}"
+                <a href="{{ route('dashboard.me', ['locale' => app()->getLocale()]) }}"
                     class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
                            {{ request()->routeIs('dashboard.me') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
                     <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
