@@ -964,6 +964,7 @@ export const translations = {
       see_project: 'Lihat Project →'
     },
     sidebar: {
+      search_placeholder: 'Cari...',
       dashboard: 'Beranda',
       dashboard_nonuser: 'Beranda',
       my_dashboard: 'My Dashboard',
@@ -2084,6 +2085,7 @@ export const translations = {
       see_project: 'See Project →'
     },
     sidebar: {
+      search_placeholder: 'Search...',
       dashboard: 'Home',
       dashboard_nonuser: 'Home',
       my_dashboard: 'My Dashboard',
@@ -2279,33 +2281,54 @@ function applyTranslations() {
   });
 
   const select = document.getElementById('languageSelect');
-  if (select) select.value = currentLang;
+  if (select) {
+    // Get locale from URL, not from currentLang variable
+    const urlLocale = getLocaleFromUrl();
+    select.value = urlLocale;
+  }
 }
 
-window.changeLanguage = function () {
-  const select = document.getElementById('languageSelect');
-  if (!select) return;
-
-  const newLang = select.value;
-  if (newLang === currentLang) return;
-
-  currentLang = newLang;
-  localStorage.setItem('lang', newLang);
-  document.documentElement.lang = newLang === 'id' ? 'id-ID' : 'en-US';
-
-  applyTranslations();
-};
+// Helper function to get locale from URL
+function getLocaleFromUrl() {
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  return ['id', 'en'].includes(pathSegments[0]) ? pathSegments[0] : 'id';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Update currentLang from URL, not localStorage
+  const urlLocale = getLocaleFromUrl();
+  currentLang = urlLocale;
+  localStorage.setItem('lang', urlLocale);
+  
   const select = document.getElementById('languageSelect');
   if (select) {
-    select.value = currentLang;
+    select.value = urlLocale;
+    select.addEventListener('change', changeLanguage);
   }
 
   cacheTranslateElements();
   applyTranslations();
 });
-window.refreshTranslations = function () {
-  cacheTranslateElements();
-  applyTranslations();
+
+window.changeLanguage = function() {
+    const select = document.getElementById('languageSelect');
+    if (!select) return;
+
+    const newLocale = select.value;
+    let pathSegments = window.location.pathname.split('/').filter(Boolean);
+
+    if (['id', 'en'].includes(pathSegments[0])) {
+        pathSegments.shift();
+    }
+
+    let newPath = '/' + newLocale;
+    if (pathSegments.length > 0) {
+        newPath += '/' + pathSegments.join('/');
+    }
+
+    currentLang = newLocale;
+    localStorage.setItem('lang', newLocale);
+
+    const search = window.location.search;
+    window.location.href = newPath + search;
 };

@@ -256,7 +256,6 @@
                             </div>
                         @endif
                     </div>
-
                 </div>
 
                 <!-- RIGHT COLUMN: Sidebar -->

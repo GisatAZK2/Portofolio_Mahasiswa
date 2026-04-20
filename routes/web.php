@@ -15,20 +15,29 @@ use App\Http\Controllers\v1\LikedPostinganController;
 
 use App\Http\Controllers\v1\KomentarController;
 
+
+
+// ========== LOCALE PREFIX ROUTES ==========
+// Routes dengan locale prefix untuk SEO dan proper multilingual support
+Route::prefix('{locale}')
+    ->where(['locale' => 'id|en'])           // hanya id atau en yang boleh
+    ->middleware(['web', 'setlocale'])       // middleware penting!
+    ->group(function () {
+
+
 // Halaman guest
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/search', [DashboardController::class, 'search'])->name('search');
 Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
 Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
-Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
 Route::resource('komentar', KomentarController::class)->only([
-            'index',
-            'create',
-            'store',
-            'edit',
-            'update',
-            'destroy'
-    ]);
+    'index',
+    'create',
+    'store',
+    'edit',
+    'update',
+    'destroy'
+]);
 
 Route::post('/postingan/{postingan}/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
 
@@ -47,14 +56,12 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         return view('views_profile_page');
     })->name('profile-page');
 
+    
     // CRUD Project
     Route::resource('project', ProjekController::class)->only([
         'index',
         'create',
-        'store',
-        'edit',
-        'update',
-        'destroy'
+        'store'
     ]);
     Route::resource('postingan', PostinganController::class)->only([
         'index',
@@ -65,9 +72,8 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
         'destroy'
     ]);
 
-    
 
-     
+
     //CRUD Sertifikat
     Route::resource('sertifikat', SertifikatController::class)->only([
         'index',
@@ -178,7 +184,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyAngkatan'])->name('bulk-destroy');
     });
 
-      Route::prefix('manageProdi')->name('prodi.')->group(function () {
+    Route::prefix('manageProdi')->name('prodi.')->group(function () {
         Route::get('/', [AdminController::class, 'ListProdi'])->name('index');
         Route::get('/AddAngkatan', [AdminController::class, 'TambahProdi'])->name('create');
         Route::get('/Details/{jurusan}', [AdminController::class, 'DetailsProdi'])->name('details');
@@ -188,7 +194,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProdi'])->name('bulk-destroy');
     });
 
-      Route::prefix('manageKeahlian')->name('keahlian.')->group(function () {
+    Route::prefix('manageKeahlian')->name('keahlian.')->group(function () {
         Route::get('/', [AdminController::class, 'ListKeahlian'])->name('index');
         Route::get('/AddAngkatan', [AdminController::class, 'TambahKeahlian'])->name('create');
         Route::get('/Details/{keahlian}', [AdminController::class, 'DetailsKeahlian'])->name('details');
@@ -254,6 +260,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:admin,dosen');
 });
 
+});
+
+// Outside of locale prefix group
+
+
 
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
@@ -262,8 +273,8 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
 Route::get('/project/{id}', [ProjekController::class, 'show'])->name('project.show');
+Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
 Route::get('/Portofolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
-
 
 
 Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
@@ -282,3 +293,13 @@ Route::post('/register', [UserController::class, 'register']);
 
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
+
+Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
+
+    Route::resource('project', ProjekController::class)->only([
+        'edit',
+        'update',
+        'destroy'
+    ]);
+
+});

@@ -148,13 +148,6 @@ function initDarkMode() {
 document.addEventListener('DOMContentLoaded', initDarkMode);
 document.addEventListener('turbo:load', initDarkMode);
 
-// Pilihan Bahasa
-window.changeLanguage = function () {
-    const lang = document.getElementById('languageSelect').value;
-    localStorage.setItem('lang', lang);
-    location.reload();
-}
-
 function setActionButtonProcessing(button) {
     if (!button || button.dataset.awaiting === 'true') return;
     button.dataset.awaiting = 'true';
