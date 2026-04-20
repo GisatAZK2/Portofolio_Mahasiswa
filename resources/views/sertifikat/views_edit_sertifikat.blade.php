@@ -35,7 +35,7 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('sertifikat.update', $sertifikat->id) }}" enctype="multipart/form-data"
+            <form method="POST" action="{{ route('sertifikat.update', ['id' => $sertifikat->id]) }}" enctype="multipart/form-data"
                 class="space-y-7">
                 @csrf
                 @method('PUT')

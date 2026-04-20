@@ -77,7 +77,7 @@
                     @endphp
 
                     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-gray-800 cursor-pointer group"
-                        onclick="window.location='{{ route('project.show', $project->id) }}'">
+                        onclick="window.location='{{ route('project.show', ['id' => $project->id]) }}'">
 
                         <div class="p-6">
                             <!-- Badge Role -->
@@ -174,7 +174,7 @@
                             <!-- Tombol Aksi - hanya untuk Pemilik & Leader -->
                             @if ($canEdit)
                                 <div class="flex gap-3 mt-5 border-t dark:border-gray-700 pt-5">
-                                    <a href="{{ route('project.edit', $project->id) }}"
+                                    <a href="{{ route('project.edit', ['locale' => app()->getLocale(), 'id' => $project->id]) }}"
                                         class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 active:bg-blue-200 transition font-medium dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 dark:active:bg-blue-900/70 shadow-sm hover:shadow-md">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>

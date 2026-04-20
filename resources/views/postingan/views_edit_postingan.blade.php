@@ -30,7 +30,7 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('postingan.update', $postingan->id_postingan) }}" enctype="multipart/form-data"
+            <form method="POST" action="{{ route('postingan.update', ['id' => $postingan->id_postingan]) }}" enctype="multipart/form-data"
                 class="space-y-8">
                 @csrf
                 @method('PUT')

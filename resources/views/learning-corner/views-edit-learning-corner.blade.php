@@ -24,7 +24,7 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('learning-corner.update', $learningCorner) }}" class="space-y-8"
+            <form method="POST" action="{{ route('learning-corner.update', ['id' => $learningCorner->id_learning_corner]) }}" class="space-y-8"
                 enctype="multipart/form-data">
 
                 @csrf

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageConversionService;
 
-
 class LearningCornerController extends Controller
 {
     public function index()
@@ -23,8 +22,15 @@ class LearningCornerController extends Controller
         return view('admin.learning-corner', compact('entries'));
     }
 
-    public function create($projectId)
+    // CREATE - ambil project_id dari query parameter
+    public function create(Request $request)
     {
+        $projectId = $request->query('project_id');
+        
+        if (!$projectId) {
+            abort(404, 'Project ID is required');
+        }
+        
         $project = Project::with(['owner', 'leader', 'members'])
             ->findOrFail($projectId);
 
@@ -41,8 +47,17 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-create-learning-corner', compact('project'));
     }
 
-    public function store(Request $request, Project $project)
+    // STORE - ambil project_id dari query parameter
+    public function store(Request $request)
     {
+        $projectId = $request->query('project_id');
+        
+        if (!$projectId) {
+            abort(404, 'Project ID is required');
+        }
+        
+        $project = Project::findOrFail($projectId);
+        
         // Cek apakah user boleh create di project ini
         $userId = Auth::id();
         if (
@@ -88,12 +103,20 @@ class LearningCornerController extends Controller
             'tanggal' => now(),
         ]);
 
-        return redirect()->route('project.show', $project->id)
+        return redirect()->route('project.show', ['id' => $project->id])
             ->with('success', 'Learning Corner berhasil ditambahkan!');
     }
 
-    public function edit(LearningCorner $learningCorner)
+    // EDIT - ambil id dari query parameter
+    public function edit(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Learning Corner ID is required');
+        }
+        
+        $learningCorner = LearningCorner::findOrFail($id);
         $this->authorizeManage($learningCorner);
 
         $judul = $learningCorner->judul;
@@ -105,8 +128,16 @@ class LearningCornerController extends Controller
         return view('learning-corner.views-edit-learning-corner', compact('learningCorner', 'judul', 'items'));
     }
 
-    public function update(Request $request, LearningCorner $learningCorner)
+    // UPDATE - ambil id dari query parameter
+    public function update(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Learning Corner ID is required');
+        }
+        
+        $learningCorner = LearningCorner::findOrFail($id);
         $this->authorizeManage($learningCorner);
 
         $validated = $request->validate([
@@ -167,12 +198,20 @@ class LearningCornerController extends Controller
             'tanggal' => now(),
         ]);
 
-        return redirect()->route('project.show', $learningCorner->project_id)
+        return redirect()->route('project.show', ['id' => $learningCorner->project_id])
             ->with('success', 'Learning Corner berhasil diperbarui!');
     }
 
-    public function destroy(LearningCorner $learningCorner)
+    // DESTROY - ambil id dari query parameter
+    public function destroy(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Learning Corner ID is required');
+        }
+        
+        $learningCorner = LearningCorner::findOrFail($id);
         $this->authorizeManage($learningCorner);
 
         // Hapus semua gambar yang terkait
@@ -194,10 +233,11 @@ class LearningCornerController extends Controller
                 ->with('success', 'Learning Corner berhasil dihapus.');
         }
 
-        return redirect()->route('project.show', $learningCorner->project_id)
+        return redirect()->route('project.show', ['id' => $learningCorner->project_id])
             ->with('success', 'Learning Corner berhasil dihapus.');
     }
 
+    // MASS DESTROY - sudah menggunakan request body, tetap bisa jalan
     public function massDestroy(Request $request)
     {
         $ids = $request->input('ids', []);

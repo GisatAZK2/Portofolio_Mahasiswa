@@ -40,7 +40,7 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('project.update', $project->id) }}" class="space-y-6 md:space-y-7" id="projectForm">
+            <form method="POST" action="{{ route('project.update', ['id' => $project->id]) }}" class="space-y-6 md:space-y-7" id="projectForm">
                 @csrf
                 @method('PUT')
 

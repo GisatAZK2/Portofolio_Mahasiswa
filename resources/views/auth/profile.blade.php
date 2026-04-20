@@ -1069,7 +1069,8 @@
                     this.loading = true;
 
                     try {
-                        const response = await fetch(`/keahlian-tambahan/${id}`, {
+                         const locale = document.querySelector('html').getAttribute('lang') || 'id';
+                        const response = await fetch(`/${locale}/keahlian-tambahan/destroy?id=${id}`,  {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

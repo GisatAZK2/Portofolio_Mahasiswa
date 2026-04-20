@@ -66,7 +66,7 @@
                     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-gray-800 flex flex-col h-full">
 
                         <!-- Content Area -->
-                        <div class="p-6 flex-1 flex flex-col cursor-pointer group" onclick="window.location='{{ route('postingan.show', $post->id_postingan) }}'">
+                        <div class="p-6 flex-1 flex flex-col cursor-pointer group" onclick="window.location='{{ route('postingan.show', ['id' => $post->id_postingan]) }}'">
                             <!-- Author Info -->
                             <div class="flex items-center gap-3 mb-4">
                                 @if($post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile)))
@@ -133,7 +133,7 @@
 
                             <!-- Action Buttons -->
                             <div class="flex gap-3">
-                                <a href="{{ route('postingan.edit', $post->id_postingan) }}" 
+                                <a href="{{ route('postingan.edit', ['id' => $post->id_postingan]) }}" 
                                     class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 active:bg-blue-200 transition font-medium dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 dark:active:bg-blue-900/70 shadow-sm hover:shadow-md"
                                     onclick="event.stopPropagation();">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +141,7 @@
                                     </svg>
                                     <span>Edit</span>
                                 </a>
-                                <form action="{{ route('postingan.destroy', $post->id_postingan) }}" method="POST" class="delete-form flex-1" onclick="event.stopPropagation();">
+                                <form action="{{ route('postingan.destroy', ['id' => $post->id_postingan]) }}" method="POST" class="delete-form flex-1" onclick="event.stopPropagation();">
                                     @csrf @method('DELETE')
                                     <button type="button"
                                         class="delete-btn w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 active:bg-red-200 transition font-medium dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 dark:active:bg-red-900/70 shadow-sm hover:shadow-md">

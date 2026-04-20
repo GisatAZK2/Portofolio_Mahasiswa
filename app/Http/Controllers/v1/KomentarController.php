@@ -88,16 +88,51 @@ class KomentarController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        //
+        $id = $request->query('id');
+        
+        if (!$id) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Komentar ID is required'
+                ], 400);
+            }
+            abort(404, 'Komentar ID is required');
+        }
+        
+        $komentar = Komentar::where('id_komentar', $id)
+            ->where('id_user', Auth::id())
+            ->firstOrFail();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'comment' => $komentar
+            ]);
+        }
+
+        return view('komentar.views_edit_komentar', compact('komentar'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Komentar ID is required'
+                ], 400);
+            }
+            abort(404, 'Komentar ID is required');
+        }
+        
         $komentar = Komentar::where('id_komentar', $id)
             ->where('id_user', Auth::id())
             ->firstOrFail();
@@ -110,19 +145,46 @@ class KomentarController extends Controller
             'komentar' => $request->komentar,
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Komentar berhasil diperbarui!',
+                'comment' => $komentar
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Komentar berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Komentar ID is required'
+                ], 400);
+            }
+            abort(404, 'Komentar ID is required');
+        }
+        
         $komentar = Komentar::where('id_komentar', $id)
             ->where('id_user', Auth::id())
             ->firstOrFail();
 
         $komentar->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Komentar berhasil dihapus!'
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Komentar berhasil dihapus!');
     }

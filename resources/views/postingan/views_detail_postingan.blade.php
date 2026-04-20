@@ -203,7 +203,7 @@
                                             </div>
 
                                             <!-- Edit Form (hidden by default) -->
-                                            <form id="edit-form-{{ $komentar->id_komentar }}" action="{{ route('komentar.update', $komentar->id_komentar) }}" method="POST" class="hidden mt-2">
+                                            <form id="edit-form-{{ $komentar->id_komentar }}" action="{{ route('komentar.update', ['id' => $komentar->id_komentar]) }}" method="POST" class="hidden mt-2">
                                                 @csrf @method('PUT')
                                                 <textarea name="komentar" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg text-sm outline-none focus:border-indigo-500">{{ $komentar->komentar }}</textarea>
                                                 <div class="flex justify-end gap-2 mt-2">
@@ -227,7 +227,7 @@
                                                         Edit
                                                     </button>
                                                     <span class="text-gray-300 dark:text-gray-600">•</span>
-                                                    <form action="{{ route('komentar.destroy', $komentar->id_komentar) }}" method="POST" class="inline">
+                                                    <form action="{{ route('komentar.destroy', ['id' => $komentar->id_komentar]) }}" method="POST" class="inline">
                                                         @csrf @method('DELETE')
                                                         <button type="button" onclick="if(confirm('Hapus komentar ini?')) this.form.submit();" data-translate="del" data-translate-page="post"
                                                             class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium">

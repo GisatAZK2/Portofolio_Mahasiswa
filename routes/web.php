@@ -36,12 +36,7 @@ Route::resource('komentar', KomentarController::class)->only([
     'index',
     'create',
     'store',
-    'edit',
-    'update',
-    'destroy'
 ]);
-
-Route::post('/postingan/{postingan}/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
 
 // Semua route yang butuh login
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
@@ -152,9 +147,54 @@ Route::get('/portofolio', [DashboardController::class, 'show'])->name('portfolio
 // Project routes - handles /id/project?project=id or /en/project?project=id
 Route::get('/projectUser', [ProjekController::class, 'show'])->name('project.show');
 
+route::get('/ProjectMahasiswa', [ProjekController::class, 'project_user'])->name('project.project_user');
+
+Route::get('/projectUser/edit', [ProjekController::class, 'edit'])->name('project.edit');
+Route::put('/projectUser/update', [ProjekController::class, 'update'])->name('project.update');
+Route::delete('/projectUser/delete', [ProjekController::class, 'destroy'])->name('project.destroy');
+
+
+// Learning Corner routes - handles /id/learning-corner?learning_corner=id or /en/learning-corner?learning_corner=id
+// CRUD Learning Corner - Ubah ke query parameter untuk support locale
+Route::get('/learning-corner/create', [LearningCornerController::class, 'create'])
+    ->name('learning-corner.create');
+Route::post('/learning-corner/store', [LearningCornerController::class, 'store'])
+    ->name('learning-corner.store');
+
+Route::get('/learning-corner/edit', [LearningCornerController::class, 'edit'])
+    ->name('learning-corner.edit');
+Route::put('/learning-corner/update', [LearningCornerController::class, 'update'])
+    ->name('learning-corner.update');
+Route::delete('/learning-corner/delete', [LearningCornerController::class, 'destroy'])
+    ->name('learning-corner.destroy');
+
+
+// CRUD Sertifikat - Ganti dengan route manual yang support query parameter
+Route::get('/sertifikatUser/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
+Route::put('/sertifikatUser/update', [SertifikatController::class, 'update'])->name('sertifikat.update');
+Route::delete('/sertifikat/delete', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
+
+// Mass destroy tetap menggunakan POST dengan query parameter
+Route::post('/learning-corner/mass-destroy', [LearningCornerController::class, 'massDestroy'])
+    ->name('learning-corner.mass-destroy');
+
 // Postingan routes - handles /id/postingan?postingan=id or /en/postingan?postingan=id
 Route::get('/postinganUser', [PostinganController::class, 'show'])->name('postingan.show');
+Route::get('/postinganUser/edit', [PostinganController::class, 'edit'])->name('postingan.edit');
+Route::put('/postinganUser/update', [PostinganController::class, 'update'])->name('postingan.update');
+Route::delete('/postinganUser/delete', [PostinganController::class, 'destroy'])->name('postingan.destroy');
 
+
+// Komentar routes - handles /id/komentar?komentar=id or /en/komentar?komentar=id
+Route::get('/komentar/edit', [KomentarController::class, 'edit'])->name('komentar.edit');
+Route::put('/komentar/update', [KomentarController::class, 'update'])->name('komentar.update');
+Route::delete('/komentar/delete', [KomentarController::class, 'destroy'])->name('komentar.destroy');
+
+// Like/unlike postingan - handles /id/postingan/{postingan}/toggle-like or /en/postingan/{postingan
+Route::post('/postingan/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
+
+// Keahlian Tambahan routes - handles /id/keahlian-tambahan?keahlian_tambahan=id or /en/keahlian-tambahan?keahlian_tambahan=id
+Route::delete('/keahlian-tambahan/destroy', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
 });
 
 // Outside of locale prefix group
@@ -162,10 +202,6 @@ Route::get('/postinganUser', [PostinganController::class, 'show'])->name('postin
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-
-
-route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
-
 
 Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
 Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('register');
@@ -189,48 +225,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::prefix('keahlian-tambahan')->name('keahlian-tambahan.')->group(function () {
         Route::get('/', [UserController::class, 'keahliantambahanlist'])->name('index');
         Route::post('/', [UserController::class, 'storeKeahlianTambahan'])->name('store');
-        Route::delete('/{id}', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
     });
-
-    Route::resource('project', ProjekController::class)->only([
-        'edit',
-        'update',
-        'destroy'
-    ]);
-
-     Route::resource('sertifikat', SertifikatController::class)->only([
-        'edit',
-        'update',
-        'destroy'
-    ]);
-
-    Route::resource('postingan', PostinganController::class)->only([
-        'edit',
-        'update',
-        'destroy'
-    ]);
-
-     // CRUD Learning Corner
-    Route::get(
-        '/project/{project}/learning-corner/create',
-        [LearningCornerController::class, 'create']
-    )->name('learning-corner.create');
-    Route::post(
-        '/project/{project}/learning-corner',
-        [LearningCornerController::class, 'store']
-    )->name('learning-corner.store');
-
-
-    Route::get(
-        '/learning-corner/{learningCorner}/edit',
-        [LearningCornerController::class, 'edit']
-    )->name('learning-corner.edit');
-
-    Route::put(
-        '/learning-corner/{learningCorner}',
-        [LearningCornerController::class, 'update']
-    )->name('learning-corner.update');
-
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -55,20 +55,38 @@ class SertifikatController extends Controller
         return redirect()->route('sertifikat.index')
             ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
-    public function edit(Sertifikat $sertifikat)
-    {
-        $this->authorizeEntry($sertifikat);
 
-        $sertifikat = Sertifikat::where('id', $sertifikat->id)
+    // EDIT - ambil id dari query parameter
+    public function edit(Request $request)
+    {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Sertifikat ID is required');
+        }
+        
+        $sertifikat = Sertifikat::where('id', $id)
             ->where('id_mahasiswa', Auth::id())
             ->firstOrFail();
 
+        $this->authorizeEntry($sertifikat);
 
         return view('sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
 
-    public function update(Request $request, Sertifikat $sertifikat)
+    // UPDATE - ambil id dari query parameter
+    public function update(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Sertifikat ID is required');
+        }
+        
+        $sertifikat = Sertifikat::where('id', $id)
+            ->where('id_mahasiswa', Auth::id())
+            ->firstOrFail();
+            
         $this->authorizeEntry($sertifikat);
 
         $validated = $request->validate([
@@ -79,19 +97,15 @@ class SertifikatController extends Controller
         ]);
 
         if ($request->hasFile('link_sertifikat')) {
-
-
             if (
                 $sertifikat->link_sertifikat &&
                 Storage::disk('public')->exists($sertifikat->link_sertifikat)
             ) {
-
                 Storage::disk('public')->delete($sertifikat->link_sertifikat);
             }
 
             $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         } else {
-
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
         }
 
@@ -101,8 +115,19 @@ class SertifikatController extends Controller
             ->with('success', 'Sertifikat berhasil diperbarui!');
     }
 
-    public function destroy(Sertifikat $sertifikat)
+    // DESTROY - ambil id dari query parameter
+    public function destroy(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Sertifikat ID is required');
+        }
+        
+        $sertifikat = Sertifikat::where('id', $id)
+            ->where('id_mahasiswa', Auth::id())
+            ->firstOrFail();
+            
         $this->authorizeEntry($sertifikat);
 
         // Hapus gambar sertifikat dari storage jika ada

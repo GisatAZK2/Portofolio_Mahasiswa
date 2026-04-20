@@ -373,29 +373,45 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
     }
-    public function destroyKeahlianTambahan($id)
-    {
-        $user = Auth::user();
-
-        try {
-            $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
-                ->findOrFail($id);
-
-            $keahlianTambahan->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Keahlian tambahan berhasil dihapus'
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+    /**
+ * Remove the specified keahlian tambahan from storage.
+ */
+public function destroyKeahlianTambahan(Request $request)
+{
+    $id = $request->query('id');
+    
+    if (!$id) {
+        return response()->json([
+            'success' => false,
+            'message' => 'ID keahlian tambahan diperlukan'
+        ], 400);
     }
+    
+    $user = Auth::user();
 
+    try {
+        $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
+            ->findOrFail($id);
+
+        $keahlianTambahan->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Keahlian tambahan berhasil dihapus'
+        ]);
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data keahlian tambahan tidak ditemukan'
+        ], 404);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
+    }
+}
     public function keahliantambahanlist()
     {
         try {

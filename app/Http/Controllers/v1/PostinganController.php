@@ -9,25 +9,26 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\ImageConversionService;
 use Illuminate\Support\Facades\Auth;
 
-
 class PostinganController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-    $postingan = Postingan::with('user', 'komentar.user', 'likes')
-        ->where('id_user', auth()->id())
-        ->latest()
-        ->paginate(10);
+    public function index() 
+    {
+        $postingan = Postingan::with('user', 'komentar.user', 'likes')
+            ->where('id_user', auth()->id())
+            ->latest()
+            ->paginate(10);
 
-    return view('postingan.postingan_card', compact('postingan'));
-}
+        return view('postingan.postingan_card', compact('postingan'));
+    }
 
-public function create() {
-    return view('postingan.views_create_postingan');
-}
-  
+    public function create() 
+    {
+        return view('postingan.views_create_postingan');
+    }
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -94,8 +95,14 @@ public function create() {
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Postingan ID is required');
+        }
+        
         $postingan = Postingan::where('id_postingan', $id)
             ->where('id_user', auth()->id())
             ->firstOrFail();
@@ -106,8 +113,14 @@ public function create() {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Postingan ID is required');
+        }
+        
         $postingan = Postingan::where('id_postingan', $id)
             ->where('id_user', auth()->id())
             ->firstOrFail();
@@ -121,6 +134,7 @@ public function create() {
             'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
+        // Extract judul from content for validation
         $content = [
             ['type' => 'title', 'content' => $validated['judul']],
             ['type' => 'description', 'content' => $validated['deskripsi']],
@@ -172,8 +186,14 @@ public function create() {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Postingan ID is required');
+        }
+        
         $postingan = Postingan::where('id_postingan', $id)
             ->where('id_user', auth()->id())
             ->firstOrFail();

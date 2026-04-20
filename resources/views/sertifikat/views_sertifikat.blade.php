@@ -187,7 +187,7 @@
 
                             <!-- Action buttons -->
                             <div class="flex gap-3 mt-4">
-                                <a href="{{ route('sertifikat.edit', $entry->id) }}"
+                                <a href="{{ route('sertifikat.edit', ['id' => $entry->id]) }}"
                                     class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition font-medium shadow-sm hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-800">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -196,7 +196,7 @@
                                     <span data-translate="edit_button" data-translate-page="sertifikat"></span>
                                 </a>
 
-                                <form class="delete-form flex-1" action="{{ route('sertifikat.destroy', $entry->id) }}"
+                                <form class="delete-form flex-1" action="{{ route('sertifikat.destroy', ['id' => $entry->id]) }}"
                                     method="POST">
                                     @csrf
                                     @method('DELETE')

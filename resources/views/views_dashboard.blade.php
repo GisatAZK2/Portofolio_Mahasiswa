@@ -82,7 +82,7 @@
                     </div>
 
                     <!-- Content + Gambar -->
-                    <div class="p-4 cursor-pointer" onclick="window.location.href='{{ route('postingan.show', $post->id_postingan) }}'">
+                    <div class="p-4 cursor-pointer" onclick="window.location.href='{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}'">
                         @php
                             $content = $post->content ?? [];
                             $title = '';
@@ -158,7 +158,7 @@
                             </button>
                         </div>
 
-                        <span onclick="window.location.href='{{ route('postingan.show', $post->id_postingan) }}'" 
+                        <span onclick="window.location.href='{{ route('postingan.show', ['id' => $post->id_postingan]) }}'" 
                               class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600 transition">
                             {{ autoTranslate('Lihat detail') }} →
                         </span>
@@ -338,8 +338,9 @@
                     e.preventDefault();
                     e.stopPropagation();
                     const postinganId = likeBtn.getAttribute('data-postingan-id');
+                      const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
-                    fetch(`/postingan/${postinganId}/toggle-like`, {
+                    fetch(`/${locale}/postingan/toggle-like?id=${postinganId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

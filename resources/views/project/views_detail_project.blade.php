@@ -34,7 +34,7 @@
                         </h1>
 
                         @if ($canEdit)
-                            <a href="{{ route('project.edit', $project->id) }}"
+                            <a href="{{ route('project.edit', ['locale' => app()->getLocale(), 'id' => $project->id]) }}"
                                 class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition shadow-md hover:shadow-lg">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>
@@ -463,7 +463,7 @@
                                     </form>
                                 @endif
 
-                                <a href="{{ route('learning-corner.create', $project->id) }}"
+                                <a href="{{ route('learning-corner.create', ['project_id' => $project->id]) }}"
                                     class="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm font-medium flex items-center justify-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -594,7 +594,7 @@
                                             @if ($canManage)
                                                 <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                                                     @unless(in_array(auth()->user()->role, ['admin', 'dosen']))
-                                                        <a href="{{ route('learning-corner.edit', $entry->id_learning_corner) }}"
+                                                        <a href="{{ route('learning-corner.edit', ['id' => $entry->id_learning_corner]) }}"
                                                             class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition text-sm font-medium shadow-sm hover:shadow-md">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>
@@ -603,7 +603,7 @@
                                                         </a>
                                                     @endunless
 
-                                                    <form action="{{ route('learning-corner.destroy', $entry->id_learning_corner) }}"
+                                                    <form action="{{ route('learning-corner.destroy', ['id' => $entry->id_learning_corner]) }}"
                                                         method="POST" class="flex-1 delete-form">
                                                         @csrf
                                                         @method('DELETE')

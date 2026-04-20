@@ -732,8 +732,9 @@
                     e.preventDefault();
                     e.stopPropagation();
                     const postinganId = likeBtn.getAttribute('data-postingan-id');
+                    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
-                    fetch(`/postingan/${postinganId}/toggle-like`, {
+                    fetch(`/${locale}/postingan/toggle-like?id=${postinganId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
