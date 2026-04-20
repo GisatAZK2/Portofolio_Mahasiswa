@@ -271,7 +271,7 @@
                         @else
                             <div id="learning-corner-list" class="space-y-4">
                                 @foreach($learningCorners->take(5) as $learning)
-                                    <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->id_learning_corner]) }}'" 
+                                    <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'" 
                                          class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
                                         <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ $learning->content[0]['content'] ?? 'Learning Content' }}</h4>
                                         <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->format('d M Y') }}</p>

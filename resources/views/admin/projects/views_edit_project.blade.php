@@ -383,6 +383,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 const isLeader = selectedUsers.leader?.id == user.id;
                 const isMember = selectedUsers.members.some(m => m.id == user.id);
                 const memberDisabled = isOwner || isLeader;
+                const selectedRole = isOwner ? 'owner' : isLeader ? 'leader' : isMember ? 'member' : '';
 
                 return `
                     <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -400,10 +401,10 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                         </div>
                         <div class="flex items-center gap-2">
                             <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
-                                <option value="">-- Pilih Role --</option>
-                                <option value="owner" ${isOwner ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''} ${selectedUsers.leader && !isLeader ? 'disabled' : ''}>Leader</option>
-                                <option value="member" ${isMember ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
+                                <option value="" ${selectedRole === '' ? 'selected' : ''}>-- Pilih Role --</option>
+                                <option value="owner" ${selectedRole === 'owner' ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
+                                <option value="leader" ${selectedRole === 'leader' ? 'selected' : ''}>Leader</option>
+                                <option value="member" ${selectedRole === 'member' ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
                             </select>
                         </div>
                     </div>
@@ -485,11 +486,37 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             }
 
             noUsersMsg.classList.add('hidden');
-            container.innerHTML = selected.map(user => {
+
+            // Jika owner dan leader sama, gabungkan menjadi satu
+            const combinedUsers = [];
+            const processedIds = new Set();
+
+            selected.forEach(user => {
+                if (processedIds.has(user.id)) return;
+
+                let combinedRole = user.role;
+                let isCombined = false;
+
+                if (user.role === 'Owner' && selectedUsers.leader && selectedUsers.leader.id === user.id) {
+                    combinedRole = 'Leader dan Owner';
+                    isCombined = true;
+                    processedIds.add(user.id);
+                } else if (user.role === 'Leader' && selectedUsers.owner && selectedUsers.owner.id === user.id) {
+                    // Skip karena sudah digabung di Owner
+                    return;
+                } else {
+                    processedIds.add(user.id);
+                }
+
+                combinedUsers.push({ ...user, role: combinedRole, isCombined });
+            });
+
+            container.innerHTML = combinedUsers.map(user => {
                 const styles = {
-                    Owner: 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    Leader: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    Member: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200',
+                    'Leader dan Owner': 'bg-indigo-50 dark:bg-indigo-950 border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200'
                 }[user.role];
 
                 return `
@@ -672,6 +699,27 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateTaskUserOptions();
         }
 
+        function setupDateValidation() {
+            const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
+            const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
+
+            if (tanggalMulai && tanggalAkhir) {
+                // Set initial min date for tanggal_akhir
+                if (tanggalMulai.value) {
+                    tanggalAkhir.min = tanggalMulai.value;
+                }
+
+                // Update min date when tanggal_mulai changes
+                tanggalMulai.addEventListener('change', function() {
+                    tanggalAkhir.min = this.value;
+                    // Clear tanggal_akhir if it's before the new min date
+                    if (this.value && tanggalAkhir.value && tanggalAkhir.value < this.value) {
+                        tanggalAkhir.value = '';
+                    }
+                });
+            }
+        }
+
         // Initialize modal functions
         document.addEventListener('DOMContentLoaded', function () {
             loadSelectedUsersFromForm();
@@ -681,6 +729,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateSelectedUsersBadge();
             initializeTaskRows(@json($existingTasks));
             document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+            setupDateValidation();
         });
     </script>
     <script>

@@ -56,7 +56,7 @@ class UserController extends Controller
             'nama_mahasiswa' => ['required', 'string', 'max:100'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
             'username' => ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S+$/'],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
             'id_jurusan' => ['required', 'exists:jurusan,id_jurusan'],
             'id_keahlian' => ['required', 'exists:keahlian,id_keahlian'],
             'id_angkatan' => ['required', 'exists:angkatan,id'],
@@ -313,7 +313,7 @@ class UserController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()];
+            $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()->numbers(), 'regex:/^\S*$/'];
         }
 
         $validated = $request->validate($rules);

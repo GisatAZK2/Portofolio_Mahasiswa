@@ -41,4 +41,15 @@ class Postingan extends Model
         return $this->hasMany(LikedPostingan::class, 'id_postingan', 'id_postingan');
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Postingan $postingan) {
+            foreach ($postingan->content ?? [] as $item) {
+                if (($item['type'] ?? '') === 'image' && !empty($item['content'])) {
+                    Storage::disk('public')->delete($item['content']);
+                }
+            }
+        });
+    }
+
 }

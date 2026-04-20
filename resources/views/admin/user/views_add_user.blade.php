@@ -158,9 +158,23 @@
                             <input type="password" name="password"
                                 class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                 required>
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Minimal 8 karakter, harus ada huruf besar dan kecil, tidak boleh spasi.
-                            </p>
+                             <div class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                                <p class="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-1">Syarat Password:</p>
+                                <ul class="text-xs text-blue-800 dark:text-blue-200 space-y-0.5">
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-600 flex items-center justify-center text-xs">✓</span>
+                                        Minimal 8 karakter
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-600 flex items-center justify-center text-xs">✓</span>
+                                        Harus ada huruf besar (A-Z)
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-600 flex items-center justify-center text-xs">✓</span>
+                                        Tidak boleh ada spasi
+                                    </li>
+                                </ul>
+                            </div>
                             @error('password')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror

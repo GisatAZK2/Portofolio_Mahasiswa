@@ -361,7 +361,8 @@ class AdminController extends Controller
                 'nullable',
                 'string',
                 'confirmed',
-                Password::min(8)->mixedCase()
+                Password::min(8)->mixedCase(),
+                'regex:/^\S*$/'
             ],
 
             'photo_profile' => [
