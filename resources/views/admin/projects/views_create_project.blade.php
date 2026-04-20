@@ -51,7 +51,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
-                                Tambah User
+                                <span data-translate="add_user" data-translate-page="dosen_add_pjt">Tambah User</span>
                             </span>
                         </button>
                     </div>
@@ -61,7 +61,7 @@
                         <!-- Users will be displayed here -->
                     </div>
 
-                    <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <div id="no-users-message" data-translate="no_users_selected" data-translate-page="dosen_add_pjt" class="text-center py-8 text-gray-500 dark:text-gray-400">
                         Belum ada user yang dipilih. Klik "Tambah User" untuk memulai.
                     </div>
                 </div>
@@ -198,7 +198,7 @@
             <div class="mt-3">
                 <!-- Modal Header -->
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih User untuk Project</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100" data-translate="select_user_title" data-translate-page="dosen_add_pjt">Pilih User untuk Project</h3>
                     <button onclick="closeUserModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -212,14 +212,13 @@
                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="relative">
-                                <input type="text" id="modal-search" placeholder="Cari nama..."
+                                <input type="text" id="modal-search" value="{{ $search ?? '' }}" data-translate-placeholder="search_name_placeholder" data-translate-page="dosen_add_pjt" placeholder=""
                                     class="w-full pl-10 pr-4 py-2 border border-gray-300 
                                     dark:bg-gray-600 dark:text-white dark:border-gray-500 
                                     rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
 
                                 <!-- SVG icon -->
                                 <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                    <!-- contoh icon search -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" 
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -228,40 +227,45 @@
                                 </div>
                             </div>
                             <select id="modal-angkatan" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
-                                <option value="">Semua Angkatan</option>
+                                <option value="" data-translate="all_angkatan" data-translate-page="dosen_add_pjt">Semua Angkatan</option>
                                 @foreach($angkatans as $angk)
-                                    <option value="{{ $angk->id }}">{{ $angk->nama_angkatan }}</option>
+                                    <option value="{{ $angk->id }}" {{ $angkatan == $angk->id ? 'selected' : '' }}>{{ $angk->nama_angkatan }}</option>
                                 @endforeach
                             </select>
                             <select id="modal-jurusan" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
-                                <option value="">Semua Jurusan</option>
+                                <option value="" data-translate="all_jurusan" data-translate-page="dosen_add_pjt">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
-                                    <option value="{{ $jrs->id_jurusan }}">{{ $jrs->nama_jurusan }}</option>
+                                    <option value="{{ $jrs->id_jurusan }}" {{ $jurusan == $jrs->id_jurusan ? 'selected' : '' }}>{{ $jrs->nama_jurusan }}</option>
                                 @endforeach
                             </select>
                             <select id="modal-keahlian" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
-                                <option value="">Semua Keahlian</option>
+                                <option value="" data-translate="all_keahlian" data-translate-page="dosen_add_pjt">Semua Keahlian</option>
                                 @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
+                                    <option value="{{ $keahlianItem->id_keahlian }}" {{ $keahlian == $keahlianItem->id_keahlian ? 'selected' : '' }}>{{ $keahlianItem->nama_keahlian }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
 
                     <!-- User List -->
-                    <div class="max-h-96 overflow-y-auto">
-                        <div id="modal-user-list" class="space-y-2">
-                            <!-- Users will be loaded here -->
+                    <div class="mt-4" data-pagination-group="admin_project_user_selection">
+                        <div class="max-h-96 overflow-y-auto">
+                            <div id="modal-user-list" class="space-y-2">
+                                <!-- Users will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection']) }}
                         </div>
                     </div>
                 </div>
 
                 <!-- Modal Footer -->
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button onclick="closeUserModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    <button onclick="closeUserModal()" data-translate="cancel" data-translate-page="dosen_add_pjt" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
                         Batal
                     </button>
-                    <button onclick="confirmUserSelection()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                    <button onclick="confirmUserSelection()" data-translate="confirm" data-translate-page="dosen_add_pjt" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
                         Konfirmasi
                     </button>
                 </div>
@@ -270,10 +274,36 @@
     </div>
 
     <script>
-        const allUsers = @json($users->items());
-        let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+        const allUsers = @json($allUsers);
+        const userSelectionStorageKey = 'admin_project_selected_users';
         let selectedUsers = { owner: null, leader: null, members: [] };
         let taskIndex = 0;
+        let filterTimer = null;
+
+        function saveSelectedUsersToStorage() {
+            const payload = {
+                owner: selectedUsers.owner,
+                leader: selectedUsers.leader,
+                members: selectedUsers.members
+            };
+            localStorage.setItem(userSelectionStorageKey, JSON.stringify(payload));
+        }
+
+        function restoreSelectedUsersFromStorage() {
+            const stored = localStorage.getItem(userSelectionStorageKey);
+            if (!stored) return false;
+
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.owner) selectedUsers.owner = parsed.owner;
+                if (parsed.leader) selectedUsers.leader = parsed.leader;
+                if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
+                return true;
+            } catch (error) {
+                console.warn('Unable to restore selected users from storage:', error);
+                return false;
+            }
+        }
 
         function updateSelectedUsersBadge() {
             const badge = document.getElementById('selected-users-badge');
@@ -312,42 +342,105 @@
 
         function openUserModal() {
             document.getElementById('userModal').classList.remove('hidden');
+            sessionStorage.setItem('admin_project_modal_open', '1');
             loadUsersToModal();
+            attachPaginationListeners();
         }
 
         function closeUserModal() {
             document.getElementById('userModal').classList.add('hidden');
+            sessionStorage.removeItem('admin_project_modal_open');
         }
         
+        function applyUserFilters() {
+            const search = document.getElementById('modal-search')?.value.trim();
+            const angkatan = document.getElementById('modal-angkatan')?.value;
+            const jurusan = document.getElementById('modal-jurusan')?.value;
+            const keahlian = document.getElementById('modal-keahlian')?.value;
+
+            const params = new URLSearchParams();
+            if (search) params.set('search', search);
+            if (angkatan) params.set('angkatan', angkatan);
+            if (jurusan) params.set('jurusan', jurusan);
+            if (keahlian) params.set('keahlian', keahlian);
+
+            const url = '{{ route("admin.projects.create") }}?' + params.toString();
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+                document.querySelector('[data-pagination-group="admin_project_user_selection"] .mt-4').innerHTML = data.paginationHtml;
+                // Re-set selected roles after updating HTML
+                setSelectedRolesInModal();
+                // Refresh translations for newly rendered elements
+                window.refreshTranslations();
+            })
+            .catch(error => {
+                console.error('Error loading users:', error);
+            });
+        }
+
+        function attachPaginationListeners() {
+            document.querySelectorAll('[data-pagination-group="admin_project_user_selection"] .pagination-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.href;
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+                        document.querySelector('[data-pagination-group="admin_project_user_selection"] .mt-4').innerHTML = data.paginationHtml;
+                        setSelectedRolesInModal();
+                        // Refresh translations for newly rendered elements
+                        window.refreshTranslations();
+                        attachPaginationListeners();
+                    })
+                    .catch(error => {
+                        console.error('Error loading page:', error);
+                    });
+                });
+            });
+        }
+
 
         function filterUsersForModal() {
-            console.log('Filtering with:', currentModalFilters);
-console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUsers[0]?.id_jurusan);
-    return allUsers.filter(user => {
-        const keyword = currentModalFilters.search.toLowerCase().trim();
+            return allUsers;
+        }
 
-        // Search (nama atau email)
-        const matchesSearch = !keyword || 
-            user.nama_mahasiswa.toLowerCase().includes(keyword) || 
-            (user.email && user.email.toLowerCase().includes(keyword));
+        function setSelectedRolesInModal() {
+            document.querySelectorAll('#modal-user-list .user-role-select').forEach(select => {
+                const userId = parseInt(select.getAttribute('onchange').match(/updateUserRole\(this, (\d+), this\.value\)/)[1]);
+                const user = allUsers.find(u => u.id == userId);
+                if (!user) return;
 
-        // Angkatan
-        const matchesAngkatan = !currentModalFilters.angkatan || 
-            String(user.id_angkatan) === String(currentModalFilters.angkatan);
+                const isOwner = selectedUsers.owner?.id == userId;
+                const isLeader = selectedUsers.leader?.id == userId;
+                const isMember = selectedUsers.members.some(m => m.id == userId);
+                const memberDisabled = isOwner || isLeader;
 
-        // Jurusan - lebih aman (bisa dari relation atau field langsung)
-        const userJurusanId = user.jurusan?.id_jurusan ?? user.id_jurusan;
-        const matchesJurusan = !currentModalFilters.jurusan || 
-            String(userJurusanId) === String(currentModalFilters.jurusan);
+                select.querySelector('option[value="owner"]').disabled = selectedUsers.owner && !isOwner;
+                select.querySelector('option[value="leader"]').disabled = selectedUsers.leader && !isLeader;
+                select.querySelector('option[value="member"]').disabled = memberDisabled;
 
-        // Keahlian - lebih aman
-        const userKeahlianId = user.keahlian?.id_keahlian ?? user.id_keahlian;
-        const matchesKeahlian = !currentModalFilters.keahlian || 
-            String(userKeahlianId) === String(currentModalFilters.keahlian);
-
-        return matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
-    });
-}
+                if (isOwner) select.value = 'owner';
+                else if (isLeader) select.value = 'leader';
+                else if (isMember) select.value = 'member';
+                else select.value = '';
+            });
+        }
 
         function loadUsersToModal() {
             const userList = document.getElementById('modal-user-list');
@@ -364,11 +457,6 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             }
 
             userList.innerHTML = filteredUsers.map(user => {
-                const isOwner = selectedUsers.owner?.id == user.id;
-                const isLeader = selectedUsers.leader?.id == user.id;
-                const isMember = selectedUsers.members.some(m => m.id == user.id);
-                const memberDisabled = isOwner || isLeader;
-
                 return `
                     <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <div class="flex items-center gap-3">
@@ -380,20 +468,24 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                             }
                             <div>
                                 <div class="font-medium text-gray-900 dark:text-gray-100">${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="${user.email}">${user.email}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
-                                <option value="">-- Pilih Role --</option>
-                                <option value="owner" ${isOwner ? 'selected' : ''} ${selectedUsers.owner && !isOwner ? 'disabled' : ''}>Owner</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''} ${selectedUsers.leader && !isLeader ? 'disabled' : ''}>Leader</option>
-                                <option value="member" ${isMember ? 'selected' : ''} ${memberDisabled ? 'disabled' : ''}>Member</option>
+                                <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
+                                <option value="owner" data-translate="owner_role" data-translate-page="dosen_add_pjt">Owner</option>
+                                <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
+                                <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
                             </select>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            setSelectedRolesInModal();
+            // Refresh translations for newly rendered elements
+            window.refreshTranslations();
         }
 
         function updateUserRole(selectElement, userId, role) {
@@ -435,6 +527,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
     updateTaskSectionVisibility();
     updateTaskUserOptions();
     updateSelectedUsersBadge();
+    saveSelectedUsersToStorage();
 }
         function confirmUserSelection() {
             updateFormInputs();
@@ -443,6 +536,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateTaskSectionVisibility();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
+            sessionStorage.removeItem('admin_project_modal_open');
             closeUserModal();
         }
 
@@ -499,7 +594,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                                 </div>`
                             }
                             <div>
-                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
+                                <div class="font-medium" data-translate="${user.role.toLowerCase().replace(' & ', '_').replace(' ', '_')}_role" data-translate-page="dosen_add_pjt">${user.role}: ${user.nama_mahasiswa}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
                             </div>
                         </div>
@@ -511,6 +606,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                     </div>
                 `;
             }).join('');
+            // Refresh translations for newly rendered role labels
+            window.refreshTranslations();
         }
 
         function removeUser(userId) {
@@ -523,9 +620,15 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateTaskSectionVisibility();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
         }
 
         function loadSelectedUsersFromForm() {
+            if (restoreSelectedUsersFromStorage()) {
+                updateFormInputs();
+                return;
+            }
+
             const ownerId = document.getElementById('selected-owner-id')?.value;
             const leaderId = document.getElementById('selected-leader-id')?.value;
             const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
@@ -556,7 +659,7 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         function renderTaskUserOptions(selectedId = '') {
             const users = getAllowedTaskUsers();
-            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            let html = '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>';
             users.forEach(user => {
                 html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
             });
@@ -578,22 +681,24 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 ${hiddenId}
                 <div class="grid gap-4 md:grid-cols-3 items-end">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
                         <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="" data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
                     </div>
-                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl" data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
                 </div>
             `;
 
             container.appendChild(taskItem);
             const select = taskItem.querySelector('.task-user-select');
             if (select) select.addEventListener('change', updateTaskUserOptions);
+            // Refresh translations for newly added task elements
+            window.refreshTranslations();
         }
 
         function removeTaskRow(button) {
@@ -620,6 +725,8 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
                 if (currentValue) select.value = currentValue;
             });
             cleanupInvalidTaskRows();
+            // Refresh translations for updated task user options
+            window.refreshTranslations();
         }
 
         function initializeTaskRows(existingTasks = []) {
@@ -640,21 +747,12 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
 
         function setupModalFilters() {
             document.getElementById('modal-search')?.addEventListener('input', function() {
-                currentModalFilters.search = this.value;
-                loadUsersToModal();
+                clearTimeout(filterTimer);
+                filterTimer = setTimeout(applyUserFilters, 500);
             });
-            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
-                currentModalFilters.angkatan = this.value;
-                loadUsersToModal();
-            });
-            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
-                currentModalFilters.jurusan = this.value;
-                loadUsersToModal();
-            });
-            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
-                currentModalFilters.keahlian = this.value;
-                loadUsersToModal();
-            });
+            document.getElementById('modal-angkatan')?.addEventListener('change', applyUserFilters);
+            document.getElementById('modal-jurusan')?.addEventListener('change', applyUserFilters);
+            document.getElementById('modal-keahlian')?.addEventListener('change', applyUserFilters);
         }
 
         function onSubmitProjectForm(event) {
@@ -669,6 +767,11 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            const hasOldData = '{{ old('members') || old('owner') || old('leader') ? 'true' : 'false' }}' === 'true';
+            if (!hasOldData) {
+                localStorage.removeItem(userSelectionStorageKey);
+            }
+            
             loadSelectedUsersFromForm();
             renderSelectedUsers();
             setupModalFilters();
@@ -676,6 +779,10 @@ console.log('Sample user jurusan:', allUsers[0]?.jurusan, 'id_jurusan:', allUser
             updateSelectedUsersBadge();
             initializeTaskRows(@json(old('tasks', [])));
             document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+
+            if (sessionStorage.getItem('admin_project_modal_open') === '1') {
+                openUserModal();
+            }
             
             // Setup date validation
             const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');

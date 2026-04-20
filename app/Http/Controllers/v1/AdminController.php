@@ -1119,9 +1119,13 @@ class AdminController extends Controller
             ->where('role', 'mahasiswa')
             ->where('status_pengajuan', 'Di Terima');
 
-        // Filter pencarian berdasarkan nama mahasiswa
+        // Filter pencarian berdasarkan nama mahasiswa, username, atau email
         if ($search) {
-            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
         }
 
         // Filter berdasarkan angkatan
@@ -1142,13 +1146,61 @@ class AdminController extends Controller
         // Ambil data dengan pagination
         $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
+        // Ambil semua user untuk JavaScript (untuk mendukung multiple members dari semua halaman)
+        $allUsers = $query->orderBy('created_at', 'desc')->get();
+
         // Ambil data untuk dropdown filter
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
 
+        if ($request->ajax()) {
+            // Return JSON for AJAX requests
+            $userListHtml = '';
+            if ($users->count() > 0) {
+                foreach ($users as $user) {
+                    $userListHtml .= '
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                ' . ($user->photo_profile ?
+                                    '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">' :
+                                    '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                        <span class="text-indigo-600 dark:text-indigo-400 font-semibold">' . strtoupper(substr($user->nama_mahasiswa, 0, 1)) . '</span>
+                                    </div>'
+                                ) . '
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-gray-100">' . $user->nama_mahasiswa . '</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                                    <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
+                                    <option value="owner" data-translate="owner_role" data-translate-page="dosen_add_pjt">Owner</option>
+                                    <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
+                                    <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
+                                </select>
+                            </div>
+                        </div>
+                    ';
+                }
+            } else {
+                $userListHtml = '<div class="text-center py-10 text-gray-500 dark:text-gray-400" data-translate="no_students_found" data-translate-page="dosen_add_pjt">Tidak ada mahasiswa yang sesuai filter.</div>';
+            }
+
+            $paginationHtml = $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection'])->toHtml();
+
+            return response()->json([
+                'userListHtml' => $userListHtml,
+                'paginationHtml' => $paginationHtml,
+                'currentPage' => $users->currentPage(),
+                'lastPage' => $users->lastPage(),
+            ]);
+        }
+
         return view('admin.projects.views_create_project', compact(
             'users',
+            'allUsers',
             'angkatans',
             'jurusans',
             'keahlians',
@@ -1158,6 +1210,8 @@ class AdminController extends Controller
             'keahlian'
         ));
     }
+
+    
 
     public function EditProjects($id)
     {
@@ -1208,13 +1262,7 @@ class AdminController extends Controller
 
         // Ambil data dengan pagination
         $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-        // Ambil data dengan pagination
-        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-        // Ambil data untuk dropdown filter
-        $angkatans = Angkatan::all();
-        $jurusans = Jurusan::all();
-        $keahlians = Keahlian::all();
+       
         // Ambil data untuk dropdown filter
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
@@ -1244,7 +1292,7 @@ class AdminController extends Controller
 
         // Merge dan filter members
         $request->merge([
-            'members' => collect($request->members)
+            'members' => collect(explode(',', $request->members ?? ''))
                 ->filter(fn($id) => !empty($id))
                 ->values()
                 ->all(),

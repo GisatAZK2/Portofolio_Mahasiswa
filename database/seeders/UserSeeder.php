@@ -33,9 +33,9 @@ class UserSeeder extends Seeder
         $this->command->info('Membuat 100 user dummy...');
 
         $users = [];
-        $batchSize = 1000; 
+        $batchSize = 100; 
 
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $nama = $faker->name;
             $username = 'user_' . ($i + 1) . '_' . strtolower(str_replace(' ', '_', $nama));
             $email = $username . '@example.com';
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
 
             $role = $faker->randomElement(['mahasiswa', 'dosen']);
 
-            $status_pengajuan = $faker->randomElement(['Di Terima', 'Sedang Di Ajukan', 'Di Tolak']);
+            $status_pengajuan = $faker->randomElement(['Di Terima', 'Sedang Di Ajukan']);
 
             $users[] = [
                 'nama_mahasiswa' => $nama,
