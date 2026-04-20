@@ -5,6 +5,15 @@ function getTranslation(lang, key) {
     return key.split('.').reduce((obj, i) => obj?.[i], translations[lang]);
 }
 
+function getCurrentLang() {
+    return localStorage.getItem('lang') || 'id';
+}
+
+function translate(key) {
+    const lang = getCurrentLang();
+    return getTranslation(lang, key) || key;
+}
+
 export function showSuccessAlert(message) {
     Swal.fire({
         icon: 'success',
@@ -65,14 +74,14 @@ export function closeLoading() {
 
 export async function showConfirm() {
     const result = await Swal.fire({
-        title: 'Ingin menghapus ini?',
-        text: showPageInfo('Aksi ini tidak bisa dikembalikan!', 'warning', 3000),
+        title: translate('confirm_delete_title'),
+        text: translate('confirm_delete_text'),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal',
+        confirmButtonText: translate('confirm_delete_yes'),
+        cancelButtonText: translate('cancel'),
         reverseButtons: true
     });
 
