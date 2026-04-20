@@ -1,18 +1,48 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+
 if (!function_exists('lroute')) {
-    /**
-     * Localized Route Helper
-     * Menggantikan route() dengan otomatis menambahkan locale
-     */
     function lroute($name, $parameters = [], $absolute = true)
     {
-        // Gabungkan locale saat ini dengan parameter lain
         $parameters = array_merge(
-            ['locale' => app()->getLocale()], 
+            ['locale' => app()->getLocale()],
             (array) $parameters
         );
 
         return route($name, $parameters, $absolute);
     }
+}
+
+function autoTranslate($text)
+{
+    if (!$text || trim($text) === '') {
+        return $text;
+    }
+
+    $locale = app()->getLocale();
+
+    if (in_array($locale, ['id', 'id_ID'])) {
+        return $text;
+    }
+
+    $cacheKey = 'translate_' . md5($text . '_' . $locale);
+
+    return Cache::remember($cacheKey, now()->addHours(12), function () use ($text, $locale) {
+        try {
+            $tr = new GoogleTranslate($locale);
+            $result = $tr->translate($text);
+
+            Log::info("Google Translate success", ['locale' => $locale]);
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error("Google Translate failed: " . $e->getMessage());
+            return $text;
+        }
+    });
 }

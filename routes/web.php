@@ -17,6 +17,8 @@ use App\Http\Controllers\v1\KomentarController;
 
 
 
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
 // ========== LOCALE PREFIX ROUTES ==========
 // Routes dengan locale prefix untuk SEO dan proper multilingual support
 Route::prefix('{locale}')
@@ -345,7 +347,21 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:admin,dosen');
 });
 
-
+Route::get('/test-translate', function () {
+    $text = "Halo Saya Cuman Ingin test Translate berbasis teks get.";
+    
+    app()->setLocale('en');        
+    $en = autoTranslate($text);
+    
+    app()->setLocale('es');        
+    $es = autoTranslate($text);
+    
+    dd([
+        'original' => $text,
+        'english'  => $en,
+        'spanish'  => $es,
+    ]);
+});
 
 
 

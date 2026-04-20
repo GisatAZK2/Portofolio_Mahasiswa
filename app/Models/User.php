@@ -57,6 +57,11 @@ public function jurusan()
     return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
 }
 
+public function postingans()
+{
+    return $this->hasMany(Postingan::class, 'id_user', 'id');
+}
+
    public function keahlian()
 {
     return $this->belongsTo(Keahlian::class, 'id_keahlian');

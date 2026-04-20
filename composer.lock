@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1925b085eac4483030c9a1e2bb021217",
+    "content-hash": "3825e0da8917beb7246c75956673d725",
     "packages": [
         {
             "name": "brick/math",
@@ -3575,43 +3575,33 @@
             "time": "2025-12-14T04:43:48+00:00"
         },
         {
-            "name": "realrashid/sweet-alert",
-            "version": "v7.3.0",
+            "name": "stichoza/google-translate-php",
+            "version": "v5.3.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/realrashid/sweet-alert.git",
-                "reference": "d54b1663970da8d416eb09e8719a8561a45fb2d9"
+                "url": "https://github.com/Stichoza/google-translate-php.git",
+                "reference": "4d9a267ac063c16967df67dcba30a71fbfb5f550"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/realrashid/sweet-alert/zipball/d54b1663970da8d416eb09e8719a8561a45fb2d9",
-                "reference": "d54b1663970da8d416eb09e8719a8561a45fb2d9",
+                "url": "https://api.github.com/repos/Stichoza/google-translate-php/zipball/4d9a267ac063c16967df67dcba30a71fbfb5f550",
+                "reference": "4d9a267ac063c16967df67dcba30a71fbfb5f550",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^5.6|^6.0|^7.0|^8.0|^9.0|^9.11|9.14.*|^10.0|^11.0|^12.0",
-                "php": "^7.2|^8.0|^8.1|^8.2|^8.3"
+                "ext-dom": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.0",
+                "php": "^8.0"
             },
             "require-dev": {
-                "symfony/thanks": "^1.0"
+                "phpunit/phpunit": "^9.5.10"
             },
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Alert": "RealRashid\\SweetAlert\\Facades\\Alert"
-                    },
-                    "providers": [
-                        "RealRashid\\SweetAlert\\SweetAlertServiceProvider"
-                    ]
-                }
-            },
             "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
                 "psr-4": {
-                    "RealRashid\\SweetAlert\\": "src/"
+                    "Stichoza\\GoogleTranslate\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3620,49 +3610,50 @@
             ],
             "authors": [
                 {
-                    "name": "Rashid Ali",
-                    "email": "realrashid05@gmail.com",
-                    "homepage": "https://realrashid.com",
-                    "role": "Developer"
+                    "name": "Levan Velijanashvili",
+                    "email": "me@stichoza.com"
                 }
             ],
-            "description": "Laravel Sweet Alert Is A Package For Laravel Provides An Easy Way To Display Alert Messages Using The SweetAlert2 Library.",
-            "homepage": "https://github.com/realrashid/sweet-alert",
+            "description": "Free Google Translate API PHP Package",
+            "homepage": "https://github.com/Stichoza/google-translate-php",
             "keywords": [
-                "alert",
-                "laravel",
-                "laravel-package",
-                "notifier",
-                "noty",
-                "sweet-alert",
-                "sweet-alert2",
-                "toast"
+                "google",
+                "php",
+                "translate",
+                "translating",
+                "translator"
             ],
             "support": {
-                "docs": "https://realrashid.github.io/sweet-alert/",
-                "email": "realrashid05@gmail.com",
-                "issues": "https://github.com/realrashid/sweet-alert/issues",
-                "source": "https://github.com/realrashid/sweet-alert"
+                "issues": "https://github.com/Stichoza/google-translate-php/issues",
+                "source": "https://github.com/Stichoza/google-translate-php/tree/v5.3.1"
             },
             "funding": [
                 {
-                    "url": "https://ko-fi.com/realrashid",
+                    "url": "https://btc.com/bc1qc25j4x7yahghm8nnn6lypnw59nptylsw32nkfl",
                     "type": "custom"
                 },
                 {
-                    "url": "https://www.buymeacoffee.com/realrashid",
+                    "url": "https://www.paypal.me/stichoza",
                     "type": "custom"
                 },
                 {
-                    "url": "https://issuehunt.io/r/realrashid",
-                    "type": "issuehunt"
+                    "url": "https://ko-fi.com/stichoza",
+                    "type": "ko_fi"
                 },
                 {
-                    "url": "https://tidelift.com/funding/github/packagist/realrashid/sweet-alert",
-                    "type": "tidelift"
+                    "url": "https://liberapay.com/stichoza",
+                    "type": "liberapay"
+                },
+                {
+                    "url": "https://opencollective.com/stichoza",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/stichoza",
+                    "type": "patreon"
                 }
             ],
-            "time": "2025-02-25T21:11:49+00:00"
+            "time": "2025-11-01T22:45:28+00:00"
         },
         {
             "name": "symfony/clock",

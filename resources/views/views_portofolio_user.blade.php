@@ -600,6 +600,105 @@
                         @endif
                     </div>
 
+                    <!-- ==================== POSTINGAN SAYA ==================== -->
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
+                                </svg>
+                                Postingannya
+                            </h3>
+                            <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                                {{ $postingans->total() ?? 0 }} postingan
+                            </span>
+                        </div>
+
+                        @if($postingans->isEmpty())
+                            <div class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="mt-3 text-gray-500 dark:text-gray-400">Belum ada postingan yang dibuat.</p>
+                            </div>
+                        @else
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                @foreach($postingans as $post)
+                                    @php
+                                        $content = $post->content ?? [];
+                                        $title = '';
+                                        $deskripsi = '';
+                                        $items = [];
+
+                                        if (is_array($content)) {
+                                            foreach ($content as $item) {
+                                                if (isset($item['type']) && $item['type'] === 'title') {
+                                                    $title = $item['content'] ?? '';
+                                                } elseif (isset($item['type']) && $item['type'] === 'description') {
+                                                    $deskripsi = $item['content'] ?? '';
+                                                } else {
+                                                    $items[] = $item;
+                                                }
+                                            }
+                                        }
+                                    @endphp
+
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-200 group">
+                                        <!-- Preview Image -->
+                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
+                                            @if(!empty($items))
+                                                @foreach($items as $item)
+                                                    @if(isset($item['type']) && $item['type'] === 'image' && !empty($item['content']))
+                                                        <img src="{{ asset('storage/' . $item['content']) }}" 
+                                                             alt="Preview postingan"
+                                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                             onerror="this.src='https://via.placeholder.com/600x400?text=Postingan'">
+                                                        @break
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <div class="w-full h-full flex items-center justify-center">
+                                                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Content -->
+                                        <div class="p-5">
+                                            @if($title)
+                                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2 group-hover:text-purple-600 transition-colors">
+                                                    {{ $title }}
+                                                </h4>
+                                            @endif
+
+                                            @if($deskripsi)
+                                                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+                                                    {{ Str::limit($deskripsi, 130) }}
+                                                </p>
+                                            @endif
+
+                                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                <span>{{ $post->created_at?->format('d M Y') }}</span>
+                                                <a href="{{ route('postingan.show', $post->id_postingan) }}" 
+                                                   class="text-purple-600 hover:text-purple-700 dark:text-purple-400 font-medium flex items-center gap-1">
+                                                    Baca selengkapnya
+                                                    <span class="text-lg leading-none">→</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="mt-8 flex justify-center">
+                                {{ $postingans->appends(request()->query())->links() }}
+                            </div>
+                        @endif
+                    </div>
+
                     <!-- Sertifikat -->
                     <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-5">

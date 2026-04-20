@@ -196,10 +196,10 @@
                                     <span data-translate="desc" data-translate-page="profile">Deskripsi</span>
                                 </p>
                                 <div class="flex items-center justify-between">
-                                    <p id="deskripsi-display"
-                                        class="text-base dark:text-gray-200 text-gray-800 break-words flex-1">
-                                        {{ $user->deskripsi ?? 'Klik untuk menambahkan deskripsi...' }}
-                                    </p>
+                                  <p id="deskripsi-display"
+                                    class="text-base dark:text-gray-200 text-gray-800 break-words flex-1">
+                                    {{ autoTranslate($user->deskripsi ?? 'Klik untuk menambahkan deskripsi...') }}
+                                </p>
                                     <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

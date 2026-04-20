@@ -296,6 +296,9 @@ class DashboardController extends Controller
             'keahlianTambahan' => function ($q) {
                 $q->wherePivot('status_pengajuan', 'Di Terima');
             },
+            'postingans' => function ($q) {
+                $q->latest();
+            },
             'sertifikats' => function ($q) {
                 $q->where('is_active', true)
                     ->where('status_pengajuan', 'Di Terima');
@@ -307,6 +310,10 @@ class DashboardController extends Controller
 
         $projectTab = $request->get('project_tab', 'completed');
         $today = Carbon::today();
+
+        $postingans = $user->postingans()
+                   ->latest()          
+                   ->paginate(6);
 
         $projectsQuery = Project::with(['owner', 'leader', 'members'])
             ->where(function ($query) use ($user) {
@@ -343,6 +350,7 @@ class DashboardController extends Controller
 
         return view('views_portofolio_user', compact(
             'user',
+            'postingans',
             'projects',
             'projectTab',
             'isOwner'
