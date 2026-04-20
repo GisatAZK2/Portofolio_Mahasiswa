@@ -254,13 +254,19 @@ class DashboardController extends Controller
      * Show Portofolio User
      */
     /**
-     * Show portfolio for specific user
-     * Handle both /Portofolio/{user} and /{locale}/Portofolio/{user} URLs
+     * Show portfolio for specific user via query parameter
+     * Handle both /{locale}/portofolio?user=username and /{locale}/portofolio?user=id URLs
      */
-    public function show($userParam, Request $request)
+    public function show(Request $request)
     {
-        // If locale is passed as first param (from locale-prefixed route)
-        // Adjust userParam accordingly
+        // Get user from query parameter
+        $userParam = $request->query('user');
+
+        if (!$userParam) {
+            abort(404, 'User parameter is required');
+        }
+
+        // If locale is passed as route param (from locale-prefixed route)
         $locale = request()->route('locale');
         if ($locale && in_array($locale, ['id', 'en'])) {
             app()->setLocale($locale);
@@ -276,9 +282,9 @@ class DashboardController extends Controller
         // If accessed by ID, redirect to username URL with locale prefix
         if (is_numeric($userParam)) {
             if ($locale && in_array($locale, ['id', 'en'])) {
-                return redirect()->route('portfolio.show.localized', ['locale' => $locale, 'user' => $user->username]);
+                return redirect($request->url() . '?user=' . $user->username);
             }
-            return redirect()->route('portfolio.show', $user->username);
+            return redirect($request->url() . '?user=' . $user->username);
         }
 
         if (in_array($user->role, ['admin', 'dosen'])) {

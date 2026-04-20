@@ -75,8 +75,15 @@ public function create() {
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        // Get ID from query parameter
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Postingan ID is required');
+        }
+
         $postingan = Postingan::with(['user', 'komentar.user', 'likes'])
             ->where('id_postingan', $id)
             ->firstOrFail();

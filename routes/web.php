@@ -146,6 +146,15 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
     });
 });
 
+// Portfolio route - handles /id/portofolio?user=username or /en/portofolio?user=username
+Route::get('/portofolio', [DashboardController::class, 'show'])->name('portfolio.show');
+
+// Project routes - handles /id/project?project=id or /en/project?project=id
+Route::get('/projectUser', [ProjekController::class, 'show'])->name('project.show');
+
+// Postingan routes - handles /id/postingan?postingan=id or /en/postingan?postingan=id
+Route::get('/postinganUser', [PostinganController::class, 'show'])->name('postingan.show');
+
 });
 
 // Outside of locale prefix group
@@ -156,9 +165,6 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 
 route::get('/ProjectUser', [ProjekController::class, 'project_user'])->name('project.project_user');
-Route::get('/project/{id}', [ProjekController::class, 'show'])->name('project.show');
-Route::get('/postinganUser/{id}', [PostinganController::class, 'show'])->name('postingan.show');
-Route::get('/Portofolio/{user}', [DashboardController::class, 'show'])->name('portfolio.show');
 
 
 Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');

@@ -481,8 +481,15 @@ class ProjekController extends Controller
             ->with('success', 'Project berhasil dihapus!');
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
+        // Get ID from query parameter
+        $id = $request->query('id');
+        
+        if (!$id) {
+            abort(404, 'Project ID is required');
+        }
+
         $project = Project::with(['leader', 'members', 'tasks', 'learningCorners'])
             ->findOrFail($id);
 

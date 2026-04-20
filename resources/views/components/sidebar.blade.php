@@ -963,6 +963,17 @@
         if (btn) btn.innerHTML = 'Light Mode';
     }
 
+    // Auto-detect language from localStorage on page load
+    const savedLang = localStorage.getItem('lang');
+    if (savedLang && (savedLang === 'id' || savedLang === 'en')) {
+        const currentPath = window.location.pathname;
+        // Check if current path already starts with /id or /en
+        if (!currentPath.startsWith('/id') && !currentPath.startsWith('/en')) {
+            // Redirect to the saved language home
+            window.location.href = `${window.location.origin}/${savedLang}`;
+        }
+    }
+
     // Close setting dropdown when clicking outside
     document.addEventListener('click', function (event) {
         const settingMenu = document.getElementById('settingMenu');
