@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-
+@section('title', autoTranslate('Detail Proyek'))
 @section('content')
     <!-- CONTENT -->
     <div class="min-h-screen bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
@@ -30,7 +30,7 @@
                         <!-- Project Title -->
                         <h1
                             class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white order-first sm:order-none w-full sm:w-auto">
-                            {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
+                            {{ autoTranslate($project->isi_content['nama_project'] ?? 'Tanpa Judul') }}
                         </h1>
 
                         @if ($canEdit)
@@ -331,7 +331,7 @@
                                             Task Proyek
                                         </h3>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $taskDoneCount }} dari {{ $taskTotalCount }} task selesai
+                                            {{ $taskDoneCount }} {{ autoTranslate('dari') }} {{ $taskTotalCount }} {{ autoTranslate('task selesai') }} 
                                         </p>
                                     </div>
                                     <span class="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
@@ -345,7 +345,7 @@
                                 </div>
 
                                 @if($visibleTasks->isEmpty())
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Tidak ada task yang dapat ditampilkan.</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">{{autoTranslate('Tidak ada task yang dapat ditampilkan.')}}</p>
                                 @else
                                     <div class="space-y-3">
                                         @foreach($visibleTasks as $task)
@@ -561,14 +561,14 @@
                                         <!-- Titles -->
                                         @foreach($titles as $title)
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                {{ $title }}
+                                                {{ autoTranslate($title) }}
                                             </h3>
                                         @endforeach
 
                                         <!-- Texts -->
                                         @foreach($texts as $text)
                                             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                                {{ $text }}
+                                                {{ autoTranslate($text) }}
                                             </p>
                                         @endforeach
 
@@ -744,7 +744,7 @@
                     if (checkedCount === 0) return;
 
                     const confirmed = await showConfirmAlert({
-                        title: 'Hapus Multiple Catatan?',
+                        title: 'Hapus Banyak Catatan?',
                         text: `Anda akan menghapus ${checkedCount} catatan. Tindakan ini tidak dapat dibatalkan.`,
                         icon: 'warning',
                         confirmButtonText: 'Ya, Hapus Semua',

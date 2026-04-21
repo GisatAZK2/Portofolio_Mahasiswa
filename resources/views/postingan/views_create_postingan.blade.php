@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Buat Postingan Baru')
+@section('title', autoTranslate('Buat Postingan Baru'))
 
 @section('content')
     <div class="min-h-screen">
@@ -23,7 +23,7 @@
                     </div>
                     <ul class="list-disc pl-10 space-y-1.5">
                         @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li>{{ autoTranslate($error) }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -40,10 +40,10 @@
                         <span data-translate="jdl" data-translate-page="add_post">Judul Postingan</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="judul" value="{{ old('judul') }}"
-                        placeholder="Judul postingan Anda..." required
+                        placeholder="{{autoTranslate('Judul postingan Anda...')}}" required
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
 
@@ -57,9 +57,9 @@
                                             text-gray-700 dark:text-gray-300
                                             placeholder-gray-500 dark:placeholder-gray-400
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
-                    placeholder="Deskripsikan postingan Anda...">{{ old('deskripsi') }}</textarea>
+                    placeholder="{{autoTranslate('Deskripsikan postingan Anda...')}}">{{ old('deskripsi') }}</textarea>
                 @error('deskripsi')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                 @enderror
             </div>
 
@@ -72,7 +72,7 @@
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            <span data-translate="add" data-translate-page="add_post">Tambah Item</span>
+                            <span data-translate="add" data-translate-page="add_post">{{autoTranslate('Tambah Item')}}</span>
                         </button>
                     </div>
 
@@ -105,24 +105,24 @@
             newItem.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option value="image" data-translate="pic" data-translate-page="add_post">Gambar</option>
-                        <option value="link" data-translate="link" data-translate-page="add_post">Link / Referensi</option>
+                        <option value="image" data-translate="pic" data-translate-page="add_post">{{autoTranslate('Gambar')}}</option>
+                        <option value="link" data-translate="link" data-translate-page="add_post">{{autoTranslate('Link / Referensi')}}</option>
                     </select>
                     <button class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
-                        <span data-translate="del" data-translate-page="add_post">Hapus</span>
+                        <span data-translate="del" data-translate-page="add_post">{{ autoTranslate('Delete') }}</span>
                     </button>
                 </div>
 
                 <div class="content-area">
                     <!-- Teks default -->
                     <textarea name="items[${itemIndex}][content]" rows="3" class="text-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:border-indigo-500 outline-none transition"
-                           placeholder="Masukkan teks di sini..."></textarea>
+                           placeholder="{{autoTranslate('Masukkan teks di sini...')}}"></textarea>
 
                     <!-- File upload (hidden awal) -->
                     <div class="file-input hidden mt-2">
                         <input type="file" name="items[${itemIndex}][file]" accept="image/*"
                                class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="max" data-translate-page="add_post">Maks 5MB • jpg, png, gif, webp</p>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="max" data-translate-page="add_post">{{autoTranslate('Maks 5MB • jpg, png, gif, webp')}}</p>
                     </div>
 
                     <!-- Link (hidden awal) -->

@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Tambah Project Baru')
+@section('title', autoTranslate('Tambah Project Baru'))
 @section('content')
     <div class="p-6 lg:p-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" data-translate="tambah_project"
@@ -36,9 +36,9 @@
                                             text-gray-700 dark:text-gray-300
                                             placeholder-gray-500 dark:placeholder-gray-400
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror"
-                    placeholder="Contoh: Website Portfolio Pribadi">
-                @error('nama_project')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    placeholder="{{ autoTranslate('Contoh: Website Portfolio Pribadi') }}">
+                @error(autoTranslate('nama_project'))
+                    <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                 @enderror
             </div>
 
@@ -52,24 +52,24 @@
                                             text-gray-700 dark:text-gray-300
                                             placeholder-gray-500 dark:placeholder-gray-400
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
-                    placeholder="Deskripsikan project Anda...">{{ old('deskripsi') }}</textarea>
+                    placeholder="{{ autoTranslate('Deskripsikan project Anda...') }}">{{ old('deskripsi') }}</textarea>
                 @error('deskripsi')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                 @enderror
             </div>
 
             <!-- Project Collaborative Toggle -->
             <div class="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Projek Kolaboratif</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Aktifkan untuk menambahkan pemimpin dan anggota tim.</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ autoTranslate('Projek Kolaboratif') }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Aktifkan untuk menambahkan pemimpin dan anggota tim.') }}</p>
                 </div>
                 <label class="inline-flex items-center cursor-pointer">
                     <span class="relative">
                         <input id="project-collaborative-toggle" type="checkbox" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
                     </span>
-                    <span id="toggle-label" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">Nonaktif</span>
+                    <span id="toggle-label" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">{{ autoTranslate('Nonaktif') }}</span>
                 </label>
             </div>
 
@@ -77,14 +77,14 @@
             <div id="user-selection-section" style="display: none;">
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Pemilihan User Project</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ autoTranslate('Pemilihan User Project') }}</h3>
                         <button type="button" onclick="openUserModal()" 
                             class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
                             <span class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
-                                Tambah User
+                                {{ autoTranslate('Tambah User') }}
                             </span>
                         </button>
                     </div>
@@ -95,7 +95,7 @@
                     </div>
 
                     <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
-                        Belum ada leader atau member yang dipilih. Klik "Tambah User" untuk memulai.
+                        {{ autoTranslate('Belum ada leader atau member yang dipilih. Klik "Tambah User" untuk memulai.') }}
                     </div>
                 </div>
             </div>
@@ -115,7 +115,7 @@
                     </div>
                     <div class="p-5 space-y-4">
                         <div class="grid gap-4 sm:grid-cols-2">
-                            <input id="modal-search" type="text" placeholder="Cari nama atau email..."
+                            <input id="modal-search" type="text" placeholder="{{autoTranslate('Cari nama atau email...')}}"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                             <select id="modal-angkatan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                                 <option value="">Semua Angkatan</option>
@@ -126,13 +126,13 @@
                             <select id="modal-jurusan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                                 <option value="">Semua Prodi</option>
                                 @foreach($jurusanList as $jurusanItem)
-                                    <option value="{{ $jurusanItem->id_jurusan }}">{{ $jurusanItem->nama_jurusan }}</option>
+                                    <option value="{{ $jurusanItem->id_jurusan }}">{{ autoTranslate($jurusanItem->nama_jurusan) }}</option>
                                 @endforeach
                             </select>
                             <select id="modal-keahlian" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                                 <option value="">Semua Keahlian</option>
                                 @foreach($keahlianList as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
+                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ autoTranslate($keahlianItem->nama_keahlian) }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -158,7 +158,7 @@
                                             placeholder-gray-500 dark:placeholder-gray-400
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_mulai') border-red-500 @enderror">
                     @error('tanggal_mulai')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
                 <div>
@@ -171,7 +171,7 @@
                                             placeholder-gray-500 dark:placeholder-gray-400
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('tanggal_akhir') border-red-500 @enderror">
                     @error('tanggal_akhir')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
             </div>
@@ -187,7 +187,7 @@
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('link_project') border-red-500 @enderror"
                     placeholder="https://github.com/username/project">
                 @error('link_project')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                 @enderror
             </div>
 
@@ -204,7 +204,7 @@
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_github') border-red-500 @enderror"
                     placeholder="https://github.com/username/repo" value="{{ old('link_github') }}">
                 @error('link_github')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                 @enderror
             </div>
 
@@ -221,7 +221,7 @@
                                             shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('link_video') border-red-500 @enderror"
                     placeholder="https://www.youtube.com/watch?v=..." value="{{ old('link_video') }}">
                 @error('link_video')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                 @enderror
             </div>
 
@@ -516,7 +516,7 @@
 
         function renderTaskUserOptions(selectedId = '') {
             const users = getAllowedTaskUsers();
-            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            let html = '<option value="">{{ autoTranslate("Pilih Penanggung Jawab") }}</option>';
             users.forEach(user => {
                 html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
             });
@@ -538,14 +538,14 @@
                 ${hiddenId}
                 <div class="grid gap-4 md:grid-cols-3 items-end">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Penanggung Jawab') }}</label>
                         <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Deskripsikan tugas...">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Nama Tugas') }}</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
                     </div>
                     <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
                 </div>

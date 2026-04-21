@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Detail Postingan')
+@section('title', autoTranslate('Detail Postingan'))
 
 @section('content')
     <div class="bg-gray-50 dark:bg-gray-950  py-8">
@@ -76,12 +76,12 @@
 
                     <!-- Title -->
                     @if($title)
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{{ $title }}</h1>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{{ autoTranslate($title) }}</h1>
                     @endif
 
                     <!-- Description -->
                     @if($deskripsi)
-                        <p class="text-gray-700 dark:text-gray-300 text-base leading-relaxed mb-4 whitespace-pre-wrap">{{ $deskripsi }}</p>
+                        <p class="text-gray-700 dark:text-gray-300 text-base leading-relaxed mb-4 whitespace-pre-wrap">{{ autoTranslate($deskripsi) }}</p>
                     @endif
 
                     <!-- Items -->
@@ -148,7 +148,7 @@
                                 <div class="flex-1">
                                     <textarea name="komentar" rows="2"
                                         class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-transparent dark:border-gray-700 text-gray-900 dark:text-white rounded-full focus:bg-white dark:focus:bg-gray-900 focus:border-gray-300 dark:focus:border-gray-600 outline-none transition placeholder-gray-500 dark:placeholder-gray-400"
-                                        placeholder="Tulis komentar...">{{ old('komentar') }}</textarea>
+                                        placeholder="{{ autoTranslate('Tulis komentar...') }}">{{ old('komentar') }}</textarea>
                                     @error('komentar')
                                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                     @enderror
@@ -199,7 +199,7 @@
                                                 <span class="text-xs text-gray-500 dark:text-gray-400">{{ $komentar->tanggal->format('d M Y') }}</span>
                                             </div>
                                             <div id="comment-content-{{ $komentar->id_komentar }}" class="text-sm text-gray-700 dark:text-gray-300 break-words">
-                                                {{ $komentar->komentar }}
+                                                {{ autoTranslate($komentar->komentar) }}
                                             </div>
 
                                             <!-- Edit Form (hidden by default) -->
@@ -229,7 +229,7 @@
                                                     <span class="text-gray-300 dark:text-gray-600">•</span>
                                                     <form action="{{ route('komentar.destroy', ['id' => $komentar->id_komentar]) }}" method="POST" class="inline">
                                                         @csrf @method('DELETE')
-                                                        <button type="button" onclick="if(confirm('Hapus komentar ini?')) this.form.submit();" data-translate="del" data-translate-page="post"
+                                                        <button type="button" onclick="if(confirm('{{ autoTranslate('Hapus komentar ini?') }}')) this.form.submit();" data-translate="del" data-translate-page="post"
                                                             class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium">
                                                             Hapus
                                                         </button>
