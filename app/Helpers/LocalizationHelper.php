@@ -1,10 +1,15 @@
 <?php
 
+/**
+ * Localization Helper Functions
+ * Compatible with PHP 8.4+
+ */
+
 if (!function_exists('locale_url')) {
     /**
      * Generate URL with locale prefix
      */
-    function locale_url(string $path = '', string $locale = null): string
+    function locale_url(string $path = '', ?string $locale = null): string
     {
         return \App\Services\LocalizationService::url($path, $locale);
     }
@@ -14,7 +19,7 @@ if (!function_exists('locale_route')) {
     /**
      * Generate route URL with locale prefix
      */
-    function locale_route(string $name, array $parameters = [], string $locale = null): string
+    function locale_route(string $name, array $parameters = [], ?string $locale = null): string
     {
         return \App\Services\LocalizationService::route($name, $parameters, $locale);
     }
@@ -24,7 +29,7 @@ if (!function_exists('locale_switch')) {
     /**
      * Get URL for switching locale
      */
-    function locale_switch(string $locale = null): string
+    function locale_switch(?string $locale = null): string
     {
         return \App\Services\LocalizationService::switchUrl($locale);
     }

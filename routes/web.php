@@ -16,9 +16,6 @@ use App\Http\Controllers\v1\LikedPostinganController;
 use App\Http\Controllers\v1\KomentarController;
 
 
-
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
 // ========== LOCALE PREFIX ROUTES ==========
 // Routes dengan locale prefix untuk SEO dan proper multilingual support
 Route::prefix('{locale}')

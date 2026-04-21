@@ -14,11 +14,11 @@ class SetLocale
     {
         $locale = $request->segment(1);
 
-        $supported = ['en', 'id']; // tambahkan locale lain kalau ada
+        $supported = ['en', 'id'];
 
         if (in_array($locale, $supported)) {
             App::setLocale($locale);
-            URL::defaults(['locale' => $locale]);   // ← Ini yang paling penting
+            URL::defaults(['locale' => $locale]);   
         } else {
             $default = config('app.locale', 'en');
             App::setLocale($default);

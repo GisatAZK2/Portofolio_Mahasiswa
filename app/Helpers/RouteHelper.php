@@ -3,14 +3,17 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Stichoza\GoogleTranslate\GoogleTranslate;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
+
 
 if (!function_exists('lroute')) {
+    /**
+     * Localized Route Helper
+     * Menggantikan route() dengan otomatis menambahkan locale
+     */
     function lroute($name, $parameters = [], $absolute = true)
     {
         $parameters = array_merge(
-            ['locale' => app()->getLocale()],
+            ['locale' => app()->getLocale()], 
             (array) $parameters
         );
 

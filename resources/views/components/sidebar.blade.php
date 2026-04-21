@@ -4,7 +4,7 @@
              lg:static lg:inset-auto lg:shadow-sm
              flex flex-col overflow-hidden
              {{ session('sidebar_collapsed', false) ? 'lg:w-20' : 'lg:w-62' }}">
-
+9
     <!-- Logo -->
     <div class="px-6 py-6 mt-10 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0">
         <div class="flex-1 flex justify-center lg:justify-center">
