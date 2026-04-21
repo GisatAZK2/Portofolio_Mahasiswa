@@ -185,12 +185,23 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::get('/', [DosenController::class, 'sertifikat'])->name('index');
         Route::get('/AddSertifikat', [DosenController::class, 'TambahSertifikat'])->name('create');
         Route::post('/store', [DosenController::class, 'StoreSertifikat'])->name('store');
+        Route::get('/Details', [DosenController::class, 'DetailsSertifikat'])->name('details');
+        Route::patch('/edit', [DosenController::class, 'UpdateSertifikat'])->name('update');
+        Route::delete('/DeleteSertifikat', [DosenController::class, 'DestroySertifikat'])->name('destroy');
+        Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroy'])->name('bulk-destroy');
     });
+
+    Route::patch('/sertifikat/approve', [DosenController::class, 'approve'])->name('sertifikat.approve');
+    Route::patch('/sertifikat/reject', [DosenController::class, 'reject'])->name('sertifikat.reject');
 
     Route::prefix('manageProject')->name('projects.')->group(function () {
         Route::get('/', [DosenController::class, 'projects'])->name('index');
         Route::get('/create', [DosenController::class, 'TambahProjects'])->name('create');
         Route::post('/store', [DosenController::class, 'StoreProject'])->name('store');
+        Route::get('/Details', [DosenController::class, 'EditProjects'])->name('details');
+        Route::patch('/EditProject', [DosenController::class, 'UpdateProject'])->name('update');
+        Route::delete('/DeleteProject', [DosenController::class, 'DestroyProject'])->name('delete');
+        Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
     });
 });
 
@@ -299,26 +310,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::patch('/{id}/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
     });
 
-});
-
-Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
- 
-    Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
-       	Route::get('/Details/{sertifikat}', [DosenController::class, 'DetailsSertifikat'])->name('details');
-        Route::patch('/edit/{sertifikat}', [DosenController::class, 'UpdateSertifikat'])->name('update');
-	    Route::delete('/DeleteSertifikat/{sertifikat}', [DosenController::class, 'DestroySertifikat'])->name('destroy');
-        Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroy'])->name('bulk-destroy');
-    });
-
-    Route::patch('/sertifikat/{id}/approve', [DosenController::class, 'approve'])->name('sertifikat.approve');
-    Route::patch('/sertifikat/{id}/reject', [DosenController::class, 'reject'])->name('sertifikat.reject');
-
-    Route::prefix('manageProject')->name('projects.')->group(function () {
-        Route::get('/Details/{project}', [DosenController::class, 'EditProjects'])->name('details');
-        Route::patch('/EditProject/{project}', [DosenController::class, 'UpdateProject'])->name('update');
-        Route::delete('/DeleteProject/{project}', [DosenController::class, 'DestroyProject'])->name('delete');
-        Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
-    });
 });
 
 Route::middleware(['auth'])->group(function () {

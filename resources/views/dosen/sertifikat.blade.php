@@ -351,7 +351,7 @@
 
                                     <div class="flex gap-3">
                                         @if($canEdit)
-                                            <a href="{{ route('dosen.sertifikat.details', $entry->id) }}"
+                                            <a href="{{ route('dosen.sertifikat.details', ['id' => $entry->id]) }}"
                                                 class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition font-medium shadow-sm hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-800">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -362,7 +362,7 @@
                                         @endif
 
                                         <form class="delete-form {{ $canEdit ? 'flex-1' : 'w-full' }}"
-                                            action="{{ route('dosen.sertifikat.destroy', $entry->id) }}" method="POST">
+                                            action="{{ route('dosen.sertifikat.destroy', ['id' => $entry->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" data-id="{{ $entry->id }}"
@@ -379,7 +379,7 @@
                                     {{-- Aksi Approve/Reject untuk status "Sedang Di Ajukan" --}}
                                     @if($entry->status_pengajuan == 'Sedang Di Ajukan')
                                         <div class="flex space-x-3 mt-2">
-                                            <form action="{{ route('dosen.sertifikat.approve', $entry->id) }}" method="POST"
+                                            <form action="{{ route('dosen.sertifikat.approve', ['id' => $entry->id]) }}" method="POST"
                                                 class="flex-1">
                                                 @csrf
                                                 @method('PATCH')
@@ -428,7 +428,7 @@
                     class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
                     <div class="mt-3">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Tolak Sertifikat</h3>
-                        <form action="{{ route('dosen.sertifikat.reject', $entry->id) }}" method="POST">
+                        <form action="{{ route('dosen.sertifikat.reject', ['id' => $entry->id]) }}" method="POST">
                             @csrf
                             @method('PATCH')
                             <div class="mb-4">

@@ -79,7 +79,7 @@
                 </div>
             </div>
 
-            <form id="bulkDeleteForm" action="{{ route('dosen.projects.bulk-delete') }}" method="POST" class="hidden">
+            <form id="bulkDeleteForm" action="{{ route('dosen.projects.bulk-delete', ['locale' => app()->getLocale()]) }}" method="POST" class="hidden">
                 @csrf
                 @method('DELETE')
                 <input type="hidden" name="selected_ids" id="selectedProjectIds">
@@ -201,7 +201,7 @@
                                             $displayUser = $leader ?? $mahasiswa;
                                             $userName = $displayUser->nama_mahasiswa ?? 'User';
                                         @endphp
-                                        <a href="{{ route('portfolio.show', $displayUser?->id ?? '#') }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                        <a href="{{ route('portfolio.show', ['user' => $displayUser?->id ?? '#']) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @if($displayUser && $displayUser->photo_profile && Storage::disk('public')->exists($displayUser->photo_profile))
                                                 <img src="{{ Storage::url($displayUser->photo_profile) }}" 
                                                      alt="{{ $userName }}" 
@@ -213,7 +213,7 @@
                                             @endif
                                         </a>
                                         <div>
-                                            <a href="{{ route('portfolio.show', $displayUser?->id ?? '#') }}" 
+                                            <a href="{{ route('portfolio.show', ['user' => $displayUser?->id ?? '#']) }}" 
                                                class="font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition-colors">
                                                 {{ $userName }}
                                             </a>
@@ -226,14 +226,14 @@
                                     @if($mahasiswa && $leader && !$isSameUser)
                                         <div class="flex items-center gap-2 mb-3 pl-2 border-l-2 border-gray-300 dark:border-gray-600">
                                             <span class="text-xs text-gray-500 dark:text-gray-400">Owner:</span>
-                                            <a href="{{ route('portfolio.show', $mahasiswa->id) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400">
+                                            <a href="{{ route('portfolio.show', ['user' => $mahasiswa->id]) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400">
                                                 {{ $mahasiswa->nama_mahasiswa }}
                                             </a>
                                         </div>
                                     @endif
 
                                     <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white line-clamp-2 mb-2">
-                                        <a href="{{ route('project.show', $project->id) }}" 
+                                        <a href="{{ route('project.show', ['id' => $project->id]) }}" 
                                            class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                             {{ $nama }}
                                         </a>
@@ -255,18 +255,17 @@
                                     <!-- Action Buttons -->
                                     <div class="flex flex-wrap gap-2 mt-auto pt-3 border-t border-gray-100 dark:border-gray-700">
                                         @if($canEdit)
-                                            <a href="{{ route('dosen.projects.details', $project->id) }}"
+                                            <a href="{{ route('dosen.projects.details', ['id' => $project->id]) }}"
                                                 class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-lg text-sm font-medium hover:bg-yellow-200 dark:hover:bg-yellow-900 transition">
                                                 Edit
                                             </a>
                                         @endif
 
-                                        <a href="{{ route('project.show', $project->id) }}"
+                                        <a href="{{ route('project.show', ['id' => $project->id]) }}"
                                             class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-300 rounded-lg text-sm font-medium hover:bg-indigo-200 dark:hover:bg-indigo-900 transition">
                                             Detail
                                         </a>
 
-                                        <!-- Tombol Hapus yang sudah diperbaiki -->
                                         @if($isInteractive)
                                             <button type="button"
                                                 onclick="handleSingleDelete(this, {{ $project->id }})"
@@ -313,17 +312,43 @@
 
     <!-- JavaScript -->
     <script>
+        // Fungsi showConfirm untuk konfirmasi delete - DITEMUKAN PERTAMA
+        async function showConfirm() {
+            const result = await Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            });
+            return result.isConfirmed;
+        }
+
         // SINGLE DELETE - Modal SweetAlert2
         async function handleSingleDelete(button, projectId) {
-            event.preventDefault();   // Penting: cegah submit langsung
-
+            event.preventDefault();
+            
             const confirmed = await showConfirm();
             
             if (confirmed) {
-                // Buat form submit manual setelah confirm
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `{{ url('dosen/projects') }}/${projectId}`;
+                
+                const locale = document.querySelector('html').getAttribute('lang') || 'id';
+                form.action = `/${locale}/dosen/manageProject/DeleteProject?id=${projectId}`;
                 
                 const csrf = document.createElement('input');
                 csrf.type = 'hidden';
@@ -359,6 +384,15 @@
 
             const confirmed = await showConfirm();
             if (confirmed) {
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
                 document.getElementById('selectedProjectIds').value = ids.join(',');
                 document.getElementById('bulkDeleteForm').submit();
             }
@@ -367,7 +401,10 @@
         // Update selected count
         function updateSelectionState() {
             const checkedCount = document.querySelectorAll('.project-checkbox:checked').length;
-            document.getElementById('selectedCount').textContent = checkedCount;
+            const selectedCountEl = document.getElementById('selectedCount');
+            if (selectedCountEl) {
+                selectedCountEl.textContent = checkedCount;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -395,7 +432,9 @@
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.dosen_projects");
+            if (typeof showPageInfo === 'function') {
+                showPageInfo("popup.dosen_projects");
+            }
         });
     </script>
 @endsection

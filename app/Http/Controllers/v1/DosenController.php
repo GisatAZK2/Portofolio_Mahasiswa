@@ -161,27 +161,27 @@ class DosenController extends Controller
 
         // === SEARCH ===
         $query = User::query()
-        ->whereIn('role', ['mahasiswa'])
-        ->where('id', '!=', Auth::id())
-        ->with(['jurusan', 'angkatan', 'keahlian'])
-        ->withCount([
-            'projects',
-            'sertifikats',
-            'learning_corners'
-        ])
-        ->orderBy('created_at', 'desc');
+            ->whereIn('role', ['mahasiswa'])
+            ->where('id', '!=', Auth::id())
+            ->with(['jurusan', 'angkatan', 'keahlian'])
+            ->withCount([
+                'projects',
+                'sertifikats',
+                'learning_corners'
+            ])
+            ->orderBy('created_at', 'desc');
         $query = $this->getdosenFilterScope($query);
 
-    $search = $request->input('search');
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
-              ->orWhere('username', 'like', '%' . $search . '%')
-              ->orWhere('email', 'like', '%' . $search . '%');
-        });
-    }
+        $search = $request->input('search');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
 
-    $users = $query->get();
+        $users = $query->get();
 
         // Retrieve all Angkatan and Jurusan data
         $angkatans = Angkatan::all();
@@ -193,16 +193,16 @@ class DosenController extends Controller
         $jurusan = $request->input('jurusan', '');
         $keahlian = $request->input('keahlian', '');
 
-return view('dosen.daftar-mahasiswa', compact(
-        'users', 
-        'angkatans', 
-        'jurusans', 
-        'keahlians',
-        'search',   
-        'angkatan', 
-        'jurusan', 
-        'keahlian'
-    ));
+        return view('dosen.daftar-mahasiswa', compact(
+            'users',
+            'angkatans',
+            'jurusans',
+            'keahlians',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian'
+        ));
     }
 
     public function ViewAddUser()
@@ -279,255 +279,255 @@ return view('dosen.daftar-mahasiswa', compact(
     }
 
     // DetailsUser - ambil id dari query parameter
-public function DetailsUser(Request $request)
-{
-    $this->authorizeAccess();
-    $id = $request->query('id');
-    
-    if (!$id) {
-        abort(404, 'User ID is required');
-    }
-    
-    $jurusans = Jurusan::all();
-    $keahlians = Keahlian::all();
-    $angkatans = Angkatan::all();
+    public function DetailsUser(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
 
-    $dosen = Auth::user();
-    if ($dosen->id_jurusan) {
-        $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
-    }
-    if ($dosen->id_keahlian) {
-        $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
-    }
-    if ($dosen->id_angkatan) {
-        $angkatans = $angkatans->where('id', $dosen->id_angkatan);
-    }
-
-    $user = User::with(['jurusan', 'keahlian', 'angkatan'])
-        ->where('id', $id);
-
-    $user = $this->getdosenFilterScope($user)->firstOrFail();
-
-    return view('dosen.user.views_edit_user', compact(
-        'user',
-        'jurusans',
-        'keahlians',
-        'angkatans'
-    ));
-}
-
-// UpdateUser - ambil id dari query parameter
-public function UpdateUser(Request $request)
-{
-    $this->authorizeAccess();
-    $dosen = Auth::user();
-    $id = $request->query('id');
-    
-    if (!$id) {
-        return redirect()->route('dosen.users.index')
-            ->with('error', 'User ID tidak ditemukan');
-    }
-
-    $user = User::where('id', $id);
-    $user = $this->getdosenFilterScope($user)->firstOrFail();
-
-    $rules = [
-        'nama_mahasiswa' => ['sometimes', 'string', 'max:100'],
-        'username' => [
-            'sometimes',
-            'string',
-            'max:100',
-            'regex:/^[a-zA-Z0-9_]+$/',
-            Rule::unique('users')->ignore($user->id)
-        ],
-        'email' => [
-            'sometimes',
-            'nullable',
-            'email',
-            'max:100',
-            Rule::unique('users')->ignore($user->id)
-        ],
-        'role' => [
-            'sometimes',
-            'in:mahasiswa,dosen'
-        ],
-        'status_pengajuan' => [
-            'sometimes',
-            'in:Di Terima,Di Tolak'
-        ],
-        'is_active' => [
-            'sometimes',
-            'boolean'
-        ],
-        'password' => [
-            'nullable',
-            'string',
-            'confirmed',
-            Password::min(8)->mixedCase(),
-            'regex:/^\S*$/'
-        ],
-        'photo_profile' => [
-            'sometimes',
-            'image',
-            'mimes:jpeg,png,jpg',
-            'max:2048'
-        ],
-        'background_url' => [
-            'sometimes',
-            'image',
-            'mimes:jpeg,png,jpg,webp',
-            'max:4096'
-        ],
-    ];
-
-    if (!$dosen->id_jurusan) {
-        $rules['id_jurusan'] = [
-            'sometimes',
-            'nullable',
-            'exists:jurusan,id_jurusan'
-        ];
-    }
-
-    if (!$dosen->id_keahlian) {
-        $rules['id_keahlian'] = [
-            'sometimes',
-            'nullable',
-            'exists:keahlian,id_keahlian'
-        ];
-    }
-
-    if (!$dosen->id_angkatan) {
-        $rules['id_angkatan'] = [
-            'sometimes',
-            'nullable',
-            'exists:angkatan,id'
-        ];
-    }
-
-    $validated = $request->validate($rules);
-
-    $updateData = [];
-
-    foreach ([
-        'nama_mahasiswa',
-        'username',
-        'email',
-        'role',
-        'status_pengajuan',
-        'is_active'
-    ] as $field) {
-        if ($request->has($field)) {
-            $updateData[$field] = $validated[$field] ?? null;
+        if (!$id) {
+            abort(404, 'User ID is required');
         }
+
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+        $angkatans = Angkatan::all();
+
+        $dosen = Auth::user();
+        if ($dosen->id_jurusan) {
+            $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
+        }
+        if ($dosen->id_keahlian) {
+            $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
+        }
+        if ($dosen->id_angkatan) {
+            $angkatans = $angkatans->where('id', $dosen->id_angkatan);
+        }
+
+        $user = User::with(['jurusan', 'keahlian', 'angkatan'])
+            ->where('id', $id);
+
+        $user = $this->getdosenFilterScope($user)->firstOrFail();
+
+        return view('dosen.user.views_edit_user', compact(
+            'user',
+            'jurusans',
+            'keahlians',
+            'angkatans'
+        ));
     }
 
-    if (!$dosen->id_jurusan && $request->has('id_jurusan')) {
-        $updateData['id_jurusan'] = $validated['id_jurusan'] ?? null;
+    // UpdateUser - ambil id dari query parameter
+    public function UpdateUser(Request $request)
+    {
+        $this->authorizeAccess();
+        $dosen = Auth::user();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('dosen.users.index')
+                ->with('error', 'User ID tidak ditemukan');
+        }
+
+        $user = User::where('id', $id);
+        $user = $this->getdosenFilterScope($user)->firstOrFail();
+
+        $rules = [
+            'nama_mahasiswa' => ['sometimes', 'string', 'max:100'],
+            'username' => [
+                'sometimes',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-Z0-9_]+$/',
+                Rule::unique('users')->ignore($user->id)
+            ],
+            'email' => [
+                'sometimes',
+                'nullable',
+                'email',
+                'max:100',
+                Rule::unique('users')->ignore($user->id)
+            ],
+            'role' => [
+                'sometimes',
+                'in:mahasiswa,dosen'
+            ],
+            'status_pengajuan' => [
+                'sometimes',
+                'in:Di Terima,Di Tolak'
+            ],
+            'is_active' => [
+                'sometimes',
+                'boolean'
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'confirmed',
+                Password::min(8)->mixedCase(),
+                'regex:/^\S*$/'
+            ],
+            'photo_profile' => [
+                'sometimes',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:2048'
+            ],
+            'background_url' => [
+                'sometimes',
+                'image',
+                'mimes:jpeg,png,jpg,webp',
+                'max:4096'
+            ],
+        ];
+
+        if (!$dosen->id_jurusan) {
+            $rules['id_jurusan'] = [
+                'sometimes',
+                'nullable',
+                'exists:jurusan,id_jurusan'
+            ];
+        }
+
+        if (!$dosen->id_keahlian) {
+            $rules['id_keahlian'] = [
+                'sometimes',
+                'nullable',
+                'exists:keahlian,id_keahlian'
+            ];
+        }
+
+        if (!$dosen->id_angkatan) {
+            $rules['id_angkatan'] = [
+                'sometimes',
+                'nullable',
+                'exists:angkatan,id'
+            ];
+        }
+
+        $validated = $request->validate($rules);
+
+        $updateData = [];
+
+        foreach ([
+            'nama_mahasiswa',
+            'username',
+            'email',
+            'role',
+            'status_pengajuan',
+            'is_active'
+        ] as $field) {
+            if ($request->has($field)) {
+                $updateData[$field] = $validated[$field] ?? null;
+            }
+        }
+
+        if (!$dosen->id_jurusan && $request->has('id_jurusan')) {
+            $updateData['id_jurusan'] = $validated['id_jurusan'] ?? null;
+        }
+
+        if (!$dosen->id_keahlian && $request->has('id_keahlian')) {
+            $updateData['id_keahlian'] = $validated['id_keahlian'] ?? null;
+        }
+
+        if (!$dosen->id_angkatan && $request->has('id_angkatan')) {
+            $updateData['id_angkatan'] = $validated['id_angkatan'] ?? null;
+        }
+
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        if ($request->has('role') && $validated['role'] === 'dosen') {
+            $updateData['id_jurusan'] = null;
+            $updateData['id_keahlian'] = null;
+            $updateData['id_angkatan'] = null;
+        }
+
+        if ($request->hasFile('photo_profile')) {
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+            $updateData['photo_profile'] = $photoPath;
+        }
+
+        if ($request->hasFile('background_url')) {
+            if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+                Storage::disk('public')->delete($user->background_url);
+            }
+            $backgroundPath = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
+            $updateData['background_url'] = $backgroundPath;
+        }
+
+        $user->update($updateData);
+
+        return redirect()
+            ->route('dosen.users.index')
+            ->with('success', 'User berhasil diperbarui.');
     }
 
-    if (!$dosen->id_keahlian && $request->has('id_keahlian')) {
-        $updateData['id_keahlian'] = $validated['id_keahlian'] ?? null;
+    // updateStatus - ambil id dari query parameter
+    public function updateStatus(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('dosen.users.index')
+                ->with('error', 'User ID tidak ditemukan');
+        }
+
+        $userQuery = User::where('id', $id);
+        $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
+
+        $validated = $request->validate([
+            'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
+            'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|string|max:500',
+        ]);
+
+        $user->status_pengajuan = $validated['status_pengajuan'];
+
+        if ($validated['status_pengajuan'] === 'Di Tolak') {
+            $user->keterangan_tolak = $validated['keterangan_tolak'];
+        } else {
+            $user->keterangan_tolak = null;
+        }
+
+        $user->save();
+
+        $nama = $user->nama_mahasiswa ?? $user->username;
+
+        return redirect()
+            ->route('dosen.users.index')
+            ->with('success', "Status pengajuan {$nama} berhasil diupdate menjadi {$user->status_pengajuan}");
     }
 
-    if (!$dosen->id_angkatan && $request->has('id_angkatan')) {
-        $updateData['id_angkatan'] = $validated['id_angkatan'] ?? null;
-    }
+    // destroyUser - ambil id dari query parameter
+    public function destroyUser(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
 
-    if ($request->filled('password')) {
-        $updateData['password'] = Hash::make($validated['password']);
-    }
+        if (!$id) {
+            return redirect()->route('dosen.users.index')
+                ->with('error', 'User ID tidak ditemukan');
+        }
 
-    if ($request->has('role') && $validated['role'] === 'dosen') {
-        $updateData['id_jurusan'] = null;
-        $updateData['id_keahlian'] = null;
-        $updateData['id_angkatan'] = null;
-    }
+        $userQuery = User::where('id', $id);
+        $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
 
-    if ($request->hasFile('photo_profile')) {
         if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
             Storage::disk('public')->delete($user->photo_profile);
         }
-        $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-        $updateData['photo_profile'] = $photoPath;
-    }
-
-    if ($request->hasFile('background_url')) {
         if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
             Storage::disk('public')->delete($user->background_url);
         }
-        $backgroundPath = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
-        $updateData['background_url'] = $backgroundPath;
-    }
 
-    $user->update($updateData);
+        $user->delete();
 
-    return redirect()
-        ->route('dosen.users.index')
-        ->with('success', 'User berhasil diperbarui.');
-}
-
-// updateStatus - ambil id dari query parameter
-public function updateStatus(Request $request)
-{
-    $this->authorizeAccess();
-    $id = $request->query('id');
-    
-    if (!$id) {
         return redirect()->route('dosen.users.index')
-            ->with('error', 'User ID tidak ditemukan');
+            ->with('success', 'User berhasil dihapus.');
     }
-
-    $userQuery = User::where('id', $id);
-    $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
-
-    $validated = $request->validate([
-        'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
-        'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|string|max:500',
-    ]);
-
-    $user->status_pengajuan = $validated['status_pengajuan'];
-
-    if ($validated['status_pengajuan'] === 'Di Tolak') {
-        $user->keterangan_tolak = $validated['keterangan_tolak'];
-    } else {
-        $user->keterangan_tolak = null;
-    }
-
-    $user->save();
-
-    $nama = $user->nama_mahasiswa ?? $user->username;
-
-    return redirect()
-        ->route('dosen.users.index')
-        ->with('success', "Status pengajuan {$nama} berhasil diupdate menjadi {$user->status_pengajuan}");
-}
-
-// destroyUser - ambil id dari query parameter
-public function destroyUser(Request $request)
-{
-    $this->authorizeAccess();
-    $id = $request->query('id');
-    
-    if (!$id) {
-        return redirect()->route('dosen.users.index')
-            ->with('error', 'User ID tidak ditemukan');
-    }
-
-    $userQuery = User::where('id', $id);
-    $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
-
-    if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
-        Storage::disk('public')->delete($user->photo_profile);
-    }
-    if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
-        Storage::disk('public')->delete($user->background_url);
-    }
-
-    $user->delete();
-
-    return redirect()->route('dosen.users.index')
-        ->with('success', 'User berhasil dihapus.');
-}
 
     //For Pages Sertifikat
     public function sertifikat(Request $request)
@@ -609,9 +609,15 @@ public function destroyUser(Request $request)
         ));
     }
 
-    public function DetailsSertifikat($id)
+    // DetailsSertifikat - ambil id dari query parameter
+    public function DetailsSertifikat(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'Sertifikat ID is required');
+        }
 
         $sertifikat = Sertifikat::with('mahasiswa')
             ->whereHas('mahasiswa', function ($query) {
@@ -622,9 +628,15 @@ public function destroyUser(Request $request)
         return view('dosen.sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
 
-    public function approve($id)
+    // approve - ambil id dari query parameter
+    public function approve(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->back()->with('error', 'Sertifikat ID tidak ditemukan');
+        }
 
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
@@ -638,9 +650,16 @@ public function destroyUser(Request $request)
         return redirect()->back()->with('success', 'Sertifikat berhasil diterima');
     }
 
-    public function reject(Request $request, $id)
+    // reject - ambil id dari query parameter
+    public function reject(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->back()->with('error', 'Sertifikat ID tidak ditemukan');
+        }
+
         $request->validate(['keterangan' => 'required|string']);
 
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
@@ -655,6 +674,8 @@ public function destroyUser(Request $request)
 
         return redirect()->back()->with('success', 'Sertifikat ditolak');
     }
+
+    // UpdateSertifikat - ambil id dari query parameter
 
     public function TambahSertifikat(Request $request)
     {
@@ -747,14 +768,20 @@ public function destroyUser(Request $request)
             ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
 
-    public function UpdateSertifikat(Request $request, Sertifikat $sertifikat)
+    public function UpdateSertifikat(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('dosen.sertifikat.index')
+                ->with('error', 'Sertifikat ID tidak ditemukan');
+        }
 
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
         })
-            ->findOrFail($sertifikat->id);
+            ->findOrFail($id);
 
         $validated = $request->validate([
             'nama_sertifikat' => 'required|string|max:255',
@@ -768,10 +795,8 @@ public function destroyUser(Request $request)
                 $sertifikat->link_sertifikat &&
                 Storage::disk('public')->exists($sertifikat->link_sertifikat)
             ) {
-
                 Storage::disk('public')->delete($sertifikat->link_sertifikat);
             }
-
             $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         } else {
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
@@ -783,14 +808,21 @@ public function destroyUser(Request $request)
             ->with('success', 'Sertifikat berhasil diperbarui!');
     }
 
-    public function DestroySertifikat(Sertifikat $sertifikat)
+    // DestroySertifikat - ambil id dari query parameter
+    public function DestroySertifikat(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('dosen.sertifikat.index')
+                ->with('error', 'Sertifikat ID tidak ditemukan');
+        }
 
         $sertifikat = Sertifikat::whereHas('mahasiswa', function ($query) {
             $this->getdosenFilterScope($query);
         })
-            ->findOrFail($sertifikat->id);
+            ->findOrFail($id);
 
         if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
             Storage::disk('public')->delete($sertifikat->link_sertifikat);
@@ -802,17 +834,32 @@ public function destroyUser(Request $request)
             ->with('success', 'Sertifikat berhasil dihapus.');
     }
 
+    // bulkDestroy - perbaiki untuk menerima berbagai format
     public function bulkDestroy(Request $request)
     {
         $this->authorizeAccess();
-        $request->validate([
-            'selected_ids' => 'required|array',
-            'selected_ids.*' => 'exists:sertifikat,id'
-        ]);
+
+        // Ambil dari berbagai kemungkinan format
+        $ids = $request->input('selected_ids', []);
+
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (!is_array($ids)) {
+            $ids = explode(',', $ids);
+        }
+
+        $ids = array_filter(array_map('intval', $ids));
+
+        if (empty($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada sertifikat terpilih untuk dihapus.'
+            ], 422);
+        }
 
         try {
-            $ids = $request->selected_ids;
-
             $sertifikats = Sertifikat::whereIn('id', $ids)
                 ->whereHas('mahasiswa', function ($query) {
                     $this->getdosenFilterScope($query);
@@ -840,34 +887,34 @@ public function destroyUser(Request $request)
     }
 
     //For Projects Pages
-public function projects(Request $request)
-{
-    $this->authorizeAccess();
+    public function projects(Request $request)
+    {
+        $this->authorizeAccess();
 
-    $search = trim($request->input('search'));
+        $search = trim($request->input('search'));
 
-    $query = Project::with(['mahasiswa', 'leader', 'members'])
-        ->where(function ($query) {
-            $query->whereHas('mahasiswa', function ($q) {
-                $this->getdosenFilterScope($q);
-            })
-            ->orWhereHas('leader', function ($q) {
-                $this->getdosenFilterScope($q);
-            })
-            ->orWhereHas('members', function ($q) {
-                $this->getdosenFilterScope($q);
+        $query = Project::with(['mahasiswa', 'leader', 'members'])
+            ->where(function ($query) {
+                $query->whereHas('mahasiswa', function ($q) {
+                    $this->getdosenFilterScope($q);
+                })
+                    ->orWhereHas('leader', function ($q) {
+                        $this->getdosenFilterScope($q);
+                    })
+                    ->orWhereHas('members', function ($q) {
+                        $this->getdosenFilterScope($q);
+                    });
             });
-        });
 
-    // Search hanya nama project
-    if ($search) {
-        $query->where('isi_content->nama_project', 'like', '%' . $search . '%');
+        // Search hanya nama project
+        if ($search) {
+            $query->where('isi_content->nama_project', 'like', '%' . $search . '%');
+        }
+
+        $projects = $query->latest()->paginate(12)->withQueryString();
+
+        return view('dosen.project', compact('projects', 'search'));
     }
-
-    $projects = $query->latest()->paginate(12)->withQueryString();
-
-    return view('dosen.project', compact('projects', 'search'));
-}
 
     public function TambahProjects(Request $request)
     {
@@ -936,9 +983,16 @@ public function projects(Request $request)
         ));
     }
 
-    public function EditProjects($id)
+
+
+    public function EditProjects(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'Project ID is required');
+        }
 
         $search = request()->input('search');
         $angkatan = request()->input('angkatan');
@@ -1101,9 +1155,15 @@ public function projects(Request $request)
             ->with('clear_local_storage', true);
     }
 
-    public function UpdateProject(Request $request, $id)
+    public function UpdateProject(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('dosen.projects.index')
+                ->with('error', 'Project ID tidak ditemukan');
+        }
 
         $project = Project::findOrFail($id);
 
@@ -1280,8 +1340,17 @@ public function projects(Request $request)
             ->whereNotIn('user_id', $allowedUserIds)
             ->delete();
     }
-    public function DestroyProject($id)
+
+    // DestroyProject - ambil id dari query parameter
+    public function DestroyProject(Request $request)
     {
+        $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->back()->with('error', 'Project ID tidak ditemukan');
+        }
+
         $project = Project::find($id);
 
         if (!$project) {
@@ -1296,9 +1365,23 @@ public function projects(Request $request)
     public function bulkDestroyProject(Request $request)
     {
         $this->authorizeAccess();
-        $ids = explode(',', $request->selected_ids);
 
-        // Ensure only projects within dosen's scope are deleted
+        $ids = $request->input('selected_ids', '');
+
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
+        $ids = array_filter(array_map('intval', $ids));
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
+        }
+
         Project::whereIn('id', $ids)
             ->whereHas('mahasiswa', function ($query) {
                 $this->getdosenFilterScope($query);
