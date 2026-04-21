@@ -312,22 +312,6 @@
 
     <!-- JavaScript -->
     <script>
-        // Fungsi showConfirm untuk konfirmasi delete - DITEMUKAN PERTAMA
-        async function showConfirm() {
-            const result = await Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            });
-            return result.isConfirmed;
-        }
-
         // SINGLE DELETE - Modal SweetAlert2
         async function handleSingleDelete(button, projectId) {
             event.preventDefault();
