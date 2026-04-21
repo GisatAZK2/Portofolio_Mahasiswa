@@ -1,6 +1,6 @@
 @extends('Layout.Layout')
 
-@section('title', 'Project Saya')
+@section('title', autoTranslate('Project Saya'))
 
 @section('content')
     <div class="p-6 lg:p-8">
@@ -85,13 +85,13 @@
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $roleClass }}"
                                     data-translate="{{ strtolower($role) }}" data-translate-page="project">
-                                    {{ $role }}
+                                    {{ autoTranslate($role) }}
                                 </span>
                             </div>
 
                             <h3
                                 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                {{ $nama_project }}
+                                {{ autoTranslate($nama_project) }}
                             </h3>
 
                             <!-- Info owner & leader -->
@@ -126,7 +126,7 @@
                                 <div class="mb-5 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
                                     @include('components.video_preview', [
                                         'link_video' => $link_video,
-                                        'alt' => 'Video ' . $nama_project,
+                                        'alt' => 'Video ' . autoTranslate($nama_project),
                                         'class' => 'w-full'
                                     ])
                                 </div>

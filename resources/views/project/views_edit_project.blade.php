@@ -1,5 +1,5 @@
 ﻿@extends('Layout.Layout')
-@section('title', 'Edit Project Mahasiswa')
+@section('title', autoTranslate('Edit Project Mahasiswa'))
 @section('content')
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div class="p-4 md:p-8 max-w-7xl mx-auto">
@@ -29,11 +29,11 @@
                         <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                         </svg>
-                        <span class="font-medium">Terdapat kesalahan pada input:</span>
+                        <span class="font-medium">{{ autoTranslate('Terdapat kesalahan pada input:')}}</span>
                     </div>
                     <ul class="list-disc pl-5 md:pl-10 space-y-1 text-sm">
                         @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li>{{ autoTranslate($error) }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -47,28 +47,28 @@
 
                 <div class="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Projek Kolaboratif</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Aktifkan untuk menambahkan pemimpin dan anggota tim.</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{autoTranslate('Projek Kolaboratif')}}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{autoTranslate('Aktifkan untuk menambahkan pemimpin dan anggota tim.')}}</p>
                 </div>
                 <label class="inline-flex items-center cursor-pointer">
                     <span class="relative">
                         <input id="project-collaborative-toggle" type="checkbox" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
                     </span>
-                    <span id="toggle-label" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">Nonaktif</span>
+                    <span id="toggle-label" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">{{autoTranslate('Nonaktif')}}</span>
                 </label>
             </div>
                 <!-- User Selection Section -->
                 <div id="user-selection-section" class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Pemilihan User Project</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{autoTranslate('Pemilihan User Project') }}</h3>
                         <button type="button" onclick="openUserModal()"
                             class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
                             <span class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
-                                Tambah User
+                                {{{ autoTranslate('Tambah User') }}}
                             </span>
                         </button>
                     </div>
@@ -79,7 +79,7 @@
                     </div>
 
                     <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
-                        Belum ada user yang dipilih. Klik "Tambah User" untuk memulai.
+                        {{autoTranslate('Belum ada user yang dipilih. Klik "Tambah User" untuk memulai.') }}
                     </div>
                 </div>
 
@@ -102,9 +102,9 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="nama_project" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
                     <input type="text" name="nama_project" value="{{ old('nama_project', $project->isi_content['nama_project'] ?? '') }}" required
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
-                        placeholder="Contoh: Website Portfolio Pribadi">
+                        placeholder="{{ autoTranslate('Contoh: Website Portfolio Pribadi') }}">
                     @error('nama_project')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
 
@@ -113,9 +113,9 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="deskripsi_opsional" data-translate-page="project_edit"></span></label>
                     <textarea name="deskripsi" rows="4"
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
-                        placeholder="Deskripsikan project Anda...">{{ old('deskripsi', $project->isi_content['deskripsi'] ?? '') }}</textarea>
+                        placeholder="{{ autoTranslate('Deskripsikan project Anda...') }}">{{ old('deskripsi', $project->isi_content['deskripsi'] ?? '') }}</textarea>
                     @error('deskripsi')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
 
@@ -125,16 +125,16 @@
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> Tambah Tugas
+                        <span class="text-xl">+</span> {{autoTranslate('Tambah Tugas')}}
                     </button>
                     @error('tasks')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                     @error('tasks.*.user_id')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                     @error('tasks.*.name_task')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message)  }}</p>
                     @enderror
                 </div>
 
@@ -145,7 +145,7 @@
                         <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ old('tanggal_mulai', $project->tanggal_mulai->format('Y-m-d')) }}" required
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_mulai') border-red-500 @enderror">
                         @error('tanggal_mulai')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                         @enderror
                     </div>
                     <div>
@@ -153,7 +153,7 @@
                         <input type="date" id="tanggal_akhir" name="tanggal_akhir" value="{{ old('tanggal_akhir', $project->tanggal_akhir?->format('Y-m-d') ?? '') }}"
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('tanggal_akhir') border-red-500 @enderror">
                         @error('tanggal_akhir')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                         @enderror
                     </div>
                 </div>
@@ -165,7 +165,7 @@
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_project') border-red-500 @enderror"
                         placeholder="https://example.com/project">
                     @error('link_project')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
 
@@ -177,7 +177,7 @@
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_github') border-red-500 @enderror"
                             placeholder="https://github.com/username/repo">
                         @error('link_github')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                         @enderror
                     </div>
                     <div>
@@ -186,7 +186,7 @@
                             class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('link_video') border-red-500 @enderror"
                             placeholder="https://www.youtube.com/watch?v=...">
                         @error('link_video')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                         @enderror
                     </div>
                 </div>
@@ -248,7 +248,7 @@
 
     function renderTaskUserOptions(selectedId = '') {
         const users = getAllowedTaskUsers();
-        let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+        let html = '<option value="">{{autoTranslate("-- Pilih Penanggung Jawab --")}}</option>';
         users.forEach(user => {
             html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
         });
@@ -268,19 +268,19 @@
         taskItem.innerHTML = `
             <div class="grid gap-4 md:grid-cols-3 items-end">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Penanggung Jawab') }}</label>
                     <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                         ${renderTaskUserOptions(userId)}
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Nama Tugas') }}</label>
                     <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
                            class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                           placeholder="Deskripsikan tugas...">
+                           placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
                 </div>
                 <button type="button" onclick="removeTaskRow(this)" 
-                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">{{ autoTranslate('Delete') }}</button>
             </div>
         `;
 

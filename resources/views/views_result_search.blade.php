@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Hasil Pencarian')
+@section('title', autoTranslate('Hasil Pencarian'))
 
 @section('content')
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">

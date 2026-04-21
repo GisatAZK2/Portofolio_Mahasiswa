@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Postingan Saya')
+@section('title', autoTranslate('Postingan Saya'))
 
 @section('content')
     <div class="p-6 lg:p-8">
@@ -7,7 +7,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl" data-translate-page="post">Postingan Saya</h1>
                 <p data-translate="desc" data-translate-page="post" class="text-gray-600 dark:text-gray-200 mt-1">
-                    Kelola semua postingan yang telah Anda buat.
+                    {{autoTranslate('Kelola semua postingan yang telah Anda buat.')}}
                 </p>
             </div>
             <a href="{{ route('postingan.create') }}"
@@ -16,7 +16,7 @@
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                <span data-translate="add" data-translate-page="post">Buat Postingan</span>
+                <span data-translate="add" data-translate-page="post">{{autoTranslate('Buat Postingan')}}</span>
             </a>
         </div>
 
@@ -39,7 +39,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada postingan.</p>
+                <p class="mt-4 text-gray-600 dark:text-gray-200">{{ autoTranslate('Belum ada postingan.') }}</p>
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -88,14 +88,14 @@
                             <!-- Title -->
                             @if($title)
                                 <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                    {{ $title }}
+                                    {{ autoTranslate($title) }}
                                 </h2>
                             @endif
 
                             <!-- Deskripsi -->
                             @if ($deskripsi)
                                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
-                                    {{ Str::limit($deskripsi, 100) }}
+                                    {{ autoTranslate(Str::limit($deskripsi, 100)) }}
                                 </p>
                             @endif
 

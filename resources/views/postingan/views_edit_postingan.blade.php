@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Edit Postingan')
+@section('title', autoTranslate('Edit Postingan'))
 
 @section('content')
     <div class="min-h-screen">
@@ -19,11 +19,11 @@
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        <span class="font-medium">Terdapat kesalahan pada input:</span>
+                        <span class="font-medium">{{ autoTranslate('Terdapat kesalahan pada input:') }}</span>
                     </div>
                     <ul class="list-disc pl-10 space-y-1.5">
                         @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li>{{ autoTranslate($error) }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -41,10 +41,10 @@
                         <span data-translate="jdl" data-translate-page="add_post">Judul Postingan</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="judul" value="{{ old('judul', $postingan->content[0]['content'] ?? '') }}"
-                        placeholder="Judul postingan Anda..." required
+                        placeholder="{{ autoTranslate('Judul postingan Anda...') }}" required
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
 
@@ -59,9 +59,9 @@
                                                 text-gray-700 dark:text-gray-300
                                                 placeholder-gray-500 dark:placeholder-gray-400
                                                 shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('deskripsi') border-red-500 @enderror"
-                        placeholder="Deskripsikan postingan Anda...">{{ old('deskripsi', $postingan->content[1]['content'] ?? '') }}</textarea>
+                        placeholder="{{ autoTranslate('Deskripsikan postingan Anda...') }}">{{ old('deskripsi', $postingan->content[1]['content'] ?? '') }}</textarea>
                     @error('deskripsi')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
                 </div>
 
@@ -87,8 +87,8 @@
                             <div class="item bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 relative" data-index="{{ $index }}">
                                 <div class="flex justify-between items-start mb-4">
                                     <select name="items[{{ $index }}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                                        <option data-translate-page="add_post" data-translate="pic" value="image" {{ (isset($item['type']) && $item['type'] === 'image') ? 'selected' : '' }}>Gambar</option>
-                                        <option data-translate-page="add_post" data-translate="link" value="link" {{ (isset($item['type']) && $item['type'] === 'link') ? 'selected' : '' }}>Link / Referensi</option>
+                                        <option data-translate-page="add_post" data-translate="pic" value="image" {{ (isset($item['type']) && $item['type'] === 'image') ? 'selected' : '' }}>{{ autoTranslate('Gambar') }}</option>
+                                        <option data-translate-page="add_post" data-translate="link" value="link" {{ (isset($item['type']) && $item['type'] === 'link') ? 'selected' : '' }}>{{ autoTranslate('Link / Referensi') }}</option>
                                     </select>
                                     <button data-translate="del" data-translate-page="add_post" type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
                                         Hapus
@@ -145,11 +145,11 @@
             newItem.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                        <option data-translate="pic" data-translate-page="add_post" value="image">Gambar</option>
-                        <option data-translate="link" data-translate-page="add_post" value="link">Link / Referensi</option>
+                        <option data-translate="pic" data-translate-page="add_post" value="image">{{ autoTranslate('Gambar') }}</option>
+                        <option data-translate="link" data-translate-page="add_post" value="link">{{ autoTranslate('Link / Referensi') }}</option>
                     </select>
                     <button data-translate="del" data-translate-page="add_post" type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
-                        Hapus
+                        {{ autoTranslate('Delete') }}
                     </button>
                 </div>
 

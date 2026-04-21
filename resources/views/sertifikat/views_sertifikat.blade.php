@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Sertifikat Saya')
+@section('title', autoTranslate('Sertifikat Saya'))
 @section('content')
     <div class="p-6 lg:p-8 rounded-2xl">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
@@ -26,22 +26,22 @@
             <button type="button" onclick="filterStatus('all')"
                 class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-indigo-600 text-white hover:bg-indigo-700"
                 data-filter="all">
-                Semua
+                {{autoTranslate('Semua')}}
             </button>
             <button type="button" onclick="filterStatus('Sedang Di Ajukan')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300"
                 data-filter="Sedang Di Ajukan">
-                Sedang Diajukan
+                {{autoTranslate('Sedang Diajukan')}}
             </button>
             <button type="button" onclick="filterStatus('Di Terima')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300"
                 data-filter="Di Terima">
-                Diterima
+                {{autoTranslate('Diterima')}}
             </button>
             <button type="button" onclick="filterStatus('Di Tolak')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300"
                 data-filter="Di Tolak">
-                Ditolak
+                {{autoTranslate('Ditolak')}}
             </button>
         </div>
 
@@ -76,14 +76,14 @@
                                 {{-- Status Badge --}}
                                 @php
                                     $statusClass = match ($entry->status_pengajuan) {
-                                        'Sedang Di Ajukan' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
-                                        'Di Terima' => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-                                        'Di Tolak' => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                                        autoTranslate('Sedang Diajukan') => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+                                        autoTranslate('Diterima') => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+                                        autoTranslate('Ditolak') => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
                                         default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                                     };
                                 @endphp
                                 <span class="text-xs font-medium px-2.5 py-1 rounded-full {{ $statusClass }}">
-                                    {{ $entry->status_pengajuan }}
+                                    {{ autoTranslate($entry->status_pengajuan) }}
                                 </span>
                             </div>
 
@@ -102,7 +102,7 @@
                         <div class="p-6 flex-1 flex flex-col">
                             <!-- Nama Sertifikat -->
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-                                {{ $entry->nama_sertifikat }}
+                                {{ autoTranslate($entry->nama_sertifikat) }}
                             </h3>
 
                             <!-- Lembaga Penerbit -->
@@ -165,7 +165,7 @@
                             @endif
 
                             {{-- Keterangan (untuk status Ditolak) --}}
-                            @if($entry->status_pengajuan === 'Di Tolak' && $entry->keterangan)
+                            @if($entry->status_pengajuan === 'Ditolak' && $entry->keterangan)
                                 <div class="mb-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded">
                                     <p class="text-xs text-red-800 dark:text-red-300 font-semibold mb-1">
                                         <span data-translate="sertifikat_alasan_penolakan" data-translate-page="sertifikat">Alasan

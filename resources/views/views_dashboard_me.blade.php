@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Dashboard')
+@section('title', autoTranslate('Dashboard'))
 
 @section('content')
     <style>
