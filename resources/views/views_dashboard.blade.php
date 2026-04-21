@@ -75,8 +75,22 @@
                                 </div>
                             @endif
                             <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">{{ autoTranslate($post->user->nama_mahasiswa) }}</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $post->tanggal?->translatedFormat('d M Y') ?? $post->created_at?->translatedFormat('d M Y') }}</p>
+                                <h4 class="font-semibold text-lg text-gray-900 dark:text-gray-100">{{ autoTranslate($post->user->nama_mahasiswa) }}</h4>
+                                <!-- Badge Jurusan & Angkatan -->
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    @if(!empty($post->user->jurusan))
+                                        <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">
+                                            {{ $post->user->jurusan['nama_jurusan'] ?? '-' }}
+                                        </span>
+                                    @endif
+
+                                    @if(!empty($post->user->angkatan))
+                                        <span class="text-[14px] px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full">
+                                            {{ $post->user->angkatan['nama_angkatan'] ?? '-' }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $post->tanggal?->translatedFormat('d M Y') ?? $post->created_at?->translatedFormat('d M Y') }}</p>
                             </div>
                         </div>
                     </div>
@@ -105,23 +119,23 @@
                         @endphp
 
                         @if($title)
-                            <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">{{ autoTranslate($title) }}</h3>
+                            <h3 class="font-semibold text-[22px] text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">{{ autoTranslate($title) }}</h3>
                         @endif
 
                         <!-- Gambar Preview -->
                         @if($imageUrl)
-                            <div class="mb-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <div class="mb-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 h-auto shadow-sm">
                                 <img src="{{ $imageUrl }}" 
                                      alt="{{ autoTranslate('Gambar postingan') }}"
                                      id="logo-zoom"
-                                     class="w-full h-auto max-h-[220px] object-cover hover:scale-105 transition-transform duration-300"
+                                     class="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
                                      loading="lazy"
                                      onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-64 bg-gray-100 dark:bg-gray-800 flex items-center justify-center\'><span class=\'text-gray-400\'>{{ autoTranslate('Gambar tidak dapat dimuat') }}</span></div>'">
                             </div>
                         @endif
 
                         @if($deskripsi)
-                            <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-4 leading-relaxed">
+                            <p class="text-[20px] text-gray-600 dark:text-gray-300 line-clamp-4 leading-relaxed">
                                 {{ autoTranslate(Str::limit(strip_tags($deskripsi), 180)) }}
                             </p>
                         @endif

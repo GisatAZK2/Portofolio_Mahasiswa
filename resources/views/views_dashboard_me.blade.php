@@ -3,7 +3,11 @@
 
 @section('content')
     <style>
-
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
         @media (min-width: 1024px) {
             .dashboard-container {
                 grid-template-columns: 2fr 1fr;
@@ -239,19 +243,33 @@
                                                 $content = $post->content;
                                                 $title = '';
                                                 $deskripsi = '';
+                                                $imageUrl = null;
                                                 if (is_array($content)) {
                                                     foreach ($content as $item) {
                                                         if (isset($item['type']) && $item['type'] === 'title') $title = $item['content'] ?? '';
                                                         if (isset($item['type']) && $item['type'] === 'description') $deskripsi = $item['content'] ?? '';
+                                                        if (isset($item['type']) && $item['type'] === 'image' && !empty($item['content']) && !$imageUrl) {
+                                                            $imageUrl = asset('storage/' . ltrim($item['content'], '/'));
+                                                        }
                                                     }
                                                 }
                                             @endphp
 
                                             @if($title)
-                                                <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">{{ $title }}</h3>
+                                                <h3 class="font-semibold text-lg text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">{{ $title }}</h3>
                                             @endif
                                             @if($deskripsi)
                                                 <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ Str::limit($deskripsi, 150) }}</p>
+                                            @endif
+                                            @if($imageUrl)
+                                                <div class="mb-4 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 w-auto h-auto shadow-sm">
+                                                    <img src="{{ $imageUrl }}" 
+                                                         alt="{{ autoTranslate('Gambar postingan') }}"
+                                                         id="logo-zoom"
+                                                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
+                                                         loading="lazy"
+                                                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-64 bg-gray-100 dark:bg-gray-800 flex items-center justify-center\'><span class=\'text-gray-400\'>{{ autoTranslate('Gambar tidak dapat dimuat') }}</span></div>'">
+                                                </div>
                                             @endif
                                         </div>
 
@@ -363,37 +381,6 @@
                                 {{ $postinganTerbaru->render('vendor.pagination.custom_ajax', ['groupName' => 'postingan']) }}
                             </div>
                         @endif
-
-                    <!-- Learning Corner -->
-                    <div class="mb-10">
-                        <div class="flex items-center gap-2 mb-6">
-                            <div class="w-1 h-6 bg-purple-600 rounded-full"></div>
-                            <h3 class="text-xl font-bold text-purple-700 dark:text-purple-300">Learning Corner</h3>
-                            <span class="ml-auto text-sm text-gray-600 dark:text-gray-400 font-medium">{{ $learningCorners->total() ?? 0 }} <span data-translate="content" data-translate-page="dashboard_me">konten</span></span>
-                        </div>
-
-                        @if($learningCorners->isEmpty())
-                            <div
-                                class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_lrn" data-translate="dahboard_me">Belum ada Learning Corner</p>
-                            </div>
-                        @else
-                            <div data-pagination-group="learning_corner">
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    @foreach($learningCorners as $post)
-                                        @include('components.card_postingan', ['post' => $post])
-                                    @endforeach
-                                </div>
-                                <div class="mt-4">
-                                    {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => 'learning_corner']) }}
-                                </div>
-                            </div>
-                        @endif
                     </div>
 
                     <!-- Project -->
@@ -465,11 +452,31 @@
                     </div>
 
                 </div>
-
-                <!-- RIGHT COLUMN: Sidebar -->
                 <div class="sidebar-column">
+                    <!-- Learning Corner -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
+                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">{{ autoTranslate('Learning Corner') }}</h3>
+                        </div>
+                        @if($learningCorners->isEmpty())
+                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn" data-translate-page="dashboard">{{ autoTranslate('Belum ada Learning Corner') }}</p>
+                        @else
+                            <div id="learning-corner-list" class="space-y-4">
+                                @foreach($learningCorners->take(5) as $learning)
+                                    <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'" 
+                                         class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
+                                        <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ autoTranslate($learning->content[0]['content'] ?? 'Learning Content') }}</h4>
+                                        <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->translatedFormat('d M Y') }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="mt-6">
+                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('learning_corner')]) }}
+                            </div>
+                        @endif
+                    </div>
                 </div>
-            </div>
         </div>
     </div>
 
