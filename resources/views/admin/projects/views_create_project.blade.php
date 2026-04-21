@@ -380,7 +380,9 @@
                 // Re-set selected roles after updating HTML
                 setSelectedRolesInModal();
                 // Refresh translations for newly rendered elements
-                window.refreshTranslations();
+                if (typeof window.refreshTranslations === 'function') {
+                    window.refreshTranslations();
+                }
             })
             .catch(error => {
                 console.error('Error loading users:', error);
@@ -405,7 +407,9 @@
                         document.querySelector('[data-pagination-group="admin_project_user_selection"] .mt-4').innerHTML = data.paginationHtml;
                         setSelectedRolesInModal();
                         // Refresh translations for newly rendered elements
-                        window.refreshTranslations();
+                        if (typeof window.refreshTranslations === 'function') {
+                            window.refreshTranslations();
+                        }
                         attachPaginationListeners();
                     })
                     .catch(error => {
@@ -485,7 +489,9 @@
 
             setSelectedRolesInModal();
             // Refresh translations for newly rendered elements
-            window.refreshTranslations();
+            if (typeof window.refreshTranslations === 'function') {
+                window.refreshTranslations();
+            }
         }
 
         function updateUserRole(selectElement, userId, role) {
@@ -607,7 +613,9 @@
                 `;
             }).join('');
             // Refresh translations for newly rendered role labels
-            window.refreshTranslations();
+            if (typeof window.refreshTranslations === 'function') {
+                window.refreshTranslations();
+            }
         }
 
         function removeUser(userId) {
@@ -698,7 +706,9 @@
             const select = taskItem.querySelector('.task-user-select');
             if (select) select.addEventListener('change', updateTaskUserOptions);
             // Refresh translations for newly added task elements
-            window.refreshTranslations();
+            if (typeof window.refreshTranslations === 'function') {
+                window.refreshTranslations();
+            }
         }
 
         function removeTaskRow(button) {
@@ -726,7 +736,9 @@
             });
             cleanupInvalidTaskRows();
             // Refresh translations for updated task user options
-            window.refreshTranslations();
+            if (typeof window.refreshTranslations === 'function') {
+                window.refreshTranslations();
+            }
         }
 
         function initializeTaskRows(existingTasks = []) {

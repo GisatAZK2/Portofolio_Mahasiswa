@@ -224,10 +224,11 @@
             emptyState.classList.add('hidden');
 
             let html = '';
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
             filteredMahasiswa.forEach((m, index) => {
                 const statusColor = m.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
                 const statusText = m.is_active ? (translations[currentLang]?.project_create?.aktf || 'Aktif') : (translations[currentLang]?.project_create?.tdk_aktf || 'Tidak Aktif');
-                const portfolioUrl = '{{ route('portfolio.show', ':id') }}'.replace(':id', m.id);
+                const portfolioUrl = `/${locale}/portofolio?user=${m.id}`;
 
                 html += `
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">

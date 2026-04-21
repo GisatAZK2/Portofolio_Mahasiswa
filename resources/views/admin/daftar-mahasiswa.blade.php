@@ -43,7 +43,7 @@
                 </p>
             </div>
             <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                <form id="bulkDeleteForm" action="{{ route('admin.users.bulkDestroy') }}" method="POST" class="inline">
+                <form id="bulkDeleteForm" action="{{ route('admin.users.bulkDestroy', ['locale' => app()->getLocale()]) }}" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
                     <button type="button" onclick="confirmBulkDelete()"
@@ -196,8 +196,25 @@
                             data-translate="tbl_foto" data-translate-page="admin">Foto</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_nm" data-translate-page="admin">Nama / Username</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                            data-translate="tbl_email" data-translate-page="admin">Email</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <div class="flex items-center justify-between gap-2">
+                                <span data-translate="tbl_email" data-translate-page="admin">Email</span>
+                                <button type="button" id="emailHeaderToggle" class="p-1 hover:bg-gray-300 dark:hover:bg-gray-600 rounded transition" title="Toggle all emails visibility">
+                                    <!-- Eye Icon (Show) -->
+                                    <svg id="header-eye-icon-show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <!-- Eye Off Icon (Hide) -->
+                                    <svg id="header-eye-icon-hide" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_role" data-translate-page="admin">Role</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
@@ -238,8 +255,23 @@
                                 <div class="text-sm text-gray-500 dark:text-gray-400">
                                     {{ '@' . ($user->username ?? 'username') }}</div>
                             </td>
-                            <td class="px-3 py-3 dark:text-white text-sm max-w-[220px] overflow-hidden whitespace-nowrap text-ellipsis truncate"
-                                title="{{ $user->email ?? '-' }}">{{ $user->email ?? '-' }}</td>
+                            <td class="px-3 py-3 dark:text-white text-sm max-w-[220px] overflow-hidden whitespace-nowrap text-ellipsis truncate relative group">
+                                <div class="email-cell" title="{{ $user->email ?? '-' }}" data-email="{{ $user->email ?? '-' }}">{{ $user->email ?? '-' }}</div>
+                                <button type="button" class="email-toggle-btn absolute right-0 top-1/2 -translate-y-1/2 p-1 bg-gray-200 dark:bg-gray-600 rounded opacity-0 group-hover:opacity-100 transition-opacity" title="Toggle email visibility">
+                                    <!-- Eye Icon (Show) -->
+                                    <svg class="email-eye-show w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <!-- Eye Off Icon (Hide) -->
+                                    <svg class="email-eye-hide w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                    </svg>
+                                </button>
+                            </td>
                             <td class="px-3 py-3">
                                 <span class="px-2 py-1 rounded-full text-xs font-medium
                                     @if($user->role == 'admin') bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
@@ -294,7 +326,7 @@
                             <td class="px-3 py-3">
                                 <div class="flex space-x-2">
                                     @if(in_array($user->role, ['mahasiswa', 'dosen']))
-                                        <a href="{{ route('portfolio.show', $user->id) }}"
+                                        <a href="{{  route('portfolio.show', ['user' => $user->id]) }}"
                                             class="text-blue-500 hover:text-blue-700 transition-colors" title="Lihat Portfolio">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor">
@@ -306,7 +338,7 @@
                                         </a>
                                     @endif
                                     <!-- Edit User Button -->
-                                    <a href="{{ route('admin.users.details', $user->id) }}"
+                                    <a href="{{ route('admin.users.details', ['id' => $user->id]) }}"
                                         class="text-yellow-500 hover:text-yellow-700 transition-colors" title="Edit User">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -459,7 +491,7 @@
 
                     <div class="flex justify-end space-x-3 pt-3 border-t border-gray-200 dark:border-gray-600">
                         @if(in_array($user->role, ['mahasiswa', 'dosen']))
-                            <a href="{{ route('portfolio.show', $user->id) }}"
+                            <a href="{{  route('portfolio.show', ['user' => $user->id]) }}"
                                 class="text-blue-500 hover:text-blue-700 p-2 transition-colors" title="Lihat Portfolio">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -471,7 +503,7 @@
                             </a>
                         @endif
                         <!-- Edit User Button Mobile -->
-                        <a href="{{ route('admin.users.details', $user->id) }}"
+                        <a href="{{ route('admin.users.details', ['id' => $user->id]) }}"
                             class="text-yellow-500 hover:text-yellow-700 p-2 transition-colors" title="Edit User">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -540,6 +572,56 @@
 
 @push('scripts')
     <script>
+        let allEmailsVisible = true;
+
+        function toggleIndividualEmailVisibility(button) {
+            const emailCell = button.previousElementSibling;
+            const eyeShowIcon = button.querySelector('.email-eye-show');
+            const eyeHideIcon = button.querySelector('.email-eye-hide');
+            const isHidden = emailCell.textContent === '...';
+
+            if (isHidden) {
+                emailCell.textContent = emailCell.dataset.email;
+                emailCell.title = emailCell.dataset.email;
+            } else {
+                emailCell.textContent = '...';
+                emailCell.title = 'Email tersembunyi';
+            }
+
+            // Toggle icon - hanya di row ini, tidak update header
+            eyeShowIcon.classList.toggle('hidden', isHidden);
+            eyeHideIcon.classList.toggle('hidden', !isHidden);
+        }
+
+        function toggleAllEmailsVisibility() {
+            allEmailsVisible = !allEmailsVisible;
+            const headerEyeShow = document.getElementById('header-eye-icon-show');
+            const headerEyeHide = document.getElementById('header-eye-icon-hide');
+            const allEmailToggleButtons = document.querySelectorAll('.email-toggle-btn');
+
+            allEmailToggleButtons.forEach(button => {
+                const emailCell = button.previousElementSibling;
+                const eyeShowIcon = button.querySelector('.email-eye-show');
+                const eyeHideIcon = button.querySelector('.email-eye-hide');
+
+                if (allEmailsVisible) {
+                    emailCell.textContent = emailCell.dataset.email;
+                    emailCell.title = emailCell.dataset.email;
+                    eyeShowIcon.classList.remove('hidden');
+                    eyeHideIcon.classList.add('hidden');
+                } else {
+                    emailCell.textContent = '...';
+                    emailCell.title = 'Email tersembunyi';
+                    eyeShowIcon.classList.add('hidden');
+                    eyeHideIcon.classList.remove('hidden');
+                }
+            });
+
+            // Toggle header icon saat button diklik
+            headerEyeShow.classList.toggle('hidden', !allEmailsVisible);
+            headerEyeHide.classList.toggle('hidden', allEmailsVisible);
+        }
+
         let selectedIds = [];
 
         function getAllCheckboxes() {
@@ -677,7 +759,8 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     const form = document.getElementById('hiddenDeleteForm');
-                    let url = `{{ route('admin.users.destroy', ':id') }}`;
+                    const locale = document.querySelector('html').getAttribute('lang') || 'id';
+                    let url = `/${locale}/admin/manageUser/DeleteUser?id=${id}`;
                     url = url.replace(':id', id);
                     form.action = url;
                     form.submit();
@@ -856,6 +939,19 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
+            // Header email toggle button
+            const emailHeaderToggle = document.getElementById('emailHeaderToggle');
+            if (emailHeaderToggle) {
+                emailHeaderToggle.addEventListener('click', toggleAllEmailsVisibility);
+            }
+
+            // Email toggle buttons (individual)
+            document.querySelectorAll('.email-toggle-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    toggleIndividualEmailVisibility(this);
+                });
+            });
+
             // Inisialisasi awal
             updateSelectedIds();
             updateClientPagination();

@@ -159,33 +159,50 @@ class DosenController extends Controller
         $this->authorizeAccess();
         $dosen = Auth::user();
 
-        $users = User::whereIn('role', ['mahasiswa'])
-            ->where('id', '!=', Auth::id())
-            ->with(['jurusan', 'angkatan', 'keahlian'])
-            ->withCount([
-                'projects',
-                'sertifikats',
-                'learning_corners'
-            ])
-            ->orderBy('created_at', 'desc');
+        // === SEARCH ===
+        $query = User::query()
+        ->whereIn('role', ['mahasiswa'])
+        ->where('id', '!=', Auth::id())
+        ->with(['jurusan', 'angkatan', 'keahlian'])
+        ->withCount([
+            'projects',
+            'sertifikats',
+            'learning_corners'
+        ])
+        ->orderBy('created_at', 'desc');
+        $query = $this->getdosenFilterScope($query);
 
-        if ($dosen->id_jurusan || $dosen->id_angkatan || $dosen->id_keahlian) {
-            $users->where(function ($q) use ($dosen) {
-                if ($dosen->id_jurusan) {
-                    $q->where('id_jurusan', $dosen->id_jurusan);
-                }
-                if ($dosen->id_angkatan) {
-                    $q->where('id_angkatan', $dosen->id_angkatan);
-                }
-                if ($dosen->id_keahlian) {
-                    $q->where('id_keahlian', $dosen->id_keahlian);
-                }
-            });
-        }
+    $search = $request->input('search');
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+              ->orWhere('username', 'like', '%' . $search . '%')
+              ->orWhere('email', 'like', '%' . $search . '%');
+        });
+    }
 
-        $users = $users->get();
+    $users = $query->get();
 
-        return view('dosen.daftar-mahasiswa', compact('users'));
+        // Retrieve all Angkatan and Jurusan data
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        // Get the selected angkatan and jurusan from the request
+        $angkatan = $request->input('angkatan', '');
+        $jurusan = $request->input('jurusan', '');
+        $keahlian = $request->input('keahlian', '');
+
+return view('dosen.daftar-mahasiswa', compact(
+        'users', 
+        'angkatans', 
+        'jurusans', 
+        'keahlians',
+        'search',   
+        'angkatan', 
+        'jurusan', 
+        'keahlian'
+    ));
     }
 
     public function ViewAddUser()
@@ -350,7 +367,7 @@ class DosenController extends Controller
             ],
         ];
 
-       if (!$dosen->id_jurusan) {
+        if (!$dosen->id_jurusan) {
             $rules['id_jurusan'] = [
                 'sometimes',
                 'nullable',
@@ -391,7 +408,7 @@ class DosenController extends Controller
             }
         }
 
-      if (!$dosen->id_jurusan && $request->has('id_jurusan')) {
+        if (!$dosen->id_jurusan && $request->has('id_jurusan')) {
             $updateData['id_jurusan'] = $validated['id_jurusan'] ?? null;
         }
 
@@ -629,11 +646,11 @@ class DosenController extends Controller
 
         $query = $this->getdosenFilterScope($query);
 
-       if ($search) {
+        if ($search) {
             $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
         }
 
-       if ($angkatan) {
+        if ($angkatan) {
             $query->where('id_angkatan', $angkatan);
         }
 
@@ -645,7 +662,7 @@ class DosenController extends Controller
             $query->where('id_keahlian', $keahlian);
         }
 
-         $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
@@ -785,7 +802,7 @@ class DosenController extends Controller
                 }
             }
 
-           Sertifikat::whereIn('id', $sertifikats->pluck('id'))->delete();
+            Sertifikat::whereIn('id', $sertifikats->pluck('id'))->delete();
 
             return response()->json([
                 'success' => true,
@@ -800,27 +817,34 @@ class DosenController extends Controller
     }
 
     //For Projects Pages
-    public function projects()
-    {
-        $this->authorizeAccess();
+public function projects(Request $request)
+{
+    $this->authorizeAccess();
 
-        $projects = Project::with(['mahasiswa', 'leader', 'members'])
-            ->where(function ($query) {
-                $query->whereHas('mahasiswa', function ($q) {
-                    $this->getdosenFilterScope($q);
-                })
-                    ->orWhereHas('leader', function ($q) {
-                    $this->getdosenFilterScope($q);
-                })
-                    ->orWhereHas('members', function ($q) {
-                    $this->getdosenFilterScope($q);
-                });
+    $search = trim($request->input('search'));
+
+    $query = Project::with(['mahasiswa', 'leader', 'members'])
+        ->where(function ($query) {
+            $query->whereHas('mahasiswa', function ($q) {
+                $this->getdosenFilterScope($q);
             })
-            ->latest()
-            ->paginate(12);
+            ->orWhereHas('leader', function ($q) {
+                $this->getdosenFilterScope($q);
+            })
+            ->orWhereHas('members', function ($q) {
+                $this->getdosenFilterScope($q);
+            });
+        });
 
-        return view('dosen.project', compact('projects'));
+    // Search hanya nama project
+    if ($search) {
+        $query->where('isi_content->nama_project', 'like', '%' . $search . '%');
     }
+
+    $projects = $query->latest()->paginate(12)->withQueryString();
+
+    return view('dosen.project', compact('projects', 'search'));
+}
 
     public function TambahProjects(Request $request)
     {
@@ -1108,8 +1132,8 @@ class DosenController extends Controller
             // Cek apakah leader berbeda dari dosen dalam jurusan/angkatan/keahlian
             $leader = User::find($newLeaderId);
             $isDifferent = ($leader->id_jurusan != $dosen->id_jurusan) ||
-                           ($leader->id_angkatan != $dosen->id_angkatan) ||
-                           ($leader->id_keahlian != $dosen->id_keahlian);
+                ($leader->id_angkatan != $dosen->id_angkatan) ||
+                ($leader->id_keahlian != $dosen->id_keahlian);
 
             if ($isDifferent) {
                 // Leader naik tingkat menjadi owner
@@ -1259,5 +1283,18 @@ class DosenController extends Controller
             ->delete();
 
         return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
+    }
+
+    public function manageUsers()
+    {
+        $this->authorizeAccess();
+
+        $users = User::query();
+
+        // Retrieve all Angkatan data
+        $angkatans = Angkatan::all();
+
+        // Pass $angkatans to the view
+        return view('dosen.daftar-mahasiswa', compact('users', 'angkatans'));
     }
 }

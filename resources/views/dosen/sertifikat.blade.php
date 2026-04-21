@@ -2,26 +2,6 @@
 @section('title', 'Sertifikat Saya')
 @section('content')
     <div class="p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
-        <div style="display:none">
-            <!-- Translations for Sweet Alerts -->
-            <span data-translate="confirm_bulk_delete_title" data-translate-page="dosen_stk">Hapus Sertifikat Terpilih?</span>
-            <span data-translate="confirm_bulk_delete_text" data-translate-page="dosen_stk">sertifikat akan dihapus permanen dan tidak bisa dikembalikan.</span>
-            <span data-translate="no_data_selected_title" data-translate-page="dosen_stk">Tidak Ada Data Dipilih</span>
-            <span data-translate="no_data_selected_text" data-translate-page="dosen_stk">Silakan pilih sertifikat yang ingin dihapus.</span>
-            <span data-translate="deleting_title" data-translate-page="dosen_stk">Menghapus...</span>
-            <span data-translate="deleting_text" data-translate-page="dosen_stk">Mohon tunggu sebentar</span>
-            <span data-translate="success_title" data-translate-page="dosen_stk">Berhasil!</span>
-            <span data-translate="error_title" data-translate-page="dosen_stk">Gagal!</span>
-            <span data-translate="confirm_individual_delete_title" data-translate-page="dosen_stk">Hapus Sertifikat?</span>
-            <span data-translate="confirm_individual_delete_text" data-translate-page="dosen_stk">Sertifikat ini akan dihapus permanen dan tidak bisa dikembalikan.</span>
-            <span data-translate="confirm_approve_title" data-translate-page="dosen_stk">Terima Sertifikat?</span>
-            <span data-translate="confirm_approve_text" data-translate-page="dosen_stk">Sertifikat akan diterima dan status akan menjadi "Di Terima".</span>
-            <span data-translate="processing_title" data-translate-page="dosen_stk">Memproses...</span>
-            <span data-translate="yes_delete_all" data-translate-page="dosen_stk">Ya, Hapus Semua</span>
-            <span data-translate="yes_delete" data-translate-page="dosen_stk">Ya, Hapus</span>
-            <span data-translate="yes_accept" data-translate-page="dosen_stk">Ya, Terima</span>
-            <span data-translate="cancel" data-translate-page="dosen_stk">Batal</span>
-        </div>
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl_stk"
@@ -564,22 +544,22 @@
                     if (checkedCount === 0) {
                         Swal.fire({
                             icon: 'warning',
-                            title: document.querySelector('[data-translate="no_data_selected_title"]').innerText,
-                            text: document.querySelector('[data-translate="no_data_selected_text"]').innerText,
+                            title: 'Tidak Ada Data Dipilih',
+                            text: 'Silakan pilih sertifikat yang ingin dihapus.',
                             confirmButtonColor: '#3b82f6'
                         });
                         return;
                     }
 
                     const confirmed = await Swal.fire({
-                        title: document.querySelector('[data-translate="confirm_bulk_delete_title"]').innerText,
-                        text: `${checkedCount} ` + document.querySelector('[data-translate="confirm_bulk_delete_text"]').innerText,
+                        title: 'Hapus Sertifikat Terpilih?',
+                        text: `${checkedCount} sertifikat akan dihapus permanen dan tidak bisa dikembalikan.`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#dc2626',
                         cancelButtonColor: '#6b7280',
-                        confirmButtonText: document.querySelector('[data-translate="yes_delete_all"]').innerText,
-                        cancelButtonText: document.querySelector('[data-translate="cancel"]').innerText,
+                        confirmButtonText: 'Ya, Hapus Semua',
+                        cancelButtonText: 'Batal',
                         reverseButtons: true
                     });
 

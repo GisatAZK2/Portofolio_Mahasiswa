@@ -341,7 +341,7 @@
                                         @endphp
 
                                         @if($canEdit)
-                                            <a href="{{ route('admin.sertifikat.details', $entry->id) }}"
+                                            <a href="{{ route('admin.sertifikat.details', ['id' => $entry->id]) }}"
                                                 class="flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-2xl font-medium transition-all shadow-md hover:shadow-lg">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -351,7 +351,7 @@
                                             </a>
                                         @endif
 
-                                        <form action="{{ route('admin.sertifikat.destroy', $entry->id) }}" method="POST"
+                                        <form action="{{ route('admin.sertifikat.destroy', ['id' => $entry->id]) }}" method="POST"
                                             class="delete-form {{ $canEdit ? '' : '' }}">
                                             @csrf @method('DELETE')
                                             <button type="submit" onclick="return confirm('Hapus Sertifikat? Sertifikat ini akan dihapus permanen dan tidak bisa dikembalikan.')"
@@ -368,7 +368,7 @@
                                     {{-- Aksi Approve/Reject untuk status "Sedang Di Ajukan" --}}
                                     @if($entry->status_pengajuan == 'Sedang Di Ajukan')
                                         <div class="flex space-x-3 mt-2">
-                                            <form action="{{ route('admin.sertifikat.approve', $entry->id) }}" method="POST"
+                                            <form action="{{ route('admin.sertifikat.approve', ['id' => $entry->id]) }}" method="POST"
                                                 class="flex-1">
                                                 @csrf
                                                 @method('PATCH')
@@ -417,7 +417,7 @@
                     class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
                     <div class="mt-3">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Tolak Sertifikat</h3>
-                        <form action="{{ route('admin.sertifikat.reject', $entry->id) }}" method="POST">
+                        <form action="{{ route('admin.sertifikat.reject', ['id' => $entry->id]) }}" method="POST">
                             @csrf
                             @method('PATCH')
                             <div class="mb-4">
@@ -564,21 +564,21 @@
                         });
 
                         try {
-                            const formData = new FormData();
                             const ids = Array.from(
                                 document.querySelectorAll('.certificate-checkbox:checked')
                             ).map(cb => cb.value);
 
-                            formData.append('_method', 'DELETE');
-                            formData.append('_token', '{{ csrf_token() }}');
-
-                            ids.forEach(id => {
-                                formData.append('selected_ids[]', id);
-                            });
-
-                            const response = await fetch('{{ route("admin.sertifikat.bulk-destroy") }}', {
-                                method: 'POST',
-                                body: formData
+                            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+                            
+                            // PERBAIKAN: Kirim sebagai JSON, bukan FormData
+                            const response = await fetch(`/${locale}/admin/manageSertifikat/bulk-destroy`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',  // Penting: set Content-Type ke JSON
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ selected_ids: ids })  // Kirim sebagai JSON string
                             });
 
                             const result = await response.json();
@@ -606,7 +606,6 @@
                     }
                 });
             }
-
             // ============== APPROVE FUNCTIONALITY ==============
             document.querySelectorAll('.approve-btn').forEach(button => {
                 button.addEventListener('click', async function (e) {

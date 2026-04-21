@@ -289,15 +289,18 @@
                 <!-- RIGHT COLUMN: Sidebar -->
                 <div class="sidebar-column">
                     <!-- Learning Corner -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
-                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">{{ autoTranslate('Learning Corner') }}</h3>
+                            <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300"
+                                data-translate="ttl_lrn" data-translate-page="dashboard">Learning Corner</h3>
                         </div>
                         @if($learningCorners->isEmpty())
-                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn" data-translate-page="dashboard">{{ autoTranslate('Belum ada Learning Corner') }}</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn"
+                                data-translate-page="dashboard">Belum ada Learning Corner</p>
                         @else
-                            <div id="learning-corner-list" class="space-y-4">
+                             <div id="learning-corner-list" class="space-y-4 overflow-y-auto max-h-96">
                                 @foreach($learningCorners->take(5) as $learning)
                                     <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'" 
                                          class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
@@ -307,7 +310,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('learning_corner')]) }}
+                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => 'learning_corner']) }}
                             </div>
                         @endif
                     </div>

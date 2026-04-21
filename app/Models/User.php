@@ -123,6 +123,11 @@ public function likedPostings()
     return $this->hasMany(LikedPostingan::class, 'id_user', 'id');
 }
 
+public function komentars()
+{
+    return $this->hasMany(Komentar::class, 'id_user', 'id');
+}
+
     protected static function booted(): void
     {
         static::deleting(function (User $user) {
