@@ -49,18 +49,24 @@
                         $title = '';
                         $deskripsi = '';
                         $items = [];
+                        $gameThumbnail = null;
 
                         if (is_array($content)) {
                             foreach ($content as $item) {
-                                if (isset($item['type']) && $item['type'] === 'title') {
-                                    $title = $item['content'] ?? '';
-                                } elseif (isset($item['type']) && $item['type'] === 'description') {
-                                    $deskripsi = $item['content'] ?? '';
-                                } else {
-                                    $items[] = $item;
+                                if (isset($item['type'])) {
+                                    if ($item['type'] === 'title') {
+                                        $title = $item['content'] ?? '';
+                                    } elseif ($item['type'] === 'description') {
+                                        $deskripsi = $item['content'] ?? '';
+                                    } elseif ($item['type'] === 'game_thumbnail' && !empty($item['content']) && !$gameThumbnail) {
+                                        $gameThumbnail = ltrim($item['content'], '/');
+                                    } else {
+                                        $items[] = $item;
+                                    }
                                 }
                             }
                         }
+                        $game = $post->game ?? null;
                     @endphp
 
                     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-gray-800 flex flex-col h-full">
@@ -111,6 +117,65 @@
                                     @endif
                                 @endforeach
                             @endif
+
+                           {{-- Game preview (card) --}}
+@if($game)
+    @php
+        // Tentukan route berdasarkan nama game
+        $gameRoute = '';
+        $gameDisplayName = $game->game_name;
+        
+        switch(strtolower($game->game_name)) {
+            case 'matematika':
+            case 'math':
+                $gameRoute = route('game.matematika', ['locale' => app()->getLocale()]);
+                $gameDisplayName = 'Matematika';
+                break;
+            case 'puzzle':
+                $gameRoute = route('game.puzzle', ['locale' => app()->getLocale()]);
+                $gameDisplayName = 'Puzzle';
+                break;
+            case 'tts':
+            case 'teka-teki silang':
+                $gameRoute = route('game.tts', ['locale' => app()->getLocale()]);
+                $gameDisplayName = 'Teka-Teki Silang';
+                break;
+            default:
+                $gameRoute = route('game.matematika', ['locale' => app()->getLocale()]);
+                $gameDisplayName = $game->game_name;
+        }
+    @endphp
+    
+    <div class="mt-2 p-3 border border-gray-100 dark:border-gray-800 rounded-lg flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            @if($gameThumbnail)
+                <img src="{{ asset('storage/' . $gameThumbnail) }}" class="w-24 h-14 object-cover rounded" alt="Game Thumbnail">
+            @else
+                <div class="w-24 h-14 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-gray-500">
+                    {{ autoTranslate('Game') }}
+                </div>
+            @endif
+            <div>
+                <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $gameDisplayName }}</div>
+                <div class="text-xs text-gray-500">{{ autoTranslate('Mainkan game') }}</div>
+                @if($game->score > 0)
+                    <div class="text-xs text-green-600 dark:text-green-400 mt-1">
+                        🏆 {{ autoTranslate('Skor terbaik') }}: {{ $game->score }}
+                    </div>
+                @endif
+            </div>
+        </div>
+        <div>
+            <a href="{{ $gameRoute }}?postingan={{ $post->id_postingan }}&game={{ $game->id_games }}" 
+               class="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/>
+                </svg>
+                {{ autoTranslate('Play') }}
+            </a>
+        </div>
+    </div>
+@endif
                         </div>
 
                         <!-- Stats & Action Footer -->

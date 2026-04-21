@@ -91,6 +91,10 @@ export async function showConfirm() {
 
 window.showConfirm = showConfirm;
 
+// expose success/error alerts globally for inline scripts
+window.showSuccessAlert = showSuccessAlert;
+window.showErrorAlert = showErrorAlert;
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {

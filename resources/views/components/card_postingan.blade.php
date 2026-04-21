@@ -416,6 +416,45 @@
                 <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ autoTranslate(Str::limit($deskripsi, 150)) }}</p>
             @endif
 
+            {{-- Game preview (if posting contains game) --}}
+            @php
+                $game = null;
+                if (method_exists($post, 'game')) {
+                    $game = $post->game ?? null;
+                }
+                $thumbItem = null;
+                if (is_array($content)) {
+                    foreach ($content as $c) {
+                        if (isset($c['type']) && $c['type'] === 'game_thumbnail') {
+                            $thumbItem = $c['content'] ?? null;
+                            break;
+                        }
+                    }
+                }
+            @endphp
+
+            @if($game || $thumbItem)
+                <div class="mt-3 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm">
+                    @if($thumbItem)
+                        <img src="{{ asset('storage/' . ltrim($thumbItem, '/')) }}" alt="{{ autoTranslate('Thumbnail Game') }}" class="w-full h-36 object-cover">
+                    @else
+                        <div class="w-full h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
+                            {{ autoTranslate('Preview Game') }}
+                        </div>
+                    @endif
+                    <div class="p-3 flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $game->game_name ?? autoTranslate('Game') }}</div>
+                            <div class="text-xs text-gray-500">{{ autoTranslate('Mainkan game langsung dari postingan') }}</div>
+                        </div>
+                        <div>
+                            @php $playUrl = route('game.matematika', ['locale' => app()->getLocale()]) . '?postingan=' . ($post->id_postingan ?? $post->id) . ($game ? '&game=' . $game->id_games : ''); @endphp
+                            <a href="{{ $playUrl }}" class="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full hover:bg-teal-700">{{ autoTranslate('Play') }}</a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Footer Actions -->
             <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex items-center justify-between -mx-4 -mb-4 mt-4 rounded-b-lg sm:rounded-b-xl">
                 <div class="flex items-center gap-6">
