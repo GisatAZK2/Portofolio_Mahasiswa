@@ -175,6 +175,10 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::get('/', [DosenController::class, 'ListUser'])->name('index');
         Route::get('/AddUser', [DosenController::class, 'ViewAddUser'])->name('ViewCreate');
         Route::post('/StoreUser', [DosenController::class, 'AddUser'])->name('StoreUser');
+        Route::get('/Details', [DosenController::class, 'DetailsUser'])->name('details');
+        Route::patch('/edit', [DosenController::class, 'UpdateUser'])->name('edit');
+        Route::delete('/DeleteUser', [DosenController::class, 'destroyUser'])->name('destroy');
+        Route::patch('/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
     });
 
     Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
@@ -299,14 +303,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
  
-    Route::prefix('manageUser')->name('users.')->group(function () {
-        Route::get('/Details/{user}', [DosenController::class, 'DetailsUser'])->name('details');
-        Route::patch('/edit/{user}', [DosenController::class, 'UpdateUser'])->name('edit');
-       	Route::delete('/DeleteUser/{user}', [DosenController::class, 'destroyUser'])->name('destroy');
-        Route::patch('/{user}/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
-        Route::patch('/{user}/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
-    });
-
     Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
        	Route::get('/Details/{sertifikat}', [DosenController::class, 'DetailsSertifikat'])->name('details');
         Route::patch('/edit/{sertifikat}', [DosenController::class, 'UpdateSertifikat'])->name('update');
