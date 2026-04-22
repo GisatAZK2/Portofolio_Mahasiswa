@@ -511,9 +511,54 @@
             }
         }
 
+        // Sorting postingan berdasarkan keberadaan game
+function sortPostinganByGame() {
+    const container = document.getElementById('postingan-container');
+    if (!container) return;
+    
+    const posts = Array.from(container.children);
+    
+    // Urutkan: postingan dengan GAME di atas, tanpa game di bawah
+    posts.sort((a, b) => {
+        // Cek apakah ada elemen game di dalam postingan
+        const aHasGame = a.querySelector('.bg-teal-600, .flex.items-center.gap-3 .font-semibold') !== null;
+        const bHasGame = b.querySelector('.bg-teal-600, .flex.items-center.gap-3 .font-semibold') !== null;
+        
+        // Jika a punya game dan b tidak, a di atas (return -1)
+        if (aHasGame && !bHasGame) return -1;
+        // Jika b punya game dan a tidak, b di atas (return 1)
+        if (!aHasGame && bHasGame) return 1;
+        // Jika sama-sama punya atau sama-sama tidak, urutan tetap
+        return 0;
+    });
+    
+    // Kosongkan container dan isi ulang dengan urutan baru
+    container.innerHTML = '';
+    posts.forEach(post => {
+        container.appendChild(post);
+    });
+}
+
         // Like functionality (sudah ada sebelumnya, dipertahankan)
         document.addEventListener('DOMContentLoaded', function () {
+            sortPostinganByGame();
+    
+    // Jika ada pagination, jalankan sorting lagi setelah halaman berubah
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                setTimeout(sortPostinganByGame, 100);
+            }
+        });
+    });
+    
+    // Observasi perubahan pada container pagination
+    const paginationContainer = document.getElementById('postingan-pagination');
+    if (paginationContainer) {
+        observer.observe(paginationContainer, { childList: true, subtree: true });
+    }
             document.addEventListener('click', function (e) {
+                
                 const likeBtn = e.target.closest('.like-btn');
                 if (likeBtn) {
                     e.preventDefault();
