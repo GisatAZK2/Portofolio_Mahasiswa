@@ -17,6 +17,23 @@
                 </p>
             </div>
             
+            <!-- Game Filter -->
+            <div class="md:w-1/3">
+                <form method="GET" action="{{ route('game.leaderboard') }}" id="filterForm" class="w-full">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ autoTranslate('Filter berdasarkan game') }}
+                    </label>
+                    <select name="game" onchange="this.form.submit()" 
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition">
+                        @foreach($gameNames as $index => $gameName)
+                            <option value="{{ $gameName }}"
+                                {{ request('game') == $gameName || (is_null(request('game')) && $index == 0) ? 'selected' : '' }}>
+                                {{ ucfirst($gameName) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
         </div>
 
         <!-- Main Content -->
