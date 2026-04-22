@@ -72,51 +72,234 @@ public function tts(Request $request)
     return view('games.views_game_tts', compact('postingan', 'game'));
 }
 
-    /**
-     * Show leaderboard for games
-     */
-    public function leaderboard(Request $request)
-    {
-        // allow filtering by game name
-        $gameFilter = $request->query('game');
-
-        // list of available games for filter
-        $gameNames = Game::select('game_name')->distinct()->pluck('game_name');
-
-        $query = Game::with(['user', 'postingan']);
-        if ($gameFilter) {
-            $query->where('game_name', $gameFilter);
-        }
-
-        // order by numeric score desc and paginate (15 items per page)
-        $games = $query->orderByRaw('CAST(score AS UNSIGNED) DESC')->paginate(15);
-
-        return view('games.leaderboard', compact('games', 'gameNames', 'gameFilter'));
-    }
-
-    /**
- * Get the player's highest score for a specific game/postingan
+ /**
+ * Get leaderboard data with grouped scores by user and game
  */
-public function getHighestScore(Request $request)
+public function leaderboard(Request $request)
 {
-    $validated = $request->validate([
-        'id_postingan' => 'nullable|integer|exists:postingan,id_postingan',
-    ]);
+    $gameFilter = $request->query('game');
+    
+    // Get all unique game names for filter
+    $gameNames = Game::select('game_name')->distinct()->pluck('game_name');
+    
+    // Build query with relationships
+    $query = Game::with(['user', 'postingan']);
+    
+    if ($gameFilter) {
+        $query->where('game_name', $gameFilter);
+    }
+    
+    // Get all games first
+    $allGames = $query->get();
+    
+    // Group scores by user_id and game_name, sum the scores
+    $groupedScores = [];
+    
+    foreach ($allGames as $game) {
+        $key = $game->id_user . '_' . $game->game_name;
+        
+        if (!isset($groupedScores[$key])) {
+            $groupedScores[$key] = [
+                'id_user' => $game->id_user,
+                'user' => $game->user,
+                'game_name' => $game->game_name,
+                'total_score' => 0,
+                'total_playing_time' => 0,
+                'games_played' => 0,
+                'postingan' => $game->postingan,
+                'latest_updated_at' => $game->updated_at
+            ];
+        }
+        
+        $groupedScores[$key]['total_score'] += (int)$game->score;
+        $groupedScores[$key]['total_playing_time'] += $this->convertPlayingTimeToSeconds($game->playing_time);
+        $groupedScores[$key]['games_played']++;
+        
+        // Keep latest update
+        if ($game->updated_at > $groupedScores[$key]['latest_updated_at']) {
+            $groupedScores[$key]['latest_updated_at'] = $game->updated_at;
+        }
+    }
+    
+    // Convert to collection and sort by total_score descending
+    $collection = collect($groupedScores)->values();
+    
+    // Sort by total_score DESC
+    $sorted = $collection->sortByDesc(function ($item) {
+        return $item['total_score'];
+    });
+    
+    // Add rank to each item
+    $rankedScores = $sorted->values()->map(function ($item, $index) {
+        $item['rank'] = $index + 1;
+        $item['formatted_playing_time'] = $this->formatSecondsToTime($item['total_playing_time']);
+        return $item;
+    });
+    
+    // Paginate manually (15 per page)
+    $perPage = 15;
+    $currentPage = request()->get('page', 1);
+    $currentItems = $rankedScores->slice(($currentPage - 1) * $perPage, $perPage);
+    
+    $games = new \Illuminate\Pagination\LengthAwarePaginator(
+        $currentItems,
+        $rankedScores->count(),
+        $perPage,
+        $currentPage,
+        ['path' => request()->url(), 'query' => request()->query()]
+    );
+    
+    return view('games.leaderboard', compact('games', 'gameNames', 'gameFilter'));
+}
 
+/**
+ * Get player statistics for dashboard
+ */
+public function getPlayerStats(Request $request)
+{
     $userId = Auth::id();
+    
+    if (!$userId) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User not authenticated'
+        ]);
+    }
+    
+    $gameFilter = $request->query('game');
     
     $query = Game::where('id_user', $userId);
     
-    if (!empty($validated['id_postingan'])) {
-        $query->where('id_postingan', $validated['id_postingan']);
+    if ($gameFilter) {
+        $query->where('game_name', $gameFilter);
     }
     
-    $highestScore = $query->orderByRaw('CAST(score AS UNSIGNED) DESC')->first();
+    $userGames = $query->get();
+    
+    // Group by game_name
+    $groupedByGame = [];
+    $totalScore = 0;
+    $totalGamesPlayed = 0;
+    
+    foreach ($userGames as $game) {
+        $gameName = $game->game_name;
+        
+        if (!isset($groupedByGame[$gameName])) {
+            $groupedByGame[$gameName] = [
+                'game_name' => $gameName,
+                'total_score' => 0,
+                'games_played' => 0,
+                'best_score' => 0,
+                'playing_time' => 0
+            ];
+        }
+        
+        $groupedByGame[$gameName]['total_score'] += (int)$game->score;
+        $groupedByGame[$gameName]['games_played']++;
+        $groupedByGame[$gameName]['best_score'] = max($groupedByGame[$gameName]['best_score'], (int)$game->score);
+        $groupedByGame[$gameName]['playing_time'] += $this->convertPlayingTimeToSeconds($game->playing_time);
+        
+        $totalScore += (int)$game->score;
+        $totalGamesPlayed++;
+    }
     
     return response()->json([
-        'highest_score' => $highestScore ? (int)$highestScore->score : 0,
-        'game_id' => $highestScore ? $highestScore->id_games : null
+        'success' => true,
+        'data' => [
+            'total_score' => $totalScore,
+            'total_games_played' => $totalGamesPlayed,
+            'games_played' => $totalGamesPlayed,
+            'by_game' => array_values($groupedByGame),
+            'rank' => $this->getUserRank($userId, $gameFilter)
+        ]
     ]);
+}
+
+/**
+ * Get user's rank
+ */
+private function getUserRank($userId, $gameFilter = null)
+{
+    $query = Game::with('user');
+    
+    if ($gameFilter) {
+        $query->where('game_name', $gameFilter);
+    }
+    
+    $allGames = $query->get();
+    
+    // Group and sum scores
+    $groupedScores = [];
+    
+    foreach ($allGames as $game) {
+        $key = $game->id_user . '_' . $game->game_name;
+        
+        if (!isset($groupedScores[$key])) {
+            $groupedScores[$key] = [
+                'id_user' => $game->id_user,
+                'total_score' => 0
+            ];
+        }
+        
+        $groupedScores[$key]['total_score'] += (int)$game->score;
+    }
+    
+    // Sort by total_score
+    usort($groupedScores, function ($a, $b) {
+        return $b['total_score'] - $a['total_score'];
+    });
+    
+    // Find user's rank
+    foreach ($groupedScores as $index => $score) {
+        if ($score['id_user'] == $userId) {
+            return $index + 1;
+        }
+    }
+    
+    return null;
+}
+
+/**
+ * Convert playing time string to seconds
+ */
+private function convertPlayingTimeToSeconds($timeString)
+{
+    if (empty($timeString)) return 0;
+    
+    // Handle format like "45s", "1m30s", "2m"
+    $seconds = 0;
+    
+    // Extract minutes
+    if (preg_match('/(\d+)m/', $timeString, $matches)) {
+        $seconds += (int)$matches[1] * 60;
+    }
+    
+    // Extract seconds
+    if (preg_match('/(\d+)s/', $timeString, $matches)) {
+        $seconds += (int)$matches[1];
+    }
+    
+    // If just a number, treat as seconds
+    if (is_numeric($timeString)) {
+        $seconds = (int)$timeString;
+    }
+    
+    return $seconds;
+}
+
+/**
+ * Format seconds back to readable time
+ */
+private function formatSecondsToTime($seconds)
+{
+    $minutes = floor($seconds / 60);
+    $remainingSeconds = $seconds % 60;
+    
+    if ($minutes > 0) {
+        return $minutes . 'm ' . $remainingSeconds . 's';
+    }
+    
+    return $remainingSeconds . 's';
 }
 
    /**
