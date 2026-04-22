@@ -636,6 +636,7 @@ function sortPostinganByGame() {
             clearInterval(autoSlide);
         }
 
+        
         const visibleDots = 4;
         const dotSize = 12 + 8; // width (w-3 = 12px) + gap (approx 8px)
 
