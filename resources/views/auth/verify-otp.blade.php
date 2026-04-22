@@ -14,45 +14,49 @@
 </head>
 
 <body
-    class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+    class="bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
 
     <!-- Background Noise -->
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
 
-    <div class="relative w-full max-w-lg">
+    <!-- Background Decorative Elements -->
+    <div class="fixed top-0 right-0 w-96 h-96 bg-blue-200/20 dark:bg-blue-500/5 rounded-full blur-3xl -z-10"></div>
+    <div class="fixed bottom-0 left-0 w-96 h-96 bg-indigo-200/20 dark:bg-indigo-500/5 rounded-full blur-3xl -z-10"></div>
+
+    <div class="relative w-full max-w-lg fade-in-up">
 
         <!-- Header dengan efek miring -->
         <div class="relative mb-8 sm:mb-12">
-            <a href="{{ route('password.forgot') }}" class="inline-flex items-center text-gray-500 hover:text-gray-700 mb-4 group transition-all duration-300">
+            <a href="{{ route('password.forgot') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4 group transition-all duration-300">
                 <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 Kembali ke Lupa Password
             </a>
             <h1
-                class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block">
+                class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none rotate-[-1.8deg] inline-block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Verifikasi OTP
             </h1>
-            <p class="mt-3 text-base sm:text-lg text-gray-600 max-w-md rotate-[-0.8deg]">
+            <p class="mt-3 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-md rotate-[-0.8deg]">
                 Masukkan kode verifikasi yang dikirim ke email kamu.
             </p>
-            <div class="absolute -top-4 -left-8 w-24 sm:w-32 h-1 bg-purple-400 rotate-[-42deg] rounded-full opacity-80">
+            <div class="absolute -top-4 -left-8 w-24 sm:w-32 h-1 bg-blue-400 rotate-[-42deg] rounded-full opacity-80">
             </div>
         </div>
 
         <!-- Informasi Email -->
-        <div class="mb-6 p-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg shadow-sm">
+        <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-lg shadow-sm">
             <div class="flex items-start">
                 <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-purple-700">
-                        Kode OTP telah dikirim ke: <strong>{{ $email ?? old('email') }}</strong>
+                    <p class="text-sm text-blue-700 dark:text-blue-300">
+                        Kode OTP telah dikirim ke: <strong id="email-display">{{ $email ?? old('email') }}</strong>
                     </p>
-                    <p class="text-xs text-purple-600 mt-1">
+                    <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">
                         * Kode valid selama 5 menit
                     </p>
                 </div>
@@ -60,19 +64,19 @@
         </div>
 
         <!-- Form Verify OTP -->
-        <form method="POST" action="{{ route('password.verify') }}" class="space-y-7 sm:space-y-8">
+        <form method="POST" action="{{ route('password.verify') }}" class="space-y-7 sm:space-y-8" id="otpForm">
             @csrf
 
-            <input type="hidden" name="email" value="{{ $email ?? old('email') }}">
+            <input type="hidden" name="email" id="email-input" value="{{ $email ?? old('email') }}">
 
             <!-- Input OTP -->
             <div>
-                <label for="otp" class="block text-sm font-medium text-gray-700 mb-1.5">
+                <label for="otp" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                     Kode OTP
                 </label>
                 <div class="relative">
-                    <input type="text" name="otp" id="otp" required autofocus value="{{ old('otp') }}"
-                        class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-purple-500 focus:ring-0 focus:outline-none transition @error('otp') border-red-400 @enderror text-center text-2xl tracking-widest font-mono"
+                    <input type="text" name="otp" id="otp" required autofocus 
+                        class="w-full px-4 py-3 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 focus:outline-none transition dark:text-white text-center text-2xl tracking-widest font-mono @error('otp') border-red-400 @enderror"
                         placeholder="• • • • • •"
                         maxlength="6"
                         pattern="[0-9]{6}"
@@ -81,7 +85,7 @@
                     <!-- Clear button -->
                     <button type="button"
                         id="clear-otp-btn"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 transition opacity-0 pointer-events-none"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition opacity-0 pointer-events-none"
                         onclick="clearOtp()">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -91,12 +95,12 @@
                 
                 <!-- OTP Hint -->
                 <div class="mt-2 flex items-center justify-between text-xs">
-                    <p class="text-gray-500">
+                    <p class="text-gray-500 dark:text-gray-400">
                         * Masukkan kode 6 digit yang dikirim ke email
                     </p>
                     <button type="button"
                         id="resend-otp-btn"
-                        class="text-purple-600 hover:text-purple-800 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2 py-1 transition"
+                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 transition"
                         onclick="resendOtp()">
                         Kirim Ulang Kode
                     </button>
@@ -108,53 +112,44 @@
             </div>
 
             <!-- Timer Countdown -->
-            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-sm text-gray-600">Kode berlaku selama:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Kode berlaku selama:</span>
                     </div>
-                    <div class="font-mono text-lg font-bold text-purple-600" id="timer">
+                    <div class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400" id="timer">
                         05:00
                     </div>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                    <div id="timer-bar" class="bg-purple-500 h-1.5 rounded-full transition-all duration-1000" style="width: 100%"></div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
+                    <div id="timer-bar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 100%"></div>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="mt-8 flex flex-col gap-6 sm:gap-8">
-                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <!-- Cancel Button -->
-                    <a href="{{ route('password.forgot') }}"
-                        class="flex-1 sm:flex-none px-8 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full shadow hover:bg-gray-200 hover:shadow-md active:scale-95 transition-all duration-300 text-center text-sm sm:text-base">
-                        Batal
-                    </a>
+            <!-- Action Buttons - Tombol di Kanan -->
+            <div class="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+                <!-- Cancel Button -->
+                <a href="{{ route('password.forgot') }}"
+                    class="cancel-btn px-8 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-full shadow hover:bg-gray-200 dark:hover:bg-gray-600 hover:shadow-md active:scale-95 transition-all duration-300 text-center text-sm sm:text-base">
+                    Batal
+                </a>
 
-                    <!-- Submit Button -->
-                    <button type="submit"
-                        class="flex-1 sm:flex-none px-8 sm:px-10 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 text-sm sm:text-base">
-                        Verifikasi OTP →
-                    </button>
-                </div>
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="px-8 sm:px-10 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base">
+                    Verifikasi OTP →
+                </button>
+            </div>
 
-                <!-- Link ke halaman lain -->
-                <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
-                    Belum menerima kode?
-                    <button type="button"
-                        onclick="resendOtp()"
-                        class="text-purple-600 hover:text-purple-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
-                        Kirim Ulang Kode
-                    </button>
-                </p>
-
-                <p class="text-center text-gray-500 text-xs">
+            <!-- Link ke halaman lain -->
+            <div class="text-center mt-4">
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
                     Atau
                     <a href="{{ route('login') }}"
-                        class="text-blue-600 hover:text-blue-800 hover:underline">
+                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline">
                         Kembali ke halaman login
                     </a>
                 </p>
@@ -164,20 +159,86 @@
     </div>
 
     <script>
+        // Storage key for form persistence
+        const STORAGE_KEY = 'otp_verification_data';
+        
         // Timer variables
         let timerInterval;
         let timeLeft = 300; // 5 minutes in seconds
         let canResend = false;
+        let isTimerRunning = true;
+        
+        // Save OTP data to sessionStorage
+        function saveOtpData() {
+            const formData = {
+                otp: document.getElementById('otp')?.value || '',
+                email: document.getElementById('email-input')?.value || '',
+                timeLeft: timeLeft,
+                lastSaved: Date.now(),
+                isActive: true
+            };
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        }
+        
+        // Load OTP data from sessionStorage
+        function loadOtpData() {
+            const savedData = sessionStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    const otpInput = document.getElementById('otp');
+                    const emailInput = document.getElementById('email-input');
+                    const emailDisplay = document.getElementById('email-display');
+                    
+                    // Restore OTP value
+                    if (otpInput && data.otp) {
+                        otpInput.value = data.otp;
+                        // Trigger input event to show clear button
+                        const event = new Event('input', { bubbles: true });
+                        otpInput.dispatchEvent(event);
+                    }
+                    
+                    // Restore email
+                    if (emailInput && data.email && !emailInput.value) {
+                        emailInput.value = data.email;
+                        if (emailDisplay) emailDisplay.textContent = data.email;
+                    }
+                    
+                    // Calculate remaining time based on last saved timestamp
+                    if (data.timeLeft && data.lastSaved) {
+                        const elapsedSeconds = Math.floor((Date.now() - data.lastSaved) / 1000);
+                        const remainingTime = Math.max(0, data.timeLeft - elapsedSeconds);
+                        if (remainingTime > 0 && data.isActive) {
+                            timeLeft = remainingTime;
+                            isTimerRunning = true;
+                            startTimer();
+                        } else if (remainingTime <= 0) {
+                            timeLeft = 0;
+                            isTimerRunning = false;
+                            updateTimerDisplay();
+                            enableResendButton();
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+        }
+        
+        // Clear saved data
+        function clearOtpData() {
+            sessionStorage.removeItem(STORAGE_KEY);
+        }
         
         // Format time as MM:SS
         function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
+            const mins = Math.floor(Math.max(0, seconds) / 60);
+            const secs = Math.max(0, seconds) % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
         
         // Update timer display
-        function updateTimer() {
+        function updateTimerDisplay() {
             const timerElement = document.getElementById('timer');
             const timerBar = document.getElementById('timer-bar');
             
@@ -186,34 +247,51 @@
             }
             
             if (timerBar) {
-                const percentage = (timeLeft / 300) * 100;
+                const percentage = (Math.max(0, timeLeft) / 300) * 100;
                 timerBar.style.width = `${percentage}%`;
                 
                 // Change color based on time left
                 if (percentage < 20) {
-                    timerBar.classList.remove('bg-purple-500');
+                    timerBar.classList.remove('bg-blue-500');
                     timerBar.classList.add('bg-red-500');
                 } else if (percentage < 50) {
-                    timerBar.classList.remove('bg-purple-500');
+                    timerBar.classList.remove('bg-blue-500');
                     timerBar.classList.add('bg-orange-500');
+                } else {
+                    timerBar.classList.remove('bg-red-500', 'bg-orange-500');
+                    timerBar.classList.add('bg-blue-500');
                 }
             }
+        }
+        
+        // Enable resend button
+        function enableResendButton() {
+            canResend = true;
+            const resendBtn = document.getElementById('resend-otp-btn');
+            if (resendBtn) {
+                resendBtn.disabled = false;
+                resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+        
+        // Update timer and check expiry
+        function updateTimer() {
+            if (!isTimerRunning) return;
+            
+            updateTimerDisplay();
+            saveOtpData();
             
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
-                canResend = true;
-                const resendBtn = document.getElementById('resend-otp-btn');
-                if (resendBtn) {
-                    resendBtn.disabled = false;
-                    resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
+                isTimerRunning = false;
+                enableResendButton();
                 
                 // Show warning
                 Swal.fire({
                     icon: 'warning',
                     title: 'Kode OTP Kadaluarsa',
                     text: 'Kode OTP sudah kadaluarsa. Silakan kirim ulang kode baru.',
-                    confirmButtonColor: '#8b5cf6',
+                    confirmButtonColor: '#3b82f6',
                     confirmButtonText: 'Kirim Ulang'
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -226,25 +304,33 @@
         // Start timer
         function startTimer() {
             clearInterval(timerInterval);
-            timeLeft = 300;
-            canResend = false;
             
-            // Disable resend button initially
+            // Disable resend button
+            canResend = false;
             const resendBtn = document.getElementById('resend-otp-btn');
             if (resendBtn) {
                 resendBtn.disabled = true;
                 resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
             }
             
-            updateTimer();
+            updateTimerDisplay();
             timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
+                if (timeLeft > 0 && isTimerRunning) {
                     timeLeft--;
                     updateTimer();
-                } else {
+                } else if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                 }
             }, 1000);
+        }
+        
+        // Reset timer
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 300;
+            isTimerRunning = true;
+            startTimer();
+            saveOtpData();
         }
 
         // Resend OTP function
@@ -254,14 +340,14 @@
                     icon: 'info',
                     title: 'Tunggu Sebentar',
                     text: `Silakan tunggu ${formatTime(timeLeft)} sebelum meminta kode baru.`,
-                    confirmButtonColor: '#8b5cf6',
+                    confirmButtonColor: '#3b82f6',
                     confirmButtonText: 'OK'
                 });
                 return;
             }
             
             // Get email from hidden input
-            const emailInput = document.querySelector('input[name="email"]');
+            const emailInput = document.getElementById('email-input');
             const email = emailInput ? emailInput.value : '';
             
             if (!email) {
@@ -269,7 +355,7 @@
                     icon: 'error',
                     title: 'Error',
                     text: 'Email tidak ditemukan. Silakan ulangi proses dari awal.',
-                    confirmButtonColor: '#8b5cf6'
+                    confirmButtonColor: '#3b82f6'
                 }).then(() => {
                     window.location.href = '{{ route("password.forgot") }}';
                 });
@@ -302,16 +388,20 @@
                         icon: 'success',
                         title: 'Berhasil!',
                         text: 'Kode OTP baru telah dikirim ke email Anda.',
-                        confirmButtonColor: '#8b5cf6',
+                        confirmButtonColor: '#3b82f6',
                         timer: 2000
                     });
-                    startTimer(); // Reset timer
+                    resetTimer();
+                    // Clear OTP input
+                    const otpInput = document.getElementById('otp');
+                    if (otpInput) otpInput.value = '';
+                    saveOtpData();
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
                         text: data.message || 'Gagal mengirim kode OTP. Silakan coba lagi.',
-                        confirmButtonColor: '#8b5cf6'
+                        confirmButtonColor: '#3b82f6'
                     });
                 }
             })
@@ -321,7 +411,7 @@
                     icon: 'error',
                     title: 'Error',
                     text: 'Terjadi kesalahan. Silakan coba lagi.',
-                    confirmButtonColor: '#8b5cf6'
+                    confirmButtonColor: '#3b82f6'
                 });
             });
         }        
@@ -332,6 +422,7 @@
             if (otpInput) {
                 otpInput.value = '';
                 otpInput.focus();
+                saveOtpData();
             }
         }
         
@@ -341,13 +432,13 @@
                 icon: 'success',
                 title: 'Berhasil!',
                 text: message,
-                confirmButtonColor: '#8b5cf6',
+                confirmButtonColor: '#3b82f6',
                 confirmButtonText: 'Lanjutkan',
                 timer: 2000,
                 timerProgressBar: true
             }).then(() => {
-                // Redirect to reset password page with email
-                const email = document.querySelector('input[name="email"]').value;
+                clearOtpData();
+                const email = document.getElementById('email-input').value;
                 window.location.href = '{{ route("password.reset.form") }}?email=' + encodeURIComponent(email);
             });
         }
@@ -357,7 +448,7 @@
                 icon: icon,
                 title: icon === 'error' ? 'Oops...' : 'Info',
                 text: message,
-                confirmButtonColor: '#8b5cf6',
+                confirmButtonColor: '#3b82f6',
                 confirmButtonText: 'OK'
             });
         }
@@ -374,8 +465,13 @@
         
         // DOM Ready
         document.addEventListener('DOMContentLoaded', function () {
-            // Start timer
-            startTimer();
+            // Load saved data (including after refresh)
+            loadOtpData();
+            
+            // If no saved timer, start fresh
+            if (!sessionStorage.getItem(STORAGE_KEY)) {
+                startTimer();
+            }
             
             // Auto-format OTP input (only numbers)
             const otpInput = document.getElementById('otp');
@@ -402,11 +498,7 @@
                         }
                     }
                     
-                    // Auto-submit when 6 digits are entered
-                    if (this.value.length === 6) {
-                        // Optional: auto-submit form
-                        // document.querySelector('form').submit();
-                    }
+                    saveOtpData();
                 });
                 
                 // Add paste event handler
@@ -434,20 +526,10 @@
                 @endphp
                 showErrorAlert('{{ $firstError }}');
             @endif
-            
-            // Auto-hide flash messages
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert, .bg-green-50, .bg-red-50, .bg-purple-50');
-                alerts.forEach(alert => {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 5000);
         });
         
         // Prevent double submit with validation
-        const form = document.querySelector('form');
+        const form = document.getElementById('otpForm');
         if (form) {
             form.addEventListener('submit', function(e) {
                 const submitButton = this.querySelector('button[type="submit"]');
@@ -475,8 +557,6 @@
                 if (submitButton) {
                     submitButton.disabled = true;
                     submitButton.innerHTML = 'Memverifikasi...';
-                    
-                    // Optional: show loading
                     showLoading('Memverifikasi kode OTP...');
                 }
             });
@@ -496,7 +576,7 @@
         }
         
         // Handle back button confirmation jika OTP sudah diisi
-        const cancelButton = document.querySelector('a[href="{{ route("password.forgot") }}"]');
+        const cancelButton = document.querySelector('.cancel-btn');
         
         function handleBackClick(e) {
             const otpInput = document.getElementById('otp');
@@ -509,12 +589,13 @@
                     text: 'Kode OTP yang sudah dimasukkan akan hilang.',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#8b5cf6',
+                    confirmButtonColor: '#3b82f6',
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Ya, Kembali',
                     cancelButtonText: 'Tetap di Sini'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        clearOtpData();
                         window.location.href = '{{ route("password.forgot") }}';
                     }
                 });
@@ -525,16 +606,20 @@
             cancelButton.addEventListener('click', handleBackClick);
         }
         
+        // Save before page unload (refresh)
+        window.addEventListener('beforeunload', function() {
+            saveOtpData();
+        });
+        
         // Add keyboard support for OTP input (Enter key)
-        document.getElementById('otp').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const form = document.querySelector('form');
-                if (form && this.value.length === 6) {
+        if (otpField) {
+            otpField.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.length === 6) {
+                    e.preventDefault();
                     form.dispatchEvent(new Event('submit'));
                 }
-            }
-        });
+            });
+        }
     </script>
 
     <style>
@@ -578,7 +663,7 @@
         
         /* Custom focus ring */
         input:focus {
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
         /* OTP input styling */
@@ -620,6 +705,16 @@
         
         #clear-otp-btn:hover {
             transform: scale(1.1);
+        }
+        
+        /* Dark mode input autofill style */
+        input:-webkit-autofill,
+        input:-webkit-autofill:focus {
+            transition: background-color 600000s 0s, color 600000s 0s;
+        }
+        
+        .dark input:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff;
         }
     </style>
 

@@ -91,23 +91,6 @@
                         Kirim Kode OTP →
                     </button>
                 </div>
-
-                <!-- Link ke halaman lain -->
-                <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
-                    Belum punya akun?
-                    <a href="{{ route('pengajuan-akun') }}"
-                        class="text-orange-600 hover:text-orange-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-orange-500 rounded">
-                        Ajukan Akun Ke Admin
-                    </a>
-                </p>
-
-                <p class="text-center text-gray-500 text-xs">
-                    Atau
-                    <a href="{{ route('login') }}"
-                        class="text-blue-600 hover:text-blue-800 hover:underline">
-                        Kembali ke halaman login
-                    </a>
-                </p>
             </div>
 
         </form>
