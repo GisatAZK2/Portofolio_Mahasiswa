@@ -20,25 +20,6 @@
                 </div>
             </div>
 
-            <!-- Right Side - Filter -->
-            <div class="md:w-auto">
-                <form method="GET" action="{{ route('game.leaderboard', ['locale' => app()->getLocale()]) }}" id="filterForm" class="flex gap-2">
-                    <div class="relative">
-                        <select id="game_filter" name="game" onchange="this.form.submit()" 
-                            class="px-4 py-2.5 pr-10 rounded-xl bg-white dark:bg-gray-800 text-sm border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer shadow-sm appearance-none">
-                            <option value="">{{ autoTranslate('Semua Permainan') }}</option>
-                            @foreach($gameNames as $name)
-                                <option value="{{ $name }}" {{ (isset($gameFilter) && $gameFilter === $name) ? 'selected' : '' }}>{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
 
         <!-- Main Content - Responsive Grid -->
