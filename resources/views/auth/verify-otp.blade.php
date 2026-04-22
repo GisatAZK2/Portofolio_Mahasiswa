@@ -246,8 +246,85 @@
                 }
             }, 1000);
         }
-        
-        
+
+        // Resend OTP function
+        function resendOtp() {
+            if (!canResend && timeLeft > 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Tunggu Sebentar',
+                    text: `Silakan tunggu ${formatTime(timeLeft)} sebelum meminta kode baru.`,
+                    confirmButtonColor: '#8b5cf6',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            
+            // Get email from hidden input
+            const emailInput = document.querySelector('input[name="email"]');
+            const email = emailInput ? emailInput.value : '';
+            
+            if (!email) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Email tidak ditemukan. Silakan ulangi proses dari awal.',
+                    confirmButtonColor: '#8b5cf6'
+                }).then(() => {
+                    window.location.href = '{{ route("password.forgot") }}';
+                });
+                return;
+            }
+            
+            // Show loading
+            Swal.fire({
+                title: 'Mengirim Kode OTP...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Send AJAX request to resend OTP
+            fetch('{{ route("password.resendOtp") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Kode OTP baru telah dikirim ke email Anda.',
+                        confirmButtonColor: '#8b5cf6',
+                        timer: 2000
+                    });
+                    startTimer(); // Reset timer
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message || 'Gagal mengirim kode OTP. Silakan coba lagi.',
+                        confirmButtonColor: '#8b5cf6'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan. Silakan coba lagi.',
+                    confirmButtonColor: '#8b5cf6'
+                });
+            });
+        }        
         
         // Clear OTP input
         function clearOtp() {

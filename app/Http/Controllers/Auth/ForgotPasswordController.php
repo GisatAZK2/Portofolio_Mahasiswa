@@ -35,8 +35,7 @@ class ForgotPasswordController extends Controller
         }
 
         // Generate OTP
-        $otp = strtoupper(Str::random(6));
-
+        $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
         // Save OTP
         PasswordResetOtp::create([
             'email' => $email,
@@ -60,7 +59,7 @@ class ForgotPasswordController extends Controller
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
-            'otp' => 'required|string|size:6',
+             'otp' => 'required|digits:6',
         ]);
 
         $otpRecord = PasswordResetOtp::where('email', $request->email)
@@ -99,5 +98,30 @@ class ForgotPasswordController extends Controller
         PasswordResetOtp::where('email', $request->email)->delete();
 
         return redirect()->route('login')->with('success', 'Password reset successfully.');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate(['email' => 'required|email|exists:users,email']);
+
+        $email = $request->email;
+
+        // Delete existing OTP for this email
+        PasswordResetOtp::where('email', $email)->delete();
+
+        // Generate new OTP
+        $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        // Save new OTP
+        PasswordResetOtp::create([
+            'email' => $email,
+            'otp' => $otp,
+            'expires_at' => now()->addMinutes(5),
+        ]);
+
+        // Send email
+        Mail::to($email)->send(new SendOtpMail($otp));
+
+        return response()->json(['success' => true, 'message' => 'OTP resent successfully.']);
     }
 }
