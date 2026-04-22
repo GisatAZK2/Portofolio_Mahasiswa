@@ -4,7 +4,7 @@
 
 @section('content')
     <div
-        class="min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-teal-400 to-teal-600 dark:from-gray-900 dark:to-gray-800 py-8">
+        class="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-400 to-teal-600 dark:from-gray-900 dark:to-gray-800 py-8">
         <div class="w-full max-w-2xl mx-auto">
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden p-6 md:p-8">
                 <div class="flex items-center justify-between mb-4">
