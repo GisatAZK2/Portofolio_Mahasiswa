@@ -174,6 +174,26 @@
                 });
             }
 
+         function deteksiJaringan() {
+                if (navigator.onLine) {
+                    console.log("Status: Online");
+                } else {
+                    console.log("Status: Offline");
+                    
+                    const offlineUrl = "{{ route('offline', app()->getLocale()) }}";
+                    
+                    if (window.location.href !== offlineUrl) {
+                        window.location.href = offlineUrl;
+                    }
+                }
+            }
+
+            deteksiJaringan();
+            window.addEventListener('online', () => console.log("Kembali Online"));
+            window.addEventListener('offline', deteksiJaringan);
+
+
+
             document.addEventListener('click', (e) => {
                 if (!searchDrop || !toggleSearch) return;
                 const isClickInsideSearch = searchDrop.contains(e.target);
