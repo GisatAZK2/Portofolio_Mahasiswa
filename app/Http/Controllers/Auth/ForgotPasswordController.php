@@ -20,9 +20,17 @@ class ForgotPasswordController extends Controller
 
     public function sendOtp(Request $request)
     {
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
 
         $email = $request->email;
+
+        // Check if user exists and has the correct role
+        $user = User::where('email', $email)->first();
+        if (!$user || !in_array($user->role, ['mahasiswa', 'dosen'])) {
+            return back()->withErrors(['email' => 'Password reset hanya tersedia untuk mahasiswa dan dosen.']);
+        }
 
         // Check if there's an active OTP for this email
         $activeOtp = PasswordResetOtp::where('email', $email)
@@ -44,7 +52,7 @@ class ForgotPasswordController extends Controller
         ]);
 
         // Send email
-        Mail::to($email)->send(new SendOtpMail($otp));
+        Mail::to($email)->queue(new SendOtpMail($otp));
 
         return redirect()->route('password.verify.form', ['email' => $email])->with('success', 'OTP sent to your email.');
     }
@@ -61,6 +69,12 @@ class ForgotPasswordController extends Controller
             'email' => 'required|email|exists:users,email',
              'otp' => 'required|digits:6',
         ]);
+
+        // Check if user exists and has the correct role
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !in_array($user->role, ['mahasiswa', 'dosen'])) {
+            return back()->withErrors(['email' => 'Password reset hanya tersedia untuk mahasiswa dan dosen.']);
+        }
 
         $otpRecord = PasswordResetOtp::where('email', $request->email)
             ->where('otp', $request->otp)
@@ -91,7 +105,12 @@ class ForgotPasswordController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // Check if user exists and has the correct role
         $user = User::where('email', $request->email)->first();
+        if (!$user || !in_array($user->role, ['mahasiswa', 'dosen'])) {
+            return back()->withErrors(['email' => 'Password reset hanya tersedia untuk mahasiswa dan dosen.']);
+        }
+
         $user->update(['password' => Hash::make($request->password)]);
 
         // Clean up used OTPs
@@ -102,9 +121,20 @@ class ForgotPasswordController extends Controller
 
     public function resendOtp(Request $request)
     {
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
 
         $email = $request->email;
+
+        // Check if user exists and has the correct role
+        $user = User::where('email', $email)->first();
+        if (!$user || !in_array($user->role, ['mahasiswa', 'dosen'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Password reset hanya tersedia untuk mahasiswa dan dosen.'
+            ]);
+        }
 
         // Delete existing OTP for this email
         PasswordResetOtp::where('email', $email)->delete();
@@ -120,7 +150,7 @@ class ForgotPasswordController extends Controller
         ]);
 
         // Send email
-        Mail::to($email)->send(new SendOtpMail($otp));
+        Mail::to($email)->queue(new SendOtpMail($otp));
 
         return response()->json(['success' => true, 'message' => 'OTP resent successfully.']);
     }
