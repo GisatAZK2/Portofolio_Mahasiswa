@@ -39,9 +39,30 @@
                 <!-- LEFT COLUMN: Posts Feed -->
                 <div class="feed-column">
 
-                    <div class="mb-6">
+                    <div class="mb-6 flex justify-between items-center">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
                             data-translate-page="dashboard">{{ autoTranslate('Postingan Terbaru') }}</h2>
+
+                                <!-- Tombol Leader Game - hanya muncul jika ada postingan dengan game -->
+                                @php
+                                    $hasAnyGame = $postinganTerbaru->contains(function($post) {
+                                        return $post->game !== null;
+                                    });
+                                @endphp
+                                
+                                @if($hasAnyGame)
+                                    <a href="{{ route('game.leaderboard', ['locale' => app()->getLocale()]) }}" 
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                            <path d="M12 6L13.5 9.5L17.5 10L14.5 12.5L15.5 16.5L12 14.5L8.5 16.5L9.5 12.5L6.5 10L10.5 9.5L12 6Z" fill="currentColor"/>
+                                        </svg>
+                                        <span>{{ autoTranslate('Leaderboard Game') }}</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                @endif
                     </div>
 
                     <!-- Postingan Mahasiswa -->
