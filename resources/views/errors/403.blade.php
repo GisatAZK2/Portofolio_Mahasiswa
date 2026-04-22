@@ -40,7 +40,7 @@
             <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
                     {{ autoTranslate('Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.') }}
-                    <a href="mailto:{{ config('support.email') }}"
+                    <a href="{{ route('help', app()->getLocale()) }}"
                         class="text-indigo-600 dark:text-indigo-400 hover:underline">
                         {{ autoTranslate('Hubungi Support') }}
                     </a>
