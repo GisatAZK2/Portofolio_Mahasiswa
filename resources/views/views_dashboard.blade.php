@@ -57,7 +57,7 @@
                                             <path d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
                                             <path d="M12 6L13.5 9.5L17.5 10L14.5 12.5L15.5 16.5L12 14.5L8.5 16.5L9.5 12.5L6.5 10L10.5 9.5L12 6Z" fill="currentColor"/>
                                         </svg>
-                                        <span>{{ autoTranslate('Leaderboard Game') }}</span>
+                                        <span>{{ autoTranslate('Peringkat Permainan') }}</span>
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
@@ -92,6 +92,8 @@
                                         <!-- Header -->
                                         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                             <div class="flex items-center gap-3">
+                                                <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" 
+                                                   class="flex items-center gap-3">
                                                 @if($post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile)))
                                                     <img src="{{ asset('storage/' . $post->user->photo_profile) }}"
                                                         class="w-10 h-10 rounded-full object-cover"
@@ -127,8 +129,9 @@
                                                         {{ $post->tanggal?->translatedFormat('d M Y') ?? $post->created_at?->translatedFormat('d M Y') }}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div>  
                                         </div>
+                                    </a>
 
                                         <!-- Content + Gambar -->
                                         <div class="p-4 cursor-pointer"
@@ -465,7 +468,7 @@
                             </div>
 
                         <!-- DOSEN LIST SECTION -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 mt-6">
+                    <div class=" rounded-xl shadow-md p-5 mt-6">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-blue-600 rounded-full"></div>
                             <h3 class="text-base font-semibold text-blue-700 dark:text-blue-300">

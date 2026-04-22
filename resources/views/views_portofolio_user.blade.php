@@ -110,7 +110,7 @@
                                 <!-- Share Button -->
                                 <div class="flex flex-col gap-2 pt-1">
                                     @php
-                                        $shareUrl = route('portfolio.show', ['user' => $user->username]) . '?utm_source=share&utm_medium=portfolio';
+                                        $shareUrl = route('portfolio.show', ['user' => $user->username]);
                                         $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
                                     @endphp
                                     
@@ -339,7 +339,7 @@
                                             <!-- Header: Nama Project -->
                                             <div class="flex flex-wrap items-start gap-3">
                                                 <div class="flex items-center flex-wrap gap-2">
-                                                    <a href="{{ route('project.show', ['id' => $project->id]) }}" 
+                                                    <a href="{{ route('project.show',['id' => $project->id])  }}" 
                                                        class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                                                         {{ $namaProject }}
                                                     </a>
@@ -378,7 +378,7 @@
                                                                     </span>
                                                                 </div>
                                                                 @if($owner)
-                                                                    <a href="{{ route('portfolio.show', $owner->username) }}" 
+                                                                    <a href="{{ route('portfolio.show', ['user' => $owner->username]) }}" 
                                                                     class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-purple-600 dark:hover:text-purple-400 truncate block">
                                                                         {{ $owner->nama_mahasiswa }}
                                                                         @if(auth()->check() && auth()->id() === $owner->username)
@@ -681,7 +681,7 @@
 
                                             <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                                                 <span>{{ $post->created_at?->format('d M Y') }}</span>
-                                                <a href="{{ route('postingan.show', $post->id_postingan) }}" 
+                                                <a href="{{ route('postingan.show', ['id' => $post->id_postingan]) }}" 
                                                    class="text-purple-600 hover:text-purple-700 dark:text-purple-400 font-medium flex items-center gap-1">
                                                     Baca selengkapnya
                                                     <span class="text-lg leading-none">→</span>

@@ -126,7 +126,7 @@
                             <div class="flex justify-end gap-2 mt-1">
                                 @php
                                     $portfolioUrl = route('portfolio.show', ['user' => Auth::user()->username]);
-                                    $shareUrl = $portfolioUrl . '?utm_source=share&utm_medium=portfolio';
+                                    $shareUrl = $portfolioUrl;
                                     $shareText = autoTranslate('Lihat portfolio saya di Politeknik Mitra Industri!');
                                 @endphp
 
@@ -136,7 +136,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                                     </svg>
-                                    <span data-translate="share_portfolio" data-translate-page="profile">{{ autoTranslate('Bagikan Portfolio') }}</span>
+                                    <span >{{ autoTranslate('Bagikan Portfolio') }}</span>
                                 </button>
                             </div>
 

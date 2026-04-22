@@ -95,7 +95,7 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($mahasiswa as $item)
-                            <a href="{{ route('portfolio.show', $item) }}"
+                            <a href="{{ route('portfolio.show', ['user' => $item->id]) }}"
                                 class="block h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl">
                                 <div
                                     class="bg-white dark:bg-gray-900 dark:border-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group-hover:border-indigo-300 group-hover:ring-1 group-hover:ring-indigo-200">
