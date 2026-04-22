@@ -104,9 +104,9 @@
                 </div>
 
                 <!-- Forgot Password Link (Optional) -->
-                @if(Route::has('password.request'))
+                @if(Route::has('password.forgot'))
                     <div>
-                        <a href="{{ route('password.request') }}"
+                        <a href="{{ route('password.forgot') }}"
                             class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
                             Lupa password?
                         </a>
