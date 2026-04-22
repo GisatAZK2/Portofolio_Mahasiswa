@@ -44,7 +44,7 @@
                 <!-- User Selection Section -->
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Pemilihan User Project</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="user_selection" data-translate-page="dosen_add_pjt"></h3>
                         <button type="button" onclick="openUserModal()" 
                             class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
                             <span class="flex items-center gap-2">
@@ -212,7 +212,7 @@
                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="relative">
-                                <input type="text" id="modal-search" value="{{ $search ?? '' }}" data-translate-placeholder="search_name_placeholder" data-translate-page="dosen_add_pjt" placeholder=""
+                                <input type="text" id="modal-search" value="{{ $search ?? '' }}" data-translate-placeholder="search_name_placeholder" data-translate-page="dosen_add_pjt" placeholder="Cari nama mahasiswa..."
                                     class="w-full pl-10 pr-4 py-2 border border-gray-300 
                                     dark:bg-gray-600 dark:text-white dark:border-gray-500 
                                     rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
@@ -254,7 +254,7 @@
                                 <!-- Users will be loaded here -->
                             </div>
                         </div>
-                        <div class="mt-4">
+                        <div class="mt-4" id="modal-pagination-container">
                             {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection']) }}
                         </div>
                     </div>
@@ -343,16 +343,26 @@
         function openUserModal() {
             document.getElementById('userModal').classList.remove('hidden');
             sessionStorage.setItem('admin_project_modal_open', '1');
-            loadUsersToModal();
-            attachPaginationListeners();
+            // Reset pagination ke halaman 1
+            sessionStorage.removeItem('admin_project_user_page');
+            // Reset filter ke nilai default
+            document.getElementById('modal-search').value = '';
+            document.getElementById('modal-angkatan').value = '';
+            document.getElementById('modal-jurusan').value = '';
+            document.getElementById('modal-keahlian').value = '';
+            // Refetch data dengan halaman 1
+            applyUserFilters();
         }
 
         function closeUserModal() {
             document.getElementById('userModal').classList.add('hidden');
             sessionStorage.removeItem('admin_project_modal_open');
+            sessionStorage.removeItem('admin_project_user_page');
         }
         
         function applyUserFilters() {
+            // Reset ke halaman 1 saat apply filter
+            sessionStorage.removeItem('admin_project_user_page');
             const search = document.getElementById('modal-search')?.value.trim();
             const angkatan = document.getElementById('modal-angkatan')?.value;
             const jurusan = document.getElementById('modal-jurusan')?.value;
@@ -376,13 +386,14 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-                document.querySelector('[data-pagination-group="admin_project_user_selection"] .mt-4').innerHTML = data.paginationHtml;
+                document.getElementById('modal-pagination-container').innerHTML = data.paginationHtml;
                 // Re-set selected roles after updating HTML
                 setSelectedRolesInModal();
                 // Refresh translations for newly rendered elements
                 if (typeof window.refreshTranslations === 'function') {
                     window.refreshTranslations();
                 }
+                attachPaginationListeners();
             })
             .catch(error => {
                 console.error('Error loading users:', error);
@@ -391,7 +402,11 @@
 
         function attachPaginationListeners() {
             document.querySelectorAll('[data-pagination-group="admin_project_user_selection"] .pagination-link').forEach(link => {
-                link.addEventListener('click', function(e) {
+                // Remove existing listeners to avoid duplicates
+                const newLink = link.cloneNode(true);
+                link.parentNode.replaceChild(newLink, link);
+                
+                newLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     const url = this.href;
                     fetch(url, {
@@ -404,7 +419,7 @@
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-                        document.querySelector('[data-pagination-group="admin_project_user_selection"] .mt-4').innerHTML = data.paginationHtml;
+                        document.getElementById('modal-pagination-container').innerHTML = data.paginationHtml;
                         setSelectedRolesInModal();
                         // Refresh translations for newly rendered elements
                         if (typeof window.refreshTranslations === 'function') {
@@ -419,122 +434,125 @@
             });
         }
 
-
-        function filterUsersForModal() {
-            return allUsers;
-        }
-
+        // Fungsi utama untuk mengatur disabled options pada select roles
         function setSelectedRolesInModal() {
-            document.querySelectorAll('#modal-user-list .user-role-select').forEach(select => {
-                const userId = parseInt(select.getAttribute('onchange').match(/updateUserRole\(this, (\d+), this\.value\)/)[1]);
-                const user = allUsers.find(u => u.id == userId);
-                if (!user) return;
-
-                const isOwner = selectedUsers.owner?.id == userId;
-                const isLeader = selectedUsers.leader?.id == userId;
-                const isMember = selectedUsers.members.some(m => m.id == userId);
-                const memberDisabled = isOwner || isLeader;
-
-                select.querySelector('option[value="owner"]').disabled = selectedUsers.owner && !isOwner;
-                select.querySelector('option[value="leader"]').disabled = selectedUsers.leader && !isLeader;
-                select.querySelector('option[value="member"]').disabled = memberDisabled;
-
-                if (isOwner) select.value = 'owner';
-                else if (isLeader) select.value = 'leader';
-                else if (isMember) select.value = 'member';
-                else select.value = '';
+            // Dapatkan semua select element di dalam modal
+            const selects = document.querySelectorAll('#modal-user-list .user-role-select');
+            
+            selects.forEach(select => {
+                // Ekstrak userId dari onchange attribute atau data attribute
+                let userId = null;
+                const onchangeAttr = select.getAttribute('onchange');
+                if (onchangeAttr) {
+                    const match = onchangeAttr.match(/updateUserRole\(this, (\d+),/);
+                    if (match) userId = parseInt(match[1]);
+                }
+                
+                if (!userId && select.hasAttribute('data-user-id')) {
+                    userId = parseInt(select.getAttribute('data-user-id'));
+                }
+                
+                if (!userId) return;
+                
+                // Cek status user saat ini
+                const isOwner = selectedUsers.owner?.id === userId;
+                const isLeader = selectedUsers.leader?.id === userId;
+                const isMember = selectedUsers.members.some(m => m.id === userId);
+                
+                // Dapatkan option elements
+                const ownerOption = select.querySelector('option[value="owner"]');
+                const leaderOption = select.querySelector('option[value="leader"]');
+                const memberOption = select.querySelector('option[value="member"]');
+                
+                // Set disabled attributes
+                if (ownerOption) {
+                    // Owner option disabled jika sudah ada owner lain
+                    ownerOption.disabled = selectedUsers.owner !== null && !isOwner;
+                }
+                
+                if (leaderOption) {
+                    // Leader option disabled jika sudah ada leader lain
+                    leaderOption.disabled = selectedUsers.leader !== null && !isLeader;
+                }
+                
+                if (memberOption) {
+                    // Member option disabled jika user adalah owner atau leader
+                    memberOption.disabled = isOwner || isLeader;
+                }
+                
+                // Set value sesuai role yang sudah dipilih
+                if (isOwner) {
+                    select.value = 'owner';
+                } else if (isLeader) {
+                    select.value = 'leader';
+                } else if (isMember) {
+                    select.value = 'member';
+                } else {
+                    select.value = '';
+                }
             });
         }
 
-        function loadUsersToModal() {
-            const userList = document.getElementById('modal-user-list');
-            const filteredUsers = filterUsersForModal();
-            if (!userList) return;
+        function updateUserRole(selectElement, userId, role) {
+            // Get user data from DOM
+            const userDiv = selectElement.closest('.flex.items-center.justify-between');
+            if (!userDiv) return;
+            const img = userDiv.querySelector('img');
+            const photo_profile = img ? img.src.replace('/storage/', '') : null;
+            const nameDiv = userDiv.querySelector('.font-medium');
+            const nama_mahasiswa = nameDiv ? nameDiv.textContent : 'Unknown';
+            const emailDiv = userDiv.querySelector('.text-sm');
+            const email = emailDiv ? emailDiv.textContent : '';
+            const user = { id: userId, nama_mahasiswa, email, photo_profile };
 
-            if (filteredUsers.length === 0) {
-                userList.innerHTML = `
-                    <div class="text-center py-10 text-gray-500 dark:text-gray-400">
-                        Tidak ada mahasiswa yang sesuai filter.
-                    </div>
-                `;
+            // Validasi Owner tidak boleh duplikat
+            if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id !== userId) {
+                alert('Owner sudah dipilih. Hapus owner yang ada terlebih dahulu jika ingin mengganti.');
+                selectElement.value = '';
+                // Refresh disabled states
+                setSelectedRolesInModal();
                 return;
             }
 
-            userList.innerHTML = filteredUsers.map(user => {
-                return `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            ${user.photo_profile ?
-                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover">` :
-                                `<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                </div>`
-                            }
-                            <div>
-                                <div class="font-medium text-gray-900 dark:text-gray-100">${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="${user.email}">${user.email}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
-                                <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
-                                <option value="owner" data-translate="owner_role" data-translate-page="dosen_add_pjt">Owner</option>
-                                <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
-                                <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            setSelectedRolesInModal();
-            // Refresh translations for newly rendered elements
-            if (typeof window.refreshTranslations === 'function') {
-                window.refreshTranslations();
+            // Validasi Leader tidak boleh duplikat
+            if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id !== userId) {
+                if (!confirm('Leader sudah ada. Ganti leader?')) {
+                    selectElement.value = '';
+                    setSelectedRolesInModal();
+                    return;
+                }
+                // Hapus leader lama
+                selectedUsers.leader = null;
             }
+
+            // Reset user ini dari semua role
+            if (selectedUsers.owner?.id === userId) selectedUsers.owner = null;
+            if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+            selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+
+            // Assign role baru
+            if (role === 'owner') {
+                selectedUsers.owner = user;
+            } else if (role === 'leader') {
+                selectedUsers.leader = user;
+            } else if (role === 'member') {
+                selectedUsers.members.push(user);
+            }
+
+            // Update form inputs
+            updateFormInputs();
+            // Render selected users di main form
+            renderSelectedUsers();
+            // Update task section visibility
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
+            
+            // Refresh disabled states di modal
+            setSelectedRolesInModal();
         }
-
-        function updateUserRole(selectElement, userId, role) {
-    const user = allUsers.find(u => u.id == userId);
-    if (!user) return;
-
-    // Hanya Owner yang tidak boleh duplikat
-    if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id != userId) {
-        alert('Owner sudah dipilih. Hapus owner yang ada terlebih dahulu jika ingin mengganti.');
-        selectElement.value = '';
-        return;
-    }
-
-    // Leader boleh diganti (tidak wajib)
-    if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id != userId) {
-        if (!confirm('Leader sudah ada. Ganti leader?')) {
-            selectElement.value = '';
-            return;
-        }
-    }
-
-    // Reset dulu user ini dari semua role
-    if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
-    if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-    selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
-
-    // Assign role baru
-    if (role === 'owner') {
-        selectedUsers.owner = user;
-    } else if (role === 'leader') {
-        selectedUsers.leader = user;
-    } else if (role === 'member') {
-        selectedUsers.members.push(user);
-    }
-
-    updateFormInputs();
-    renderSelectedUsers();
-    loadUsersToModal();
-    updateTaskSectionVisibility();
-    updateTaskUserOptions();
-    updateSelectedUsersBadge();
-    saveSelectedUsersToStorage();
-}
+        
         function confirmUserSelection() {
             updateFormInputs();
             renderSelectedUsers();
@@ -554,74 +572,90 @@
             document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
         }
 
-        function renderSelectedUsers() {
-            const container = document.getElementById('selected-users-container');
-            const noUsersMsg = document.getElementById('no-users-message');
-            if (!container || !noUsersMsg) return;
+       function renderSelectedUsers() {
+    const container = document.getElementById('selected-users-container');
+    const noUsersMsg = document.getElementById('no-users-message');
+    if (!container || !noUsersMsg) return;
 
-            const selected = [];
-            if (selectedUsers.owner) {
-                // Jika leader null dan ada member, tampilkan owner sebagai Owner & Leader (indikasi visual saja)
-                if (!selectedUsers.leader && selectedUsers.members.length > 0) {
-                    selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
-                } else if (selectedUsers.leader && selectedUsers.owner.id === selectedUsers.leader.id) {
-                    selected.push({ ...selectedUsers.owner, role: 'Owner & Leader' });
-                } else {
-                    selected.push({ ...selectedUsers.owner, role: 'Owner' });
-                }
-            }
-            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
-                selected.push({ ...selectedUsers.leader, role: 'Leader' });
-            }
-            selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
+    const selected = [];
+    if (selectedUsers.owner) {
+        if (!selectedUsers.leader && selectedUsers.members.length > 0) {
+            selected.push({ ...selectedUsers.owner, role: 'owner_leader_role' }); // Use the translation key
+        } else if (selectedUsers.leader && selectedUsers.owner.id === selectedUsers.leader.id) {
+            selected.push({ ...selectedUsers.owner, role: 'owner_leader_role' });
+        } else {
+            selected.push({ ...selectedUsers.owner, role: 'owner_role' });
+        }
+    }
+    if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+        selected.push({ ...selectedUsers.leader, role: 'leader_role' });
+    }
+    selectedUsers.members.forEach(member => selected.push({ ...member, role: 'member_role' }));
 
-            if (!selected.length) {
-                container.innerHTML = '';
-                noUsersMsg.classList.remove('hidden');
-                return;
-            }
+    if (!selected.length) {
+        container.innerHTML = '';
+        noUsersMsg.classList.remove('hidden');
+        return;
+    }
 
-            noUsersMsg.classList.add('hidden');
-            container.innerHTML = selected.map(user => {
-                const styles = {
-                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200',
-                    'Owner & Leader': 'bg-indigo-50 dark:bg-indigo-950 border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200'
-                }[user.role];
-
-                return `
-                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                        <div class="flex items-center gap-3">
-                            ${user.photo_profile ?
-                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
-                                `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                </div>`
-                            }
-                            <div>
-                                <div class="font-medium" data-translate="${user.role.toLowerCase().replace(' & ', '_').replace(' ', '_')}_role" data-translate-page="dosen_add_pjt">${user.role}: ${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
-                            </div>
-                        </div>
-                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                `;
-            }).join('');
-            // Refresh translations for newly rendered role labels
-            if (typeof window.refreshTranslations === 'function') {
-                window.refreshTranslations();
+    noUsersMsg.classList.add('hidden');
+    container.innerHTML = selected.map(user => {
+        const roleKey = user.role;
+        let roleDisplay = '';
+        
+        // Get the translated role text
+        if (typeof window.translations !== 'undefined' && window.currentLang) {
+            const pageData = window.translations[window.currentLang]?.dosen_add_pjt || 
+                           window.translations.id?.dosen_add_pjt;
+            if (pageData && pageData[roleKey]) {
+                roleDisplay = pageData[roleKey];
+            } else {
+                // Fallback mapping
+                const fallback = {
+                    'owner_role': 'Owner',
+                    'leader_role': 'Leader', 
+                    'member_role': 'Member',
+                    'owner_leader_role': 'Owner & Leader'
+                };
+                roleDisplay = fallback[roleKey] || user.role;
             }
+        } else {
+            const fallback = {
+                'owner_role': 'Owner',
+                'leader_role': 'Leader',
+                'member_role': 'Member', 
+                'owner_leader_role': 'Owner & Leader'
+            };
+            roleDisplay = fallback[roleKey] || user.role;
         }
 
+        return `
+            <div class="flex items-center justify-between p-4 border rounded-2xl bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200">
+                <div class="flex items-center gap-3">
+                    ${user.photo_profile ?
+                        `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
+                        `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                            <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                        </div>`
+                    }
+                    <div>
+                        <div class="font-medium">${roleDisplay}: ${user.nama_mahasiswa}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                    </div>
+                </div>
+                <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
         function removeUser(userId) {
-            if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
-            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-            selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
+            if (selectedUsers.owner?.id === userId) selectedUsers.owner = null;
+            if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+            selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
             updateFormInputs();
             renderSelectedUsers();
             // Refresh task UI
@@ -665,51 +699,51 @@
             return users;
         }
 
-        function renderTaskUserOptions(selectedId = '') {
-            const users = getAllowedTaskUsers();
-            let html = '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>';
-            users.forEach(user => {
-                html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-            });
-            return html;
-        }
+       function renderTaskUserOptions(selectedId = '') {
+    const users = getAllowedTaskUsers();
+    let html = '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>';
+    users.forEach(user => {
+        html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+    });
+    return html;
+}
+       function addTaskRow(taskData = null) {
+    const container = document.getElementById('tasks-container');
+    if (!container) return;
 
-        function addTaskRow(taskData = null) {
-            const container = document.getElementById('tasks-container');
-            if (!container) return;
+    const index = taskIndex++;
+    const userId = taskData?.user_id ?? '';
+    const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+    const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
 
-            const index = taskIndex++;
-            const userId = taskData?.user_id ?? '';
-            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
-            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+    const taskItem = document.createElement('div');
+    taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+    taskItem.innerHTML = `
+        ${hiddenId}
+        <div class="grid gap-4 md:grid-cols-3 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
+                <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                    ${renderTaskUserOptions(userId)}
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
+                <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Nama tugas..." data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
+            </div>
+            <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl" data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
+        </div>
+    `;
 
-            const taskItem = document.createElement('div');
-            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="" data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
-                    </div>
-                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl" data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
-                </div>
-            `;
-
-            container.appendChild(taskItem);
-            const select = taskItem.querySelector('.task-user-select');
-            if (select) select.addEventListener('change', updateTaskUserOptions);
-            // Refresh translations for newly added task elements
-            if (typeof window.refreshTranslations === 'function') {
-                window.refreshTranslations();
-            }
-        }
+    container.appendChild(taskItem);
+    const select = taskItem.querySelector('.task-user-select');
+    if (select) select.addEventListener('change', updateTaskUserOptions);
+    
+    // CRITICAL: Refresh translations for the newly added task row
+    if (typeof window.refreshTranslations === 'function') {
+        window.refreshTranslations();
+    }
+}
 
         function removeTaskRow(button) {
             const taskItem = button.closest('.task-item');
@@ -758,13 +792,21 @@
         }
 
         function setupModalFilters() {
-            document.getElementById('modal-search')?.addEventListener('input', function() {
-                clearTimeout(filterTimer);
-                filterTimer = setTimeout(applyUserFilters, 500);
-            });
-            document.getElementById('modal-angkatan')?.addEventListener('change', applyUserFilters);
-            document.getElementById('modal-jurusan')?.addEventListener('change', applyUserFilters);
-            document.getElementById('modal-keahlian')?.addEventListener('change', applyUserFilters);
+            const searchInput = document.getElementById('modal-search');
+            const angkatanSelect = document.getElementById('modal-angkatan');
+            const jurusanSelect = document.getElementById('modal-jurusan');
+            const keahlianSelect = document.getElementById('modal-keahlian');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(filterTimer);
+                    filterTimer = setTimeout(applyUserFilters, 500);
+                });
+            }
+            
+            if (angkatanSelect) angkatanSelect.addEventListener('change', applyUserFilters);
+            if (jurusanSelect) jurusanSelect.addEventListener('change', applyUserFilters);
+            if (keahlianSelect) keahlianSelect.addEventListener('change', applyUserFilters);
         }
 
         function onSubmitProjectForm(event) {
