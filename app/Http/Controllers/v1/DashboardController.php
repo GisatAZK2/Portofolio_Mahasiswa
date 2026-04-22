@@ -165,6 +165,7 @@ class DashboardController extends Controller
         */
 
         $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes'])
+            ->where('id_user', $user->id)
             ->latest()
             ->paginate(6, ['*'], 'postingan_page');
 

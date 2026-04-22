@@ -200,7 +200,7 @@
                         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="my_content" data-translate-page="dashboard_me">Konten Saya</h2>
                     </div>
 
-
+                    
                     <!-- Postingan Sendiri -->
                     <div class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-4">
@@ -253,13 +253,23 @@
                                                             if ($item['type'] === 'image' && !empty($item['content']) && !$imageUrl) {
                                                                 $imageUrl = asset('storage/' . ltrim($item['content'], '/'));
                                                             }
-                                                            if ($item['type'] === 'game_thumbnail' && !empty($item['content']) && !$gameThumbnail) {
-                                                                $gameThumbnail = ltrim($item['content'], '/');
-                                                            }
                                                         }
                                                     }
                                                 }
                                                 $game = $post->game ?? null;
+                                                  $gameThumbnailMap = [
+                                                    'matematika' => 'assets/game-angka.svg',
+                                                    'math' => 'assets/game-angka.svg',
+                                                    'puzzle' => 'assets/game-puzzle.svg',
+                                                    'tts' => 'assets/game-tts.svg',
+                                                    'teka-teki silang' => 'assets/game-tts.svg',
+                                                ];
+
+                                                // Ambil thumbnail berdasarkan nama game
+                                                $gameThumbnail = '';
+                                                if ($game && isset($gameThumbnailMap[strtolower($game->game_name)])) {
+                                                    $gameThumbnail = $gameThumbnailMap[strtolower($game->game_name)];
+                                                }
                                             @endphp
 
                                             @if($title)
@@ -280,63 +290,58 @@
                                             @endif
 
                                         {{-- Game preview (card) --}}
-@if($game)
-    @php
-        // Tentukan route berdasarkan nama game
-        $gameRoute = '';
-        $gameDisplayName = $game->game_name;
-        
-        switch(strtolower($game->game_name)) {
-            case 'matematika':
-            case 'math':
-                $gameRoute = route('game.matematika', ['locale' => app()->getLocale()]);
-                $gameDisplayName = 'Matematika';
-                break;
-            case 'puzzle':
-                $gameRoute = route('game.puzzle', ['locale' => app()->getLocale()]);
-                $gameDisplayName = 'Puzzle';
-                break;
-            case 'tts':
-            case 'teka-teki silang':
-                $gameRoute = route('game.tts', ['locale' => app()->getLocale()]);
-                $gameDisplayName = 'Teka-Teki Silang';
-                break;
-            default:
-                $gameRoute = route('game.matematika', ['locale' => app()->getLocale()]);
-                $gameDisplayName = $game->game_name;
-        }
-    @endphp
-    
-    <div class="mt-2 p-3 border border-gray-100 dark:border-gray-800 rounded-lg flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            @if($gameThumbnail)
-                <img src="{{ asset('storage/' . $gameThumbnail) }}" class="w-24 h-14 object-cover rounded" alt="Game Thumbnail">
-            @else
-                <div class="w-24 h-14 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-gray-500">
-                    {{ autoTranslate('Game') }}
-                </div>
-            @endif
-            <div>
-                <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $gameDisplayName }}</div>
-                <div class="text-xs text-gray-500">{{ autoTranslate('Mainkan game') }}</div>
-                @if($game->score > 0)
-                    <div class="text-xs text-green-600 dark:text-green-400 mt-1">
-                        🏆 {{ autoTranslate('Skor terbaik') }}: {{ $game->score }}
-                    </div>
-                @endif
-            </div>
-        </div>
-        <div>
-            <a href="{{ $gameRoute }}?postingan={{ $post->id_postingan }}&game={{ $game->id_games }}" 
-               class="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/>
-                </svg>
-                {{ autoTranslate('Play') }}
-            </a>
-        </div>
-    </div>
-@endif
+                                        @if($game)
+                                            @php
+                                                // Tentukan route berdasarkan nama game
+                                                $gameRoute = '';
+                                                $gameDisplayName = $game->game_name;
+                                                
+                                                switch(strtolower($game->game_name)) {
+                                                    case 'matematika':
+                                                    case 'math':
+                                                        $gameRoute = route('game.matematika', ['locale' => app()->getLocale()]);
+                                                        $gameDisplayName = 'Matematika';
+                                                        break;
+                                                    case 'puzzle':
+                                                        $gameRoute = route('game.puzzle', ['locale' => app()->getLocale()]);
+                                                        $gameDisplayName = 'Puzzle';
+                                                        break;
+                                                    case 'tts':
+                                                    case 'teka-teki silang':
+                                                        $gameRoute = route('game.tts', ['locale' => app()->getLocale()]);
+                                                        $gameDisplayName = 'Teka-Teki Silang';
+                                                        break;
+                                                    default:
+                                                        $gameRoute = route('game.matematika', ['locale' => app()->getLocale()]);
+                                                        $gameDisplayName = $game->game_name;
+                                                }
+                                            @endphp
+                                            
+                                            <div class="mt-2 p-3 border border-gray-100 dark:border-gray-800 rounded-lg flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                        <img src="{{ asset($gameThumbnail) }}" class="w-24 h-14 object-cover rounded" alt="Game Thumbnail">
+                                                    
+                                                    <div>
+                                                        <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $gameDisplayName }}</div>
+                                                        <div class="text-xs text-gray-500">{{ autoTranslate('Mainkan game') }}</div>
+                                                        @if($game->score > 0)
+                                                            <div class="text-xs text-green-600 dark:text-green-400 mt-1">
+                                                                🏆 {{ autoTranslate('Skor terbaik') }}: {{ $game->score }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="{{ $gameRoute }}?postingan={{ $post->id_postingan }}&game={{ $game->id_games }}" 
+                                                    class="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors">
+                                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/>
+                                                        </svg>
+                                                        {{ autoTranslate('Play') }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
                                         </div>
 
                                         <!-- Footer Actions -->
@@ -369,7 +374,7 @@
                                                     <span class="text-sm">{{ $post->komentar->count() }}</span>
                                                 </button>
                                             </div>
-                                            <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan) }}'"  data-translate="see_dtl" data-translate-page="dashboard_me"
+                                            <span onclick="window.location.href='{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}'"  data-translate="see_dtl" data-translate-page="dashboard_me"
                                                   class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
                                                 Lihat detail
                                             </span>

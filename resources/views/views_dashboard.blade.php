@@ -128,13 +128,25 @@
                                                                 $deskripsi = $item['content'] ?? '';
                                                             } elseif ($item['type'] === 'image' && !empty($item['content']) && !$imageUrl) {
                                                                 $imageUrl = asset('storage/' . ltrim($item['content'], '/'));
-                                                            } elseif ($item['type'] === 'game_thumbnail' && !empty($item['content']) && !$gameThumbnail) {
-                                                                $gameThumbnail = ltrim($item['content'], '/');
-                                                            }
+                                                            } 
                                                         }
                                                     }
                                                 }
                                                 $game = $post->game ?? null;
+
+                                                 $gameThumbnailMap = [
+                                                    'matematika' => 'assets/game-angka.svg',
+                                                    'math' => 'assets/game-angka.svg',
+                                                    'puzzle' => 'assets/game-puzzle.svg',
+                                                    'tts' => 'assets/game-tts.svg',
+                                                    'teka-teki silang' => 'assets/game-tts.svg',
+                                                ];
+
+                                                // Ambil thumbnail berdasarkan nama game
+                                                $gameThumbnail = '';
+                                                if ($game && isset($gameThumbnailMap[strtolower($game->game_name)])) {
+                                                    $gameThumbnail = $gameThumbnailMap[strtolower($game->game_name)];
+                                                }
                                             @endphp
 
                                             @if($title)
@@ -190,13 +202,8 @@
     
     <div class="mt-2 p-3 border border-gray-100 dark:border-gray-800 rounded-lg flex items-center justify-between">
         <div class="flex items-center gap-3">
-            @if($gameThumbnail)
-                <img src="{{ asset('storage/' . $gameThumbnail) }}" class="w-24 h-14 object-cover rounded" alt="Game Thumbnail">
-            @else
-                <div class="w-24 h-14 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-gray-500">
-                    {{ autoTranslate('Game') }}
-                </div>
-            @endif
+                <img src="{{ asset($gameThumbnail) }}" class="w-24 h-14 object-cover rounded" alt="Game Thumbnail">
+            
             <div>
                 <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $gameDisplayName }}</div>
                 <div class="text-xs text-gray-500">{{ autoTranslate('Mainkan game') }}</div>

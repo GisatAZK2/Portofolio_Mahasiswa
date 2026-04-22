@@ -157,6 +157,10 @@ class PostinganController extends Controller
             ->where('id_user', auth()->id())
             ->firstOrFail();
 
+        $user = auth()->user();
+
+        $isAllowedGame = in_array($user->role, ['admin', 'dosen']);
+        
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -216,10 +220,9 @@ class PostinganController extends Controller
                 }
             }
         }
-
-        // Handle game thumbnail and game record logic
-        // If a new thumbnail was uploaded, store it and append to content. Remove old thumb file if replaced.
-        if ($request->hasFile('game_thumbnail')) {
+        
+        if ($isAllowedGame) {
+            if ($request->hasFile('game_thumbnail')) {
             $thumbPath = ImageConversionService::storeWebp($request->file('game_thumbnail'), 'postingan/game_thumbnails');
             $content[] = ['type' => 'game_thumbnail', 'content' => $thumbPath];
             if ($existingGameThumbnail && $existingGameThumbnail !== $thumbPath) {
@@ -261,6 +264,11 @@ class PostinganController extends Controller
             }
         }
 
+        }
+
+        // Handle game thumbnail and game record logic
+        // If a new thumbnail was uploaded, store it and append to content. Remove old thumb file if replaced.
+        
         $newImagePaths = collect($content)
             ->where('type', 'image')
             ->pluck('content')

@@ -27,6 +27,15 @@
                             </div>
                         </div>
 
+                         <!-- Tombol Back -->
+                        <button onclick="window.location.href='{{ route('dashboard') }}'"
+                            class="inline-flex items-center gap-2 px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            <span class="text-sm font-medium">Back</span>
+                        </button>
+
                         <!-- Action Dropdown -->
                         @if(auth()->check() && auth()->id() == $postingan->id_user)
                             <div class="relative group">
@@ -69,8 +78,6 @@
                                         $title = $item['content'] ?? '';
                                     } elseif ($item['type'] === 'description') {
                                         $deskripsi = $item['content'] ?? '';
-                                    } elseif ($item['type'] === 'game_thumbnail') {
-                                        $gameThumbnail = $item['content'] ?? null;
                                     } else {
                                         $items[] = $item;
                                     }
@@ -79,6 +86,19 @@
                         }
                         
                         $game = $postingan->game ?? null;
+                        $gameThumbnailMap = [
+                            'matematika' => 'assets/game-angka.svg',
+                            'math' => 'assets/game-angka.svg',
+                            'puzzle' => 'assets/game-puzzle.svg',
+                            'tts' => 'assets/game-tts.svg',
+                            'teka-teki silang' => 'assets/game-tts.svg',
+                        ];
+
+                        // Ambil thumbnail berdasarkan nama game
+                        $gameThumbnail = '';
+                        if ($game && isset($gameThumbnailMap[strtolower($game->game_name)])) {
+                            $gameThumbnail = $gameThumbnailMap[strtolower($game->game_name)];
+                        }
                         
                         // Tentukan route berdasarkan nama game
                         $gameRoute = '';
@@ -149,17 +169,9 @@
                         <div class="mt-6 p-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-800/50 dark:to-gray-900/50">
                             <div class="flex items-center justify-between flex-wrap gap-4">
                                 <div class="flex items-center gap-4">
-                                    @if($gameThumbnail && file_exists(public_path('storage/' . ltrim($gameThumbnail, '/'))))
-                                        <img src="{{ asset('storage/' . ltrim($gameThumbnail, '/')) }}" 
+                                        <img src="{{ asset($gameThumbnail) }}" 
                                             class="w-16 h-16 object-cover rounded-lg shadow-md" 
                                             alt="Game Thumbnail">
-                                    @else
-                                        <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-lg flex items-center justify-center shadow-md">
-                                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/>
-                                            </svg>
-                                        </div>
-                                    @endif
                                     <div>
                                         <div class="font-semibold text-gray-900 dark:text-gray-100 text-lg">{{ $gameDisplayName }}</div>
                                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Mainkan game dan raih skor tertinggi!') }}</div>
@@ -360,8 +372,9 @@
                     
                     const postinganId = this.dataset.postinganId;
                     const likeButton = this;
+                    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
-                    fetch(`/postingan/${postinganId}/toggle-like`, {
+                    fetch(`/${locale}/postingan/toggle-like?id=${postinganId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
