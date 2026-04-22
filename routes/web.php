@@ -265,15 +265,22 @@ Route::prefix('{locale}')
         Route::get('/get-app', function () {
             return view('get-app');
         })->name('get-app');
-
+        
         // Offline page route
         Route::get('/offline', function () {
             return view('offline');
         })->name('offline');
 
+      
     });
 
 // Outside of locale prefix group
+
+  // Offline page route
+        Route::get('/offline', function () {
+            return view('offline');
+        })->name('offline');
+
 
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
