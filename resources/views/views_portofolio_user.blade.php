@@ -110,7 +110,7 @@
                                 <!-- Share Button -->
                                 <div class="flex flex-col gap-2 pt-1">
                                     @php
-                                        $shareUrl = route('portfolio.show', ['user' => $user->username]) . '?utm_source=share&utm_medium=portfolio';
+                                        $shareUrl = route('portfolio.show', ['user' => $user->username]);
                                         $shareText = 'Lihat portfolio saya di Politeknik Mitra Industri!';
                                     @endphp
                                     
