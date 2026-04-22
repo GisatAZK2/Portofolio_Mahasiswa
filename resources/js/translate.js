@@ -2372,3 +2372,7 @@ window.changeLanguage = function() {
     // Always redirect to home page with new locale
     window.location.href = '/' + newLocale;
 };
+
+// Make variables globally available
+window.translations = translations;
+window.currentLang = currentLang;
