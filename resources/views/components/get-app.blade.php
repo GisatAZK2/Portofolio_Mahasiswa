@@ -101,7 +101,6 @@
                     <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <div class="flex items-center gap-2">✓ Akses Cepat</div>
                         <div class="flex items-center gap-2">✓ Tampilan native</div>
-                        <div class="flex items-center gap-2">✓ Notifikasi terbaru</div>
                     </div>
                 </div>
             </div>
