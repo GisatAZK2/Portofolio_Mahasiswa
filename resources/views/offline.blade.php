@@ -19,22 +19,11 @@
         <div class="space-y-4">
             <button onclick="location.reload()" 
                 class="w-full px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg">
-                🔄 Coba Lagi
+                Coba Lagi
             </button>
             
-            <a href="{{ route('home', ['locale' => app()->getLocale()]) }}" 
-                class="inline-block w-full px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-                🏠 Kembali ke Beranda
-            </a>
         </div>
         
-        <!-- Saved content indicator -->
-        <div class="mt-8 text-xs text-gray-400 dark:text-gray-500">
-            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            Beberapa konten mungkin tersedia offline
-        </div>
     </div>
 </div>
 @endsection
