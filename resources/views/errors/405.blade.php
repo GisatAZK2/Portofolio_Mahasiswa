@@ -19,30 +19,29 @@
                 <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-2">405</h1>
                 <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Method Not Allowed</h2>
                 <p class="text-gray-600 dark:text-gray-400 mb-6">
-                    Metode HTTP yang Anda gunakan tidak diizinkan untuk halaman ini. Silakan coba lagi atau hubungi
-                    administrator.
-                </p>
+                    {{ autoTranslate('Metode HTTP yang Anda gunakan tidak diizinkan untuk URL ini. Periksa kembali metode yang Anda gunakan atau hubungi support jika Anda membutuhkan bantuan.') }}
+                 </p>
             </div>
 
             <!-- Action Buttons -->
             <div class="space-y-3">
                 <a href="{{ url('/') }}"
                     class="w-full block px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
-                    Kembali ke Beranda
+                    {{ autoTranslate('Kembali ke Beranda') }}
                 </a>
                 <button onclick="window.history.back()"
                     class="w-full px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                    Kembali
+                    {{ autoTranslate('Kembali') }}
                 </button>
             </div>
 
             <!-- Support -->
             <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
-                    Butuh bantuan?
+                    {{ autoTranslate('Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.') }}
                     <a href="mailto:{{ config('support.email') }}"
                         class="text-indigo-600 dark:text-indigo-400 hover:underline">
-                        Hubungi Support
+                        {{ autoTranslate('Hubungi Support') }}
                     </a>
                 </p>
             </div>
