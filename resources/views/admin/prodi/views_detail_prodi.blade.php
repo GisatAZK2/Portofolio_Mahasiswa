@@ -212,7 +212,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Table - Desktop View -->
                 <div class="hidden md:block">
                     <div class="table-half-container">
