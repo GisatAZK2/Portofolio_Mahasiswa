@@ -465,7 +465,7 @@
                             </div>
 
                         <!-- DOSEN LIST SECTION -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 mt-6">
+                    <div class=" rounded-xl shadow-md p-5 mt-6">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-blue-600 rounded-full"></div>
                             <h3 class="text-base font-semibold text-blue-700 dark:text-blue-300">

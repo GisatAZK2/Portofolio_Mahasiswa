@@ -531,7 +531,12 @@
                             <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">{{ autoTranslate('Learning Corner') }}</h3>
                         </div>
                         @if($learningCorners->isEmpty())
-                            <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_lrn" data-translate-page="dashboard">{{ autoTranslate('Belum ada Learning Corner') }}</p>
+                            <div class="text-center py-8">
+                                <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M3 9h.06M3 12h.06M3 15h.06M6 9h.06M6 12h.06M6 15h.06M9 9h.06M9 18h.06M12 9h.06M12 18h.06M15 9h.06M15 12h.06M15 15h.06M18 9h.06M18 12h.06M18 15h.06M21 9h.06M21 12h.06M21 15h.06" />
+                                </svg>
+                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_lrn" data-translate-page="dashboard_me">Belum ada Learning Corner</p>
+                            </div>
                         @else
                             <div id="learning-corner-list" class="space-y-4">
                                 @foreach($learningCorners->take(5) as $learning)
