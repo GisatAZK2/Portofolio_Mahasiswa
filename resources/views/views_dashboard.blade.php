@@ -92,6 +92,8 @@
                                         <!-- Header -->
                                         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                             <div class="flex items-center gap-3">
+                                                <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" 
+                                                   class="flex items-center gap-3">
                                                 @if($post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile)))
                                                     <img src="{{ asset('storage/' . $post->user->photo_profile) }}"
                                                         class="w-10 h-10 rounded-full object-cover"
@@ -127,8 +129,9 @@
                                                         {{ $post->tanggal?->translatedFormat('d M Y') ?? $post->created_at?->translatedFormat('d M Y') }}
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div>  
                                         </div>
+                                    </a>
 
                                         <!-- Content + Gambar -->
                                         <div class="p-4 cursor-pointer"
