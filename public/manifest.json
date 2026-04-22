@@ -1,16 +1,37 @@
 {
     "name": "Portofolio Mahasiswa",
     "short_name": "POLMA",
-    "display": "fullscreen",
-    "description": "Portofolio mahasiswa berbasis web.",
+    "display": "standalone",
+    "description": "Portofolio mahasiswa berbasis web dengan fitur leaderboard dan PWA.",
     "background_color": "#ffffff",
-    "theme_color": "#87CEEB",
+    "theme_color": "#3B82F6",
     "start_url": "/",
+    "scope": "/",
+    "orientation": "portrait",
+    "lang": "id",
+    "dir": "ltr",
+    "categories": ["education", "productivity"],
+    "prefer_related_applications": false,
     "icons": [
         {
             "src": "assets/Logo-rounded.svg",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "assets/screenshot-mobile.png",
+            "sizes": "1080x1920",
+            "type": "image/png",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "assets/screenshot-desktop.png",
+            "sizes": "1920x1080",
+            "type": "image/png",
+            "form_factor": "wide"
         }
     ]
 }

@@ -257,17 +257,18 @@ Route::prefix('{locale}')
         Route::post('/game/get-highest-score', [GameController::class, 'getHighestScore'])->name('game.getHighestScore');
 
         // Footer Routes
-        Route::get('/about', function () {
-            return view('pages.about');
-        })->name('about');
-
         Route::get('/help', function () {
-            return view('pages.help');
+            return view('help');
         })->name('help');
 
         Route::get('/get-app', function () {
-            return view('pages.get-app');
+            return view('get-app');
         })->name('get-app');
+
+        // Offline page route
+        Route::get('/offline', function () {
+            return view('offline');
+        })->name('offline');
 
     });
 
