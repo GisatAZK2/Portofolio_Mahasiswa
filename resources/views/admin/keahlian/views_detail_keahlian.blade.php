@@ -155,12 +155,24 @@
         let filteredMahasiswa = [];
 
         document.addEventListener("DOMContentLoaded", () => {
+            // Wait for translations to be available
+            const checkTranslations = () => {
+                if (typeof window.translations !== 'undefined' && typeof window.currentLang !== 'undefined') {
+                    initializePage();
+                } else {
+                    setTimeout(checkTranslations, 100);
+                }
+            };
+            checkTranslations();
+        });
+
+        function initializePage() {
             const aktif = {{ $keahlian->users->where('is_active', true)->count() }};
             const tidakAktif = {{ $keahlian->users->where('is_active', false)->count() }};
 
             // Get translated labels
-            const aktifLabel = translations[currentLang]?.project_create?.aktf || 'Aktif';
-            const tidakAktifLabel = translations[currentLang]?.project_create?.tdk_aktf || 'Tidak Aktif';
+            const aktifLabel = window.translations[window.currentLang]?.project_create?.aktf || 'Aktif';
+            const tidakAktifLabel = window.translations[window.currentLang]?.project_create?.tdk_aktf || 'Tidak Aktif';
 
             new Chart(document.getElementById('statusChart'), {
                 type: 'doughnut',
@@ -188,7 +200,7 @@
             document.getElementById('search-mahasiswa').addEventListener('keyup', function (e) {
                 if (e.key === 'Enter') applyFiltersMahasiswa();
             });
-        });
+        }
 
         function applyFiltersMahasiswa() {
             const search = document.getElementById('search-mahasiswa').value.toLowerCase().trim();
@@ -221,7 +233,7 @@
             const locale = document.querySelector('html').getAttribute('lang') || 'id';
             filteredMahasiswa.forEach((m, index) => {
                 const statusColor = m.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
-                const statusText = m.is_active ? (translations[currentLang]?.project_create?.aktf || 'Aktif') : (translations[currentLang]?.project_create?.tdk_aktf || 'Tidak Aktif');
+                const statusText = m.is_active ? (window.translations[window.currentLang]?.project_create?.aktf || 'Aktif') : (window.translations[window.currentLang]?.project_create?.tdk_aktf || 'Tidak Aktif');
                 const portfolioUrl = `/${locale}/portofolio?user=${m.id}`;
 
                 html += `
