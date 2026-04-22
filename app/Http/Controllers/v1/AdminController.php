@@ -180,12 +180,29 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        if ($request->has('search')) {
+        // Filter berdasarkan search
+        if ($request->has('search') && $request->input('search') != '') {
             $search = $request->input('search');
             $users = $users->filter(function ($user) use ($search) {
                 return str_contains(strtolower($user->nama_mahasiswa), strtolower($search)) ||
                     str_contains(strtolower($user->username), strtolower($search)) ||
                     str_contains(strtolower($user->email), strtolower($search));
+            });
+        }
+
+        // Filter berdasarkan role
+        if ($request->has('role') && $request->input('role') != '') {
+            $role = $request->input('role');
+            $users = $users->filter(function ($user) use ($role) {
+                return $user->role === $role;
+            });
+        }
+
+        // Filter berdasarkan status_pengajuan
+        if ($request->has('status_pengajuan') && $request->input('status_pengajuan') != '') {
+            $status = $request->input('status_pengajuan');
+            $users = $users->filter(function ($user) use ($status) {
+                return $user->status_pengajuan === $status;
             });
         }
 
@@ -284,13 +301,21 @@ class AdminController extends Controller
             ->with('success', 'User berhasil ditambahkan.');
     }
 
-    public function DetailsUser($id)
+    // DetailsUser - ambil id dari query parameter
+    public function DetailsUser(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'User ID is required');
+        }
+
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
         $user = User::with(['jurusan', 'keahlian', 'angkatan'])->findOrFail($id);
+
         return view('admin.user.views_edit_user', compact(
             'user',
             'jurusans',
@@ -298,16 +323,22 @@ class AdminController extends Controller
             'angkatans'
         ));
     }
-    public function UpdateUser(Request $request, $id_user)
+
+    // UpdateUser - ambil id dari query parameter
+    public function UpdateUser(Request $request)
     {
         $this->authorizeAccess();
-        $user = User::findOrFail($id_user);
+        $id = $request->query('id');
 
+        if (!$id) {
+            abort(404, 'User ID is required');
+        }
+
+        $user = User::findOrFail($id);
 
         // Base validation rules
         $rules = [
             'nama_mahasiswa' => ['sometimes', 'string', 'max:100'],
-
             'username' => [
                 'sometimes',
                 'string',
@@ -315,7 +346,6 @@ class AdminController extends Controller
                 'regex:/^[a-zA-Z0-9_]+$/',
                 Rule::unique('users')->ignore($user->id)
             ],
-
             'email' => [
                 'sometimes',
                 'nullable',
@@ -323,40 +353,33 @@ class AdminController extends Controller
                 'max:100',
                 Rule::unique('users')->ignore($user->id)
             ],
-
             'role' => [
                 'sometimes',
                 'in:mahasiswa,dosen,admin'
             ],
-
             'status_pengajuan' => [
                 'sometimes',
                 'in:Di Terima,Di Tolak'
             ],
-
             'is_active' => [
                 'sometimes',
                 'boolean'
             ],
-
             'id_jurusan' => [
                 'sometimes',
                 'nullable',
                 'exists:jurusan,id_jurusan'
             ],
-
             'id_keahlian' => [
                 'sometimes',
                 'nullable',
                 'exists:keahlian,id_keahlian'
             ],
-
             'id_angkatan' => [
                 'sometimes',
                 'nullable',
                 'exists:angkatan,id'
             ],
-
             'password' => [
                 'nullable',
                 'string',
@@ -364,14 +387,12 @@ class AdminController extends Controller
                 Password::min(8)->mixedCase(),
                 'regex:/^\S*$/'
             ],
-
             'photo_profile' => [
                 'sometimes',
                 'image',
                 'mimes:jpeg,png,jpg',
                 'max:2048'
             ],
-
             'background_url' => [
                 'sometimes',
                 'image',
@@ -415,25 +436,19 @@ class AdminController extends Controller
 
         // Photo upload
         if ($request->hasFile('photo_profile')) {
-
             if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
                 Storage::disk('public')->delete($user->photo_profile);
             }
-
             $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-
             $updateData['photo_profile'] = $photoPath;
         }
 
         // Background upload
         if ($request->hasFile('background_url')) {
-
             if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
                 Storage::disk('public')->delete($user->background_url);
             }
-
             $backgroundPath = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
-
             $updateData['background_url'] = $backgroundPath;
         }
 
@@ -445,9 +460,18 @@ class AdminController extends Controller
             ->with('success', 'User berhasil diperbarui.');
     }
 
-    public function updateStatus(Request $request, User $user)
+    // updateStatus - ambil id dari query parameter
+    public function updateStatus(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'User ID is required');
+        }
+
+        $user = User::findOrFail($id);
+
         $validated = $request->validate([
             'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
             'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|string|max:500',
@@ -470,9 +494,18 @@ class AdminController extends Controller
             ->with('success', "Status pengajuan {$nama} berhasil diupdate menjadi {$user->status_pengajuan}");
     }
 
-    public function destroyUser(User $user)
+    // destroyUser - ambil id dari query parameter
+    public function destroyUser(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User ID tidak ditemukan');
+        }
+
+        $user = User::findOrFail($id);
 
         // Hapus gambar dari storage jika ada
         if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
@@ -488,8 +521,10 @@ class AdminController extends Controller
             ->with('success', 'User berhasil dihapus.');
     }
 
+    // bulkDestroyUsers - tetap sama karena sudah menggunakan request body
     public function bulkDestroyUsers(Request $request)
     {
+        $this->authorizeAccess();
         $ids = $request->input('selected_ids');
 
         // Handle jika dikirim sebagai JSON string (dari JS)
@@ -540,9 +575,9 @@ class AdminController extends Controller
 
             $applications = $applications->filter(function ($application) use ($search) {
                 return str_contains(strtolower($application->mahasiswa->nama_mahasiswa ?? ''), $search) ||
-                       str_contains(strtolower($application->mahasiswa->username ?? ''), $search) ||
-                       str_contains(strtolower($application->mahasiswa->email ?? ''), $search) ||
-                       str_contains(strtolower($application->keahlian->nama_keahlian ?? ''), $search);
+                    str_contains(strtolower($application->mahasiswa->username ?? ''), $search) ||
+                    str_contains(strtolower($application->mahasiswa->email ?? ''), $search) ||
+                    str_contains(strtolower($application->keahlian->nama_keahlian ?? ''), $search);
             });
         }
 
@@ -656,16 +691,30 @@ class AdminController extends Controller
         ));
     }
 
-    public function DetailsSertifikat($id)
+    // DetailsSertifikat - ambil id dari query parameter
+    public function DetailsSertifikat(Request $request)
     {
         $this->authorizeAccess();
-        $sertifikat = Sertifikat::findorfail($id);
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'Sertifikat ID is required');
+        }
+
+        $sertifikat = Sertifikat::findOrFail($id);
         return view('admin.sertifikat.views_edit_sertifikat', compact('sertifikat'));
     }
 
-    public function approve($id)
+    // approve - ambil id dari query parameter
+    public function approve(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->back()->with('error', 'Sertifikat ID tidak ditemukan');
+        }
+
         $sertifikat = Sertifikat::findOrFail($id);
         $sertifikat->status_pengajuan = 'Di Terima';
         $sertifikat->is_active = true;
@@ -674,9 +723,16 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Sertifikat berhasil diterima');
     }
 
-    public function reject(Request $request, $id)
+    // reject - ambil id dari query parameter
+    public function reject(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->back()->with('error', 'Sertifikat ID tidak ditemukan');
+        }
+
         $request->validate(['keterangan' => 'required|string']);
 
         $sertifikat = Sertifikat::findOrFail($id);
@@ -780,9 +836,19 @@ class AdminController extends Controller
             ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
 
-    public function UpdateSertifikat(Request $request, Sertifikat $sertifikat)
+    // UpdateSertifikat - ambil id dari query parameter
+    public function UpdateSertifikat(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.sertifikat.index')
+                ->with('error', 'Sertifikat ID tidak ditemukan');
+        }
+
+        $sertifikat = Sertifikat::findOrFail($id);
+
         $validated = $request->validate([
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
@@ -791,19 +857,11 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('link_sertifikat')) {
-
-
-            if (
-                $sertifikat->link_sertifikat &&
-                Storage::disk('public')->exists($sertifikat->link_sertifikat)
-            ) {
-
+            if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
                 Storage::disk('public')->delete($sertifikat->link_sertifikat);
             }
-
             $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
         } else {
-
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
         }
 
@@ -813,9 +871,18 @@ class AdminController extends Controller
             ->with('success', 'Sertifikat berhasil diperbarui!');
     }
 
-    public function DestroySertifikat(Sertifikat $sertifikat)
+    // DestroySertifikat - ambil id dari query parameter
+    public function DestroySertifikat(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.sertifikat.index')
+                ->with('error', 'Sertifikat ID tidak ditemukan');
+        }
+
+        $sertifikat = Sertifikat::findOrFail($id);
 
         // Hapus gambar sertifikat dari storage jika ada
         if ($sertifikat->link_sertifikat && Storage::disk('public')->exists($sertifikat->link_sertifikat)) {
@@ -828,6 +895,7 @@ class AdminController extends Controller
             ->with('success', 'Sertifikat berhasil dihapus.');
     }
 
+    // bulkDestroy - tetap sama karena sudah menggunakan request body
     public function bulkDestroy(Request $request)
     {
         $this->authorizeAccess();
@@ -861,7 +929,6 @@ class AdminController extends Controller
             ], 500);
         }
     }
-
     // For Pages Angkatan
     public function ListAngkatan()
     {
@@ -870,9 +937,16 @@ class AdminController extends Controller
         return view('admin.list-angkatan', compact('angkatans'));
     }
 
-    public function DetailsAngkatan($id)
+    // DetailsAngkatan - ambil id dari query parameter
+    public function DetailsAngkatan(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'Angkatan ID is required');
+        }
+
         $angkatan = Angkatan::withCount('mahasiswa')->with([
             'mahasiswa' => function ($query) {
                 $query->with('jurusan');
@@ -909,9 +983,19 @@ class AdminController extends Controller
             ->with('success', 'Angkatan berhasil ditambahkan!');
     }
 
-    public function UpdateAngkatan(Request $request, Angkatan $angkatan)
+    // UpdateAngkatan - ambil id dari query parameter
+    public function UpdateAngkatan(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.angkatan.index')
+                ->with('error', 'Angkatan ID tidak ditemukan');
+        }
+
+        $angkatan = Angkatan::findOrFail($id);
+
         $validated = $request->validate([
             'nama_angkatan' => 'required|string|max:255',
             'tahun_masuk' => 'required|date',
@@ -924,23 +1008,55 @@ class AdminController extends Controller
             ->with('success', 'Data Angkatan berhasil diperbarui!');
     }
 
-    public function DestroyAngkatan(Angkatan $angkatan)
+    // DestroyAngkatan - ambil id dari query parameter
+    public function DestroyAngkatan(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.angkatan.index')
+                ->with('error', 'Angkatan ID tidak ditemukan');
+        }
+
+        $angkatan = Angkatan::findOrFail($id);
         $angkatan->delete();
 
         return redirect()->route('admin.angkatan.index')
             ->with('success', 'Angkatan berhasil dihapus.');
     }
 
+    // bulkDestroyAngkatan - perbaiki untuk menerima berbagai format
     public function bulkDestroyAngkatan(Request $request)
     {
         $this->authorizeAccess();
-        $ids = explode(',', $request->selected_ids);
 
-        Angkatan::whereIn('id', $ids)->delete();
+        // Ambil data dari input form (bukan JSON)
+        $ids = $request->input('selected_ids');
 
-        return redirect()->back()->with('success', count($ids) . ' Angkatan berhasil dihapus');
+        // Jika ids adalah string dari input hidden yang diisi oleh JavaScript
+        if (is_string($ids)) {
+            // Coba parse sebagai JSON dulu
+            $decoded = json_decode($ids, true);
+            if (is_array($decoded)) {
+                $ids = $decoded;
+            } else {
+                // Jika bukan JSON, mungkin comma separated
+                $ids = explode(',', $ids);
+            }
+        }
+
+        // Filter dan validasi
+        if (empty($ids) || !is_array($ids)) {
+            return redirect()->route('admin.angkatan.index')
+                ->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // Hapus data
+        $count = Angkatan::whereIn('id', $ids)->delete();
+
+        return redirect()->route('admin.angkatan.index')
+            ->with('success', $count . ' Angkatan berhasil dihapus');
     }
 
     // For Prodi Pages
@@ -951,17 +1067,23 @@ class AdminController extends Controller
         return view('admin.list-prodi', compact('jurusans'));
     }
 
-    public function DetailsProdi($id)
+    // DetailsProdi - ambil id dari query parameter
+    public function DetailsProdi(Request $request)
     {
-            $this->authorizeAccess();
+        $this->authorizeAccess();
+        $id = $request->query('id');
 
-            $prodi = Jurusan::withCount('users')
-                ->with(['users.angkatan'])
-                ->findOrFail($id);
+        if (!$id) {
+            abort(404, 'Prodi ID is required');
+        }
 
-            $angkatans = \App\Models\Angkatan::all();
+        $prodi = Jurusan::withCount('users')
+            ->with(['users.angkatan'])
+            ->findOrFail($id);
 
-            return view('admin.prodi.views_detail_prodi', compact('prodi', 'angkatans'));
+        $angkatans = \App\Models\Angkatan::all();
+
+        return view('admin.prodi.views_detail_prodi', compact('prodi', 'angkatans'));
     }
 
     public function TambahProdi()
@@ -986,9 +1108,19 @@ class AdminController extends Controller
             ->with('success', 'Prodi berhasil ditambahkan!');
     }
 
-    public function UpdateProdi(Request $request, Jurusan $jurusan)
+    // UpdateProdi - ambil id dari query parameter
+    public function UpdateProdi(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.prodi.index')
+                ->with('error', 'Prodi ID tidak ditemukan');
+        }
+
+        $jurusan = Jurusan::findOrFail($id);
+
         $validated = $request->validate([
             'nama_prodi' => 'required|string|max:255',
         ]);
@@ -1001,25 +1133,75 @@ class AdminController extends Controller
             ->with('success', 'Data Prodi berhasil diperbarui!');
     }
 
-    public function DestroyProdi(Jurusan $jurusan)
+    // DestroyProdi - ambil id dari query parameter
+    public function DestroyProdi(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.prodi.index')
+                ->with('error', 'Prodi ID tidak ditemukan');
+        }
+
+        $jurusan = Jurusan::findOrFail($id);
         $jurusan->delete();
 
         return redirect()->route('admin.prodi.index')
             ->with('success', 'Prodi berhasil dihapus.');
     }
 
+    // bulkDestroyProdi - perbaiki untuk menerima berbagai format
     public function bulkDestroyProdi(Request $request)
     {
         $this->authorizeAccess();
-        $ids = explode(',', $request->selected_ids);
 
-        Jurusan::whereIn('id_jurusan', $ids)->delete();
+        // Ambil data dari input form
+        $ids = $request->input('selected_ids');
 
-        return redirect()->back()->with('success', count($ids) . ' Prodi berhasil dihapus');
+        // Log untuk debugging
+        \Log::info('Bulk Delete Prodi - Raw input:', ['ids' => $ids, 'type' => gettype($ids)]);
+
+        // Jika ids adalah string kosong
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // Decode JSON jika perlu
+        if (is_string($ids)) {
+            $decoded = json_decode($ids, true);
+            if (is_array($decoded)) {
+                $ids = $decoded;
+            } else {
+                // Jika bukan JSON, mungkin comma separated
+                $ids = explode(',', $ids);
+            }
+        }
+
+        // Pastikan ids adalah array dan bersihkan nilai kosong
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        // Filter nilai yang kosong
+        $ids = array_filter($ids, function ($id) {
+            return !empty($id);
+        });
+
+        // Konversi ke integer
+        $ids = array_map('intval', $ids);
+
+        // Jika masih kosong
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada data valid yang dipilih.');
+        }
+
+        // Hapus data
+        $count = Jurusan::whereIn('id_jurusan', $ids)->delete();
+
+        return redirect()->route('admin.prodi.index')
+            ->with('success', $count . ' Jurusan berhasil dihapus');
     }
-
     // For Keahlian Pages
     public function ListKeahlian()
     {
@@ -1028,17 +1210,23 @@ class AdminController extends Controller
         return view('admin.list-keahlian', compact('keahlians'));
     }
 
-    public function DetailsKeahlian($id)
+    // DetailsKeahlian - ambil id dari query parameter
+    public function DetailsKeahlian(Request $request)
     {
-            $this->authorizeAccess();
+        $this->authorizeAccess();
+        $id = $request->query('id');
 
-            $keahlian = Keahlian::withCount('users')
-                ->with(['users.angkatan'])
-                ->findOrFail($id);
+        if (!$id) {
+            abort(404, 'Keahlian ID is required');
+        }
 
-            $angkatans = \App\Models\Angkatan::all();
+        $keahlian = Keahlian::withCount('users')
+            ->with(['users.angkatan'])
+            ->findOrFail($id);
 
-            return view('admin.keahlian.views_detail_keahlian', compact('keahlian', 'angkatans'));
+        $angkatans = \App\Models\Angkatan::all();
+
+        return view('admin.keahlian.views_detail_keahlian', compact('keahlian', 'angkatans'));
     }
 
     public function TambahKeahlian()
@@ -1063,9 +1251,19 @@ class AdminController extends Controller
             ->with('success', 'Keahlian berhasil ditambahkan!');
     }
 
-    public function UpdateKeahlian(Request $request, Keahlian $keahlian)
+    // UpdateKeahlian - ambil id dari query parameter
+    public function UpdateKeahlian(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.keahlian.index')
+                ->with('error', 'Keahlian ID tidak ditemukan');
+        }
+
+        $keahlian = Keahlian::findOrFail($id);
+
         $validated = $request->validate([
             'nama_keahlian' => 'required|string|max:255',
         ]);
@@ -1078,25 +1276,69 @@ class AdminController extends Controller
             ->with('success', 'Data Keahlian berhasil diperbarui!');
     }
 
-    public function DestroyKeahlian(Keahlian $keahlian)
+    // DestroyKeahlian - ambil id dari query parameter
+    public function DestroyKeahlian(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.keahlian.index')
+                ->with('error', 'Keahlian ID tidak ditemukan');
+        }
+
+        $keahlian = Keahlian::findOrFail($id);
         $keahlian->delete();
 
         return redirect()->route('admin.keahlian.index')
             ->with('success', 'Keahlian berhasil dihapus.');
     }
 
+    // bulkDestroyKeahlian - perbaiki untuk menerima berbagai format
     public function bulkDestroyKeahlian(Request $request)
     {
         $this->authorizeAccess();
-        $ids = explode(',', $request->selected_ids);
 
-        Keahlian::whereIn('id_keahlian', $ids)->delete();
+        // Ambil data dari berbagai kemungkinan format
+        $ids = $request->input('selected_ids');
 
-        return redirect()->back()->with('success', count($ids) . ' Keahlian berhasil dihapus');
+        // Jika ids adalah string JSON, decode dulu
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        // Jika ids masih string biasa (comma separated)
+        if (is_string($ids) && str_contains($ids, ',')) {
+            $ids = explode(',', $ids);
+        }
+
+        // Jika ids adalah array tapi berisi string JSON
+        if (is_array($ids) && count($ids) === 1 && is_string($ids[0]) && str_starts_with($ids[0], '[')) {
+            $ids = json_decode($ids[0], true);
+        }
+
+        // Pastikan ids adalah array
+        if (empty($ids) || !is_array($ids)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada data yang dipilih.'
+                ], 422);
+            }
+            return redirect()->back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        $count = Keahlian::whereIn('id_keahlian', $ids)->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $count . ' Keahlian berhasil dihapus'
+            ]);
+        }
+
+        return redirect()->back()->with('success', $count . ' Keahlian berhasil dihapus');
     }
-
     //For Projects Pages
     public function projects()
     {
@@ -1163,11 +1405,11 @@ class AdminController extends Controller
                         <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                             <div class="flex items-center gap-3">
                                 ' . ($user->photo_profile ?
-                                    '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">' :
-                                    '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                        '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">' :
+                        '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
                                         <span class="text-indigo-600 dark:text-indigo-400 font-semibold">' . strtoupper(substr($user->nama_mahasiswa, 0, 1)) . '</span>
                                     </div>'
-                                ) . '
+                    ) . '
                                 <div>
                                     <div class="font-medium text-gray-900 dark:text-gray-100">' . $user->nama_mahasiswa . '</div>
                                     <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '</div>
@@ -1211,11 +1453,15 @@ class AdminController extends Controller
         ));
     }
 
-    
-
-    public function EditProjects($id)
+    // EditProjects - ambil id dari query parameter
+    public function EditProjects(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'Project ID is required');
+        }
 
         // Get search and filter inputs
         $search = request()->input('search');
@@ -1237,24 +1483,12 @@ class AdminController extends Controller
         if ($angkatan) {
             $query->where('id_angkatan', $angkatan);
         }
-        // Filter berdasarkan angkatan
-        if ($angkatan) {
-            $query->where('id_angkatan', $angkatan);
-        }
 
         // Filter berdasarkan jurusan
         if ($jurusan) {
             $query->where('id_jurusan', $jurusan);
         }
-        // Filter berdasarkan jurusan
-        if ($jurusan) {
-            $query->where('id_jurusan', $jurusan);
-        }
 
-        // Filter berdasarkan keahlian
-        if ($keahlian) {
-            $query->where('id_keahlian', $keahlian);
-        }
         // Filter berdasarkan keahlian
         if ($keahlian) {
             $query->where('id_keahlian', $keahlian);
@@ -1262,7 +1496,7 @@ class AdminController extends Controller
 
         // Ambil data dengan pagination
         $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-       
+
         // Ambil data untuk dropdown filter
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
@@ -1285,7 +1519,6 @@ class AdminController extends Controller
             'keahlian'
         ));
     }
-
     public function StoreProject(Request $request)
     {
         $this->authorizeAccess();
@@ -1353,20 +1586,20 @@ class AdminController extends Controller
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
             'isi_content' => $content,
-            'id_mahasiswa' => $ownerId, 
-            'leader_id' => $leaderId, 
+            'id_mahasiswa' => $ownerId,
+            'leader_id' => $leaderId,
         ]);
 
 
         $members = collect($request->members ?? [])
-            ->filter() 
+            ->filter()
             ->reject(fn($id) => $id == $ownerId || $id == $leaderId)
             ->map(fn($id) => (int) $id)
-            ->unique() 
+            ->unique()
             ->values()
             ->all();
 
-     
+
         if (!empty($members)) {
             $project->members()->attach($members);
         }
@@ -1387,9 +1620,16 @@ class AdminController extends Controller
             ->with('clear_local_storage', true);
     }
 
-    public function UpdateProject(Request $request, $id)
+    // UpdateProject - ambil id dari query parameter
+    public function UpdateProject(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.projects.index')
+                ->with('error', 'Project ID tidak ditemukan');
+        }
 
         $project = Project::findOrFail($id);
 
@@ -1425,7 +1665,6 @@ class AdminController extends Controller
             'is_collaborative' => 'nullable|boolean'
         ]);
 
-       
         $content = [];
         if ($request->filled('nama_project'))
             $content['nama_project'] = $request->nama_project;
@@ -1446,7 +1685,6 @@ class AdminController extends Controller
         $leaderId = $request->leader ?: null;
         $isCollaborative = $request->boolean('is_collaborative', true);
 
-    
         if (!$leaderId && $ownerId) {
             $leaderId = $ownerId;
         }
@@ -1492,9 +1730,9 @@ class AdminController extends Controller
                 ProjectTask::where('project_id', $project->id)->delete();
             }
         } else {
-       
             ProjectTask::where('project_id', $project->id)->delete();
         }
+
         $allowedUserIds = collect([$ownerId, $leaderId])
             ->merge($members)
             ->filter()
@@ -1520,33 +1758,64 @@ class AdminController extends Controller
             ->with('success', 'Project berhasil diperbarui!');
     }
 
-    public function DestroyProject(Project $project)
+
+    // DestroyProject - ambil id dari query parameter
+    public function DestroyProject(Request $request)
     {
         $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.projects.index')
+                ->with('error', 'Project ID tidak ditemukan');
+        }
+
+        $project = Project::findOrFail($id);
         $project->delete();
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project Mahasiswa berhasil dihapus!');
     }
 
-    public function bulkDestroyProject(Request $request)
-    {
-        $this->authorizeAccess();
+ public function bulkDestroyProject(Request $request)
+{
+    $this->authorizeAccess();
 
-        $selectedIds = $request->input('selected_ids', []);
-        if (!is_array($selectedIds)) {
-            $selectedIds = array_filter(explode(',', $selectedIds), fn($value) => trim($value) !== '');
+    // Ambil dari input
+    $selectedIds = $request->input('selected_ids', []);
+    
+    // Log untuk debugging
+    \Log::info('Bulk Delete - Raw input:', ['selected_ids' => $selectedIds, 'type' => gettype($selectedIds)]);
+    
+    // Jika string, coba decode JSON
+    if (is_string($selectedIds)) {
+        $decoded = json_decode($selectedIds, true);
+        if (is_array($decoded)) {
+            $selectedIds = $decoded;
+        } else {
+            // Jika bukan JSON, coba explode comma
+            $selectedIds = explode(',', $selectedIds);
         }
-
+    }
+    
+    // Pastikan $selectedIds adalah array
+    if (!is_array($selectedIds)) {
+        $selectedIds = [];
+    }
+    
+    // Filter dan konversi ke integer (hanya jika array tidak kosong)
+    $ids = [];
+    if (!empty($selectedIds)) {
         $ids = array_values(array_filter(array_map('intval', $selectedIds)));
-
-        if (empty($ids)) {
-            return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
-        }
-
-        Project::whereIn('id', $ids)->delete();
-
-        return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
+    }
+    
+    // Jika masih kosong
+    if (empty($ids)) {
+        return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
     }
 
+    Project::whereIn('id', $ids)->delete();
+
+    return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
+}
 }

@@ -8,7 +8,7 @@
             <h2 class="text-xl sm:text-2xl font-bold dark:text-white" data-translate='title_agkt'
                 data-translate-page="admin">Daftar Angkatan</h2>
             <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                <form id="bulkDeleteForm" action="{{ route('admin.angkatan.bulk-destroy') }}" method="POST" class="inline">
+                <form id="bulkDeleteForm" action="{{ route('admin.angkatan.bulk-destroy', ['locale' => app()->getLocale()]) }}" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="selected_ids" id="selectedIds" value="">
@@ -55,8 +55,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="exit_agkt" data-translate-page="admin">Tahun Keluar</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                            data-translate="total_mhs" data-translate-page="admin">Jumlah Mahasiswa</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="aksi_agkt" data-translate-page="admin">Aksi</th>
                     </tr>
                 </thead>
@@ -76,14 +74,9 @@
                             <td class="px-6 py-4 dark:text-white">
                                 {{ $angkatan->tahun_keluar ? \Carbon\Carbon::parse($angkatan->tahun_keluar)->format('d/m/Y') : '-' }}
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                                    {{ $angkatan->mahasiswa_count }} Mahasiswa
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
+                             <td class="px-6 py-4">
                                 <div class="flex space-x-3">
-                                    <a href="{{ route('admin.angkatan.details', $angkatan->id) }}"
+                                    <a href="{{ route('admin.angkatan.details', ['id' => $angkatan->id]) }}"
                                         class="text-blue-500 hover:text-blue-700 transition-colors" title="Detail">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -157,7 +150,7 @@
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-3 border-t border-gray-200 dark:border-gray-600">
-                        <a href="{{ route('admin.angkatan.details', $angkatan->id) }}"
+                        <a href="{{ route('admin.angkatan.details', ['id' => $angkatan->id]) }}"
                             class="text-blue-500 hover:text-blue-700 p-2 transition-colors" title="Detail">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -286,29 +279,57 @@
             updateSelectedIds();
         }
 
-        // Update selected IDs
-        function updateSelectedIds() {
-            selectedIds = [];
-            let checkboxes = document.querySelectorAll('.item-checkbox:checked');
-            checkboxes.forEach(checkbox => {
-                selectedIds.push(checkbox.value);
-            });
-            document.getElementById('selectedIds').value = selectedIds;
-        }
+        // Update selected IDs - simpan sebagai array dalam JSON string
+function updateSelectedIds() {
+    selectedIds = [];
+    let checkboxes = document.querySelectorAll('.item-checkbox:checked');
+    checkboxes.forEach(checkbox => {
+        selectedIds.push(checkbox.value);
+    });
+    // Simpan sebagai JSON string agar mudah di-parse di controller
+    document.getElementById('selectedIds').value = JSON.stringify(selectedIds);
+}
 
-        // Confirm bulk delete
-        function confirmBulkDelete() {
-            updateSelectedIds();
-            if (selectedIds.length === 0) {
-                alert('Pilih data yang akan dihapus');
-                return;
-            }
+// Confirm bulk delete
+function confirmBulkDelete() {
+    updateSelectedIds();
+    
+    let selectedIdsArray = [];
+    try {
+        selectedIdsArray = JSON.parse(document.getElementById('selectedIds').value);
+    } catch(e) {
+        selectedIdsArray = [];
+    }
+    
+    if (selectedIdsArray.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak Ada Data Dipilih',
+            text: 'Pilih data yang akan dihapus',
+            confirmButtonColor: '#3b82f6'
+        });
+        return;
+    }
 
-            if (confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} data?`)) {
-                document.getElementById('bulkDeleteForm').submit();
-            }
+    Swal.fire({
+        title: 'Hapus Angkatan Terpilih?',
+        text: `${selectedIdsArray.length} angkatan akan dihapus permanen.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Submit form biasa, tanpa mengubah action
+            document.getElementById('bulkDeleteForm').submit();
         }
-        // Open edit modal
+    });
+}
+        
+       // Open edit modal
         function openEditModal(angkatan) {
             document.getElementById('edit_nama').value = angkatan.nama_angkatan;
             document.getElementById('edit_masuk').value = angkatan.tahun_masuk.split(' ')[0];
@@ -317,17 +338,17 @@
                 : '';
 
             let form = document.getElementById('editForm');
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
-            // route admin.angkatan.details
-            let url = `{{ route('admin.angkatan.update', ':id') }}`;
-            url = url.replace(':id', angkatan.id);
-
+            // New way dengan query parameter
+            let url = `/${locale}/admin/manageAngkatan/edit?id=${angkatan.id}`;
+            
             form.action = url;
+            form.method = 'POST'; 
 
             document.getElementById('editModal').classList.remove('hidden');
         }
-
-        // Close modal
+            // Close modal
         function closeModal() {
             document.getElementById('editModal').classList.add('hidden');
         }
@@ -339,16 +360,16 @@
             document.getElementById('deleteName').textContent = name;
 
             let form = document.getElementById('deleteForm');
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
-            // route admin.angkatan.destroy
-            let url = `{{ route('admin.angkatan.destroy', ':id') }}`;
-            url = url.replace(':id', id);
-
+            // New way dengan query parameter
+            let url = `/${locale}/admin/manageAngkatan/DeleteAngkatan?id=${id}`;
+            
             form.action = url;
+            form.method = 'POST'; // Method POST dengan @method('DELETE') di dalam form
 
             document.getElementById('deleteModal').classList.remove('hidden');
         }
-
         // Close delete modal
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.add('hidden');

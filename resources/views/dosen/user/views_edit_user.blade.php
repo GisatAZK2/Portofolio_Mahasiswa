@@ -16,7 +16,7 @@
 
             <!-- Form Edit User -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <form action="{{ route('dosen.users.edit', $user->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('dosen.users.edit', ['id' => $user->id]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
 

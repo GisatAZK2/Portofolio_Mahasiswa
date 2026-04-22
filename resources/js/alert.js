@@ -89,6 +89,8 @@ export async function showConfirm() {
     return result.isConfirmed;
 }
 
+window.showConfirm = showConfirm;
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {

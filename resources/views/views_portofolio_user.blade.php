@@ -339,7 +339,7 @@
                                             <!-- Header: Nama Project -->
                                             <div class="flex flex-wrap items-start gap-3">
                                                 <div class="flex items-center flex-wrap gap-2">
-                                                    <a href="{{ route('project.show', $project->id) }}" 
+                                                    <a href="{{ route('project.show', ['id' => $project->id]) }}" 
                                                        class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                                                         {{ $namaProject }}
                                                     </a>
@@ -868,7 +868,7 @@
                                                 <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                                                     <p class="text-xs text-gray-500 dark:text-gray-400">
                                                         <span data-translate="lrn_origin" data-translate-page="portofolio_user">Dari project:</span> 
-                                                        <a href="{{ route('project.show', $entry->project->id) }}" class="text-indigo-600 hover:underline">
+                                                        <a href="{{ route('project.show', ['id' => $entry->project->id]) }}" class="text-indigo-600 hover:underline">
                                                             {{ $entry->project->isi_content['nama_project'] ?? 'Project' }}
                                                         </a>
                                                     </p>

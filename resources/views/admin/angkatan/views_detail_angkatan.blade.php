@@ -118,13 +118,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="filter-jurusan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Filter PRO
+                            Filter Prodi
                         </label>
                         <select id="filter-jurusan"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            <option value="">Semua Jurusan</option>
+                            <option value="">Semua Prodi</option>
                             @foreach($jurusans as $jurusan)
-                                <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }}</option>
+                                <option value="{{ $jurusan->id_jurusan }}">{{ $jurusan->nama_jurusan }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -211,16 +211,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         // Data mahasiswa
-        const allMahasiswa = {!! json_encode($angkatan->mahasiswa->map(function ($m) {
-        return [
-            'id' => $m->id,
-            'nama_mahasiswa' => $m->nama_mahasiswa,
-            'jurusan_id' => $m->jurusan_id,
-            'jurusan_nama' => $m->jurusan?->nama_jurusan ?? '-',
-            'email' => $m->email,
-            'is_active' => $m->is_active,
-        ];
-    })) !!};
+       // Data mahasiswa - PERBAIKAN: gunakan id_jurusan
+const allMahasiswa = {!! json_encode($angkatan->mahasiswa->map(function ($m) {
+    return [
+        'id' => $m->id,
+        'nama_mahasiswa' => $m->nama_mahasiswa,
+        'id_jurusan' => $m->id_jurusan, // PERBAIKAN: pakai id_jurusan, bukan jurusan_id
+        'jurusan_nama' => $m->jurusan?->nama_jurusan ?? '-',
+        'email' => $m->email,
+        'is_active' => $m->is_active,
+    ];
+})) !!};
+
+
 
         let filteredMahasiswa = [];
 
@@ -271,21 +274,22 @@
         });
 
         function applyFiltersMahasiswa() {
-            const search = document.getElementById('search-mahasiswa').value.toLowerCase().trim();
-            const jurusanFilter = document.getElementById('filter-jurusan').value;
-            const statusFilter = document.getElementById('filter-status').value;
+    const search = document.getElementById('search-mahasiswa').value.toLowerCase().trim();
+    const jurusanFilter = document.getElementById('filter-jurusan').value;
+    const statusFilter = document.getElementById('filter-status').value;
 
-            filteredMahasiswa = allMahasiswa.filter(m => {
-                const matchesSearch = m.nama_mahasiswa.toLowerCase().includes(search);
-                const matchesJurusan = !jurusanFilter || m.jurusan_id == jurusanFilter;
-                const matchesStatus = !statusFilter ||
-                    (statusFilter === 'aktif' ? m.is_active : !m.is_active);
+    filteredMahasiswa = allMahasiswa.filter(m => {
+        const matchesSearch = m.nama_mahasiswa.toLowerCase().includes(search);
+        // PERBAIKAN: gunakan id_jurusan, bukan jurusan_id
+        const matchesJurusan = !jurusanFilter || m.id_jurusan == jurusanFilter;
+        const matchesStatus = !statusFilter ||
+            (statusFilter === 'aktif' ? m.is_active : !m.is_active);
 
-                return matchesSearch && matchesJurusan && matchesStatus;
-            });
+        return matchesSearch && matchesJurusan && matchesStatus;
+    });
 
-            displayMahasiswa();
-        }
+    displayMahasiswa();
+}
 
         function displayMahasiswa() {
             const tbody = document.getElementById('mahasiswa-tbody');
@@ -305,10 +309,12 @@
             emptyState.classList.add('hidden');
 
             let html = '';
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+
             filteredMahasiswa.forEach((m, index) => {
                 const statusColor = m.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
                 const statusText = m.is_active ? 'Aktif' : 'Tidak Aktif';
-                const portfolioUrl = '{{ route('portfolio.show', ':id') }}'.replace(':id', m.id);
+                const portfolioUrl = `/${locale}/portofolio?user=${m.id}`;
 
                 html += `
                                                                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">

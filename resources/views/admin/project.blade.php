@@ -41,21 +41,20 @@
                             class="w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                         <span data-translate="select_all" data-translate-page="admin">Pilih Semua</span>
                     </label>
-                    <span class="text-sm text-gray-500 dark:text-gray-400"> <span
-                            class="text-sm text-gray-500 dark:text-gray-400"><span data-translate="selected"
-                                data-translate-page="admin">Terpilih:</span> <strong id="selectedCount">0</strong> /
-                            <strong id="totalProjectCount">{{ $projects->count() }}</strong></span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                        <span data-translate="selected" data-translate-page="admin">Terpilih:</span> 
+                        <strong id="selectedCount">0</strong> / 
+                        <strong id="totalProjectCount">{{ $projects->count() }}</strong>
+                    </span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <form id="bulkDeleteForm" action="{{ route('admin.projects.bulk-delete') }}" method="POST"
-                        class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" onclick="confirmBulkDelete()"
-                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
-                            <span data-translate="delete_select" data-translate-page="admin">Hapus Terpilih</span>
-                        </button>
-                    </form>
+                    <button type="button" onclick="confirmBulkDelete()"
+                        class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span data-translate="delete_select" data-translate-page="admin">Hapus Terpilih</span>
+                    </button>
                 </div>
             </div>
 
@@ -74,7 +73,6 @@
                                 $linkVideo = $content['link_video'] ?? null;
                                 $thumbnail = $content['thumbnail'] ?? null;
 
-                                // Tanggal dari field model
                                 $mulaiRaw = $project->tanggal_mulai ?? null;
                                 $akhirRaw = $project->tanggal_akhir ?? null;
 
@@ -85,117 +83,83 @@
                                 $mulaiFormatted = $mulai ? $mulai->translatedFormat('d M Y') : '—';
                                 $akhirFormatted = $akhir ? $akhir->translatedFormat('d M Y') : 'Sekarang';
 
-                                // Status logic
-                                $status = '—';
                                 $statusBadgeClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
                                 $statusText = 'Tidak diketahui';
 
                                 if ($mulai && $akhir) {
                                     if ($akhir < $today) {
-                                        $status = 'Past';
                                         $statusBadgeClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
                                         $statusText = 'Selesai';
                                     } elseif ($mulai <= $today && $today <= $akhir) {
-                                        $status = 'Now';
                                         $statusBadgeClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
                                         $statusText = 'Sedang Berjalan';
                                     } elseif ($mulai > $today) {
-                                        $status = 'Coming';
                                         $statusBadgeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
                                         $statusText = 'Akan Datang';
                                     }
                                 } elseif ($mulai && !$akhir) {
                                     if ($mulai <= $today) {
-                                        $status = 'Now';
                                         $statusBadgeClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
                                         $statusText = 'Sedang Berjalan';
                                     } else {
-                                        $status = 'Coming';
                                         $statusBadgeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
                                         $statusText = 'Akan Datang';
                                     }
                                 } elseif (!$mulai && $akhir) {
                                     if ($akhir < $today) {
-                                        $status = 'Past';
                                         $statusBadgeClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
                                         $statusText = 'Selesai';
                                     }
                                 }
 
-                                // YouTube embed
                                 $embedVideo = null;
-                                $youtube_id = null;
                                 if ($linkVideo) {
                                     preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^"&?\/\s]{11})/i', $linkVideo, $matches);
                                     if (!empty($matches[1])) {
-                                        $youtube_id = $matches[1];
-                                        $embedVideo = "https://www.youtube.com/embed/" . $youtube_id;
+                                        $embedVideo = "https://www.youtube.com/embed/" . $matches[1];
                                     }
                                 }
 
-                                // Get user information
                                 $mahasiswa = $project->mahasiswa;
                                 $leader = $project->leader;
                                 $isSameUser = $mahasiswa && $leader && $mahasiswa->id === $leader->id;
                             @endphp
 
-                            <div
-                                class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
-
+                            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
 
                                 <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
                                     @if($embedVideo)
-                                        <div class="relative w-full h-full">
-                                            <iframe class="absolute inset-0 w-full h-full"
-                                                src="{{ $embedVideo }}?rel=0&modestbranding=1" title="Video: {{ $nama }}"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen></iframe>
-                                        </div>
-
+                                        <iframe class="absolute inset-0 w-full h-full"
+                                            src="{{ $embedVideo }}?rel=0&modestbranding=1" 
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen></iframe>
                                     @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
                                         <img src="{{ Storage::url($thumbnail) }}" alt="{{ $nama }}" class="w-full h-full object-cover">
-
                                     @else
-                                        <!-- Kondisi: Tidak ada video embed & tidak ada thumbnail -->
-                                        <div
-                                            class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 
-                                                                                flex flex-col items-center justify-center text-center px-4">
-                                            <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center text-center px-4">
+                                            <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            <p data-translate="no_thumbnail_text" data-translate-page="project_user"
-                                                class="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">
-
-                                            </p>
-                                            <p data-translate="no_thumbnail_description" data-translate-page="project_user"
-                                                class="text-gray-400 dark:text-gray-500 text-xs mt-1">
-
-                                            </p>
+                                            <p class="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">Tidak ada thumbnail</p>
                                         </div>
                                     @endif
 
-                                    <!-- Status Badge -->
                                     <div class="absolute top-2 right-2">
-                                        <span
-                                            class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
                                             {{ $statusText }}
                                         </span>
                                     </div>
                                 </div>
 
-                                <!-- Content -->
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
-
-                                    <!-- User Info -->
                                     <div class="flex items-center gap-3 mb-3">
                                         <label class="inline-flex items-center mr-2">
                                             <input type="checkbox" value="{{ $project->id }}"
                                                 class="project-checkbox w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                                         </label>
-                                        <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}"
+                                        <a href="{{ route('portfolio.show', ['user' => ($leader ?? $mahasiswa)->id]) }}"
                                             class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @php
                                                 $displayUser = $leader ?? $mahasiswa;
@@ -207,35 +171,28 @@
                                                 <img src="{{ Storage::url($displayUser->photo_profile) }}" alt="{{ $userName }}"
                                                     class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700">
                                             @else
-                                                <div
-                                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                                                     {{ $userInitial }}
                                                 </div>
                                             @endif
                                         </a>
 
-                                        <!-- Nama dan Role dengan LINK -->
                                         <div>
                                             <div class="flex items-center gap-2 flex-wrap">
-                                                <a href="{{ route('portfolio.show', ($leader ?? $mahasiswa)->id) }}"
+                                                <a href="{{ route('portfolio.show', ['user' => ($leader ?? $mahasiswa)->id]) }}"
                                                     class="font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                     {{ $userName }}
                                                 </a>
                                                 @if($leader && $mahasiswa)
                                                     @if($isSameUser)
-                                                        <span
-                                                            class="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-full">Owner
-                                                            & Leader</span>
+                                                        <span class="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-full">Owner & Leader</span>
                                                     @else
-                                                        <span
-                                                            class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
+                                                        <span class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
                                                     @endif
                                                 @elseif($leader)
-                                                    <span
-                                                        class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
+                                                    <span class="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded-full">Leader</span>
                                                 @else
-                                                    <span
-                                                        class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full">Owner</span>
+                                                    <span class="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full">Owner</span>
                                                 @endif
                                             </div>
                                             <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -244,40 +201,32 @@
                                         </div>
                                     </div>
 
-                                    <!-- Jika Owner berbeda dengan Leader -->
                                     @if($mahasiswa && $leader && !$isSameUser)
                                         <div class="flex items-center gap-2 mb-3 pl-2 border-l-2 border-gray-300 dark:border-gray-600">
-                                            <a href="{{ route('portfolio.show', $mahasiswa->id) }}"
-                                                class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                            <a href="{{ route('portfolio.show', ['user' => $mahasiswa->id]) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                                 @if($mahasiswa->photo_profile && Storage::disk('public')->exists($mahasiswa->photo_profile))
-                                                    <img src="{{ Storage::url($mahasiswa->photo_profile) }}"
-                                                        alt="{{ $mahasiswa->nama_mahasiswa }}" class="w-6 h-6 rounded-full object-cover">
+                                                    <img src="{{ Storage::url($mahasiswa->photo_profile) }}" alt="{{ $mahasiswa->nama_mahasiswa }}" class="w-6 h-6 rounded-full object-cover">
                                                 @else
-                                                    <div
-                                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-xs font-bold">
+                                                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-xs font-bold">
                                                         {{ substr($mahasiswa->nama_mahasiswa ?? 'O', 0, 1) }}
                                                     </div>
                                                 @endif
                                             </a>
                                             <span class="text-xs text-gray-600 dark:text-gray-400">
                                                 <span class="text-gray-500 dark:text-gray-500">Owner:</span>
-                                                <a href="{{ route('portfolio.show', $mahasiswa->id) }}"
-                                                    class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                                <a href="{{ route('portfolio.show', ['user' => $mahasiswa->id]) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                     {{ $mahasiswa->nama_mahasiswa }}
                                                 </a>
                                             </span>
                                         </div>
                                     @endif
 
-                                    <!-- Project Title -->
                                     <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2">
-                                        <a href="{{ route('project.show', $project->id) }}"
-                                            class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                        <a href="{{ route('project.show', ['id' => $project->id]) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                             {{ $nama }}
                                         </a>
                                     </h3>
 
-                                    <!-- Periode -->
                                     <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -286,60 +235,34 @@
                                         <span>{{ $mulaiFormatted }} - {{ $akhirFormatted }}</span>
                                     </div>
 
-                                    <!-- Description -->
                                     @if($deskripsi)
-                                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 flex-1">
-                                            {{ $deskripsi }}
-                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 flex-1">{{ $deskripsi }}</p>
                                     @endif
 
-                                    <!-- Tech Stack (optional) -->
-                                    @if(!empty($content['tech_stack']) && is_array($content['tech_stack']))
-                                        <div class="flex flex-wrap gap-1 mb-3">
-                                            @foreach(array_slice($content['tech_stack'], 0, 3) as $tech)
-                                                <span
-                                                    class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-xs rounded text-gray-700 dark:text-gray-300">{{ $tech }}</span>
-                                            @endforeach
-                                            @if(count($content['tech_stack']) > 3)
-                                                <span
-                                                    class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-xs rounded text-gray-700 dark:text-gray-300">+{{ count($content['tech_stack']) - 3 }}</span>
-                                            @endif
-                                        </div>
-                                    @endif
-
-                                    <!-- Links - SEPERTI CONTOH SERTIFIKAT -->
-                                    <div
-                                        class="flex flex-wrap items-center gap-3 mt-auto pt-3 border-t border-gray-100 dark:border-gray-800">
+                                    <div class="flex flex-wrap items-center gap-3 mt-auto pt-3 border-t border-gray-100 dark:border-gray-800">
                                         @if($linkProject)
-                                            <a href="{{ $linkProject }}" target="_blank" rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
+                                            <a href="{{ $linkProject }}" target="_blank" class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                                 </svg>
                                                 Website
                                             </a>
                                         @endif
 
                                         @if($linkGithub)
-                                            <a href="{{ $linkGithub }}" target="_blank" rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white font-medium">
+                                            <a href="{{ $linkGithub }}" target="_blank" class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-black dark:text-gray-300 font-medium">
                                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path
-                                                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                                                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                                                 </svg>
                                                 GitHub
                                             </a>
                                         @endif
 
                                         @if($linkVideo && !$embedVideo)
-                                            <a href="{{ $linkVideo }}" target="_blank" rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium">
+                                            <a href="{{ $linkVideo }}" target="_blank" class="inline-flex items-center gap-1 text-sm text-red-600 hover:text-red-800 dark:text-red-400 font-medium">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                                 Video
                                             </a>
@@ -347,29 +270,30 @@
                                     </div>
 
                                     <div class="mt-3 flex flex-wrap gap-2">
-                                        <a data-translate="edit_project" data-translate-page="admin"
-                                            href="{{ route('admin.projects.details', $project->id) }}"
+                                        <a href="{{ route('admin.projects.details', ['id' => $project->id]) }}"
                                             class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-xs font-medium hover:bg-yellow-200 transition">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
                                             Edit
                                         </a>
-                                        <button data-translate="delete_project" data-translate-page="admin" type="button"
-                                            onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')"
+                                        <button type="button" onclick="confirmDeleteProject('{{ $project->id }}', '{{ addslashes($nama) }}')"
                                             class="inline-flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg text-xs font-medium hover:bg-red-200 transition">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
                                             Hapus
                                         </button>
                                     </div>
 
-                                    <!-- Footer Date - SEPERTI CONTOH SERTIFIKAT -->
                                     <div class="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                                        <span data-translate="diposting" data-translate-page="kelola_project"></span>
-                                        {{ $project->created_at?->format('d M Y H:i') ?? '—' }}
+                                        Diposting: {{ $project->created_at?->format('d M Y H:i') ?? '—' }}
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <!-- Pagination -->
                     @if(method_exists($projects, 'links'))
                         <div class="mt-8 flex justify-center" data-pagination-group="admin_projects">
                             {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_projects']) }}
@@ -377,17 +301,12 @@
                     @endif
 
                 @else
-                    <div
-                        class="text-center py-12 sm:py-16 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 dark:text-gray-600" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <div class="text-center py-12 sm:py-16 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg">Belum ada proyek yang ditampilkan.
-                        </p>
-                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Silakan tambahkan proyek baru untuk memulai.
-                        </p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg">Belum ada proyek yang ditampilkan.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Silakan tambahkan proyek baru untuk memulai.</p>
                     </div>
                 @endif
 
@@ -398,11 +317,11 @@
             </section>
         </div>
     </div>
+
     <script>
         function updateSelectedProjects() {
             const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
             const selectedCountEl = document.getElementById('selectedCount');
-            const bulkDeleteForm = document.getElementById('bulkDeleteForm');
             const selectAllCheckbox = document.getElementById('selectAllProjects');
             const allCheckboxes = document.querySelectorAll('.project-checkbox');
 
@@ -410,56 +329,100 @@
                 selectedCountEl.textContent = selectedCheckboxes.length;
             }
 
-            if (bulkDeleteForm) {
-                bulkDeleteForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
-                selectedCheckboxes.forEach(cb => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'selected_ids[]';
-                    input.value = cb.value;
-                    bulkDeleteForm.appendChild(input);
-                });
-            }
-
             if (selectAllCheckbox) {
-                if (selectedCheckboxes.length === allCheckboxes.length) {
+                if (selectedCheckboxes.length === allCheckboxes.length && allCheckboxes.length > 0) {
                     selectAllCheckbox.checked = true;
                     selectAllCheckbox.indeterminate = false;
                 } else if (selectedCheckboxes.length === 0) {
                     selectAllCheckbox.checked = false;
                     selectAllCheckbox.indeterminate = false;
                 } else {
+                    selectAllCheckbox.checked = false;
                     selectAllCheckbox.indeterminate = true;
                 }
             }
         }
 
-        function confirmBulkDelete() {
-            const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
-            if (selectedCheckboxes.length === 0) {
-                alert('Silakan pilih setidaknya satu project sebelum menghapus.');
-                return;
-            }
+        async function confirmBulkDelete() {
+    const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+    
+    if (selectedIds.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak Ada Data Dipilih',
+            text: 'Silakan pilih setidaknya satu project sebelum menghapus.',
+            confirmButtonColor: '#3b82f6'
+        });
+        return;
+    }
 
-            if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedCheckboxes.length} project terpilih?`)) {
-                return;
-            }
+    const result = await Swal.fire({
+        title: 'Hapus Project Terpilih?',
+        html: `${selectedIds.length} project akan dihapus permanen.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    });
 
-            document.getElementById('bulkDeleteForm').submit();
-        }
-
+    if (result.isConfirmed) {
+        // Buat form baru untuk submit
+        const form = document.createElement('form');
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        
+        form.method = 'POST';
+        form.action = `/${locale}/admin/manageProject/bulk-destroy`;
+        
+        // Tambahkan CSRF token
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        form.appendChild(csrfInput);
+        
+        // Tambahkan method spoofing untuk DELETE
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        form.appendChild(methodInput);
+        
+        // Tambahkan selected_ids sebagai JSON string
+        const idsInput = document.createElement('input');
+        idsInput.type = 'hidden';
+        idsInput.name = 'selected_ids';
+        idsInput.value = JSON.stringify(selectedIds);
+        form.appendChild(idsInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
         function confirmDeleteProject(projectId, projectName) {
-            if (!confirm(`Hapus project "${projectName}"? Tindakan ini tidak dapat dibatalkan.`)) {
-                return;
-            }
-
-            const deleteForm = document.getElementById('deleteProjectForm');
-
-            let url = `{{ route('admin.projects.delete', ':id') }}`;
-            url = url.replace(':id', projectId);
-
-            deleteForm.action = url;
-            deleteForm.submit();
+            Swal.fire({
+                title: 'Hapus Project?',
+                html: `Apakah Anda yakin ingin menghapus project <strong>"${projectName}"</strong>?<br>Tindakan ini tidak dapat dibatalkan.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const deleteForm = document.getElementById('deleteProjectForm');
+                    const locale = document.querySelector('html').getAttribute('lang') || 'id';
+                    
+                    let url = `/${locale}/admin/manageProject/DeleteProject?id=${projectId}`;
+                    deleteForm.action = url;
+                    deleteForm.submit();
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -480,10 +443,11 @@
         });
     </script>
 
-     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.admin_projects");
+            if (typeof showPageInfo === 'function') {
+                showPageInfo("popup.admin_projects");
+            }
         });
     </script>
 @endsection
