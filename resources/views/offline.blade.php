@@ -20,9 +20,34 @@
                 class="w-full px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg">
                 {{ autoTranslate('Muat Ulang') }}
             </button>
-            
         </div>
         
     </div>
 </div>
+
+
+<script>
+    function checkAndRedirect() {
+        if (navigator.onLine) {
+            const destination = document.referrer && !document.referrer.includes('offline') 
+                                ? document.referrer 
+                                : '{{ url('/') }}';
+            window.location.href = destination;
+        }
+    }
+
+    checkAndRedirect();
+
+    window.addEventListener('online', checkAndRedirect);
+
+    function handleReload() {
+        if (navigator.onLine) {
+            checkAndRedirect();
+        } else {
+            alert('{{ autoTranslate("Masih offline, nih. Cek koneksi kamu lagi ya!") }}');
+        }
+    }
+</script>
 @endsection
+
+
