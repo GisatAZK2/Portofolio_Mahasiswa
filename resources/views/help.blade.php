@@ -30,6 +30,17 @@
                     <div class="divide-y divide-gray-100 dark:divide-gray-700" id="faqContainer">
                         <div class="faq-item py-3 transform transition-all duration-500 ease-in-out">
                             <h3 class="font-medium text-gray-800 dark:text-white text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex justify-between items-center">
+                                {{ autoTranslate('Apa website ini?') }}
+                                <svg class="w-4 h-4 text-gray-500 transition-transform duration-300 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </h3>
+                            <div class="faq-answer mt-1 overflow-hidden transition-all duration-500 ease-in-out" style="max-height: 0; opacity: 0;">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ autoTranslate('Website ini digunakan untuk para mahasiswa untuk menampilkan portofolio mereka.') }}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item py-3 transform transition-all duration-500 ease-in-out">
+                            <h3 class="font-medium text-gray-800 dark:text-white text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex justify-between items-center">
                                 {{ autoTranslate('Cara mendaftar?') }}
                                 <svg class="w-4 h-4 text-gray-500 transition-transform duration-300 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -85,6 +96,50 @@
                             </h3>
                             <div class="faq-answer mt-1 overflow-hidden transition-all duration-500 ease-in-out" style="max-height: 0; opacity: 0;">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ autoTranslate('Anda dapat menghubungi kami melalui email info@polmind.ac.id atau WhatsApp +62 821-1329-6897.') }}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item py-3 transform transition-all duration-500 ease-in-out">
+                            <h3 class="font-medium text-gray-800 dark:text-white text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex justify-between items-center">
+                                {{ autoTranslate('Apakah bisa menghubungi para mahasiswa?') }}
+                                <svg class="w-4 h-4 text-gray-500 transition-transform duration-300 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </h3>
+                            <div class="faq-answer mt-1 overflow-hidden transition-all duration-500 ease-in-out" style="max-height: 0; opacity: 0;">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ autoTranslate('Anda dapat menghubungi mahasiswa melalui email mereka atau dengan menghubungi admin untuk informasi mereka.') }}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item py-3 transform transition-all duration-500 ease-in-out">
+                            <h3 class="font-medium text-gray-800 dark:text-white text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex justify-between items-center">
+                                {{ autoTranslate('Apa itu portofolio dan kenapa penting di website ini?') }}
+                                <svg class="w-4 h-4 text-gray-500 transition-transform duration-300 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </h3>
+                            <div class="faq-answer mt-1 overflow-hidden transition-all duration-500 ease-in-out" style="max-height: 0; opacity: 0;">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ autoTranslate('Portofolio adalah kumpulan hasil karya atau proyek yang pernah Anda kerjakan. Portofolio membantu pihak luar melihat kemampuan dan keterampilan Anda..') }}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item py-3 transform transition-all duration-500 ease-in-out">
+                            <h3 class="font-medium text-gray-800 dark:text-white text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex justify-between items-center">
+                                {{ autoTranslate('Bagaimana cara menambahkan portofolio?') }}
+                                <svg class="w-4 h-4 text-gray-500 transition-transform duration-300 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </h3>
+                            <div class="faq-answer mt-1 overflow-hidden transition-all duration-500 ease-in-out" style="max-height: 0; opacity: 0;">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ autoTranslate('Masuk ke dashboard, pilih menu portofolio, lalu klik tombol tambah proyek atau tambah sertifikat dan isi informasi yang diperlukan seperti judul, deskripsi, dan file pendukung..') }}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item py-3 transform transition-all duration-500 ease-in-out">
+                            <h3 class="font-medium text-gray-800 dark:text-white text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex justify-between items-center">
+                                {{ autoTranslate('Apa itu sistem TeFa??') }}
+                                <svg class="w-4 h-4 text-gray-500 transition-transform duration-300 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </h3>
+                            <div class="faq-answer mt-1 overflow-hidden transition-all duration-500 ease-in-out" style="max-height: 0; opacity: 0;">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ autoTranslate('Teaching Factory (TeFa) adalah sistem pembelajaran berbasis proyek nyata, di mana mahasiswa mengerjakan proyek dari dunia industri sebagai bagian dari proses akademik.') }}</p>
                             </div>
                         </div>
                     </div>
