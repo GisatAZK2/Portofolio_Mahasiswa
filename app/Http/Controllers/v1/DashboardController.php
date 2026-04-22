@@ -693,7 +693,7 @@ class DashboardController extends Controller
                 'type' => 'mahasiswa',
                 'id' => $user->id,
                 'name' => $user->nama_mahasiswa,
-                'url' => route('portfolio.show', $user->username),
+                'url' => route('portfolio.show', ['user' => $user->username]),
                 'label' => 'Mahasiswa'
             ];
         }
@@ -713,7 +713,7 @@ class DashboardController extends Controller
                 'type' => 'project',
                 'id' => $project->id,
                 'name' => $name,
-                'url' => route('project.show', $project->id),
+                'url' => route('project.show',['id' => $project->id]),
                 'label' => 'Project'
             ];
         }
