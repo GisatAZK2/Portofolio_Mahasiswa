@@ -15,6 +15,8 @@ use App\Models\Keahlian;
 use App\Models\Sertifikat;
 use App\Models\Postingan;
 
+use Illuminate\Support\Facades\DB;
+
 class DashboardController extends Controller
 {
     /**
@@ -56,10 +58,21 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes'])
-            ->latest()
+        $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes', 'game'])
+            ->leftJoin(DB::raw('
+                (SELECT * FROM games g1
+                WHERE g1.created_at = (
+                    SELECT MIN(g2.created_at)
+                    FROM games g2
+                    WHERE g2.id_postingan = g1.id_postingan
+                )
+                ) as games_oldest
+            '), 'postingan.id_postingan', '=', 'games_oldest.id_postingan')
+            ->select('postingan.*')
+            ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
+            ->orderBy('postingan.created_at', 'desc')
             ->paginate(6, ['*'], 'postingan_page');
-
+            
         $projects = Project::with('mahasiswa')
             ->latest()
             ->paginate(6, ['*'], 'project_page');

@@ -629,7 +629,7 @@ function sortPostinganByGame() {
             autoSlide = setInterval(() => {
                 current = (current + 1) % cards.length;
                 updateCarousel();
-            }, 10000);
+            }, 5000);
         }
 
         function stopAutoSlide() {
