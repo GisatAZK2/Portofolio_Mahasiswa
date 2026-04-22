@@ -158,6 +158,9 @@ export const translations = {
       manage_angkatan: 'Kelola semua angkatan yang terdaftar dalam sistem. Lihat detail angkatan, tambah angkatan baru, edit, atau hapus angkatan sesuai kebutuhan.',
       admin_projects: 'Kelola semua proyek yang terdaftar dalam sistem. Lihat detail proyek, edit, atau hapus proyek sesuai kebutuhan.',
       admin_sertifikat: 'Kelola semua sertifikat yang terdaftar dalam sistem. Lihat detail sertifikat, edit, atau hapus sertifikat sesuai kebutuhan.',
+      manage_prodi : 'Kelola semua prodi yang terdaftar dalam sistem. Lihat detail prodi, tambah prodi baru, edit, atau hapus prodi sesuai kebutuhan.',
+      manage_keahlian : 'Kelola semua keahlian yang terdaftar dalam sistem. Lihat detail keahlian, tambah keahlian baru, edit, atau hapus keahlian sesuai kebutuhan.',
+      semua_postingan: 'Lihat semua postingan . Temukan berbagai catatan pembelajaran yang dibagikan oleh komunitas.',
     },
     dosen_dashboard: {
       dashboard_dosen: 'Dashboard Dosen',
@@ -225,6 +228,7 @@ export const translations = {
       filter: 'Filter Mahasiswa',
       empty_filter: 'Tidak ada mahasiswa ditemukan',
       empty_filter_desc: 'Coba ubah filter pencarian anda',
+      user_selection: 'Pemilihan User Project',
       agkt: 'Angkatan',
       all_agkt: 'Semua Angkatan',
       jrs: 'Jurusan',
@@ -1318,6 +1322,9 @@ export const translations = {
       manage_angkatan: 'Manage all registered cohorts in the system. View cohort details, add new cohorts, edit, or delete cohorts as needed.',
       admin_projects: 'Manage all projects in the system. View project details, add new projects, edit, or delete projects as needed.',
       admin_sertifikat: 'Manage all certificates in the system. View certificate details, add new certificates, edit, or delete certificates as needed.',
+      manage_prodi : 'Manage all registered majors in the system. View major details, add new majors, edit, or delete majors as needed.',
+      manage_keahlian : 'Manage all registered skills in the system. View skill details, add new skills, edit, or delete skills as needed.',
+      semua_postingan: 'Manage all posts created. View, edit, or delete posts as needed.',
     },
     dosen_dashboard: {
       dashboard_dosen: 'Lecturer Dashboard',
@@ -1384,6 +1391,7 @@ export const translations = {
       empty_filter_desc: 'Try to change your filters.',
       agkt: 'Cohorts',
       all_agkt: 'All Cohorts',
+      user_selection: 'Selection User',
       jrs: 'Majors',
       all_jrs: 'All Majors',
       khl: 'Skills',
@@ -2295,25 +2303,39 @@ export const translations = {
   }
 };
 
-
 const DEFAULT_LANG = 'id';
 let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;
 
 let translateElements = [];
 
+// Cache semua element yang butuh translate
 function cacheTranslateElements() {
-  translateElements = Array.from(document.querySelectorAll('[data-translate], [data-translate-placeholder]'));
+  translateElements = Array.from(
+    document.querySelectorAll('[data-translate], [data-translate-placeholder]')
+  );
 }
 
+// Ambil locale dari URL
+function getLocaleFromUrl() {
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  return ['id', 'en'].includes(pathSegments[0]) ? pathSegments[0] : DEFAULT_LANG;
+}
+
+// Apply translation ke semua element
 function applyTranslations() {
   const langData = translations[currentLang] || translations[DEFAULT_LANG];
 
-  const translateKey = (page, key) => langData?.[page]?.[key] || translations[DEFAULT_LANG]?.[page]?.[key] || key;
+  const translateKey = (page, key) => {
+    return langData?.[page]?.[key]
+      || translations[DEFAULT_LANG]?.[page]?.[key]
+      || key;
+  };
 
   translateElements.forEach(el => {
     const page = el.dataset.translatePage || 'sidebar';
     const key = el.dataset.translate;
 
+    // Text
     if (page && key) {
       const text = translateKey(page, key);
       if (text !== el.textContent) {
@@ -2321,35 +2343,30 @@ function applyTranslations() {
       }
     }
 
+    // Placeholder
     const placeholderKey = el.dataset.translatePlaceholder;
     if (placeholderKey) {
-      const placeholderText = translateKey(el.dataset.translatePage || 'sidebar', placeholderKey);
+      const placeholderText = translateKey(page, placeholderKey);
       if (placeholderText) {
         el.setAttribute('placeholder', placeholderText);
       }
     }
   });
 
+  // Sync dropdown language
   const select = document.getElementById('languageSelect');
   if (select) {
-    // Get locale from URL, not from currentLang variable
-    const urlLocale = getLocaleFromUrl();
-    select.value = urlLocale;
+    select.value = currentLang;
   }
 }
 
-// Helper function to get locale from URL
-function getLocaleFromUrl() {
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  return ['id', 'en'].includes(pathSegments[0]) ? pathSegments[0] : 'id';
-}
-
+// Init saat page load
 document.addEventListener('DOMContentLoaded', () => {
-  // Update currentLang from URL, not localStorage
   const urlLocale = getLocaleFromUrl();
+
   currentLang = urlLocale;
   localStorage.setItem('lang', urlLocale);
-  
+
   const select = document.getElementById('languageSelect');
   if (select) {
     select.value = urlLocale;
@@ -2360,19 +2377,34 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
 });
 
-window.changeLanguage = function() {
-    const select = document.getElementById('languageSelect');
-    if (!select) return;
+// Ganti bahasa
+window.changeLanguage = function () {
+  const select = document.getElementById('languageSelect');
+  if (!select) return;
 
-    const newLocale = select.value;
+  const newLocale = select.value;
 
-    currentLang = newLocale;
-    localStorage.setItem('lang', newLocale);
+  currentLang = newLocale;
+  localStorage.setItem('lang', newLocale);
 
-    // Always redirect to home page with new locale
-    window.location.href = '/' + newLocale;
+  // Redirect ke halaman sesuai locale
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+
+  // Hapus locale lama jika ada
+  if (['id', 'en'].includes(pathSegments[0])) {
+    pathSegments.shift();
+  }
+
+  const newPath = '/' + newLocale + '/' + pathSegments.join('/');
+  window.location.href = newPath;
 };
 
-// Make variables globally available
+// 🔥 Penting: untuk dynamic content (Livewire, AJAX, dll)
+window.refreshTranslations = function () {
+  cacheTranslateElements();
+  applyTranslations();
+};
+
+// Global access
 window.translations = translations;
 window.currentLang = currentLang;
