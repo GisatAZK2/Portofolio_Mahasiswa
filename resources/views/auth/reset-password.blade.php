@@ -163,7 +163,7 @@
 
                 <p class="text-center text-gray-500 text-xs">
                     Atau
-                    <a href="{{ route('password.request') }}"
+                    <a href="{{ route('password.forgot') }}"
                         class="text-blue-600 hover:text-blue-800 hover:underline">
                         Kirim ulang kode OTP
                     </a>
