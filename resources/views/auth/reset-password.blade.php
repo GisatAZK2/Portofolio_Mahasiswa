@@ -152,14 +152,6 @@
                     </button>
                 </div>
 
-                <!-- Link ke halaman lain -->
-                <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
-                    Belum punya akun?
-                    <a href="{{ route('pengajuan-akun') }}"
-                        class="text-green-600 hover:text-green-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-green-500 rounded">
-                        Ajukan Akun Ke Admin
-                    </a>
-                </p>
 
                 <p class="text-center text-gray-500 text-xs">
                     Atau

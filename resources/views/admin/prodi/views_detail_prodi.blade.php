@@ -65,13 +65,6 @@
                 </div>
             </div>
 
-            <!-- Grafik -->
-            <div class="xl:col-span-7 bg-white dark:bg-gray-700 p-6 md:p-8 rounded-3xl border border-gray-200 dark:border-gray-600">
-                <h3 class="text-lg font-semibold dark:text-white mb-6" data-translate="grafik_status_mahasiswa" data-translate-page="admin">Grafik Status Mahasiswa</h3>
-                <div class="relative" style="height: 320px;">
-                    <canvas id="statusChart"></canvas>
-                </div>
-            </div>
         </div>
 
         <!-- Daftar Mahasiswa -->
