@@ -5,8 +5,7 @@
         <div class="max-w-7xl mx-auto">
 
             @if(session('success'))
-                <div
-                    class="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 dark:bg-green-700 border border-green-200 text-green-800 rounded-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
+                <div class="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 dark:bg-green-700 border border-green-200 text-green-800 rounded-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -34,6 +33,36 @@
                     data-translate-page="kelola_project"></p>
             </div>
 
+            <!-- Search and Filter Section -->
+            <div class="mb-6 bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="searchProject" placeholder="Cari nama project..."
+                            class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <select id="filterStatus" class="px-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Semua Status</option>
+                        <option value="Sedang Berjalan">Sedang Berjalan</option>
+                        <option value="Selesai">Selesai</option>
+                        <option value="Akan Datang">Akan Datang</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="resetFilters()"
+                            class="px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                            Reset
+                        </button>
+                        <button type="button" onclick="applyFilters()"
+                            class="px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all shadow-sm">
+                            Terapkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Info & Bulk Actions -->
             <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -45,6 +74,9 @@
                         <span data-translate="selected" data-translate-page="admin">Terpilih:</span> 
                         <strong id="selectedCount">0</strong> / 
                         <strong id="totalProjectCount">{{ $projects->count() }}</strong>
+                    </span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                        | <span id="filteredCount">{{ $projects->count() }}</span> project ditampilkan
                     </span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -59,10 +91,9 @@
             </div>
 
             <!-- Projects Grid -->
-            <section>
+            <section id="projectsGrid">
                 @if($projects->isNotEmpty())
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" id="projectCardsContainer">
                         @foreach($projects as $project)
                             @php
                                 $content = $project->isi_content ?? [];
@@ -125,8 +156,9 @@
                                 $isSameUser = $mahasiswa && $leader && $mahasiswa->id === $leader->id;
                             @endphp
 
-                            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700">
-
+                            <div class="project-card bg-white dark:bg-gray-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-200 dark:border-gray-700"
+                                 data-project-name="{{ strtolower($nama) }}"
+                                 data-project-status="{{ $statusText }}">
                                 <div class="relative w-full h-40 sm:h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden">
                                     @if($embedVideo)
                                         <iframe class="absolute inset-0 w-full h-full"
@@ -147,7 +179,7 @@
                                     @endif
 
                                     <div class="absolute top-2 right-2">
-                                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
+                                        <span class="project-status inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shadow-sm">
                                             {{ $statusText }}
                                         </span>
                                     </div>
@@ -221,7 +253,7 @@
                                         </div>
                                     @endif
 
-                                    <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2">
+                                    <h3 class="project-name text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2">
                                         <a href="{{ route('project.show', ['id' => $project->id]) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                             {{ $nama }}
                                         </a>
@@ -294,8 +326,17 @@
                         @endforeach
                     </div>
 
+                    <!-- Empty State (hidden by default) -->
+                    <div id="emptyState" class="hidden text-center py-12 sm:py-16 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg">Tidak ada project ditemukan.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Coba ubah filter pencarian Anda.</p>
+                    </div>
+
                     @if(method_exists($projects, 'links'))
-                        <div class="mt-8 flex justify-center" data-pagination-group="admin_projects">
+                        <div class="mt-8 flex justify-center" data-pagination-group="admin_projects" id="paginationContainer">
                             {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_projects']) }}
                         </div>
                     @endif
@@ -319,18 +360,87 @@
     </div>
 
     <script>
+        // Filter functions
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchProject').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filterStatus').value;
+            
+            const cards = document.querySelectorAll('.project-card');
+            const container = document.getElementById('projectCardsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const paginationContainer = document.getElementById('paginationContainer');
+            
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const projectName = card.dataset.projectName || '';
+                const projectStatus = card.dataset.projectStatus || '';
+                
+                const matchesSearch = !searchTerm || projectName.includes(searchTerm);
+                const matchesStatus = !statusFilter || projectStatus === statusFilter;
+                
+                if (matchesSearch && matchesStatus) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Update filtered count
+            document.getElementById('filteredCount').textContent = visibleCount;
+            document.getElementById('totalProjectCount').textContent = visibleCount;
+            
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                if (container) container.style.display = 'none';
+                if (emptyState) emptyState.classList.remove('hidden');
+                if (paginationContainer) paginationContainer.style.display = 'none';
+            } else {
+                if (container) container.style.display = 'grid';
+                if (emptyState) emptyState.classList.add('hidden');
+                if (paginationContainer) paginationContainer.style.display = 'flex';
+            }
+            
+            // Reset checkboxes and update selection
+            updateSelectedProjects();
+        }
+        
+        function resetFilters() {
+            document.getElementById('searchProject').value = '';
+            document.getElementById('filterStatus').value = '';
+            applyFilters();
+        }
+        
+        // Search on Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchProject');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        applyFilters();
+                    }
+                });
+            }
+            
+            // Initial count
+            const cards = document.querySelectorAll('.project-card');
+            document.getElementById('filteredCount').textContent = cards.length;
+        });
+
         function updateSelectedProjects() {
-            const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
+            const visibleCheckboxes = Array.from(document.querySelectorAll('.project-checkbox'))
+                .filter(cb => cb.closest('.project-card')?.style.display !== 'none');
+            const selectedCheckboxes = visibleCheckboxes.filter(cb => cb.checked);
             const selectedCountEl = document.getElementById('selectedCount');
             const selectAllCheckbox = document.getElementById('selectAllProjects');
-            const allCheckboxes = document.querySelectorAll('.project-checkbox');
 
             if (selectedCountEl) {
                 selectedCountEl.textContent = selectedCheckboxes.length;
             }
 
             if (selectAllCheckbox) {
-                if (selectedCheckboxes.length === allCheckboxes.length && allCheckboxes.length > 0) {
+                if (selectedCheckboxes.length === visibleCheckboxes.length && visibleCheckboxes.length > 0) {
                     selectAllCheckbox.checked = true;
                     selectAllCheckbox.indeterminate = false;
                 } else if (selectedCheckboxes.length === 0) {
@@ -344,64 +454,63 @@
         }
 
         async function confirmBulkDelete() {
-    const selectedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
-    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
-    
-    if (selectedIds.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Tidak Ada Data Dipilih',
-            text: 'Silakan pilih setidaknya satu project sebelum menghapus.',
-            confirmButtonColor: '#3b82f6'
-        });
-        return;
-    }
+            const visibleCheckboxes = Array.from(document.querySelectorAll('.project-checkbox'))
+                .filter(cb => cb.closest('.project-card')?.style.display !== 'none');
+            const selectedCheckboxes = visibleCheckboxes.filter(cb => cb.checked);
+            const selectedIds = selectedCheckboxes.map(cb => cb.value);
+            
+            if (selectedIds.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tidak Ada Data Dipilih',
+                    text: 'Silakan pilih setidaknya satu project sebelum menghapus.',
+                    confirmButtonColor: '#3b82f6'
+                });
+                return;
+            }
 
-    const result = await Swal.fire({
-        title: 'Hapus Project Terpilih?',
-        html: `${selectedIds.length} project akan dihapus permanen.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal',
-        reverseButtons: true
-    });
+            const result = await Swal.fire({
+                title: 'Hapus Project Terpilih?',
+                html: `${selectedIds.length} project akan dihapus permanen.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            });
 
-    if (result.isConfirmed) {
-        // Buat form baru untuk submit
-        const form = document.createElement('form');
-        const locale = document.querySelector('html').getAttribute('lang') || 'id';
-        
-        form.method = 'POST';
-        form.action = `/${locale}/admin/manageProject/bulk-destroy`;
-        
-        // Tambahkan CSRF token
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        form.appendChild(csrfInput);
-        
-        // Tambahkan method spoofing untuk DELETE
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = '_method';
-        methodInput.value = 'DELETE';
-        form.appendChild(methodInput);
-        
-        // Tambahkan selected_ids sebagai JSON string
-        const idsInput = document.createElement('input');
-        idsInput.type = 'hidden';
-        idsInput.name = 'selected_ids';
-        idsInput.value = JSON.stringify(selectedIds);
-        form.appendChild(idsInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                const locale = document.querySelector('html').getAttribute('lang') || 'id';
+                
+                form.method = 'POST';
+                form.action = `/${locale}/admin/manageProject/bulk-destroy`;
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                form.appendChild(csrfInput);
+                
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+                
+                const idsInput = document.createElement('input');
+                idsInput.type = 'hidden';
+                idsInput.name = 'selected_ids';
+                idsInput.value = JSON.stringify(selectedIds);
+                form.appendChild(idsInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
         function confirmDeleteProject(projectId, projectName) {
             Swal.fire({
                 title: 'Hapus Project?',
@@ -432,7 +541,9 @@
             const selectAllProjects = document.getElementById('selectAllProjects');
             if (selectAllProjects) {
                 selectAllProjects.addEventListener('change', function () {
-                    projectCheckboxes.forEach(cb => {
+                    const visibleCheckboxes = Array.from(document.querySelectorAll('.project-checkbox'))
+                        .filter(cb => cb.closest('.project-card')?.style.display !== 'none');
+                    visibleCheckboxes.forEach(cb => {
                         cb.checked = this.checked;
                     });
                     updateSelectedProjects();

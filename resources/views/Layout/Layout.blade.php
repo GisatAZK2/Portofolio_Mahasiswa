@@ -34,6 +34,12 @@
 
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
+{{-- Splash Screen Overlay --}}
+    @if(!request()->has('skip_splash'))
+        @include('components.splash')
+    @endif
+
+        
     <!-- Overlay backdrop mobile -->
     <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
     </div>
@@ -43,6 +49,7 @@
         <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-4
         z-[9999] flex flex-col gap-3 w-full max-w-sm px-4 sm:px-0 items-center sm:items-end">
         </div>
+
 
         <!-- Sidebar -->
         @include('components.sidebar')
@@ -59,6 +66,7 @@
 
 
             <!-- Footer -->
+            @include('components.chat-bot')
             @include('components.up-page')
             @include('components.footer')
 

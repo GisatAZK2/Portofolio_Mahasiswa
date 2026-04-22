@@ -20,8 +20,8 @@ class UserSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         $photoProfiles = [
-            'https://wallpapers.com/images/featured/cool-profile-picture-87h46gcobjl5e4xu.jpg',
-            'https://englishleaflet.com/wp-content/uploads/2025/04/whatsapp-dp-80-e1744744670618.jpg',
+            'photos/01fc73b1-9b0b-46ef-8af7-6dadb337ac11.webp',
+            'photos/c0a28dd7-4427-4ca8-982d-6aec690e779a.webp',
         ];
 
         $backgroundUrls = [

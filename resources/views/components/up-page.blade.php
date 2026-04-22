@@ -1,5 +1,5 @@
 <button id="backToTop"
-    class="fixed bottom-12 right-6 hidden text-white dark:text-white hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 p-3 rounded-full z-1000 shadow-lg transition">
+    class="fixed bottom-25 right-6 hidden bg-blue-600 text-white dark:text-white hover:bg-blue-600 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 p-3 rounded-full z-1000 shadow-lg transition">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
         viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
