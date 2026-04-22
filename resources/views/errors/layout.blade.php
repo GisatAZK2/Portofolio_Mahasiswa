@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="id"
-    class="{{ request()->cookie('theme') === 'dark' || (!request()->hasCookie('theme') && now()->hour >= 18) ? 'dark' : '' }}">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - Error</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css'])
     <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (
+            localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
             document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
         }
     </script>
 </head>
@@ -25,8 +26,7 @@
         </div>
     </div>
 
-    @include('components.footer')
-
+    @include('components.footer') 
 </body>
 
 </html>
