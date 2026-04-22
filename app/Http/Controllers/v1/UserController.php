@@ -166,6 +166,10 @@ class UserController extends Controller
         ])->onlyInput('login');
     }
 
+    public function forgotpasswordpage(){
+        return view('auth.forgot-password');
+    }
+
     public function updateStatusPengajuan(Request $request, $id)
     {
         $currentUser = Auth::user();

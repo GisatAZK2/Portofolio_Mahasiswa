@@ -39,6 +39,7 @@ Route::prefix('{locale}')
             'store',
         ]);
 
+        
         // Semua route yang butuh login
         Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
 
@@ -285,6 +286,14 @@ Route::prefix('{locale}')
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+
+// Forgot Password Routes
+        Route::get('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.forgot');
+        Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendOtp'])->name('password.sendOtp');
+        Route::get('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showVerifyOtpForm'])->name('password.verify.form');
+        Route::post('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'verifyOtp'])->name('password.verify');
+        Route::get('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
+        Route::post('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
 Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
 Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('register');
