@@ -165,6 +165,8 @@
                     $hasGame = $existingGame ? true : false;
                 @endphp
 
+        
+                @if (Auth::user()->role !== 'mahasiswa') 
                 <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">
                         {{ autoTranslate('Tambahkan Game (opsional)') }}
@@ -196,6 +198,7 @@
                     </div>
 
                 </div>
+                @endif
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200 dark:border-gray-700">
