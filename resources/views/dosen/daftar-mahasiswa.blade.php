@@ -25,7 +25,7 @@
                 <form action="{{ route('dosen.users.index') }}" method="GET" id="filterForm">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
                         <!-- Search -->
-                        <div class="lg:col-span-2">
+                        <div class="lg:col-span-3">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pencarian</label>
                             <div class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
