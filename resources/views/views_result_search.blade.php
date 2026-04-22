@@ -256,7 +256,7 @@
                             <div
                                 class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-green-500 project-item">
                                 <div class="p-6 flex flex-col flex-1">
-                                    <a href="{{ route('project.show', $item->id) }}" class="block flex-1">
+                                    <a href="{{ route('project.show', ['locale' => app()->getLocale(), 'id' => $item->id]) }}" class="block flex-1">
                                         <span
                                             class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mb-3 w-fit">
                                             Project
