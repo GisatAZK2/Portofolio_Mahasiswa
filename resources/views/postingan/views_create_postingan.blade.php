@@ -86,34 +86,35 @@
                     </div>
                 </div>
 
-                <!-- Submit -->
                <!-- Game Option Section - Perbaikan -->
-<div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-    <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Tambahkan Game (opsional)</h3>
+                @if (Auth::user()->role!= 'mahasiswa')
+                <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Tambahkan Game (opsional)</h3>
 
-    <div class="flex items-center gap-4">
-        <label class="inline-flex items-center cursor-pointer">
-            <input type="checkbox" name="game_enabled" id="game_enabled" value="on"
-                class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-300">
-            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sertakan game pada postingan</span>
-        </label>
+                    <div class="flex items-center gap-4">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="game_enabled" id="game_enabled" value="on"
+                                class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-300">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sertakan game pada postingan</span>
+                        </label>
 
-        <select name="game_name" id="game_name"
-            class="ml-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
-            disabled>
-            <option value="Matematika">Matematika</option>
-            <option value="TTS">Teka-Teki Silang (TTS)</option>
-            <option value="Puzzle">Puzzle</option>
-        </select>
-    </div>
+                        <select name="game_name" id="game_name"
+                            class="ml-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                            disabled>
+                            <option value="Matematika">Matematika</option>
+                            <option value="TTS">Teka-Teki Silang (TTS)</option>
+                            <option value="Puzzle">Puzzle</option>
+                        </select>
+                    </div>
 
-    <div class="mt-4" id="thumbnail_container" style="display: none;">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Thumbnail Game (opsional)</label>
-        <input type="file" name="game_thumbnail" id="game_thumbnail" accept="image/*"
-            class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700">
-        <p class="text-xs text-gray-500 mt-1">Maks 5MB • jpg, jpeg, png, gif, webp</p>
-    </div>
-</div>
+                    <div class="mt-4" id="thumbnail_container" style="display: none;">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Thumbnail Game (opsional)</label>
+                        <input type="file" name="game_thumbnail" id="game_thumbnail" accept="image/*"
+                            class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700">
+                        <p class="text-xs text-gray-500 mt-1">Maks 5MB • jpg, jpeg, png, gif, webp</p>
+                    </div>
+                </div>
+                @endif
 
                 <div class="flex justify-end pt-8 border-t border-gray-200 dark:border-gray-700">
                     <button type="submit"

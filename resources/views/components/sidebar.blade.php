@@ -672,7 +672,13 @@
                     </div>
                 </div>
 
-                <!-- Postingan -->
+                
+            @endif
+        @endauth
+
+        @auth 
+         @if(Auth::user())
+          <!-- Postingan -->
                 <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }" class="relative">
                     <button @click="open = !open"
                         class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group

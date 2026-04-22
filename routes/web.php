@@ -59,17 +59,7 @@ Route::prefix('{locale}')
             Route::put('/projectUser/update', [ProjekController::class, 'update'])->name('project.update');
             Route::delete('/projectUser/delete', [ProjekController::class, 'destroy'])->name('project.destroy');
 
-            // CRUD Postingan
-            Route::resource('postingan', PostinganController::class)->only([
-                'index',
-                'create',
-                'store',
-            ]);
-
-            Route::get('/postinganUser/edit', [PostinganController::class, 'edit'])->name('postingan.edit');
-            Route::put('/postinganUser/update', [PostinganController::class, 'update'])->name('postingan.update');
-            Route::delete('/postinganUser/delete', [PostinganController::class, 'destroy'])->name('postingan.destroy');
-
+            
             //CRUD Sertifikat
             Route::resource('sertifikat', SertifikatController::class)->only([
                 'index',
@@ -206,6 +196,17 @@ Route::prefix('{locale}')
             });
         });
 
+        Route::resource('postingan', PostinganController::class)->only([
+                'index',
+                'create',
+                'store',
+            ]);
+
+            Route::get('/postinganUser/edit', [PostinganController::class, 'edit'])->name('postingan.edit');
+            Route::put('/postinganUser/update', [PostinganController::class, 'update'])->name('postingan.update');
+            Route::delete('/postinganUser/delete', [PostinganController::class, 'destroy'])->name('postingan.destroy');
+
+
         // Portfolio route - handles /id/portofolio?user=username or /en/portofolio?user=username
         Route::get('/portofolio', [DashboardController::class, 'show'])->name('portfolio.show');
 
@@ -218,7 +219,7 @@ Route::prefix('{locale}')
         Route::get('/postinganUser', [PostinganController::class, 'show'])->name('postingan.show');
 
         // Learning Corner routes - handles /id/learning-corner?learning_corner=id or /en/learning-corner?learning_corner=id
-// CRUD Learning Corner - Ubah ke query parameter untuk support locale
+        // CRUD Learning Corner - Ubah ke query parameter untuk support locale
         Route::get('/learning-corner/create', [LearningCornerController::class, 'create'])
             ->name('learning-corner.create');
         Route::post('/learning-corner/store', [LearningCornerController::class, 'store'])
