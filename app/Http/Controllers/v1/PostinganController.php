@@ -247,22 +247,46 @@ class PostinganController extends Controller
 
         // Create or update Game record if enabled
         if ($request->filled('game_enabled')) {
-            $gameName = $request->input('game_name') ?: ($existingGame->game_name ?? 'Matematika');
-            if ($existingGame) {
-                $existingGame->update([
-                    'game_name' => $gameName,
-                ]);
-            } else {
-                Game::create([
-                    'id_postingan' => $postingan->id_postingan,
-                    'id_user' => Auth::id(),
-                    'game_name' => $gameName,
-                    'score' => '0',
-                    'playing_time' => '0',
-                    'is_active' => true,
-                ]);
-            }
+    $gameName = $request->input('game_name') ?: ($existingGame->game_name ?? 'Matematika');
+
+    // 🔥 Ambil semua game dengan id_postingan sama
+    $games = Game::where('id_postingan', $postingan->id_postingan)->get();
+
+    // 🧹 Kalau ada lebih dari 1, hapus sisanya
+    if ($games->count() > 1) {
+        $games->slice(1)->each(function ($g) {
+            $g->delete();
+        });
+    }
+
+    $game = $games->first();
+
+    if ($game) {
+        // 🔥 Kalau nama game berubah → reset score
+        if ($game->game_name !== $gameName) {
+            $game->update([
+                'game_name' => $gameName,
+                'score' => 0,
+                'playing_time' => 0,
+            ]);
+        } else {
+            // kalau sama, cukup update nama aja (opsional)
+            $game->update([
+                'game_name' => $gameName,
+            ]);
         }
+    } else {
+        // 🆕 buat baru
+        Game::create([
+            'id_postingan' => $postingan->id_postingan,
+            'id_user' => Auth::id(),
+            'game_name' => $gameName,
+            'score' => 0,
+            'playing_time' => 0,
+            'is_active' => true,
+        ]);
+    }
+}
 
         }
 
