@@ -164,8 +164,6 @@
                     $existingGame = $postingan->game ?? null;
                     $hasGame = $existingGame ? true : false;
                 @endphp
-
-        
                 @if (Auth::user()->role !== 'mahasiswa') 
                 <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">
