@@ -457,34 +457,58 @@
                                 {{ autoTranslate('Belum ada data dosen') }}
                             </p>
                         @else
-                            <div class="relative">
-                                <button class="" id="dosenPrevBtn">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </button>
-                                <button class="" id="dosenNextBtn">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                    </svg>
+                            <div class="relative w-full max-w-xl mx-auto">
+                                <!-- Slider -->
+                                <div class="overflow-hidden relative h-64 flex items-center justify-center">
+
+                                    <div id="dosenCarouselTrack" class="relative w-full h-full flex items-center justify-center">
+
+                                        @php
+                                            $dosenArray = $dosenList->values()->all();
+                                        @endphp
+
+                                        @foreach($dosenArray as $index => $dosen)
+                                            <div class="dosen-card absolute transition-all duration-500 ease-in-out"
+                                                data-index="{{ $index }}">
+
+                                                @if($dosen->photo_profile && file_exists(public_path('storage/' . $dosen->photo_profile)))
+                                                    <img class="w-24 h-24 rounded-full mx-auto"
+                                                        src="{{ asset('storage/' . $dosen->photo_profile) }}">
+                                                @else
+                                                    <img class="w-24 h-24 rounded-full mx-auto"
+                                                        src="https://ui-avatars.com/api/?background=045be6&color=fff&size=100&name={{ urlencode($dosen->nama_mahasiswa ?? 'D') }}">
+                                                @endif
+                                                
+                                                <p class="dosen-name text-center dark:text-gray-100 mt-4 font-semibold opacity-0 transition-all duration-300">
+                                                    {{ $dosen->nama_mahasiswa ?? 'Dosen' }}
+                                                </p>
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+
+                                <!-- Arrow -->
+                                <button id="dosenPrevBtn"
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow z-10">
+                                    ←
                                 </button>
 
-                                <div class="" id="dosenCarouselTrack">
-                                    @php
-                                        // Konversi koleksi ke array untuk memudahkan looping
-                                        $dosenArray = $dosenList->values()->all();
-                                    @endphp
-                                    @foreach($dosenArray as $dosen)
-                                        <div class="dosen-card">
-                                            @if($dosen->photo_profile && file_exists(public_path('storage/' . $dosen->photo_profile)))
-                                                <img src="{{ asset('storage/' . $dosen->photo_profile) }}" alt="{{ $dosen->nama_lengkap ?? 'Dosen' }}">
-                                            @else
-                                                <img src="https://ui-avatars.com/api/?background=045be6&color=fff&size=100&name={{ urlencode($dosen->nama_lengkap ?? 'D') }}" alt="Avatar">
-                                            @endif
-                                            <b>{{ ($dosen->nama_mahasiswa ?? 'Dosen') }}</b>
-                                        </div>
-                                    @endforeach
+                                <button id="dosenNextBtn"
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow z-10">
+                                    →
+                                </button>
+
+                                <!-- Dots -->
+                                <div class="w-24 overflow-hidden mx-auto mt-4">
+                                    <div class="flex gap-2 transition-transform duration-300" id="dosenDotsTrack">
+                                        @foreach($dosenArray as $index => $dosen)
+                                            <span class="dot w-3 h-3 bg-gray-300 rounded-full cursor-pointer flex-shrink-0 transition-all duration-300 opacity-40 scale-90"
+                                                data-index="{{ $index }}"></span>
+                                        @endforeach
+                                    </div>
                                 </div>
+
                             </div>
                         @endif
                     </div>
@@ -593,5 +617,121 @@ function sortPostinganByGame() {
                 }
             });
         });
+    </script>
+    <script>
+        const cards = document.querySelectorAll('.dosen-card');
+        const dots = document.querySelectorAll('.dot');
+        const dotsTrack = document.getElementById('dosenDotsTrack');
+
+        let current = 0;
+        let autoSlide;
+        function startAutoSlide() {
+            autoSlide = setInterval(() => {
+                current = (current + 1) % cards.length;
+                updateCarousel();
+            }, 10000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(autoSlide);
+        }
+
+        const visibleDots = 4;
+        const dotSize = 12 + 8; // width (w-3 = 12px) + gap (approx 8px)
+
+        function updateCarousel() {
+            cards.forEach((card, i) => {
+                let offset = i - current;
+                const name = card.querySelector('.dosen-name');
+
+                if (offset === 0) {
+                    card.style.transform = "translateX(0) scale(1)";
+                    card.style.zIndex = "3";
+                    card.style.opacity = "1";
+                } else if (offset === -1) {
+                    card.style.transform = "translateX(-120px) scale(0.8)";
+                    card.style.zIndex = "2";
+                    card.style.opacity = "0.6";
+                } else if (offset === 1) {
+                    card.style.transform = "translateX(120px) scale(0.8)";
+                    card.style.zIndex = "2";
+                    card.style.opacity = "0.6";
+                } else {
+                    card.style.transform = "translateX(0) scale(0.5)";
+                    card.style.zIndex = "1";
+                    card.style.opacity = "0";
+                }
+
+                if (offset === 0) {
+                    card.style.transform = "translateX(0) scale(1)";
+                    card.style.zIndex = "3";
+                    card.style.opacity = "1";
+
+                    if (name) name.style.opacity = "1"; // tampil
+                } else if (offset === -1) {
+                    card.style.transform = "translateX(-120px) scale(0.8)";
+                    card.style.zIndex = "2";
+                    card.style.opacity = "0.6";
+
+                    if (name) name.style.opacity = "0"; // sembunyi
+                } else if (offset === 1) {
+                    card.style.transform = "translateX(120px) scale(0.8)";
+                    card.style.zIndex = "2";
+                    card.style.opacity = "0.6";
+
+                    if (name) name.style.opacity = "0";
+                } else {
+                    card.style.transform = "translateX(0) scale(0.5)";
+                    card.style.zIndex = "1";
+                    card.style.opacity = "0";
+
+                    if (name) name.style.opacity = "0";
+                }
+            });
+
+            //  ACTIVE DOT
+            dots.forEach((dot, i) => {
+                if (i === current) {
+                    dot.classList.add('bg-blue-500', 'opacity-100', 'scale-110');
+                    dot.classList.remove('bg-gray-300', 'opacity-40', 'scale-90');
+                } else {
+                    dot.classList.add('bg-gray-300', 'opacity-40', 'scale-90');
+                    dot.classList.remove('bg-blue-500', 'opacity-100', 'scale-110');
+                }
+            });
+
+            // SCROLLING DOT EFFECT
+            let offsetIndex = current - Math.floor(visibleDots / 2);
+
+            if (offsetIndex < 0) offsetIndex = 0;
+            if (offsetIndex > dots.length - visibleDots) {
+                offsetIndex = dots.length - visibleDots;
+            }
+
+            let translateX = -(offsetIndex * dotSize);
+            dotsTrack.style.transform = `translateX(${translateX}px)`;
+        }
+
+        // Arrow
+        document.getElementById('dosenNextBtn').onclick = () => {
+            current = (current + 1) % cards.length;
+            updateCarousel();
+        };
+
+        document.getElementById('dosenPrevBtn').onclick = () => {
+            current = (current - 1 + cards.length) % cards.length;
+            updateCarousel();
+        };
+
+        // Klik dot
+        dots.forEach(dot => {
+            dot.onclick = () => {
+                current = parseInt(dot.dataset.index);
+                updateCarousel();
+            };
+        });
+        
+        updateCarousel();
+        startAutoSlide();
     </script>
 @endsection
