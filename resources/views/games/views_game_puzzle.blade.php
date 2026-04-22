@@ -3,16 +3,16 @@
 @section('title', 'Game Puzzle')
 
 @section('content')
-    <div class="min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-purple-400 to-purple-600 dark:from-gray-900 dark:to-gray-800 py-8">
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 to-purple-600 dark:from-gray-900 dark:to-gray-800 py-8">
         <div class="w-full max-w-2xl mx-auto">
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden p-6 md:p-8">
                 <div class="flex items-center justify-between mb-4">
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                         {{ autoTranslate('Game Puzzle') }}
                     </h1>
-                    <div class="text-sm text-gray-700 dark:text-gray-300">
-                        <div id="timer" class="font-medium">{{ autoTranslate('Waktu tersisa:') }} 180s</div>
-                        <div id="moves" class="text-xs text-gray-500">{{ autoTranslate('Langkah:') }} 0</div>
+                    <div class="text-sm">
+                        <div id="timer" class="font-medium text-gray-900 dark:text-gray-100">{{ autoTranslate('Waktu tersisa:') }} <span id="timer-seconds">180</span>s</div>
+                        <div id="moves" class="text-xs text-gray-600 dark:text-gray-400">{{ autoTranslate('Langkah:') }} <span id="moves-count">0</span></div>
                     </div>
                 </div>
 
@@ -26,14 +26,12 @@
                     <div class="flex gap-4 mb-4">
                         <button id="shuffleBtn"
                             class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full shadow-md">{{ autoTranslate('ACAK') }}</button>
-                        <button id="resetBtn"
-                            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-full shadow-md">{{ autoTranslate('RESET') }}</button>
                     </div>
 
                     <div id="result" class="mt-4 text-gray-800 dark:text-gray-200 text-lg"></div>
-                    <div class="mt-2 text-gray-700 dark:text-gray-300">{{ autoTranslate('Skor') }}: <span
+                    <div class="mt-2 text-gray-800 dark:text-gray-200">{{ autoTranslate('Skor') }}: <span
                             id="score">0</span></div>
-                    <div class="mt-1 text-xs text-gray-500 dark:text-gray-400" id="bestScoreInfo"></div>
+                    <div class="mt-1 text-xs text-gray-600 dark:text-gray-400" id="bestScoreInfo"></div>
                 </div>
             </div>
         </div>
@@ -61,18 +59,113 @@
             let gameStart = Date.now();
             let currentGameId = null;
             let highestScore = 0;
+            let remainingTime = 180;
             
             const postinganId = @json($postingan->id_postingan ?? null);
             const storageKey = `puzzle_state_postingan_${postinganId}`;
             
             const container = document.getElementById('puzzle-container');
-            const movesEl = document.getElementById('moves');
+            const movesEl = document.getElementById('moves-count');
             const scoreEl = document.getElementById('score');
-            const timerEl = document.getElementById('timer');
+            const timerEl = document.getElementById('timer-seconds');
             const resultEl = document.getElementById('result');
             const bestScoreInfoEl = document.getElementById('bestScoreInfo');
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            const resetBtn = document.getElementById('resetBtn');
             
-            // Initialize puzzle
+            // Load saved state from localStorage
+            function loadSavedState() {
+                const savedState = localStorage.getItem(storageKey);
+                if (savedState) {
+                    try {
+                        const state = JSON.parse(savedState);
+                        
+                        // Restore tiles
+                        if (state.tiles && Array.isArray(state.tiles)) {
+                            tiles = state.tiles;
+                        }
+                        
+                        // Restore moves
+                        if (state.moves !== undefined) {
+                            moves = state.moves;
+                            if (movesEl) movesEl.innerText = moves;
+                        }
+                        
+                        // Restore score
+                        if (state.score !== undefined) {
+                            score = state.score;
+                            scoreEl.innerText = score;
+                        }
+                        
+                        // Restore remaining time
+                        if (state.remainingTime !== undefined && state.timestamp) {
+                            const timePassed = Math.floor((Date.now() - state.timestamp) / 1000);
+                            remainingTime = Math.max(0, state.remainingTime - timePassed);
+                            if (remainingTime <= 0) {
+                                finishGame(false);
+                                return false;
+                            }
+                        } else {
+                            remainingTime = CONFIG.timeLimit;
+                        }
+                        
+                        // Restore start time
+                        if (state.startTime) {
+                            startTime = Date.now() - (state.elapsedTime || 0);
+                        }
+                        
+                        // Restore game start
+                        if (state.gameStart) {
+                            gameStart = Date.now() - (state.gameElapsed || 0);
+                        }
+                        
+                        // Restore currentGameId
+                        if (state.currentGameId) {
+                            currentGameId = state.currentGameId;
+                        }
+                        
+                        // Restore gameActive status
+                        if (state.gameActive !== undefined) {
+                            gameActive = state.gameActive;
+                        }
+                        
+                        // Re-render the puzzle
+                        render();
+                        
+                        return true;
+                    } catch (e) {
+                        console.error('Error loading saved state:', e);
+                    }
+                }
+                return false;
+            }
+            
+            // Save current state to localStorage
+            function saveCurrentState() {
+                if (!gameActive) return;
+                
+                const timeElapsed = Date.now() - startTime;
+                const gameElapsed = Date.now() - gameStart;
+                const currentRemainingTime = timeRemainingSeconds();
+                
+                const state = {
+                    tiles: tiles,
+                    moves: moves,
+                    score: score,
+                    remainingTime: currentRemainingTime,
+                    elapsedTime: timeElapsed,
+                    gameElapsed: gameElapsed,
+                    startTime: startTime,
+                    gameStart: gameStart,
+                    currentGameId: currentGameId,
+                    gameActive: gameActive,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(storageKey, JSON.stringify(state));
+            }
+            
+            
+            // Initialize tiles
             function initTiles() {
                 tiles = [];
                 for (let i = 0; i < CONFIG.TILE_COUNT - 1; i++) {
@@ -113,6 +206,7 @@
             }
             
             function render() {
+                if (!container) return;
                 container.innerHTML = '';
                 const tileSize = 400 / CONFIG.SIZE;
                 
@@ -151,8 +245,9 @@
                     [tiles[clickedIndex], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[clickedIndex]];
                     moves++;
                     updateScore();
-                    movesEl.innerText = `{{ autoTranslate('Langkah:') }} ${moves}`;
+                    if (movesEl) movesEl.innerText = moves;
                     render();
+                    saveCurrentState(); // Save after each move
                     
                     if (isComplete()) {
                         finishGame(true);
@@ -165,7 +260,8 @@
                 const timeBonus = Math.max(0, CONFIG.timeLimit - timeElapsed) * 5;
                 const movesPenalty = moves * CONFIG.movesPenalty;
                 score = Math.max(0, CONFIG.baseScore + timeBonus - movesPenalty);
-                scoreEl.innerText = score;
+                if (scoreEl) scoreEl.innerText = score;
+                saveCurrentState(); // Save score changes
             }
             
             function isComplete() {
@@ -194,9 +290,9 @@
                         const data = await response.json();
                         highestScore = data.highest_score || 0;
                         if (bestScoreInfoEl && highestScore > 0) {
-                            bestScoreInfoEl.innerHTML = `🏆 {{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore}`;
+                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore}</span>`;
                         } else if (bestScoreInfoEl) {
-                            bestScoreInfoEl.innerHTML = `🎯 {{ autoTranslate('Selesaikan puzzle dengan langkah sedikit!') }}`;
+                            bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">{{ autoTranslate('Selesaikan puzzle dengan langkah sedikit!') }}</span>`;
                         }
                     }
                 } catch (err) {
@@ -237,10 +333,11 @@
                     if (score > highestScore) {
                         highestScore = score;
                         if (bestScoreInfoEl) {
-                            bestScoreInfoEl.innerHTML = `🏆 {{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore} ✨ {{ autoTranslate('Rekor Baru!') }}`;
+                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore} ✨ {{ autoTranslate('Rekor Baru!') }}</span>`;
                         }
                     }
                     
+                    saveCurrentState(); // Save after score update
                     return true;
                 } catch (err) {
                     console.error('Error sending score:', err);
@@ -254,13 +351,29 @@
             }
             
             function timeRemainingSeconds() {
+                if (remainingTime !== undefined && remainingTime !== null) {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    return Math.max(0, remainingTime - elapsed);
+                }
                 const elapsed = Math.floor((Date.now() - startTime) / 1000);
                 return Math.max(0, CONFIG.timeLimit - elapsed);
             }
             
             function updateTimerDisplay() {
                 if (timerEl) {
-                    timerEl.innerText = `{{ autoTranslate('Waktu tersisa:') }} ${Math.ceil(timeRemainingSeconds())}s`;
+                    const remaining = Math.ceil(timeRemainingSeconds());
+                    timerEl.innerText = remaining;
+                    
+                    // Change color when time is low
+                    if (remaining <= 10) {
+                        timerEl.classList.add('text-red-600', 'dark:text-red-400');
+                        timerEl.classList.remove('text-gray-900', 'dark:text-gray-100');
+                    } else if (remaining <= 30) {
+                        timerEl.classList.add('text-yellow-600', 'dark:text-yellow-400');
+                        timerEl.classList.remove('text-red-600', 'dark:text-red-400');
+                    } else {
+                        timerEl.classList.remove('text-red-600', 'dark:text-red-400', 'text-yellow-600', 'dark:text-yellow-400');
+                    }
                 }
             }
             
@@ -273,12 +386,15 @@
                     timerInterval = null;
                 }
                 
+                // Clear saved state on game completion
+                localStorage.removeItem(storageKey);
+                
                 if (completed) {
                     updateScore();
-                    resultEl.innerText = '🎉 {{ autoTranslate('Selamat! Puzzle terselesaikan!') }} 🎉';
+                    resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 {{ autoTranslate('Selamat! Puzzle terselesaikan!') }} 🎉</span>';
                     await sendScore(true);
                 } else {
-                    resultEl.innerText = '⏰ {{ autoTranslate('Waktu habis!') }}';
+                    resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ {{ autoTranslate('Waktu habis!') }}</span>';
                 }
                 
                 // Show result and redirect
@@ -291,44 +407,71 @@
                 if (!gameActive) return;
                 shuffleTiles();
                 moves = 0;
-                movesEl.innerText = `{{ autoTranslate('Langkah:') }} ${moves}`;
+                if (movesEl) movesEl.innerText = moves;
                 updateScore();
                 render();
+                saveCurrentState(); // Save after shuffle
             }
             
-            function resetGame() {
-                if (!gameActive) return;
-                initTiles();
-                shuffleTiles();
-                moves = 0;
-                movesEl.innerText = `{{ autoTranslate('Langkah:') }} ${moves}`;
-                updateScore();
-                render();
-            }
+            // Save state periodically (every 5 seconds)
+            setInterval(() => {
+                if (gameActive) {
+                    saveCurrentState();
+                }
+            }, 5000);
+            
+            // Save state before page unload
+            window.addEventListener('beforeunload', () => {
+                if (gameActive) {
+                    saveCurrentState();
+                }
+            });
             
             // Timer
-            timerInterval = setInterval(() => {
-                if (!gameActive) return;
-                
-                updateTimerDisplay();
-                updateScore();
-                scoreEl.innerText = score;
-                
-                if (timeRemainingSeconds() <= 0) {
-                    clearInterval(timerInterval);
-                    finishGame(false);
-                }
-            }, 1000);
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    if (!gameActive) return;
+                    
+                    updateTimerDisplay();
+                    updateScore();
+                    
+                    if (timeRemainingSeconds() <= 0) {
+                        clearInterval(timerInterval);
+                        finishGame(false);
+                    }
+                }, 1000);
+            }
             
             // Event listeners
-            document.getElementById('shuffleBtn').addEventListener('click', shuffleGame);
-            document.getElementById('resetBtn').addEventListener('click', resetGame);
+            if (shuffleBtn) shuffleBtn.addEventListener('click', shuffleGame);
+            if (resetBtn) resetBtn.addEventListener('click', resetGame);
             
-            // Initialize
-            initTiles();
-            shuffleTiles();
-            render();
+            // Load saved state or initialize new game
+            const hasSavedState = loadSavedState();
+            
+            if (!hasSavedState) {
+                // New game
+                initTiles();
+                shuffleTiles();
+                render();
+                startTime = Date.now();
+                gameStart = Date.now();
+                remainingTime = CONFIG.timeLimit;
+            } else {
+                // Continue from saved state
+                if (remainingTime <= 0) {
+                    finishGame(false);
+                    return;
+                }
+                // Adjust start time based on remaining time
+                startTime = Date.now() - (CONFIG.timeLimit - remainingTime) * 1000;
+            }
+            
+            // Fetch highest score
             fetchHighestScore();
+            
+            // Start timer
+            startTimer();
         });
     </script>
 @endpush
