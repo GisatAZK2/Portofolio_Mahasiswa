@@ -69,6 +69,12 @@ class DashboardController extends Controller
             return $item;
         });
 
+        $dosenList = User::where('role', 'dosen')
+            ->orWhere('role', 'Dosen')
+            ->orWhere('role', 'DOSEN')
+            ->where('status_pengajuan', 'Di Terima')
+            ->get();
+
         $projectUsers = Sertifikat::with('mahasiswa')
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
@@ -92,8 +98,10 @@ class DashboardController extends Controller
             'jurusanList',
             'keahlianList',
             'angkatanList',
+            'dosenList',
         ));
     }
+    
     /**
      * My Dashboard (Dashboard Pribadi Mahasiswa)
      */

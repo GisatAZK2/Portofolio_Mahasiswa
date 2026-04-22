@@ -70,7 +70,6 @@ class UserSeeder extends Seeder
             }
 
             $role = $faker->randomElement(['mahasiswa', 'dosen', 'admin']);
-            $jenis_kelamin = $faker->randomElement(['Laki-laki', 'Perempuan', 'Tidak ingin memberitahu']);
 
             $users[] = [
                 'nama_mahasiswa'   => $nama,
@@ -79,7 +78,6 @@ class UserSeeder extends Seeder
                 'password'         => Hash::make('password123'),
                 'photo_profile'    => $faker->randomElement($photoProfiles),
                 'background_url'   => $faker->randomElement($backgroundUrls),
-                'jenis_kelamin'    => $jenis_kelamin,
                 'status_pengajuan' => $faker->randomElement(['Sedang Di Ajukan', 'Di Terima', 'Di Tolak']),
                 'deskripsi'        => $faker->paragraph(3),
                 'keterangan'       => $faker->sentence(8),

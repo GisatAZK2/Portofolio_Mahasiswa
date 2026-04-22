@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Postingan;
+use App\Models\Game;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageConversionService;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class PostinganController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() 
+    public function index()
     {
         $postingan = Postingan::with('user', 'komentar.user', 'likes')
             ->where('id_user', auth()->id())
@@ -24,11 +25,11 @@ class PostinganController extends Controller
         return view('postingan.postingan_card', compact('postingan'));
     }
 
-    public function create() 
+    public function create()
     {
         return view('postingan.views_create_postingan');
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -41,6 +42,9 @@ class PostinganController extends Controller
             'items.*.type' => 'required|in:image,link',
             'items.*.content' => 'nullable|string',
             'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'game_enabled' => 'nullable|in:on,1,true,0',
+            'game_name' => 'nullable|string|max:100',
+            'game_thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         $content = [
@@ -48,27 +52,55 @@ class PostinganController extends Controller
             ['type' => 'description', 'content' => $validated['deskripsi']],
         ];
 
-        if (!empty($validated['items'])) {
-            foreach ($validated['items'] as $index => $item) {
+        // Use the raw request items to preserve array keys for uploaded files
+        $rawItems = $request->input('items', []);
+        if (!empty($rawItems) && is_array($rawItems)) {
+            foreach ($rawItems as $index => $item) {
                 $processed = [
-                    'type' => $item['type'],
+                    'type' => $item['type'] ?? null,
                     'content' => $item['content'] ?? null,
                 ];
 
-                if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
+                if (($processed['type'] ?? '') === 'image' && $request->hasFile("items.$index.file")) {
                     $path = ImageConversionService::storeWebp($request->file("items.$index.file"), 'postingan/images');
                     $processed['content'] = $path;
                 }
 
-                $content[] = $processed;
+                // only add if type exists
+                if (!empty($processed['type'])) {
+                    // Skip image items without uploaded content
+                    if ($processed['type'] === 'image' && empty($processed['content'])) {
+                        continue;
+                    }
+                    $content[] = $processed;
+                }
             }
         }
 
-        Postingan::create([
+        // Handle optional game thumbnail upload
+        if ($request->hasFile('game_thumbnail')) {
+            $thumbPath = ImageConversionService::storeWebp($request->file('game_thumbnail'), 'postingan/game_thumbnails');
+            $content[] = ['type' => 'game_thumbnail', 'content' => $thumbPath];
+        }
+
+        $post = Postingan::create([
             'id_user' => Auth::id(),
             'content' => $content,
             'tanggal' => now(),
         ]);
+
+        // If user selected to include a game, create a game record linked to this posting
+        if ($request->filled('game_enabled')) {
+            $gameName = $request->input('game_name') ?: 'Matematika';
+            Game::create([
+                'id_postingan' => $post->id_postingan,
+                'id_user' => Auth::id(),
+                'game_name' => $gameName,
+                'score' => '0',
+                'playing_time' => '0',
+                'is_active' => true,
+            ]);
+        }
 
         return redirect()->route('postingan.index')->with('success', 'Postingan berhasil dibuat!');
     }
@@ -80,7 +112,7 @@ class PostinganController extends Controller
     {
         // Get ID from query parameter
         $id = $request->query('id');
-        
+
         if (!$id) {
             abort(404, 'Postingan ID is required');
         }
@@ -98,11 +130,11 @@ class PostinganController extends Controller
     public function edit(Request $request)
     {
         $id = $request->query('id');
-        
+
         if (!$id) {
             abort(404, 'Postingan ID is required');
         }
-        
+
         $postingan = Postingan::where('id_postingan', $id)
             ->where('id_user', auth()->id())
             ->firstOrFail();
@@ -116,11 +148,11 @@ class PostinganController extends Controller
     public function update(Request $request)
     {
         $id = $request->query('id');
-        
+
         if (!$id) {
             abort(404, 'Postingan ID is required');
         }
-        
+
         $postingan = Postingan::where('id_postingan', $id)
             ->where('id_user', auth()->id())
             ->firstOrFail();
@@ -132,6 +164,9 @@ class PostinganController extends Controller
             'items.*.type' => 'required|in:image,link',
             'items.*.content' => 'nullable|string',
             'items.*.file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'game_enabled' => 'nullable|in:on,1,true,0',
+            'game_name' => 'nullable|string|max:100',
+            'game_thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         // Extract judul from content for validation
@@ -147,19 +182,82 @@ class PostinganController extends Controller
             ->values()
             ->all();
 
-        if (!empty($validated['items'])) {
-            foreach ($validated['items'] as $index => $item) {
+        // find existing game and thumbnail in current posting content
+        $existingGame = Game::where('id_postingan', $postingan->id_postingan)->first();
+        $existingGameThumbnail = null;
+        if (is_array($postingan->content)) {
+            foreach ($postingan->content as $c) {
+                if (isset($c['type']) && $c['type'] === 'game_thumbnail' && !empty($c['content'])) {
+                    $existingGameThumbnail = ltrim($c['content'], '/');
+                    break;
+                }
+            }
+        }
+
+        $rawItems = $request->input('items', []);
+        if (!empty($rawItems) && is_array($rawItems)) {
+            foreach ($rawItems as $index => $item) {
                 $processed = [
-                    'type' => $item['type'],
+                    'type' => $item['type'] ?? null,
                     'content' => $item['content'] ?? null,
                 ];
 
-                if ($item['type'] === 'image' && $request->hasFile("items.$index.file")) {
+                if (($processed['type'] ?? '') === 'image' && $request->hasFile("items.$index.file")) {
                     $path = ImageConversionService::storeWebp($request->file("items.$index.file"), 'postingan/images');
                     $processed['content'] = $path;
                 }
 
-                $content[] = $processed;
+                if (!empty($processed['type'])) {
+                    // Skip image items without uploaded content
+                    if ($processed['type'] === 'image' && empty($processed['content'])) {
+                        continue;
+                    }
+                    $content[] = $processed;
+                }
+            }
+        }
+
+        // Handle game thumbnail and game record logic
+        // If a new thumbnail was uploaded, store it and append to content. Remove old thumb file if replaced.
+        if ($request->hasFile('game_thumbnail')) {
+            $thumbPath = ImageConversionService::storeWebp($request->file('game_thumbnail'), 'postingan/game_thumbnails');
+            $content[] = ['type' => 'game_thumbnail', 'content' => $thumbPath];
+            if ($existingGameThumbnail && $existingGameThumbnail !== $thumbPath) {
+                Storage::disk('public')->delete($existingGameThumbnail);
+            }
+        } else {
+            // No new upload: if game remains enabled, preserve existing thumbnail; if disabled, remove it
+            if ($request->filled('game_enabled')) {
+                if ($existingGameThumbnail) {
+                    $content[] = ['type' => 'game_thumbnail', 'content' => $existingGameThumbnail];
+                }
+            } else {
+                // game disabled: delete existing game record and thumbnail file
+                if ($existingGame) {
+                    $existingGame->delete();
+                }
+                if ($existingGameThumbnail) {
+                    Storage::disk('public')->delete($existingGameThumbnail);
+                }
+            }
+        }
+
+        // Create or update Game record if enabled
+        if ($request->filled('game_enabled')) {
+            $gameName = $request->input('game_name') ?: ($existingGame->game_name ?? 'Matematika');
+            if ($existingGame) {
+                $existingGame->update([
+                    'game_name' => $gameName,
+                ]);
+            } else {
+                Game::create([
+                    'id_postingan' => $postingan->id_postingan,
+                    'id_user' => Auth::id(),
+                    'game_name' => $gameName,
+                    'score' => '0',
+                    'playing_time' => '0',
+                    'is_active' => true,
+                ]);
             }
         }
 
@@ -189,11 +287,11 @@ class PostinganController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->query('id');
-        
+
         if (!$id) {
             abort(404, 'Postingan ID is required');
         }
-        
+
         $postingan = Postingan::where('id_postingan', $id)
             ->where('id_user', auth()->id())
             ->firstOrFail();
