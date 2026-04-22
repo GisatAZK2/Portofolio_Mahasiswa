@@ -29,6 +29,63 @@
                 font-size: 0.7rem !important;
             }
         }
+                /* Style untuk tabel responsif dengan scroll horizontal */
+        .table-responsive-wrapper {
+           
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .table-responsive-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive-wrapper::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-responsive-wrapper::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table-responsive-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark .table-responsive-wrapper::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        .dark .table-responsive-wrapper::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+
+        .dark .table-responsive-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        /* Tabel dengan lebar setengah container */
+        .half-width-table {
+            table-layout: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Container untuk membatasi lebar menjadi setengah */
+        .table-half-container {
+            width: 200%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
     </style>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
         <!-- Header -->
@@ -184,9 +241,11 @@
         @endif
 
         <!-- Table - Desktop View -->
-        <div class="hidden md:block overflow-x-auto">
-            <table class="min-w-full w-full table-auto bg-white dark:bg-gray-800 text-sm responsive-compact-table">
-                <thead>
+               <div class="hidden w-100 md:block">
+            <div class="table-half-container">
+                <div class="table-responsive-wrapper">
+                    <table class="half-width-table bg-white dark:bg-gray-800 text-sm responsive-compact-table">
+        <thead>
                     <tr class="bg-gray-100 dark:bg-gray-700">
                         <th class="px-4 py-3 text-left">
                             <input type="checkbox" id="tableSelectAllCheckbox"
@@ -387,6 +446,8 @@
                 </tbody>
             </table>
         </div>
+        </div>
+        </div>
 
         <!-- Mobile View - Card Layout -->
         <div class="md:hidden space-y-4">
@@ -554,6 +615,7 @@
             <nav id="paginationNumberButtons" class="flex flex-wrap items-center gap-2"></nav>
         </div>
 
+        
         <!-- Hidden Delete Form -->
         <form id="hiddenDeleteForm" method="POST" style="display: none;">
             @csrf

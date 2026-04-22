@@ -260,16 +260,16 @@ Route::prefix('{locale}')
 
         // Footer Routes
         Route::get('/help', function () {
-            return view('help');
+            return view('components.help');
         })->name('help');
 
         Route::get('/get-app', function () {
-            return view('get-app');
+            return view('components.get-app');
         })->name('get-app');
         
         // Offline page route
         Route::get('/offline', function () {
-            return view('offline');
+            return view('components.offline');
         })->name('offline');
 
       
@@ -280,6 +280,19 @@ Route::prefix('{locale}')
   // Offline page route
         Route::get('/offline', function () {
             return view('offline');
+        })->name('offline');
+
+            Route::get('/help', function () {
+            return view('components.help');
+        })->name('help');
+
+        Route::get('/get-app', function () {
+            return view('components.get-app');
+        })->name('get-app');
+        
+        // Offline page route
+        Route::get('/offline', function () {
+            return view('components.offline');
         })->name('offline');
 
 
