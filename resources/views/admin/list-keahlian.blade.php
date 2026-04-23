@@ -84,7 +84,7 @@
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
-                                    <button onclick="openDeleteModal({{ $keahlian->id_keahlian }}, '{{ addslashes($keahlian->nama_keahlian) }}')"
+                                    <button onclick="handleDelete({{ $keahlian->id_keahlian }}, '{{ addslashes($keahlian->nama_keahlian) }}')"
                                         class="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -146,7 +146,7 @@
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                         </button>
-                        <button onclick="openDeleteModal({{ $keahlian->id_keahlian }}, '{{ addslashes($keahlian->nama_keahlian) }}')"
+                        <button onclick="handleDelete({{ $keahlian->id_keahlian }}, '{{ addslashes($keahlian->nama_keahlian) }}')"
                             class="text-red-500 hover:text-red-700 p-2 transition-colors" title="Hapus">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -328,6 +328,38 @@
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.add('hidden');
             deleteId = null;
+        }
+
+        async function handleDelete(id, name) {
+            const confirmed = await showConfirm();
+
+            if (!confirmed) return;
+
+            showLoading('Menghapus...');
+
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+            const url = `/${locale}/admin/manageProdi/DeleteProdi?id=${id}`;
+
+            // bikin form dinamis
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const method = document.createElement('input');
+            method.type = 'hidden';
+            method.name = '_method';
+            method.value = 'DELETE';
+
+            form.appendChild(csrf);
+            form.appendChild(method);
+
+            document.body.appendChild(form);
+            form.submit();
         }
 
         // Close modal when clicking outside
