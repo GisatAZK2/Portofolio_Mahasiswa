@@ -1,399 +1,447 @@
-<header
-    class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">
+<style>
+    .backdrop-blur-md {
+        backdrop-filter: blur(12px);
+    }
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    .overflow-y-auto::-webkit-scrollbar {
+        width: 6px;
+    }
+    .overflow-y-auto::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    .overflow-y-auto::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+    .dark .overflow-y-auto::-webkit-scrollbar-track {
+        background: #1f2937;
+    }
+    .dark .overflow-y-auto::-webkit-scrollbar-thumb {
+        background: #4b5563;
+    }
+</style>
+
+<header class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">
     <div class="px-4 py-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
 
-            <!-- Mobile: Hamburger + Search Icon -->
-            <div class="flex items-center gap-4 lg:hidden">
+            <!-- Mobile: Hamburger + Search Icon (left side) -->
+            <div class="flex items-center gap-3 lg:hidden">
                 <button id="toggle-sidebar" class="text-gray-700 dark:text-gray-300 focus:outline-none">
-                    <svg id="sidebar-hamburger" class="w-7 h-7 transition-transform duration-200" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
+                    <svg id="sidebar-hamburger" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    <svg id="sidebar-close" class="w-7 h-7 hidden transition-transform duration-200" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
+                    <svg id="sidebar-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
                 <button id="toggle-search-mobile" class="text-gray-700 dark:text-gray-300 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
             </div>
 
-            <!-- MOBILE TITLE  -->
+            <!-- MOBILE TITLE -->
             <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
                 <a href="{{ route('dashboard') }}">
-                    <h1 class="text-sm font-semibold text-indigo-600 tracking-wide">
-                        PORTOFOLIO MAHASISWA
-                    </h1>
+                    <h1 class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 tracking-wide">PORTOFOLIO MAHASISWA</h1>
                 </a>
+            </div>
+
+            <!-- Mobile Notification Bell (right side) -->
+            <div class="flex items-center gap-2 lg:hidden">
+                @auth
+                    @if(Auth::user()->role === 'admin')
+                    <div x-data="notificationBell()" x-init="init()" class="relative">
+                        <button type="button" @click="toggleDropdown" class="relative p-2 bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span x-show="unreadCount > 0" x-text="unreadCount > 99 ? '99+' : unreadCount" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white animate-pulse"></span>
+                        </button>
+                        <div x-show="isOpen" @click.away="isOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
+                            <div class="p-3 border-b border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Notifikasi</h3>
+                                    <div class="flex gap-2">
+                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Tandai</button>
+                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                <template x-if="notifications.length === 0">
+                                    <div class="p-4 text-center text-gray-500 dark:text-gray-400">
+                                        <svg class="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                        </svg>
+                                        <p class="text-sm">Belum ada notifikasi</p>
+                                    </div>
+                                </template>
+                                <template x-for="item in notifications" :key="item.id">
+                                    <div @click="handleNotificationClick(item)" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition" :class="{ 'bg-blue-50 dark:bg-blue-900/20': !item.read }">
+                                        <div class="flex items-start gap-3">
+                                            <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" :class="getIconBg(item.type)">
+                                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.data.title"></p>
+                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">PENTING</span>
+                                                </div>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="item.data.message"></p>
+                                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="formatTime(item.created_at)"></p>
+                                            </div>
+                                            <span x-show="!item.read" class="flex-shrink-0 w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                @endauth
             </div>
 
             <!-- DESKTOP SEARCH -->
             <div id="search-container" class="hidden lg:flex lg:items-center lg:gap-3 w-full max-w-5xl mx-auto">
                 <form method="GET" action="{{ route('search') }}" class="flex items-center gap-2.5 w-full">
-
-                    <!-- Search Input -->
                     <div class="relative grow min-w-0">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-                            <svg class="h-5 w-5 text-gray-500 dark:text-white" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
                         <input id="search-input" type="text" name="q" value="{{ request('q') }}"
-                            class="w-full pl-11 pr-4 py-2.5 border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-100 text-sm transition shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
-                            placeholder="Cari..." data-translate="placeholder_student" data-translate-page="search" autocomplete="off">
-                        <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl overflow-hidden z-50 max-h-72 overflow-y-auto"></div>
+                            class="w-full pl-11 pr-4 py-2.5 border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 text-sm transition shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
+                            placeholder="Cari..." autocomplete="off">
+                        <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl overflow-hidden z-50 max-h-72 overflow-y-auto"></div>
                     </div>
-
-                    <a href="{{ route('search') }}"
-                        class="bg-white/60 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 text-gray-700 px-5 py-2.5 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition text-sm font-medium backdrop-blur-sm border border-gray-300/50">
-                        Reset
-                    </a>
-
-                    <!-- Filters -->
-                    <select name="jurusan"
-                        class="block border border-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
-                        <option class="dark:bg-gray-800 dark:text-gray-200" data-translate="filter_jurusan"
-                            data-translate-page="search" value="">Semua Prodi</option>
+                    <a href="{{ route('search') }}" class="bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 px-5 py-2.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm font-medium backdrop-blur-sm border border-gray-300/50 dark:border-gray-600/50">Reset</a>
+                    
+                    <select name="jurusan" class="border border-gray-200 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-lg py-2.5 px-3 text-sm backdrop-blur-sm focus:ring-indigo-400 min-w-[140px]">
+                        <option value="">Semua Prodi</option>
                         @foreach($jurusanList ?? [] as $jurusan)
-                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
-                                {{ Str::limit($jurusan->nama_jurusan, 20) }}
-                            </option>
+                            <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>{{ Str::limit($jurusan->nama_jurusan, 20) }}</option>
                         @endforeach
                     </select>
-
-                    <select name="keahlian"
-                        class="block border  border-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[140px] lg:min-w-[160px]">
-                        <option class="dark:bg-gray-800 dark:text-gray-200" data-translate="filter_keahlian"
-                            data-translate-page="search" value="">Semua Keahlian</option>
+                    
+                    <select name="keahlian" class="border border-gray-200 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-lg py-2.5 px-3 text-sm backdrop-blur-sm focus:ring-indigo-400 min-w-[140px]">
+                        <option value="">Semua Keahlian</option>
                         @foreach($keahlianList ?? [] as $keahlian)
-                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
-                                {{ Str::limit($keahlian->nama_keahlian, 20) }}
-                            </option>
+                            <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>{{ Str::limit($keahlian->nama_keahlian, 20) }}</option>
                         @endforeach
                     </select>
-
-                    <select name="angkatan"
-                        class="block border border-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-700/50 rounded-lg py-2.5 px-3 text-sm bg-white/80 backdrop-blur-sm focus:ring-indigo-400 focus:border-indigo-400 min-w-[120px] lg:min-w-[140px]">
-                        <option class="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-900"
-                            data-translate="filter_angkatan" data-translate-page="search" value="">Semua Angkatan
-                        </option>
+                    
+                    <select name="angkatan" class="border border-gray-200 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-lg py-2.5 px-3 text-sm backdrop-blur-sm focus:ring-indigo-400 min-w-[120px]">
+                        <option value="">Semua Angkatan</option>
                         @foreach($angkatanList ?? [] as $angkatan)
-                            <option class="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-900"
-                                value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
-                                {{ $angkatan->nama_angkatan }}
-                            </option>
+                            <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>{{ $angkatan->nama_angkatan }}</option>
                         @endforeach
                     </select>
-
-                    <!-- Buttons -->
-                    <div class="flex gap-2 shrink-0">
-                        <button type="submit"
-                            class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition text-sm font-medium flex items-center gap-1.5 shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                            <span data-translate="search" data-translate-page="search"></span>
-                        </button>
-                    </div>
+                    
+                    <button type="submit" class="bg-indigo-600 dark:bg-indigo-500 text-white px-5 py-2.5 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition text-sm font-medium flex items-center gap-1.5 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        Cari
+                    </button>
                 </form>
+
+                <!-- Desktop Notification Bell -->
+                @auth
+                    @if(Auth::user()->role === 'admin')
+                    <div class="ml-3 hidden lg:block" x-data="notificationBell()" x-init="init()">
+                        <button type="button" @click="toggleDropdown" class="relative p-2.5 bg-white/70 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span x-show="unreadCount > 0" x-text="unreadCount > 99 ? '99+' : unreadCount" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white animate-pulse"></span>
+                        </button>
+                        <div x-show="isOpen" @click.away="isOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
+                            <div class="p-3 border-b border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Notifikasi</h3>
+                                    <div class="flex gap-2">
+                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Tandai</button>
+                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                <template x-if="notifications.length === 0">
+                                    <div class="p-4 text-center text-gray-500 dark:text-gray-400">
+                                        <svg class="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                        </svg>
+                                        <p class="text-sm">Belum ada notifikasi</p>
+                                    </div>
+                                </template>
+                                <template x-for="item in notifications" :key="item.id">
+                                    <div @click="handleNotificationClick(item)" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition" :class="{ 'bg-blue-50 dark:bg-blue-900/20': !item.read }">
+                                        <div class="flex items-start gap-3">
+                                            <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" :class="getIconBg(item.type)">
+                                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.data.title"></p>
+                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">PENTING</span>
+                                                </div>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="item.data.message"></p>
+                                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="formatTime(item.created_at)"></p>
+                                            </div>
+                                            <span x-show="!item.read" class="flex-shrink-0 w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                @endauth
             </div>
         </div>
     </div>
 
     <!-- MOBILE Search Dropdown -->
-    <div id="mobile-search-dropdown"
-        class="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 ease-in-out max-h-0">
-
+    <div id="mobile-search-dropdown" class="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 overflow-hidden hidden">
         <div class="px-4 py-5 space-y-5 sm:px-6">
             <form method="GET" action="{{ route('search') }}" class="space-y-4">
-
-                <!-- Search Input -->
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-500 dark:text-white" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-
-                    <input id="search-input-mobile" type="text" name="q" value="{{ request('q') }}" class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                    focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                    text-gray-700 dark:text-gray-300
-                    placeholder-gray-500 dark:placeholder-gray-400
-                    shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
-                        placeholder="Cari mahasiswa, proyek, portofolio..." data-translate="placeholder_student"
-                        data-translate-page="search" autocomplete="off">
-                        <div id="search-suggestions-mobile" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl overflow-hidden z-50 max-h-72 overflow-y-auto"></div>
+                    <input id="search-input-mobile" type="text" name="q" value="{{ request('q') }}" class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm" placeholder="Cari mahasiswa, proyek, portofolio..." autocomplete="off">
+                    <div id="search-suggestions-mobile" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl overflow-hidden z-50 max-h-72 overflow-y-auto"></div>
                 </div>
-
-                <!-- Filters -->
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
-                    <select name="jurusan" class="block w-full border border-gray-300/80 dark:border-gray-700/80
-                    rounded-lg py-3 px-3.5 text-sm
-                    bg-white/80 dark:bg-gray-700/80
-                    text-gray-700 dark:text-gray-300
-                    backdrop-blur-sm
-                    focus:ring-indigo-400 focus:border-indigo-400">
-
-                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Jurusan</option>
-
+                    <select name="jurusan" class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-3 px-3.5 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 backdrop-blur-sm focus:ring-indigo-400">
+                        <option value="">Semua Jurusan</option>
                         @foreach($jurusanList ?? [] as $jurusan)
-                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>
-                                {{ $jurusan->nama_jurusan }}
-                            </option>
+                            <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>{{ $jurusan->nama_jurusan }}</option>
                         @endforeach
                     </select>
-
-                    <select name="keahlian" class="block w-full border border-gray-300/80 dark:border-gray-700/80
-                    rounded-lg py-3 px-3.5 text-sm
-                    bg-white/80 dark:bg-gray-700/80
-                    text-gray-700 dark:text-gray-300
-                    backdrop-blur-sm
-                    focus:ring-indigo-400 focus:border-indigo-400">
-
-                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Keahlian</option>
-
+                    <select name="keahlian" class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-3 px-3.5 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 backdrop-blur-sm focus:ring-indigo-400">
+                        <option value="">Semua Keahlian</option>
                         @foreach($keahlianList ?? [] as $keahlian)
-                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>
-                                {{ $keahlian->nama_keahlian }}
-                            </option>
+                            <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>{{ $keahlian->nama_keahlian }}</option>
                         @endforeach
                     </select>
-
-                    <select name="angkatan" class="block w-full border border-gray-300/80 dark:border-gray-700/80
-                    rounded-lg py-3 px-3.5 text-sm
-                    bg-white/80 dark:bg-gray-700/80
-                    text-gray-700 dark:text-gray-300
-                    backdrop-blur-sm
-                    focus:ring-indigo-400 focus:border-indigo-400 sm:col-span-2">
-
-                        <option class="dark:bg-gray-800 dark:text-gray-200" value="">Semua Angkatan</option>
-
+                    <select name="angkatan" class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-3 px-3.5 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 backdrop-blur-sm focus:ring-indigo-400 sm:col-span-2">
+                        <option value="">Semua Angkatan</option>
                         @foreach($angkatanList ?? [] as $angkatan)
-                            <option class="dark:bg-gray-800 dark:text-gray-200" value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>
-                                {{ $angkatan->nama_angkatan }}
-                            </option>
+                            <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>{{ $angkatan->nama_angkatan }}</option>
                         @endforeach
                     </select>
-
                 </div>
-
-                <!-- Buttons -->
                 <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
-
-                    <button data-translate="search" data-translate-page="search" type="submit" class="flex-1 bg-indigo-600 text-white py-3.5 rounded-lg text-sm font-medium
-                    hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2
-                    transition flex items-center justify-center gap-2 shadow-sm">
-
-                        <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-
-                        <span data-translate="search" data-translate-page="search"></span>
+                    <button type="submit" class="flex-1 bg-indigo-600 dark:bg-indigo-500 text-white py-3.5 rounded-lg text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition flex items-center justify-center gap-2 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        Cari
                     </button>
-
-                    <a href="{{ route('search') }}" class="flex-1 bg-white/60 dark:bg-gray-700/60
-                    text-gray-700 dark:text-gray-300
-                    py-3.5 rounded-lg text-sm font-medium
-                    hover:bg-gray-100/80 dark:hover:bg-gray-600
-                    focus:ring-2 focus:ring-gray-300
-                    transition flex items-center justify-center
-                    border border-gray-300/50 dark:border-gray-700/50 backdrop-blur-sm">
-
-                        Reset Filter
-                    </a>
-
+                    <a href="{{ route('search') }}" class="flex-1 bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 py-3.5 rounded-lg text-sm font-medium hover:bg-gray-100/80 dark:hover:bg-gray-600 transition flex items-center justify-center border border-gray-300/50 dark:border-gray-600/50">Reset</a>
                 </div>
-
             </form>
         </div>
     </div>
 </header>
 
 <script>
-    // Get translations dynamically
-    function getPlaceholderTexts() {
-        const currentLang = localStorage.getItem('lang') || 'id';
+    // Notification Bell Component
+    function notificationBell() {
+        return {
+            isOpen: false,
+            notifications: [],
+            unreadCount: 0,
+            page: 1,
+            pollingInterval: null,
 
-        // Fallback texts
-        const defaultTexts = {
+            async init() {
+                await this.loadNotifications();
+                this.startPolling();
+                if (Notification.permission === 'default') Notification.requestPermission();
+            },
+
+            getIconBg(type) {
+                const colors = {
+                    'user-registered': 'bg-gradient-to-br from-blue-500 to-indigo-600',
+                    'project-created': 'bg-gradient-to-br from-green-500 to-emerald-600',
+                    'certificate-uploaded': 'bg-gradient-to-br from-purple-500 to-pink-600',
+                };
+                return colors[type] || 'bg-gradient-to-br from-gray-500 to-gray-600';
+            },
+
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+                if (diff < 60) return 'Baru saja';
+                if (diff < 3600) return Math.floor(diff / 60) + ' menit lalu';
+                if (diff < 86400) return Math.floor(diff / 3600) + ' jam lalu';
+                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+            },
+
+            toggleDropdown() { this.isOpen = !this.isOpen; },
+
+            startPolling() {
+                this.pollingInterval = setInterval(async () => {
+                    try {
+                        const res = await fetch('/api/notifications/unread-count');
+                        const data = await res.json();
+                        if (data.count > this.unreadCount) { this.page = 1; await this.loadNotifications(); }
+                    } catch (e) {}
+                }, 10000);
+            },
+
+            async loadNotifications() {
+                try {
+                    const res = await fetch(`/api/notifications?page=${this.page}`);
+                    const data = await res.json();
+                    this.notifications = data.data || [];
+                    this.updateUnreadCount();
+                } catch (error) {}
+            },
+async handleNotificationClick(item) {
+    if (!item.read) await this.markAsRead(item.id);
+    
+    const locale = document.documentElement.lang || 'id';
+    
+    // Redirect berdasarkan tipe notifikasi
+    if (item.data.link) {
+        window.location.href = item.data.link;
+    } else {
+        // Fallback route berdasarkan tipe
+        const routes = {
+            'user-registered': `/${locale}/admin/manageUser`,
+            'project-created': `/${locale}/admin/manageProject`,
+            'certificate-uploaded': `/${locale}/admin/manageSertifikat`,
+        };
+        window.location.href = routes[item.type] || `/${locale}/dashboard`;
+    }
+},
+
+            async markAsRead(id) {
+                try {
+                    await fetch(`/api/notifications/${id}/read`, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' } });
+                } catch(e) {}
+                const notif = this.notifications.find(n => n.id === id);
+                if (notif) notif.read = true;
+                this.updateUnreadCount();
+            },
+
+            async markAllAsRead() {
+                this.notifications.forEach(n => n.read = true);
+                this.updateUnreadCount();
+            },
+
+            async clearAll() {
+                if (!confirm('Hapus semua notifikasi?')) return;
+                this.notifications = [];
+                this.unreadCount = 0;
+            },
+
+            updateUnreadCount() { this.unreadCount = this.notifications.filter(n => !n.read).length; }
+        };
+    }
+
+    // Placeholder typing effect
+    function getPlaceholderTexts() {
+        const lang = localStorage.getItem('lang') || 'id';
+        const texts = {
             id: ["Cari Mahasiswa...", "Cari Portofolio...", "Cari Sertifikat..."],
             en: ["Search Students...", "Search Portfolio...", "Search Certificate..."]
         };
-
-        // Try to get from window.translations if available
-        if (window.translations && window.translations[currentLang]?.search) {
-            const trans = window.translations[currentLang].search;
-            return [
-                trans.placeholder_student || defaultTexts[currentLang][0],
-                trans.placeholder_portfolio || defaultTexts[currentLang][1],
-                trans.placeholder_certificate || defaultTexts[currentLang][2]
-            ];
-        }
-
-        return defaultTexts[currentLang] || defaultTexts['id'];
+        return texts[lang] || texts['id'];
     }
 
     let texts = getPlaceholderTexts();
     const inputs = document.querySelectorAll('input[name="q"]');
-
-    let textIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let speed = 80;
+    let textIndex = 0, charIndex = 0, isDeleting = false, speed = 80;
 
     function typeEffect() {
         const currentText = texts[textIndex];
-        const displayText = currentText.substring(0, charIndex);
-
-        inputs.forEach(input => {
-            input.setAttribute("placeholder", displayText);
-        });
-
+        inputs.forEach(input => input.setAttribute("placeholder", currentText.substring(0, charIndex)));
         if (!isDeleting) {
             charIndex++;
-            if (charIndex > currentText.length) {
-                isDeleting = true;
-                setTimeout(typeEffect, 1500);
-                return;
-            }
-            speed = 60 + Math.random() * 40; // Variasi kecepatan typing
+            if (charIndex > currentText.length) { isDeleting = true; setTimeout(typeEffect, 1500); return; }
+            speed = 60 + Math.random() * 40;
         } else {
             charIndex--;
-            if (charIndex === 0) {
-                isDeleting = false;
-                textIndex = (textIndex + 1) % texts.length;
-                // Update texts when switching
-                texts = getPlaceholderTexts();
-            }
-            speed = 30 + Math.random() * 30; // Variasi kecepatan delete
+            if (charIndex === 0) { isDeleting = false; textIndex = (textIndex + 1) % texts.length; texts = getPlaceholderTexts(); }
+            speed = 30 + Math.random() * 30;
         }
-
         setTimeout(typeEffect, speed);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
         typeEffect();
 
-        // Listen for language changes
-        window.addEventListener('languageChanged', () => {
-            texts = getPlaceholderTexts();
-            charIndex = 0;
-            textIndex = 0;
-            isDeleting = false;
-        });
+        // Mobile search toggle
+        const mobileSearchBtn = document.getElementById('toggle-search-mobile');
+        const mobileDropdown = document.getElementById('mobile-search-dropdown');
+        if(mobileSearchBtn && mobileDropdown) {
+            mobileSearchBtn.addEventListener('click', () => {
+                mobileDropdown.classList.toggle('hidden');
+            });
+        }
 
-        const searchInputs = [
-            document.getElementById('search-input'),
-            document.getElementById('search-input-mobile')
-        ].filter(Boolean);
-
+        // Search suggestions
+        const searchInputs = [document.getElementById('search-input'), document.getElementById('search-input-mobile')].filter(Boolean);
         searchInputs.forEach(input => {
-            const suggestionsContainer = input.id === 'search-input'
-                ? document.getElementById('search-suggestions')
-                : document.getElementById('search-suggestions-mobile');
-            let debounceTimer;
-
-            input.addEventListener('input', function () {
+            const container = input.id === 'search-input' ? document.getElementById('search-suggestions') : document.getElementById('search-suggestions-mobile');
+            let timer;
+            input.addEventListener('input', function() {
                 const query = this.value.trim();
-                clearTimeout(debounceTimer);
-
-                if (query.length < 2) {
-                    suggestionsContainer.classList.add('hidden');
-                    suggestionsContainer.innerHTML = '';
-                    return;
-                }
-
-                debounceTimer = setTimeout(() => {
-                    fetchSuggestions(query, suggestionsContainer);
+                clearTimeout(timer);
+                if (query.length < 2) { container.classList.add('hidden'); return; }
+                timer = setTimeout(() => {
+                    fetch(`{{ route('search.suggestions') }}?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.length) {
+                                container.innerHTML = `<div class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">Tidak ada hasil</div>`;
+                            } else {
+                                const grouped = data.reduce((acc, item) => { acc[item.type] = acc[item.type] || []; acc[item.type].push(item); return acc; }, {});
+                                const titles = { mahasiswa: 'Mahasiswa', project: 'Project', sertifikat: 'Sertifikat', postingan: 'Postingan' };
+                                let html = '';
+                                Object.keys(titles).forEach(type => {
+                                    const items = grouped[type] || [];
+                                    if (items.length) {
+                                        html += `<div class="border-b border-gray-100 dark:border-gray-700"><div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400 font-semibold">${titles[type]}</div>`;
+                                        items.forEach(item => html += `<a href="${item.url}" class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm text-gray-700 dark:text-gray-200"><div class="font-medium">${item.name}</div><div class="text-xs text-gray-500 dark:text-gray-400">${item.label}</div></a>`);
+                                        html += `</div>`;
+                                    }
+                                });
+                                html += `<div class="px-4 py-3 bg-white dark:bg-gray-800"><a href="{{ route('search') }}?q=${encodeURIComponent(query)}" class="block text-center text-sm text-indigo-600 dark:text-indigo-400 font-medium">Lihat semua hasil</a></div>`;
+                                container.innerHTML = html;
+                            }
+                            container.classList.remove('hidden');
+                        })
+                        .catch(() => container.classList.add('hidden'));
                 }, 250);
             });
-
-            input.addEventListener('focus', function () {
-                if (this.value.trim().length >= 2 && suggestionsContainer.innerHTML.trim() !== '') {
-                    suggestionsContainer.classList.remove('hidden');
-                }
-            });
         });
 
-        document.addEventListener('click', function (event) {
-            if (!event.target.closest('#search-input') && !event.target.closest('#search-suggestions') &&
-                !event.target.closest('#search-input-mobile') && !event.target.closest('#search-suggestions-mobile')) {
-                document.querySelectorAll('#search-suggestions, #search-suggestions-mobile').forEach(box => {
-                    box.classList.add('hidden');
-                });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#search-input') && !e.target.closest('#search-suggestions') && 
+                !e.target.closest('#search-input-mobile') && !e.target.closest('#search-suggestions-mobile')) {
+                document.querySelectorAll('#search-suggestions, #search-suggestions-mobile').forEach(box => box.classList.add('hidden'));
             }
         });
-
-        function fetchSuggestions(query, container) {
-            fetch(`{{ route('search.suggestions') }}?q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => displaySuggestions(data, container, query))
-                .catch(error => {
-                    console.error('Error fetching suggestions:', error);
-                    container.classList.add('hidden');
-                });
-        }
-
-        function displaySuggestions(suggestions, container, query) {
-            if (!Array.isArray(suggestions) || suggestions.length === 0) {
-                container.innerHTML = `<div class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300">Tidak ada hasil untuk "${query}"</div>`;
-                container.classList.remove('hidden');
-                return;
-            }
-
-            const grouped = suggestions.reduce((acc, item) => {
-                acc[item.type] = acc[item.type] || [];
-                acc[item.type].push(item);
-                return acc;
-            }, {});
-
-            const titles = {
-                mahasiswa: 'Mahasiswa',
-                project: 'Project',
-                sertifikat: 'Sertifikat',
-                postingan: 'Postingan'
-            };
-
-            const html = Object.keys(titles).map(type => {
-                const items = grouped[type] || [];
-                if (!items.length) return '';
-
-                return `
-                    <div class="border-b border-gray-100 dark:border-gray-700">
-                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">${titles[type]}</div>
-                        ${items.map(item => `
-                            <a href="${item.url}"
-                                class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 transition">
-                                <div class="font-medium">${item.name}</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">${item.label}</div>
-                            </a>
-                        `).join('')}
-                    </div>
-                `;
-            }).join('');
-
-            container.innerHTML = `${html}
-                <div class="px-4 py-3 bg-white dark:bg-gray-900">
-                    <a href="{{ route('search') }}?q=${encodeURIComponent(query)}"
-                        class="block text-center text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 font-medium">
-                        Lihat semua hasil untuk "${query}"
-                    </a>
-                </div>`;
-            container.classList.remove('hidden');
-        }
     });
 </script>

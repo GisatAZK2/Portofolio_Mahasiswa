@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\v1\NotificationController;
 use App\Http\Controllers\v1\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -23,8 +24,8 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 // ========== LOCALE PREFIX ROUTES ==========
 // Routes dengan locale prefix untuk SEO dan proper multilingual support
 Route::prefix('{locale}')
-    ->where(['locale' => 'id|en'])           // hanya id atau en yang boleh
-    ->middleware(['web', 'setlocale'])       // middleware penting!
+    ->where(['locale' => 'id|en'])        
+    ->middleware(['web', 'setlocale'])      
     ->group(function () {
 
 
@@ -373,20 +374,47 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:admin,dosen');
 });
 
-Route::get('/test-translate', function () {
-    $text = "Halo Saya Cuman Ingin test Translate berbasis teks get.";
+// Route::get('/test-translate', function () {
+//     $text = "Halo Saya Cuman Ingin test Translate berbasis teks get.";
 
-    app()->setLocale('en');
-    $en = autoTranslate($text);
+//     app()->setLocale('en');
+//     $en = autoTranslate($text);
 
-    app()->setLocale('es');
-    $es = autoTranslate($text);
+//     app()->setLocale('es');
+//     $es = autoTranslate($text);
 
-    dd([
-        'original' => $text,
-        'english' => $en,
-        'spanish' => $es,
-    ]);
+//     dd([
+//         'original' => $text,
+//         'english' => $en,
+//         'spanish' => $es,
+//     ]);
+// });
+
+
+// Route untuk testing notification 
+Route::get('/test-notification', function () {
+    \App\Http\Controllers\v1\NotificationController::add(
+        'user-registered',
+        [
+            'title' => 'Test Notification',
+            'message' => 'This is a test notification at ' . now()->format('H:i:s'),
+            'user_id' => 1,
+            'user_name' => 'Test User',
+            'link' => '/',
+        ],
+        'high'
+    );
+    
+    return 'Notification sent!';
+});
+
+    // Notification Admin
+Route::prefix('api/notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/clear-all', [NotificationController::class, 'clearAll']);
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
 });
 
 
