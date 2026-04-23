@@ -84,7 +84,7 @@
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
-                                    <button onclick="openDeleteModal({{ $jurusan->id_jurusan }}, '{{ addslashes($jurusan->nama_jurusan) }}')"
+                                    <button onclick="handleDelete({{ $jurusan->id_jurusan }}, '{{ addslashes($jurusan->nama_jurusan) }}')"
                                         class="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -146,7 +146,7 @@
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                         </button>
-                        <button onclick="openDeleteModal({{ $jurusan->id_jurusan }}, '{{ addslashes($jurusan->nama_jurusan) }}')"
+                        <button onclick="handleDelete({{ $jurusan->id_jurusan }}, '{{ addslashes($jurusan->nama_jurusan) }}')"
                             class="text-red-500 hover:text-red-700 p-2 transition-colors" title="Hapus">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -190,36 +190,7 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 sm:w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <div class="mt-3 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-2" data-translate="hapus_jurusan" data-translate-page="admin">Hapus Jurusan</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Apakah Anda yakin ingin menghapus jurusan <span id="deleteName" class="font-bold"></span>?
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
-                    <button onclick="closeDeleteModal()"
-                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 w-full sm:w-auto"
-                        data-translate="cancel" data-translate-page="admin">Batal</button>
-                    <form id="deleteForm" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto"
-                            data-translate="delete" data-translate-page="admin">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 @endsection
 
@@ -343,6 +314,38 @@
             if (event.target == deleteModal) {
                 closeDeleteModal();
             }
+        }
+
+        async function handleDelete(id, name) {
+            const confirmed = await showConfirm();
+
+            if (!confirmed) return;
+
+            showLoading('Menghapus...');
+
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+            const url = `/${locale}/admin/manageProdi/DeleteProdi?id=${id}`;
+
+            // bikin form dinamis
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const method = document.createElement('input');
+            method.type = 'hidden';
+            method.name = '_method';
+            method.value = 'DELETE';
+
+            form.appendChild(csrf);
+            form.appendChild(method);
+
+            document.body.appendChild(form);
+            form.submit();
         }
 
         // Handle responsive checkbox selection
