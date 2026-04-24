@@ -241,7 +241,7 @@
         @endif
 
         <!-- Table - Desktop View -->
-               <div class="hidden w-100 md:block">
+               <div class="hidden w-115 md:block">
             <div class="table-half-container">
                 <div class="table-responsive-wrapper">
                     <table class="half-width-table bg-white dark:bg-gray-800 text-sm responsive-compact-table">
