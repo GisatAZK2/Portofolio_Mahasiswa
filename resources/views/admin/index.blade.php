@@ -1,6 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard Admin')
 
+
 @section('content')
     <style>
         .skeleton {
@@ -478,14 +479,56 @@
                                 </div>
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="pending_students_title" data-translate-page="admin">
                                     Mahasiswa Menunggu
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
+                                    <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="pending_students_title" data-translate-page="admin">
+                                    Mahasiswa Menunggu
                                 </h2>
                             </div>
+                            <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition">
+                                <span data-translate="see_all" data-translate-page="admin">Lihat Semua</span> →
+                            </a>
                             <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition">
                                 <span data-translate="see_all" data-translate-page="admin">Lihat Semua</span> →
                             </a>
                         </div>
                         <div class="space-y-3">
                             @forelse($pendingMahasiswa as $mahasiswa)
+                                <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg {{ $loop->index >= 3 ? 'hidden extra-pending' : '' }}">
+                                    <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-yellow-700 dark:text-yellow-300 font-medium text-sm">
+                                            {{ strtoupper(substr($mahasiswa->nama_mahasiswa ?? 'M', 0, 1)) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-gray-900 dark:text-white truncate">{{ $mahasiswa->nama_mahasiswa }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <div class="relative group flex items-center">
+                                                <button type="button" class="email-toggle-btn p-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition" title="Toggle email">
+                                                    <svg class="email-eye-show w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    <svg class="email-eye-hide w-3.5 h-3.5 text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                                    </svg>
+                                                </button>
+                                                <span class="email-display text-xs text-gray-500 dark:text-gray-400 ml-1 truncate" data-email="{{ $mahasiswa->email ?? $mahasiswa->username }}">••••••••</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full flex-shrink-0">Menunggu</span>
+                                </div>
+                            @empty
+                                <div class="text-center py-6">
+                                    <p class="text-gray-500 dark:text-gray-400" data-translate="pending_students_empty" data-translate-page="admin">
+                                        Tidak ada mahasiswa menunggu
                                 <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg {{ $loop->index >= 3 ? 'hidden extra-pending' : '' }}">
                                     <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span class="text-yellow-700 dark:text-yellow-300 font-medium text-sm">
@@ -527,6 +570,12 @@
                                 </svg>
                                 <span data-translate="show_more" data-translate-page="admin">Tampilkan Lebih Banyak</span>
                             </button>
+                                class="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 px-4 py-2.5 text-sm font-medium text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition border border-yellow-200 dark:border-yellow-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <span data-translate="show_more" data-translate-page="admin">Tampilkan Lebih Banyak</span>
+                            </button>
                         @endif
                     </div>
 
@@ -541,8 +590,21 @@
                                 </div>
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="rejected_students_title" data-translate-page="admin">
                                     Mahasiswa Ditolak
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-red-100 dark:bg-red-900/50 rounded-lg">
+                                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="rejected_students_title" data-translate-page="admin">
+                                    Mahasiswa Ditolak
                                 </h2>
                             </div>
+                            <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition">
+                                <span data-translate="see_all" data-translate-page="admin">Lihat Semua</span> →
+                            </a>
                             <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition">
                                 <span data-translate="see_all" data-translate-page="admin">Lihat Semua</span> →
                             </a>
@@ -578,12 +640,47 @@
                                 <div class="text-center py-6">
                                     <p class="text-gray-500 dark:text-gray-400" data-translate="rejected_students_empty" data-translate-page="admin">
                                         Tidak ada mahasiswa ditolak
+                                <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg {{ $loop->index >= 3 ? 'hidden extra-rejected' : '' }}">
+                                    <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-red-700 dark:text-red-300 font-medium text-sm">
+                                            {{ strtoupper(substr($mahasiswa->nama_mahasiswa ?? 'M', 0, 1)) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-gray-900 dark:text-white truncate">{{ $mahasiswa->nama_mahasiswa }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <div class="relative group flex items-center">
+                                                <button type="button" class="email-toggle-btn p-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition" title="Toggle email">
+                                                    <svg class="email-eye-show w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    <svg class="email-eye-hide w-3.5 h-3.5 text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                                    </svg>
+                                                </button>
+                                                <span class="email-display text-xs text-gray-500 dark:text-gray-400 ml-1 truncate" data-email="{{ $mahasiswa->email ?? $mahasiswa->username }}">••••••••</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full flex-shrink-0">Ditolak</span>
+                                </div>
+                            @empty
+                                <div class="text-center py-6">
+                                    <p class="text-gray-500 dark:text-gray-400" data-translate="rejected_students_empty" data-translate-page="admin">
+                                        Tidak ada mahasiswa ditolak
                                     </p>
                                 </div>
                             @endforelse
                         </div>
                         @if($rejectedMahasiswa->count() > 3)
                             <button id="toggleRejected" type="button"
+                                class="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 dark:bg-red-900/30 px-4 py-2.5 text-sm font-medium text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50 transition border border-red-200 dark:border-red-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <span data-translate="show_more" data-translate-page="admin">Tampilkan Lebih Banyak</span>
+                            </button>
                                 class="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-red-50 dark:bg-red-900/30 px-4 py-2.5 text-sm font-medium text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50 transition border border-red-200 dark:border-red-800">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -691,6 +788,76 @@
             }
 
             // Toggle Functions for sections
+            // Global email visibility state
+            let allEmailsVisible = false;
+            
+            // Toggle individual email
+            function toggleIndividualEmail(button) {
+                const container = button.closest('.relative');
+                const emailDisplay = container.querySelector('.email-display');
+                const eyeShow = button.querySelector('.email-eye-show');
+                const eyeHide = button.querySelector('.email-eye-hide');
+                
+                if (emailDisplay.textContent === '••••••••') {
+                    emailDisplay.textContent = emailDisplay.dataset.email;
+                    eyeShow.classList.add('hidden');
+                    eyeHide.classList.remove('hidden');
+                } else {
+                    emailDisplay.textContent = '••••••••';
+                    eyeShow.classList.remove('hidden');
+                    eyeHide.classList.add('hidden');
+                }
+            }
+            
+            // Toggle all emails
+            function toggleAllEmails(show) {
+                document.querySelectorAll('.email-display').forEach(display => {
+                    const container = display.closest('.relative');
+                    const button = container.querySelector('.email-toggle-btn');
+                    const eyeShow = button.querySelector('.email-eye-show');
+                    const eyeHide = button.querySelector('.email-eye-hide');
+                    
+                    if (show) {
+                        display.textContent = display.dataset.email;
+                        eyeShow.classList.add('hidden');
+                        eyeHide.classList.remove('hidden');
+                    } else {
+                        display.textContent = '••••••••';
+                        eyeShow.classList.remove('hidden');
+                        eyeHide.classList.add('hidden');
+                    }
+                });
+                
+                // Update global button icons
+                const globalEyeShow = document.getElementById('global-eye-show');
+                const globalEyeHide = document.getElementById('global-eye-hide');
+                if (show) {
+                    globalEyeShow.classList.add('hidden');
+                    globalEyeHide.classList.remove('hidden');
+                } else {
+                    globalEyeShow.classList.remove('hidden');
+                    globalEyeHide.classList.add('hidden');
+                }
+                allEmailsVisible = show;
+            }
+            
+            // Attach event listeners to all email toggle buttons
+            document.querySelectorAll('.email-toggle-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleIndividualEmail(this);
+                });
+            });
+            
+            // Global email toggle button
+            const globalToggle = document.getElementById('globalEmailToggle');
+            if (globalToggle) {
+                globalToggle.addEventListener('click', function() {
+                    toggleAllEmails(!allEmailsVisible);
+                });
+            }
+
+            // Toggle Functions for sections
             const toggleActivity = document.getElementById('toggleActivity');
             const togglePending = document.getElementById('togglePending');
             const toggleRejected = document.getElementById('toggleRejected');
@@ -700,11 +867,26 @@
                 
                 const icon = button.querySelector('svg');
                 
+                
+                const icon = button.querySelector('svg');
+                
                 button.addEventListener('click', () => {
                     const items = document.querySelectorAll(selector);
                     const isHidden = items.length && items[0].classList.contains('hidden');
                     
+                    
                     items.forEach(item => item.classList.toggle('hidden', !isHidden));
+                    
+                    // Rotate icon and change text
+                    if (icon) {
+                        icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+                        icon.style.transition = 'transform 0.3s ease';
+                    }
+                    
+                    const span = button.querySelector('span');
+                    if (span) {
+                        span.textContent = isHidden ? 'Sembunyikan' : 'Tampilkan Lebih Banyak';
+                    }
                     
                     // Rotate icon and change text
                     if (icon) {
@@ -724,6 +906,54 @@
             toggleSection(toggleRejected, '.extra-rejected');
 
             // Chart.js Sparklines
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? '#374151' : '#E5E7EB';
+
+            function createSparkline(canvasId, borderColor) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                const data = Array.from({ length: 10 }, () => Math.floor(Math.random() * 40) + 15);
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array(data.length).fill(''),
+                        datasets: [{
+                            data: data,
+                            borderColor: borderColor,
+                            backgroundColor: borderColor + '15',
+                            tension: 0.35,
+                            borderWidth: 2.5,
+                            pointRadius: 0,
+                            pointHoverRadius: 0,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        elements: {
+                            line: { borderJoinStyle: 'round' }
+                        }
+                    }
+                });
+            }
+
+            // Create all sparkline charts
+            createSparkline('chart-users', '#3B82F6');
+            createSparkline('chart-students', '#10B981');
+            createSparkline('chart-admin', '#F59E0B');
+            createSparkline('chart-lecturers', '#8B5CF6');
             const isDark = document.documentElement.classList.contains('dark');
             const gridColor = isDark ? '#374151' : '#E5E7EB';
 

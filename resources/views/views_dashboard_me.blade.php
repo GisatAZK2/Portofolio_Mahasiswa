@@ -332,6 +332,7 @@
                                         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                             <div class="flex items-center gap-3">
                                                 <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" class="flex items-center gap-3">
+                                                <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" class="flex items-center gap-3">
                                                 @if($post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile)))
                                                     <img src="{{ asset('storage/' . $post->user->photo_profile) }}" 
                                                          class="w-10 h-10 rounded-full object-cover" alt="">
@@ -349,8 +350,10 @@
                                             </div>
                                         </div>
                                         </a>
+                                        </a>
 
                                         <!-- Content -->
+                                        <div class="p-4" onclick="window.location.href='{{ route('postingan.index', ['id' => $post->id_postingan]) }}'" style="cursor: pointer;">
                                         <div class="p-4" onclick="window.location.href='{{ route('postingan.index', ['id' => $post->id_postingan]) }}'" style="cursor: pointer;">
                                             @php
                                                 $content = $post->content;
