@@ -31,30 +31,64 @@ class SertifikatController extends Controller
         return view('sertifikat.views_create_sertifikat');
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nama_sertifikat' => 'required|string|max:255',
-            'lembaga_penerbit' => 'required|string|max:255',
-            'tanggal_terbit' => 'required|date',
-            'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nama_sertifikat' => 'required|string|max:255',
+        'lembaga_penerbit' => 'required|string|max:255',
+        'tanggal_terbit' => 'required|date',
+        'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+    ]);
 
-        if ($request->hasFile('link_sertifikat')) {
-            $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
-        }
-
-        Sertifikat::create([
-            'id_mahasiswa' => Auth::id(),
-            'nama_sertifikat' => $validated['nama_sertifikat'],
-            'lembaga_penerbit' => $validated['lembaga_penerbit'],
-            'tanggal_terbit' => $validated['tanggal_terbit'],
-            'link_sertifikat' => $validated['link_sertifikat'],
-        ]);
-
-        return redirect()->route('sertifikat.index')
-            ->with('success', 'Sertifikat berhasil ditambahkan!');
+    if ($request->hasFile('link_sertifikat')) {
+        $validated['link_sertifikat'] = ImageConversionService::storeWebp($request->file('link_sertifikat'), 'sertifikat');
     }
+
+    $sertifikat = Sertifikat::create([
+        'id_mahasiswa' => Auth::id(),
+        'nama_sertifikat' => $validated['nama_sertifikat'],
+        'lembaga_penerbit' => $validated['lembaga_penerbit'],
+        'tanggal_terbit' => $validated['tanggal_terbit'],
+        'link_sertifikat' => $validated['link_sertifikat'],
+    ]);
+
+    // Kirim notifikasi
+    $this->sendSertifikatNotifications($sertifikat);
+
+    return redirect()->route('sertifikat.index')
+        ->with('success', 'Sertifikat berhasil ditambahkan!');
+}
+
+/**
+ * Kirim notifikasi terkait sertifikat baru
+ */
+private function sendSertifikatNotifications($sertifikat)
+{
+    $user = Auth::user();
+    $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
+    $sertifikatName = $sertifikat->nama_sertifikat;
+    $lembaga = $sertifikat->lembaga_penerbit;
+    
+    $tanggalTerbit = \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('d M Y');
+
+    // HANYA SATU notifikasi untuk admin
+    \App\Http\Controllers\v1\NotificationController::add(
+        'certificate-uploaded',
+        [
+            'title' => 'Sertifikat Baru Diupload',
+            'message' => "{$userName} mengupload sertifikat {$sertifikatName} dari {$lembaga}",
+            'user_id' => $user->id,
+            'user_name' => $userName,
+            'sertifikat_id' => $sertifikat->id,
+            'sertifikat_name' => $sertifikatName,
+            'lembaga_penerbit' => $lembaga,
+            'tanggal_terbit' => $tanggalTerbit,
+            'link' => url(app()->getLocale() . '/admin/manageSertifikat'),
+
+        ],
+        'high'
+    );
+}
 
     // EDIT - ambil id dari query parameter
     public function edit(Request $request)

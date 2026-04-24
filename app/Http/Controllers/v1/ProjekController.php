@@ -245,13 +245,12 @@ class ProjekController extends Controller
         return $savedTaskIds;
     }
     // SIMPAN BARU
-    public function store(Request $request)
+ public function store(Request $request)
     {
-        // Filter tasks yang incomplete (hanya simpan yang punya kedua field)
+        // Filter tasks yang incomplete
         $filteredTasks = collect($request->input('tasks', []))
             ->filter(function ($task) {
-                if (!is_array($task))
-                    return false;
+                if (!is_array($task)) return false;
                 $userId = trim($task['user_id'] ?? '');
                 $nameTask = trim($task['name_task'] ?? '');
                 return !empty($userId) && !empty($nameTask);
@@ -273,11 +272,9 @@ class ProjekController extends Controller
             'members' => 'nullable|array',
             'members.*' => 'nullable|exists:users,id|different:leader',
             'tasks' => 'nullable|array',
-            'tasks.*.user_id' => 'required|exists:users,id',           // required karena sudah difilter
+            'tasks.*.user_id' => 'required|exists:users,id',
             'tasks.*.name_task' => 'required|string|max:255',
         ]);
-
-        // ... (bagian content, Project::create, attach members tetap sama)
 
         $content = array_filter($request->only([
             'nama_project',
@@ -289,7 +286,7 @@ class ProjekController extends Controller
         ]), fn($value) => !is_null($value) && $value !== '');
 
         if (empty($content)) {
-            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
+            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field']);
         }
 
         $project = Project::create([
@@ -311,14 +308,40 @@ class ProjekController extends Controller
             $project->members()->attach($members);
         }
 
-        // Create tasks (lewati pengecekan ketat untuk saat create)
+        // Create tasks
         if (!empty($request->tasks)) {
-            $this->createProjectTasks($project, $request->tasks, $skipValidation = true);
+            $this->createProjectTasks($project, $request->tasks, true);
         }
+
+        // Kirim notifikasi
+        $this->sendProjectNotifications($project, $members);
 
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil ditambahkan!');
     }
+
+private function sendProjectNotifications($project, $members)
+{
+    $user = Auth::user();
+    $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
+    $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
+
+    // HANYA SATU notifikasi untuk admin
+    \App\Http\Controllers\v1\NotificationController::add(
+        'project-created',
+        [
+            'title' => 'Project Baru Dibuat',
+            'message' => "{$userName} membuat project: {$projectName}" . (count($members) > 0 ? " dengan " . count($members) . " anggota" : ""),
+            'user_id' => $user->id,
+            'user_name' => $userName,
+            'project_id' => $project->id,
+            'project_name' => $projectName,
+            'members_count' => count($members),
+            'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+        ],
+        'high'
+    );
+}
 
     // Ubah method edit untuk menerima query parameter 'id' dan 'user'
 public function edit(Request $request)

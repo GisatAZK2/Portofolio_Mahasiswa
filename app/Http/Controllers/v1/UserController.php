@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use App\Services\ImageConversionService;
+use App\Http\Controllers\v1\NotificationController;
 
 class UserController extends Controller
 {
     // Tampilkan form registrasi
-    public function showRegister()
+       public function showRegister()
     {
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
@@ -28,7 +29,6 @@ class UserController extends Controller
         return view('auth.register', compact('jurusans', 'keahlians', 'angkatans'));
     }
 
-    // Proses registrasi
     public function register(Request $request)
     {
         $ipAddress = $request->ip();
@@ -41,9 +41,7 @@ class UserController extends Controller
             return 0;
         });
 
-        // Cek di session juga sebagai backup
         $sessionCount = $request->session()->get('registration_attempts', 0);
-
         $totalAttempts = max($registrationCount, $sessionCount);
 
         if ($totalAttempts >= 3) {
@@ -73,19 +71,41 @@ class UserController extends Controller
         $validated['is_active'] = true;
         $validated['status_pengajuan'] = 'Sedang Di Ajukan';
 
-        User::create($validated);
+        $user = User::create($validated);
+        $user->load('jurusan', 'angkatan', 'keahlian');
+
+        // Kirim notifikasi ke admin
+        $this->sendNotifications($user);
 
         $newCount = $totalAttempts + 1;
-
         Cache::put("registration_count_{$guestIdentifier}", $newCount, now()->addHours(24));
-
-        // Simpan di session
         $request->session()->put('registration_attempts', $newCount);
         $request->session()->put('last_registration_time', now());
 
         return redirect()->route('login')
             ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');
     }
+
+    private function sendNotifications($user)
+{
+    $jurusanNama = $user->jurusan->nama_jurusan ?? '-';
+    $angkatanNama = $user->angkatan->nama_angkatan ?? '-';
+
+    NotificationController::add(
+        'user-registered',
+        [
+            'title' => 'Mahasiswa Baru Mendaftar',
+            'message' => "{$user->nama_mahasiswa} ({$jurusanNama} - {$angkatanNama})",
+            'user_id' => $user->id,
+            'user_name' => $user->nama_mahasiswa,
+            'link' => url(app()->getLocale() . '/admin/manageUser'),
+
+        ],
+        'high'
+    );
+}
+
+
     // Tampilkan form login
     public function showLogin()
     {

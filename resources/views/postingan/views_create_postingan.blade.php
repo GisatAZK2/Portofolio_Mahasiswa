@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class=" mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
             
             <!-- Header Modern -->
             <div class="mb-8">
@@ -139,7 +139,7 @@
                             {{ autoTranslate('Batal') }}
                         </a>
                         <button type="submit"
-                            class="px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r bg-blue-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                            class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
@@ -152,22 +152,44 @@
     </div>
 
     <style>
-        /* Auto-resize textarea */
         textarea {
             overflow-y: hidden;
         }
         textarea:focus {
             outline: none;
         }
-        /* Smooth transitions */
         .transition-all {
             transition-property: all;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             transition-duration: 150ms;
         }
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+        }
+        .image-preview-container img {
+            max-height: 200px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .remove-preview {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
     </style>
 
-    <!-- JavaScript Dynamic Items -->
     <script>
         let itemIndex = 0;
 
@@ -203,12 +225,14 @@
                     <textarea name="items[${itemIndex}][content]" rows="2" class="text-input w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 resize-none"
                         placeholder="{{ autoTranslate('Tulis keterangan...') }}"></textarea>
 
-                    <!-- File upload (hidden awal) -->
+                    <!-- File upload dengan preview -->
                     <div class="file-input hidden mt-3">
-                        <div class="relative border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors">
+                        <div class="relative border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors" id="drop-area-${itemIndex}">
                             <input type="file" name="items[${itemIndex}][file]" accept="image/*"
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="text-center">
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 file-input-trigger"
+                                data-index="${itemIndex}"
+                                onchange="previewImage(this)">
+                            <div class="text-center" id="upload-placeholder-${itemIndex}">
                                 <svg class="mx-auto w-8 h-8 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -216,6 +240,8 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ autoTranslate('Klik atau drag & drop gambar') }}</p>
                                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ autoTranslate('Maks 5MB • jpg, png, gif, webp') }}</p>
                             </div>
+                            <!-- Preview container -->
+                            <div id="image-preview-${itemIndex}" class="hidden mt-2 flex justify-center"></div>
                         </div>
                     </div>
 
@@ -239,7 +265,6 @@
             container.appendChild(newItem);
             attachTypeListener(newItem);
             
-            // Auto-resize textarea
             const textarea = newItem.querySelector('.text-input');
             textarea.addEventListener('input', function() {
                 this.style.height = '';
@@ -247,6 +272,67 @@
             });
             
             itemIndex++;
+        }
+
+        // Fungsi preview image
+        function previewImage(input) {
+            const index = input.dataset.index;
+            const previewContainer = document.getElementById(`image-preview-${index}`);
+            const uploadPlaceholder = document.getElementById(`upload-placeholder-${index}`);
+            
+            if (!previewContainer) return;
+            
+            const file = input.files[0];
+            
+            if (file) {
+                // Validasi ukuran (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 5MB');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validasi tipe file
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Format file tidak didukung. Gunakan jpg, jpeg, png, gif, atau webp');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewContainer.innerHTML = `
+                        <div class="image-preview-container">
+                            <img src="${e.target.result}" alt="Preview" class="max-h-48 rounded-lg shadow-md">
+                            <span class="remove-preview" onclick="removePreview(this, ${index})" title="Hapus gambar">×</span>
+                        </div>
+                    `;
+                    previewContainer.classList.remove('hidden');
+                    if (uploadPlaceholder) uploadPlaceholder.classList.add('hidden');
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.innerHTML = '';
+                previewContainer.classList.add('hidden');
+                if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi hapus preview
+        function removePreview(btn, index) {
+            const previewContainer = document.getElementById(`image-preview-${index}`);
+            const uploadPlaceholder = document.getElementById(`upload-placeholder-${index}`);
+            const fileInput = document.querySelector(`input[data-index="${index}"]`);
+            
+            if (fileInput) fileInput.value = '';
+            if (previewContainer) {
+                previewContainer.innerHTML = '';
+                previewContainer.classList.add('hidden');
+            }
+            if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
         }
 
         function attachTypeListener(itemElement) {
@@ -259,7 +345,6 @@
             function toggleFields() {
                 const type = select.value;
                 
-                // Update icon
                 if (type === 'image') {
                     iconContainer.innerHTML = `
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,12 +381,9 @@
             toggleFields();
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Add first item
             addItem();
             
-            // Auto-resize judul dan deskripsi
             const judul = document.getElementById('judul');
             const deskripsi = document.getElementById('deskripsi');
             
@@ -323,7 +405,6 @@
                 });
             }
             
-            // Game toggle
             const gameEnabled = document.getElementById('game_enabled');
             const gameName = document.getElementById('game_name');
             const gameThumbnail = document.getElementById('game_thumbnail');
@@ -338,7 +419,6 @@
             }
         });
 
-        // Event listeners
         document.getElementById('add-item').addEventListener('click', addItem);
 
         document.addEventListener('click', (e) => {
