@@ -159,6 +159,17 @@ Route::prefix('{locale}')
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProject'])->name('bulk-delete');
             });
 
+            Route::prefix('manageNotifications')->name('notifications.')->group(function () {
+                Route::get('/', [AdminController::class, 'notifications'])->name('index');
+                Route::get('/create', [AdminController::class, 'ViewAddNotification'])->name('create');
+                Route::post('/store', [AdminController::class, 'StoreNotification'])->name('store');
+                Route::get('/edit', [AdminController::class, 'EditNotification'])->name('edit');
+                Route::patch('/update', [AdminController::class, 'UpdateNotification'])->name('update');
+                Route::delete('/delete', [AdminController::class, 'DestroyNotification'])->name('destroy');
+                Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyNotification'])->name('bulk-destroy');
+                Route::get('/load-users', [AdminController::class, 'loadUsersForNotification'])->name('load-users');
+            });
+
         });
 
         Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {

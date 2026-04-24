@@ -66,4 +66,5 @@ class NotificationController
         Notification::truncate();
         return response()->json(['success' => true]);
     }
+    
 }

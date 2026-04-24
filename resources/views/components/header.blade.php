@@ -59,8 +59,8 @@
             <!-- Mobile Notification Bell (right side) -->
             <div class="flex items-center gap-2 lg:hidden">
                 @auth
-                    @if(Auth::user()->role === 'admin')
-                    <div x-data="notificationBell()" x-init="init()" class="relative">
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
+                    <div x-data="notificationBell({ userId: {{ Auth::id() }}, userRole: '{{ Auth::user()->role }}' })" x-init="init()" class="relative">
                         <button type="button" @click="toggleDropdown" class="relative p-2 bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -87,7 +87,7 @@
                                     </div>
                                 </template>
                                 <template x-for="item in notifications" :key="item.id">
-                                    <div @click="handleNotificationClick(item)" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition" :class="{ 'bg-blue-50 dark:bg-blue-900/20': !item.read }">
+                                    <div @click="item.data.link ? handleNotificationClick(item) : null" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 transition" :class="{ 'cursor-pointer': item.data.link, 'bg-blue-50 dark:bg-blue-900/20': !item.read }">
                                         <div class="flex items-start gap-3">
                                             <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" :class="getIconBg(item.type)">
                                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,8 +160,8 @@
 
                 <!-- Desktop Notification Bell -->
                 @auth
-                    @if(Auth::user()->role === 'admin')
-                    <div class="ml-3 hidden lg:block" x-data="notificationBell()" x-init="init()">
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
+                    <div class="ml-3 hidden lg:block" x-data="notificationBell({ userId: {{ Auth::id() }}, userRole: '{{ Auth::user()->role }}' })" x-init="init()">
                         <button type="button" @click="toggleDropdown" class="relative p-2.5 bg-white/70 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -188,7 +188,7 @@
                                     </div>
                                 </template>
                                 <template x-for="item in notifications" :key="item.id">
-                                    <div @click="handleNotificationClick(item)" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition" :class="{ 'bg-blue-50 dark:bg-blue-900/20': !item.read }">
+                                    <div @click="item.data.link ? handleNotificationClick(item) : null" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 transition" :class="{ 'cursor-pointer': item.data.link, 'bg-blue-50 dark:bg-blue-900/20': !item.read }">
                                         <div class="flex items-start gap-3">
                                             <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" :class="getIconBg(item.type)">
                                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,13 +263,32 @@
 
 <script>
     // Notification Bell Component
-    function notificationBell() {
+    function notificationBell(data) {
         return {
+            userId: data.userId,
+            userRole: data.userRole,
             isOpen: false,
             notifications: [],
             unreadCount: 0,
             page: 1,
             pollingInterval: null,
+
+            filterNotifications(notifications) {
+                return notifications.filter(item => {
+                    const notifData = item.data || {};
+                    if (notifData.admin_id) {
+                        if (notifData.target === 'all') {
+                            return notifData.admin_id !== this.userId;
+                        } else if (notifData.target_type === 'specific') {
+                            return notifData.selected_users && notifData.selected_users.includes(this.userId);
+                        }
+                    } else {
+                        // Notifikasi untuk admin, seperti pendaftaran user baru
+                        return this.userRole === 'admin';
+                    }
+                    return false;
+                });
+            },
 
             async init() {
                 await this.loadNotifications();
@@ -312,7 +331,7 @@
                 try {
                     const res = await fetch(`/api/notifications?page=${this.page}`);
                     const data = await res.json();
-                    this.notifications = data.data || [];
+                    this.notifications = this.filterNotifications(data.data || []);
                     this.updateUnreadCount();
                 } catch (error) {}
             },

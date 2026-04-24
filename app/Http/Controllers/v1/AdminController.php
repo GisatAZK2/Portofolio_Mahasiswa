@@ -13,6 +13,8 @@ use App\Models\Keahlian_Tambahan;
 use App\Models\Jurusan;
 use App\Models\Angkatan;
 use App\Models\LearningCorner;
+use App\Models\Notification;
+use App\Http\Controllers\v1\NotificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -1818,4 +1820,216 @@ class AdminController extends Controller
 
     return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
 }
+
+    // Notifikasi Page
+    public function notifications(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $search = $request->input('search');
+        $type = $request->input('type');
+        $priority = $request->input('priority');
+        $read = $request->input('read');
+
+        $query = Notification::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('type', 'like', '%' . $search . '%')
+                    ->orWhereJsonContains('data->title', $search)
+                    ->orWhereJsonContains('data->message', $search);
+            });
+        }
+
+        if ($type && $type !== 'Semua') {
+            $query->where('type', $type);
+        }
+
+        if ($priority && $priority !== 'Semua') {
+            $query->where('priority', $priority);
+        }
+
+        if ($read !== null && $read !== '') {
+            $query->where('read', $read === '1');
+        }
+
+        $notifications = $query->orderBy('created_at', 'desc')->paginate(12)->withQueryString();
+
+        $types = Notification::distinct()->pluck('type')->filter()->values();
+        $priorities = ['normal', 'high', 'low'];
+
+        return view('admin.notifikasi.views-notifications', compact(
+            'notifications',
+            'types',
+            'priorities',
+            'search',
+            'type',
+            'priority',
+            'read'
+        ));
+    }
+
+    // For Notifications CRUD
+    public function ViewAddNotification()
+    {
+        $this->authorizeAccess();
+        return view('admin.notifikasi.views_create_notification');
+    }
+
+    public function StoreNotification(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $validated = $request->validate([
+            'type' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'message' => 'required|string|max:1000',
+            'priority' => 'required|in:normal,high,low',
+            'target_type' => 'required|in:all,role,specific',
+             'target_role' => 'nullable|in:mahasiswa,dosen,admin',
+            'selected_users' => 'required_if:target_type,specific|json',
+        ]);
+
+        $data = [
+            'title' => $validated['title'],
+            'message' => $validated['message'],
+            'target_type' => $validated['target_type'],
+            'admin_id' => Auth::id(),
+            'admin_name' => Auth::user()->nama_mahasiswa ?? Auth::user()->username,
+        ];
+
+        if ($validated['target_type'] === 'role') {
+            $data['target_role'] = $validated['target_role'];
+        } elseif ($validated['target_type'] === 'specific') {
+            $data['selected_users'] = json_decode($validated['selected_users'], true);
+        }
+
+        // Send notification
+        $this->sendAdminNotification($validated['type'], $data, $validated['priority']);
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', 'Notifikasi berhasil dikirim!');
+    }
+
+    private function sendAdminNotification($type, $data, $priority = 'normal')
+    {
+        return NotificationController::add($type, $data, $priority);
+    }
+
+    public function EditNotification(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'Notification ID is required');
+        }
+
+        $notification = Notification::findOrFail($id);
+        return view('admin.notifikasi.views_edit_notification', compact('notification'));
+    }
+
+    public function UpdateNotification(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.notifications.index')
+                ->with('error', 'Notification ID tidak ditemukan');
+        }
+
+        $notification = Notification::findOrFail($id);
+
+        $validated = $request->validate([
+            'type' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'message' => 'required|string|max:1000',
+            'priority' => 'required|in:normal,high,low',
+            'read' => 'boolean',
+        ]);
+
+        $data = $notification->data;
+        $data['title'] = $validated['title'];
+        $data['message'] = $validated['message'];
+
+        $notification->update([
+            'type' => $validated['type'],
+            'data' => $data,
+            'priority' => $validated['priority'],
+            'read' => $request->has('read') ? $validated['read'] : $notification->read,
+        ]);
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', 'Notifikasi berhasil diperbarui!');
+    }
+
+    public function DestroyNotification(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            return redirect()->route('admin.notifications.index')
+                ->with('error', 'Notification ID tidak ditemukan');
+        }
+
+        $notification = Notification::findOrFail($id);
+        $notification->delete();
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', 'Notifikasi berhasil dihapus.');
+    }
+
+    public function bulkDestroyNotification(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $ids = $request->input('selected_ids');
+
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return redirect()->back()
+                ->with('error', 'Tidak ada notifikasi yang dipilih untuk dihapus.');
+        }
+
+        $count = Notification::whereIn('id', $ids)->delete();
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', "{$count} notifikasi berhasil dihapus.");
+    }
+
+    // AJAX method to load users for notification targeting
+    public function loadUsersForNotification(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $search = $request->input('search', '');
+        $page = $request->input('page', 1);
+        $perPage = 10;
+
+        $query = User::where('id', '!=', Auth::id()) // Exclude current admin
+            ->where('is_active', 1);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+
+        $users = $query->orderBy('nama_mahasiswa')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'users' => $users->items(),
+            'hasMore' => $users->hasMorePages(),
+            'currentPage' => $users->currentPage(),
+            'total' => $users->total(),
+        ]);
+    }
 }
