@@ -63,6 +63,55 @@
             background-color: rgb(31, 41, 55);
         }
 
+        .skeleton {
+            background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 0.5rem;
+        }
+
+        .dark .skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200px 100%;
+        }
+
+        .skeleton-circle {
+            border-radius: 50%;
+        }
+
+        .skeleton-text {
+            height: 14px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-title {
+            height: 20px;
+            width: 60%;
+            margin-bottom: 12px;
+        }
+
+        .skeleton-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+        }
+
+        .skeleton-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .dark .skeleton-card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .skeleton-pulse {
+            animation: skeletonPulse 2s ease-in-out infinite;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -84,6 +133,10 @@
                 opacity: 1;
             }
         }
+        @keyframes skeletonPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
     </style>
 
     <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me">
@@ -95,66 +148,102 @@
 
                     <!-- Statistic Cards with Chart -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                        <!-- Card Learning Corner -->
-                        <div
-                            class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="all_lrn" data-translate-page="dashboard_me">Semua Learning Corner
-                                </h3>
-                                <span class="text-purple-500">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </span>
+                        <div id="total-lrn-skeleton" class="space-y-4">
+                            @for($i = 0; $i < 1; $i++)
+                            <div class="skeleton-card skeleton-pulse h-52">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="skeleton w-1/2 h-8"></div>
+                                    <div class="skeleton w-6 h-6 rounded-full"></div>
+                                </div>
                             </div>
-                            <p class="text-3xl font-bold text-purple-600 dark:text-purple-300">{{ $totalLearning ?? 0 }}</p>
-                            <div class="mt-4 h-20">
-                                <canvas id="learningChart"></canvas>
+                            @endfor
+                        </div>
+                    
+                        <div id="total-lrn-wrapper" class="hidden">
+                            <!-- Card Learning Corner -->
+                            <div
+                                class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="all_lrn" data-translate-page="dashboard_me">Semua Learning Corner
+                                    </h3>
+                                    <span class="text-purple-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p class="text-3xl font-bold text-purple-600 dark:text-purple-300">{{ $totalLearning ?? 0 }}</p>
+                                <div class="mt-4 h-20">
+                                    <canvas id="learningChart"></canvas>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Card Total Project -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
-                            onclick="window.location.href = '{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Semua Project
-                                </h3>
-                                <span class="text-orange-500">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </span>
+                        <div id="total-pjt-skeleton" class="space-y-4">
+                            @for($i = 0; $i < 1; $i++)
+                            <div class="skeleton-card skeleton-pulse h-52">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="skeleton w-1/2 h-8"></div>
+                                    <div class="skeleton w-6 h-6 rounded-full"></div>
+                                </div>
                             </div>
-                            <p class="text-3xl font-bold text-orange-600">{{ $totalProject ?? 0 }}</p>
-                            <div class="mt-4 h-20">
-                                <canvas id="projectChart"></canvas>
+                            @endfor
+                        </div>
+                        <div class="hidden" id="total-pjt-wrapper">
+                            <!-- Card Total Project -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                                onclick="window.location.href = '{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Total Semua Project
+                                    </h3>
+                                    <span class="text-orange-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p class="text-3xl font-bold text-orange-600">{{ $totalProject ?? 0 }}</p>
+                                <div class="mt-4 h-20">
+                                    <canvas id="projectChart"></canvas>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Card Total Sertifikat -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
-                            onclick="window.location.href = '{{ auth()->check() ? route('sertifikat.index') : route('sertifikat-mahasiswa') }}';">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="all_stk" data-translate-page="dashboard_me">Total Semua Sertifikat</h3>
-                                <span class="text-amber-500">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                    </svg>
-                                </span>
+                        <div id="total-stk-skeleton" class="space-y-4">
+                            @for($i = 0; $i < 1; $i++)
+                            <div class="skeleton-card skeleton-pulse h-52">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="skeleton w-1/2 h-8"></div>
+                                    <div class="skeleton w-6 h-6 rounded-full"></div>
+                                </div>
                             </div>
-                            <p class="text-3xl font-bold text-amber-600">{{ $totalSertifikat ?? 0 }}</p>
-                            <div class="mt-4 h-20">
-                                <canvas id="sertifikatChart"></canvas>
+                            @endfor
+                        </div>
+                        <div id="total-stk-wrapper" class="hidden">
+                            <!-- Card Total Sertifikat -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                                onclick="window.location.href = '{{ auth()->check() ? route('sertifikat.index') : route('sertifikat-mahasiswa') }}';">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200" data-translate="all_stk" data-translate-page="dashboard_me">Total Semua Sertifikat</h3>
+                                    <span class="text-amber-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p class="text-3xl font-bold text-amber-600">{{ $totalSertifikat ?? 0 }}</p>
+                                <div class="mt-4 h-20">
+                                    <canvas id="sertifikatChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-
+                    
                     <!-- Create Posting Section -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 mb-8">
@@ -194,7 +283,7 @@
                             </button>
                         </div>
                     </div>
-
+                    
                     <!-- Konten Saya Title -->
                     <div class="mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="my_content" data-translate-page="dashboard_me">Konten Saya</h2>
@@ -208,6 +297,28 @@
                             <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300" data-translate="ur_post" data-translate-page="dashboard_me">Postingan Anda</h3>
                         </div>
 
+                        <div id="postingan-skeleton" class="space-y-6">
+                            @for($i = 0; $i < 2; $i++)
+                            <div class="skeleton-card skeleton-pulse">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="skeleton skeleton-circle w-10 h-10"></div>
+                                    <div>
+                                        <div class="skeleton skeleton-text w-32"></div>
+                                        <div class="skeleton skeleton-text w-20"></div>
+                                    </div>
+                                </div>
+                                <div class="skeleton skeleton-title"></div>
+                                <div class="skeleton skeleton-image"></div>
+                                <div class="skeleton skeleton-text w-full mt-3"></div>
+                                <div class="skeleton skeleton-text w-3/4"></div>
+                                <div class="flex gap-4 mt-4">
+                                    <div class="skeleton skeleton-text w-16"></div>
+                                    <div class="skeleton skeleton-text w-16"></div>
+                                </div>
+                            </div>
+                            @endfor
+                        </div>
+                        <div class="hidden" id="postingan-content-wrapper">
                         @if($postinganTerbaru->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                                 <p class="text-gray-500 dark:text-gray-400" data-translate="empty_post" data-translate-page="dashboard_me">Belum ada postingan mahasiswa</p>
@@ -463,28 +574,43 @@
                             <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300" data-translate="pjt" data-translate-page="dashboard_me">Project</h3>
                         </div>
 
-                        @if($projects->isEmpty())
-                            <div
-                                class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
-                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="dashboard_me">Belum ada Project</p>
-                            </div>
-                        @else
-                            <div data-pagination-group="project">
-                                <div class="lg:grid-cols-3 gap-4">
-                                    @foreach($projects as $post)
-                                        @include('components.card_postingan', ['post' => $post])
-                                    @endforeach
-                                </div>
-                                <div class="mt-4">
-                                    {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}
+                        <div id="project-skeleton" class="space-y-4">
+                            @for($i = 0; $i < 2; $i++)
+                            <div class="skeleton-card skeleton-pulse flex gap-4">
+                                <div class="skeleton w-20 h-20 rounded-lg"></div>
+                                <div class="flex-1">
+                                    <div class="skeleton skeleton-title w-3/4"></div>
+                                    <div class="skeleton skeleton-text w-full"></div>
+                                    <div class="skeleton skeleton-text w-1/2"></div>
                                 </div>
                             </div>
-                        @endif
+                            @endfor
+                        </div>
+                        
+                        <div class="hidden" id="project-content-wrapper">
+                            @if($projects->isEmpty())
+                                <div
+                                    class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                                    <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                    <p class="text-gray-500 dark:text-gray-400" data-translate="empty_pjt" data-translate-page="dashboard_me">Belum ada Project</p>
+                                </div>
+                            @else
+                                <div data-pagination-group="project">
+                                    <div class="lg:grid-cols-3 gap-4">
+                                        @foreach($projects as $post)
+                                            @include('components.card_postingan', ['post' => $post])
+                                        @endforeach
+                                    </div>
+                                    <div class="mt-4">
+                                        {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project']) }}
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Sertifikat -->
@@ -493,29 +619,41 @@
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="stk" data-translate-page="dashboard_me">Sertifikat</h3>
                         </div>
-
-                        @if($projectUsers->isEmpty())
-                            <div
-                                class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada Sertifikat</p>
-                            </div>
-                        @else
-                            <div data-pagination-group="sertifikat">
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    @foreach($projectUsers as $post)
-                                        @include('components.card_postingan', ['post' => $post])
-                                    @endforeach
-                                </div>
-                                <div class="mt-4">
-                                    {{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => 'sertifikat']) }}
+                            <div id="sertifikat-skeleton" class="space-y-4">
+                            @for($i = 0; $i < 2; $i++)
+                            <div class="skeleton-card skeleton-pulse flex gap-4">
+                                <div class="skeleton w-16 h-20 rounded-lg"></div>
+                                <div class="flex-1">
+                                    <div class="skeleton skeleton-title w-1/2"></div>
+                                    <div class="skeleton skeleton-text w-3/4"></div>
                                 </div>
                             </div>
-                        @endif
+                            @endfor
+                        </div>
+                        <div id="sertifikat-content-wrapper" class="hidden">
+                            @if($projectUsers->isEmpty())
+                                <div
+                                    class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                                    <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                    </svg>
+                                    <p class="text-gray-500 dark:text-gray-400">Belum ada Sertifikat</p>
+                                </div>
+                            @else
+                                <div data-pagination-group="sertifikat">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        @foreach($projectUsers as $post)
+                                            @include('components.card_postingan', ['post' => $post])
+                                        @endforeach
+                                    </div>
+                                    <div class="mt-4">
+                                        {{ $projectUsers->render('vendor.pagination.custom_ajax', ['groupName' => 'sertifikat']) }}
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Timestamp -->
@@ -532,27 +670,39 @@
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
                             <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300" data-translate="ttl_lrn" data-translate-page="dashboard">{{ autoTranslate('Learning Corner') }}</h3>
                         </div>
-                        @if($learningCorners->isEmpty())
-                            <div class="text-center py-8">
-                                <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M3 9h.06M3 12h.06M3 15h.06M6 9h.06M6 12h.06M6 15h.06M9 9h.06M9 18h.06M12 9h.06M12 18h.06M15 9h.06M15 12h.06M15 15h.06M18 9h.06M18 12h.06M18 15h.06M21 9h.06M21 12h.06M21 15h.06" />
-                                </svg>
-                                <p class="text-gray-500 dark:text-gray-400" data-translate="empty_lrn" data-translate-page="dashboard_me">Belum ada Learning Corner</p>
-                            </div>
-                        @else
-                            <div id="learning-corner-list" class="space-y-4">
-                                @foreach($learningCorners->take(5) as $learning)
-                                    <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'" 
-                                         class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
-                                        <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ autoTranslate($learning->content[0]['content'] ?? 'Learning Content') }}</h4>
-                                        <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->translatedFormat('d M Y') }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="mt-6">
-                                {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('learning_corner')]) }}
-                            </div>
-                        @endif
+                        
+                        <div class="py-8" id="learning-skeleton">
+                            @for($i = 0; $i < 3; $i++)
+                                <div class="skeleton-card skeleton-pulse">
+                                    <div class="skeleton skeleton-title w-3/4"></div>
+                                    <div class="skeleton skeleton-text w-1/2 mt-2"></div>
+                                </div>
+                            @endfor
+
+                        </div>
+                        <div id="learning-content-wrapper" class="hidden">
+                            @if($learningCorners->isEmpty())
+                                <div class="text-center py-8">
+                                    <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M3 9h.06M3 12h.06M3 15h.06M6 9h.06M6 12h.06M6 15h.06M9 9h.06M9 18h.06M12 9h.06M12 18h.06M15 9h.06M15 12h.06M15 15h.06M18 9h.06M18 12h.06M18 15h.06M21 9h.06M21 12h.06M21 15h.06" />
+                                    </svg>
+                                    <p class="text-gray-500 dark:text-gray-400" data-translate="empty_lrn" data-translate-page="dashboard_me">Belum ada Learning Corner</p>
+                                </div>
+                            @else
+                                <div id="learning-corner-list" class="space-y-4">
+                                    @foreach($learningCorners->take(5) as $learning)
+                                        <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'" 
+                                            class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
+                                            <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ autoTranslate($learning->content[0]['content'] ?? 'Learning Content') }}</h4>
+                                            <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->translatedFormat('d M Y') }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="mt-6">
+                                    {{ $learningCorners->render('vendor.pagination.custom_ajax', ['groupName' => autoTranslate('learning_corner')]) }}
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
         </div>
@@ -646,6 +796,32 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('postingan-skeleton').classList.add('hidden');
+                document.getElementById('postingan-content-wrapper').classList.remove('hidden');
+                
+                document.getElementById('project-skeleton').classList.add('hidden');
+                document.getElementById('project-content-wrapper').classList.remove('hidden');
+                
+                document.getElementById('sertifikat-skeleton').classList.add('hidden');
+                document.getElementById('sertifikat-content-wrapper').classList.remove('hidden');
+                
+                document.getElementById('learning-skeleton').classList.add('hidden');
+                document.getElementById('learning-content-wrapper').classList.remove('hidden');
+                
+                document.getElementById('total-lrn-skeleton').classList.add("hidden");
+                document.getElementById('total-lrn-wrapper').classList.remove('hidden');
+
+                document.getElementById('total-pjt-skeleton').classList.add("hidden");
+                document.getElementById('total-pjt-wrapper').classList.remove('hidden');
+
+                document.getElementById('total-stk-skeleton').classList.add("hidden");
+                document.getElementById('total-stk-wrapper').classList.remove('hidden');
+                sortPostinganByGame();
+            }, 800);
+        });
+            
         // Modal Functions
         function openCreatePostModal() {
             document.getElementById('createPostModal').classList.add('show');
