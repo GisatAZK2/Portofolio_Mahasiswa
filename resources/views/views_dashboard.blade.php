@@ -230,10 +230,12 @@
                                                                 @if($game->score > 0)<div class="text-xs text-green-600 dark:text-green-400 mt-1">🏆 {{ autoTranslate('Skor terbaik') }}: {{ $game->score }}</div>@endif
                                                             </div>
                                                         </div>
+                                                        @auth
                                                         <a href="{{ $gameRoute }}?postingan={{ $post->id_postingan }}&game={{ $game->id_games }}" class="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors">
                                                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/></svg>
                                                             {{ autoTranslate('Play') }}
                                                         </a>
+                                                        @endauth
                                                     </div>
                                                 @endif
                                             </div>
