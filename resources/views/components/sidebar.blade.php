@@ -398,10 +398,8 @@
                                {{ request()->routeIs('admin.notifications.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400' }}">
                         <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5 min-w-[20px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
-                                </path>
-                            </svg>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg> 
                             <span data-translate="manajemen_notifikasi" class="font-medium whitespace-nowrap {{ session('sidebar_collapsed') ? 'lg:hidden' : '' }}">Manajemen Notifikasi</span>
                         </div>
                         <svg x-show="!{{ session('sidebar_collapsed') ? 'true' : 'false' }}" :class="open ? 'rotate-180' : ''"
@@ -427,16 +425,16 @@
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                 </path>
                             </svg>
-                            <span data-translate="lihat_prodi">Lihat Prodi</span>
+                            <span data-translate="lihat_notifikasi">Lihat Notifikasi</span>
                         </a>
-                        <a href="{{ route('admin.prodi.create') }}"
+                        <a href="{{ route('admin.notifications.create') }}"
                             class="flex items-center space-x-2 py-2 pl-9 pr-3 text-sm rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 {{ request()->routeIs('admin.prodi.create') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400' }}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
                                 </path>
                             </svg>
-                            <span data-translate="tambah_prodi">Tambah Prodi</span>
+                            <span data-translate="tambah_notifikasi">Tambah Notifikasi</span>
                         </a>
                     </div>
                 </div>

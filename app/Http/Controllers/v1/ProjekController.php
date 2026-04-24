@@ -314,36 +314,75 @@ class ProjekController extends Controller
         }
 
         // Kirim notifikasi
-        $this->sendProjectNotifications($project, $members);
+        $this->createProjectNotifications($project, $members);
 
         return redirect()->route('project.index')
             ->with('success', 'Project berhasil ditambahkan!');
     }
 
-private function sendProjectNotifications($project, $members)
-{
-    $user = Auth::user();
-    $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
-    $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
+        private function createProjectNotifications($project, $members)
+        {
+            $user = Auth::user();
+            $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
+            $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
 
-    // HANYA SATU notifikasi untuk admin
-    \App\Http\Controllers\v1\NotificationController::add(
-        'project-created',
-        [
-            'title' => 'Project Baru Dibuat',
-            'message' => "{$userName} membuat project: {$projectName}" . (count($members) > 0 ? " dengan " . count($members) . " anggota" : ""),
-            'user_id' => $user->id,
-            'user_name' => $userName,
-            'project_id' => $project->id,
-            'project_name' => $projectName,
-            'members_count' => count($members),
-            'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
-        ],
-        'high'
-    );
-}
+            /*
+            |--------------------------------------------------------------------------
+            | 1. Notifikasi ke Admin
+            |--------------------------------------------------------------------------
+            */
+            \App\Http\Controllers\v1\NotificationController::add(
+                'project-created',
+                [
+                    'title' => 'Project Baru Dibuat',
+                    'message' => "{$userName} membuat project: {$projectName}" .
+                        (count($members) > 0 ? " dengan " . count($members) . " anggota" : ""),
+                    'user_id' => $user->id,
+                    'user_name' => $userName,
+                    'project_id' => $project->id,
+                    'project_name' => $projectName,
+                    'members_count' => count($members),
+                    'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+                ],
+                'high'
+            );
 
-    // Ubah method edit untuk menerima query parameter 'id' dan 'user'
+            /*
+            |--------------------------------------------------------------------------
+            | 2. Kumpulkan penerima (leader + members)
+            |--------------------------------------------------------------------------
+            */
+            $receivers = collect($members);
+
+            if (!empty($project->leader_id)) {
+                $receivers->push($project->leader_id);
+            }
+
+            $receivers = $receivers
+                ->unique()
+                ->filter(fn($id) => $id != $user->id) // jangan kirim ke pembuat sendiri
+                ->values();
+
+            foreach ($receivers as $receiverId) {
+                \App\Http\Controllers\v1\NotificationController::add(
+                    'project-assigned',
+                    [
+                        'title' => 'Anda Ditambahkan ke Project',
+                        'message' => "{$userName} menambahkan Anda ke project: {$projectName}",
+                        "target_type" => "specific",
+                        "selected_users" => $receiverId,
+                        'sender_id' => $user->id,
+                        'sender_name' => $userName,
+                        'project_id' => $project->id,
+                        'project_name' => $projectName,
+                        'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+                    ],
+                    'normal'
+                );
+            }
+        }
+
+// Ubah method edit untuk menerima query parameter 'id' dan 'user'
 public function edit(Request $request)
 {
     $id = $request->query('id');
@@ -478,6 +517,16 @@ public function update(Request $request)
     // Filter out null/empty values
     $content = array_filter($content, fn($value) => !is_null($value) && $value !== '');
 
+    $oldMembers = $project->members()->pluck('user_id')->toArray();
+    $oldLeader  = $project->leader_id;
+
+    $oldReceivers = collect($oldMembers)
+        ->push($oldLeader)
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
     // Update project
     $project->update([
         'tanggal_mulai' => $request->tanggal_mulai,
@@ -495,6 +544,15 @@ public function update(Request $request)
         ->all();
 
     $project->members()->sync($members);
+
+    $newReceivers = collect($members)
+    ->push($request->leader)
+    ->filter()
+    ->unique()
+    ->values()
+    ->all();
+
+    $this->updateProjectNotifications($project, $oldReceivers, $newReceivers);
 
     $allowedUserIds = collect([$project->id_mahasiswa])
         ->when($project->leader_id, fn($collection, $leaderId) => $collection->push($leaderId))
@@ -532,10 +590,87 @@ public function update(Request $request)
         ->whereNotIn('user_id', $allowedUserIds)
         ->delete();
 
-    // Redirect dengan locale
+    
     $locale = app()->getLocale();
     return redirect()->route('project.index', ['locale' => $locale])
         ->with('success', 'Project berhasil diperbarui!');
+}
+private function updateProjectNotifications($project, array $oldReceivers, array $newReceivers)
+{
+    $user = Auth::user();
+
+    $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
+    $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
+
+    $oldReceivers = collect($oldReceivers)->filter()->unique()->values();
+    $newReceivers = collect($newReceivers)->filter()->unique()->values();
+
+    /*
+    |--------------------------------------------------------------------------
+    | 1. User baru ditambahkan
+    |--------------------------------------------------------------------------
+    */
+    $addedUsers = $newReceivers->diff($oldReceivers);
+
+    foreach ($addedUsers as $receiverId) {
+
+        // cek kalau notif lama sudah ada, skip
+        $exists = Notification::where('type', 'project-assigned')
+            ->where('data->project_id', $project->id)
+            ->where('data->selected_users', (int)$receiverId)
+            ->exists();
+
+        if (!$exists) {
+            \App\Http\Controllers\v1\NotificationController::add(
+                'project-assigned',
+                [
+                    'title' => 'Anda Ditambahkan ke Project',
+                    'message' => "{$userName} menambahkan Anda ke project: {$projectName}",
+                    'target_type' => 'specific',
+                    'selected_users' => $receiverId,
+                    'sender_id' => $user->id,
+                    'sender_name' => $userName,
+                    'project_id' => $project->id,
+                    'project_name' => $projectName,
+                    'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+                ],
+                'normal'
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2. User dihapus dari project
+    |--------------------------------------------------------------------------
+    */
+    $removedUsers = $oldReceivers->diff($newReceivers);
+
+    foreach ($removedUsers as $receiverId) {
+
+        // hapus notif lama
+        Notification::where('type', 'project-assigned')
+            ->where('data->project_id', $project->id)
+            ->where('data->selected_users', (int)$receiverId)
+            ->delete();
+
+        // kirim notif keluar
+        \App\Http\Controllers\v1\NotificationController::add(
+            'project-removed',
+            [
+                'title' => 'Dikeluarkan dari Project',
+                'message' => "Anda telah dikeluarkan dari project: {$projectName}",
+                'target_type' => 'specific',
+                'selected_users' => $receiverId,
+                'sender_id' => $user->id,
+                'sender_name' => $userName,
+                'project_id' => $project->id,
+                'project_name' => $projectName,
+                'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+            ],
+            'high'
+        );
+    }
 }
 
 // Update destroy method juga

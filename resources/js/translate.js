@@ -1037,6 +1037,9 @@ export const translations = {
       register: 'Register',
       postingan: 'Postingan',
       postingan_tambah: 'Tambah Postingan',
+      lihat_notifikasi: 'Lihat Notifikasi',
+      tambah_notifikasi: 'Tambah Notifikasi', 
+      manajemen_notifikasi : 'Management Notifikasi',
       lihat_profil: 'Lihat Profil'
     },
     footer: {
@@ -2184,6 +2187,9 @@ export const translations = {
       register: 'Register',
       postingan: 'Posts',
       postingan_tambah: 'Add Post',
+      lihat_notifikasi: 'See Notifications',
+      tambah_notifikasi: 'Add Notification', 
+      manajemen_notifikasi : 'Notification Management',
       lihat_profil: 'See Profile'
     },
     footer: {

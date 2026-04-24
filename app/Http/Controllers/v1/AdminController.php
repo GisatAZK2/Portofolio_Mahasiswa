@@ -722,6 +722,14 @@ class AdminController extends Controller
         $sertifikat->is_active = true;
         $sertifikat->save();
 
+        $this->createSertifikatNotification(
+            $sertifikat,
+            'sertifikat-approved',
+            'Sertifikat Disetujui',
+            "Sertifikat Anda '{$sertifikat->nama_sertifikat}' telah disetujui oleh admin.",
+            'high'
+        );
+
         return redirect()->back()->with('success', 'Sertifikat berhasil diterima');
     }
 
@@ -743,7 +751,43 @@ class AdminController extends Controller
         $sertifikat->keterangan = $request->keterangan;
         $sertifikat->save();
 
+        $this->createSertifikatNotification(
+            $sertifikat,
+            'sertifikat-rejected',
+            'Sertifikat Ditolak',
+            "Sertifikat Anda '{$sertifikat->nama_sertifikat}' telah ditolak. Keterangan: {$request->keterangan}",
+            'high'
+        );
+
         return redirect()->back()->with('success', 'Sertifikat ditolak');
+    }
+
+    private function createSertifikatNotification(Sertifikat $sertifikat, string $type, string $title, string $message, string $priority = 'high')
+    {
+        $user = Auth::user();
+        $recipientId = $sertifikat->id_mahasiswa;
+
+        if (empty($recipientId)) {
+            return;
+        }
+
+        $data = [
+            'title' => $title,
+            'message' => $message,
+            'target_type' => 'specific',
+            'selected_users' => $recipientId,
+            'sender_id' => $user->id,
+            'sender_name' => $user->nama_mahasiswa ?? $user->username,
+            'sertifikat_id' => $sertifikat->id,
+            'sertifikat_name' => $sertifikat->nama_sertifikat,
+            'link' => url(app()->getLocale() . '/dashboard'),
+        ];
+
+        \App\Http\Controllers\v1\NotificationController::add(
+            $type,
+            $data,
+            $priority
+        );
     }
 
     public function TambahSertifikat(Request $request)
@@ -1880,13 +1924,17 @@ class AdminController extends Controller
     {
         $this->authorizeAccess();
 
+         if ($request->target_type !== 'specific') {
+        $request->request->remove('selected_users');
+        }
+
         $validated = $request->validate([
             'type' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'message' => 'required|string|max:1000',
             'priority' => 'required|in:normal,high,low',
             'target_type' => 'required|in:all,role,specific',
-             'target_role' => 'nullable|in:mahasiswa,dosen,admin',
+            'target_role' => 'required_if:target_type,role|in:mahasiswa,dosen,admin',
             'selected_users' => 'required_if:target_type,specific|json',
         ]);
 

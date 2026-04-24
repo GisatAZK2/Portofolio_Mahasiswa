@@ -276,20 +276,48 @@
             filterNotifications(notifications) {
                 return notifications.filter(item => {
                     const notifData = item.data || {};
-                    if (notifData.admin_id) {
-                        if (notifData.target === 'all') {
-                            return notifData.admin_id !== this.userId;
-                        } else if (notifData.target_type === 'specific') {
-                            return notifData.selected_users && notifData.selected_users.includes(this.userId);
+                    const selected = notifData.selected_users;
+
+                    // Jika notifikasi khusus user tertentu
+                    if (notifData.target_type === 'specific') {
+                        if (!selected) return false;
+
+                        // array
+                        if (Array.isArray(selected)) {
+                            return selected.map(Number).includes(Number(this.userId));
                         }
-                    } else {
-                        // Notifikasi untuk admin, seperti pendaftaran user baru
+
+                        // string JSON array "[38,2]"
+                        if (typeof selected === 'string' && selected.startsWith('[')) {
+                            try {
+                                const parsed = JSON.parse(selected);
+                                return Array.isArray(parsed)
+                                    ? parsed.map(Number).includes(Number(this.userId))
+                                    : false;
+                            } catch (e) {}
+                        }
+
+                        // string biasa "13"
+                        return Number(selected) === Number(this.userId);
+                    }
+
+                    // broadcast semua
+                    if (notifData.target_type === 'all') {
+                        return true;
+                    }
+
+                    // role tertentu
+                    if (notifData.target_role) {
+                        return notifData.target_role === this.userRole;
+                    }
+
+                    // notifikasi admin system
+                    if (!notifData.admin_id && !notifData.sender_id) {
                         return this.userRole === 'admin';
                     }
                     return false;
                 });
             },
-
             async init() {
                 await this.loadNotifications();
                 this.startPolling();

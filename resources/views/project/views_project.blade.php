@@ -181,7 +181,7 @@
                                         </svg>
                                         <span data-translate="edit_project" data-translate-page="project"></span>
                                     </a>
-                                    <form class="delete-form flex-1" action="{{ route('project.destroy', $project->id) }}"
+                                    <form class="delete-form flex-1" action="{{ route('project.destroy', ['locale' => app()->getLocale(), 'id' => $project->id]) }}"
                                         method="POST">
                                         @csrf
                                         @method('DELETE')
