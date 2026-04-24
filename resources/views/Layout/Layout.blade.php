@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
+    <link rel="manifest" href="/manifest.json">
     @hasSection('title')
         <title>@yield('title') - {{ config('app.name', 'Laravel') }}</title>
     @else

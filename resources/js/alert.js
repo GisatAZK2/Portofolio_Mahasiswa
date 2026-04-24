@@ -218,4 +218,48 @@ function showPageInfo(message, type = "info", duration = 2000) {
     setTimeout(() => removeToast(false), duration);
 }
 
+export function showInstallAlert(onInstall) {
+    Swal.fire({
+        title: translate('install_app_title') || 'Install App',
+        text: translate('install_app_text') || 'Install aplikasi untuk pengalaman terbaik',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: translate('install') || 'Install',
+        cancelButtonText: translate('later') || 'Nanti',
+        allowOutsideClick: false,
+        customClass: {
+            popup: 'rounded-2xl shadow-2xl bg-white/95 backdrop-blur-md border border-indigo-100/50 p-6 sm:p-8',
+            title: 'text-gray-900 font-bold text-xl sm:text-2xl mb-3',
+            htmlContainer: 'text-gray-700 text-base sm:text-lg',
+            confirmButton: 'px-8 py-3 text-base font-medium rounded-xl bg-blue-600 hover:bg-blue-700',
+            cancelButton: 'px-8 py-3 text-base font-medium rounded-xl'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            onInstall();
+        } else {
+            localStorage.setItem('pwaInstallDismissed', 'true');
+        }
+    });
+}
+
+export function showInfoAlert(message) {
+    Swal.fire({
+        icon: 'info',
+        title: translate('info') || 'Info',
+        text: message,
+        confirmButtonColor: '#2563eb',
+        confirmButtonText: translate('oke') || 'Oke',
+        allowOutsideClick: true,
+        customClass: {
+            popup: 'rounded-2xl shadow-2xl bg-white/95 backdrop-blur-md border border-blue-100/50 p-6 sm:p-8',
+            title: 'text-gray-900 font-bold text-xl sm:text-2xl mb-3',
+            htmlContainer: 'text-gray-700 text-base sm:text-lg',
+            confirmButton: 'px-8 py-3 text-base font-medium rounded-xl'
+        }
+    });
+}
+
+window.showInstallAlert = showInstallAlert;
+window.showInfoAlert = showInfoAlert;
 window.showPageInfo = showPageInfo;

@@ -119,63 +119,6 @@
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
     });
-
-    // PWA Installation
-    let deferredPrompt;
-    const installBtn = document.getElementById('direct-install-btn');
-    
-    // Listen for beforeinstallprompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        console.log('PWA install prompt available');
-    });
-    
-    // Handle install button click
-    if (installBtn) {
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                // Show install prompt
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to install prompt: ${outcome}`);
-                deferredPrompt = null;
-            } else {
-                // Fallback for browsers that don't support beforeinstallprompt
-                alert('Silakan ikuti petunjuk instalasi di atas untuk menginstal aplikasi.\n\nUntuk Desktop: Klik icon install di address bar browser.\nUntuk Mobile: Ikuti panduan Android/iOS di atas.');
-            }
-        });
-    }
-    
-    // Check if app is already installed
-    const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
-                       window.navigator.standalone === true;
-    
-    if (isInstalled && installBtn) {
-        installBtn.innerHTML = `
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span>${autoTranslate('Terinstall')}</span>
-        `;
-        installBtn.disabled = true;
-        installBtn.classList.add('opacity-50', 'cursor-not-allowed', 'hover:scale-100');
-    }
-    
-    // Optional: Log app installed event
-    window.addEventListener('appinstalled', (evt) => {
-        console.log('PWA was installed successfully');
-        if (installBtn) {
-            installBtn.innerHTML = `
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>${autoTranslate('Terinstall')}</span>
-            `;
-            installBtn.disabled = true;
-            installBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
-    });
 </script>
 
 <style>
