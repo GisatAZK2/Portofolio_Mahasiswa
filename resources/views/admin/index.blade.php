@@ -525,10 +525,6 @@
                                     </div>
                                     <span class="text-xs px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full flex-shrink-0">Menunggu</span>
                                 </div>
-                            @empty
-                                <div class="text-center py-6">
-                                    <p class="text-gray-500 dark:text-gray-400" data-translate="pending_students_empty" data-translate-page="admin">
-                                        Tidak ada mahasiswa menunggu
                                 <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg {{ $loop->index >= 3 ? 'hidden extra-pending' : '' }}">
                                     <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span class="text-yellow-700 dark:text-yellow-300 font-medium text-sm">
@@ -636,10 +632,6 @@
                                     </div>
                                     <span class="text-xs px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full flex-shrink-0">Ditolak</span>
                                 </div>
-                            @empty
-                                <div class="text-center py-6">
-                                    <p class="text-gray-500 dark:text-gray-400" data-translate="rejected_students_empty" data-translate-page="admin">
-                                        Tidak ada mahasiswa ditolak
                                 <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg {{ $loop->index >= 3 ? 'hidden extra-rejected' : '' }}">
                                     <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span class="text-red-700 dark:text-red-300 font-medium text-sm">
