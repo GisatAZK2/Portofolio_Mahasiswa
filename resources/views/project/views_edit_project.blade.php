@@ -517,12 +517,15 @@
 
         const leaderId = document.getElementById('selected-leader-id').value;
         if (leaderId) {
-            selectedUsers.leader = usersData.find(u => String(u.id) === String(leaderId)) || null;
+            selectedUsers.leader = usersData.find(u => String(u.id) === String(leaderId))
+                || projectParticipants.find(u => String(u.id) === String(leaderId))
+                || null;
         }
 
         const memberInputs = document.querySelectorAll('#members-hidden-container input[name="members[]"]');
         selectedUsers.members = Array.from(memberInputs)
-            .map(input => usersData.find(u => String(u.id) === String(input.value)))
+            .map(input => usersData.find(u => String(u.id) === String(input.value))
+                || projectParticipants.find(u => String(u.id) === String(input.value)))
             .filter(Boolean);
     }
 

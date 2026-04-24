@@ -615,7 +615,7 @@ private function updateProjectNotifications($project, array $oldReceivers, array
     foreach ($addedUsers as $receiverId) {
 
         // cek kalau notif lama sudah ada, skip
-        $exists = Notification::where('type', 'project-assigned')
+        $exists = \App\Models\Notification::where('type', 'project-assigned')
             ->where('data->project_id', $project->id)
             ->where('data->selected_users', (int)$receiverId)
             ->exists();
@@ -649,7 +649,7 @@ private function updateProjectNotifications($project, array $oldReceivers, array
     foreach ($removedUsers as $receiverId) {
 
         // hapus notif lama
-        Notification::where('type', 'project-assigned')
+        \App\Models\Notification::where('type', 'project-assigned')
             ->where('data->project_id', $project->id)
             ->where('data->selected_users', (int)$receiverId)
             ->delete();
