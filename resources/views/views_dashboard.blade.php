@@ -99,6 +99,7 @@
                 <div class="feed-column">
 
                     <div class="mb-6 flex justify-between items-center">
+                    <div class="mb-6 flex justify-between items-center">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
                             data-translate-page="dashboard">{{ autoTranslate('Postingan Terbaru') }}</h2>
 
