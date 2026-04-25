@@ -284,6 +284,13 @@ Route::prefix('{locale}')
             return view('components.offline');
         })->name('offline');
 
+        Route::prefix('api/notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/clear-all', [NotificationController::class, 'clearAll']);
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+});
       
     });
 
@@ -419,15 +426,7 @@ Route::get('/test-notification', function () {
     return 'Notification sent!';
 });
 
-    // Notification Admin
-Route::prefix('api/notifications')->group(function () {
-    Route::get('/', [NotificationController::class, 'index']);
-    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
-    Route::post('/clear-all', [NotificationController::class, 'clearAll']);
-    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
-});
-
+   
 
 
 

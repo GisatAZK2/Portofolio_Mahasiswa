@@ -479,21 +479,8 @@
                                 </div>
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="pending_students_title" data-translate-page="admin">
                                     Mahasiswa Menunggu
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
-                        <div class="flex items-center justify-between mb-5">
-                            <div class="flex items-center gap-3">
-                                <div class="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
-                                    <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="pending_students_title" data-translate-page="admin">
-                                    Mahasiswa Menunggu
                                 </h2>
                             </div>
-                            <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition">
-                                <span data-translate="see_all" data-translate-page="admin">Lihat Semua</span> →
-                            </a>
                             <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition">
                                 <span data-translate="see_all" data-translate-page="admin">Lihat Semua</span> →
                             </a>
@@ -565,9 +552,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                                 <span data-translate="show_more" data-translate-page="admin">Tampilkan Lebih Banyak</span>
-                            </button>
-                                class="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 px-4 py-2.5 text-sm font-medium text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition border border-yellow-200 dark:border-yellow-800">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            </button> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                                 <span data-translate="show_more" data-translate-page="admin">Tampilkan Lebih Banyak</span>

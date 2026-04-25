@@ -171,10 +171,10 @@
                         <div x-show="isOpen" @click.away="isOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">Notifikasi</h3>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">{{ autoTranslate('Notifikasi') }}</h3>
                                     <div class="flex gap-2">
-                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Tandai</button>
-                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">Hapus</button>
+                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">{{ autoTranslate('Tandai dibaca') }}</button>
+                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">{{ autoTranslate('Hapus semua') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -195,10 +195,11 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                                 </svg>
                                             </div>
+                                            
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center">
                                                     <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.data.title"></p>
-                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">PENTING</span>
+                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">{{ autoTranslate('PENTING') }}</span>
                                                 </div>
                                                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="item.data.message"></p>
                                                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="formatTime(item.created_at)"></p>
@@ -262,6 +263,7 @@
 </header>
 
 <script>
+    const currentLocale = document.documentElement.lang || 'id';
     // Notification Bell Component
     function notificationBell(data) {
         return {
@@ -320,7 +322,7 @@
             startPolling() {
                 this.pollingInterval = setInterval(async () => {
                     try {
-                        const res = await fetch('/api/notifications/unread-count');
+                        const res = await fetch(`/${currentLocale}/api/notifications/unread-count`);
                         const data = await res.json();
                         if (data.count > this.unreadCount) { this.page = 1; await this.loadNotifications(); }
                     } catch (e) {}
@@ -329,7 +331,7 @@
 
             async loadNotifications() {
                 try {
-                    const res = await fetch(`/api/notifications?page=${this.page}`);
+                    const res = await fetch(`/${currentLocale}/api/notifications?page=${this.page}`);
                     const data = await res.json();
                     this.notifications = this.filterNotifications(data.data || []);
                     this.updateUnreadCount();
@@ -356,7 +358,7 @@ async handleNotificationClick(item) {
 
             async markAsRead(id) {
                 try {
-                    await fetch(`/api/notifications/${id}/read`, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' } });
+                    await fetch(`/${currentLocale}/api/notifications/${id}/read`, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' } });
                 } catch(e) {}
                 const notif = this.notifications.find(n => n.id === id);
                 if (notif) notif.read = true;

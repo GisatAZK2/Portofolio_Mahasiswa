@@ -1,5 +1,6 @@
 <button id="chatBotButton"
-    class="fixed bottom-40 sm:bottom-40 right-4 sm:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-3 sm:p-3.5 rounded-2xl shadow-lg transition-all duration-300 z-[100] group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105">
+    class="fixed bottom-40 sm:bottom-40 right-4 sm:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-3 sm:p-3.5 rounded-2xl shadow-lg transition-all duration-300 z-[100] group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
+    style="cursor: grab; user-select: none;">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 group-[.chat-open]:hidden" fill="none" viewBox="0 0 24 24"
         stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round"
@@ -10,6 +11,23 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
 </button>
+
+<!-- BUBBLE NOTIFICATION -->
+<div id="notificationBubble"
+    class="fixed bottom-55 sm:bottom-55 right-4 sm:right-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 z-[101] flex items-center gap-2 cursor-pointer transition-all duration-300 animate-bounce-subtle"
+    style="max-width: 280px; transform-origin: bottom right;">
+    <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
+       <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-6 h-6 sm:w-5 sm:h-5 rounded-full">
+    </div>
+    <div class="flex-1">
+        <p class="text-sm font-semibold text-gray-800 dark:text-white">Ada yang ingin ditanyakan?</p>
+    </div>
+    <button id="closeBubbleBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+</div>
 
 <div id="chatWidget"
     class="fixed bottom-40 sm:bottom-40 right-4 sm:right-6 w-[calc(100vw-2rem)] max-w-[360px] sm:max-w-[380px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[99] hidden transition-all duration-200 ease-out"
@@ -147,6 +165,23 @@
     #chatWidget.hidden {
         display: none !important;
     }
+
+    /* Bubble animation */
+    @keyframes bounce-subtle {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    
+    .animate-bounce-subtle {
+        animation: bounce-subtle 1.2s infinite ease-in-out;
+    }
+
+    /* Dragging state */
+    .dragging {
+        cursor: grabbing !important;
+        opacity: 0.8;
+        transition: none;
+    }
 </style>
 
 <script>
@@ -161,11 +196,230 @@
         const quickQuestionsContainer = document.getElementById('quickQuestionsContainer');
         const suggestionsContainer = document.getElementById('suggestionsContainer');
         const suggestionsList = document.getElementById('suggestionsList');
+        
+        // Bubble elements
+        const notificationBubble = document.getElementById('notificationBubble');
+        const closeBubbleBtn = document.getElementById('closeBubbleBtn');
 
         let isChatOpen = false;
         let isTyping = false;
         let suggestionTimeout = null;
 
+        // ============ DRAG TO MOVE CHAT BUTTON ============
+        let isDragging = false;
+        let dragStartX, dragStartY;
+        let buttonStartLeft, buttonStartTop;
+        let dragDistance = 0;
+        
+        // Get saved position from localStorage
+        function loadButtonPosition() {
+            const savedPos = localStorage.getItem('chatButtonPosition');
+            if (savedPos) {
+                try {
+                    const pos = JSON.parse(savedPos);
+                    chatButton.style.left = pos.left;
+                    chatButton.style.top = pos.top;
+                    chatButton.style.right = 'auto';
+                    chatButton.style.bottom = 'auto';
+                } catch(e) {}
+            }
+        }
+        
+        function saveButtonPosition(left, top) {
+            localStorage.setItem('chatButtonPosition', JSON.stringify({ left, top }));
+        }
+        
+        function onMouseDown(e) {
+            // Only start drag if not clicking on child elements that might interfere
+            if (e.target.closest('svg') && !isChatOpen) {
+                // Let the normal click happen if it's just an icon click
+                return;
+            }
+            
+            isDragging = false;
+            dragDistance = 0;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            
+            const rect = chatButton.getBoundingClientRect();
+            buttonStartLeft = rect.left;
+            buttonStartTop = rect.top;
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+            
+            chatButton.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+        
+        function onMouseMove(e) {
+            const dx = e.clientX - dragStartX;
+            const dy = e.clientY - dragStartY;
+            dragDistance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dragDistance > 5) {
+                isDragging = true;
+                chatButton.classList.add('dragging');
+                
+                let newLeft = buttonStartLeft + dx;
+                let newTop = buttonStartTop + dy;
+                
+                // Boundary constraints
+                const maxX = window.innerWidth - chatButton.offsetWidth - 16;
+                const maxY = window.innerHeight - chatButton.offsetHeight - 16;
+                newLeft = Math.min(Math.max(8, newLeft), maxX);
+                newTop = Math.min(Math.max(8, newTop), maxY);
+                
+                chatButton.style.left = newLeft + 'px';
+                chatButton.style.top = newTop + 'px';
+                chatButton.style.right = 'auto';
+                chatButton.style.bottom = 'auto';
+            }
+        }
+        
+        function onMouseUp(e) {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            chatButton.style.cursor = 'grab';
+            chatButton.classList.remove('dragging');
+            
+            if (isDragging && dragDistance > 5) {
+                // Save the new position
+                saveButtonPosition(chatButton.style.left, chatButton.style.top);
+                // Prevent click event
+                e.stopPropagation();
+            }
+            
+            isDragging = false;
+            dragDistance = 0;
+        }
+        
+        // Initialize drag functionality
+        function initDrag() {
+            loadButtonPosition();
+            chatButton.style.cursor = 'grab';
+            chatButton.addEventListener('mousedown', onMouseDown);
+            
+            // Also handle touch events for mobile
+            chatButton.addEventListener('touchstart', onTouchStart, { passive: false });
+            chatButton.addEventListener('touchmove', onTouchMove, { passive: false });
+            chatButton.addEventListener('touchend', onTouchEnd);
+        }
+        
+        function onTouchStart(e) {
+            if (e.target.closest('svg') && !isChatOpen) return;
+            
+            isDragging = false;
+            dragDistance = 0;
+            const touch = e.touches[0];
+            dragStartX = touch.clientX;
+            dragStartY = touch.clientY;
+            
+            const rect = chatButton.getBoundingClientRect();
+            buttonStartLeft = rect.left;
+            buttonStartTop = rect.top;
+            
+            e.preventDefault();
+        }
+        
+        function onTouchMove(e) {
+            const touch = e.touches[0];
+            const dx = touch.clientX - dragStartX;
+            const dy = touch.clientY - dragStartY;
+            dragDistance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dragDistance > 5) {
+                isDragging = true;
+                chatButton.classList.add('dragging');
+                
+                let newLeft = buttonStartLeft + dx;
+                let newTop = buttonStartTop + dy;
+                
+                const maxX = window.innerWidth - chatButton.offsetWidth - 16;
+                const maxY = window.innerHeight - chatButton.offsetHeight - 16;
+                newLeft = Math.min(Math.max(8, newLeft), maxX);
+                newTop = Math.min(Math.max(8, newTop), maxY);
+                
+                chatButton.style.left = newLeft + 'px';
+                chatButton.style.top = newTop + 'px';
+                chatButton.style.right = 'auto';
+                chatButton.style.bottom = 'auto';
+                
+                e.preventDefault();
+            }
+        }
+        
+        function onTouchEnd(e) {
+            chatButton.classList.remove('dragging');
+            
+            if (isDragging && dragDistance > 5) {
+                saveButtonPosition(chatButton.style.left, chatButton.style.top);
+                e.preventDefault();
+            }
+            
+            isDragging = false;
+            dragDistance = 0;
+        }
+        
+        // ============ BUBBLE LOGIC (show only once) ============
+        // Check if user has permanently dismissed the bubble
+        let bubblePermanentlyHidden = localStorage.getItem('bubblePermanentlyHidden') === 'true';
+        
+        function startBubbleAutoHide() {
+            if (window.bubbleAutoHideTimeout) clearTimeout(window.bubbleAutoHideTimeout);
+            window.bubbleAutoHideTimeout = setTimeout(() => {
+                if (notificationBubble && notificationBubble.style.display !== 'none') {
+                    hideBubble();
+                }
+            }, 8000);
+        }
+        
+        function hideBubble() {
+            if (notificationBubble) {
+                notificationBubble.style.display = 'none';
+                if (window.bubbleAutoHideTimeout) clearTimeout(window.bubbleAutoHideTimeout);
+            }
+        }
+        
+        function permanentHideBubble() {
+            bubblePermanentlyHidden = true;
+            localStorage.setItem('bubblePermanentlyHidden', 'true');
+            hideBubble();
+        }
+        
+        function showBubble() {
+            if (notificationBubble && !bubblePermanentlyHidden) {
+                notificationBubble.style.display = 'flex';
+                startBubbleAutoHide();
+            }
+        }
+        
+        function hideBubbleOnChatOpen() {
+            if (notificationBubble) {
+                hideBubble();
+            }
+        }
+        
+        // Close bubble manually (permanent)
+        if (closeBubbleBtn) {
+            closeBubbleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                permanentHideBubble();
+            });
+        }
+        
+        // Click bubble to open chat (but not permanent hide)
+        if (notificationBubble) {
+            notificationBubble.addEventListener('click', (e) => {
+                if (e.target === closeBubbleBtn || closeBubbleBtn.contains(e.target)) {
+                    return;
+                }
+                hideBubbleOnChatOpen();
+                openChat();
+            });
+        }
+
+        // ============ FAQ DATABASE (unchanged) ============
         const faqDatabase = {
             'apa website ini': 'Website ini adalah platform portofolio digital untuk mahasiswa POLMIND (Politeknik Mitra Indonesia). Mahasiswa dapat menampilkan proyek, sertifikat, dan keterampilan mereka kepada publik dan calon employer.',
             'apa itu website ini': 'Website ini adalah platform portofolio mahasiswa POLMIND. Di sini mahasiswa bisa memamerkan karya, proyek, dan sertifikat mereka.',
@@ -496,12 +750,33 @@
             chatButton.classList.remove('chat-open');
         }
 
+        // Modified click handler to handle drag vs click
+        let originalClickHandler = null;
+        
         if (chatButton) {
-            chatButton.addEventListener('click', (e) => {
-                e.stopPropagation();
+            // Store original click handler
+            originalClickHandler = (e) => {
+                if (isDragging && dragDistance > 5) {
+                    e.stopPropagation();
+                    return;
+                }
                 if (isChatOpen) {
                     closeChat();
                 } else {
+                    hideBubbleOnChatOpen();
+                    openChat();
+                }
+            };
+            
+            chatButton.addEventListener('click', (e) => {
+                if (isDragging && dragDistance > 5) {
+                    e.stopPropagation();
+                    return;
+                }
+                if (isChatOpen) {
+                    closeChat();
+                } else {
+                    hideBubbleOnChatOpen();
                     openChat();
                 }
             });
@@ -524,5 +799,12 @@
         }
 
         renderQuickQuestions();
+        
+        // Initialize drag functionality
+        initDrag();
+        
+        if (!bubblePermanentlyHidden) {
+            showBubble();
+        }
     });
 </script>

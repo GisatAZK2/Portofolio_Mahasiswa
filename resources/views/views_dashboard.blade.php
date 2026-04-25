@@ -89,6 +89,48 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
+
+        /* Search Styles */
+        .search-container {
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-clear-btn {
+            transition: all 0.2s ease;
+        }
+
+        .search-clear-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .no-results-animation {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-highlight {
+            background-color: rgba(99, 102, 241, 0.2);
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+
+        .dark .search-highlight {
+            background-color: rgba(99, 102, 241, 0.4);
+        }
     </style>
 
     <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me">
@@ -98,7 +140,7 @@
                 <!-- LEFT COLUMN: Posts Feed -->
                 <div class="feed-column">
 
-                    <div class="mb-6 flex justify-between items-center">
+                    <div class="mb-6 flex justify-between items-center flex-wrap gap-3">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" data-translate="perihal_terbaru"
                             data-translate-page="dashboard">{{ autoTranslate('Postingan Terbaru') }}</h2>
 
@@ -121,6 +163,27 @@
                                 </svg>
                             </a>
                         @endif
+                    </div>
+
+                    <!-- SEARCH BAR -->
+                    <div class="mb-6 search-container">
+                        <div class="relative">
+                            <input type="text" 
+                                id="searchPostinganInput" 
+                                placeholder="{{ autoTranslate('Cari postingan berdasarkan judul, deskripsi, atau penulis...') }}"
+                                class="search-input w-full px-4 py-3 pl-11 pr-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all">
+                            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <button id="clearSearchBtn" class="search-clear-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hidden">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="searchResultInfo" class="mt-2 text-sm text-gray-500 dark:text-gray-400 hidden">
+                            <span id="searchResultCount"></span> {{ autoTranslate('postingan ditemukan') }}
+                        </div>
                     </div>
 
                     <!-- Postingan Mahasiswa -->
@@ -163,7 +226,28 @@
                             @else
                                 <div id="postingan-container" class="space-y-6">
                                     @foreach($postinganTerbaru as $post)
-                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 post-card">
+                                        @php
+                                            // Extract title and description from content JSON
+                                            $postTitle = '';
+                                            $postDescription = '';
+                                            $contentArray = is_array($post->content) ? $post->content : json_decode($post->content, true);
+                                            if (is_array($contentArray)) {
+                                                foreach ($contentArray as $item) {
+                                                    if (isset($item['type'])) {
+                                                        if ($item['type'] === 'title') {
+                                                            $postTitle = $item['content'] ?? '';
+                                                        } elseif ($item['type'] === 'description') {
+                                                            $postDescription = strip_tags($item['content'] ?? '');
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 post-card" 
+                                            data-post-title="{{ strtolower($postTitle) }}" 
+                                            data-post-description="{{ strtolower($postDescription) }}" 
+                                            data-post-author="{{ strtolower($post->user->nama_mahasiswa ?? '') }}" 
+                                            data-post-id="{{ $post->id_postingan }}">
                                             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                                 <div class="flex items-center gap-3">
                                                     <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" class="flex items-center gap-3">
@@ -500,6 +584,163 @@
             posts.forEach(post => container.appendChild(post));
         }
 
+        // ============ SEARCH FUNCTIONALITY ============
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const searchResultInfo = document.getElementById('searchResultInfo');
+        const searchResultCount = document.getElementById('searchResultCount');
+        const postinganContainer = document.getElementById('postingan-container');
+        const paginationDiv = document.getElementById('postingan-pagination');
+        
+        let originalPostsHTML = '';
+        let originalPaginationHTML = '';
+        
+        // Store original content
+        if (postinganContainer) {
+            originalPostsHTML = postinganContainer.innerHTML;
+        }
+        if (paginationDiv) {
+            originalPaginationHTML = paginationDiv.innerHTML;
+        }
+        
+        function highlightText(text, searchTerm) {
+            if (!searchTerm || searchTerm.length < 2) return text;
+            const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+        }
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (searchTerm.length < 2) {
+                // Reset to original
+                if (postinganContainer && originalPostsHTML) {
+                    postinganContainer.innerHTML = originalPostsHTML;
+                }
+                if (paginationDiv && originalPaginationHTML) {
+                    paginationDiv.innerHTML = originalPaginationHTML;
+                    paginationDiv.style.display = '';
+                }
+                searchResultInfo.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                
+                // Remove no results message if exists
+                const noResultsMsg = document.getElementById('noResultsMessage');
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+                return;
+            }
+            
+            clearBtn.classList.remove('hidden');
+            
+            const allPosts = document.querySelectorAll('#postingan-container .post-card');
+            let visibleCount = 0;
+            
+            // Hide pagination when searching
+            if (paginationDiv) {
+                paginationDiv.style.display = 'none';
+            }
+            
+            allPosts.forEach(post => {
+                const title = post.getAttribute('data-post-title') || '';
+                const description = post.getAttribute('data-post-description') || '';
+                const author = post.getAttribute('data-post-author') || '';
+                
+                const titleMatch = title.includes(searchTerm);
+                const descMatch = description.includes(searchTerm);
+                const authorMatch = author.includes(searchTerm);
+                
+                if (titleMatch || descMatch || authorMatch) {
+                    post.style.display = '';
+                    visibleCount++;
+                    
+                    // Highlight title if needed
+                    if (titleMatch && searchTerm.length >= 2) {
+                        const titleElement = post.querySelector('h3');
+                        if (titleElement && titleElement.innerText) {
+                            const originalTitle = titleElement.innerText;
+                            const highlightedTitle = highlightText(originalTitle, searchTerm);
+                            if (titleElement.innerHTML !== highlightedTitle) {
+                                titleElement.innerHTML = highlightedTitle;
+                            }
+                        }
+                    }
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+            
+            // Show result info
+            if (visibleCount === 0) {
+                searchResultCount.textContent = '0';
+                searchResultInfo.classList.remove('hidden');
+                
+                // Show no results message if needed
+                let noResultsMsg = document.getElementById('noResultsMessage');
+                if (!noResultsMsg && postinganContainer) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.id = 'noResultsMessage';
+                    noResultsMsg.className = 'text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm no-results-animation';
+                    noResultsMsg.innerHTML = `
+                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">Tidak ada postingan ditemukan</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-sm">Coba dengan kata kunci lain</p>
+                    `;
+                    postinganContainer.appendChild(noResultsMsg);
+                } else if (noResultsMsg) {
+                    noResultsMsg.style.display = 'block';
+                }
+            } else {
+                searchResultCount.textContent = visibleCount;
+                searchResultInfo.classList.remove('hidden');
+                
+                // Remove no results message if exists
+                const noResultsMsg = document.getElementById('noResultsMessage');
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
+        }
+        
+        // Reset search and restore original content with highlighting removed
+        function resetSearch() {
+            searchInput.value = '';
+            clearBtn.classList.add('hidden');
+            searchResultInfo.classList.add('hidden');
+            
+            if (postinganContainer && originalPostsHTML) {
+                postinganContainer.innerHTML = originalPostsHTML;
+            }
+            if (paginationDiv && originalPaginationHTML) {
+                paginationDiv.innerHTML = originalPaginationHTML;
+                paginationDiv.style.display = '';
+            }
+            
+            // Remove no results message if exists
+            const noResultsMsg = document.getElementById('noResultsMessage');
+            if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+        
+        // Debounce search input
+        let debounceTimer;
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    performSearch();
+                }, 300);
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', resetSearch);
+        }
+        
+        // Like button handler
         document.addEventListener('click', function(e) {
             const likeBtn = e.target.closest('.like-btn');
             if (likeBtn) {
@@ -517,10 +758,16 @@
                         const countEl = likeBtn.querySelector('.like-count');
                         countEl.textContent = data.like_count;
                         const svg = likeBtn.querySelector('svg');
-                        if (data.liked) { likeBtn.classList.add('text-red-500'); svg.classList.add('fill-current', 'text-red-500'); }
-                        else { likeBtn.classList.remove('text-red-500'); svg.classList.remove('fill-current', 'text-red-500'); }
+                        if (data.liked) { 
+                            likeBtn.classList.add('text-red-500'); 
+                            svg.classList.add('fill-current', 'text-red-500'); 
+                        } else { 
+                            likeBtn.classList.remove('text-red-500'); 
+                            svg.classList.remove('fill-current', 'text-red-500'); 
+                        }
                     }
-                });
+                })
+                .catch(error => console.error('Error:', error));
             }
         });
 
@@ -532,6 +779,7 @@
         const dotSize = 20;
 
         function updateCarousel() {
+            if (!dosenCards.length) return;
             dosenCards.forEach((card, i) => {
                 let offset = i - current;
                 const name = card.querySelector('.dosen-name');
@@ -547,13 +795,28 @@
                 dot.classList.toggle('opacity-40', i !== current);
             });
             let offsetIndex = Math.max(0, Math.min(current - Math.floor(visibleDots / 2), dots.length - visibleDots));
-            document.getElementById('dosenDotsTrack').style.transform = `translateX(${-(offsetIndex * dotSize)}px)`;
+            const dotsTrack = document.getElementById('dosenDotsTrack');
+            if (dotsTrack) {
+                dotsTrack.style.transform = `translateX(${-(offsetIndex * dotSize)}px)`;
+            }
         }
 
-        document.getElementById('dosenNextBtn').onclick = () => { current = (current + 1) % dosenCards.length; updateCarousel(); };
-        document.getElementById('dosenPrevBtn').onclick = () => { current = (current - 1 + dosenCards.length) % dosenCards.length; updateCarousel(); };
-        dots.forEach(dot => { dot.onclick = () => { current = parseInt(dot.dataset.index); updateCarousel(); }; });
-        updateCarousel();
-        setInterval(() => { current = (current + 1) % dosenCards.length; updateCarousel(); }, 5000);
+        const nextBtn = document.getElementById('dosenNextBtn');
+        const prevBtn = document.getElementById('dosenPrevBtn');
+        if (nextBtn && dosenCards.length) {
+            nextBtn.onclick = () => { current = (current + 1) % dosenCards.length; updateCarousel(); };
+        }
+        if (prevBtn && dosenCards.length) {
+            prevBtn.onclick = () => { current = (current - 1 + dosenCards.length) % dosenCards.length; updateCarousel(); };
+        }
+        if (dots.length) {
+            dots.forEach(dot => { 
+                dot.onclick = () => { current = parseInt(dot.dataset.index); updateCarousel(); }; 
+            });
+        }
+        if (dosenCards.length) {
+            updateCarousel();
+            setInterval(() => { current = (current + 1) % dosenCards.length; updateCarousel(); }, 5000);
+        }
     </script>
 @endsection

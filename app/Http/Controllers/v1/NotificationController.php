@@ -18,16 +18,29 @@ class NotificationController
 
         return $notification;
     }
+public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 20);
+    $notifications = Notification::orderBy('created_at', 'desc')->paginate($perPage);
 
-    public function index(Request $request)
-    {
-        $perPage = $request->input('per_page', 20);
-        
-        $notifications = Notification::orderBy('created_at', 'desc')
-            ->paginate($perPage);
+    $notifications->getCollection()->transform(function ($item) {
+        $data = $item->data ?? [];
 
-        return response()->json($notifications);
-    }
+        if (isset($data['message'])) {
+            $data['message'] = autoTranslate($data['message']);
+        }
+
+        if (isset($data['title'])) {
+            $data['title'] = autoTranslate($data['title']);
+        }
+
+        $item->data = $data;
+
+        return $item;
+    });
+
+    return response()->json($notifications);
+}
 
     public function unreadCount()
     {

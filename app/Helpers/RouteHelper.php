@@ -40,11 +40,8 @@ function autoTranslate($text)
             $tr = new GoogleTranslate($locale);
             $result = $tr->translate($text);
 
-            Log::info("Google Translate success", ['locale' => $locale]);
-
             return $result;
         } catch (\Exception $e) {
-            Log::error("Google Translate failed: " . $e->getMessage());
             return $text;
         }
     });
