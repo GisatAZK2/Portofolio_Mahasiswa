@@ -154,7 +154,7 @@ Route::prefix('{locale}')
                 Route::get('/create', [AdminController::class, 'TambahProjects'])->name('create');
                 Route::post('/store', [AdminController::class, 'StoreProject'])->name('store');
                 Route::get('/Details', [AdminController::class, 'EditProjects'])->name('details');
-                Route::post('/EditProject', [AdminController::class, 'UpdateProject'])->name('update');
+                Route::put('/EditProject', [AdminController::class, 'UpdateProject'])->name('update');
                 Route::delete('/DeleteProject', [AdminController::class, 'DestroyProject'])->name('delete');
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProject'])->name('bulk-delete');
             });

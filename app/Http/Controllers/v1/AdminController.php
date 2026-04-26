@@ -1499,72 +1499,124 @@ class AdminController extends Controller
         ));
     }
 
-    // EditProjects - ambil id dari query parameter
-    public function EditProjects(Request $request)
-    {
-        $this->authorizeAccess();
-        $id = $request->query('id');
+// EditProjects - ambil id dari query parameter
+public function EditProjects(Request $request)
+{
+    $this->authorizeAccess();
+    $id = $request->query('id');
 
-        if (!$id) {
-            abort(404, 'Project ID is required');
-        }
-
-        // Get search and filter inputs
-        $search = request()->input('search');
-        $angkatan = request()->input('angkatan');
-        $jurusan = request()->input('jurusan');
-        $keahlian = request()->input('keahlian');
-
-        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
-        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-            ->where('role', 'mahasiswa')
-            ->where('status_pengajuan', 'Di Terima');
-
-        // Filter pencarian berdasarkan nama mahasiswa
-        if ($search) {
-            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
-        }
-
-        // Filter berdasarkan angkatan
-        if ($angkatan) {
-            $query->where('id_angkatan', $angkatan);
-        }
-
-        // Filter berdasarkan jurusan
-        if ($jurusan) {
-            $query->where('id_jurusan', $jurusan);
-        }
-
-        // Filter berdasarkan keahlian
-        if ($keahlian) {
-            $query->where('id_keahlian', $keahlian);
-        }
-
-        // Ambil data dengan pagination
-        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-        // Ambil data untuk dropdown filter
-        $angkatans = Angkatan::all();
-        $jurusans = Jurusan::all();
-        $keahlians = Keahlian::all();
-
-        // Get project data
-        $project = Project::with(['members', 'tasks'])
-            ->where('id', $id)
-            ->firstOrFail();
-
-        return view('admin.projects.views_edit_project', compact(
-            'project',
-            'users',
-            'angkatans',
-            'jurusans',
-            'keahlians',
-            'search',
-            'angkatan',
-            'jurusan',
-            'keahlian'
-        ));
+    if (!$id) {
+        abort(404, 'Project ID is required');
     }
+
+    // Get search and filter inputs
+    $search = $request->input('search');
+    $angkatan = $request->input('angkatan');
+    $jurusan = $request->input('jurusan');
+    $keahlian = $request->input('keahlian');
+
+    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+        ->where('role', 'mahasiswa')
+        ->where('status_pengajuan', 'Di Terima');
+
+    // Filter pencarian berdasarkan nama mahasiswa, username, atau email
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                ->orWhere('username', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
+        });
+    }
+
+    // Filter berdasarkan angkatan
+    if ($angkatan) {
+        $query->where('id_angkatan', $angkatan);
+    }
+
+    // Filter berdasarkan jurusan
+    if ($jurusan) {
+        $query->where('id_jurusan', $jurusan);
+    }
+
+    // Filter berdasarkan keahlian
+    if ($keahlian) {
+        $query->where('id_keahlian', $keahlian);
+    }
+
+    // Ambil data dengan pagination
+    $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    // Ambil semua user untuk JavaScript (untuk mendukung multiple members dari semua halaman)
+    $allUsers = $query->orderBy('created_at', 'desc')->get();
+
+    // Ambil data untuk dropdown filter
+    $angkatans = Angkatan::all();
+    $jurusans = Jurusan::all();
+    $keahlians = Keahlian::all();
+
+    // Get project data
+    $project = Project::with(['members', 'tasks'])
+        ->where('id', $id)
+        ->firstOrFail();
+
+    if ($request->ajax()) {
+        // Return JSON for AJAX requests
+        $userListHtml = '';
+        if ($users->count() > 0) {
+            foreach ($users as $user) {
+                $userListHtml .= '
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            ' . ($user->photo_profile ?
+                    '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">' :
+                    '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">' . strtoupper(substr($user->nama_mahasiswa, 0, 1)) . '</span>
+                                </div>'
+                ) . '
+                            <div>
+                                <div class="font-medium text-gray-900 dark:text-gray-100">' . $user->nama_mahasiswa . '</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                                <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
+                                <option value="owner" data-translate="owner_role" data-translate-page="dosen_add_pjt">Owner</option>
+                                <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
+                                <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
+                            </select>
+                        </div>
+                    </div>
+                ';
+            }
+        } else {
+            $userListHtml = '<div class="text-center py-10 text-gray-500 dark:text-gray-400" data-translate="no_students_found" data-translate-page="dosen_add_pjt">Tidak ada mahasiswa yang sesuai filter.</div>';
+        }
+
+        $paginationHtml = $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection'])->toHtml();
+
+        return response()->json([
+            'userListHtml' => $userListHtml,
+            'paginationHtml' => $paginationHtml,
+            'currentPage' => $users->currentPage(),
+            'lastPage' => $users->lastPage(),
+        ]);
+    }
+
+    return view('admin.projects.views_edit_project', compact(
+        'project',
+        'users',
+        'allUsers',
+        'angkatans',
+        'jurusans',
+        'keahlians',
+        'search',
+        'angkatan',
+        'jurusan',
+        'keahlian'
+    ));
+}
     public function StoreProject(Request $request)
     {
         $this->authorizeAccess();
@@ -1666,144 +1718,220 @@ class AdminController extends Controller
             ->with('clear_local_storage', true);
     }
 
-    // UpdateProject - ambil id dari query parameter
-    public function UpdateProject(Request $request)
-    {
-        $this->authorizeAccess();
-        $id = $request->query('id');
+// UpdateProject - support URL query parameter ?id=123
+public function UpdateProject(Request $request)
+{
+    $this->authorizeAccess();
 
-        if (!$id) {
-            return redirect()->route('admin.projects.index')
-                ->with('error', 'Project ID tidak ditemukan');
-        }
+    // Ambil id dari query parameter
+    $id = $request->query('id');
 
-        $project = Project::findOrFail($id);
-
-        $request->merge([
-            'members' => collect($request->members)
-                ->filter(fn($id) => !empty($id))
-                ->values()
-                ->all(),
-            'tasks' => collect($request->input('tasks', []))
-                ->filter(fn($task) => is_array($task) && (
-                    !empty($task['user_id']) && !empty(trim($task['name_task'] ?? ''))
-                ))
-                ->values()
-                ->all()
-        ]);
-
-        $validated = $request->validate([
-            'nama_project' => 'required|string|max:255',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
-            'link_project' => 'nullable|url|max:255',
-            'deskripsi' => 'nullable|string|max:2000',
-            'link_github' => 'nullable|url|max:500',
-            'link_video' => 'nullable|url|max:500',
-            'owner' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-            'leader' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-            'members' => 'nullable|array',
-            'members.*' => 'exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-            'tasks' => 'nullable|array',
-            'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
-            'tasks.*.user_id' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-            'tasks.*.name_task' => 'nullable|string|max:255',
-            'is_collaborative' => 'nullable|boolean'
-        ]);
-
-        $content = [];
-        if ($request->filled('nama_project'))
-            $content['nama_project'] = $request->nama_project;
-        if ($request->filled('deskripsi'))
-            $content['deskripsi'] = $request->deskripsi;
-        if ($request->filled('link_project'))
-            $content['link_project'] = $request->link_project;
-        if ($request->filled('link_github'))
-            $content['link_github'] = $request->link_github;
-        if ($request->filled('link_video'))
-            $content['link_video'] = $request->link_video;
-
-        if (empty($content)) {
-            return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)']);
-        }
-
-        $ownerId = $request->owner ?: null;
-        $leaderId = $request->leader ?: null;
-        $isCollaborative = $request->boolean('is_collaborative', true);
-
-        if (!$leaderId && $ownerId) {
-            $leaderId = $ownerId;
-        }
-        if (!$isCollaborative && $ownerId) {
-            $leaderId = $ownerId;
-        }
-
-        $project->update([
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'isi_content' => $content,
-            'id_mahasiswa' => $ownerId,
-            'leader_id' => $leaderId,
-        ]);
-
-        // Handle members
-        $members = collect($request->members ?? [])
-            ->filter()
-            ->reject(fn($memberId) => $memberId == $ownerId || $memberId == $leaderId)
-            ->map(fn($id) => (int) $id)
-            ->values()
-            ->all();
-
-        if (!$isCollaborative) {
-            $members = [];
-        }
-
-        $project->members()->sync($members);
-
-        $submittedTasks = collect($request->input('tasks', []))
-            ->filter(fn($task) => !empty($task['user_id']) && !empty(trim($task['name_task'] ?? '')))
-            ->values()
-            ->all();
-
-        if (!empty($submittedTasks)) {
-            $savedTaskIds = $this->createProjectTasks($project, $submittedTasks);
-
-            if (!empty($savedTaskIds)) {
-                ProjectTask::where('project_id', $project->id)
-                    ->whereNotIn('id', $savedTaskIds)
-                    ->delete();
-            } else {
-                ProjectTask::where('project_id', $project->id)->delete();
-            }
-        } else {
-            ProjectTask::where('project_id', $project->id)->delete();
-        }
-
-        $allowedUserIds = collect([$ownerId, $leaderId])
-            ->merge($members)
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
-
-        if (!empty($allowedUserIds)) {
-            ProjectTask::where('project_id', $project->id)
-                ->whereNotIn('user_id', $allowedUserIds)
-                ->delete();
-        } else {
-            ProjectTask::where('project_id', $project->id)->delete();
-        }
-
-        if (!$isCollaborative && $ownerId) {
-            ProjectTask::where('project_id', $project->id)
-                ->where('user_id', '!=', $ownerId)
-                ->delete();
-        }
-
+    if (!$id) {
         return redirect()->route('admin.projects.index')
-            ->with('success', 'Project berhasil diperbarui!');
+            ->with('error', 'Project ID tidak ditemukan');
     }
 
+    $project = Project::findOrFail($id);
+
+    // Sanitize members input - support string "1,2,3" atau array
+    $membersInput = $request->input('members', '');
+
+    if (is_string($membersInput) && !empty($membersInput)) {
+        $membersArray = explode(',', $membersInput);
+        $request->merge([
+            'members' => array_filter($membersArray)
+        ]);
+    } elseif (is_array($membersInput)) {
+        $request->merge([
+            'members' => array_filter($membersInput)
+        ]);
+    } else {
+        $request->merge([
+            'members' => []
+        ]);
+    }
+
+    // Filter tasks
+    $request->merge([
+        'tasks' => collect($request->input('tasks', []))
+            ->filter(fn($task) => is_array($task) && (
+                !empty($task['user_id']) &&
+                !empty(trim($task['name_task'] ?? ''))
+            ))
+            ->values()
+            ->all()
+    ]);
+
+    $validated = $request->validate([
+        'nama_project' => 'required|string|max:255',
+        'tanggal_mulai' => 'required|date',
+        'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
+        'link_project' => 'nullable|url|max:255',
+        'deskripsi' => 'nullable|string|max:2000',
+        'link_github' => 'nullable|url|max:500',
+        'link_video' => 'nullable|url|max:500',
+        'owner' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+        'leader' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+        'members' => 'nullable|array',
+        'members.*' => 'exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+        'tasks' => 'nullable|array',
+        'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
+        'tasks.*.user_id' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+        'tasks.*.name_task' => 'nullable|string|max:255',
+        'is_collaborative' => 'nullable|boolean'
+    ]);
+
+    // Prepare content
+    $content = [];
+
+    if ($request->filled('nama_project'))
+        $content['nama_project'] = $request->nama_project;
+
+    if ($request->filled('deskripsi'))
+        $content['deskripsi'] = $request->deskripsi;
+
+    if ($request->filled('link_project'))
+        $content['link_project'] = $request->link_project;
+
+    if ($request->filled('link_github'))
+        $content['link_github'] = $request->link_github;
+
+    if ($request->filled('link_video'))
+        $content['link_video'] = $request->link_video;
+
+    if (empty($content)) {
+        return back()
+            ->withInput()
+            ->withErrors([
+                'project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)'
+            ]);
+    }
+
+    $ownerId = $request->owner ?: null;
+    $leaderId = $request->leader ?: null;
+    $isCollaborative = $request->boolean('is_collaborative', true);
+
+    // Jika collaborative tapi leader kosong
+    if ($isCollaborative && !$leaderId && $ownerId) {
+        $leaderId = $ownerId;
+    }
+
+    // Jika non collaborative
+    if (!$isCollaborative && $ownerId) {
+        $leaderId = $ownerId;
+    }
+
+    // Update project
+    $project->update([
+        'tanggal_mulai' => $request->tanggal_mulai,
+        'tanggal_akhir' => $request->tanggal_akhir,
+        'isi_content' => $content,
+        'id_mahasiswa' => $ownerId,
+        'leader_id' => $leaderId,
+    ]);
+
+    // Handle members
+    $members = collect($request->members ?? [])
+        ->filter()
+        ->reject(fn($memberId) =>
+            $memberId == $ownerId ||
+            $memberId == $leaderId
+        )
+        ->map(fn($id) => (int) $id)
+        ->unique()
+        ->values()
+        ->all();
+
+    if (!$isCollaborative) {
+        $members = [];
+    }
+
+    $project->members()->sync($members);
+
+    // Handle tasks
+    $submittedTasks = collect($request->input('tasks', []))
+        ->filter(fn($task) =>
+            !empty($task['user_id']) &&
+            !empty(trim($task['name_task'] ?? ''))
+        )
+        ->values()
+        ->all();
+
+    if (!empty($submittedTasks)) {
+
+        $savedTaskIds = [];
+
+        foreach ($submittedTasks as $taskData) {
+
+            if (!empty($taskData['id'])) {
+
+                $task = ProjectTask::find($taskData['id']);
+
+                if ($task && $task->project_id == $project->id) {
+
+                    $task->update([
+                        'user_id' => $taskData['user_id'],
+                        'name_task' => $taskData['name_task'],
+                    ]);
+
+                    $savedTaskIds[] = $task->id;
+
+                } else {
+
+                    $newTask = $project->tasks()->create([
+                        'user_id' => $taskData['user_id'],
+                        'name_task' => $taskData['name_task'],
+                    ]);
+
+                    $savedTaskIds[] = $newTask->id;
+                }
+
+            } else {
+
+                $newTask = $project->tasks()->create([
+                    'user_id' => $taskData['user_id'],
+                    'name_task' => $taskData['name_task'],
+                ]);
+
+                $savedTaskIds[] = $newTask->id;
+            }
+        }
+
+        ProjectTask::where('project_id', $project->id)
+            ->whereNotIn('id', $savedTaskIds)
+            ->delete();
+
+    } else {
+
+        ProjectTask::where('project_id', $project->id)->delete();
+    }
+
+    // Validasi task user masih bagian project
+    $allowedUserIds = collect([$ownerId, $leaderId])
+        ->merge($members)
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
+    if (!empty($allowedUserIds)) {
+        ProjectTask::where('project_id', $project->id)
+            ->whereNotIn('user_id', $allowedUserIds)
+            ->delete();
+    } else {
+        ProjectTask::where('project_id', $project->id)->delete();
+    }
+
+    // Jika solo project, task hanya owner
+    if (!$isCollaborative && $ownerId) {
+        ProjectTask::where('project_id', $project->id)
+            ->where('user_id', '!=', $ownerId)
+            ->delete();
+    }
+
+    return redirect()->route('admin.projects.index')
+        ->with('success', 'Project berhasil diperbarui!');
+}
 
     // DestroyProject - ambil id dari query parameter
     public function DestroyProject(Request $request)
