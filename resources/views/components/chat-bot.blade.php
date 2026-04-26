@@ -230,9 +230,7 @@
         }
         
         function onMouseDown(e) {
-            // Only start drag if not clicking on child elements that might interfere
             if (e.target.closest('svg') && !isChatOpen) {
-                // Let the normal click happen if it's just an icon click
                 return;
             }
             
@@ -264,7 +262,6 @@
                 let newLeft = buttonStartLeft + dx;
                 let newTop = buttonStartTop + dy;
                 
-                // Boundary constraints
                 const maxX = window.innerWidth - chatButton.offsetWidth - 16;
                 const maxY = window.innerHeight - chatButton.offsetHeight - 16;
                 newLeft = Math.min(Math.max(8, newLeft), maxX);
@@ -284,9 +281,7 @@
             chatButton.classList.remove('dragging');
             
             if (isDragging && dragDistance > 5) {
-                // Save the new position
                 saveButtonPosition(chatButton.style.left, chatButton.style.top);
-                // Prevent click event
                 e.stopPropagation();
             }
             
@@ -294,13 +289,10 @@
             dragDistance = 0;
         }
         
-        // Initialize drag functionality
         function initDrag() {
             loadButtonPosition();
             chatButton.style.cursor = 'grab';
             chatButton.addEventListener('mousedown', onMouseDown);
-            
-            // Also handle touch events for mobile
             chatButton.addEventListener('touchstart', onTouchStart, { passive: false });
             chatButton.addEventListener('touchmove', onTouchMove, { passive: false });
             chatButton.addEventListener('touchend', onTouchEnd);
@@ -361,65 +353,77 @@
             dragDistance = 0;
         }
         
-        // ============ BUBBLE LOGIC (show only once) ============
-        // Check if user has permanently dismissed the bubble
-        let bubblePermanentlyHidden = localStorage.getItem('bubblePermanentlyHidden') === 'true';
+        // ============ BUBBLE LOGIC - PERMANENT HIDE ============
+        // Cek localStorage untuk status bubble
+        let bubblePermanentlyClosed = localStorage.getItem('bubblePermanentlyClosed') === 'true';
         
-        function startBubbleAutoHide() {
-            if (window.bubbleAutoHideTimeout) clearTimeout(window.bubbleAutoHideTimeout);
-            window.bubbleAutoHideTimeout = setTimeout(() => {
-                if (notificationBubble && notificationBubble.style.display !== 'none') {
-                    hideBubble();
-                }
-            }, 8000);
-        }
-        
-        function hideBubble() {
+        function permanentlyCloseBubble() {
+            // Set localStorage
+            localStorage.setItem('bubblePermanentlyClosed', 'true');
+            bubblePermanentlyClosed = true;
+            
+            // Sembunyikan bubble
             if (notificationBubble) {
                 notificationBubble.style.display = 'none';
-                if (window.bubbleAutoHideTimeout) clearTimeout(window.bubbleAutoHideTimeout);
+                notificationBubble.style.visibility = 'hidden';
             }
-        }
-        
-        function permanentHideBubble() {
-            bubblePermanentlyHidden = true;
-            localStorage.setItem('bubblePermanentlyHidden', 'true');
-            hideBubble();
+            
+            console.log('Bubble permanently closed');
         }
         
         function showBubble() {
-            if (notificationBubble && !bubblePermanentlyHidden) {
-                notificationBubble.style.display = 'flex';
-                startBubbleAutoHide();
+            // Cek apakah bubble pernah ditutup permanen
+            if (bubblePermanentlyClosed) {
+                console.log('Bubble is permanently closed, not showing');
+                if (notificationBubble) {
+                    notificationBubble.style.display = 'none';
+                    notificationBubble.style.visibility = 'hidden';
+                }
+                return;
             }
-        }
-        
-        function hideBubbleOnChatOpen() {
+            
+            // Tampilkan bubble jika belum ditutup permanen
             if (notificationBubble) {
-                hideBubble();
+                notificationBubble.style.display = 'flex';
+                notificationBubble.style.visibility = 'visible';
+                
+                // Auto hide setelah 8 detik
+                setTimeout(() => {
+                    if (notificationBubble && notificationBubble.style.display === 'flex') {
+                        notificationBubble.style.display = 'none';
+                    }
+                }, 8000);
             }
         }
         
-        // Close bubble manually (permanent)
+        // Event untuk tombol X pada bubble
         if (closeBubbleBtn) {
-            closeBubbleBtn.addEventListener('click', (e) => {
+            closeBubbleBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                permanentHideBubble();
+                e.preventDefault();
+                permanentlyCloseBubble();
             });
         }
         
-        // Click bubble to open chat (but not permanent hide)
+        // Event klik pada bubble (selain tombol X) untuk membuka chat
         if (notificationBubble) {
-            notificationBubble.addEventListener('click', (e) => {
+            notificationBubble.addEventListener('click', function(e) {
+                // Jangan buka chat jika yang diklik adalah tombol X
                 if (e.target === closeBubbleBtn || closeBubbleBtn.contains(e.target)) {
                     return;
                 }
-                hideBubbleOnChatOpen();
+                
+                // Sembunyikan bubble
+                if (notificationBubble) {
+                    notificationBubble.style.display = 'none';
+                }
+                
+                // Buka chat
                 openChat();
             });
         }
 
-        // ============ FAQ DATABASE (unchanged) ============
+        // ============ FAQ DATABASE ============
         const faqDatabase = {
             'apa website ini': 'Website ini adalah platform portofolio digital untuk mahasiswa POLMIND (Politeknik Mitra Indonesia). Mahasiswa dapat menampilkan proyek, sertifikat, dan keterampilan mereka kepada publik dan calon employer.',
             'apa itu website ini': 'Website ini adalah platform portofolio mahasiswa POLMIND. Di sini mahasiswa bisa memamerkan karya, proyek, dan sertifikat mereka.',
@@ -750,24 +754,7 @@
             chatButton.classList.remove('chat-open');
         }
 
-        // Modified click handler to handle drag vs click
-        let originalClickHandler = null;
-        
         if (chatButton) {
-            // Store original click handler
-            originalClickHandler = (e) => {
-                if (isDragging && dragDistance > 5) {
-                    e.stopPropagation();
-                    return;
-                }
-                if (isChatOpen) {
-                    closeChat();
-                } else {
-                    hideBubbleOnChatOpen();
-                    openChat();
-                }
-            };
-            
             chatButton.addEventListener('click', (e) => {
                 if (isDragging && dragDistance > 5) {
                     e.stopPropagation();
@@ -776,7 +763,10 @@
                 if (isChatOpen) {
                     closeChat();
                 } else {
-                    hideBubbleOnChatOpen();
+                    // Sembunyikan bubble saat membuka chat
+                    if (notificationBubble) {
+                        notificationBubble.style.display = 'none';
+                    }
                     openChat();
                 }
             });
@@ -799,12 +789,12 @@
         }
 
         renderQuickQuestions();
-        
-        // Initialize drag functionality
         initDrag();
         
-        if (!bubblePermanentlyHidden) {
+        // Tampilkan bubble hanya jika belum pernah ditutup permanen
+        // Delay sebentar agar tidak langsung muncul
+        setTimeout(() => {
             showBubble();
-        }
+        }, 1000);
     });
 </script>

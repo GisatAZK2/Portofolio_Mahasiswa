@@ -235,7 +235,7 @@
                                                 foreach ($contentArray as $item) {
                                                     if (isset($item['type'])) {
                                                         if ($item['type'] === 'title') {
-                                                            $postTitle = $item['content'] ?? '';
+                                                            $postTitle = strip_tags($item['content'] ?? '');
                                                         } elseif ($item['type'] === 'description') {
                                                             $postDescription = strip_tags($item['content'] ?? '');
                                                         }
@@ -584,161 +584,137 @@
             posts.forEach(post => container.appendChild(post));
         }
 
-        // ============ SEARCH FUNCTIONALITY ============
-        const clearBtn = document.getElementById('clearSearchBtn');
-        const searchResultInfo = document.getElementById('searchResultInfo');
-        const searchResultCount = document.getElementById('searchResultCount');
-        const postinganContainer = document.getElementById('postingan-container');
-        const paginationDiv = document.getElementById('postingan-pagination');
-        
-        let originalPostsHTML = '';
-        let originalPaginationHTML = '';
-        
-        // Store original content
-        if (postinganContainer) {
-            originalPostsHTML = postinganContainer.innerHTML;
-        }
-        if (paginationDiv) {
-            originalPaginationHTML = paginationDiv.innerHTML;
-        }
-        
-        function highlightText(text, searchTerm) {
-            if (!searchTerm || searchTerm.length < 2) return text;
-            const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            return text.replace(regex, '<mark class="search-highlight">$1</mark>');
-        }
-        
-        function performSearch() {
-            const searchTerm = searchInput.value.trim().toLowerCase();
+        // ============ SEARCH FUNCTIONALITY - FIXED VERSION ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchPostinganInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const searchResultInfo = document.getElementById('searchResultInfo');
+            const searchResultCount = document.getElementById('searchResultCount');
             
-            if (searchTerm.length < 2) {
-                // Reset to original
-                if (postinganContainer && originalPostsHTML) {
-                    postinganContainer.innerHTML = originalPostsHTML;
-                }
-                if (paginationDiv && originalPaginationHTML) {
-                    paginationDiv.innerHTML = originalPaginationHTML;
-                    paginationDiv.style.display = '';
-                }
-                searchResultInfo.classList.add('hidden');
-                clearBtn.classList.add('hidden');
+            if (!searchInput) return;
+            
+            let debounceTimer;
+            
+            function performSearch() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                const allPosts = document.querySelectorAll('#postingan-container .post-card');
+                const paginationDiv = document.getElementById('postingan-pagination');
                 
-                // Remove no results message if exists
-                const noResultsMsg = document.getElementById('noResultsMessage');
-                if (noResultsMsg) {
-                    noResultsMsg.remove();
-                }
-                return;
-            }
-            
-            clearBtn.classList.remove('hidden');
-            
-            const allPosts = document.querySelectorAll('#postingan-container .post-card');
-            let visibleCount = 0;
-            
-            // Hide pagination when searching
-            if (paginationDiv) {
-                paginationDiv.style.display = 'none';
-            }
-            
-            allPosts.forEach(post => {
-                const title = post.getAttribute('data-post-title') || '';
-                const description = post.getAttribute('data-post-description') || '';
-                const author = post.getAttribute('data-post-author') || '';
-                
-                const titleMatch = title.includes(searchTerm);
-                const descMatch = description.includes(searchTerm);
-                const authorMatch = author.includes(searchTerm);
-                
-                if (titleMatch || descMatch || authorMatch) {
-                    post.style.display = '';
-                    visibleCount++;
+                if (searchTerm.length < 2) {
+                    // Reset to show all posts
+                    allPosts.forEach(post => {
+                        post.style.display = '';
+                    });
+                    if (paginationDiv) paginationDiv.style.display = '';
+                    searchResultInfo.classList.add('hidden');
+                    clearBtn.classList.add('hidden');
                     
-                    // Highlight title if needed
-                    if (titleMatch && searchTerm.length >= 2) {
-                        const titleElement = post.querySelector('h3');
-                        if (titleElement && titleElement.innerText) {
-                            const originalTitle = titleElement.innerText;
-                            const highlightedTitle = highlightText(originalTitle, searchTerm);
-                            if (titleElement.innerHTML !== highlightedTitle) {
-                                titleElement.innerHTML = highlightedTitle;
+                    // Remove no results message if exists
+                    const noResultsMsg = document.getElementById('noResultsMessage');
+                    if (noResultsMsg) noResultsMsg.remove();
+                    return;
+                }
+                
+                clearBtn.classList.remove('hidden');
+                
+                // Hide pagination when searching
+                if (paginationDiv) paginationDiv.style.display = 'none';
+                
+                let visibleCount = 0;
+                
+                allPosts.forEach(post => {
+                    const title = post.getAttribute('data-post-title') || '';
+                    const description = post.getAttribute('data-post-description') || '';
+                    const author = post.getAttribute('data-post-author') || '';
+                    
+                    const titleMatch = title.includes(searchTerm);
+                    const descMatch = description.includes(searchTerm);
+                    const authorMatch = author.includes(searchTerm);
+                    const hasMatch = titleMatch || descMatch || authorMatch;
+                    
+                    if (hasMatch) {
+                        post.style.display = '';
+                        visibleCount++;
+                        
+                        // Highlight title if match
+                        if (titleMatch && searchTerm.length >= 2) {
+                            const titleElement = post.querySelector('h3');
+                            if (titleElement && titleElement.innerText) {
+                                const originalTitle = titleElement.innerText;
+                                const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                                const highlightedTitle = originalTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
+                                if (titleElement.innerHTML !== highlightedTitle) {
+                                    titleElement.innerHTML = highlightedTitle;
+                                }
                             }
                         }
+                    } else {
+                        post.style.display = 'none';
                     }
-                } else {
-                    post.style.display = 'none';
-                }
-            });
-            
-            // Show result info
-            if (visibleCount === 0) {
-                searchResultCount.textContent = '0';
-                searchResultInfo.classList.remove('hidden');
+                });
                 
-                // Show no results message if needed
-                let noResultsMsg = document.getElementById('noResultsMessage');
-                if (!noResultsMsg && postinganContainer) {
-                    noResultsMsg = document.createElement('div');
-                    noResultsMsg.id = 'noResultsMessage';
-                    noResultsMsg.className = 'text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm no-results-animation';
-                    noResultsMsg.innerHTML = `
-                        <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">Tidak ada postingan ditemukan</p>
-                        <p class="text-gray-400 dark:text-gray-500 text-sm">Coba dengan kata kunci lain</p>
-                    `;
-                    postinganContainer.appendChild(noResultsMsg);
-                } else if (noResultsMsg) {
-                    noResultsMsg.style.display = 'block';
-                }
-            } else {
+                // Update search result info
                 searchResultCount.textContent = visibleCount;
                 searchResultInfo.classList.remove('hidden');
                 
-                // Remove no results message if exists
-                const noResultsMsg = document.getElementById('noResultsMessage');
-                if (noResultsMsg) {
-                    noResultsMsg.remove();
+                // Show/hide no results message
+                let noResultsMsg = document.getElementById('noResultsMessage');
+                if (visibleCount === 0) {
+                    const container = document.getElementById('postingan-container');
+                    if (container && !noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.id = 'noResultsMessage';
+                        noResultsMsg.className = 'text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm no-results-animation';
+                        noResultsMsg.innerHTML = `
+                            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">Tidak ada postingan ditemukan</p>
+                            <p class="text-gray-400 dark:text-gray-500 text-sm">Coba dengan kata kunci lain</p>
+                        `;
+                        container.appendChild(noResultsMsg);
+                    } else if (noResultsMsg && visibleCount === 0) {
+                        noResultsMsg.style.display = 'block';
+                    }
+                } else if (noResultsMsg) {
+                    noResultsMsg.style.display = 'none';
                 }
             }
-        }
-        
-        // Reset search and restore original content with highlighting removed
-        function resetSearch() {
-            searchInput.value = '';
-            clearBtn.classList.add('hidden');
-            searchResultInfo.classList.add('hidden');
             
-            if (postinganContainer && originalPostsHTML) {
-                postinganContainer.innerHTML = originalPostsHTML;
-            }
-            if (paginationDiv && originalPaginationHTML) {
-                paginationDiv.innerHTML = originalPaginationHTML;
-                paginationDiv.style.display = '';
+            function resetSearch() {
+                if (searchInput) searchInput.value = '';
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (searchResultInfo) searchResultInfo.classList.add('hidden');
+                
+                const allPosts = document.querySelectorAll('#postingan-container .post-card');
+                const paginationDiv = document.getElementById('postingan-pagination');
+                
+                allPosts.forEach(post => {
+                    post.style.display = '';
+                    // Remove highlight from titles
+                    const titleElement = post.querySelector('h3');
+                    if (titleElement && titleElement.innerHTML.includes('search-highlight')) {
+                        titleElement.innerHTML = titleElement.innerText;
+                    }
+                });
+                
+                if (paginationDiv) paginationDiv.style.display = '';
+                
+                // Remove no results message
+                const noResultsMsg = document.getElementById('noResultsMessage');
+                if (noResultsMsg) noResultsMsg.remove();
             }
             
-            // Remove no results message if exists
-            const noResultsMsg = document.getElementById('noResultsMessage');
-            if (noResultsMsg) {
-                noResultsMsg.remove();
-            }
-        }
-        
-        // Debounce search input
-        let debounceTimer;
-        if (searchInput) {
+            // Event listeners
             searchInput.addEventListener('input', function() {
                 clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    performSearch();
-                }, 300);
+                debounceTimer = setTimeout(performSearch, 300);
             });
-        }
-        
-        if (clearBtn) {
-            clearBtn.addEventListener('click', resetSearch);
-        }
+            
+            if (clearBtn) {
+                clearBtn.addEventListener('click', resetSearch);
+            }
+        });
         
         // Like button handler
         document.addEventListener('click', function(e) {

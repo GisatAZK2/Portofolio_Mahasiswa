@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class Sertifikat extends Model
 {
+    use Cachable;
     protected $table = 'sertifikat';
 
     protected $fillable = [

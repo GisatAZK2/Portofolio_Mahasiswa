@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use App\Models\User;
 use App\Models\Project;
 
+
 class Project_User extends Model
 {
-    use HasFactory;
+    use HasFactory,Cachable;
     protected $table = 'project_user';
 
     protected $fillable = ['project_id','user_id'];

@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Postingan;
 
 class Komentar extends Model
 {
-    use HasFactory;
+    use HasFactory,Cachable;
     protected $table = 'komentar';
     protected $primaryKey = 'id_komentar';   
     public $incrementing = true;                    

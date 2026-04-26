@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^4.2",
+        "mikebronner/laravel-model-caching": "^13.1",
         "nesbot/carbon": "^3.11",
         "phpmailer/phpmailer": "^7.0",
         "stichoza/google-translate-php": "^5.3"
