@@ -81,23 +81,19 @@
     document.querySelectorAll('.pagination-link').forEach(link => {
         link.addEventListener('click', function (e) {
             const groupName = this.getAttribute('data-group');
-            // Simpan nama grup ke sessionStorage untuk scroll otomatis
             sessionStorage.setItem('scrollToGroup', groupName);
         });
     });
 
-    // Scroll otomatis saat page load jika ada data scrollToGroup
     document.addEventListener('DOMContentLoaded', function () {
         const groupName = sessionStorage.getItem('scrollToGroup');
         if (groupName) {
             const element = document.querySelector(`[data-pagination-group="${groupName}"]`);
             if (element) {
-                // Scroll dengan smooth animation dan delay
                 setTimeout(function () {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
             }
-            // Hapus data setelah digunakan
             sessionStorage.removeItem('scrollToGroup');
         }
     });

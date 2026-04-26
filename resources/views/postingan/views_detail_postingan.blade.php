@@ -266,83 +266,100 @@
                     @endauth
 
                     <!-- Comments List -->
-                    @if($postingan->komentar->count() > 0)
-                        <div class="space-y-3 mt-6">
-                            @foreach($postingan->komentar->sortByDesc('tanggal') as $komentar)
-                                <div class="group flex items-start gap-2.5 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                                    <!-- Avatar -->
-                                    @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
-                                        <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}"
-                                            class="w-8 h-8 rounded-full object-cover shrink-0">
-                                    @else
-                                        <div class="w-8 h-8 rounded-full bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center shrink-0">
-                                            <span class="text-white font-semibold text-xs">
-                                                {{ strtoupper(substr($komentar->user->nama_mahasiswa, 0, 1)) }}
-                                            </span>
-                                        </div>
-                                    @endif
-
-                                    <div class="flex-1 min-w-0">
-                                        <!-- Comment Bubble -->
-                                        <div class="bg-gray-100 dark:bg-gray-800 rounded-xl px-4 py-2.5">
-                                            <div class="flex items-baseline gap-2 mb-1">
-                                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{{ $komentar->user->nama_mahasiswa }}</h4>
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ $komentar->tanggal->format('d M Y') }}</span>
-                                            </div>
-                                            <div id="comment-content-{{ $komentar->id_komentar }}" class="text-sm text-gray-700 dark:text-gray-300 break-words">
-                                                {{ autoTranslate($komentar->komentar) }}
-                                            </div>
-
-                                            <!-- Edit Form (hidden by default) -->
-                                            <form id="edit-form-{{ $komentar->id_komentar }}" action="{{ route('komentar.update', ['id' => $komentar->id_komentar]) }}" method="POST" class="hidden mt-2">
-                                                @csrf 
-                                                @method('PUT')
-                                                <textarea name="komentar" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg text-sm outline-none focus:border-indigo-500">{{ $komentar->komentar }}</textarea>
-                                                <div class="flex justify-end gap-2 mt-2">
-                                                    <button type="button" onclick="cancelEdit({{ $komentar->id_komentar }})" 
-                                                        class="px-3 py-1 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
-                                                        {{ autoTranslate('Batal') }}
-                                                    </button>
-                                                    <button type="submit" 
-                                                        class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                                                        {{ autoTranslate('Simpan') }}
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-
-                                        <!-- Comment Actions -->
-                                        @auth
-                                            @if(auth()->id() == $komentar->id_user)
-                                                <div class="flex items-center gap-3 mt-1 opacity-0 group-hover:opacity-100 transition">
-                                                    <button onclick="editComment({{ $komentar->id_komentar }})" 
-                                                        class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium">
-                                                        {{ autoTranslate('Edit') }}
-                                                    </button>
-                                                    <span class="text-gray-300 dark:text-gray-600">•</span>
-                                                    <form action="{{ route('komentar.destroy', ['id' => $komentar->id_komentar]) }}" method="POST" class="inline">
-                                                        @csrf 
-                                                        @method('DELETE')
-                                                        <button type="button" onclick="if(confirm('{{ autoTranslate('Hapus komentar ini?') }}')) this.form.submit();" 
-                                                            class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium">
-                                                            {{ autoTranslate('Hapus') }}
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            @endif
-                                        @endauth
+                  @if($postingan->komentar->count() > 0)
+                    <div class="space-y-2 mt-3">
+                        @foreach($postingan->komentar->sortByDesc('tanggal') as $komentar)
+                            @php
+                                $isOwnComment = auth()->check() && auth()->id() == $komentar->id_user;
+                            @endphp
+                            <div class="group flex items-start gap-2 p-2 rounded-lg transition {{ $isOwnComment ? 'bg-indigo-50 dark:bg-indigo-950/30 border-l-4 border-indigo-500' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }}">
+                                <!-- Avatar -->
+                                @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
+                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}"
+                                        class="w-7 h-7 rounded-full object-cover shrink-0">
+                                @else
+                                    <div class="w-7 h-7 rounded-full {{ $isOwnComment ? 'bg-gradient-to-br from-indigo-500 to-indigo-700' : 'bg-linear-to-br from-blue-400 to-blue-600' }} flex items-center justify-center shrink-0">
+                                        <span class="text-white font-semibold text-xs">
+                                            {{ strtoupper(substr($komentar->user->nama_mahasiswa, 0, 1)) }}
+                                        </span>
                                     </div>
+                                @endif
+
+                                <div class="flex-1 min-w-0">
+                                    <!-- Comment Bubble -->
+                                    <div class="{{ $isOwnComment ? 'bg-indigo-100 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800' : 'bg-gray-100 dark:bg-gray-800' }} rounded-xl px-3 py-1.5">
+                                        <div class="flex items-baseline gap-2 mb-0.5">
+                                            <h4 class="font-semibold {{ $isOwnComment ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-900 dark:text-gray-100' }} text-sm">
+                                                {{ $komentar->user->nama_mahasiswa }}
+                                                @if($isOwnComment)
+                                                    <span class="text-xs font-normal text-indigo-500 dark:text-indigo-400 ml-1">({{ autoTranslate('Anda') }})</span>
+                                                @endif
+                                            </h4>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $komentar->tanggal->format('d M Y') }}</span>
+                                        </div>
+                                        <div id="comment-content-{{ $komentar->id_komentar }}" class="text-sm {{ $isOwnComment ? 'text-indigo-800 dark:text-indigo-200' : 'text-gray-700 dark:text-gray-300' }} break-words">
+                                            {{ autoTranslate($komentar->komentar) }}
+                                        </div>
+
+                                        <!-- Edit Form (hidden by default) -->
+                                        <form id="edit-form-{{ $komentar->id_komentar }}" action="{{ route('komentar.update', ['id' => $komentar->id_komentar]) }}" method="POST" class="hidden mt-1">
+                                            @csrf 
+                                            @method('PUT')
+                                            <textarea name="komentar" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg text-sm outline-none focus:border-indigo-500">{{ $komentar->komentar }}</textarea>
+                                            <div class="flex justify-end gap-2 mt-1">
+                                                <button type="button" onclick="cancelEdit({{ $komentar->id_komentar }})" 
+                                                    class="px-2 py-0.5 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                                    {{ autoTranslate('Batal') }}
+                                                </button>
+                                                <button type="submit" 
+                                                    class="px-2 py-0.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                                    {{ autoTranslate('Simpan') }}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- Comment Actions -->
+                                    @auth
+                                        @if($isOwnComment)
+                                            <div class="flex items-center gap-2 mt-0.5 opacity-0 group-hover:opacity-100 transition">
+                                                <button onclick="editComment({{ $komentar->id_komentar }})" 
+                                                    class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium">
+                                                    {{ autoTranslate('Edit') }}
+                                                </button>
+                                                <span class="text-gray-300 dark:text-gray-600 text-xs">•</span>
+                                                <form action="{{ route('komentar.destroy', ['id' => $komentar->id_komentar]) }}" method="POST" class="inline">
+                                                    @csrf 
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="if(confirm('{{ autoTranslate('Hapus komentar ini?') }}')) this.form.submit();" 
+                                                        class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium">
+                                                        {{ autoTranslate('Hapus') }}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @endif
+                                    @endauth
                                 </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-8">
-                            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                            </svg>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">{{ autoTranslate('Belum ada komentar') }}</p>
-                        </div>
-                    @endif
+                                
+                                <!-- "Anda" Badge for Mobile (optional) -->
+                                @if($isOwnComment)
+                                    <div class="shrink-0 self-center md:hidden">
+                                        <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/50 px-2 py-0.5 rounded-full">
+                                            {{ autoTranslate('Anda') }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-6">
+                        <svg class="w-10 h-10 mx-auto text-gray-300 dark:text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">{{ autoTranslate('Belum ada komentar') }}</p>
+                    </div>
+                @endif
                 </div>
             </div>
         </div>
