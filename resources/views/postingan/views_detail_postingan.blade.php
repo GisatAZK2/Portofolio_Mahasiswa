@@ -182,6 +182,7 @@
                                         @endif
                                     </div>
                                 </div>
+                                @auth
                                 <a href="{{ $gameRoute }}?postingan={{ $postingan->id_postingan }}&game={{ $game->id_games }}" 
                                     class="inline-flex items-center px-5 py-2.5 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-all transform hover:scale-105 shadow-md">
                                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -189,6 +190,7 @@
                                     </svg>
                                     {{ autoTranslate('Mainkan Sekarang') }}
                                 </a>
+                                @endauth
                             </div>
                         </div>
                     @endif

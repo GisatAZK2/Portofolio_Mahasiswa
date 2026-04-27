@@ -3,7 +3,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +18,7 @@ use App\Models\Keahlian_Tambahan;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, Cachable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
