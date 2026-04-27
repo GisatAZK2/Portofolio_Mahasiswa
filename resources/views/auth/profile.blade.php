@@ -6,8 +6,132 @@
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
 
-            <!-- Alpine.js Component untuk Keahlian Tambahan -->
-            <div x-data="keahlianTambahan()" x-init="init()" class="contents">
+            <!-- Skeleton Loading Overlay -->
+            <div id="skeleton-loading" class="contents">
+                <!-- Cover Image Skeleton -->
+                <div class="relative h-48 rounded-t-2xl overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse">
+                    <div class="absolute top-4 right-4 bg-gray-300 dark:bg-gray-600 px-4 py-2 rounded-lg animate-pulse">
+                        <div class="w-20 h-4 bg-gray-400 dark:bg-gray-500 rounded"></div>
+                    </div>
+                </div>
+
+                <!-- Profile Section Skeleton -->
+                <div class="bg-white dark:bg-gray-800 rounded-b-2xl shadow-sm px-6 pb-8 sm:px-10 animate-pulse">
+                    <!-- Avatar Skeleton -->
+                    <div class="relative flex">
+                        <div class="relative -mt-16">
+                            <div class="relative w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-gray-300 dark:bg-gray-600 animate-pulse">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Buttons Skeleton -->
+                    <div class="flex justify-end gap-2 mt-1">
+                        <div class="w-32 h-8 bg-gray-300 dark:bg-gray-600 rounded-lg animate-pulse"></div>
+                    </div>
+
+                    <!-- Name and Username Skeleton -->
+                    <div class="mt-4">
+                        <div class="w-48 h-8 bg-gray-300 dark:bg-gray-600 rounded mb-2 animate-pulse"></div>
+                        <div class="w-32 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                    </div>
+
+                    <!-- Info Cards Skeleton -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto mt-8">
+                        <template x-for="n in 6">
+                            <div class="bg-gray-200 dark:bg-gray-700 p-5 rounded-lg animate-pulse">
+                                <div class="w-16 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                                <div class="w-24 h-5 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+                                <div class="w-full h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Save Button Skeleton -->
+                    <div class="mt-8 text-center">
+                        <div class="w-40 h-10 bg-gray-300 dark:bg-gray-600 rounded-lg mx-auto animate-pulse"></div>
+                    </div>
+                </div>
+
+                <!-- Projects Section Skeleton -->
+                <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 animate-pulse">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="w-32 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                        <div class="w-20 h-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <template x-for="n in 3">
+                            <div class="bg-gray-200 dark:bg-gray-700 rounded-xl border shadow-sm overflow-hidden animate-pulse">
+                                <div class="w-full h-48 bg-gray-300 dark:bg-gray-600"></div>
+                                <div class="p-5">
+                                    <div class="w-3/4 h-5 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                                    <div class="w-full h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                                    <div class="w-2/3 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
+                                    <div class="flex gap-3">
+                                        <div class="w-16 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                                        <div class="w-16 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </section>
+
+                <!-- Sertifikat Section Skeleton -->
+                <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 animate-pulse">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="w-32 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                        <div class="w-20 h-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <template x-for="n in 3">
+                            <div class="bg-gray-200 dark:bg-gray-700 rounded-xl shadow-sm overflow-hidden animate-pulse">
+                                <div class="p-6">
+                                    <div class="flex gap-2 mb-3">
+                                        <div class="w-16 h-5 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                        <div class="w-20 h-5 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                    </div>
+                                    <div class="w-3/4 h-5 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+                                    <div class="w-1/2 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                                    <div class="w-2/3 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
+                                    <div class="w-24 h-5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </section>
+
+                <!-- Learning Corners Section Skeleton -->
+                <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 mb-10 animate-pulse">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="w-40 h-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                        <div class="w-20 h-6 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <template x-for="n in 3">
+                            <div class="bg-gray-200 dark:bg-gray-700 rounded-xl shadow-sm overflow-hidden animate-pulse">
+                                <div class="p-6">
+                                    <div class="w-3/4 h-5 bg-gray-300 dark:bg-gray-600 rounded mb-3"></div>
+                                    <div class="w-full h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                                    <div class="w-2/3 h-4 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
+                                    <div class="w-1/2 h-3 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </section>
+
+                <!-- Footer Skeleton -->
+                <div class="mt-8 text-center">
+                    <div class="w-48 h-3 bg-gray-300 dark:bg-gray-600 rounded mx-auto animate-pulse"></div>
+                </div>
+            </div>
+
+            <!-- Actual Content (Hidden initially) -->
+            <div id="actual-content" class="contents" style="display: none;">
+
+                <!-- Alpine.js Component untuk Keahlian Tambahan -->
+                <div x-data="keahlianTambahan()" x-init="init()" class="contents"></template>
 
                 <!-- Alert Notification -->
                 <template x-if="showAlert">
@@ -348,6 +472,23 @@
                                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
                                 </div>
 
+                                <!-- Skeleton Loading -->
+                                <div x-show="loading" class="space-y-3 mb-4">
+                                    <template x-for="n in 3" :key="n">
+                                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 animate-pulse">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-32"></div>
+                                                    <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
+                                                </div>
+                                                <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-24 mb-1"></div>
+                                                <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-20"></div>
+                                            </div>
+                                            <div class="h-8 w-8 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                                        </div>
+                                    </template>
+                                </div>
+
                                 <!-- Daftar Keahlian Tambahan -->
                                 <template x-if="!loading">
                                     <div class="space-y-3 mb-4">
@@ -541,14 +682,6 @@
                         </div>
                     </div>
                 </form>
-
-                @if (session('success'))
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function () {
-                            showSuccessAlert('{{ autoTranslate(session('success')) }}');
-                        });
-                    </script>
-                @endif
 
                 @if(Auth::check())
                     <!-- Projects Section -->
@@ -1015,6 +1148,38 @@
         </div>
     </div>
 
+    <!-- JavaScript untuk Skeleton Loading -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide skeleton and show actual content after a short delay
+            setTimeout(function() {
+                const skeleton = document.getElementById('skeleton-loading');
+                const content = document.getElementById('actual-content');
+
+                if (skeleton && content) {
+                    skeleton.style.display = 'none';
+                    content.style.display = 'block';
+                }
+            }, 500); // Adjust delay as needed
+        });
+    </script>
+
+    <!-- JavaScript untuk Skeleton Loading -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide skeleton and show actual content after a short delay
+            setTimeout(function() {
+                const skeleton = document.getElementById('skeleton-loading');
+                const content = document.getElementById('actual-content');
+
+                if (skeleton && content) {
+                    skeleton.style.display = 'none';
+                    content.style.display = 'block';
+                }
+            }, 500); // Adjust delay as needed
+        });
+    </script>
+
     <!-- Alpine.js Data -->
     <script>
         function keahlianTambahan() {
@@ -1197,6 +1362,13 @@
             container.appendChild(iframe);
             container.classList.remove('cursor-pointer');
         }
+
+        // Show success alert if session success exists
+        @if (session('success'))
+            document.addEventListener('DOMContentLoaded', function () {
+                showSuccessAlert('{{ autoTranslate(session('success')) }}');
+            });
+        @endif
 
         // Alpine.js untuk collapse functionality
         document.addEventListener('alpine:init', () => {
