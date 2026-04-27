@@ -378,12 +378,9 @@
     <script>
         function toggleShare(btn) {
             const url = window.location.href;
-            const title = document.title;
 
             if (navigator.share) {
                 navigator.share({
-                    title: title,
-                    text: title,
                     url: url
                 }).catch(() => {});
                 return;
