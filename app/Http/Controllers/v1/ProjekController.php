@@ -195,7 +195,8 @@ class ProjekController extends Controller
             foreach ($users as $user) {
 
                 $userListHtml .= '
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg" data-user-id="' . $user->id . '">
+                
                     <div class="flex items-center gap-3">
                         ' . ($user->photo_profile
                             ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
@@ -214,8 +215,10 @@ class ProjekController extends Controller
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
-                            onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                       <select
+class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
+data-user-id="' . $user->id . '"
+onchange="updateUserRole(this, ' . $user->id . ', this.value)">
 
                             <option value="">-- Pilih Role --</option>
                             <option value="leader">Leader</option>

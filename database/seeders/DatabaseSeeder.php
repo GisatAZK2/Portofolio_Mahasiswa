@@ -20,10 +20,7 @@ class DatabaseSeeder extends Seeder
             AngkatanSeeder::class,
             JurusanSeeder::class,
             KeahlianSeeder::class,
-            UserSeeder::class,
-            ProjectSeeder::class,
-            LearningCornerSeeder::class,
-            SertifikatSeeder::class,
+            
         ]);
     }
 }

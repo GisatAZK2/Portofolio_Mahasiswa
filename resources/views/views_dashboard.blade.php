@@ -247,7 +247,8 @@
                                             data-post-title="{{ strtolower($postTitle) }}" 
                                             data-post-description="{{ strtolower($postDescription) }}" 
                                             data-post-author="{{ strtolower($post->user->nama_mahasiswa ?? '') }}" 
-                                            data-post-id="{{ $post->id_postingan }}">
+                                            data-post-id="{{ $post->id_postingan }}"
+                                             data-share-url="{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}">
                                             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                                 <div class="flex items-center gap-3">
                                                     <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" class="flex items-center gap-3">
@@ -573,46 +574,41 @@
             commentSection.style.display = commentSection.style.display === 'block' ? 'none' : 'block';
         }
 
-        function toggleShare(btn) {
-            const postCard = btn.closest('.post-card');
-            if (!postCard) return;
-
-            const detailBtn = postCard.querySelector('span[onclick*="{{ route('postingan.show', ['id' => $post->id_postingan]) }}"]');
-            let url = window.location.href;
-
-            if (detailBtn) {
-                const match = detailBtn.getAttribute('onclick').match(/'(.*?)'/);
-                if (match && match[1]) {
-                    url = match[1];
-                }
-            }
-
-            const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
-
-            if (navigator.share) {
-                navigator.share({
-                    url: url
-                }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    btn.innerHTML = `
-                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 13l4 4L19 7"/>
-                        </svg>
-                    `;
-
-                    setTimeout(() => {
-                        btn.innerHTML = `
-                        <svg fill="none" class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M21.707,11.293l-8-8A1,1,0,0,0,12,4V7.545A11.015,11.015,0,0,0,2,18.5V20a1,1,0,0,0,1.784.621a11.456,11.456,0,0,1,7.887-4.049c.05-.006.175-.016.329-.026V20a1,1,0,0,0,1.707.707l8-8A1,1,0,0,0,21.707,11.293Z"/>
-                        </svg>
-                        `;
-                    }, 2000);
-                });
-            }
-        }
-
+       function toggleShare(btn) {
+    const postCard = btn.closest('.post-card');
+    if (!postCard) return;
+    
+    // Ambil URL dari data attribute yang sudah disimpan di post card
+    let url = postCard.dataset.shareUrl || window.location.href;
+    
+    const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
+    
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: url
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            btn.innerHTML = `
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 13l4 4L19 7"/>
+                </svg>
+            `;
+            
+            setTimeout(() => {
+                btn.innerHTML = `
+                <svg fill="none" class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M21.707,11.293l-8-8A1,1,0,0,0,12,4V7.545A11.015,11.015,0,0,0,2,18.5V20a1,1,0,0,0,1.784.621a11.456,11.456,0,0,1,7.887-4.049c.05-.006.175-.016.329-.026V20a1,1,0,0,0,1.707.707l8-8A1,1,0,0,0,21.707,11.293Z"/>
+                </svg>
+                `;
+            }, 2000);
+        }).catch(() => {
+            alert('Gagal menyalin URL');
+        });
+    }
+}
         function sortPostinganByGame() {
             const container = document.getElementById('postingan-container');
             if (!container) return;

@@ -119,7 +119,7 @@
             <!-- User selection modal -->
             <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
                 <div class="absolute inset-0 bg-black/40" onclick="closeUserModal()"></div>
-                <div class="relative w-full max-w-3xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
+                <div class="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
                     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih Leader / Member</h2>
                         <button type="button" onclick="closeUserModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">Tutup</button>
@@ -149,6 +149,7 @@
                         </div>
 
                         <div id="modal-user-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
+                        <div id="modal-pagination" class="mt-4"></div>
 
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" onclick="closeUserModal()" class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">Batal</button>
@@ -265,7 +266,7 @@
             : null;
     @endphp
     <script>
-        const allUsers = @json($users->items());
+        let allUsers = @json($users->items());
         const currentUser = @json($currentUserData);
         const userSelectionStorageKey = 'project_selected_users';
         let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
@@ -340,7 +341,7 @@
                 return;
             }
             document.getElementById('userModal').classList.remove('hidden');
-            loadUsersToModal();
+            fetchUsers();
         }
 
         function closeUserModal() {
@@ -382,92 +383,61 @@
             });
         }
 
-        function loadUsersToModal() {
-            const userList = document.getElementById('modal-user-list');
-            const filteredUsers = filterUsersForModal();
-            if (!userList) return;
+        // GANTI updateUserRole()
+       function updateUserRole(selectElement, userId, role) {
+    const user = allUsers.find(u => u.id == userId);
+    if (!user) return;
 
-            if (filteredUsers.length === 0) {
-                userList.innerHTML = `
-                    <div class="text-center py-10 text-gray-500 dark:text-gray-400">
-                        Tidak ada mahasiswa yang sesuai filter.
-                    </div>
-                `;
-                return;
-            }
+    // Cek apakah user adalah owner (tidak boleh diubah role-nya)
+    if (selectedUsers.owner && String(selectedUsers.owner.id) === String(userId)) {
+        alert('Owner tidak dapat diubah role-nya!');
+        selectElement.value = ''; // Reset select
+        refreshRoleSelections();
+        return;
+    }
 
-            userList.innerHTML = filteredUsers.map(user => {
-                const isOwner = selectedUsers.owner?.id == user.id;
-                const isLeader = selectedUsers.leader?.id == user.id;
-                const isMember = selectedUsers.members.some(m => m.id == user.id);
-                const hasOtherOwner = selectedUsers.owner && !isOwner;
-                const disableLeaderSelect = isLeader;
-
-                return `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg" data-user-id="${user.id}">
-                        <div class="flex items-center gap-3">
-                            ${user.photo_profile ?
-                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover">` :
-                                `<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                </div>`
-                            }
-                            <div>
-                                <div class="font-medium text-gray-900 dark:text-gray-100">${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)" ${disableLeaderSelect ? 'disabled' : ''}>
-                                <option value="">-- Pilih Role --</option>
-                                <option value="owner" ${isOwner ? 'selected' : ''} ${hasOtherOwner ? 'disabled' : ''}>Owner</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''}>Leader</option>
-                                <option value="member" ${isMember ? 'selected' : ''}>Member</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+    // Cek jika mencoba memilih leader tapi sudah ada leader lain
+    if (role === 'leader' && selectedUsers.leader && String(selectedUsers.leader.id) !== String(userId)) {
+        const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${selectedUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
+        if (!confirmChange) {
+            selectElement.value = '';
+            refreshRoleSelections();
+            return;
         }
+        // Hapus leader lama
+        selectedUsers.leader = null;
+    }
 
-        function updateUserRole(selectElement, userId, role) {
-            const user = allUsers.find(u => u.id == userId);
-            if (!user) return;
+    // Hapus dari manapun dia berada dulu
+    if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
+        selectedUsers.leader = null;
+    }
+    selectedUsers.members = selectedUsers.members.filter(
+        m => String(m.id) !== String(userId)
+    );
 
-            if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id != userId) {
-                if (!confirm('Owner sudah dipilih. Ganti owner?')) {
-                    selectElement.value = '';
-                    return;
-                }
-            }
+    // Assign role baru
+    if (role === 'leader') {
+        selectedUsers.leader = user;
+    } else if (role === 'member') {
+        selectedUsers.members.push(user);
+    }
+    // role === '' => hapus saja (sudah di atas)
 
-            if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id != userId) {
-                if (!confirm('Leader sudah ada. Ganti leader?')) {
-                    selectElement.value = '';
-                    return;
-                }
-            }
-
-            if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
-            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-            selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
-
-            if (role === 'owner') {
-                selectedUsers.owner = user;
-            } else if (role === 'leader') {
-                selectedUsers.leader = user;
-            } else if (role === 'member') {
-                selectedUsers.members.push(user);
-            }
-
-            updateFormInputs();
-            renderSelectedUsers();
-            loadUsersToModal();
-            updateTaskSectionVisibility();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-        }
+    updateFormInputs();
+    renderSelectedUsers();
+    updateTaskSectionVisibility();
+    updateTaskUserOptions();
+    updateSelectedUsersBadge();
+    saveSelectedUsersToStorage();
+    refreshRoleSelections();
+    
+    // Tutup modal jika masih terbuka
+    const modal = document.getElementById('userModal');
+    if (modal && !modal.classList.contains('hidden')) {
+        closeUserModal();
+    }
+}
         
         function confirmUserSelection() {
             updateFormInputs();
@@ -569,6 +539,27 @@
                 }
             }, 500);
         }
+        function fetchUsers(page = 1) {
+    const params = new URLSearchParams({
+        page: page,
+        search: currentModalFilters.search,
+        angkatan: currentModalFilters.angkatan,
+        jurusan: currentModalFilters.jurusan,
+        keahlian: currentModalFilters.keahlian
+    });
+
+    fetch(`{{ route('project.create') }}?${params}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+        document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+        refreshRoleSelections();
+    });
+}
 
         function loadSelectedUsersFromForm() {
             if (restoreSelectedUsersFromStorage()) {
@@ -690,57 +681,129 @@
         function setupModalFilters() {
             document.getElementById('modal-search')?.addEventListener('input', function() {
                 currentModalFilters.search = this.value;
-                loadUsersToModal();
+                fetchUsers();
             });
             document.getElementById('modal-angkatan')?.addEventListener('change', function() {
                 currentModalFilters.angkatan = this.value;
-                loadUsersToModal();
+                fetchUsers();
             });
             document.getElementById('modal-jurusan')?.addEventListener('change', function() {
                 currentModalFilters.jurusan = this.value;
-                loadUsersToModal();
+                fetchUsers();
             });
             document.getElementById('modal-keahlian')?.addEventListener('change', function() {
                 currentModalFilters.keahlian = this.value;
-                loadUsersToModal();
+                fetchUsers();
             });
         }
 
         function onSubmitProjectForm(event) {
-            selectedUsers.owner = currentUser;
-            updateFormInputs();
-            cleanupInvalidTaskRows();
-            updateTaskUserOptions();
-        }
+    // Pastikan owner diisi dengan current user saat submit
+    if (currentUser) {
+        selectedUsers.owner = currentUser;
+    }
+    updateFormInputs();
+    cleanupInvalidTaskRows();
+    updateTaskUserOptions();
+}
 
         // Fungsi untuk mengontrol visibilitas section user selection
-        function toggleUserSelectionSection() {
-            const toggle = document.getElementById('project-collaborative-toggle');
-            const userSelectionSection = document.getElementById('user-selection-section');
-            const leaderInput = document.getElementById('selected-leader-id');
-            
-            if (toggle && userSelectionSection) {
-                if (toggle.checked) {
-                    userSelectionSection.style.display = 'block';
-                    // Jika toggle diaktifkan, pastikan leader input tidak required (opsional)
-                    if (leaderInput) leaderInput.removeAttribute('required');
-                } else {
-                    userSelectionSection.style.display = 'none';
-                    // Ketika toggle dimatikan, user auth menjadi owner + leader
-                    selectedUsers.owner = currentUser;
-                    selectedUsers.leader = currentUser;
-                    selectedUsers.members = [];
-                    updateFormInputs();
-                    renderSelectedUsers();
-                    updateTaskUserOptions();
-                    updateSelectedUsersBadge();
-                    saveSelectedUsersToStorage();
-                    // Leader menjadi tidak required karena sudah terisi sebagai currentUser
-                    if (leaderInput) leaderInput.removeAttribute('required');
-                }
+       function toggleUserSelectionSection() {
+    const toggle = document.getElementById('project-collaborative-toggle');
+    const userSelectionSection = document.getElementById('user-selection-section');
+    const leaderInput = document.getElementById('selected-leader-id');
+    
+    if (toggle && userSelectionSection) {
+        if (toggle.checked) {
+            userSelectionSection.style.display = 'block';
+            // Jika toggle diaktifkan, pastikan leader bisa dipilih dari modal
+            if (leaderInput) {
+                leaderInput.removeAttribute('required');
+                // Jangan otomatis set leader = currentUser
+                // Biarkan user memilih leader dari modal
+            }
+        } else {
+            userSelectionSection.style.display = 'none';
+            // Ketika toggle dimatikan, user auth menjadi owner + leader
+            selectedUsers.owner = currentUser;
+            selectedUsers.leader = currentUser; // Hanya ini yang otomatis
+            selectedUsers.members = [];
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
+            if (leaderInput) leaderInput.removeAttribute('required');
+        }
+    }
+}
+function refreshRoleSelections() {
+    const leaderId = selectedUsers.leader 
+        ? String(selectedUsers.leader.id) 
+        : null;
+    const ownerId = selectedUsers.owner 
+        ? String(selectedUsers.owner.id) 
+        : null;
+
+    document.querySelectorAll('.user-role-select').forEach(select => {
+        const userId = String(select.dataset.userId);
+        
+        // Reset value
+        select.value = '';
+        
+        // Set value berdasarkan selectedUsers
+        if (leaderId === userId) {
+            select.value = 'leader';
+        } else if (selectedUsers.members.some(m => String(m.id) === userId)) {
+            select.value = 'member';
+        }
+        
+        // Disable options yang tidak tersedia
+        const leaderOption = select.querySelector('option[value="leader"]');
+        const memberOption = select.querySelector('option[value="member"]');
+        
+        if (leaderOption) {
+            // Hanya disable leader jika:
+            // 1. Sudah ada leader lain DAN user ini BUKAN leader yang terpilih
+            // 2. User ini BUKAN owner (owner tetap bisa di select tapi akan ditolak di updateUserRole)
+            if (leaderId && leaderId !== userId && ownerId !== userId) {
+                leaderOption.disabled = true;
+                leaderOption.title = 'Leader sudah dipilih';
+            } else {
+                leaderOption.disabled = false;
+                leaderOption.title = '';
             }
         }
+        
+        if (memberOption) {
+            memberOption.disabled = false;
+        }
+        
+        // Disable select untuk owner (owner tidak boleh diganti role-nya)
+        if (ownerId === userId) {
+            select.disabled = true;
+            select.title = 'Owner tidak dapat diubah role-nya';
+        } else {
+            select.disabled = false;
+        }
+    });
+}
 
+function loadSelectedUsersFromStorage() {
+    if (restoreSelectedUsersFromStorage()) {
+        updateFormInputs();
+        return;
+    }
+
+    // Jangan set owner default di sini, biarkan user memilih saat menyimpan
+    // selectedUsers.owner = currentUser || null; // HAPUS BARIS INI
+    
+    const leaderId = document.getElementById('selected-leader-id')?.value;
+    const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
+
+    if (leaderId) selectedUsers.leader = getUserById(leaderId);
+    selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+}
         // Fungsi untuk update min date pada tanggal_akhir berdasarkan tanggal_mulai
         function setupDateValidation() {
             const tanggalMulaiInput = document.getElementById('tanggal_mulai');
@@ -774,6 +837,21 @@
                 }
             });
         }
+
+        document.addEventListener('click', function (e) {
+    const link = e.target.closest('#modal-pagination a');
+
+    if (link) {
+        e.preventDefault();
+
+        const url = link.getAttribute('href');
+        if (!url) return;
+
+        const page = new URL(url).searchParams.get('page') || 1;
+        fetchUsers(page);
+    }
+});
+
 
         document.addEventListener('DOMContentLoaded', function () {
             loadSelectedUsersFromForm();
