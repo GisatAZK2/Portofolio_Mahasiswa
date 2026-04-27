@@ -6,9 +6,9 @@
             <!-- Header -->
             <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Kelola Pengguna</h1>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white" data-translate="kll_pengguna" data-translate-page="admin"></h1>
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Kelola semua pengguna yang terdaftar dalam sistem
+                        <span data-translate="desc_kll_pengguna" data-translate-page="admin"></span>
                     </p>
                 </div>
                 <a href="{{ route('dosen.users.ViewCreate') }}"
@@ -16,7 +16,7 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Tambah Pengguna
+                    <span data-translate="add_user" data-translate-page="admin"></span>
                 </a>
             </div>
 
@@ -27,54 +27,103 @@
                         <!-- Search -->
                         <div class="lg:col-span-3">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pencarian</label>
-                            <div class="relative">
-                                <input type="text" name="search" value="{{ request('search') }}"
-                                    placeholder="Cari nama, username, atau email..."
-                                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                                <div class="absolute left-3 top-3">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
+                           <div class="relative">
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                placeholder="Cari data..."
+                                data-translate-placeholder="search_placeholder"
+                                data-translate-page="admin"
+                                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+
+                            <div class="absolute left-3 top-3">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
                             </div>
                         </div>
-                        <!-- Angkatan -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
-                            <select name="angkatan" class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                                <option value="">Semua Angkatan</option>
-                                @foreach($angkatans as $angkatanItem)
-                                    <option value="{{ $angkatanItem->id }}" {{ request('angkatan') == $angkatanItem->id ? 'selected' : '' }}>
-                                        {{ $angkatanItem->nama_angkatan }}
-                                    </option>
-                                @endforeach
-                            </select>
                         </div>
-                        <!-- Jurusan -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jurusan</label>
-                            <select name="jurusan" class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                                <option value="">Semua Jurusan</option>
-                                @foreach($jurusans as $jurusanItem)
-                                    <option value="{{ $jurusanItem->id_jurusan }}" {{ request('jurusan') == $jurusanItem->id_jurusan ? 'selected' : '' }}>
-                                        {{ $jurusanItem->nama_jurusan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <!-- Keahlian -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keahlian</label>
-                            <select name="keahlian" class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                                <option value="">Semua Keahlian</option>
-                                @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id_keahlian }}" {{ request('keahlian') == $keahlianItem->id_keahlian ? 'selected' : '' }}>
-                                        {{ $keahlianItem->nama_keahlian }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                       <!-- Angkatan -->
+<div>
+    <label
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        data-translate="angkatan"
+        data-translate-page="admin">
+        Angkatan
+    </label>
+
+    <select name="angkatan"
+        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+
+        <option value=""
+            data-translate="all_angkatan"
+            data-translate-page="admin">
+            Semua Angkatan
+        </option>
+
+        @foreach($angkatans as $angkatanItem)
+            <option value="{{ $angkatanItem->id }}"
+                {{ request('angkatan') == $angkatanItem->id ? 'selected' : '' }}>
+                {{ $angkatanItem->nama_angkatan }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+<!-- Jurusan -->
+<div>
+    <label
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        data-translate="jurusan"
+        data-translate-page="admin">
+        Jurusan
+    </label>
+
+    <select name="jurusan"
+        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+
+        <option value=""
+            data-translate="all_jurusan"
+            data-translate-page="admin">
+            Semua Jurusan
+        </option>
+
+        @foreach($jurusans as $jurusanItem)
+            <option value="{{ $jurusanItem->id_jurusan }}"
+                {{ request('jurusan') == $jurusanItem->id_jurusan ? 'selected' : '' }}>
+                {{ $jurusanItem->nama_jurusan }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+<!-- Keahlian -->
+<div>
+    <label
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        data-translate="keahlian"
+        data-translate-page="admin">
+        Keahlian
+    </label>
+
+    <select name="keahlian"
+        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+
+        <option value=""
+            data-translate="all_keahlian"
+            data-translate-page="admin">
+            Semua Keahlian
+        </option>
+
+        @foreach($keahlians as $keahlianItem)
+            <option value="{{ $keahlianItem->id_keahlian }}"
+                {{ request('keahlian') == $keahlianItem->id_keahlian ? 'selected' : '' }}>
+                {{ $keahlianItem->nama_keahlian }}
+            </option>
+        @endforeach
+    </select>
+</div>
                     </div>
                 </form>
             </div>
@@ -87,12 +136,12 @@
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pengguna</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Jurusan</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Angkatan</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Keahlian</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status Pengajuan</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aksi</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"><span data-translate="semua_user" data-translate-page="admin"></span></th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"><span data-translate="tbl_jrs" data-translate-page="admin"></span></th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"><span data-translate="tbl_agkt" data-translate-page="admin"></span></th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"><span data-translate="keahlian" data-translate-page="admin"></span></th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"><span data-translate="stat_pengajuan" data-translate-page="admin"></span></th>
+                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"><span data-translate="aksi" data-translate-page="admin"></span>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
@@ -245,25 +294,25 @@
                                 <!-- Details -->
                                 <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                                     <div>
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs">Jurusan</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-xs" data-translate="tbl_jrs" data-translate-page="admin"></p>
                                         <p class="font-medium text-gray-700 dark:text-gray-300">
                                             {{ $user->jurusan?->nama_jurusan ?? '-' }}
                                         </p>
                                     </div>
                                     <div>
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs">Angkatan</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-xs" data-translate="tbl_agkt" data-translate-page="admin"></p>
                                         <p class="font-medium text-gray-700 dark:text-gray-300">
                                             {{ $user->angkatan?->nama_angkatan ?? '-' }}
                                         </p>
                                     </div>
                                     <div class="col-span-2">
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs">Keahlian</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-xs" data-translate="keahlian" data-translate-page="admin"></p>
                                         <p class="font-medium text-gray-700 dark:text-gray-300">
                                             {{ $user->keahlian?->nama_keahlian ?? '-' }}
                                         </p>
                                     </div>
                                     <div class="col-span-2">
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs">Status Pengajuan</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-xs" data-translate="stat_pengajuan" data-translate-page="admin"></p>
                                         <div>
                                             @if($user->status_pengajuan)
                                                 @if($user->status_pengajuan == 'Di Terima')
@@ -298,7 +347,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
-                                    Lihat Portfolio
+                                    <span data-translate="see_portofolio" data-translate-page="admin"></span>
                                 </a>
 
                                 @if($user->status_pengajuan == 'Sedang Di Ajukan')

@@ -390,7 +390,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M5 13l4 4L19 7"></path>
                                                     </svg>
-                                                    Terima
+                                                    <span data-translate="acc" data-translate-page="dosen_stk"></span>
                                                 </button>
                                             </form>
 
@@ -401,7 +401,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M6 18L18 6M6 6l12 12"></path>
                                                 </svg>
-                                                Tolak
+                                                <span data-translate="rej" data-translate-page="dosen_stk"></span>
                                             </button>
                                         </div>
                                     @endif

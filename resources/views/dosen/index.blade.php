@@ -18,7 +18,7 @@
                         Dashboard Dosen
                     </h1>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">
-                        Selamat datang kembali, <span class="font-medium text-indigo-600 dark:text-indigo-400">{{ auth()->user()->nama_mahasiswa ?? auth()->user()->username }}</span>
+                         <span data-translate="welcome_back" data-translate-page="admin"></span><span class="font-medium text-indigo-600 dark:text-indigo-400">{{ auth()->user()->nama_mahasiswa ?? auth()->user()->username }}</span>
                     </p>
                 </div>
             </div>
