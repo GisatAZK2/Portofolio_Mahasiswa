@@ -834,6 +834,7 @@
                         @endif
                     @endif
                 </div>
+
                 <div class="flex-1 min-w-0 {{ session('sidebar_collapsed', false) ? 'lg:hidden' : '' }} text-left">
                     @if(Auth::user()->role === 'admin')
                         <p class="text-gray-900 dark:text-gray-100 text-sm font-medium truncate">{{ Auth::user()->name ?? 'Admin' }}</p>
@@ -864,6 +865,136 @@
                     </svg>
                     <span class="text-sm text-gray-700 dark:text-gray-200" data-translate="lihat_profil">Lihat Profil</span>
                 </a>
+                @endif
+
+                @if (Auth::check() && (Auth::user()->role == 'admin' || Auth::user()->role == 'dosen'))
+                <div x-data="{ showPhotoModal: false }" class="w-full">
+
+                    <!-- Button -->
+                    <button type="button"
+                        @click.stop="showPhotoModal = true"
+                        class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+
+                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12v7m0-7l-3 3m3-3l3 3M12 4a4 4 0 110 8 4 4 0 010-8z"/>
+                        </svg>
+
+                        <span class="text-sm text-gray-700 dark:text-gray-200">
+                    {{ autoTranslate('Foto Profil') }}
+                        </span>
+                    </button>
+
+                    <!-- Modal -->
+                    <div x-cloak
+                        x-show="showPhotoModal"
+                        x-transition.opacity
+                        class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 px-4">
+
+                        <div @click.stop
+                            class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+
+                            <!-- Header -->
+                            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                   {{ autoTranslate('Ubah')}}
+                                </h2>
+
+                                <button type="button"
+                                    @click="showPhotoModal = false"
+                                    class="text-gray-400 hover:text-red-500 text-xl">
+                                    ✕
+                                </button>
+                            </div>
+
+                            <!-- Form -->
+                            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PATCH')
+
+                                <div class="p-6">
+
+                                    <!-- Preview -->
+                                    <div class="flex justify-center mb-5">
+                                        <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700">
+
+                                            @if(Auth::user()->photo_profile)
+                                                <img id="preview-photo"
+                                                    src="{{ asset('storage/' . Auth::user()->photo_profile) }}"
+                                                    class="w-full h-full object-cover">
+                                            @else
+                                                <img id="preview-photo"
+                                                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}"
+                                                    class="w-full h-full object-cover">
+                                            @endif
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload -->
+                                    <label class="block cursor-pointer">
+                                        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center hover:border-indigo-500 transition">
+                                            <p class="text-sm text-gray-700 dark:text-gray-200">
+                                            {{ autoTranslate('PILIH GAMBAR') }}
+                                            </p>
+                                            <p class="text-xs text-gray-400 mt-1">
+                                                JPG, PNG, JPEG
+                                            </p>
+                                        </div>
+
+                                        <input type="file"
+                                            name="photo_profile"
+                                            accept="image/*"
+                                            class="hidden"
+                                            onchange="previewPhoto(event)">
+                                    </label>
+
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex justify-end gap-2">
+
+                                    <button type="button"
+                                        @click="showPhotoModal = false"
+                                        class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white">
+                                        {{ autoTranslate('Batal') }}
+                                    </button>
+
+                                    <button type="submit"
+                                        class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white">
+                                        {{ autoTranslate('Simpan') }}
+                                    </button>
+
+                                </div>
+                            </form>
+
+                        </div>
+
+                        <!-- Klik background close -->
+                        <div class="absolute inset-0 -z-10" @click="showPhotoModal = false"></div>
+                    </div>
+                </div>
+
+                <style>
+                [x-cloak]{
+                    display:none !important;
+                }
+                </style>
+
+                <script>
+                function previewPhoto(event){
+                    const file = event.target.files[0];
+                    if(!file) return;
+
+                    const reader = new FileReader();
+
+                    reader.onload = function(e){
+                        document.getElementById('preview-photo').src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(file);
+                }
+                </script>
                 @endif
                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf

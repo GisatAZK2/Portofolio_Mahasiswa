@@ -284,6 +284,9 @@ Route::prefix('{locale}')
             return view('components.offline');
         })->name('offline');
 
+    // admin update photo profile
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+
         Route::prefix('api/notifications')->group(function () {
     Route::get('/', [NotificationController::class, 'index']);
     Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
