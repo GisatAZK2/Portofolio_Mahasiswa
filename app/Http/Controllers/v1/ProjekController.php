@@ -154,43 +154,113 @@ class ProjekController extends Controller
 
     // FORM TAMBAH
     public function create(Request $request)
-    {
-        $search = $request->query('search', '');
-        $angkatan = $request->query('angkatan', '');
-        $jurusan = $request->query('jurusan', '');
-        $keahlian = $request->query('keahlian', '');
+{
+    $search = $request->query('search', '');
+    $angkatan = $request->query('angkatan', '');
+    $jurusan = $request->query('jurusan', '');
+    $keahlian = $request->query('keahlian', '');
 
-         $usersQuery = User::with(['angkatan', 'jurusan', 'keahlian'])
+    $authId = auth()->id(); // user login sekarang
+
+    $usersQuery = User::with(['angkatan', 'jurusan', 'keahlian'])
         ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan', 'id_keahlian')
         ->whereNotIn('role', ['admin', 'dosen'])
         ->where('is_active', 1)
-        ->where('status_pengajuan', 'Di Terima');
-        
-        if (!empty($search)) {
-            $usersQuery->where('nama_mahasiswa', 'like', '%' . $search . '%');
-        }
+        ->where('status_pengajuan', 'Di Terima')
+        ->where('id', '!=', $authId); // sembunyikan user login
 
-        if (!empty($angkatan)) {
-            $usersQuery->where('id_angkatan', $angkatan);
-        }
-
-        if (!empty($jurusan)) {
-            $usersQuery->where('id_jurusan', $jurusan);
-        }
-
-        if (!empty($keahlian)) {
-            $usersQuery->where('id_keahlian', $keahlian);
-        }
-
-        $users = $usersQuery->get();
-
-        // Get all angkatan and jurusan for filter dropdowns
-        $angkatanList = Angkatan::orderBy('tahun_masuk', 'desc')->get();
-        $jurusanList = Jurusan::orderBy('nama_jurusan')->get();
-        $keahlianList = Keahlian::orderBy('nama_keahlian')->get();
-
-        return view('project.views_create_project', compact('users', 'search', 'angkatan', 'jurusan', 'keahlian', 'angkatanList', 'jurusanList', 'keahlianList'));
+    if (!empty($search)) {
+        $usersQuery->where('nama_mahasiswa', 'like', '%' . $search . '%');
     }
+
+    if (!empty($angkatan)) {
+        $usersQuery->where('id_angkatan', $angkatan);
+    }
+
+    if (!empty($jurusan)) {
+        $usersQuery->where('id_jurusan', $jurusan);
+    }
+
+    if (!empty($keahlian)) {
+        $usersQuery->where('id_keahlian', $keahlian);
+    }
+
+    $users = $usersQuery->paginate(10);
+
+    if ($request->ajax()) {
+
+        $userListHtml = '';
+
+        if ($users->count() > 0) {
+            foreach ($users as $user) {
+
+                $userListHtml .= '
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        ' . ($user->photo_profile
+                            ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
+                            : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
+                                    . strtoupper(substr($user->nama_mahasiswa, 0, 1)) .
+                                  '</span>
+                               </div>'
+                        ) . '
+
+                        <div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">' . e($user->nama_mahasiswa) . '</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none"
+                                 title="' . e($user->email) . '">' . e($user->email) . '</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
+                            onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+
+                            <option value="">-- Pilih Role --</option>
+                            <option value="leader">Leader</option>
+                            <option value="member">Member</option>
+
+                        </select>
+                    </div>
+                </div>
+                ';
+            }
+        } else {
+            $userListHtml = '
+            <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+                Tidak ada mahasiswa yang sesuai filter.
+            </div>';
+        }
+
+        $paginationHtml = $users->render(
+            'vendor.pagination.custom_ajax',
+            ['groupName' => 'admin_project_user_selection']
+        )->toHtml();
+
+        return response()->json([
+            'userListHtml'   => $userListHtml,
+            'paginationHtml' => $paginationHtml,
+            'currentPage'    => $users->currentPage(),
+            'lastPage'       => $users->lastPage(),
+        ]);
+    }
+
+    $angkatanList = Angkatan::orderBy('tahun_masuk', 'desc')->get();
+    $jurusanList = Jurusan::orderBy('nama_jurusan')->get();
+    $keahlianList = Keahlian::orderBy('nama_keahlian')->get();
+
+    return view('project.views_create_project', compact(
+        'users',
+        'search',
+        'angkatan',
+        'jurusan',
+        'keahlian',
+        'angkatanList',
+        'jurusanList',
+        'keahlianList'
+    ));
+}
 
     protected function createProjectTasks(Project $project, array $tasks, bool $skipValidation = false)
     {

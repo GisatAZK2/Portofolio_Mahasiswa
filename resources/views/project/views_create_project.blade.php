@@ -78,15 +78,26 @@
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ autoTranslate('Pemilihan User Project') }}</h3>
-                        <button type="button" onclick="openUserModal()" 
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                {{ autoTranslate('Tambah User') }}
-                            </span>
-                        </button>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="openUserModal()" 
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    {{ autoTranslate('Tambah User') }}
+                                </span>
+                            </button>
+                            <button type="button" onclick="openUserModal()" 
+                                class="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    {{ autoTranslate('Edit') }}
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Selected Users Display -->
@@ -100,7 +111,7 @@
                 </div>
             </div>
 
-            <input type="hidden" id="selected-owner-id" value="{{ Auth::id() }}">
+            <input type="hidden" name="owner" id="selected-owner-id" value="{{ Auth::id() }}">
             <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader') }}">
             <input type="hidden" id="selected-members-ids" value="{{ old('members') ? implode(',', old('members')) : '' }}">
             <div id="selected-members-inputs" class="hidden"></div>
@@ -248,36 +259,77 @@
         </form>
     </div>
 
+    @php
+        $currentUserData = Auth::check()
+            ? Auth::user()->only(['id', 'nama_mahasiswa', 'photo_profile', 'email'])
+            : null;
+    @endphp
     <script>
-        @php
-            $currentUserData = Auth::check() 
-                ? Auth::user()->only(['id', 'nama_mahasiswa', 'photo_profile', 'email']) 
-                : null;
-        @endphp
-        const allUsers = @json($users);
+        const allUsers = @json($users->items());
         const currentUser = @json($currentUserData);
-        
+        const userSelectionStorageKey = 'project_selected_users';
         let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
         let selectedUsers = { owner: null, leader: null, members: [] };
         let taskIndex = 0;
+
+        function saveSelectedUsersToStorage() {
+            const payload = {
+                owner: selectedUsers.owner,
+                leader: selectedUsers.leader,
+                members: selectedUsers.members
+            };
+            localStorage.setItem(userSelectionStorageKey, JSON.stringify(payload));
+        }
+
+        function restoreSelectedUsersFromStorage() {
+            const stored = localStorage.getItem(userSelectionStorageKey);
+            if (!stored) return false;
+
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.owner) selectedUsers.owner = parsed.owner;
+                if (parsed.leader) selectedUsers.leader = parsed.leader;
+                if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
+                return true;
+            } catch (error) {
+                console.warn('Unable to restore selected users from storage:', error);
+                return false;
+            }
+        }
 
         function updateSelectedUsersBadge() {
             const badge = document.getElementById('selected-users-badge');
             if (!badge) return;
 
-            const count = (selectedUsers.leader ? 1 : 0) + selectedUsers.members.length;
+            let count = 0;
+            if (selectedUsers.owner) count++;
+            if (selectedUsers.leader) count++;
+            count += selectedUsers.members.length;
 
             if (count === 0) {
                 badge.innerHTML = '';
             } else {
-                badge.innerHTML = `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} terpilih</span>`;
+                badge.innerHTML = `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
             }
         }
 
         function updateTaskSectionVisibility() {
             const taskSection = document.getElementById('task-section');
             if (!taskSection) return;
-            taskSection.classList.remove('hidden');
+
+            let hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
+
+            if (hasUsers) {
+                taskSection.classList.remove('hidden');
+            } else {
+                taskSection.classList.add('hidden');
+                // Clear tasks saat tidak ada users
+                const container = document.getElementById('tasks-container');
+                if (container) {
+                    container.innerHTML = '';
+                    taskIndex = 0;
+                }
+            }
         }
 
         function openUserModal() {
@@ -297,7 +349,8 @@
         
         function filterUsersForModal() {
             return allUsers.filter(user => {
-                if (currentUser && String(user.id) === String(currentUser.id)) {
+                // Exclude current user only if not already selected as owner
+                if (currentUser && String(user.id) === String(currentUser.id) && !selectedUsers.owner) {
                     return false;
                 }
                 const keyword = currentModalFilters.search.toLowerCase().trim();
@@ -344,12 +397,14 @@
             }
 
             userList.innerHTML = filteredUsers.map(user => {
+                const isOwner = selectedUsers.owner?.id == user.id;
                 const isLeader = selectedUsers.leader?.id == user.id;
                 const isMember = selectedUsers.members.some(m => m.id == user.id);
-                const hasOtherLeader = selectedUsers.leader && !isLeader;
+                const hasOtherOwner = selectedUsers.owner && !isOwner;
+                const disableLeaderSelect = isLeader;
 
                 return `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg" data-user-id="${user.id}">
                         <div class="flex items-center gap-3">
                             ${user.photo_profile ?
                                 `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover">` :
@@ -363,9 +418,10 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)">
+                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ${user.id}, this.value)" ${disableLeaderSelect ? 'disabled' : ''}>
                                 <option value="">-- Pilih Role --</option>
-                                <option value="leader" ${isLeader ? 'selected' : ''} ${hasOtherLeader ? 'disabled' : ''}>Leader</option>
+                                <option value="owner" ${isOwner ? 'selected' : ''} ${hasOtherOwner ? 'disabled' : ''}>Owner</option>
+                                <option value="leader" ${isLeader ? 'selected' : ''}>Leader</option>
                                 <option value="member" ${isMember ? 'selected' : ''}>Member</option>
                             </select>
                         </div>
@@ -378,6 +434,13 @@
             const user = allUsers.find(u => u.id == userId);
             if (!user) return;
 
+            if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id != userId) {
+                if (!confirm('Owner sudah dipilih. Ganti owner?')) {
+                    selectElement.value = '';
+                    return;
+                }
+            }
+
             if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id != userId) {
                 if (!confirm('Leader sudah ada. Ganti leader?')) {
                     selectElement.value = '';
@@ -385,10 +448,13 @@
                 }
             }
 
+            if (selectedUsers.owner?.id == userId) selectedUsers.owner = null;
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
             selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
 
-            if (role === 'leader') {
+            if (role === 'owner') {
+                selectedUsers.owner = user;
+            } else if (role === 'leader') {
                 selectedUsers.leader = user;
             } else if (role === 'member') {
                 selectedUsers.members.push(user);
@@ -400,6 +466,7 @@
             updateTaskSectionVisibility();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
         }
         
         function confirmUserSelection() {
@@ -409,6 +476,7 @@
             updateTaskSectionVisibility();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
             closeUserModal();
         }
 
@@ -431,7 +499,10 @@
             if (!container || !noUsersMsg) return;
 
             const selected = [];
-            if (selectedUsers.leader) {
+            if (selectedUsers.owner) {
+                selected.push({ ...selectedUsers.owner, role: 'Owner' });
+            }
+            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
                 selected.push({ ...selectedUsers.leader, role: 'Leader' });
             }
             selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
@@ -464,29 +535,47 @@
                                 <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
                             </div>
                         </div>
-                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            ${user.role !== 'Owner' ? `
+                            <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                            ` : ''}
+                        </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function removeUser(userId) {
-            // Keep owner intact. If owner is also leader and removed, only clear leader.
-            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-            selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
-            updateFormInputs();
-            renderSelectedUsers();
-            // Refresh task UI
-            updateTaskSectionVisibility();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
+        function editUser(userId) {
+            // Open modal and focus on the specific user
+            openUserModal();
+            // Scroll to the user in modal after a short delay
+            setTimeout(() => {
+                const userElement = document.querySelector(`[data-user-id="${userId}"]`) || 
+                                   document.querySelector(`.user-role-select[onchange*="${userId}"]`)?.closest('.flex.items-center.justify-between');
+                if (userElement) {
+                    userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Highlight temporarily
+                    userElement.style.backgroundColor = '#fef3c7';
+                    setTimeout(() => userElement.style.backgroundColor = '', 2000);
+                }
+            }, 500);
         }
 
         function loadSelectedUsersFromForm() {
+            if (restoreSelectedUsersFromStorage()) {
+                updateFormInputs();
+                return;
+            }
+
             selectedUsers.owner = currentUser || null;
             const leaderId = document.getElementById('selected-leader-id')?.value;
             const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
@@ -645,6 +734,7 @@
                     renderSelectedUsers();
                     updateTaskUserOptions();
                     updateSelectedUsersBadge();
+                    saveSelectedUsersToStorage();
                     // Leader menjadi tidak required karena sudah terisi sebagai currentUser
                     if (leaderInput) leaderInput.removeAttribute('required');
                 }
