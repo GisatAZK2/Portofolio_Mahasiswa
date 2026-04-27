@@ -181,14 +181,13 @@
             </div>
 
             <!-- Copyright -->
-            <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-4 pt-3">
+            <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-4">
                 <p class="text-xs text-gray-500 dark:text-gray-400">
                     &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
                     {{ autoTranslate('All rights reserved.') }}
                 </p>
             </div>
         </div>
-    </div>
 </footer>
 
 <script>
