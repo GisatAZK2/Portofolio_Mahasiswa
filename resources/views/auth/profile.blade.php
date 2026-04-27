@@ -187,7 +187,7 @@
                     @method('PATCH')
 
                     <!-- Cover Image -->
-                    <div class="relative h-48 rounded-t-2xl overflow-hidden
+                     <div class="relative h-48 rounded-t-2xl overflow-hidden
                         @if(Auth::user()->background_url)
                             bg-cover bg-center
                         @else
@@ -207,7 +207,6 @@
                         </label>
                         <input type="file" name="background_url" id="background_input" class="hidden" accept="image/*" />
                     </div>
-
                     <!-- Profile Section -->
                     <div class="bg-white dark:bg-gray-800 rounded-b-2xl shadow-sm px-6 pb-8 sm:px-10">
 
@@ -1315,18 +1314,29 @@
 
             const reader = new FileReader();
             reader.onload = function (ev) {
-                const preview = document.getElementById('profile-preview');
-                const placeholder = document.getElementById('profile-preview-placeholder');
+                // Wait for skeleton to hide and actual content to show
+                const checkContentReady = () => {
+                    const actualContent = document.getElementById('actual-content');
+                    if (actualContent && actualContent.style.display !== 'none') {
+                        const preview = document.getElementById('profile-preview');
+                        const placeholder = document.getElementById('profile-preview-placeholder');
 
-                if (preview) {
-                    preview.src = ev.target.result;
-                } else if (placeholder) {
-                    const newImg = document.createElement('img');
-                    newImg.id = 'profile-preview';
-                    newImg.className = 'w-full h-full object-cover';
-                    newImg.src = ev.target.result;
-                    placeholder.replaceWith(newImg);
-                }
+                        if (preview) {
+                            preview.src = ev.target.result;
+                        } else if (placeholder) {
+                            const newImg = document.createElement('img');
+                            newImg.id = 'profile-preview';
+                            newImg.className = 'w-full h-full object-cover';
+                            newImg.src = ev.target.result;
+                            placeholder.replaceWith(newImg);
+                        }
+                    } else {
+                        // If not ready yet, wait a bit more
+                        setTimeout(checkContentReady, 100);
+                    }
+                };
+
+                checkContentReady();
             };
 
             reader.readAsDataURL(file);
@@ -1334,21 +1344,66 @@
         });
 
         // Background Preview
-        document.getElementById('background_input')?.addEventListener('change', function (e) {
+       document.getElementById('background_input')?.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function (ev) {
-                const coverDiv = document.querySelector('.relative.h-48');
-                coverDiv.style.backgroundImage = `url('${ev.target.result}')`;
-                coverDiv.classList.add('bg-cover', 'bg-center');
+                // Wait for skeleton to hide and actual content to show
+                const checkContentReady = () => {
+                    const actualContent = document.getElementById('actual-content');
+                    if (actualContent && actualContent.style.display !== 'none') {
+                        // Find the cover div in actual content
+                        const coverDiv = actualContent.querySelector('.relative.h-48');
+                        if (coverDiv) {
+                            coverDiv.style.backgroundImage = `url('${ev.target.result}')`;
+                            coverDiv.classList.add('bg-cover', 'bg-center');
+                        }
+
+                        // Show preview card
+                        const previewCard = document.getElementById('background-preview-card');
+                        const previewImage = document.getElementById('background-preview-image');
+                        if (previewCard && previewImage) {
+                            previewImage.src = ev.target.result;
+                            previewCard.classList.remove('hidden');
+                        }
+                    } else {
+                        // If not ready yet, wait a bit more
+                        setTimeout(checkContentReady, 100);
+                    }
+                };
+
+                checkContentReady();
             };
 
             reader.readAsDataURL(file);
             document.getElementById('save-button-container').classList.remove('hidden');
         });
 
+        // Clear Background Preview
+        function clearBackgroundPreview() {
+            const previewCard = document.getElementById('background-preview-card');
+            const backgroundInput = document.getElementById('background_input');
+            const actualContent = document.getElementById('actual-content');
+
+            if (!previewCard || !backgroundInput || !actualContent) return;
+
+            // Reset background to original
+            const coverDiv = actualContent.querySelector('.relative.h-48');
+            if (coverDiv) {
+                @if(Auth::user()->background_url)
+                    coverDiv.style.backgroundImage = `url('{{ asset('storage/' . Auth::user()->background_url) }}')`;
+                @else
+                    coverDiv.style.backgroundImage = '';
+                    coverDiv.classList.remove('bg-cover', 'bg-center');
+                @endif
+            }
+
+            // Clear input and hide preview
+            backgroundInput.value = '';
+            previewCard.classList.add('hidden');
+        }
         // YouTube Video Player
         function playVideo(element, embedUrl) {
             const container = element;
