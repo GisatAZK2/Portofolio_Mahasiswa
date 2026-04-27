@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Game;
 
 class Postingan extends Model
 {
-    use HasFactory;
+    use HasFactory,Cachable;
     protected $table = 'postingan';
     protected $primaryKey = 'id_postingan';
     public $incrementing = true;

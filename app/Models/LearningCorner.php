@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class LearningCorner extends Model
 {
-    use HasFactory;
+    use HasFactory,Cachable;
     protected $table = 'learning_corner';
     protected $primaryKey = 'id_learning_corner';   
     public $incrementing = true;                    
