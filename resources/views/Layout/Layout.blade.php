@@ -63,13 +63,14 @@
             <!-- Page content -->
             <main class="overflow-auto">
                 @yield('content')
+                
+            @include('components.footer')
             </main>
 
 
             <!-- Footer -->
             @include('components.chat-bot')
             @include('components.up-page')
-            @include('components.footer')
 
         </div>
     </div>

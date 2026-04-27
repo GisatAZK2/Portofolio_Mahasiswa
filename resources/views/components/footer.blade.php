@@ -1,4 +1,4 @@
-<footer class="dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-800 transition-all duration-300 z-20 hidden" id="mainFooter">
+<footer class="dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-800 transition-all duration-300 z-20 " id="mainFooter">
     <!-- Footer Content -->
     <div id="footerContent" class="transition-all duration-500 overflow-hidden">
         
@@ -197,14 +197,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const main = document.querySelector("main.overflow-auto");
     if (!footer) return;
 
-    function setBodyPadding() {
-        const footerHeight = footer.offsetHeight;
-        document.body.style.paddingBottom = footerHeight + "px";
-        if (main) {
-            main.style.paddingBottom = (footerHeight + 24) + "px";
-        }
-    }
-
     function toggleFooter() {
         let scrollTop;
         
@@ -214,27 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
             scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         }
 
-        if (scrollTop > 300) {
-            footer.classList.remove("hidden");
-        } else {
-            footer.classList.add("hidden");
-        }
     }
 
-    if (main) {
-        main.addEventListener("scroll", toggleFooter);
-    } else {
-        window.addEventListener("scroll", toggleFooter);
-    }
-
-    window.addEventListener("resize", () => {
-        setBodyPadding();
-        toggleFooter();
-    });
-
-    // Initial call
-    setTimeout(() => {
-        toggleFooter();
-    }, 100);
 });
 </script>
