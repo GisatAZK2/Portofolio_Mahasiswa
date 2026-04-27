@@ -119,7 +119,7 @@
             <!-- User selection modal -->
             <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
                 <div class="absolute inset-0 bg-black/40" onclick="closeUserModal()"></div>
-                <div class="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
+                        <div class="relative w-full max-w-xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
                     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih Leader / Member</h2>
                         <button type="button" onclick="closeUserModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">Tutup</button>
@@ -383,61 +383,58 @@
             });
         }
 
-        // GANTI updateUserRole()
-       function updateUserRole(selectElement, userId, role) {
-    const user = allUsers.find(u => u.id == userId);
-    if (!user) return;
+        function updateUserRole(selectElement, userId, role) {
+            const user = allUsers.find(u => u.id == userId);
+            if (!user) return;
 
-    // Cek apakah user adalah owner (tidak boleh diubah role-nya)
-    if (selectedUsers.owner && String(selectedUsers.owner.id) === String(userId)) {
-        alert('Owner tidak dapat diubah role-nya!');
-        selectElement.value = ''; // Reset select
-        refreshRoleSelections();
-        return;
-    }
+            const isOwner = selectedUsers.owner && String(selectedUsers.owner.id) === String(userId);
+            const isCurrentLeader = selectedUsers.leader && String(selectedUsers.leader.id) === String(userId);
 
-    // Cek jika mencoba memilih leader tapi sudah ada leader lain
-    if (role === 'leader' && selectedUsers.leader && String(selectedUsers.leader.id) !== String(userId)) {
-        const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${selectedUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
-        if (!confirmChange) {
-            selectElement.value = '';
+            // Owner may become leader at the same time, but should not be assigned member.
+            if (isOwner && role === 'member') {
+                alert('Owner tidak bisa menjadi member.');
+                selectElement.value = isCurrentLeader ? 'leader' : '';
+                refreshRoleSelections();
+                return;
+            }
+
+            // Jika owner menjadi leader sekaligus, biarkan fleksibel.
+            if (role === 'leader' && selectedUsers.leader && String(selectedUsers.leader.id) !== String(userId)) {
+                const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${selectedUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
+                if (!confirmChange) {
+                    selectElement.value = isCurrentLeader ? 'leader' : '';
+                    refreshRoleSelections();
+                    return;
+                }
+                selectedUsers.leader = null;
+            }
+
+            if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
+                selectedUsers.leader = null;
+            }
+            selectedUsers.members = selectedUsers.members.filter(
+                m => String(m.id) !== String(userId)
+            );
+
+            if (role === 'leader') {
+                selectedUsers.leader = user;
+            } else if (role === 'member') {
+                selectedUsers.members.push(user);
+            }
+
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
             refreshRoleSelections();
-            return;
+
+            const modal = document.getElementById('userModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeUserModal();
+            }
         }
-        // Hapus leader lama
-        selectedUsers.leader = null;
-    }
-
-    // Hapus dari manapun dia berada dulu
-    if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
-        selectedUsers.leader = null;
-    }
-    selectedUsers.members = selectedUsers.members.filter(
-        m => String(m.id) !== String(userId)
-    );
-
-    // Assign role baru
-    if (role === 'leader') {
-        selectedUsers.leader = user;
-    } else if (role === 'member') {
-        selectedUsers.members.push(user);
-    }
-    // role === '' => hapus saja (sudah di atas)
-
-    updateFormInputs();
-    renderSelectedUsers();
-    updateTaskSectionVisibility();
-    updateTaskUserOptions();
-    updateSelectedUsersBadge();
-    saveSelectedUsersToStorage();
-    refreshRoleSelections();
-    
-    // Tutup modal jika masih terbuka
-    const modal = document.getElementById('userModal');
-    if (modal && !modal.classList.contains('hidden')) {
-        closeUserModal();
-    }
-}
         
         function confirmUserSelection() {
             updateFormInputs();
@@ -470,7 +467,10 @@
 
             const selected = [];
             if (selectedUsers.owner) {
-                selected.push({ ...selectedUsers.owner, role: 'Owner' });
+                const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id
+                    ? 'Owner & Leader'
+                    : 'Owner';
+                selected.push({ ...selectedUsers.owner, role });
             }
             if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
                 selected.push({ ...selectedUsers.leader, role: 'Leader' });
@@ -522,6 +522,34 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function deleteTasksForUser(userId) {
+            const userIdStr = String(userId);
+            document.querySelectorAll('.task-item').forEach(taskItem => {
+                const select = taskItem.querySelector('.task-user-select');
+                if (select && String(select.value) === userIdStr) {
+                    taskItem.remove();
+                }
+            });
+            if (!document.querySelectorAll('.task-item').length) {
+                addTaskRow();
+            }
+        }
+
+        function removeUser(userId) {
+            deleteTasksForUser(userId);
+
+            if (selectedUsers.leader?.id == userId) {
+                selectedUsers.leader = null;
+            }
+            selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
+
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
         }
 
         function editUser(userId) {
@@ -698,14 +726,20 @@
         }
 
         function onSubmitProjectForm(event) {
-    // Pastikan owner diisi dengan current user saat submit
-    if (currentUser) {
-        selectedUsers.owner = currentUser;
-    }
-    updateFormInputs();
-    cleanupInvalidTaskRows();
-    updateTaskUserOptions();
-}
+            // Pastikan owner diisi dengan current user saat submit
+            if (currentUser) {
+                selectedUsers.owner = currentUser;
+            }
+
+            // Jika ada members tapi belum ada leader, jadikan owner sebagai leader saat submit.
+            if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
+                selectedUsers.leader = selectedUsers.owner;
+            }
+
+            updateFormInputs();
+            cleanupInvalidTaskRows();
+            updateTaskUserOptions();
+        }
 
         // Fungsi untuk mengontrol visibilitas section user selection
        function toggleUserSelectionSection() {
@@ -721,6 +755,14 @@
                 leaderInput.removeAttribute('required');
                 // Jangan otomatis set leader = currentUser
                 // Biarkan user memilih leader dari modal
+            }
+
+            if (selectedUsers.leader && selectedUsers.owner && String(selectedUsers.leader.id) === String(selectedUsers.owner.id) && selectedUsers.members.length === 0) {
+                selectedUsers.leader = null;
+                updateFormInputs();
+                renderSelectedUsers();
+                updateSelectedUsersBadge();
+                saveSelectedUsersToStorage();
             }
         } else {
             userSelectionSection.style.display = 'none';
@@ -744,29 +786,26 @@ function refreshRoleSelections() {
     const ownerId = selectedUsers.owner 
         ? String(selectedUsers.owner.id) 
         : null;
+    const hasSeparateLeader = leaderId && ownerId && leaderId !== ownerId;
 
     document.querySelectorAll('.user-role-select').forEach(select => {
         const userId = String(select.dataset.userId);
-        
-        // Reset value
+        const isOwner = ownerId === userId;
+        const isLeader = leaderId === userId;
+
         select.value = '';
-        
-        // Set value berdasarkan selectedUsers
-        if (leaderId === userId) {
+
+        if (isLeader) {
             select.value = 'leader';
         } else if (selectedUsers.members.some(m => String(m.id) === userId)) {
             select.value = 'member';
         }
-        
-        // Disable options yang tidak tersedia
+
         const leaderOption = select.querySelector('option[value="leader"]');
         const memberOption = select.querySelector('option[value="member"]');
-        
+
         if (leaderOption) {
-            // Hanya disable leader jika:
-            // 1. Sudah ada leader lain DAN user ini BUKAN leader yang terpilih
-            // 2. User ini BUKAN owner (owner tetap bisa di select tapi akan ditolak di updateUserRole)
-            if (leaderId && leaderId !== userId && ownerId !== userId) {
+            if (leaderId && leaderId !== userId && !isOwner) {
                 leaderOption.disabled = true;
                 leaderOption.title = 'Leader sudah dipilih';
             } else {
@@ -774,17 +813,25 @@ function refreshRoleSelections() {
                 leaderOption.title = '';
             }
         }
-        
+
         if (memberOption) {
             memberOption.disabled = false;
         }
-        
-        // Disable select untuk owner (owner tidak boleh diganti role-nya)
-        if (ownerId === userId) {
+
+        if (hasSeparateLeader && isLeader) {
             select.disabled = true;
-            select.title = 'Owner tidak dapat diubah role-nya';
+            select.title = 'Leader telah ditetapkan';
         } else {
             select.disabled = false;
+            select.title = '';
+        }
+
+        if (hasSeparateLeader && isOwner) {
+            const ownerLeaderOption = select.querySelector('option[value="leader"]');
+            if (ownerLeaderOption) {
+                ownerLeaderOption.disabled = true;
+                ownerLeaderOption.title = 'Leader sudah ditetapkan';
+            }
         }
     });
 }
