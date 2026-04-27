@@ -1,4 +1,4 @@
-<footer class="dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-800 transition-all duration-300 relative z-20 hidden" id="mainFooter">
+<footer class="dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-800 transition-all duration-300 z-20 hidden" id="mainFooter">
     <!-- Footer Content -->
     <div id="footerContent" class="transition-all duration-500 overflow-hidden">
         <div class="px-4 sm:px-6 py-3">
