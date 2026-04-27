@@ -558,7 +558,7 @@
             const userDiv = selectElement.closest('.flex.items-center.justify-between');
             if (!userDiv) return;
             const img = userDiv.querySelector('img');
-            const photo_profile = img ? img.src.replace('/storage/', '') : null;
+            const photo_profile = img?.src ? img.src.split('/storage/')[1]: null;
             const nameDiv = userDiv.querySelector('.font-medium');
             const nama_mahasiswa = nameDiv ? nameDiv.textContent : 'Unknown';
             const emailDiv = userDiv.querySelector('.text-sm');

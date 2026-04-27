@@ -203,7 +203,7 @@ Route::prefix('{locale}')
                 Route::get('/create', [DosenController::class, 'TambahProjects'])->name('create');
                 Route::post('/store', [DosenController::class, 'StoreProject'])->name('store');
                 Route::get('/Details', [DosenController::class, 'EditProjects'])->name('details');
-                Route::patch('/EditProject', [DosenController::class, 'UpdateProject'])->name('update');
+                Route::put('/EditProject', [DosenController::class, 'UpdateProject'])->name('update');
                 Route::delete('/DeleteProject', [DosenController::class, 'DestroyProject'])->name('delete');
                 Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
             });

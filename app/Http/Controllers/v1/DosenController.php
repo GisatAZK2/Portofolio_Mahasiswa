@@ -919,123 +919,137 @@ class DosenController extends Controller
     public function TambahProjects(Request $request)
     {
         $this->authorizeAccess();
+
         $search = $request->input('search');
         $angkatan = $request->input('angkatan');
         $jurusan = $request->input('jurusan');
         $keahlian = $request->input('keahlian');
 
-        // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
+        // Query mahasiswa + relasi
         $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-            ->where('role', 'mahasiswa');
+            ->where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Di Terima');
 
-        // Apply dosen filter scope
+        // Scope filter dosen
         $query = $this->getdosenFilterScope($query);
 
-        // Filter pencarian berdasarkan nama mahasiswa
+        // Search nama / username / email
         if ($search) {
-            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
         }
 
-        // Filter berdasarkan angkatan
+        // Filter angkatan
         if ($angkatan) {
             $query->where('id_angkatan', $angkatan);
         }
 
-        // Filter berdasarkan jurusan
+        // Filter jurusan
         if ($jurusan) {
             $query->where('id_jurusan', $jurusan);
         }
 
-        // Filter berdasarkan keahlian
+        // Filter keahlian
         if ($keahlian) {
             $query->where('id_keahlian', $keahlian);
         }
 
-        // Ambil data dengan pagination
-        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        // Pagination
+        $users = $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
-        // Ambil data untuk dropdown filter
+        // Semua user untuk JS multi member
+        $allUsers = $query->orderBy('created_at', 'desc')->get();
+
+        // Dropdown data
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
 
-        // Filter dropdown options based on dosen's attributes
+        // Batasi dropdown sesuai data dosen
         $dosen = Auth::user();
+
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
         }
+
         if ($dosen->id_keahlian) {
             $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
         }
+
         if ($dosen->id_angkatan) {
             $angkatans = $angkatans->where('id', $dosen->id_angkatan);
         }
 
-        return view('dosen.projects.views_create_project', compact(
-            'users',
-            'angkatans',
-            'jurusans',
-            'keahlians',
-            'search',
-            'angkatan',
-            'jurusan',
-            'keahlian'
-        ));
-    }
+        // AJAX request
+        if ($request->ajax()) {
 
+            $userListHtml = '';
 
+            if ($users->count() > 0) {
+                foreach ($users as $user) {
 
-    public function EditProjects(Request $request)
-    {
-        $this->authorizeAccess();
-        $id = $request->query('id');
+                    $photo = $user->photo_profile
+                        ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
+                        : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                            <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
+                        . strtoupper(substr($user->nama_mahasiswa, 0, 1)) .
+                        '</span>
+                       </div>';
 
-        if (!$id) {
-            abort(404, 'Project ID is required');
+                    $userListHtml .= '
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        ' . $photo . '
+                        <div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">'
+                        . e($user->nama_mahasiswa) .
+                        '</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="'
+                        . e($user->email) . '">'
+                        . e($user->email) .
+                        '</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
+                            onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                            <option value="">-- Pilih Role --</option>
+                            <option value="owner">Owner</option>
+                            <option value="leader">Leader</option>
+                            <option value="member">Member</option>
+                        </select>
+                    </div>
+                </div>';
+                }
+            } else {
+                $userListHtml = '
+            <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+                Tidak ada mahasiswa yang sesuai filter.
+            </div>';
+            }
+
+            $paginationHtml = $users->render(
+                'vendor.pagination.custom_ajax',
+                ['groupName' => 'dosen_project_user_selection']
+            )->toHtml();
+
+            return response()->json([
+                'userListHtml' => $userListHtml,
+                'paginationHtml' => $paginationHtml,
+                'currentPage' => $users->currentPage(),
+                'lastPage' => $users->lastPage(),
+            ]);
         }
 
-        $search = request()->input('search');
-        $angkatan = request()->input('angkatan');
-        $jurusan = request()->input('jurusan');
-        $keahlian = request()->input('keahlian');
-
-        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-            ->where('role', 'mahasiswa');
-        $query = $this->getDosenFilterScope($query);
-
-        if ($search)
-            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
-        if ($angkatan)
-            $query->where('id_angkatan', $angkatan);
-        if ($jurusan)
-            $query->where('id_jurusan', $jurusan);
-        if ($keahlian)
-            $query->where('id_keahlian', $keahlian);
-
-        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-        $angkatans = Angkatan::all();
-        $jurusans = Jurusan::all();
-        $keahlians = Keahlian::all();
-
-        // Load project dengan relasi yang diperlukan
-        $project = Project::with(['members', 'tasks', 'leader'])
-            ->where('id', $id)
-            ->firstOrFail();
-
-        $selectedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
-            ->merge($project->members->pluck('id'))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
-
-        $selectedUsers = User::whereIn('id', $selectedUserIds)->get();
-
-        return view('dosen.projects.views_edit_project', compact(
-            'project',
+        return view('dosen.projects.views_create_project', compact(
             'users',
-            'selectedUsers',
+            'allUsers',
             'angkatans',
             'jurusans',
             'keahlians',
@@ -1045,6 +1059,155 @@ class DosenController extends Controller
             'keahlian'
         ));
     }
+
+    // Edit Projects Dosen
+public function EditProjects(Request $request)
+{
+    $this->authorizeAccess();
+    $id = $request->query('id');
+
+    if (!$id) {
+        abort(404, 'Project ID is required');
+    }
+
+    // Get search & filter inputs
+    $search    = $request->input('search');
+    $angkatan  = $request->input('angkatan');
+    $jurusan   = $request->input('jurusan');
+    $keahlian  = $request->input('keahlian');
+
+    // Base query mahasiswa
+    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+        ->where('role', 'mahasiswa')
+        ->where('status_pengajuan', 'Di Terima');
+
+    // Search nama / username / email
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                ->orWhere('username', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
+        });
+    }
+
+    // Filter dropdown
+    if ($angkatan) {
+        $query->where('id_angkatan', $angkatan);
+    }
+
+    if ($jurusan) {
+        $query->where('id_jurusan', $jurusan);
+    }
+
+    if ($keahlian) {
+        $query->where('id_keahlian', $keahlian);
+    }
+
+    // Pagination
+    $users = $query->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
+
+    // Semua user untuk JS multi select semua halaman
+    $allUsers = (clone $query)->orderBy('created_at', 'desc')->get();
+
+    // Dropdown filter data
+    $angkatans = Angkatan::all();
+    $jurusans  = Jurusan::all();
+    $keahlians = Keahlian::all();
+
+    // Load project
+    $project = Project::with(['members', 'tasks', 'leader'])
+        ->where('id', $id)
+        ->firstOrFail();
+
+    // User terpilih
+    $selectedUserIds = collect([$project->id_mahasiswa, $project->leader_id])
+        ->merge($project->members->pluck('id'))
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
+    $selectedUsers = User::whereIn('id', $selectedUserIds)->get();
+
+    // AJAX Request
+    if ($request->ajax()) {
+
+        $userListHtml = '';
+
+        if ($users->count() > 0) {
+            foreach ($users as $user) {
+
+                $userListHtml .= '
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        ' . ($user->photo_profile
+                    ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
+                    : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                            <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
+                    . strtoupper(substr($user->nama_mahasiswa, 0, 1)) .
+                    '</span>
+                       </div>'
+                ) . '
+
+                        <div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">' . $user->nama_mahasiswa . '</div>
+
+                            <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none"
+                                title="' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '">
+                                ' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
+                            onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                            
+                            <option value="">-- Pilih Role --</option>
+                            <option value="owner">Owner</option>
+                            <option value="leader">Leader</option>
+                            <option value="member">Member</option>
+
+                        </select>
+                    </div>
+                </div>';
+            }
+        } else {
+            $userListHtml = '
+            <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+                Tidak ada mahasiswa yang sesuai filter.
+            </div>';
+        }
+
+        $paginationHtml = $users
+            ->render('vendor.pagination.custom_ajax', [
+                'groupName' => 'dosen_project_user_selection'
+            ])->toHtml();
+
+        return response()->json([
+            'userListHtml'   => $userListHtml,
+            'paginationHtml' => $paginationHtml,
+            'currentPage'    => $users->currentPage(),
+            'lastPage'       => $users->lastPage(),
+        ]);
+    }
+
+    return view('dosen.projects.views_edit_project', compact(
+        'project',
+        'users',
+        'allUsers',
+        'selectedUsers',
+        'angkatans',
+        'jurusans',
+        'keahlians',
+        'search',
+        'angkatan',
+        'jurusan',
+        'keahlian'
+    ));
+}
 
     public function StoreProject(Request $request)
     {
