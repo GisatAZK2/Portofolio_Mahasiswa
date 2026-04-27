@@ -71,19 +71,19 @@ export function showLoading(message = 'Memproses...') {
 export function closeLoading() {
     Swal.close();
 }
-
 export async function showConfirm() {
     const result = await Swal.fire({
         title: translate('confirm_delete_title'),
-        text: showPageInfo('confirm_delete_text', 'warning', 3000),
-      
+        text: showPageInfo('confirm_delete_text', 'warning', 10000),
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#6b7280',
         confirmButtonText: translate('confirm_delete_yes'),
         cancelButtonText: translate('cancel'),
-        reverseButtons: true
+        reverseButtons: true,
+        timer: 7000,
+        timerProgressBar: true
     });
 
     return result.isConfirmed;
