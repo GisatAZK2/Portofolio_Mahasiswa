@@ -150,11 +150,11 @@
                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                     Edit
                                 </a>
-                                <form action="{{ route('admin.notifications.destroy', app()->getLocale()) }}?id={{ $notification->id }}" method="POST" class="inline">
+                                <form action="{{ route('admin.notifications.destroy', app()->getLocale()) }}?id={{ $notification->id }}" method="POST" class="inline"
+                                 onsubmit="return handleDeleteConfirm(event)">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                            onclick="return confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')">
+                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                         Hapus
                                     </button>
                                 </form>
@@ -211,14 +211,16 @@
                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-sm">
                                     Edit
                                 </a>
-                                <form action="{{ route('admin.notifications.destroy', app()->getLocale()) }}?id={{ $notification->id }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-sm"
-                                            onclick="return confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')">
-                                        Hapus
-                                    </button>
-                                </form>
+                           <form action="{{ route('admin.notifications.destroy', app()->getLocale()) }}?id={{ $notification->id }}" method="POST" class="inline"
+                                onsubmit="return handleDeleteConfirm(event)">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                    Hapus
+                                </button>
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -250,6 +252,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const rowCheckboxesMobile = document.querySelectorAll('.row-checkbox-mobile');
     const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
 
+    window.handleDeleteConfirm = async function (event) {
+        event.preventDefault();
+
+        const form = event.target;
+
+        const confirmed = await showConfirm();
+
+        if (confirmed) {
+            form.submit();
+        }
+
+        return false;
+    };
+
+
     function updateBulkDeleteButton() {
         const allCheckboxes = document.querySelectorAll('.row-checkbox:checked, .row-checkbox-mobile:checked');
         bulkDeleteBtn.disabled = allCheckboxes.length === 0;
@@ -258,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('bulk-action-form');
         const existingInputs = form.querySelectorAll('input[name="selected_ids[]"]:not(.row-checkbox):not(.row-checkbox-mobile)');
         existingInputs.forEach(input => input.remove());
+        
         
         allCheckboxes.forEach(checkbox => {
             const hiddenInput = document.createElement('input');
