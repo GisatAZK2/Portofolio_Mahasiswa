@@ -212,6 +212,10 @@
                             </svg>
                             {{ $postingan->komentar->count() }}
                         </span>
+                        <button onclick="toggleShare(this)" class="comment-toggle flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition">
+                            <svg fill="none" class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21.707,11.293l-8-8A.99991.99991,0,0,0,12,4V7.54492A11.01525,11.01525,0,0,0,2,18.5V20a1,1,0,0,0,1.78418.62061,11.45625,11.45625,0,0,1,7.88672-4.04932c.0498-.00635.1748-.01611.3291-.02588V20a.99991.99991,0,0,0,1.707.707l8-8A.99962.99962,0,0,0,21.707,11.293ZM14,17.58594V15.5a.99974.99974,0,0,0-1-1c-.25488,0-1.2959.04932-1.56152.085A14.00507,14.00507,0,0,0,4.05176,17.5332,9.01266,9.01266,0,0,1,13,9.5a.99974.99974,0,0,0,1-1V6.41406L19.58594,12Z"/></svg>
+                        </button>
                     </div>
                 </div>
 
@@ -372,6 +376,40 @@
 
     <!-- JavaScript -->
     <script>
+        function toggleShare(btn) {
+            const url = window.location.href;
+            const title = document.title;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: title,
+                    url: url
+                }).catch(() => {});
+                return;
+            }
+
+            navigator.clipboard.writeText(url).then(() => {
+                const oldHtml = btn.innerHTML;
+
+                btn.innerHTML = `
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 13l4 4L19 7"/>
+                    </svg>
+                `;
+
+                btn.classList.add('text-green-500');
+
+                setTimeout(() => {
+                    btn.innerHTML = oldHtml;
+                    btn.classList.remove('text-green-500');
+                }, 2000);
+            }).catch(() => {
+                alert('Gagal menyalin link');
+            });
+        }
+        
         function editComment(commentId) {
             document.getElementById('comment-content-' + commentId).classList.add('hidden');
             document.getElementById('edit-form-' + commentId).classList.remove('hidden');
