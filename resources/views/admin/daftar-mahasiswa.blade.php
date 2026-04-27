@@ -100,6 +100,26 @@
                 </p>
             </div>
             <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <button type="button" onclick="exportToExcel()"
+        class="bg-green-500 hover:bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <span class="hidden sm:inline">Export Excel</span>
+        <span class="sm:hidden">Excel</span>
+    </button>
+
+    <!-- Tombol Export Word -->
+    <button type="button" onclick="exportToWord()"
+        class="bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <span class="hidden sm:inline">Export Word</span>
+        <span class="sm:hidden">Word</span>
+    </button>
+
+
                 <form id="bulkDeleteForm" action="{{ route('admin.users.bulkDestroy', ['locale' => app()->getLocale()]) }}" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
@@ -635,6 +655,281 @@
 @push('scripts')
     <script>
         let allEmailsVisible = true;
+    // ============ EXPORT FUNCTIONS - SIMPLE VERSION ============
+    
+    // Fungsi untuk mengumpulkan data pengguna
+    function getExportData() {
+        const users = [];
+        const userRows = document.querySelectorAll('.paginated-item:not(.hidden), tbody .paginated-item');
+        
+        userRows.forEach(row => {
+            if (row.offsetParent !== null || row.style.display !== 'none') {
+                let userData = {};
+                
+                // Desktop view
+                const desktopCells = row.querySelectorAll('td');
+                if (desktopCells.length > 0) {
+                    userData = {
+                        nama: row.querySelector('td:nth-child(3) .font-medium')?.innerText || '-',
+                        username: row.querySelector('td:nth-child(3) .text-sm')?.innerText?.replace('@', '') || '-',
+                        email: getEmailText(row),
+                        role: row.querySelector('td:nth-child(5) span')?.innerText || '-',
+                        status_pengajuan: getStatusPengajuanText(row),
+                        status_aktif: getStatusAktifText(row),
+                        jurusan: row.querySelector('td:nth-child(8)')?.innerText?.trim() || '-',
+                        angkatan: row.querySelector('td:nth-child(9)')?.innerText?.trim() || '-'
+                    };
+                } 
+                // Mobile view
+                else {
+                    userData = {
+                        nama: row.querySelector('h3')?.innerText || '-',
+                        username: row.querySelector('.text-gray-500')?.innerText?.replace('@', '') || '-',
+                        email: getMobileEmailText(row),
+                        role: row.querySelector('.rounded-full')?.innerText || '-',
+                        status_pengajuan: getMobileStatusPengajuanText(row),
+                        status_aktif: getMobileStatusAktifText(row),
+                        jurusan: getMobileJurusanText(row),
+                        angkatan: getMobileAngkatanText(row)
+                    };
+                }
+                
+                users.push(userData);
+            }
+        });
+        
+        return users;
+    }
+    
+    function getEmailText(row) {
+        const emailCell = row.querySelector('td:nth-child(4) .email-cell');
+        if (emailCell && emailCell.textContent !== '...') {
+            return emailCell.textContent;
+        }
+        const emailData = row.querySelector('td:nth-child(4) [data-email]')?.getAttribute('data-email');
+        return emailData || '-';
+    }
+    
+    function getStatusPengajuanText(row) {
+        const statusSpan = row.querySelector('td:nth-child(6) span');
+        if (statusSpan) {
+            let text = statusSpan.innerText.replace('✓', '').replace('✗', '').replace('⏳', '').trim();
+            if (text === 'Diterima') return 'Di Terima';
+            if (text === 'Ditolak') return 'Di Tolak';
+            if (text === 'Menunggu') return 'Sedang Di Ajukan';
+            return text;
+        }
+        return '-';
+    }
+    
+    function getStatusAktifText(row) {
+        const activeSpan = row.querySelector('td:nth-child(7) span');
+        if (activeSpan) {
+            return activeSpan.innerText.includes('Aktif') ? 'Aktif' : 'Tidak Aktif';
+        }
+        return '-';
+    }
+    
+    function getMobileEmailText(row) {
+        const emailEl = row.querySelector('.break-words');
+        return emailEl?.innerText || '-';
+    }
+    
+    function getMobileStatusPengajuanText(row) {
+        const statusText = row.querySelector('.text-green-600, .text-red-600, .text-yellow-600');
+        if (statusText) {
+            let text = statusText.innerText.replace('✓', '').replace('✗', '').replace('⏳', '').trim();
+            if (text === 'Diterima') return 'Di Terima';
+            if (text === 'Ditolak') return 'Di Tolak';
+            if (text === 'Menunggu') return 'Sedang Di Ajukan';
+            return text;
+        }
+        return '-';
+    }
+    
+    function getMobileStatusAktifText(row) {
+        const activeText = Array.from(row.querySelectorAll('.text-green-600, .text-red-600'))
+            .find(el => el.innerText.includes('Aktif') || el.innerText.includes('Tidak'));
+        if (activeText) {
+            return activeText.innerText.replace('✓', '').replace('✗', '').trim();
+        }
+        return '-';
+    }
+    
+    function getMobileJurusanText(row) {
+        const jurusanDiv = Array.from(row.querySelectorAll('.flex.justify-between'))
+            .find(div => div.innerText.includes('Jurusan:'));
+        return jurusanDiv ? jurusanDiv.querySelector('span:last-child')?.innerText || '-' : '-';
+    }
+    
+    function getMobileAngkatanText(row) {
+        const angkatanDiv = Array.from(row.querySelectorAll('.flex.justify-between'))
+            .find(div => div.innerText.includes('Angkatan:'));
+        return angkatanDiv ? angkatanDiv.querySelector('span:last-child')?.innerText || '-' : '-';
+    }
+    
+    // Export ke Excel (CSV)
+   function exportToExcel() {
+    const users = getExportData();
+
+    if (users.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak Ada Data',
+            text: 'Tidak ada data pengguna yang dapat diexport.',
+            confirmButtonColor: '#3b82f6'
+        });
+        return;
+    }
+
+    const columns = [
+        'NO',
+        'NAMA LENGKAP',
+        'USERNAME',
+        'EMAIL',
+        'ROLE',
+        'STATUS PENGAJUAN',
+        'STATUS AKTIF',
+        'JURUSAN/PRODI',
+        'ANGKATAN'
+    ];
+
+    let csvContent = '\uFEFF';
+
+    csvContent += columns.map(col => `"${col}"`).join(';') + '\r\n';
+
+    users.forEach((user, index) => {
+        const row = [
+            index + 1,
+            user.nama,
+            user.username,
+            user.email,
+            user.role,
+            user.status_pengajuan,
+            user.status_aktif,
+            user.jurusan,
+            user.angkatan
+        ];
+
+        csvContent += row.map(item =>
+            `"${String(item).replace(/"/g, '""')}"`
+        ).join(';') + '\r\n';
+    });
+
+    const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;'
+    });
+
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.href = url;
+    link.download = `data_pengguna_${formatDate(new Date())}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Export Berhasil!',
+        text: `${users.length} data berhasil diexport.`,
+        timer: 1500,
+        showConfirmButton: false
+    });
+}
+
+    
+    // Export ke Word (Simple)
+    function exportToWord() {
+        const users = getExportData();
+        
+        if (users.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Ada Data',
+                text: 'Tidak ada data pengguna yang dapat diexport.',
+                confirmButtonColor: '#3b82f6'
+            });
+            return;
+        }
+        
+        const date = new Date();
+        
+        let html = `<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Data Pengguna</title>
+            <style>
+                table { border-collapse: collapse; width: 100%; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background: #f0f0f0; }
+            </style>
+        </head>
+        <body>
+            <h3>Data Pengguna - ${formatDate(date)}</h3>
+            <p>Total: ${users.length} pengguna</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>NO</th><th>NAMA LENGKAP</th><th>USERNAME</th><th>EMAIL</th>
+                        <th>ROLE</th><th>STATUS PENGAJUAN</th><th>STATUS AKTIF</th>
+                        <th>JURUSAN/PRODI</th><th>ANGKATAN</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        users.forEach((user, i) => {
+            html += `<tr>
+                <td>${i+1}</td>
+                <td>${escapeHtml(user.nama)}</td>
+                <td>${escapeHtml(user.username)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td>${escapeHtml(user.role)}</td>
+                <td>${escapeHtml(user.status_pengajuan)}</td>
+                <td>${escapeHtml(user.status_aktif)}</td>
+                <td>${escapeHtml(user.jurusan)}</td>
+                <td>${escapeHtml(user.angkatan)}</td>
+            </tr>`;
+        });
+        
+        html += `</tbody></table></body></html>`;
+        
+        const blob = new Blob([html], { type: 'application/msword' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', `laporan_pengguna_${formatDate(date)}.doc`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Export Berhasil!',
+            text: `${users.length} data berhasil diexport.`,
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+    
+    function formatDate(date) {
+        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    }
+    
+    function escapeHtml(str) {
+        if (!str || str === '-') return '-';
+        return String(str).replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
 
         function toggleIndividualEmailVisibility(button) {
             const emailCell = button.previousElementSibling;
