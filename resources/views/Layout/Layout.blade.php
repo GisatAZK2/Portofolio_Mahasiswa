@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,71 +14,80 @@
     @endif
     @yield('meta')
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
-    <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
-    
     <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@10/dist/bundle/index.umd.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .flex.h-screen {
+            overflow-x: hidden;
+            min-height: 100vh;
+            height: 100%;
+        }
+        main {
+            position: relative;
+            z-index: 1;
+            min-width: 0;   
+            width: 100%;
+            overflow-x: auto;
+            flex: 1 1 auto;
+        }
+        #sidebar {
+            z-index: 40;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        @media (max-width: 1023px) {
+            main {
+                z-index: 1;
+            }
+        }
+        
+    </style>
+
     <script>
-        if (
-            localStorage.getItem('theme') === 'dark' ||
-            (!localStorage.getItem('theme') &&
-                window.matchMedia('(prefers-color-scheme: dark)').matches)
-        ) {
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
 </head>
-
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
-{{-- Splash Screen Overlay --}}
     @if(!request()->has('skip_splash'))
         @include('components.splash')
     @endif
 
-        
-    <!-- Overlay backdrop mobile -->
-    <div id="sidebar-overlay" class="fixed inset- bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
-    </div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
 
     <div class="flex h-screen">
-
-        <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-4
-        z-[9999] flex flex-col gap-3 w-full max-w-sm px-4 sm:px-0 items-center sm:items-end">
-        </div>
-
-
-        <!-- Sidebar -->
         @include('components.sidebar')
 
-        <div class="flex-1 flex flex-col">
-
-            <!-- Header -->
+        <div class="flex-1 flex flex-col min-w-0 h-full">
             @include('components.header')
 
-            <!-- Page content -->
-            <main class="overflow-auto">
-                @yield('content')
-                
-            @include('components.footer')
+            <main class="overflow-x-auto flex-1">
+                <div class="content-wrapper">
+                    @yield('content')
+                </div>
             </main>
 
-
-            <!-- Footer -->
+            @include('components.footer')
             @include('components.chat-bot')
             @include('components.up-page')
-
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
             const toggleBtn = document.getElementById('toggle-sidebar');
             const hamburger = document.getElementById('sidebar-hamburger');
             const closeIcon = document.getElementById('sidebar-close');
@@ -89,21 +96,16 @@
             const closeSidebarBtn = document.getElementById('close-sidebar');
             const toggleSearch = document.getElementById('toggle-search-mobile');
             const searchDrop = document.getElementById('mobile-search-dropdown');
-
-            // Toggle collapse untuk desktop
             const toggleDesktopBtn = document.getElementById('toggle-desktop-sidebar');
             const toggleIcon = document.getElementById('toggleCollapseIcon');
 
             if (toggleDesktopBtn) {
                 toggleDesktopBtn.addEventListener('click', () => {
                     const isCollapsed = sidebar.classList.contains('lg:w-20');
-
-                    // Toggle class
                     if (isCollapsed) {
                         sidebar.classList.remove('lg:w-20');
                         sidebar.classList.add('lg:w-62');
                         toggleIcon.classList.remove('rotate-180');
-
                         fetch('/toggle-sidebar', {
                             method: 'POST',
                             headers: {
@@ -116,13 +118,9 @@
                         sidebar.classList.remove('lg:w-62');
                         sidebar.classList.add('lg:w-20');
                         toggleIcon.classList.add('rotate-180');
-
                         document.querySelectorAll('[x-data]').forEach(el => {
-                            if (el.__x) {
-                                el.__x.$data.open = false;
-                            }
+                            if (el.__x) el.__x.$data.open = false;
                         });
-
                         fetch('/toggle-sidebar', {
                             method: 'POST',
                             headers: {
@@ -137,75 +135,39 @@
 
             if (toggleSearch && searchDrop) {
                 toggleSearch.addEventListener('click', () => {
-
                     const isClosed = searchDrop.classList.contains('max-h-0');
-
                     if (isClosed) {
-
                         searchDrop.style.maxHeight = '0px';
-
-                        searchDrop.classList.remove(
-                            'max-h-0',
-                            'opacity-0',
-                            '-translate-y-2',
-                            'scale-y-95'
-                        );
-
-                        searchDrop.classList.add(
-                            'opacity-100',
-                            'translate-y-0',
-                            'scale-y-100'
-                        );
-
+                        searchDrop.classList.remove('max-h-0', 'opacity-0', '-translate-y-2', 'scale-y-95');
+                        searchDrop.classList.add('opacity-100', 'translate-y-0', 'scale-y-100');
                         requestAnimationFrame(() => {
-                            searchDrop.style.maxHeight =
-                                searchDrop.scrollHeight + 'px';
+                            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
                         });
-
                     } else {
-
-                        searchDrop.style.maxHeight =
-                            searchDrop.scrollHeight + 'px';
-
+                        searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
                         requestAnimationFrame(() => {
                             searchDrop.style.maxHeight = '0px';
                         });
-
-                        searchDrop.classList.add(
-                            'opacity-0',
-                            '-translate-y-2',
-                            'scale-y-95',
-                            'max-h-0'
-                        );
-
-                        searchDrop.classList.remove(
-                            'opacity-100',
-                            'translate-y-0',
-                            'scale-y-100'
-                        );
+                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95', 'max-h-0');
+                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
                     }
                 });
             }
 
-         function deteksiJaringan() {
+            function deteksiJaringan() {
                 if (navigator.onLine) {
                     console.log("Status: Online");
                 } else {
                     console.log("Status: Offline");
-                    
                     const offlineUrl = "{{ route('offline', app()->getLocale()) }}";
-                    
                     if (window.location.href !== offlineUrl) {
                         window.location.href = offlineUrl;
                     }
                 }
             }
-
             deteksiJaringan();
             window.addEventListener('online', () => console.log("Kembali Online"));
             window.addEventListener('offline', deteksiJaringan);
-
-
 
             document.addEventListener('click', (e) => {
                 if (!searchDrop || !toggleSearch) return;
@@ -217,17 +179,8 @@
                         requestAnimationFrame(() => {
                             searchDrop.style.maxHeight = '0px';
                         });
-                        searchDrop.classList.add(
-                            'opacity-0',
-                            '-translate-y-2',
-                            'scale-y-95',
-                            'max-h-0'
-                        );
-                        searchDrop.classList.remove(
-                            'opacity-100',
-                            'translate-y-0',
-                            'scale-y-100'
-                        );
+                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95', 'max-h-0');
+                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
                     }
                 }
             });
@@ -240,22 +193,9 @@
                     overlay.classList.add('block');
                 }
                 document.body.style.overflow = 'hidden';
-
                 if (hamburger) hamburger.classList.add('hidden');
                 if (closeIcon) closeIcon.classList.remove('hidden');
             }
-
-            // Fungsi untuk menutup sidebar saat klik di luar sidebar
-            document.addEventListener('click', (e) => {
-                if (!sidebar || !toggleBtn) return;
-
-                const isClickInsideSidebar = sidebar.contains(e.target);
-                const isClickOnToggle = toggleBtn.contains(e.target);
-
-                if (!isClickInsideSidebar && !isClickOnToggle) {
-                    closeSidebar();
-                }
-            });
 
             function closeSidebar() {
                 if (!sidebar) return;
@@ -265,7 +205,6 @@
                     overlay.classList.add('hidden');
                 }
                 document.body.style.overflow = '';
-
                 if (hamburger) hamburger.classList.remove('hidden');
                 if (closeIcon) closeIcon.classList.add('hidden');
             }
@@ -279,37 +218,26 @@
                     }
                 });
             }
-
             if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
             if (overlay) overlay.addEventListener('click', closeSidebar);
 
-            // Fungsi toggle dropdown (fallback)
             window.toggleDropdown = function (menuId) {
                 const menu = document.getElementById(menuId + 'Menu');
                 const arrow = document.getElementById(menuId + 'Arrow');
-
                 if (menu && arrow) {
                     menu.classList.toggle('hidden');
                     arrow.classList.toggle('rotate-180');
                 }
             };
 
-
             window.toggleTheme = function () {
                 const html = document.documentElement;
                 html.classList.toggle('dark');
-
-                localStorage.setItem(
-                    'theme',
-                    html.classList.contains('dark') ? 'dark' : 'light'
-                );
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
             };
         });
-
-
     </script>
 
     @stack('scripts')
 </body>
-
 </html>

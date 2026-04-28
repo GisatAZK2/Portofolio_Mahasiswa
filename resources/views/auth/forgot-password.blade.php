@@ -1,34 +1,15 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+@extends('auth.layout')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Lupa Password - Portal Mahasiswa</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+@section('title', autoTranslate('Forgot'))
 
-<body
-    class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+@section('content')
 
-    <!-- Background Noise -->
-    <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
+    <main class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
 
     <div class="relative w-full max-w-lg">
 
         <!-- Header dengan efek miring -->
-        <div class="relative mb-8 sm:mb-12">
-            <a href="{{ route('login') }}" class="inline-flex items-center text-gray-500 hover:text-gray-700 mb-4 group transition-all duration-300">
-                <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Kembali ke Login
-            </a>
+        <div class="relative mb-13 sm:mb-15">
             <h1
                 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block">
                 Lupa Password
@@ -41,7 +22,7 @@
         </div>
 
         <!-- Form Forgot Password -->
-        <form method="POST" action="{{ route('password.sendOtp') }}" class="space-y-7 sm:space-y-8">
+        <form method="POST" action="{{ route('password.sendOtp') }}" class="space-y-7 mt-30 sm:space-y-8">
             @csrf
 
             <!-- Informasi Alert -->
@@ -77,7 +58,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="mt-8 flex flex-col gap-6 sm:gap-8">
+            <div class="mt-20 flex flex-col gap-6 sm:gap-8">
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <!-- Cancel Button -->
                     <a href="{{ route('login') }}"
@@ -95,6 +76,7 @@
 
         </form>
     </div>
+    </main>
 
     <script>
         // SweetAlert functions
@@ -285,18 +267,6 @@
             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
         }
         
-        /* Scroll behavior */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Loading animation untuk button */
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+      
     </style>
-
-</body>
-
-</html>
+@endsection

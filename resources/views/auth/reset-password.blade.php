@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+@extends('auth.layout')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Reset Password - Portal Mahasiswa</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+@section('title', autoTranslate('Reset Password'))
 
-<body
-    class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+@section('content')
 
-    <!-- Background Noise -->
-    <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
+    <main class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
+
 
     <div class="relative w-full max-w-lg">
 
@@ -164,6 +152,7 @@
 
         </form>
     </div>
+</mian>
 
     <script>
         // Password visibility toggle function
@@ -469,7 +458,4 @@
             transition: width 0.3s ease, background-color 0.3s ease;
         }
     </style>
-
-</body>
-
-</html>
+@endsection
