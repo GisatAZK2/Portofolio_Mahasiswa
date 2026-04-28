@@ -10,17 +10,21 @@ return new class extends Migration
     {
         Schema::create('passkeys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('name'); // Nama device (contoh: "iPhone 15")
-            $table->text('credential_id'); // Base64 encoded
+
+            $table->foreignId('user_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            $table->string('name');
+            $table->string('credential_id', 255); // ubah dari text
             $table->text('public_key');
-            $table->string('sign_count', 32)->default('0');
+            $table->unsignedBigInteger('sign_count')->default(0);
             $table->text('transports')->nullable();
-            $table->string('aaguid', 36)->nullable();
+            $table->uuid('aaguid')->nullable();
+
             $table->timestamps();
-            
-            // Index untuk performa
-            $table->index(['user_id', 'credential_id(100)']);
+
+            $table->index(['user_id', 'credential_id']);
         });
     }
 

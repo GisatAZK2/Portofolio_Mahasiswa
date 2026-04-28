@@ -90,7 +90,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/webauthn/register/options', [PasskeyController::class, 'registerOptions']);
     Route::post('/webauthn/register/verify', [PasskeyController::class, 'registerVerify']);
     Route::get('/webauthn/passkeys', [PasskeyController::class, 'index']);
-    Route::delete('/webauthn/passkeys/{id}', [PasskeyController::class, 'destroy'])->name('webauthn.passkeys.destroy');
+    Route::delete('/webauthn/passkeys', [PasskeyController::class, 'destroy'])->name('webauthn.passkeys.destroy');
     Route::get('/passkeys', function () {
         return view('auth.passkey-management');
     })->name('passkeys.index');

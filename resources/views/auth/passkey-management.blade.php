@@ -156,67 +156,69 @@
     }
     
     // Delete passkey with fetch API (lebih reliable)
-    async function deletePasskey(id, name) {
-        const result = await Swal.fire({
-            title: 'Hapus Passkey?',
-            text: `Apakah Anda yakin ingin menghapus passkey "${name}"?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
+    // Delete passkey dengan fetch API (menggunakan query params)
+async function deletePasskey(id, name) {
+    const result = await Swal.fire({
+        title: 'Hapus Passkey?',
+        text: `Apakah Anda yakin ingin menghapus passkey "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    });
+    
+    if (result.isConfirmed) {
+        // Tampilkan loading
+        Swal.fire({
+            title: 'Memproses...',
+            text: 'Menghapus passkey...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
         
-        if (result.isConfirmed) {
-            // Tampilkan loading
-            Swal.fire({
-                title: 'Memproses...',
-                text: 'Menghapus passkey...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+        try {
+            const locale = getCurrentLocale();
+            // Ubah dari /webauthn/passkeys/${id} menjadi /webauthn/passkeys?id=${id}
+            const url = `/${locale}/webauthn/passkeys?id=${id}`;
+            
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
             });
             
-            try {
-                const locale = getCurrentLocale();
-                const url = `/${locale}/webauthn/passkeys/${id}`;
-                
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'same-origin'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Passkey berhasil dihapus',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    loadPasskeys(); // Refresh list
-                } else {
-                    throw new Error(data.message || 'Gagal menghapus passkey');
-                }
-            } catch (error) {
-                console.error('Delete error:', error);
+            const data = await response.json();
+            
+            if (data.success) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: error.message || 'Terjadi kesalahan saat menghapus passkey'
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Passkey berhasil dihapus',
+                    timer: 1500,
+                    showConfirmButton: false
                 });
+                loadPasskeys(); // Refresh list
+            } else {
+                throw new Error(data.message || 'Gagal menghapus passkey');
             }
+        } catch (error) {
+            console.error('Delete error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: error.message || 'Terjadi kesalahan saat menghapus passkey'
+            });
         }
     }
+}
     
     function renderPasskeysList(passkeys) {
         const container = document.getElementById('passkeysList');

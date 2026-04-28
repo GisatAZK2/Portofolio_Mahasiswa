@@ -306,10 +306,20 @@ class PasskeyController extends Controller
         ]);
     }
     
-
-  public function destroy(Request $request, $id)
+public function destroy(Request $request)
 {
     try {
+        // Ambil id dari query parameter
+        $id = $request->query('id');
+        
+        if (!$id) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'ID passkey diperlukan'], 400);
+            }
+            return redirect()->back()->with('error', 'ID passkey diperlukan');
+        }
+        
+        // Cek user dari session/auth
         $user = $request->user();
         
         if (!$user) {
@@ -333,7 +343,9 @@ class PasskeyController extends Controller
         
         // Jika request dari form (bukan JSON)
         if (!$request->wantsJson()) {
-            return redirect()->back()->with('success', 'Passkey berhasil dihapus');
+            $locale = app()->getLocale();
+            return redirect()->route('webauthn.passkeys.index', ['locale' => $locale])
+                ->with('success', 'Passkey berhasil dihapus');
         }
         
         return response()->json(['success' => true, 'message' => 'Passkey dihapus']);
