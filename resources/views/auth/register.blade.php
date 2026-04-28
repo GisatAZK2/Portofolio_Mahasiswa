@@ -1,25 +1,13 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+@extends('auth.layout')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pendaftaran Mahasiswa Baru</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+@section('title', autoTranslate('Register'))
 
-<body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-10 pb-12 px-5 sm:px-8">
+@section('content')
 
-    <div class="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\" 0 0 200 200\"
-        xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"n\"%3E%3CfeTurbulence type=\"fractalNoise\"
-        baseFrequency=\"0.9\" numOctaves=\"3\"/%3E%3C/filter%3E%3Ccircle cx=\"100\" cy=\"100\" r=\"200\"
-        filter=\"url(%23n)\"/%3E%3C/svg%3E');"></div>
+    <main class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
+    <div class="relative max-w-6xl w-200 justify-center">
 
-    <div class="relative w-full max-w-4xl">
-
-        <div class="relative mb-8 sm:mb-12">
+        <div class=" mb-8 sm:mb-12">
             <h1
                 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-2deg] inline-block">
                 Daftar di Sini
@@ -310,6 +298,7 @@
 
         </form>
     </div>
+    </main>
 
     @if(!$isBlocked)
         <script>
@@ -374,7 +363,4 @@
             });
         @endif
     </script>
-
-</body>
-
-</html>
+@endsection

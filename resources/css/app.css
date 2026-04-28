@@ -11,6 +11,12 @@
             'Segoe UI Symbol', 'Noto Color Emoji';
     }
 
+    /* Force containment */
+.main-content, 
+[class*="container"] {
+    max-width: 100%;
+    overflow: hidden;
+}
     /* Independent scroll for dashboard layout */
     .dashboard-left-column {
         max-height: calc(100vh - 100px);

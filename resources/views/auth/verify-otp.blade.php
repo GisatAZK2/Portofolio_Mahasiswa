@@ -1,27 +1,13 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+@extends('auth.layout')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Verifikasi OTP - Portal Mahasiswa</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+@section('title', autoTranslate('Verifikasi'))
 
-<body
-    class="bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+@section('content')
 
-    <!-- Background Noise -->
-    <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
-
+    <main class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
     <!-- Background Decorative Elements -->
-    <div class="fixed top-0 right-0 w-96 h-96 bg-blue-200/20 dark:bg-blue-500/5 rounded-full blur-3xl -z-10"></div>
-    <div class="fixed bottom-0 left-0 w-96 h-96 bg-indigo-200/20 dark:bg-indigo-500/5 rounded-full blur-3xl -z-10"></div>
+    <div class="fixed top-0 right-0 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl -z-10"></div>
+    <div class="fixed bottom-0 left-0 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl -z-10"></div>
 
     <div class="relative w-full max-w-lg fade-in-up">
 
@@ -34,10 +20,10 @@
                 Kembali ke Lupa Password
             </a>
             <h1
-                class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none rotate-[-1.8deg] inline-block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Verifikasi OTP
             </h1>
-            <p class="mt-3 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-md rotate-[-0.8deg]">
+            <p class="mt-3 text-base sm:text-lg text-gray-600 max-w-md rotate-[-0.8deg]">
                 Masukkan kode verifikasi yang dikirim ke email kamu.
             </p>
             <div class="absolute -top-4 -left-8 w-24 sm:w-32 h-1 bg-blue-400 rotate-[-42deg] rounded-full opacity-80">
@@ -45,7 +31,7 @@
         </div>
 
         <!-- Informasi Email -->
-        <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-lg shadow-sm">
+        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-sm">
             <div class="flex items-start">
                 <div class="flex-shrink-0">
                     <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,10 +39,10 @@
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-blue-700 dark:text-blue-300">
+                    <p class="text-sm text-blue-700">
                         Kode OTP telah dikirim ke: <strong id="email-display">{{ $email ?? old('email') }}</strong>
                     </p>
-                    <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    <p class="text-xs text-blue-600 mt-1">
                         * Kode valid selama 5 menit
                     </p>
                 </div>
@@ -71,12 +57,12 @@
 
             <!-- Input OTP -->
             <div>
-                <label for="otp" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label for="otp" class="block text-sm font-medium text-gray-700 mb-1.5">
                     Kode OTP
                 </label>
                 <div class="relative">
                     <input type="text" name="otp" id="otp" required autofocus 
-                        class="w-full px-4 py-3 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 focus:outline-none transition dark:text-white text-center text-2xl tracking-widest font-mono @error('otp') border-red-400 @enderror"
+                        class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 focus:outline-none transition text-center text-2xl tracking-widest font-mono @error('otp') border-red-400 @enderror"
                         placeholder="• • • • • •"
                         maxlength="6"
                         pattern="[0-9]{6}"
@@ -85,7 +71,7 @@
                     <!-- Clear button -->
                     <button type="button"
                         id="clear-otp-btn"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition opacity-0 pointer-events-none"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-blue-600 transition opacity-0 pointer-events-none"
                         onclick="clearOtp()">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -95,12 +81,12 @@
                 
                 <!-- OTP Hint -->
                 <div class="mt-2 flex items-center justify-between text-xs">
-                    <p class="text-gray-500 dark:text-gray-400">
+                    <p class="text-gray-500">
                         * Masukkan kode 6 digit yang dikirim ke email
                     </p>
                     <button type="button"
                         id="resend-otp-btn"
-                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 transition"
+                        class="text-blue-600 hover:text-blue-800 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 transition"
                         onclick="resendOtp()">
                         Kirim Ulang Kode
                     </button>
@@ -112,19 +98,19 @@
             </div>
 
             <!-- Timer Countdown -->
-            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Kode berlaku selama:</span>
+                        <span class="text-sm text-gray-600">Kode berlaku selama:</span>
                     </div>
-                    <div class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400" id="timer">
+                    <div class="font-mono text-lg font-bold text-blue-600" id="timer">
                         05:00
                     </div>
                 </div>
-                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
                     <div id="timer-bar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 100%"></div>
                 </div>
             </div>
@@ -133,7 +119,7 @@
             <div class="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
                 <!-- Cancel Button -->
                 <a href="{{ route('password.forgot') }}"
-                    class="cancel-btn px-8 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-full shadow hover:bg-gray-200 dark:hover:bg-gray-600 hover:shadow-md active:scale-95 transition-all duration-300 text-center text-sm sm:text-base">
+                    class="cancel-btn px-8 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full shadow hover:bg-gray-200 hover:shadow-md active:scale-95 transition-all duration-300 text-center text-sm sm:text-base">
                     Batal
                 </a>
 
@@ -146,10 +132,10 @@
 
             <!-- Link ke halaman lain -->
             <div class="text-center mt-4">
-                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                <p class="text-gray-600 text-sm">
                     Atau
                     <a href="{{ route('login') }}"
-                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline">
+                        class="text-blue-600 hover:text-blue-800 hover:underline">
                         Kembali ke halaman login
                     </a>
                 </p>
@@ -157,6 +143,7 @@
 
         </form>
     </div>
+    </main>
 
     <script>
         // Storage key for form persistence
@@ -707,17 +694,11 @@
             transform: scale(1.1);
         }
         
-        /* Dark mode input autofill style */
+        /* Dark mode input autofill style - REMOVED */
+        /* Autofill style kept but dark mode specific rules removed */
         input:-webkit-autofill,
         input:-webkit-autofill:focus {
             transition: background-color 600000s 0s, color 600000s 0s;
         }
-        
-        .dark input:-webkit-autofill {
-            -webkit-text-fill-color: #ffffff;
-        }
     </style>
-
-</body>
-
-</html>
+@endsection

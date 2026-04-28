@@ -1,11 +1,10 @@
-<footer class="dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-800 transition-all duration-300 z-20 " id="mainFooter">
+<footer class="dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-all duration-300 z-20 " id="mainFooter">
     <!-- Footer Content -->
     <div id="footerContent" class="transition-all duration-500 overflow-hidden">
         
         <!-- ================= MOBILE VIEW ================= -->
         <div class="block md:hidden px-5 py-6">
             <div class="grid grid-cols-2 gap-6">
-                <!-- KIRI -->
                 <div class="space-y-4">
                     <!-- Logo -->
                     <div class="bg-black rounded-lg p-2 inline-block">
