@@ -117,47 +117,116 @@
             <div id="selected-members-inputs" class="hidden"></div>
 
             <!-- User selection modal -->
-            <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-                <div class="absolute inset-0 bg-black/40" onclick="closeUserModal()"></div>
-                        <div class="relative w-full max-w-xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
-                    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih Leader / Member</h2>
-                        <button type="button" onclick="closeUserModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">Tutup</button>
-                    </div>
-                    <div class="p-5 space-y-4">
-                        <div class="grid gap-4 sm:grid-cols-2">
-                            <input id="modal-search" type="text" placeholder="{{autoTranslate('Cari nama atau email...')}}"
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                            <select id="modal-angkatan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                                <option value="">Semua Angkatan</option>
-                                @foreach($angkatanList as $angkatanItem)
-                                    <option value="{{ $angkatanItem->id }}">{{ $angkatanItem->nama_angkatan }}</option>
-                                @endforeach
-                            </select>
-                            <select id="modal-jurusan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                                <option value="">Semua Prodi</option>
-                                @foreach($jurusanList as $jurusanItem)
-                                    <option value="{{ $jurusanItem->id_jurusan }}">{{ autoTranslate($jurusanItem->nama_jurusan) }}</option>
-                                @endforeach
-                            </select>
-                            <select id="modal-keahlian" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                                <option value="">Semua Keahlian</option>
-                                @foreach($keahlianList as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ autoTranslate($keahlianItem->nama_keahlian) }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+            <!-- User selection modal -->
+<div id="userModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
 
-                        <div id="modal-user-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
-                        <div id="modal-pagination" class="mt-4"></div>
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black/40" onclick="closeUserModal()"></div>
 
-                        <div class="flex justify-end gap-3 pt-4">
-                            <button type="button" onclick="closeUserModal()" class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">Batal</button>
-                            <button type="button" onclick="confirmUserSelection()" class="px-4 py-3 bg-indigo-600 text-white rounded-xl">Simpan</button>
-                        </div>
-                    </div>
+    <!-- Modal Box -->
+    <div
+        class="relative w-full max-w-xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <div
+            class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Pilih Leader / Member
+            </h2>
+
+            <button type="button"
+                onclick="closeUserModal()"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-300">
+                Tutup
+            </button>
+        </div>
+
+        <!-- Main Content Scrollbar 1 -->
+        <div class="flex-1 overflow-y-auto">
+
+            <div class="p-5 space-y-5">
+
+                <!-- Filter -->
+                <div class="grid gap-4 sm:grid-cols-2">
+
+                    <input id="modal-search"
+                        type="text"
+                        placeholder="{{ autoTranslate('Cari nama atau email...') }}"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+
+                    <select id="modal-angkatan"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value="">Semua Angkatan</option>
+                        @foreach($angkatanList as $angkatanItem)
+                            <option value="{{ $angkatanItem->id }}">
+                                {{ $angkatanItem->nama_angkatan }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <select id="modal-jurusan"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value="">Semua Prodi</option>
+                        @foreach($jurusanList as $jurusanItem)
+                            <option value="{{ $jurusanItem->id_jurusan }}">
+                                {{ autoTranslate($jurusanItem->nama_jurusan) }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <select id="modal-keahlian"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value="">Semua Keahlian</option>
+                        @foreach($keahlianList as $keahlianItem)
+                            <option value="{{ $keahlianItem->id_keahlian }}">
+                                {{ autoTranslate($keahlianItem->nama_keahlian) }}
+                            </option>
+                        @endforeach
+                    </select>
+
                 </div>
+
+                <!-- User List Area -->
+                <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+
+                    <!-- Title -->
+                    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        <h3 data-translate="daftar_user" data-translate-page="project_create" class="font-medium text-gray-700 dark:text-white">
+                        </h3>
+                    </div>
+
+                    <!-- Scrollbar 2 -->
+                    <div id="modal-user-list"
+                        class="max-h-[320px] overflow-y-auto p-4 space-y-3 bg-white dark:bg-gray-900">
+                    </div>
+
+                </div>
+
+                <!-- Pagination -->
+                <div id="modal-pagination" class="pt-2"></div>
+
             </div>
+        </div>
+
+        <!-- Footer -->
+        <div
+            class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+            <button type="button"
+                onclick="closeUserModal()"
+                class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">
+                Batal
+            </button>
+
+            <button type="button"
+                onclick="confirmUserSelection()"
+                class="px-4 py-3 bg-indigo-600 text-white rounded-xl">
+                Simpan
+            </button>
+        </div>
+
+    </div>
+</div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>

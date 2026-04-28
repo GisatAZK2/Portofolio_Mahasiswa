@@ -44,46 +44,47 @@
                 @csrf
                 @method('PUT')
 
-
                 <div class="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{autoTranslate('Projek Kolaboratif')}}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{autoTranslate('Aktifkan untuk menambahkan pemimpin dan anggota tim.')}}</p>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{autoTranslate('Projek Kolaboratif')}}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{autoTranslate('Aktifkan untuk menambahkan pemimpin dan anggota tim.')}}</p>
+                    </div>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <span class="relative">
+                            <input id="project-collaborative-toggle" type="checkbox" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+                        </span>
+                        <span id="toggle-label" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">{{autoTranslate('Nonaktif')}}</span>
+                    </label>
                 </div>
-                <label class="inline-flex items-center cursor-pointer">
-                    <span class="relative">
-                        <input id="project-collaborative-toggle" type="checkbox" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
-                    </span>
-                    <span id="toggle-label" class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">{{autoTranslate('Nonaktif')}}</span>
-                </label>
-            </div>
+
                 <!-- User Selection Section -->
-                <div id="user-selection-section" class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{autoTranslate('Pemilihan User Project') }}</h3>
-                        <button type="button" onclick="openUserModal()"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                {{{ autoTranslate('Tambah User') }}}
-                            </span>
-                        </button>
-                    </div>
+                <div id="user-selection-section" style="display: none;">
+                    <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ autoTranslate('Pemilihan User Project') }}</h3>
+                            <button type="button" onclick="openUserModal()" 
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    {{ autoTranslate('Tambah User') }}
+                                </span>
+                            </button>
+                        </div>
 
-                    <!-- Selected Users Display -->
-                    <div id="selected-users-container" class="space-y-3">
-                        <!-- Users will be displayed here -->
-                    </div>
+                        <!-- Selected Users Display -->
+                        <div id="selected-users-container" class="space-y-3"></div>
 
-                    <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
-                        {{autoTranslate('Belum ada user yang dipilih. Klik "Tambah User" untuk memulai.') }}
+                        <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            {{ autoTranslate('Belum ada leader atau member yang dipilih. Klik "Tambah User" untuk memulai.') }}
+                        </div>
                     </div>
                 </div>
 
                 <!-- Hidden inputs for selected users -->
+                <input type="hidden" name="owner" id="selected-owner-id" value="{{ Auth::id() }}">
                 <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader', $project->leader_id) }}">
                 <div id="members-hidden-container">
                     @php
@@ -97,7 +98,7 @@
                     @endforeach
                 </div>
 
-                 <!-- Nama Project -->
+                <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="nama_project" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
                     <input type="text" name="nama_project" value="{{ old('nama_project', $project->isi_content['nama_project'] ?? '') }}" required
@@ -119,23 +120,16 @@
                     @enderror
                 </div>
 
-                <!-- Tugas Project -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">Tugas Proyek (opsional)</label>
+                <!-- Tambah Tugas -->
+                <div id="task-section" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                        Tambah Tugas (opsional)
+                    </label>
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> {{autoTranslate('Tambah Tugas')}}
+                        <span class="text-xl">+</span> <span>Tambah Tugas</span>
                     </button>
-                    @error('tasks')
-                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message) }}</p>
-                    @enderror
-                    @error('tasks.*.user_id')
-                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message) }}</p>
-                    @enderror
-                    @error('tasks.*.name_task')
-                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message)  }}</p>
-                    @enderror
                 </div>
 
                 <!-- Tanggal -->
@@ -210,498 +204,659 @@
         return [
             'id'        => $task->id,
             'user_id'   => $task->user_id,
+            'user_name' => $task->user?->nama_mahasiswa,
             'name_task' => $task->name_task,
         ];
     })->toArray();
-@endphp
+    @endphp
 
     <script>
-    // Data dari Laravel
-    const usersData = @json($users->items());
-    const currentUserData = @json(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa]);
-    const projectParticipants = @json(
-        collect([$project->mahasiswa])
-            ->merge($project->leader ? collect([$project->leader]) : collect())
-            ->merge($project->members)
-            ->unique('id')
-            ->values()
-    );
-     const existingTasks = @json($existingTasks);
-    let selectedUsers = { owner: null, leader: null, members: [] };
-    let taskIndex = 0;
+        // Data dari Laravel
+        const allUsers = @json($users->items());
+        const currentUser = @json(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa]);
+        const existingTasksData = @json($existingTasks);
+        
+        let selectedUsers = { owner: null, leader: null, members: [] };
+        let taskIndex = 0;
+        let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
 
-    // ====================== TASK FUNCTIONS ======================
-    function getAllowedTaskUsers() {
-        const users = [];
-        const added = new Set();
-        const add = user => {
-            if (!user || added.has(user.id)) return;
-            added.add(user.id);
-            users.push({ id: user.id, name: user.nama_mahasiswa });
-        };
+        // ====================== TASK FUNCTIONS ======================
+        function getAllowedTaskUsers(additionalUsers = []) {
+            const users = [];
+            const added = new Set();
+            const add = user => {
+                if (!user || added.has(String(user.id))) return;
+                added.add(String(user.id));
+                users.push({ id: user.id, name: user.nama_mahasiswa });
+            };
 
-        add(selectedUsers.owner);
-        add(selectedUsers.leader);
-        selectedUsers.members.forEach(add);
-        return users;
-    }
+            add(selectedUsers.owner);
+            add(selectedUsers.leader);
+            selectedUsers.members.forEach(add);
+            additionalUsers.forEach(add);
+            return users;
+        }
 
-    function renderTaskUserOptions(selectedId = '') {
-        const users = getAllowedTaskUsers();
-        let html = '<option value="">{{autoTranslate("-- Pilih Penanggung Jawab --")}}</option>';
-        users.forEach(user => {
-            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-        });
-        return html;
-    }
+        function renderTaskUserOptions(selectedId = '') {
+            const additionalUsers = [];
+            let fallbackName = null;
 
-    function addTaskRow(taskData = null) {
-        const container = document.getElementById('tasks-container');
-        if (!container) return;
+            if (selectedId) {
+                const selectedTaskUser = allUsers.find(u => String(u.id) === String(selectedId));
+                if (selectedTaskUser) {
+                    additionalUsers.push(selectedTaskUser);
+                } else {
+                    const taskData = existingTasksData.find(t => String(t.user_id) === String(selectedId));
+                    if (taskData && taskData.user_name) {
+                        fallbackName = taskData.user_name;
+                    }
+                }
+            }
 
-        const index = taskIndex++;
-        const userId = taskData?.user_id ?? '';
-        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+            const users = getAllowedTaskUsers(additionalUsers);
+            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            users.forEach(user => {
+                html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+            });
 
-        const taskItem = document.createElement('div');
-        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-        taskItem.innerHTML = `
-            <div class="grid gap-4 md:grid-cols-3 items-end">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Penanggung Jawab') }}</label>
-                    <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                        ${renderTaskUserOptions(userId)}
-                    </select>
+            if (selectedId && fallbackName && !users.some(u => String(u.id) === String(selectedId))) {
+                html += `<option value="${selectedId}" selected>${fallbackName}</option>`;
+            }
+
+            return html;
+        }
+
+        function addTaskRow(taskData = null) {
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+
+            const index = taskIndex++;
+            const userId = taskData?.user_id ?? '';
+            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+            taskItem.innerHTML = `
+                ${hiddenId}
+                <div class="grid gap-4 md:grid-cols-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                            ${renderTaskUserOptions(userId)}
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
+                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
+                               placeholder="Deskripsikan tugas...">
+                    </div>
+                    <button type="button" onclick="removeTaskRow(this)" 
+                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Nama Tugas') }}</label>
-                    <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
-                           class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                           placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
-                </div>
-                <button type="button" onclick="removeTaskRow(this)" 
-                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">{{ autoTranslate('Delete') }}</button>
-            </div>
-        `;
+            `;
 
-        container.appendChild(taskItem);
+            container.appendChild(taskItem);
 
-        const select = taskItem.querySelector('.task-user-select');
-        if (select) select.addEventListener('change', updateTaskUserOptions);
-    }
+            const select = taskItem.querySelector('.task-user-select');
+            if (select) select.addEventListener('change', updateTaskUserOptions);
+        }
 
-    function removeTaskRow(button) {
-        const taskItem = button.closest('.task-item');
-        if (taskItem) taskItem.remove();
-        if (!document.querySelectorAll('.task-item').length) addTaskRow();
-    }
+        function removeTaskRow(button) {
+            const taskItem = button.closest('.task-item');
+            if (taskItem) taskItem.remove();
+            if (!document.querySelectorAll('.task-item').length) addTaskRow();
+        }
 
-    function updateTaskUserOptions() {
+        function updateTaskUserOptions() {
+    // Gunakan setTimeout agar select options benar-benar terupdate
+    setTimeout(() => {
         document.querySelectorAll('.task-user-select').forEach(select => {
             const currentValue = select.value;
-            select.innerHTML = renderTaskUserOptions(currentValue);
+            const newOptions = renderTaskUserOptions(currentValue);
+            select.innerHTML = newOptions;
             if (currentValue) select.value = currentValue;
         });
-    }
+    }, 50);
+}
 
-    function initializeTaskRows(tasks = []) {
-        const container = document.getElementById('tasks-container');
-        container.innerHTML = '';
-        taskIndex = 0;
+       function initializeTaskRows() {
+    const container = document.getElementById('tasks-container');
+    if (!container) return;
+    container.innerHTML = '';
+    taskIndex = 0;
 
-        if (Array.isArray(tasks) && tasks.length) {
-            tasks.forEach(task => addTaskRow(task));
-        } else {
-            addTaskRow();
-        }
-        updateTaskUserOptions();
-    }
-
-    // ====================== USER SELECTION ======================
-    function openUserModal() {
-        document.getElementById('userModal').classList.remove('hidden');
-        loadUsersToModal();
-    }
-
-    function closeUserModal() {
-        document.getElementById('userModal').classList.add('hidden');
-    }
-
-    function filterUsersForModal() {
-        const keyword = document.getElementById('modal-search')?.value.toLowerCase().trim() || '';
-        const angkatanValue = document.getElementById('modal-angkatan')?.value || '';
-        const jurusanValue = document.getElementById('modal-jurusan')?.value || '';
-        const keahlianValue = document.getElementById('modal-keahlian')?.value || '';
-
-        return usersData.filter(user => {
-            // Exclude current logged-in user
-            if (String(user.id) === String(currentUserData.id)) return false;
-
-            const matchesSearch = !keyword || 
-                user.nama_mahasiswa.toLowerCase().includes(keyword) || 
-                (user.email && user.email.toLowerCase().includes(keyword));
-
-            const matchesAngkatan = !angkatanValue || String(user.id_angkatan) === String(angkatanValue);
-            const matchesJurusan = !jurusanValue || String(user.id_jurusan) === String(jurusanValue);
-            const matchesKeahlian = !keahlianValue || String(user.id_keahlian) === String(keahlianValue);
-
-            return matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
+    // JANGAN filter berdasarkan toggle!
+    // Langsung tampilkan semua tugas yang ada dari database
+    if (Array.isArray(existingTasksData) && existingTasksData.length) {
+        existingTasksData.forEach(task => {
+            // Gunakan addTaskRow biasa, BUKAN addTaskRowOwnerMode
+            addTaskRow(task);
         });
     }
+    
+    // Jika tidak ada tugas sama sekali, buat row kosong
+    if (container.children.length === 0) {
+        addTaskRow();
+    }
+    
+    // Update options setelah semua row ditambahkan
+    setTimeout(() => updateTaskUserOptions(), 100);
+}
 
-    function loadUsersToModal() {
-        const userList = document.getElementById('modal-user-list');
-        if (!userList) return;
 
-        const filtered = filterUsersForModal();
-        if (filtered.length === 0) {
-            userList.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada mahasiswa yang sesuai filter.</div>`;
-            return;
+        // ====================== AJAX FUNCTIONS ======================
+        function fetchUsers(page = 1) {
+            const params = new URLSearchParams({
+                id: {{ $project->id }},
+                page: page,
+                search: currentModalFilters.search,
+                angkatan: currentModalFilters.angkatan,
+                jurusan: currentModalFilters.jurusan,
+                keahlian: currentModalFilters.keahlian
+            });
+
+            fetch(`{{ route('project.edit', ['id' => $project->id]) }}?${params}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+                attachRoleSelectEvents();
+            })
+            .catch(error => console.error('Error fetching users:', error));
         }
 
-        userList.innerHTML = filtered.map(user => {
-            const isLeader = selectedUsers.leader?.id == user.id;
-            const isMember = selectedUsers.members.some(m => m.id == user.id);
-            const hasOtherLeader = selectedUsers.leader && !isLeader;
+        function attachRoleSelectEvents() {
+            document.querySelectorAll('.user-role-select').forEach(select => {
+                const userId = select.getAttribute('data-user-id');
+                if (userId) {
+                    select.onchange = function() { updateUserRole(this, userId, this.value); };
+                }
+            });
+        }
 
-            return `
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div class="flex items-center gap-3">
-                        ${user.photo_profile ? 
-                            `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover">` : 
-                            `<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                            </div>`
-                        }
-                        <div>
-                            <div class="font-medium">${user.nama_mahasiswa}</div>
-                            <div class="text-sm text-gray-500">${user.email}</div>
-                        </div>
-                    </div>
-                    <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" 
-                            onchange="updateUserRole(this, ${user.id}, this.value)">
-                        <option value="">-- Pilih Role --</option>
-                        <option value="leader" ${isLeader ? 'selected' : ''} ${hasOtherLeader ? 'disabled' : ''}>Leader</option>
-                        <option value="member" ${isMember ? 'selected' : ''}>Member</option>
-                    </select>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function updateUserRole(selectElement, userId, role) {
-        const user = usersData.find(u => u.id == userId);
-        if (!user) return;
-
-        if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id != userId) {
-            if (!confirm('Leader sudah ada. Ganti leader?')) {
-                selectElement.value = '';
+        // ====================== USER SELECTION ======================
+        function openUserModal() {
+            const toggle = document.getElementById('project-collaborative-toggle');
+            if (!toggle || !toggle.checked) {
+                alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
                 return;
             }
+            document.getElementById('userModal').classList.remove('hidden');
+            fetchUsers(1);
         }
 
-        // Reset dulu
-        if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-        selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
-
-        if (role === 'leader') selectedUsers.leader = user;
-        else if (role === 'member') selectedUsers.members.push(user);
-
-        updateFormInputs();
-        renderSelectedUsers();
-        loadUsersToModal();
-        updateTaskUserOptions();
-    }
-
-    function confirmUserSelection() {
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskUserOptions();
-        closeUserModal();
-    }
-
-    function updateFormInputs() {
-        document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
-        
-        const container = document.getElementById('members-hidden-container');
-        container.innerHTML = '';
-        selectedUsers.members.forEach(member => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'members[]';
-            input.value = member.id;
-            container.appendChild(input);
-        });
-    }
-
-    function renderSelectedUsers() {
-        const container = document.getElementById('selected-users-container');
-        const noMsg = document.getElementById('no-users-message');
-        if (!container || !noMsg) return;
-
-        const selected = [];
-        if (selectedUsers.leader && (String(selectedUsers.leader.id) !== String(selectedUsers.owner?.id) || selectedUsers.members.length > 0)) {
-            const leaderRole = selectedUsers.leader.id === selectedUsers.owner?.id ? 'Owner & Leader' : 'Leader';
-            selected.push({ ...selectedUsers.leader, role: leaderRole });
-        }
-        selectedUsers.members.forEach(m => selected.push({ ...m, role: 'Member' }));
-
-        if (!selected.length) {
-            container.innerHTML = '';
-            noMsg.classList.remove('hidden');
-            return;
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
         }
 
-        noMsg.classList.add('hidden');
-        container.innerHTML = selected.map(user => {
-            const style = user.role === 'Leader'
-                ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
-                : user.role === 'Owner'
-                    ? 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200'
-                    : user.role === 'Owner & Leader'
-                        ? 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200'
-                        : 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200';
+        function updateUserRole(selectElement, userId, role) {
+            const user = allUsers.find(u => u.id == userId);
+            if (!user) return;
 
-            return `
-                <div class="flex items-center justify-between p-4 border rounded-2xl ${style}">
-                    <div class="flex items-center gap-3">
-                        ${user.photo_profile ? 
-                            `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
-                            `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                            </div>`
-                        }
-                        <div>
-                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-            `;
-        }).join('');
-    }
+            const isOwner = selectedUsers.owner && String(selectedUsers.owner.id) === String(userId);
+            const isCurrentLeader = selectedUsers.leader && String(selectedUsers.leader.id) === String(userId);
 
-    function deleteTasksForUser(userId) {
-        const userIdStr = String(userId);
-        document.querySelectorAll('.task-item').forEach(taskItem => {
-            const select = taskItem.querySelector('.task-user-select');
-            if (select && String(select.value) === userIdStr) {
-                taskItem.remove();
+            if (isOwner && role === 'member') {
+                alert('Owner tidak bisa menjadi member.');
+                selectElement.value = isCurrentLeader ? 'leader' : '';
+                return;
             }
-        });
-        
-        if (!document.querySelectorAll('.task-item').length) {
-            addTaskRow();
-        }
-    }
 
-    function removeUser(userId) {
-        // Hapus tugas milik user ini sebelum menghapus user
-        deleteTasksForUser(userId);
-        
-        if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-        selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
+            if (role === 'leader' && selectedUsers.leader && String(selectedUsers.leader.id) !== String(userId)) {
+                const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${selectedUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
+                if (!confirmChange) {
+                    selectElement.value = isCurrentLeader ? 'leader' : '';
+                    return;
+                }
+                selectedUsers.leader = null;
+            }
 
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskUserOptions();
-    }
+            if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
+                selectedUsers.leader = null;
+            }
+            selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
 
-    function loadSelectedUsersFromForm() {
-        selectedUsers.owner = projectParticipants[0] || null;
+            if (role === 'leader') {
+                selectedUsers.leader = user;
+            } else if (role === 'member') {
+                selectedUsers.members.push(user);
+            }
 
-        const leaderId = document.getElementById('selected-leader-id').value;
-        if (leaderId) {
-            selectedUsers.leader = usersData.find(u => String(u.id) === String(leaderId))
-                || projectParticipants.find(u => String(u.id) === String(leaderId))
-                || null;
-        }
-
-        const memberInputs = document.querySelectorAll('#members-hidden-container input[name="members[]"]');
-        selectedUsers.members = Array.from(memberInputs)
-            .map(input => usersData.find(u => String(u.id) === String(input.value))
-                || projectParticipants.find(u => String(u.id) === String(input.value)))
-            .filter(Boolean);
-    }
-
-    // ====================== COLLABORATIVE TOGGLE ======================
-    function handleCollaborativeToggle() {
-        const toggle = document.getElementById('project-collaborative-toggle');
-        const userSection = document.getElementById('user-selection-section');
-        const label = document.getElementById('toggle-label');
-
-        if (toggle.checked) {
-            // Toggle ON: show user section
-            userSection.style.display = '';
-            label.textContent = 'Aktif';
-            // Refresh task user options
+            updateFormInputs();
+            renderSelectedUsers();
             updateTaskUserOptions();
+        }
+
+        function confirmUserSelection() {
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskUserOptions();
+            closeUserModal();
+        }
+
+        function updateFormInputs() {
+            document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || currentUser.id;
+            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+            
+            const container = document.getElementById('members-hidden-container');
+            container.innerHTML = '';
+            selectedUsers.members.forEach(member => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'members[]';
+                input.value = member.id;
+                container.appendChild(input);
+            });
+        }
+
+        function renderSelectedUsers() {
+            const container = document.getElementById('selected-users-container');
+            const noMsg = document.getElementById('no-users-message');
+            if (!container || !noMsg) return;
+
+            const selected = [];
+            
+            if (selectedUsers.owner) {
+                const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id ? 'Owner & Leader' : 'Owner';
+                selected.push({ ...selectedUsers.owner, role });
+            } else if (currentUser) {
+                selected.push({ ...currentUser, role: 'Owner' });
+            }
+            
+            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+                selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            }
+            
+            selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
+
+            if (selected.length === 0) {
+                container.innerHTML = '';
+                noMsg.classList.remove('hidden');
+                return;
+            }
+
+            noMsg.classList.add('hidden');
+            container.innerHTML = selected.map(user => {
+                const styles = {
+                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
+                
+                return `
+                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                        <div class="flex items-center gap-3">
+                            ${user.photo_profile ?
+                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
+                                `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                    <span class="font-semibold text-current">${(user.nama_mahasiswa || '?').charAt(0).toUpperCase()}</span>
+                                </div>`
+                            }
+                            <div>
+                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa || 'Unknown'}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
+                            </div>
+                        </div>
+                        ${user.role !== 'Owner' ? `
+                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removeUser(userId) {
+            if (selectedUsers.leader?.id == userId) {
+                selectedUsers.leader = null;
+            }
+            selectedUsers.members = selectedUsers.members.filter(m => m.id != userId);
+
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskUserOptions();
+        }
+
+        function loadSelectedUsersFromForm() {
+    selectedUsers.owner = currentUser;
+    
+    const leaderId = document.getElementById('selected-leader-id')?.value;
+    if (leaderId) {
+        // Cari leader dari allUsers atau dari existingTasksData jika perlu
+        let leader = allUsers.find(u => String(u.id) === String(leaderId));
+        if (!leader && existingTasksData) {
+            // Fallback: cari dari tasks data
+            const taskUser = existingTasksData.find(t => String(t.user_id) === String(leaderId));
+            if (taskUser && taskUser.user_name) {
+                leader = { id: leaderId, nama_mahasiswa: taskUser.user_name };
+            }
+        }
+        selectedUsers.leader = leader || null;
+    }
+
+    const memberInputs = document.querySelectorAll('#members-hidden-container input[name="members[]"]');
+    selectedUsers.members = Array.from(memberInputs)
+        .map(input => {
+            const memberId = input.value;
+            let member = allUsers.find(u => String(u.id) === String(memberId));
+            if (!member && existingTasksData) {
+                const taskUser = existingTasksData.find(t => String(t.user_id) === String(memberId));
+                if (taskUser && taskUser.user_name) {
+                    member = { id: memberId, nama_mahasiswa: taskUser.user_name };
+                }
+            }
+            return member;
+        })
+        .filter(Boolean);
+    
+    // Debug: console.log untuk memastikan data ter-load
+    console.log('Loaded selectedUsers:', {
+        owner: selectedUsers.owner,
+        leader: selectedUsers.leader,
+        members: selectedUsers.members
+    });
+}
+
+        // ====================== TOGGLE FUNCTIONS ======================
+        function toggleUserSelectionSection() {
+    const toggle = document.getElementById('project-collaborative-toggle');
+    const userSelectionSection = document.getElementById('user-selection-section');
+    const taskSection = document.getElementById('task-section');
+    
+    if (toggle && userSelectionSection) {
+        if (toggle.checked) {
+            userSelectionSection.style.display = 'block';
+            if (selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0) {
+                taskSection.classList.remove('hidden');
+            }
+            // Reset tasks to collaborative mode
+            resetTasksToCollaborativeMode();
         } else {
-            // Toggle OFF: hide user section, user auth menjadi owner + leader
-            userSection.style.display = 'none';
-            label.textContent = 'Nonaktif';
-            // Ketika toggle dimatikan, user auth menjadi owner + leader
-            selectedUsers.owner = currentUserData;
-            selectedUsers.leader = currentUserData;
+            userSelectionSection.style.display = 'none';
+            taskSection.classList.remove('hidden'); // Tugas tetap muncul
+            selectedUsers.owner = currentUser;
+            selectedUsers.leader = null;
             selectedUsers.members = [];
             updateFormInputs();
             renderSelectedUsers();
-            // Refresh task user options
-            updateTaskUserOptions();
+            // Reset tasks to owner-only mode
+            resetTasksToOwnerMode();
         }
     }
+}
 
-    // ====================== DATE VALIDATION ======================
-    function setupDateValidation() {
-        const tanggalMulaiInput = document.getElementById('tanggal_mulai');
-        const tanggalAkhirInput = document.getElementById('tanggal_akhir');
-
-        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
-
-        // Set minimum date pada tanggal_akhir saat halaman dimuat (jika tanggal_mulai sudah ada)
-        if (tanggalMulaiInput.value) {
-            tanggalAkhirInput.min = tanggalMulaiInput.value;
+function resetTasksToOwnerMode() {
+    const container = document.getElementById('tasks-container');
+    if (!container) return;
+    
+    // Simpan tugas-tugas yang ada, tapi filter hanya milik owner
+    const existingTasks = [];
+    document.querySelectorAll('.task-item').forEach(taskItem => {
+        const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+        const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
+        const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+        
+        let userId = null;
+        if (userIdInput) {
+            userId = userIdInput.value;
         }
-
-        // Update minimum date ketika tanggal_mulai berubah
-        tanggalMulaiInput.addEventListener('change', function () {
-            if (this.value) {
-                tanggalAkhirInput.min = this.value;
-                // Reset tanggal_akhir jika lebih kecil dari tanggal_mulai
-                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
-                    tanggalAkhirInput.value = '';
-                }
-            } else {
-                tanggalAkhirInput.min = '';
-            }
-        });
-
-        // Optional: Validasi saat tanggal_akhir berubah
-        tanggalAkhirInput.addEventListener('change', function () {
-            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
-                this.value = '';
-                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
-            }
-        });
-    }
-
-    // ====================== INIT ======================
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('project-collaborative-toggle');
-        const userSection = document.getElementById('user-selection-section');
-        const currentUserId = currentUserData.id;
-
-        loadSelectedUsersFromForm();
-
-        const isCollaborative = selectedUsers.members.length > 0 ||
-            (selectedUsers.leader && String(selectedUsers.leader.id) !== String(currentUserId));
-
-        toggle.checked = isCollaborative;
-        if (isCollaborative) {
-            userSection.style.display = '';
-            document.getElementById('toggle-label').textContent = 'Aktif';
-        } else {
-            userSection.style.display = 'none';
-            document.getElementById('toggle-label').textContent = 'Nonaktif';
+        
+        const taskName = taskNameInput ? taskNameInput.value : '';
+        const taskId = taskIdInput ? taskIdInput.value : null;
+        
+        // Hanya simpan tugas milik owner
+        if (userId == currentUser.id || (!userId && taskName)) {
+            existingTasks.push({
+                id: taskId,
+                user_id: currentUser.id,
+                name_task: taskName
+            });
         }
-
-        renderSelectedUsers();
-        initializeTaskRows(existingTasks);
-        setupDateValidation();
-
-        // Add toggle listener
-        toggle.addEventListener('change', handleCollaborativeToggle);
-
-        // Setup modal filters
-        document.getElementById('modal-search')?.addEventListener('input', loadUsersToModal);
-        document.getElementById('modal-angkatan')?.addEventListener('change', loadUsersToModal);
-        document.getElementById('modal-jurusan')?.addEventListener('change', loadUsersToModal);
-        document.getElementById('modal-keahlian')?.addEventListener('change', loadUsersToModal);
     });
-</script>
-    <!-- User Selection Modal -->
-    <div id="userModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-2xl bg-white dark:bg-gray-800">
-            <div class="mt-3">
-                <!-- Modal Header -->
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih User untuk Project</h3>
-                    <button onclick="closeUserModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+    
+    // Jika tidak ada tugas, buat satu tugas kosong untuk owner
+    if (existingTasks.length === 0) {
+        existingTasks.push({
+            id: null,
+            user_id: currentUser.id,
+            name_task: ''
+        });
+    }
+    
+    // Render ulang tasks
+    container.innerHTML = '';
+    taskIndex = 0;
+    existingTasks.forEach(task => {
+        addTaskRowOwnerMode(task);
+    });
+}
+
+function resetTasksToCollaborativeMode() {
+    const container = document.getElementById('tasks-container');
+    if (!container) return;
+    
+    // Konversi tugas existing ke mode kolaboratif
+    const existingTasks = [];
+    document.querySelectorAll('.task-item').forEach(taskItem => {
+        const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+        const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
+        const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+        
+        let userId = userIdInput ? userIdInput.value : currentUser.id;
+        const taskName = taskNameInput ? taskNameInput.value : '';
+        const taskId = taskIdInput ? taskIdInput.value : null;
+        
+        existingTasks.push({
+            id: taskId,
+            user_id: userId,
+            name_task: taskName
+        });
+    });
+    
+    container.innerHTML = '';
+    taskIndex = 0;
+    if (existingTasks.length === 0) {
+        addTaskRow();
+    } else {
+        existingTasks.forEach(task => {
+            addTaskRow(task);
+        });
+    }
+    updateTaskUserOptions();
+}
+
+function addTaskRowOwnerMode(taskData = null) {
+    const container = document.getElementById('tasks-container');
+    if (!container) return;
+
+    const index = taskIndex++;
+    const userId = currentUser.id;
+    const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+    const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+    const taskItem = document.createElement('div');
+    taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+    taskItem.innerHTML = `
+        ${hiddenId}
+        <input type="hidden" name="tasks[${index}][user_id]" value="${userId}">
+        <div class="grid gap-4 md:grid-cols-3 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                <input type="text" value="${currentUser.nama_mahasiswa} (Owner)" 
+                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400" 
+                       readonly disabled>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
+                       class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
+                       placeholder="Deskripsikan tugas...">
+            </div>
+            <button type="button" onclick="removeTaskRow(this)" 
+                    class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+        </div>
+    `;
+
+    container.appendChild(taskItem);
+}
+        // ====================== DATE VALIDATION ======================
+        function setupDateValidation() {
+            const tanggalMulaiInput = document.getElementById('tanggal_mulai');
+            const tanggalAkhirInput = document.getElementById('tanggal_akhir');
+
+            if (!tanggalMulaiInput || !tanggalAkhirInput) return;
+
+            if (tanggalMulaiInput.value) {
+                tanggalAkhirInput.min = tanggalMulaiInput.value;
+            }
+
+            tanggalMulaiInput.addEventListener('change', function () {
+                if (this.value) {
+                    tanggalAkhirInput.min = this.value;
+                    if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
+                        tanggalAkhirInput.value = '';
+                    }
+                } else {
+                    tanggalAkhirInput.min = '';
+                }
+            });
+
+            tanggalAkhirInput.addEventListener('change', function () {
+                if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
+                    this.value = '';
+                    alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
+                }
+            });
+        }
+
+        function setupModalFilters() {
+            document.getElementById('modal-search')?.addEventListener('input', function() {
+                currentModalFilters.search = this.value;
+                fetchUsers(1);
+            });
+            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
+                currentModalFilters.angkatan = this.value;
+                fetchUsers(1);
+            });
+            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
+                currentModalFilters.jurusan = this.value;
+                fetchUsers(1);
+            });
+            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
+                currentModalFilters.keahlian = this.value;
+                fetchUsers(1);
+            });
+        }
+
+        // Handle pagination clicks
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('#modal-pagination a');
+            if (link) {
+                e.preventDefault();
+                const url = new URL(link.href);
+                const page = url.searchParams.get('page') || 1;
+                fetchUsers(page);
+            }
+        });
+
+        // ====================== INIT ======================
+        // Perbaiki urutan inisialisasi di DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. LOAD selectedUsers TERLEBIH DAHULU
+    loadSelectedUsersFromForm();
+    renderSelectedUsers();
+    
+    // 2. BARU initialize tasks (karena butuh selectedUsers yang sudah terisi)
+    initializeTaskRows(); // Panggil ini setelah selectedUsers terisi
+    
+    setupDateValidation();
+    setupModalFilters();
+
+    const collaborativeToggle = document.getElementById('project-collaborative-toggle');
+    const toggleLabel = document.getElementById('toggle-label');
+    
+    if (collaborativeToggle && toggleLabel) {
+        const hasMembers = selectedUsers.members.length > 0 || selectedUsers.leader;
+        collaborativeToggle.checked = hasMembers;
+        toggleLabel.textContent = hasMembers ? 'Aktif' : 'Nonaktif';
+        toggleUserSelectionSection();
+        
+        collaborativeToggle.addEventListener('change', function() {
+            toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
+            toggleUserSelectionSection();
+            
+            if (this.checked) {
+                resetTasksToCollaborativeMode();
+            } else {
+                resetTasksToOwnerMode();
+            }
+        });
+    }
+});
+    </script>
+
+    <!-- User selection modal -->
+    <!-- User selection modal -->
+<div id="userModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeUserModal()"></div>
+    <div class="relative w-full max-w-xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden mx-auto mt-20 flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih Leader / Member</h2>
+            <button type="button" onclick="closeUserModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">Tutup</button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-5">
+            <div class="space-y-4">
+                
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <input id="modal-search" type="text" placeholder="Cari nama atau email..."
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                    <select id="modal-angkatan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value="">Semua Angkatan</option>
+                        @foreach($angkatans as $angkatanItem)
+                            <option value="{{ $angkatanItem->id }}">{{ $angkatanItem->nama_angkatan }}</option>
+                        @endforeach
+                    </select>
+                    <select id="modal-jurusan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value="">Semua Prodi</option>
+                        @foreach($jurusans as $jurusanItem)
+                            <option value="{{ $jurusanItem->id_jurusan }}">{{ $jurusanItem->nama_jurusan }}</option>
+                        @endforeach
+                    </select>
+                    <select id="modal-keahlian" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value="">Semua Keahlian</option>
+                        @foreach($keahlians as $keahlianItem)
+                            <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <!-- Modal Body -->
-                <div class="space-y-4">
-                    <!-- Search and Filters -->
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="relative">
-                                <input type="text" id="modal-search" placeholder="Cari nama..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 
-                                    dark:bg-gray-600 dark:text-white dark:border-gray-500 
-                                    rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" 
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <select id="modal-angkatan" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
-                                <option value="">Semua Angkatan</option>
-                                @foreach($angkatans as $angk)
-                                    <option value="{{ $angk->id }}">{{ $angk->nama_angkatan }}</option>
-                                @endforeach
-                            </select>
-                            <select id="modal-jurusan" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
-                                <option value="">Semua Jurusan</option>
-                                @foreach($jurusans as $jrs)
-                                    <option value="{{ $jrs->id_jurusan }}">{{ $jrs->nama_jurusan }}</option>
-                                @endforeach
-                            </select>
-                            <select id="modal-keahlian" class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg">
-                                <option value="">Semua Keahlian</option>
-                                @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- User List -->
-                    <div class="max-h-96 overflow-y-auto">
-                        <div id="modal-user-list" class="space-y-2">
-                            <!-- Users will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Footer -->
-                <div class="flex justify-end space-x-3 mt-6">
-                    <button onclick="closeUserModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                        Batal
-                    </button>
-                    <button onclick="confirmUserSelection()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                        Konfirmasi
-                    </button>
-                </div>
+                <div id="modal-user-list" class="space-y-3"></div>
+                <div id="modal-pagination" class="mt-4 flex justify-center"></div>
             </div>
         </div>
-    </div>
 
-    <!-- Page Info -->
+        <div class="flex justify-end gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+            <button type="button" onclick="closeUserModal()" class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-200">Batal</button>
+            <button type="button" onclick="confirmUserSelection()" class="px-4 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">Simpan</button>
+        </div>
+    </div>
+</div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.user_edit_project");
+            if (typeof showPageInfo === 'function') {
+                showPageInfo("popup.user_edit_project");
+            }
         });
     </script>
 @endsection
