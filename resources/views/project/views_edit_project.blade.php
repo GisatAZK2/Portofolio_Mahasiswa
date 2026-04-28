@@ -122,13 +122,14 @@
 
                 <!-- Tambah Tugas -->
                 <div id="task-section" class="hidden">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3" data-translate="add_task_opt" data-translate-page="dosen_add_pjt">
                         Tambah Tugas (opsional)
                     </label>
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> <span>Tambah Tugas</span>
+                        <span class="text-xl">+</span> <span data-translate="add_task_opt"
+                            data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                     </button>
                 </div>
 
@@ -254,7 +255,7 @@
             }
 
             const users = getAllowedTaskUsers(additionalUsers);
-            let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+            let html = '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>';
             users.forEach(user => {
                 html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
             });
@@ -281,16 +282,16 @@
                 ${hiddenId}
                 <div class="grid gap-4 md:grid-cols-3 items-end">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt"></label>
                         <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt"></label>
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
                                class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                               placeholder="Deskripsikan tugas...">
+                               >
                     </div>
                     <button type="button" onclick="removeTaskRow(this)" 
                             class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
@@ -301,6 +302,10 @@
 
             const select = taskItem.querySelector('.task-user-select');
             if (select) select.addEventListener('change', updateTaskUserOptions);
+
+            if (typeof window.refreshTranslations === 'function') {
+                window.refreshTranslations();
+            }
         }
 
         function removeTaskRow(button) {
@@ -348,28 +353,35 @@
 
         // ====================== AJAX FUNCTIONS ======================
         function fetchUsers(page = 1) {
-            const params = new URLSearchParams({
-                id: {{ $project->id }},
-                page: page,
-                search: currentModalFilters.search,
-                angkatan: currentModalFilters.angkatan,
-                jurusan: currentModalFilters.jurusan,
-                keahlian: currentModalFilters.keahlian
-            });
+    const params = new URLSearchParams({
+        id: {{ $project->id }},
+        page: page,
+        search: currentModalFilters.search,
+        angkatan: currentModalFilters.angkatan,
+        jurusan: currentModalFilters.jurusan,
+        keahlian: currentModalFilters.keahlian
+    });
 
-            fetch(`{{ route('project.edit', ['id' => $project->id]) }}?${params}`, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-                attachRoleSelectEvents();
-            })
-            .catch(error => console.error('Error fetching users:', error));
+    fetch(`{{ route('project.edit', ['id' => $project->id]) }}?${params}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+        document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+
+        attachRoleSelectEvents();
+
+        refreshLeaderOptions(); // <-- PINDAH KE SINI
+
+        if (typeof window.refreshTranslations === 'function') {
+            window.refreshTranslations();
+        }
+    })
+    .catch(error => console.error('Error fetching users:', error));
+}
 
         function attachRoleSelectEvents() {
             document.querySelectorAll('.user-role-select').forEach(select => {
@@ -431,6 +443,7 @@
             updateFormInputs();
             renderSelectedUsers();
             updateTaskUserOptions();
+            refreshLeaderOptions();
         }
 
         function confirmUserSelection() {
@@ -691,16 +704,16 @@ function addTaskRowOwnerMode(taskData = null) {
         <input type="hidden" name="tasks[${index}][user_id]" value="${userId}">
         <div class="grid gap-4 md:grid-cols-3 items-end">
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt"></label>
                 <input type="text" value="${currentUser.nama_mahasiswa} (Owner)" 
                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400" 
                        readonly disabled>
             </div>
             <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt"></label>
                 <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
                        class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                       placeholder="Deskripsikan tugas...">
+                       >
             </div>
             <button type="button" onclick="removeTaskRow(this)" 
                     class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
@@ -708,6 +721,25 @@ function addTaskRowOwnerMode(taskData = null) {
     `;
 
     container.appendChild(taskItem);
+}
+
+function refreshLeaderOptions() {
+    const leaderId = selectedUsers.leader ? selectedUsers.leader.id : null;
+
+    document.querySelectorAll('.user-role-select').forEach(select => {
+        const userId = select.dataset.userId;
+        const leaderOption = select.querySelector('option[value="leader"]');
+
+        if (!leaderOption) return;
+
+        if (leaderId && String(userId) !== String(leaderId)) {
+            leaderOption.disabled = true;
+            leaderOption.textContent = 'Leader (Sudah Dipilih)';
+        } else {
+            leaderOption.disabled = false;
+            leaderOption.textContent = 'Leader';
+        }
+    });
 }
         // ====================== DATE VALIDATION ======================
         function setupDateValidation() {
@@ -805,51 +837,132 @@ document.addEventListener('DOMContentLoaded', function() {
 });
     </script>
 
-    <!-- User selection modal -->
-    <!-- User selection modal -->
-<div id="userModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/40" onclick="closeUserModal()"></div>
-    <div class="relative w-full max-w-xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden mx-auto mt-20 flex flex-col">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pilih Leader / Member</h2>
-            <button type="button" onclick="closeUserModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">Tutup</button>
+ <!-- User selection modal -->
+<div id="userModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black/40" onclick="closeUserModal()"></div>
+
+    <!-- Modal Box -->
+    <div
+        class="relative w-full max-w-xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <div
+            class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"
+                data-translate="add_user"
+                data-translate-page="dosen_add_pjt"></h2>
+
+            <button type="button"
+                onclick="closeUserModal()"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6 6l12 12M6 18L18 6" />
+                </svg>
+
+            </button>
         </div>
-        
+
+        <!-- Main Content -->
         <div class="flex-1 overflow-y-auto p-5">
-            <div class="space-y-4">
-                
+
+            <div class="space-y-5">
+
+                <!-- Filter -->
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <input id="modal-search" type="text" placeholder="Cari nama atau email..."
+
+                    <input id="modal-search"
+                        type="text"
+                        placeholder="Cari nama atau email..."
+                        data-translate-placeholder="search_name_placeholder"
+                        data-translate-page="dosen_add_pjt"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                    <select id="modal-angkatan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="">Semua Angkatan</option>
+
+                    <select id="modal-angkatan"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value=""
+                            data-translate="all_angkatan"
+                            data-translate-page="dosen_add_pjt">
+                            Semua Angkatan
+                        </option>
                         @foreach($angkatans as $angkatanItem)
-                            <option value="{{ $angkatanItem->id }}">{{ $angkatanItem->nama_angkatan }}</option>
+                            <option value="{{ $angkatanItem->id }}">
+                                {{ $angkatanItem->nama_angkatan }}
+                            </option>
                         @endforeach
                     </select>
-                    <select id="modal-jurusan" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="">Semua Prodi</option>
+
+                    <select id="modal-jurusan"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value=""
+                            data-translate="all_jurusan"
+                            data-translate-page="dosen_add_pjt">
+                            Semua Prodi
+                        </option>
                         @foreach($jurusans as $jurusanItem)
-                            <option value="{{ $jurusanItem->id_jurusan }}">{{ $jurusanItem->nama_jurusan }}</option>
+                            <option value="{{ $jurusanItem->id_jurusan }}">
+                                {{ $jurusanItem->nama_jurusan }}
+                            </option>
                         @endforeach
                     </select>
-                    <select id="modal-keahlian" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="">Semua Keahlian</option>
+
+                    <select id="modal-keahlian"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                        <option value=""
+                            data-translate="all_keahlian"
+                            data-translate-page="dosen_add_pjt">
+                            Semua Keahlian
+                        </option>
                         @foreach($keahlians as $keahlianItem)
-                            <option value="{{ $keahlianItem->id_keahlian }}">{{ $keahlianItem->nama_keahlian }}</option>
+                            <option value="{{ $keahlianItem->id_keahlian }}">
+                                {{ $keahlianItem->nama_keahlian }}
+                            </option>
                         @endforeach
                     </select>
+
                 </div>
 
+                <!-- User List -->
                 <div id="modal-user-list" class="space-y-3"></div>
+
+                <!-- Pagination -->
                 <div id="modal-pagination" class="mt-4 flex justify-center"></div>
+
             </div>
+
         </div>
 
-        <div class="flex justify-end gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-            <button type="button" onclick="closeUserModal()" class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-200">Batal</button>
-            <button type="button" onclick="confirmUserSelection()" class="px-4 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">Simpan</button>
+        <!-- Footer -->
+        <div
+            class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+
+            <button type="button"
+                onclick="closeUserModal()"
+                data-translate="cancel"
+                data-translate-page="dosen_add_pjt"
+                class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-200">
+                Batal
+            </button>
+
+            <button type="button"
+                onclick="confirmUserSelection()"
+                data-translate="confirm"
+                data-translate-page="dosen_add_pjt"
+                class="px-4 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">
+                Simpan
+            </button>
+
         </div>
+
     </div>
 </div>
     <script>

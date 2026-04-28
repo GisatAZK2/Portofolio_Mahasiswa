@@ -262,16 +262,16 @@ class ProjekController extends Controller
                         <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
                             data-user-id="' . $user->id . '"
                             onchange="updateUserRole(this, ' . $user->id . ', this.value)">
-                            <option value="">-- Pilih Role --</option>
-                            <option value="leader">Leader</option>
-                            <option value="member">Member</option>
+                            <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
+                            <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
+                            <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
                         </select>
                     </div>
                 </div>';
             }
         } else {
             $userListHtml = '
-            <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+            <div class="text-center py-10 text-gray-500 dark:text-gray-400" data-translate="no_students_found" data-translate-page="dosen_add_pjt">
                 Tidak ada mahasiswa yang sesuai filter.
             </div>';
         }
@@ -624,13 +624,13 @@ class ProjekController extends Controller
                             data-user-id="' . $u->id . '"
                             onchange="updateUserRole(this, ' . $u->id . ', this.value)">
 
-                            <option value="">-- Pilih Role --</option>
+                            <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
 
-                            <option value="leader" ' . ($selectedRole == 'leader' ? 'selected' : '') . '>
+                            <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt"' . ($selectedRole == 'leader' ? 'selected' : '') . '>
                                 Leader
                             </option>
 
-                            <option value="member" ' . ($selectedRole == 'member' ? 'selected' : '') . '>
+                            <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt" ' . ($selectedRole == 'member' ? 'selected' : '') . '>
                                 Member
                             </option>
 
@@ -641,7 +641,7 @@ class ProjekController extends Controller
             }
         } else {
             $userListHtml = '
-            <div class="text-center py-10 text-gray-500 dark:text-gray-400">
+            <div class="text-center py-10 text-gray-500 dark:text-gray-400" data-translate="no_students_found" data-translate-page="dosen_add_pjt">
                 Tidak ada mahasiswa yang sesuai filter.
             </div>';
         }

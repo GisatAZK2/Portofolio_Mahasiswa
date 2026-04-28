@@ -117,7 +117,6 @@
             <div id="selected-members-inputs" class="hidden"></div>
 
             <!-- User selection modal -->
-            <!-- User selection modal -->
 <div id="userModal"
     class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
 
@@ -126,19 +125,26 @@
 
     <!-- Modal Box -->
     <div
-        class="relative w-full max-w-xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-
+    class="relative w-full max-w-xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
         <!-- Header -->
         <div
             class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Pilih Leader / Member
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100" data-translate="add_user" data-translate-page="dosen_add_pjt">
             </h2>
 
             <button type="button"
                 onclick="closeUserModal()"
-                class="text-gray-500 hover:text-gray-700 dark:text-gray-300">
-                Tutup
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    class="w-5 h-5" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor" 
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6" />
+                </svg>
+
             </button>
         </div>
 
@@ -149,15 +155,16 @@
 
                 <!-- Filter -->
                 <div class="grid gap-4 sm:grid-cols-2">
-
-                    <input id="modal-search"
-                        type="text"
-                        placeholder="{{ autoTranslate('Cari nama atau email...') }}"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                     <input id="modal-search"
+                    type="text"
+                    placeholder="{{ autoTranslate('Cari nama atau email...') }}"
+                    data-translate-placeholder="search_name_placeholder"
+                    data-translate-page="dosen_add_pjt"
+                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
 
                     <select id="modal-angkatan"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="">Semua Angkatan</option>
+                        <option value="" data-translate="all_angkatan" data-translate-page="dosen_add_pjt"></option>
                         @foreach($angkatanList as $angkatanItem)
                             <option value="{{ $angkatanItem->id }}">
                                 {{ $angkatanItem->nama_angkatan }}
@@ -167,7 +174,7 @@
 
                     <select id="modal-jurusan"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="">Semua Prodi</option>
+                        <option value="" data-translate="all_jurusan" data-translate-page="dosen_add_pjt"></option>
                         @foreach($jurusanList as $jurusanItem)
                             <option value="{{ $jurusanItem->id_jurusan }}">
                                 {{ autoTranslate($jurusanItem->nama_jurusan) }}
@@ -177,7 +184,7 @@
 
                     <select id="modal-keahlian"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="">Semua Keahlian</option>
+                        <option value="" data-translate="all_keahlian" data-translate-page="dosen_add_pjt"></option>
                         @foreach($keahlianList as $keahlianItem)
                             <option value="{{ $keahlianItem->id_keahlian }}">
                                 {{ autoTranslate($keahlianItem->nama_keahlian) }}
@@ -214,12 +221,14 @@
             class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
             <button type="button"
                 onclick="closeUserModal()"
+                data-translate="cancel" data-translate-page="dosen_add_pjt"
                 class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">
                 Batal
             </button>
 
             <button type="button"
                 onclick="confirmUserSelection()"
+                data-translate="confirm" data-translate-page="dosen_add_pjt"
                 class="px-4 py-3 bg-indigo-600 text-white rounded-xl">
                 Simpan
             </button>
@@ -652,10 +661,16 @@
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-        document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-        refreshRoleSelections();
-    });
+    document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+    document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+
+    refreshRoleSelections();
+
+    // jalankan ulang translate
+        if (typeof window.refreshTranslations === 'function') {
+                    window.refreshTranslations();
+                }
+});
 }
 
         function loadSelectedUsersFromForm() {
