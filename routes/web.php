@@ -322,7 +322,7 @@ Route::middleware(['web', 'auth'])->group(function () {
             Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
             Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
             Route::post('/clear-all', [NotificationController::class, 'clearAll']);
-            Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+            Route::post('/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         });
     });
 
