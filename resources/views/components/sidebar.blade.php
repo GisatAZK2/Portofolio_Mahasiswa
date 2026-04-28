@@ -1028,76 +1028,168 @@
 
 <!-- JavaScript untuk Search Menu + Existing Scripts -->
 <script>
-    // ================== SEARCH MENU FUNCTIONALITY ==================
-    const searchInput = document.getElementById('sidebarSearch');
-    const searchResults = document.getElementById('searchResults');
+  // ================== SEARCH MENU FUNCTIONALITY WITH AUTO TRANSLATE ==================
+const searchInput = document.getElementById('sidebarSearch');
+const searchResults = document.getElementById('searchResults');
 
-    // Daftar semua menu yang bisa dicari
-    const allMenus = [
-        { name: "Dashboard", url: "{{ route('dashboard') }}", keyword: "dashboard" },
-        { name: "My Dashboard", url: "{{ route('dashboard.me') }}", keyword: "my dashboard" },
-        { name: "Admin Dashboard", url: "{{ route('admin.index') }}", keyword: "admin dashboard", role: "admin" },
-        { name: "Manajemen Users", url: "{{ route('admin.users.index') }}", keyword: "users manajemen user", role: "admin" },
-        { name: "Lihat User", url: "{{ route('admin.users.index') }}", keyword: "lihat user semua user", role: "admin" },
-        { name: "Tambah User", url: "{{ route('admin.users.ViewCreate') }}", keyword: "tambah user", role: "admin" },
-        { name: "Manajemen Angkatan", url: "{{ route('admin.angkatan.index') }}", keyword: "angkatan", role: "admin" },
-        { name: "Manajemen Prodi", url: "{{ route('admin.prodi.index') }}", keyword: "prodi program studi", role: "admin" },
-        { name: "Manajemen Keahlian", url: "{{ route('admin.keahlian.index') }}", keyword: "keahlian skill", role: "admin" },
-        { name: "Manajemen Project", url: "{{ route('admin.projects.index') }}", keyword: "project proyek", role: "admin" },
-        { name: "Manajemen Sertifikat", url: "{{ route('admin.sertifikat.index') }}", keyword: "sertifikat", role: "admin" },
-        { name: "Dashboard Dosen", url: "{{ route('dosen.dashboard') }}", keyword: "dosen dashboard", role: "dosen" },
-        { name: "Mahasiswa Bimbingan", url: "{{ route('dosen.users.index') }}", keyword: "mahasiswa bimbingan", role: "dosen" },
-        { name: "Projects Bimbingan", url: "{{ route('dosen.projects.index') }}", keyword: "project bimbingan", role: "dosen" },
-        { name: "Sertifikat Bimbingan", url: "{{ route('dosen.sertifikat.index') }}", keyword: "sertifikat bimbingan", role: "dosen" },
-        { name: "Project Saya", url: "{{ route('project.index') }}", keyword: "project saya", role: "mahasiswa" },
-        { name: "Tambah Project Baru", url: "{{ route('project.create') }}", keyword: "tambah project", role: "mahasiswa" },
-        { name: "Sertifikat Saya", url: "{{ route('sertifikat.index') }}", keyword: "sertifikat saya", role: "mahasiswa" },
-        { name: "Tambah Sertifikat", url: "{{ route('sertifikat.create') }}", keyword: "tambah sertifikat", role: "mahasiswa" },
-        { name: "Postingan", url: "{{ route('postingan.index') }}", keyword: "postingan post", role: "mahasiswa" },
-        { name: "Tambah Postingan", url: "{{ route('postingan.create') }}", keyword: "tambah postingan", role: "mahasiswa" },
-    ];
+// Daftar semua menu yang bisa dicari
+const allMenus = [
+    // === MENU UMUM ===
+    { name: "{{ autoTranslate('Dashboard') }}", url: "{{ route('dashboard', ['locale' => app()->getLocale()]) }}", keyword: "dashboard home beranda utama", role: "all" },
+    
+    // === MENU MAHASISWA ===
+    { name: "{{ autoTranslate('My Dashboard') }}", url: "{{ route('dashboard.me', ['locale' => app()->getLocale()]) }}", keyword: "my dashboard mahasiswa pribadi", role: "mahasiswa" },
+    { name: "{{ autoTranslate('Project Saya') }}", url: "{{ route('project.index', ['locale' => app()->getLocale()]) }}", keyword: "project saya proyek mahasiswa", role: "mahasiswa" },
+    { name: "{{ autoTranslate('Tambah Project') }}", url: "{{ route('project.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah project baru proyek", role: "mahasiswa" },
+    { name: "{{ autoTranslate('Sertifikat Saya') }}", url: "{{ route('sertifikat.index', ['locale' => app()->getLocale()]) }}", keyword: "sertifikat saya mahasiswa", role: "mahasiswa" },
+    { name: "{{ autoTranslate('Tambah Sertifikat') }}", url: "{{ route('sertifikat.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah sertifikat baru", role: "mahasiswa" },
+    { name: "{{ autoTranslate('Postingan') }}", url: "{{ route('postingan.index', ['locale' => app()->getLocale()]) }}", keyword: "postingan post feed berita", role: "all_auth" },
+    { name: "{{ autoTranslate('Tambah Postingan') }}", url: "{{ route('postingan.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah postingan baru post", role: "all_auth" },
+    { name: "{{ autoTranslate('Project Mahasiswa') }}", url: "{{ route('project.project_user', ['locale' => app()->getLocale()]) }}", keyword: "project mahasiswa guest publik", role: "guest" },
+    
+    // === MENU ADMIN ===
+    { name: "{{ autoTranslate('Admin Dashboard') }}", url: "{{ route('admin.index', ['locale' => app()->getLocale()]) }}", keyword: "admin dashboard administrator", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Users') }}", url: "{{ route('admin.users.index', ['locale' => app()->getLocale()]) }}", keyword: "users manajemen user pengguna", role: "admin" },
+    { name: "{{ autoTranslate('Tambah User') }}", url: "{{ route('admin.users.ViewCreate', ['locale' => app()->getLocale()]) }}", keyword: "tambah user baru pengguna", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Angkatan') }}", url: "{{ route('admin.angkatan.index', ['locale' => app()->getLocale()]) }}", keyword: "angkatan manajemen tahun masuk", role: "admin" },
+    { name: "{{ autoTranslate('Tambah Angkatan') }}", url: "{{ route('admin.angkatan.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah angkatan baru", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Prodi') }}", url: "{{ route('admin.prodi.index', ['locale' => app()->getLocale()]) }}", keyword: "prodi program studi manajemen", role: "admin" },
+    { name: "{{ autoTranslate('Tambah Prodi') }}", url: "{{ route('admin.prodi.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah prodi program studi baru", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Keahlian') }}", url: "{{ route('admin.keahlian.index', ['locale' => app()->getLocale()]) }}", keyword: "keahlian skill manajemen", role: "admin" },
+    { name: "{{ autoTranslate('Tambah Keahlian') }}", url: "{{ route('admin.keahlian.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah keahlian skill baru", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Project') }}", url: "{{ route('admin.projects.index', ['locale' => app()->getLocale()]) }}", keyword: "project proyek manajemen admin", role: "admin" },
+    { name: "{{ autoTranslate('Tambah Project Admin') }}", url: "{{ route('admin.projects.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah project proyek baru admin", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Sertifikat') }}", url: "{{ route('admin.sertifikat.index', ['locale' => app()->getLocale()]) }}", keyword: "sertifikat manajemen admin", role: "admin" },
+    { name: "{{ autoTranslate('Tambah Sertifikat Admin') }}", url: "{{ route('admin.sertifikat.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah sertifikat baru admin", role: "admin" },
+    { name: "{{ autoTranslate('Manajemen Notifikasi') }}", url: "{{ route('admin.notifications.index', ['locale' => app()->getLocale()]) }}", keyword: "notifikasi manajemen admin", role: "admin" },
+    { name: "{{ autoTranslate('Tambah Notifikasi') }}", url: "{{ route('admin.notifications.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah notifikasi baru admin", role: "admin" },
+    
+    // === MENU DOSEN ===
+    { name: "{{ autoTranslate('Dashboard Dosen') }}", url: "{{ route('dosen.dashboard', ['locale' => app()->getLocale()]) }}", keyword: "dosen dashboard pengajar lecturer", role: "dosen" },
+    { name: "{{ autoTranslate('Mahasiswa Bimbingan') }}", url: "{{ route('dosen.users.index', ['locale' => app()->getLocale()]) }}", keyword: "mahasiswa bimbingan dosen supervised students", role: "dosen" },
+    { name: "{{ autoTranslate('Tambah Mahasiswa Bimbingan') }}", url: "{{ route('dosen.users.ViewCreate', ['locale' => app()->getLocale()]) }}", keyword: "tambah mahasiswa bimbingan baru add supervised student", role: "dosen" },
+    { name: "{{ autoTranslate('Projects Bimbingan') }}", url: "{{ route('dosen.projects.index', ['locale' => app()->getLocale()]) }}", keyword: "project bimbingan dosen proyek supervised projects", role: "dosen" },
+    { name: "{{ autoTranslate('Tambah Project Bimbingan') }}", url: "{{ route('dosen.projects.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah project bimbingan dosen add supervised project", role: "dosen" },
+    { name: "{{ autoTranslate('Sertifikat Bimbingan') }}", url: "{{ route('dosen.sertifikat.index', ['locale' => app()->getLocale()]) }}", keyword: "sertifikat bimbingan dosen supervised certificates", role: "dosen" },
+    { name: "{{ autoTranslate('Tambah Sertifikat Bimbingan') }}", url: "{{ route('dosen.sertifikat.create', ['locale' => app()->getLocale()]) }}", keyword: "tambah sertifikat bimbingan dosen add supervised certificate", role: "dosen" },
+    
+    // === MENU SETTING & PROFILE ===
+    { name: "{{ autoTranslate('Pengaturan') }}", url: "#", keyword: "setting pengaturan mode bahasa settings preferences", role: "all" },
+    { name: "{{ autoTranslate('Lihat Profil') }}", url: "{{ route('profile', ['locale' => app()->getLocale()]) }}", keyword: "profile profil lihat profil view profile account", role: "mahasiswa" },
+    { name: "{{ autoTranslate('Logout') }}", url: "{{ route('logout') }}", keyword: "logout keluar sign out exit", role: "all_auth", isPost: true },
+];
 
-    function filterMenus(query) {
-        if (!query) {
-            searchResults.classList.add('hidden');
-            return;
-        }
+// Fungsi untuk mendapatkan role user saat ini
+function getUserRole() {
+    @auth
+        return "{{ Auth::user()->role }}";
+    @else
+        return "guest";
+    @endauth
+}
 
-        const filtered = allMenus.filter(menu => {
-            const match = menu.name.toLowerCase().includes(query.toLowerCase()) || 
-                         menu.keyword.toLowerCase().includes(query.toLowerCase());
-            return match;
-        });
+// Fungsi untuk mengecek apakah user sudah login
+function isAuthenticated() {
+    @auth
+        return true;
+    @else
+        return false;
+    @endauth
+}
 
-        if (filtered.length === 0) {
-            searchResults.innerHTML = `<div class="px-4 py-3 text-gray-500 text-sm">Tidak ditemukan menu yang cocok</div>`;
-        } else {
-            let html = '';
-            filtered.forEach(menu => {
-                html += `
-                    <a href="${menu.url}" 
-                       class="flex items-center px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <span class="font-medium text-gray-700 dark:text-gray-200">${menu.name}</span>
-                    </a>
-                `;
-            });
-            searchResults.innerHTML = html;
-        }
-
-        searchResults.classList.remove('hidden');
+function filterMenus(query) {
+    if (!query) {
+        searchResults.classList.add('hidden');
+        return;
     }
 
-    // Event Listener untuk Search
-    searchInput.addEventListener('input', (e) => {
-        filterMenus(e.target.value.trim());
+    const currentRole = getUserRole();
+    const authenticated = isAuthenticated();
+    const searchQuery = query.toLowerCase().trim();
+    
+    const filtered = allMenus.filter(menu => {
+        // Filter berdasarkan keyword (nama menu dalam bahasa apapun + keyword)
+        const matchKeyword = menu.name.toLowerCase().includes(searchQuery) || 
+                            menu.keyword.toLowerCase().includes(searchQuery);
+        
+        if (!matchKeyword) return false;
+        
+        // Filter berdasarkan role
+        if (menu.role === "all") return true;
+        if (menu.role === "all_auth" && authenticated) return true;
+        if (menu.role === "guest" && !authenticated) return true;
+        if (menu.role === currentRole) return true;
+        
+        return false;
     });
 
-    // Close search results when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.classList.add('hidden');
-        }
-    });
+    if (filtered.length === 0) {
+        searchResults.innerHTML = `
+            <div class="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm text-center">
+                <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ autoTranslate('Menu tidak ditemukan') }}
+            </div>`;
+    } else {
+        let html = '';
+        filtered.forEach(menu => {
+            if (menu.isPost) {
+                html += `
+                    <form method="POST" action="${menu.url}" class="m-0">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-sm text-left">
+                            <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            <span class="font-medium text-gray-700 dark:text-gray-200">${menu.name}</span>
+                        </button>
+                    </form>`;
+            } else if (menu.url === "#") {
+                html += `
+                    <button onclick="document.getElementById('sidebarSearch').blur(); toggleDropdown('setting')" 
+                            class="w-full flex items-center px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-sm text-left">
+                        <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="font-medium text-gray-700 dark:text-gray-200">${menu.name}</span>
+                    </button>`;
+            } else {
+                html += `
+                    <a href="${menu.url}" class="flex items-center px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        <span class="font-medium text-gray-700 dark:text-gray-200">${menu.name}</span>
+                    </a>`;
+            }
+        });
+        searchResults.innerHTML = html;
+    }
+
+    searchResults.classList.remove('hidden');
+}
+
+// Event Listener untuk Search
+searchInput.addEventListener('input', (e) => {
+    filterMenus(e.target.value.trim());
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.add('hidden');
+    }
+});
+
+// Escape key to close search
+searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        searchResults.classList.add('hidden');
+        searchInput.blur();
+    }
+});
 
     // ================== EXISTING SCRIPTS (dari kode lama) ==================
     function toggleDropdown(menu) {
