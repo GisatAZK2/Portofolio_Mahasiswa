@@ -14,82 +14,135 @@ use App\Http\Controllers\v1\DosenController;
 use App\Http\Controllers\v1\PostinganController;
 use App\Http\Controllers\v1\LikedPostinganController;
 use App\Http\Controllers\v1\PasskeyController;
-
 use App\Http\Controllers\v1\KomentarController;
 use App\Http\Controllers\GameController;
 
-
-
+// ========== PUBLIC ROUTES (tanpa locale) ==========
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+// ========== AUTH ROUTES ==========
+Route::get('/login', [UserController::class, 'showLogin'])->name('login');
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+
+// Forgot Password Routes
+Route::get('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.forgot');
+Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendOtp'])->name('password.sendOtp');
+Route::get('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showVerifyOtpForm'])->name('password.verify.form');
+Route::post('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'verifyOtp'])->name('password.verify');
+Route::post('/resend-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resendOtp'])->name('password.resendOtp');
+Route::get('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
+Route::post('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
+
+// Register routes
+Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
+Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('register');
+Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserController::class, 'register']);
+
+// ========== 2FA PASSKEY ROUTES (di luar locale group) ==========
+Route::middleware(['web'])->group(function () {
+    Route::post('/webauthn/2fa/options', [PasskeyController::class, 'twoFactorOptions']);
+    Route::post('/webauthn/2fa/verify', [PasskeyController::class, 'twoFactorVerify']);
+});
+
+// Halaman verifikasi 2FA (tanpa locale, tapi bisa diakses setelah login)
+Route::get('/verify-passkey', function () {
+    return view('auth.verify-passkey');
+})->name('2fa.verify')->middleware('web');
+
+// ========== SIDEBAR TOGGLE ==========
+Route::post('/toggle-sidebar', function (Request $request) {
+    Session::put('sidebar_collapsed', $request->collapsed);
+    return response()->json(['success' => true]);
+})->middleware('web');
+
+Route::post('/sidebar/toggle', function () {
+    session(['sidebar_collapsed' => request('collapsed')]);
+    return response()->json(['success' => true]);
+})->name('sidebar.toggle')->middleware('web');
+
+// ========== TEST ROUTES ==========
+Route::get('/test-notification', function () {
+    \App\Http\Controllers\v1\NotificationController::add(
+        'user-registered',
+        [
+            'title' => 'Test Notification',
+            'message' => 'This is a test notification at ' . now()->format('H:i:s'),
+            'user_id' => 1,
+            'user_name' => 'Test User',
+            'link' => '/',
+        ],
+        'high'
+    );
+    return 'Notification sent!';
+});
+
 // ========== LOCALE PREFIX ROUTES ==========
-// Routes dengan locale prefix untuk SEO dan proper multilingual support
 Route::prefix('{locale}')
     ->where(['locale' => 'id|en'])        
     ->middleware(['web', 'setlocale'])      
     ->group(function () {
 
+        
+// ========== PASSKEY MANAGEMENT ROUTES ==========
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::post('/webauthn/register/options', [PasskeyController::class, 'registerOptions']);
+    Route::post('/webauthn/register/verify', [PasskeyController::class, 'registerVerify']);
+    Route::get('/webauthn/passkeys', [PasskeyController::class, 'index']);
+    Route::delete('/webauthn/passkeys/{id}', [PasskeyController::class, 'destroy'])->name('webauthn.passkeys.destroy');
+    Route::get('/passkeys', function () {
+        return view('auth.passkey-management');
+    })->name('passkeys.index');
+});
 
-        // Halaman guest
+        // ========== GUEST ROUTES ==========
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/search', [DashboardController::class, 'search'])->name('search');
         Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
         Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
+        
         Route::resource('komentar', KomentarController::class)->only([
-            'index',
-            'create',
-            'store',
+            'index', 'create', 'store',
         ]);
 
-        
-        // Semua route yang butuh login
-        Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
-
+        // ========== MAHASISWA ROUTES (dengan 2FA) ==========
+        Route::middleware(['auth', 'role:mahasiswa', '2fa'])->group(function () {
             Route::get('/MyDashboard', [DashboardController::class, 'myDashboard'])->name('dashboard.me');
-
             Route::get('/profile-page', function () {
                 return view('views_profile_page');
             })->name('profile-page');
 
             // CRUD Project
             Route::resource('project', ProjekController::class)->only([
-                'index',
-                'create',
-                'store'
+                'index', 'create', 'store'
             ]);
-
             Route::get('/projectUser/edit', [ProjekController::class, 'edit'])->name('project.edit');
             Route::put('/projectUser/update', [ProjekController::class, 'update'])->name('project.update');
             Route::delete('/projectUser/delete', [ProjekController::class, 'destroy'])->name('project.destroy');
 
-            
-            //CRUD Sertifikat
+            // CRUD Sertifikat
             Route::resource('sertifikat', SertifikatController::class)->only([
-                'index',
-                'create',
-                'store',
+                'index', 'create', 'store',
             ]);
-            // CRUD Sertifikat - Ganti dengan route manual yang support query parameter
             Route::get('/sertifikatUser/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
             Route::put('/sertifikatUser/update', [SertifikatController::class, 'update'])->name('sertifikat.update');
             Route::delete('/sertifikat/delete', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
 
-
+            // Profile
             Route::get('/profile', [UserController::class, 'profile'])->name('profile');
             Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 
+            // Keahlian Tambahan
             Route::prefix('keahlian-tambahan')->name('keahlian-tambahan.')->group(function () {
                 Route::get('/', [UserController::class, 'keahliantambahanlist'])->name('index');
                 Route::post('/', [UserController::class, 'storeKeahlianTambahan'])->name('store');
             });
-            // Keahlian Tambahan routes - handles /id/keahlian-tambahan?keahlian_tambahan=id or /en/keahlian-tambahan?keahlian_tambahan=id
             Route::delete('/keahlian-tambahan/destroy', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
-
         });
 
-
-        Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-
+        // ========== ADMIN ROUTES ==========
+        Route::middleware(['auth', 'role:admin', '2fa'])->prefix('admin')->name('admin.')->group(function () {
             Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
 
             Route::prefix('manageUser')->name('users.')->group(function () {
@@ -105,6 +158,8 @@ Route::prefix('{locale}')
 
             Route::prefix('manageUserKeahlianTambahan')->name('users.keahlian-tambahan.')->group(function () {
                 Route::get('/', [AdminController::class, 'ListUserKeahlianTambahan'])->name('index');
+                Route::patch('/{id}/approve', [AdminController::class, 'approveKeahlianTambahan'])->name('approve');
+                Route::patch('/{id}/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
             });
 
             Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {
@@ -170,10 +225,10 @@ Route::prefix('{locale}')
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyNotification'])->name('bulk-destroy');
                 Route::get('/load-users', [AdminController::class, 'loadUsersForNotification'])->name('load-users');
             });
-
         });
 
-        Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
+        // ========== DOSEN ROUTES ==========
+        Route::middleware(['auth', 'role:dosen', '2fa'])->prefix('dosen')->name('dosen.')->group(function () {
             Route::get('/dashboard', [DosenController::class, 'index'])->name('dashboard');
 
             Route::prefix('manageUser')->name('users.')->group(function () {
@@ -210,243 +265,76 @@ Route::prefix('{locale}')
             });
         });
 
+        // ========== POSTINGAN ROUTES ==========
         Route::resource('postingan', PostinganController::class)->only([
-                'index',
-                'create',
-                'store',
-            ]);
+            'index', 'create', 'store',
+        ]);
+        Route::get('/postinganUser/edit', [PostinganController::class, 'edit'])->name('postingan.edit');
+        Route::put('/postinganUser/update', [PostinganController::class, 'update'])->name('postingan.update');
+        Route::delete('/postinganUser/delete', [PostinganController::class, 'destroy'])->name('postingan.destroy');
 
-            Route::get('/postinganUser/edit', [PostinganController::class, 'edit'])->name('postingan.edit');
-            Route::put('/postinganUser/update', [PostinganController::class, 'update'])->name('postingan.update');
-            Route::delete('/postinganUser/delete', [PostinganController::class, 'destroy'])->name('postingan.destroy');
-
-
-        // Portfolio route - handles /id/portofolio?user=username or /en/portofolio?user=username
+        // ========== PUBLIC VIEW ROUTES ==========
         Route::get('/portofolio', [DashboardController::class, 'show'])->name('portfolio.show');
-
-        // Project routes - handles /id/project?project=id or /en/project?project=id
         Route::get('/projectUser', [ProjekController::class, 'show'])->name('project.show');
-
         Route::get('/ProjectMahasiswa', [ProjekController::class, 'project_user'])->name('project.project_user');
-
-        // Postingan routes - handles /id/postingan?postingan=id or /en/postingan?postingan=id
         Route::get('/postinganUser', [PostinganController::class, 'show'])->name('postingan.show');
 
-        // Learning Corner routes - handles /id/learning-corner?learning_corner=id or /en/learning-corner?learning_corner=id
-        // CRUD Learning Corner - Ubah ke query parameter untuk support locale
-        Route::get('/learning-corner/create', [LearningCornerController::class, 'create'])
-            ->name('learning-corner.create');
-        Route::post('/learning-corner/store', [LearningCornerController::class, 'store'])
-            ->name('learning-corner.store');
+        // ========== LEARNING CORNER ROUTES ==========
+        Route::get('/learning-corner/create', [LearningCornerController::class, 'create'])->name('learning-corner.create');
+        Route::post('/learning-corner/store', [LearningCornerController::class, 'store'])->name('learning-corner.store');
+        Route::get('/learning-corner/edit', [LearningCornerController::class, 'edit'])->name('learning-corner.edit');
+        Route::put('/learning-corner/update', [LearningCornerController::class, 'update'])->name('learning-corner.update');
+        Route::delete('/learning-corner/delete', [LearningCornerController::class, 'destroy'])->name('learning-corner.destroy');
+        Route::post('/learning-corner/mass-destroy', [LearningCornerController::class, 'massDestroy'])->name('learning-corner.mass-destroy');
 
-        Route::get('/learning-corner/edit', [LearningCornerController::class, 'edit'])
-            ->name('learning-corner.edit');
-        Route::put('/learning-corner/update', [LearningCornerController::class, 'update'])
-            ->name('learning-corner.update');
-        Route::delete('/learning-corner/delete', [LearningCornerController::class, 'destroy'])
-            ->name('learning-corner.destroy');
-
-
-
-        // Mass destroy tetap menggunakan POST dengan query parameter
-        Route::post('/learning-corner/mass-destroy', [LearningCornerController::class, 'massDestroy'])
-            ->name('learning-corner.mass-destroy');
-
-
-
-        // Komentar routes - handles /id/komentar?komentar=id or /en/komentar?komentar=id
+        // ========== KOMENTAR ROUTES ==========
         Route::get('/komentar/edit', [KomentarController::class, 'edit'])->name('komentar.edit');
         Route::put('/komentar/update', [KomentarController::class, 'update'])->name('komentar.update');
         Route::delete('/komentar/delete', [KomentarController::class, 'destroy'])->name('komentar.destroy');
 
-        // Like/unlike postingan - handles /id/postingan/{postingan}/toggle-like or /en/postingan/{postingan
+        // ========== LIKE ROUTES ==========
         Route::post('/postingan/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
 
-        // Game routes
+        // ========== GAME ROUTES ==========
         Route::get('/game-matematika', [GameController::class, 'mtk'])->name('game.matematika');
         Route::get('/game/puzzle', [GameController::class, 'puzzle'])->name('game.puzzle');
         Route::get('/game/tts', [GameController::class, 'tts'])->name('game.tts');
-
         Route::post('/game/save-score', [GameController::class, 'saveScore'])->name('game.saveScore')->middleware('auth');
         Route::get('/game/leaderboard', [GameController::class, 'leaderboard'])->name('game.leaderboard');
         Route::post('/game/get-highest-score', [GameController::class, 'getHighestScore'])->name('game.getHighestScore');
 
-        // Footer Routes
+        // ========== FOOTER ROUTES ==========
         Route::get('/help', function () {
             return view('components.help');
         })->name('help');
-
         Route::get('/get-app', function () {
             return view('components.get-app');
         })->name('get-app');
-        
-        // Offline page route
         Route::get('/offline', function () {
             return view('components.offline');
         })->name('offline');
 
-    // admin update photo profile
-    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
-
+        // ========== API NOTIFICATIONS ==========
         Route::prefix('api/notifications')->group(function () {
-    Route::get('/', [NotificationController::class, 'index']);
-    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
-    Route::post('/clear-all', [NotificationController::class, 'clearAll']);
-    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
-});
-      
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+            Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+            Route::post('/clear-all', [NotificationController::class, 'clearAll']);
+            Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+        });
     });
 
-// Outside of locale prefix group
-
-  // Offline page route
-        Route::get('/offline', function () {
-            return view('offline');
-        })->name('offline');
-
-            Route::get('/help', function () {
-            return view('components.help');
-        })->name('help');
-
-        Route::get('/get-app', function () {
-            return view('components.get-app');
-        })->name('get-app');
-        
-        // Offline page route
-        Route::get('/offline', function () {
-            return view('components.offline');
-        })->name('offline');
-
-Route::get('/login', [UserController::class, 'showLogin'])->name('login');
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-
-// Forgot Password Routes
-        Route::get('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.forgot');
-        Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendOtp'])->name('password.sendOtp');
-        Route::get('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showVerifyOtpForm'])->name('password.verify.form');
-        Route::post('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'verifyOtp'])->name('password.verify');
-        Route::post('/resend-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resendOtp'])->name('password.resendOtp');
-        Route::get('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
-        Route::post('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
-
-Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
-Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('register');
-
-
-Route::post('/toggle-sidebar', function (Request $request) {
-    Session::put('sidebar_collapsed', $request->collapsed);
-    return response()->json(['success' => true]);
-})->middleware('web');
-Route::post('/sidebar/toggle', function () {
-    session(['sidebar_collapsed' => request('collapsed')]);
-    return response()->json(['success' => true]);
-})->name('sidebar.toggle');
-
-// Auth routes (bisa di luar middleware auth)
-Route::get('/register', [UserController::class, 'showRegister'])->name('register');
-Route::post('/register', [UserController::class, 'register']);
-
-
+// ========== ADDITIONAL ROUTES (di luar locale) ==========
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
 
-
-Route::middleware(['auth'])->group(function () {
-
-    Route::post(
-        '/project/{project}/tasks',
-        [ProjekController::class, 'storeTask']
-    )->name('project.tasks.store');
-    Route::patch(
-        '/project/{project}/tasks/{task}',
-        [ProjekController::class, 'updateTask']
-    )->name('project.tasks.update');
-    Route::patch(
-        '/project/{project}/tasks/{task}/complete',
-        [ProjekController::class, 'completeTask']
-    )->name('project.tasks.complete');
-    Route::delete(
-        '/project/{project}/tasks/{task}',
-        [ProjekController::class, 'destroyTask']
-    )->name('project.tasks.destroy');
-
-    Route::post(
-        '/learning-corner-mass/mass-destroy',
-        [LearningCornerController::class, 'massDestroy']
-    )->name('learning-corner.mass-destroy');
-
-
-    Route::delete('/learning-corner/{learning_corner}', [LearningCornerController::class, 'destroy'])
-        ->name('learning-corner.destroy')
-        ->middleware('role:admin,dosen,mahasiswa');
-
-});
-
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::prefix('manageUserKeahlianTambahan')->name('users.keahlian-tambahan.')->group(function () {
-        Route::patch('/{id}/approve', [AdminController::class, 'approveKeahlianTambahan'])->name('approve');
-        Route::patch('/{id}/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
-    });
-
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::patch('/user/{id}/update-status', [App\Http\Controllers\v1\UserController::class, 'updateStatusPengajuan'])
-        ->name('user.update-status')
-        ->middleware('role:admin,dosen');
-});
-
-// Route::get('/test-translate', function () {
-//     $text = "Halo Saya Cuman Ingin test Translate berbasis teks get.";
-
-//     app()->setLocale('en');
-//     $en = autoTranslate($text);
-
-//     app()->setLocale('es');
-//     $es = autoTranslate($text);
-
-//     dd([
-//         'original' => $text,
-//         'english' => $en,
-//         'spanish' => $es,
-//     ]);
-// });
-
-  Route::middleware(['auth'])->get('/passkeys', function () {
-    return view('auth.passkey-management');
-})->name('passkeys.index');
-
-
-Route::prefix('webauthn')->group(function () {
-    Route::post('/login/options', [PasskeyController::class, 'authenticationOptions']);
-    Route::post('/login/verify', [PasskeyController::class, 'authenticate']);
-});
-
-// Authenticated routes for passkey management
-Route::middleware(['auth'])->prefix('webauthn')->group(function () {
-    Route::post('/register/options', [PasskeyController::class, 'registerOptions']);
-    Route::post('/register/verify', [PasskeyController::class, 'registerVerify']);
-    Route::get('/passkeys', [PasskeyController::class, 'index']);
-    Route::delete('/passkeys/{id}', [PasskeyController::class, 'destroy']);
-});
-
-
-// Route untuk testing notification 
-Route::get('/test-notification', function () {
-    \App\Http\Controllers\v1\NotificationController::add(
-        'user-registered',
-        [
-            'title' => 'Test Notification',
-            'message' => 'This is a test notification at ' . now()->format('H:i:s'),
-            'user_id' => 1,
-            'user_name' => 'Test User',
-            'link' => '/',
-        ],
-        'high'
-    );
-    
-    return 'Notification sent!';
+// ========== AUTHENTICATED TASK ROUTES ==========
+Route::middleware(['auth', '2fa'])->group(function () {
+    Route::post('/project/{project}/tasks', [ProjekController::class, 'storeTask'])->name('project.tasks.store');
+    Route::patch('/project/{project}/tasks/{task}', [ProjekController::class, 'updateTask'])->name('project.tasks.update');
+    Route::patch('/project/{project}/tasks/{task}/complete', [ProjekController::class, 'completeTask'])->name('project.tasks.complete');
+    Route::delete('/project/{project}/tasks/{task}', [ProjekController::class, 'destroyTask'])->name('project.tasks.destroy');
+    Route::post('/learning-corner-mass/mass-destroy', [LearningCornerController::class, 'massDestroy'])->name('learning-corner.mass-destroy');
+    Route::delete('/learning-corner/{learning_corner}', [LearningCornerController::class, 'destroy'])->name('learning-corner.destroy')->middleware('role:admin,dosen,mahasiswa');
+    Route::patch('/user/{id}/update-status', [App\Http\Controllers\v1\UserController::class, 'updateStatusPengajuan'])->name('user.update-status')->middleware('role:admin,dosen');
 });

@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'setlocale' => \App\Http\Middleware\SetLocale::class,
             'role'      => \App\Http\Middleware\AdminMiddleware::class,
+            '2fa' => \App\Http\Middleware\TwoFactorVerified::class,
+
         ]);
 
         // TAMBAHKAN INI (paling penting)
