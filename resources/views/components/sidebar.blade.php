@@ -1226,9 +1226,19 @@ searchInput.addEventListener('keydown', function(e) {
         // Simpan preferensi bahasa ke localStorage bila diperlukan
         localStorage.setItem('lang', newLang);
 
-        // Redirect otomatis ke halaman home locale baru
-        const homeUrl = `${window.location.origin}/${newLang}`;
-        window.location.href = homeUrl;
+        const currentUrl = new URL(window.location.href);
+        const currentPath = currentUrl.pathname;
+        const currentSearch = currentUrl.search;
+        const segments = currentPath.replace(/^\//, '').split('/');
+
+        if (segments.length > 0 && (segments[0] === 'id' || segments[0] === 'en')) {
+            segments[0] = newLang;
+        } else {
+            segments.unshift(newLang);
+        }
+
+        const newPath = '/' + segments.filter(Boolean).join('/');
+        window.location.href = `${window.location.origin}${newPath}${currentSearch}`;
     }
 
     // Initialize dark mode

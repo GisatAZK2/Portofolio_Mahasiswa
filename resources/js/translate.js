@@ -2419,16 +2419,15 @@ window.changeLanguage = function () {
   currentLang = newLocale;
   localStorage.setItem('lang', newLocale);
 
-  // Redirect ke halaman sesuai locale
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  const currentUrl = new URL(window.location.href);
+  const pathSegments = currentUrl.pathname.split('/').filter(Boolean);
 
-  // Hapus locale lama jika ada
   if (['id', 'en'].includes(pathSegments[0])) {
     pathSegments.shift();
   }
 
-  const newPath = '/' + newLocale + '/' + pathSegments.join('/');
-  window.location.href = newPath;
+  const newPath = '/' + [newLocale, ...pathSegments].filter(Boolean).join('/');
+  window.location.href = `${window.location.origin}${newPath}${currentUrl.search}${currentUrl.hash}`;
 };
 
 // 🔥 Penting: untuk dynamic content (Livewire, AJAX, dll)
