@@ -265,6 +265,8 @@ Route::middleware(['web', 'auth'])->group(function () {
             });
         });
 
+        
+            Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
         // ========== POSTINGAN ROUTES ==========
         Route::resource('postingan', PostinganController::class)->only([
             'index', 'create', 'store',
