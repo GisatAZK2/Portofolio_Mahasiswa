@@ -154,58 +154,58 @@ class ProjekController extends Controller
 
     // FORM TAMBAH
     public function create(Request $request)
-{
-    $search = $request->query('search', '');
-    $angkatan = $request->query('angkatan', '');
-    $jurusan = $request->query('jurusan', '');
-    $keahlian = $request->query('keahlian', '');
+    {
+        $search = $request->query('search', '');
+        $angkatan = $request->query('angkatan', '');
+        $jurusan = $request->query('jurusan', '');
+        $keahlian = $request->query('keahlian', '');
 
-    $authId = auth()->id(); // user login sekarang
+        $authId = auth()->id(); // user login sekarang
 
-    $usersQuery = User::with(['angkatan', 'jurusan', 'keahlian'])
-        ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan', 'id_keahlian')
-        ->whereNotIn('role', ['admin', 'dosen'])
-        ->where('is_active', 1)
-        ->where('status_pengajuan', 'Di Terima')
-        ->where('id', '!=', $authId); // sembunyikan user login
+        $usersQuery = User::with(['angkatan', 'jurusan', 'keahlian'])
+            ->select('id', 'nama_mahasiswa', 'photo_profile', 'email', 'id_angkatan', 'id_jurusan', 'id_keahlian')
+            ->whereNotIn('role', ['admin', 'dosen'])
+            ->where('is_active', 1)
+            ->where('status_pengajuan', 'Di Terima')
+            ->where('id', '!=', $authId); // sembunyikan user login
 
-    if (!empty($search)) {
-        $usersQuery->where('nama_mahasiswa', 'like', '%' . $search . '%');
-    }
+        if (!empty($search)) {
+            $usersQuery->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        }
 
-    if (!empty($angkatan)) {
-        $usersQuery->where('id_angkatan', $angkatan);
-    }
+        if (!empty($angkatan)) {
+            $usersQuery->where('id_angkatan', $angkatan);
+        }
 
-    if (!empty($jurusan)) {
-        $usersQuery->where('id_jurusan', $jurusan);
-    }
+        if (!empty($jurusan)) {
+            $usersQuery->where('id_jurusan', $jurusan);
+        }
 
-    if (!empty($keahlian)) {
-        $usersQuery->where('id_keahlian', $keahlian);
-    }
+        if (!empty($keahlian)) {
+            $usersQuery->where('id_keahlian', $keahlian);
+        }
 
-    $users = $usersQuery->paginate(10);
+        $users = $usersQuery->paginate(10);
 
-    if ($request->ajax()) {
+        if ($request->ajax()) {
 
-        $userListHtml = '';
+            $userListHtml = '';
 
-        if ($users->count() > 0) {
-            foreach ($users as $user) {
+            if ($users->count() > 0) {
+                foreach ($users as $user) {
 
-                $userListHtml .= '
+                    $userListHtml .= '
                 <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg" data-user-id="' . $user->id . '">
                 
                     <div class="flex items-center gap-3">
                         ' . ($user->photo_profile
-                            ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
-                            : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                        ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
+                        : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
                                     <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
-                                    . strtoupper(substr($user->nama_mahasiswa, 0, 1)) .
-                                  '</span>
+                        . strtoupper(substr($user->nama_mahasiswa, 0, 1)) .
+                        '</span>
                                </div>'
-                        ) . '
+                    ) . '
 
                         <div>
                             <div class="font-medium text-gray-900 dark:text-gray-100">' . e($user->nama_mahasiswa) . '</div>
@@ -228,42 +228,42 @@ onchange="updateUserRole(this, ' . $user->id . ', this.value)">
                     </div>
                 </div>
                 ';
-            }
-        } else {
-            $userListHtml = '
+                }
+            } else {
+                $userListHtml = '
             <div class="text-center py-10 text-gray-500 dark:text-gray-400">
                 Tidak ada mahasiswa yang sesuai filter.
             </div>';
+            }
+
+            $paginationHtml = $users->render(
+                'vendor.pagination.custom_ajax',
+                ['groupName' => 'admin_project_user_selection']
+            )->toHtml();
+
+            return response()->json([
+                'userListHtml' => $userListHtml,
+                'paginationHtml' => $paginationHtml,
+                'currentPage' => $users->currentPage(),
+                'lastPage' => $users->lastPage(),
+            ]);
         }
 
-        $paginationHtml = $users->render(
-            'vendor.pagination.custom_ajax',
-            ['groupName' => 'admin_project_user_selection']
-        )->toHtml();
+        $angkatanList = Angkatan::orderBy('tahun_masuk', 'desc')->get();
+        $jurusanList = Jurusan::orderBy('nama_jurusan')->get();
+        $keahlianList = Keahlian::orderBy('nama_keahlian')->get();
 
-        return response()->json([
-            'userListHtml'   => $userListHtml,
-            'paginationHtml' => $paginationHtml,
-            'currentPage'    => $users->currentPage(),
-            'lastPage'       => $users->lastPage(),
-        ]);
+        return view('project.views_create_project', compact(
+            'users',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian',
+            'angkatanList',
+            'jurusanList',
+            'keahlianList'
+        ));
     }
-
-    $angkatanList = Angkatan::orderBy('tahun_masuk', 'desc')->get();
-    $jurusanList = Jurusan::orderBy('nama_jurusan')->get();
-    $keahlianList = Keahlian::orderBy('nama_keahlian')->get();
-
-    return view('project.views_create_project', compact(
-        'users',
-        'search',
-        'angkatan',
-        'jurusan',
-        'keahlian',
-        'angkatanList',
-        'jurusanList',
-        'keahlianList'
-    ));
-}
 
     protected function createProjectTasks(Project $project, array $tasks, bool $skipValidation = false)
     {
@@ -318,12 +318,13 @@ onchange="updateUserRole(this, ' . $user->id . ', this.value)">
         return $savedTaskIds;
     }
     // SIMPAN BARU
- public function store(Request $request)
+    public function store(Request $request)
     {
         // Filter tasks yang incomplete
         $filteredTasks = collect($request->input('tasks', []))
             ->filter(function ($task) {
-                if (!is_array($task)) return false;
+                if (!is_array($task))
+                    return false;
                 $userId = trim($task['user_id'] ?? '');
                 $nameTask = trim($task['name_task'] ?? '');
                 return !empty($userId) && !empty($nameTask);
@@ -393,314 +394,57 @@ onchange="updateUserRole(this, ' . $user->id . ', this.value)">
             ->with('success', 'Project berhasil ditambahkan!');
     }
 
-        private function createProjectNotifications($project, $members)
-        {
-            $user = Auth::user();
-            $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
-            $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
-
-            /*
-            |--------------------------------------------------------------------------
-            | 1. Notifikasi ke Admin
-            |--------------------------------------------------------------------------
-            */
-            \App\Http\Controllers\v1\NotificationController::add(
-                'project-created',
-                [
-                    'title' => 'Project Baru Dibuat',
-                    'message' => "{$userName} membuat project: {$projectName}" .
-                        (count($members) > 0 ? " dengan " . count($members) . " anggota" : ""),
-                    'user_id' => $user->id,
-                    'user_name' => $userName,
-                    'project_id' => $project->id,
-                    'project_name' => $projectName,
-                    'members_count' => count($members),
-                    'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
-                ],
-                'high'
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | 2. Kumpulkan penerima (leader + members)
-            |--------------------------------------------------------------------------
-            */
-            $receivers = collect($members);
-
-            if (!empty($project->leader_id)) {
-                $receivers->push($project->leader_id);
-            }
-
-            $receivers = $receivers
-                ->unique()
-                ->filter(fn($id) => $id != $user->id) // jangan kirim ke pembuat sendiri
-                ->values();
-
-            foreach ($receivers as $receiverId) {
-                \App\Http\Controllers\v1\NotificationController::add(
-                    'project-assigned',
-                    [
-                        'title' => 'Anda Ditambahkan ke Project',
-                        'message' => "{$userName} menambahkan Anda ke project: {$projectName}",
-                        "target_type" => "specific",
-                        "selected_users" => $receiverId,
-                        'sender_id' => $user->id,
-                        'sender_name' => $userName,
-                        'project_id' => $project->id,
-                        'project_name' => $projectName,
-                        'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
-                    ],
-                    'normal'
-                );
-            }
-        }
-
-// Ubah method edit untuk menerima query parameter 'id' dan 'user'
-public function edit(Request $request)
-{
-    $id = $request->query('id');
-    $username = $request->query('user');
-    
-    if (!$id) {
-        abort(404, 'Project ID is required');
-    }
-    
-    // Cek user berdasarkan username
-    $user = null;
-    if ($username) {
-        $user = User::where('username', $username)->firstOrFail();
-        
-        // Pastikan user yang login memiliki akses
-        if (Auth::id() !== $user->id && Auth::user()->role !== 'admin') {
-            abort(403, 'Unauthorized access');
-        }
-    } else {
+    private function createProjectNotifications($project, $members)
+    {
         $user = Auth::user();
-    }
-    
-    $search = $request->input('search');
-    $angkatan = $request->input('angkatan');
-    $jurusan = $request->input('jurusan');
-    $keahlian = $request->input('keahlian');
+        $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
+        $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
 
-    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
-        ->where('role', 'mahasiswa')
-        ->where('is_active', 1)
-        ->where('status_pengajuan', 'Di Terima');
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Notifikasi ke Admin
+        |--------------------------------------------------------------------------
+        */
+        \App\Http\Controllers\v1\NotificationController::add(
+            'project-created',
+            [
+                'title' => 'Project Baru Dibuat',
+                'message' => "{$userName} membuat project: {$projectName}" .
+                    (count($members) > 0 ? " dengan " . count($members) . " anggota" : ""),
+                'user_id' => $user->id,
+                'user_name' => $userName,
+                'project_id' => $project->id,
+                'project_name' => $projectName,
+                'members_count' => count($members),
+                'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+            ],
+            'high'
+        );
 
-    if ($search) {
-        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Kumpulkan penerima (leader + members)
+        |--------------------------------------------------------------------------
+        */
+        $receivers = collect($members);
 
-    if ($angkatan) {
-        $query->where('id_angkatan', $angkatan);
-    }
-
-    if ($jurusan) {
-        $query->where('id_jurusan', $jurusan);
-    }
-
-    if ($keahlian) {
-        $query->where('id_keahlian', $keahlian);
-    }
-
-    $users = $query->orderBy('created_at', 'desc')
-        ->paginate(10)
-        ->withQueryString();
-
-    $angkatans = Angkatan::all();
-    $jurusans = Jurusan::all();
-    $keahlians = Keahlian::all();
-
-    $project = Project::with(['members', 'leader', 'mahasiswa', 'tasks'])
-        ->where('id', $id)
-        ->firstOrFail();
-    
-    // Verifikasi akses
-    if (Auth::user()->role !== 'admin' && $project->id_mahasiswa !== $user->id) {
-        abort(403, 'You can only edit your own projects');
-    }
-
-    return view('project.views_edit_project', compact(
-        'project',
-        'users',
-        'angkatans',
-        'jurusans',
-        'keahlians',
-        'search',
-        'angkatan',
-        'jurusan',
-        'keahlian'
-    ));
-}
-
-// Update method update juga
-public function update(Request $request)
-{
-    $id = $request->query('id');
-    $username = $request->query('user');
-    
-    if (!$id) {
-        abort(404, 'Project ID is required');
-    }
-    
-    // Cek user berdasarkan username
-    $user = null;
-    if ($username) {
-        $user = User::where('username', $username)->firstOrFail();
-        
-        if (Auth::id() !== $user->id && Auth::user()->role !== 'admin') {
-            abort(403, 'Unauthorized access');
+        if (!empty($project->leader_id)) {
+            $receivers->push($project->leader_id);
         }
-    } else {
-        $user = Auth::user();
-    }
-    
-    $project = Project::where('id', $id)
-        ->where('id_mahasiswa', $user->id)
-        ->firstOrFail();
 
-    // Rest of your update logic remains the same...
-    $request->validate([
-        'nama_project' => 'required|string|max:255',
-        'tanggal_mulai' => 'required|date',
-        'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
-        'link_project' => 'nullable|url|max:255',
-        'deskripsi' => 'nullable|string|max:255',
-        'link_github' => 'nullable|url|max:500',
-        'link_video' => 'nullable|url|max:500',
-        'leader' => 'nullable|exists:users,id',
-        'members' => 'nullable|array',
-        'members.*' => 'nullable|exists:users,id|different:leader',
-        'tasks' => 'nullable|array',
-        'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
-        'tasks.*.user_id' => 'sometimes|nullable|exists:users,id',
-        'tasks.*.name_task' => 'sometimes|nullable|string|max:255',
-    ]);
+        $receivers = $receivers
+            ->unique()
+            ->filter(fn($id) => $id != $user->id) // jangan kirim ke pembuat sendiri
+            ->values();
 
-    // Prepare content array
-    $content = [
-        'nama_project' => $request->nama_project,
-        'deskripsi' => $request->deskripsi,
-        'link_project' => $request->link_project,
-        'link_github' => $request->link_github,
-        'link_video' => $request->link_video
-    ];
-
-    // Filter out null/empty values
-    $content = array_filter($content, fn($value) => !is_null($value) && $value !== '');
-
-    $oldMembers = $project->members()->pluck('user_id')->toArray();
-    $oldLeader  = $project->leader_id;
-
-    $oldReceivers = collect($oldMembers)
-        ->push($oldLeader)
-        ->filter()
-        ->unique()
-        ->values()
-        ->all();
-
-    // Update project
-    $project->update([
-        'tanggal_mulai' => $request->tanggal_mulai,
-        'tanggal_akhir' => $request->tanggal_akhir,
-        'isi_content' => $content,
-        'leader_id' => $request->leader,
-    ]);
-
-    // Handle members
-    $members = collect($request->input('members', []))
-        ->filter()
-        ->reject(fn($memberId) => $memberId == $request->leader)
-        ->unique()
-        ->values()
-        ->all();
-
-    $project->members()->sync($members);
-
-    $newReceivers = collect($members)
-    ->push($request->leader)
-    ->filter()
-    ->unique()
-    ->values()
-    ->all();
-
-    $this->updateProjectNotifications($project, $oldReceivers, $newReceivers);
-
-    $allowedUserIds = collect([$project->id_mahasiswa])
-        ->when($project->leader_id, fn($collection, $leaderId) => $collection->push($leaderId))
-        ->merge($members)
-        ->filter()
-        ->unique()
-        ->values()
-        ->all();
-
-    $submittedTasks = collect($request->input('tasks', []))
-        ->map(function ($task) {
-            return [
-                'id' => $task['id'] ?? null,
-                'user_id' => $task['user_id'] ?? null,
-                'name_task' => trim($task['name_task'] ?? ''),
-            ];
-        })
-        ->filter(function ($task) {
-            return !empty($task['user_id']) && !empty($task['name_task']);
-        })
-        ->values()
-        ->all();
-
-    $savedTaskIds = $this->createProjectTasks($project, $submittedTasks, false);
-
-    if (!empty($savedTaskIds)) {
-        ProjectTask::where('project_id', $project->id)
-            ->whereNotIn('id', $savedTaskIds)
-            ->delete();
-    } else {
-        ProjectTask::where('project_id', $project->id)->delete();
-    }
-
-    ProjectTask::where('project_id', $project->id)
-        ->whereNotIn('user_id', $allowedUserIds)
-        ->delete();
-
-    
-    $locale = app()->getLocale();
-    return redirect()->route('project.index', ['locale' => $locale])
-        ->with('success', 'Project berhasil diperbarui!');
-}
-private function updateProjectNotifications($project, array $oldReceivers, array $newReceivers)
-{
-    $user = Auth::user();
-
-    $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
-    $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
-
-    $oldReceivers = collect($oldReceivers)->filter()->unique()->values();
-    $newReceivers = collect($newReceivers)->filter()->unique()->values();
-
-    /*
-    |--------------------------------------------------------------------------
-    | 1. User baru ditambahkan
-    |--------------------------------------------------------------------------
-    */
-    $addedUsers = $newReceivers->diff($oldReceivers);
-
-    foreach ($addedUsers as $receiverId) {
-
-        // cek kalau notif lama sudah ada, skip
-        $exists = \App\Models\Notification::where('type', 'project-assigned')
-            ->where('data->project_id', $project->id)
-            ->where('data->selected_users', (int)$receiverId)
-            ->exists();
-
-        if (!$exists) {
+        foreach ($receivers as $receiverId) {
             \App\Http\Controllers\v1\NotificationController::add(
                 'project-assigned',
                 [
                     'title' => 'Anda Ditambahkan ke Project',
                     'message' => "{$userName} menambahkan Anda ke project: {$projectName}",
-                    'target_type' => 'specific',
-                    'selected_users' => $receiverId,
+                    "target_type" => "specific",
+                    "selected_users" => $receiverId,
                     'sender_id' => $user->id,
                     'sender_name' => $userName,
                     'project_id' => $project->id,
@@ -712,76 +456,333 @@ private function updateProjectNotifications($project, array $oldReceivers, array
         }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. User dihapus dari project
-    |--------------------------------------------------------------------------
-    */
-    $removedUsers = $oldReceivers->diff($newReceivers);
+    // Ubah method edit untuk menerima query parameter 'id' dan 'user'
+    public function edit(Request $request)
+    {
+        $id = $request->query('id');
+        $username = $request->query('user');
 
-    foreach ($removedUsers as $receiverId) {
+        if (!$id) {
+            abort(404, 'Project ID is required');
+        }
 
-        // hapus notif lama
-        \App\Models\Notification::where('type', 'project-assigned')
-            ->where('data->project_id', $project->id)
-            ->where('data->selected_users', (int)$receiverId)
+        // Cek user berdasarkan username
+        $user = null;
+        if ($username) {
+            $user = User::where('username', $username)->firstOrFail();
+
+            // Pastikan user yang login memiliki akses
+            if (Auth::id() !== $user->id && Auth::user()->role !== 'admin') {
+                abort(403, 'Unauthorized access');
+            }
+        } else {
+            $user = Auth::user();
+        }
+
+        $search = $request->input('search');
+        $angkatan = $request->input('angkatan');
+        $jurusan = $request->input('jurusan');
+        $keahlian = $request->input('keahlian');
+
+        $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+            ->where('role', 'mahasiswa')
+            ->where('is_active', 1)
+            ->where('status_pengajuan', 'Di Terima');
+
+        if ($search) {
+            $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        }
+
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
+
+        if ($jurusan) {
+            $query->where('id_jurusan', $jurusan);
+        }
+
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
+
+        $users = $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        $project = Project::with(['members', 'leader', 'mahasiswa', 'tasks'])
+            ->where('id', $id)
+            ->firstOrFail();
+
+        // Verifikasi akses
+        if (Auth::user()->role !== 'admin' && $project->id_mahasiswa !== $user->id) {
+            abort(403, 'You can only edit your own projects');
+        }
+
+        return view('project.views_edit_project', compact(
+            'project',
+            'users',
+            'angkatans',
+            'jurusans',
+            'keahlians',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian'
+        ));
+    }
+
+    // Update method update juga
+    public function update(Request $request)
+    {
+        $id = $request->query('id');
+        $username = $request->query('user');
+
+        if (!$id) {
+            abort(404, 'Project ID is required');
+        }
+
+        // Cek user berdasarkan username
+        $user = null;
+        if ($username) {
+            $user = User::where('username', $username)->firstOrFail();
+
+            if (Auth::id() !== $user->id && Auth::user()->role !== 'admin') {
+                abort(403, 'Unauthorized access');
+            }
+        } else {
+            $user = Auth::user();
+        }
+
+        $project = Project::where('id', $id)
+            ->where('id_mahasiswa', $user->id)
+            ->firstOrFail();
+
+        // Rest of your update logic remains the same...
+        $request->validate([
+            'nama_project' => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'link_project' => 'nullable|url|max:255',
+            'deskripsi' => 'nullable|string|max:255',
+            'link_github' => 'nullable|url|max:500',
+            'link_video' => 'nullable|url|max:500',
+            'leader' => 'nullable|exists:users,id',
+            'members' => 'nullable|array',
+            'members.*' => 'nullable|exists:users,id|different:leader',
+            'tasks' => 'nullable|array',
+            'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
+            'tasks.*.user_id' => 'sometimes|nullable|exists:users,id',
+            'tasks.*.name_task' => 'sometimes|nullable|string|max:255',
+        ]);
+
+        // Prepare content array
+        $content = [
+            'nama_project' => $request->nama_project,
+            'deskripsi' => $request->deskripsi,
+            'link_project' => $request->link_project,
+            'link_github' => $request->link_github,
+            'link_video' => $request->link_video
+        ];
+
+        // Filter out null/empty values
+        $content = array_filter($content, fn($value) => !is_null($value) && $value !== '');
+
+        $oldMembers = $project->members()->pluck('user_id')->toArray();
+        $oldLeader = $project->leader_id;
+
+        $oldReceivers = collect($oldMembers)
+            ->push($oldLeader)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        // Update project
+        $project->update([
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'isi_content' => $content,
+            'leader_id' => $request->leader,
+        ]);
+
+        // Handle members
+        $members = collect($request->input('members', []))
+            ->filter()
+            ->reject(fn($memberId) => $memberId == $request->leader)
+            ->unique()
+            ->values()
+            ->all();
+
+        $project->members()->sync($members);
+
+        $newReceivers = collect($members)
+            ->push($request->leader)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->updateProjectNotifications($project, $oldReceivers, $newReceivers);
+
+        $allowedUserIds = collect([$project->id_mahasiswa])
+            ->when($project->leader_id, fn($collection, $leaderId) => $collection->push($leaderId))
+            ->merge($members)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $submittedTasks = collect($request->input('tasks', []))
+            ->map(function ($task) {
+                return [
+                    'id' => $task['id'] ?? null,
+                    'user_id' => $task['user_id'] ?? null,
+                    'name_task' => trim($task['name_task'] ?? ''),
+                ];
+            })
+            ->filter(function ($task) {
+                return !empty($task['user_id']) && !empty($task['name_task']);
+            })
+            ->values()
+            ->all();
+
+        $savedTaskIds = $this->createProjectTasks($project, $submittedTasks, false);
+
+        if (!empty($savedTaskIds)) {
+            ProjectTask::where('project_id', $project->id)
+                ->whereNotIn('id', $savedTaskIds)
+                ->delete();
+        } else {
+            ProjectTask::where('project_id', $project->id)->delete();
+        }
+
+        ProjectTask::where('project_id', $project->id)
+            ->whereNotIn('user_id', $allowedUserIds)
             ->delete();
 
-        // kirim notif keluar
-        \App\Http\Controllers\v1\NotificationController::add(
-            'project-removed',
-            [
-                'title' => 'Dikeluarkan dari Project',
-                'message' => "Anda telah dikeluarkan dari project: {$projectName}",
-                'target_type' => 'specific',
-                'selected_users' => $receiverId,
-                'sender_id' => $user->id,
-                'sender_name' => $userName,
-                'project_id' => $project->id,
-                'project_name' => $projectName,
-                'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
-            ],
-            'high'
-        );
-    }
-}
 
-// Update destroy method juga
-public function destroy(Request $request)
-{
-    $id = $request->query('id');
-    $username = $request->query('user');
-    
-    if (!$id) {
-        abort(404, 'Project ID is required');
+        $locale = app()->getLocale();
+        return redirect()->route('project.index', ['locale' => $locale])
+            ->with('success', 'Project berhasil diperbarui!');
     }
-    
-    $user = null;
-    if ($username) {
-        $user = User::where('username', $username)->firstOrFail();
-        if (Auth::id() !== $user->id && Auth::user()->role !== 'admin') {
-            abort(403, 'Unauthorized access');
-        }
-    } else {
+    private function updateProjectNotifications($project, array $oldReceivers, array $newReceivers)
+    {
         $user = Auth::user();
+
+        $projectName = $project->isi_content['nama_project'] ?? 'Tanpa Nama';
+        $userName = $user->nama_mahasiswa ?? $user->username ?? 'User';
+
+        $oldReceivers = collect($oldReceivers)->filter()->unique()->values();
+        $newReceivers = collect($newReceivers)->filter()->unique()->values();
+
+        /*
+        |--------------------------------------------------------------------------
+        | 1. User baru ditambahkan
+        |--------------------------------------------------------------------------
+        */
+        $addedUsers = $newReceivers->diff($oldReceivers);
+
+        foreach ($addedUsers as $receiverId) {
+
+            // cek kalau notif lama sudah ada, skip
+            $exists = \App\Models\Notification::where('type', 'project-assigned')
+                ->where('data->project_id', $project->id)
+                ->where('data->selected_users', (int) $receiverId)
+                ->exists();
+
+            if (!$exists) {
+                \App\Http\Controllers\v1\NotificationController::add(
+                    'project-assigned',
+                    [
+                        'title' => 'Anda Ditambahkan ke Project',
+                        'message' => "{$userName} menambahkan Anda ke project: {$projectName}",
+                        'target_type' => 'specific',
+                        'selected_users' => $receiverId,
+                        'sender_id' => $user->id,
+                        'sender_name' => $userName,
+                        'project_id' => $project->id,
+                        'project_name' => $projectName,
+                        'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+                    ],
+                    'normal'
+                );
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2. User dihapus dari project
+        |--------------------------------------------------------------------------
+        */
+        $removedUsers = $oldReceivers->diff($newReceivers);
+
+        foreach ($removedUsers as $receiverId) {
+
+            // hapus notif lama
+            \App\Models\Notification::where('type', 'project-assigned')
+                ->where('data->project_id', $project->id)
+                ->where('data->selected_users', (int) $receiverId)
+                ->delete();
+
+            // kirim notif keluar
+            \App\Http\Controllers\v1\NotificationController::add(
+                'project-removed',
+                [
+                    'title' => 'Dikeluarkan dari Project',
+                    'message' => "Anda telah dikeluarkan dari project: {$projectName}",
+                    'target_type' => 'specific',
+                    'selected_users' => $receiverId,
+                    'sender_id' => $user->id,
+                    'sender_name' => $userName,
+                    'project_id' => $project->id,
+                    'project_name' => $projectName,
+                    'link' => url(app()->getLocale() . '/projectUser?id=' . $project->id),
+                ],
+                'high'
+            );
+        }
     }
-    
-    $project = Project::where('id', $id)
-        ->where('id_mahasiswa', $user->id)
-        ->firstOrFail();
 
-    $project->delete();
+    // Update destroy method juga
+    public function destroy(Request $request)
+    {
+        $id = $request->query('id');
+        $username = $request->query('user');
 
-    $locale = app()->getLocale();
-    return redirect()->route('project.index', ['locale' => $locale])
-        ->with('success', 'Project berhasil dihapus!');
-}
+        if (!$id) {
+            abort(404, 'Project ID is required');
+        }
+
+        $user = null;
+        if ($username) {
+            $user = User::where('username', $username)->firstOrFail();
+            if (Auth::id() !== $user->id && Auth::user()->role !== 'admin') {
+                abort(403, 'Unauthorized access');
+            }
+        } else {
+            $user = Auth::user();
+        }
+
+        $project = Project::where('id', $id)
+            ->where('id_mahasiswa', $user->id)
+            ->firstOrFail();
+
+        $project->delete();
+
+        $locale = app()->getLocale();
+        return redirect()->route('project.index', ['locale' => $locale])
+            ->with('success', 'Project berhasil dihapus!');
+    }
 
     public function show(Request $request)
     {
         // Get ID from query parameter
         $id = $request->query('id');
-        
+
         if (!$id) {
             abort(404, 'Project ID is required');
         }
