@@ -221,6 +221,29 @@
         let taskIndex = 0;
         let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
 
+        // Simpan state role sebelum fetch ulang
+let tempSelectedRoles = {};
+
+function saveCurrentModalRoles() {
+    tempSelectedRoles = {};
+    document.querySelectorAll('.user-role-select').forEach(select => {
+        const userId = select.dataset.userId;
+        if (userId && select.value) {
+            tempSelectedRoles[userId] = select.value;
+        }
+    });
+}
+
+function restoreModalRoles() {
+    document.querySelectorAll('.user-role-select').forEach(select => {
+        const userId = select.dataset.userId;
+        if (userId && tempSelectedRoles[userId]) {
+            select.value = tempSelectedRoles[userId];
+        }
+    });
+    refreshLeaderOptions();
+}
+
         // ====================== TASK FUNCTIONS ======================
         function getAllowedTaskUsers(additionalUsers = []) {
             const users = [];
@@ -352,7 +375,7 @@
 
 
         // ====================== AJAX FUNCTIONS ======================
-        function fetchUsers(page = 1) {
+       function fetchUsers(page = 1) {
     const params = new URLSearchParams({
         id: {{ $project->id }},
         page: page,
@@ -373,8 +396,23 @@
         document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
 
         attachRoleSelectEvents();
-
-        refreshLeaderOptions(); // <-- PINDAH KE SINI
+        
+        // Set value untuk setiap select berdasarkan selectedUsers
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId = select.dataset.userId;
+            
+            // Cek apakah user ini adalah leader
+            if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
+                select.value = 'leader';
+            } 
+            // Cek apakah user ini adalah member
+            else if (selectedUsers.members.some(m => String(m.id) === String(userId))) {
+                select.value = 'member';
+            }
+        });
+        
+        // Baru panggil refreshLeaderOptions untuk disable option leader yang sudah dipilih
+        refreshLeaderOptions();
 
         if (typeof window.refreshTranslations === 'function') {
             window.refreshTranslations();
@@ -383,14 +421,21 @@
     .catch(error => console.error('Error fetching users:', error));
 }
 
-        function attachRoleSelectEvents() {
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = select.getAttribute('data-user-id');
-                if (userId) {
-                    select.onchange = function() { updateUserRole(this, userId, this.value); };
-                }
-            });
+       function attachRoleSelectEvents() {
+    document.querySelectorAll('.user-role-select').forEach(select => {
+        const userId = select.getAttribute('data-user-id');
+        if (userId) {
+            // Hapus event lama jika ada
+            select.removeEventListener('change', select._handler);
+            // Buat handler baru
+            const handler = function() { 
+                updateUserRole(this, userId, this.value); 
+            };
+            select.addEventListener('change', handler);
+            select._handler = handler;
         }
+    });
+}
 
         // ====================== USER SELECTION ======================
         function openUserModal() {
@@ -725,22 +770,48 @@ function addTaskRowOwnerMode(taskData = null) {
 
 function refreshLeaderOptions() {
     const leaderId = selectedUsers.leader ? selectedUsers.leader.id : null;
+    const memberIds = selectedUsers.members.map(m => String(m.id));
 
     document.querySelectorAll('.user-role-select').forEach(select => {
         const userId = select.dataset.userId;
         const leaderOption = select.querySelector('option[value="leader"]');
-
+        const memberOption = select.querySelector('option[value="member"]');
+        
         if (!leaderOption) return;
 
-        if (leaderId && String(userId) !== String(leaderId)) {
+        // Reset disabled state dan text
+        leaderOption.disabled = false;
+        leaderOption.textContent = 'Leader';
+        
+        // Cek apakah user ini adalah leader yang sudah dipilih
+        if (leaderId && String(userId) === String(leaderId)) {
+            // User ini adalah leader, pilih option leader
+            select.value = 'leader';
+            leaderOption.disabled = false;
+        } 
+        // Cek apakah user ini adalah member
+        else if (memberIds.includes(String(userId))) {
+            select.value = 'member';
+        }
+        // Cek apakah user ini bukan leader tapi ada leader lain
+        else if (leaderId && String(userId) !== String(leaderId)) {
+            // User lain tidak bisa jadi leader karena sudah ada leader
             leaderOption.disabled = true;
             leaderOption.textContent = 'Leader (Sudah Dipilih)';
-        } else {
+            // Jika sebelumnya role-nya leader, reset ke empty
+            if (select.value === 'leader') {
+                select.value = '';
+            }
+        }
+        
+        // Jika tidak ada leader sama sekali, enable semua option leader
+        if (!leaderId) {
             leaderOption.disabled = false;
             leaderOption.textContent = 'Leader';
         }
     });
 }
+
         // ====================== DATE VALIDATION ======================
         function setupDateValidation() {
             const tanggalMulaiInput = document.getElementById('tanggal_mulai');
@@ -772,23 +843,56 @@ function refreshLeaderOptions() {
         }
 
         function setupModalFilters() {
-            document.getElementById('modal-search')?.addEventListener('input', function() {
-                currentModalFilters.search = this.value;
-                fetchUsers(1);
-            });
-            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
-                currentModalFilters.angkatan = this.value;
-                fetchUsers(1);
-            });
-            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
-                currentModalFilters.jurusan = this.value;
-                fetchUsers(1);
-            });
-            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
-                currentModalFilters.keahlian = this.value;
-                fetchUsers(1);
-            });
-        }
+    const searchInput = document.getElementById('modal-search');
+    const angkatanSelect = document.getElementById('modal-angkatan');
+    const jurusanSelect = document.getElementById('modal-jurusan');
+    const keahlianSelect = document.getElementById('modal-keahlian');
+    
+    const fetchWithSave = (page) => {
+        saveCurrentModalRoles(); // Simpan role saat ini
+        fetchUsers(page);
+    };
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            currentModalFilters.search = this.value;
+            fetchWithSave(1);
+        });
+    }
+    
+    if (angkatanSelect) {
+        angkatanSelect.addEventListener('change', function() {
+            currentModalFilters.angkatan = this.value;
+            fetchWithSave(1);
+        });
+    }
+    
+    if (jurusanSelect) {
+        jurusanSelect.addEventListener('change', function() {
+            currentModalFilters.jurusan = this.value;
+            fetchWithSave(1);
+        });
+    }
+    
+    if (keahlianSelect) {
+        keahlianSelect.addEventListener('change', function() {
+            currentModalFilters.keahlian = this.value;
+            fetchWithSave(1);
+        });
+    }
+}
+
+// Handle pagination clicks dengan save state
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('#modal-pagination a');
+    if (link) {
+        e.preventDefault();
+        const url = new URL(link.href);
+        const page = url.searchParams.get('page') || 1;
+        saveCurrentModalRoles(); // Simpan role sebelum pindah halaman
+        fetchUsers(page);
+    }
+});
 
         // Handle pagination clicks
         document.addEventListener('click', function(e) {

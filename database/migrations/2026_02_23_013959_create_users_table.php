@@ -19,7 +19,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             
+
             $table->string('nama_mahasiswa', 100);
+            $table->string('nim', 50)->unique()->nullable();
             $table->string('photo_profile', 100)->nullable();
             $table->string('email',100)->unique()->nullable();
             $table->string('username', 100)->unique()->nullable();
@@ -32,6 +34,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_jurusan')->nullable();
             $table->unsignedBigInteger('id_keahlian')->nullable();
             $table->unsignedBigInteger('id_angkatan')->nullable();
+            $table->date('tanggal_lahir');
+
             
             $table->boolean('is_active')->default(true);
             $table->rememberToken(); 
