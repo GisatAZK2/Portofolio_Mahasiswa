@@ -14,6 +14,7 @@
         "mikebronner/laravel-model-caching": "^13.1",
         "nesbot/carbon": "^3.11",
         "phpmailer/phpmailer": "^7.0",
+        "spatie/laravel-passkeys": "^1.7",
         "stichoza/google-translate-php": "^5.3"
     },
     "require-dev": {

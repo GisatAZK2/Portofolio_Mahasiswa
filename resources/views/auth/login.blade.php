@@ -12,6 +12,9 @@
     </style>
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- WebAuth PASSKEY -->
+    <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@10/dist/bundle/index.umd.min.js"></script>
+
 </head>
 
 <body
@@ -161,23 +164,39 @@
                     </div>
                 </div>
 
-            <!-- Link Register -->
-            <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
-                Belum punya akun?
-                <a href="{{ route('pengajuan-akun') }}"
-                    class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
-                    Ajukan Akun Ke Admin
-                </a>
-            </p>
+                           <!-- SEPARATOR -->
+                <div class="relative my-2">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-3 bg-[#f8f5f2] text-gray-500">atau</span>
+                    </div>
+                </div>
 
+                <!-- TOMBOL LOGIN DENGAN PASSKEY -->
+                <button type="button" id="loginWithPasskeyBtn"
+                    class="w-full flex items-center justify-center gap-3 border-2 border-gray-300 rounded-xl px-4 py-3 hover:bg-gray-100 hover:border-blue-400 transition-all duration-300">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                    </svg>
+                    <span class="font-medium text-gray-700">Masuk dengan Passkey (Face ID / Fingerprint)</span>
+                </button>
 
+                <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
+                    Belum punya akun?
+                    <a href="{{ route('pengajuan-akun') }}"
+                        class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
+                        Ajukan Akun Ke Admin
+                    </a>
+                </p>
+            </div>
         </form>
     </div>
 
-    <script>
-
-
-        // password visibility
+ <script>
+        // Password visibility toggle
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const eyeShowIcon = document.getElementById('eye-icon-show');
@@ -194,113 +213,158 @@
             }
         }
 
-
-        // Dom
-        document.addEventListener('DOMContentLoaded', function () {
-
-            // Handle session success
-            @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
-            @endif
-
-            // Handle custom error messages
-            @if ($errors->any())
-                    @php
-                        $firstError = $errors->first();
-                    @endphp
-                @if($firstError === 'PENGAJUAN_DIPROSES')
-                    showErrorAlert(
-                        'Pengajuan akun Anda sedang diproses. Mohon tunggu konfirmasi dari admin.',
-                        'info'
-                        );
-                @elseif($firstError === 'PENGAJUAN_DITOLAK')
-                    showErrorAlert(
-                        'Pengajuan akun Anda ditolak. Silakan hubungi admin untuk informasi lebih lanjut.',
-                        'error'
-                        );
-                @elseif($firstError === 'AKUN_DIBLOKIR')
-                    showErrorAlert(
-                        'Akun Anda diblokir. Silakan hubungi admin untuk informasi lebih lanjut.',
-                        'error'
-                        );
-                @elseif(!in_array($firstError, ['PENGAJUAN_DIPROSES', 'PENGAJUAN_DITOLAK', 'AKUN_DIBLOKIR']))
-                    showErrorAlert('{{ $firstError }}');
-                @endif
-            @endif
-
-            // Optional: Auto-hide flash messages setelah beberapa detik
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 5000);
-        });
-
-        // Prevent double submit
-        const form = document.querySelector('form');
-        if (form) {
-             form.addEventListener('submit', function(e) {
-                const submitButton = this.querySelector('button[type="submit"]');
-                if (submitButton) {
-                    submitButton.disabled = true;
-submitButton.innerHTML = 'Memproses...';
-                    
-                    // Optional: show loading
-                    showLoading('Memverifikasi akun...');
-                }
-            });
-        }
-
-        // Handle input focus untuk menghilangkan error message
-        const loginInput = document.getElementById('login');
-        if (loginInput) {
-             loginInput.addEventListener('focus', function() {
-                const errorElement = this.parentElement.querySelector('.text-red-600');
-                if (errorElement) {
-                    errorElement.remove();
-                }
-            });
-        }
-
-        // Handle back button confirmation jika form sudah diisi
-        const backButton = document.querySelector('.back-button');
-const cancelButton = document.querySelector('a[href="{{ route('dashboard') }}"]');
-        
-        function handleBackClick(e) {
-            const formInputs = document.querySelectorAll('input[type="text"], input[type="password"]');
-let isFormFilled = false;
+        // Login dengan Passkey
+        async function loginWithPasskey() {
+            const loginInput = document.getElementById('login');
+            const emailOrUsername = loginInput.value.trim();
             
-            formInputs.forEach(input => {
-                if (input.value.trim() !== '') {
-                    isFormFilled = true;
-                }
-});
-            
-            if (isFormFilled) {
-                e.preventDefault();
-                showConfirmAlert({
-                    title: 'Yakin ingin kembali?',
-                    text: 'Data yang sudah diisi akan hilang.',
-                    icon: 'question',
-                    confirmButtonText: 'Ya, Kembali',
-                    cancelButtonText: 'Tetap di Sini'
-                }).then((confirmed) => {
-                    if (confirmed) {
-                        window.location.href = '{{ route('dashboard') }}';
-                    }
+            if (!emailOrUsername) {
+                showAlert('Silakan masukkan email atau username terlebih dahulu', 'warning');
+                loginInput.focus();
+                return;
+            }
+
+            // Disable button dan show loading
+            const btn = document.getElementById('loginWithPasskeyBtn');
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Memproses...</span>
+            `;
+
+            try {
+                // Step 1: Get authentication options from server
+                const optionsResponse = await fetch('/webauthn/login/options', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: emailOrUsername })
                 });
+
+                if (!optionsResponse.ok) {
+                    const error = await optionsResponse.json();
+                    throw new Error(error.message || 'Gagal mendapatkan options');
+                }
+
+                const options = await optionsResponse.json();
+
+                // Step 2: Prompt device for biometric/PIN
+                const assertion = await SimpleWebAuthnBrowser.startAuthentication(options);
+
+                // Step 3: Verify and login
+                const verifyResponse = await fetch('/webauthn/login/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ credential: assertion })
+                });
+
+                const result = await verifyResponse.json();
+
+                if (result.success) {
+                    showAlert('Login berhasil! Mengalihkan...', 'success');
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 1000);
+                } else {
+                    throw new Error(result.message || 'Login gagal');
+                }
+
+            } catch (error) {
+                console.error('Passkey login error:', error);
+                
+                let errorMessage = 'Terjadi kesalahan saat login dengan passkey';
+                if (error.name === 'NotAllowedError') {
+                    errorMessage = 'Autentikasi dibatalkan atau ditolak';
+                } else if (error.name === 'NotSupportedError') {
+                    errorMessage = 'Browser Anda tidak mendukung WebAuthn/Passkey';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                showAlert(errorMessage, 'error');
+            } finally {
+                // Restore button
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
             }
         }
 
-        if (backButton) {
-            backButton.addEventListener('click', handleBackClick);
-}
-        
-        if (cancelButton) {
-            cancelButton.addEventListener('click', handleBackClick);
+        // Show alert function
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.getElementById('passkeyAlert');
+            alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'text-green-800', 'text-red-800', 'text-yellow-800');
+            
+            if (type === 'success') {
+                alertDiv.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'warning') {
+                alertDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+            } else {
+                alertDiv.classList.add('bg-red-100', 'text-red-800');
+            }
+            
+            alertDiv.innerHTML = message;
+            alertDiv.classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Event listener for passkey button
+        document.getElementById('loginWithPasskeyBtn').addEventListener('click', loginWithPasskey);
+
+        // Handle Enter key on login input
+        document.getElementById('login').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginWithPasskey();
+            }
+        });
+
+        // Session success/error handling
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                showAlert('{{ session('success') }}', 'success');
+            @endif
+
+            @if ($errors->any())
+                @php
+                    $firstError = $errors->first();
+                @endphp
+                @if($firstError === 'PENGAJUAN_DIPROSES')
+                    showAlert('Pengajuan akun Anda sedang diproses. Mohon tunggu konfirmasi dari admin.', 'warning');
+                @elseif($firstError === 'PENGAJUAN_DITOLAK')
+                    showAlert('Pengajuan akun Anda ditolak. Silakan hubungi admin untuk informasi lebih lanjut.', 'error');
+                @elseif($firstError === 'AKUN_DIBLOKIR')
+                    showAlert('Akun Anda diblokir. Silakan hubungi admin untuk informasi lebih lanjut.', 'error');
+                @elseif(!in_array($firstError, ['PENGAJUAN_DIPROSES', 'PENGAJUAN_DITOLAK', 'AKUN_DIBLOKIR']))
+                    showAlert('{{ $firstError }}', 'error');
+                @endif
+            @endif
+        });
+
+        // Prevent double submit on normal form
+        const form = document.getElementById('loginForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const submitButton = this.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = 'Memproses...';
+                }
+            });
         }
     </script>
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\v1\SertifikatController;
 use App\Http\Controllers\v1\DosenController;
 use App\Http\Controllers\v1\PostinganController;
 use App\Http\Controllers\v1\LikedPostinganController;
+use App\Http\Controllers\v1\PasskeyController;
 
 use App\Http\Controllers\v1\KomentarController;
 use App\Http\Controllers\GameController;
@@ -317,7 +318,6 @@ Route::prefix('{locale}')
             return view('components.offline');
         })->name('offline');
 
-
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
@@ -414,6 +414,24 @@ Route::middleware(['auth'])->group(function () {
 //         'spanish' => $es,
 //     ]);
 // });
+
+  Route::middleware(['auth'])->get('/passkeys', function () {
+    return view('auth.passkey-management');
+})->name('passkeys.index');
+
+
+Route::prefix('webauthn')->group(function () {
+    Route::post('/login/options', [PasskeyController::class, 'authenticationOptions']);
+    Route::post('/login/verify', [PasskeyController::class, 'authenticate']);
+});
+
+// Authenticated routes for passkey management
+Route::middleware(['auth'])->prefix('webauthn')->group(function () {
+    Route::post('/register/options', [PasskeyController::class, 'registerOptions']);
+    Route::post('/register/verify', [PasskeyController::class, 'registerVerify']);
+    Route::get('/passkeys', [PasskeyController::class, 'index']);
+    Route::delete('/passkeys/{id}', [PasskeyController::class, 'destroy']);
+});
 
 
 // Route untuk testing notification 
