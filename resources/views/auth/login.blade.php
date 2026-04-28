@@ -8,29 +8,17 @@
     <title>Masuk ke Akun - Portal Mahasiswa</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/Logo.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    </style>
-    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body
-    class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
+<body class="bg-[#f8f5f2] min-h-screen flex items-start justify-center pt-12 pb-12 px-5 sm:px-8 font-sans antialiased relative">
 
-    <!--    
-    <audio id="welcomeSound" preload="auto">
-    <source src="audio/welcome_sound.mp3" type="audio/mpeg">
-    </audio> -->
-
-    <!-- Background Noise -->
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-noise"></div>
 
     <div class="relative w-full max-w-lg">
 
-        <!-- Header dengan efek miring -->
         <div class="relative mb-8 sm:mb-12">
-            <h1
-                class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block">
                 Masuk Yuk
             </h1>
             <p class="mt-3 text-base sm:text-lg text-gray-600 max-w-md rotate-[-0.8deg]">
@@ -40,8 +28,11 @@
             </div>
         </div>
 
+        <!-- Alert untuk notifikasi -->
+        <div id="alertMessage" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+
         <!-- Form Login -->
-        <form method="POST" action="{{ route('login') }}" class="space-y-7 sm:space-y-8">
+        <form method="POST" action="{{ route('login') }}" class="space-y-7 sm:space-y-8" id="loginForm">
             @csrf
 
             <!-- Input Email/Username -->
@@ -70,8 +61,7 @@
                         placeholder="Masukkan kata sandi">
                     <button type="button" id="toggle-password-btn"
                         class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition"
-                        aria-label="Toggle password visibility" onclick="togglePasswordVisibility()">
-                        <!-- Eye Icon (Show) -->
+                        onclick="togglePasswordVisibility()">
                         <svg id="eye-icon-show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -79,7 +69,6 @@
                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                             </path>
                         </svg>
-                        <!-- Eye Off Icon (Hide) -->
                         <svg id="eye-icon-hide" class="w-5 h-5 hidden" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -103,7 +92,6 @@
                     </label>
                 </div>
 
-                <!-- Forgot Password Link (Optional) -->
                 @if(Route::has('password.forgot'))
                     <div>
                         <a href="{{ route('password.forgot') }}"
@@ -120,32 +108,30 @@
                     
                     <div class="flex gap-3 sm:gap-4 justify-center sm:justify-start">
                         <!-- Website -->
-                        <a href="{{ env('SOCIAL_WEBSITE', 'https://example.com') }}" target="_blank" rel="noopener noreferrer"
-                            class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br rounded-full flex items-center justify-center border-2 border-blue-300 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform"
-                            title="Website">
-                          <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M498.183 .005c-147.445 .678 -291.229 66.62 -387.347 186.018l153.958 236.639c38.92 -110.963 150.567 -181.877 267.325 -170.051l414.127 22.061c-42.323 -84.026 -108.752 -157.098 -196.299 -207.641 -79.421 -45.855 -166.209 -67.42 -251.763 -67.026zm-416.533 226.203c-51.608 78.666 -81.65 172.734 -81.65 273.825 0 249.758 183.248 456.794 422.595 493.996l127.929 -251.638c-115.557 21.774 -232.78 -39.492 -280.918 -146.521l-187.956 -369.662zm884.812 93.837l-281.918 14.999c76.637 89.189 82.213 221.338 13.593 316.541l-226.172 347.6c93.931 5.361 190.433 -15.638 277.98 -66.183 216.297 -124.878 303.971 -387.076 216.516 -612.956zm-466.498 11.374c-93.11 0 -168.613 75.503 -168.613 168.613s75.503 168.613 168.613 168.613 168.613 -75.503 168.613 -168.613 -75.503 -168.613 -168.613 -168.613z" fill="#0e63ec"></path></g></svg>  
+                        <a href="{{ env('SOCIAL_WEBSITE', 'https://example.com') }}" target="_blank"
+                            class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br rounded-full flex items-center justify-center border-2 border-blue-300 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform">
+                            <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" fill="#000000" class="w-5 h-5">
+                                <path d="M498.183 .005c-147.445 .678 -291.229 66.62 -387.347 186.018l153.958 236.639c38.92 -110.963 150.567 -181.877 267.325 -170.051l414.127 22.061c-42.323 -84.026 -108.752 -157.098 -196.299 -207.641-79.421 -45.855 -166.209 -67.42 -251.763 -67.026zm-416.533 226.203c-51.608 78.666 -81.65 172.734 -81.65 273.825 0 249.758 183.248 456.794 422.595 493.996l127.929 -251.638c-115.557 21.774 -232.78 -39.492 -280.918 -146.521l-187.956 -369.662zm884.812 93.837l-281.918 14.999c76.637 89.189 82.213 221.338 13.593 316.541l-226.172 347.6c93.931 5.361 190.433 -15.638 277.98 -66.183 216.297 -124.878 303.971 -387.076 216.516 -612.956zm-466.498 11.374c-93.11 0 -168.613 75.503 -168.613 168.613s75.503 168.613 168.613 168.613 168.613 -75.503 168.613 -168.613 -75.503 -168.613 -168.613 -168.613z" fill="#0e63ec"></path>
+                            </svg>  
                         </a>
 
                         <!-- Instagram -->
-                        <a href="{{ env('SOCIAL_INSTAGRAM', 'https://instagram.com') }}" target="_blank" rel="noopener noreferrer"
-                            class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-400 via-pink-500 to-red-500 rounded-full flex items-center justify-center border-2 border-pink-300 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform"
-                            title="Instagram">
+                        <a href="{{ env('SOCIAL_INSTAGRAM', 'https://instagram.com') }}" target="_blank"
+                            class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-400 via-pink-500 to-red-500 rounded-full flex items-center justify-center border-2 border-pink-300 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M7 2H17C19.7614 2 22 4.23858 22 7V17C22 19.7614 19.7614 22 17 22H7C4.23858 22 2 19.7614 2 17V7C2 4.23858 4.23858 2 7 2ZM12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7ZM19.5 6.5C19.5 7.328 18.828 8 18 8C17.172 8 16.5 7.328 16.5 6.5C16.5 5.672 17.172 5 18 5C18.828 5 19.5 5.672 19.5 6.5ZM12 9C13.657 9 15 10.343 15 12C15 13.657 13.657 15 12 15C10.343 15 9 13.657 9 12C9 10.343 10.343 9 12 9Z"></path>
                             </svg>
                         </a>
 
                         <!-- YouTube -->
-                        <a href="{{ env('SOCIAL_YOUTUBE', 'https://youtube.com') }}" target="_blank" rel="noopener noreferrer"
-                            class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center border-2 border-red-400 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform"
-                            title="YouTube">
+                        <a href="{{ env('SOCIAL_YOUTUBE', 'https://youtube.com') }}" target="_blank"
+                            class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center border-2 border-red-400 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-6.605-.476c-.945-.266-1.687-1.04-1.938-2.022C3 15.72 3 12 3 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 6.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15l6-3-6-3v6z"></path>
                             </svg>
                         </a>
                     </div>
 
-                    <!-- Buttons on Right -->
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <!-- Cancel Button -->
                         <a href="{{ route('dashboard') }}"
@@ -155,29 +141,42 @@
 
                         <!-- Submit Button -->
                         <button type="submit"
-                            class="flex-1 sm:flex-none px-8 sm:px-10 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base">
+                            class="flex-1 sm:flex-none px-8 sm:px-10 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-sm sm:text-base">
                             Masuk Sekarang →
                         </button>
                     </div>
                 </div>
 
-            <!-- Link Register -->
-            <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
-                Belum punya akun?
-                <a href="{{ route('pengajuan-akun') }}"
-                    class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
-                    Ajukan Akun Ke Admin
-                </a>
-            </p>
+                <!-- Info Passkey 2FA -->
+                <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <div class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-medium">Keamanan Ekstra dengan Passkey</p>
+                            <p class="text-xs mt-0.5">
+                                Jika Anda memiliki passkey (Face ID/Touch ID), Anda akan diminta verifikasi 
+                                tambahan setelah memasukkan password untuk keamanan maksimal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-
+                <p class="text-center mt-4 text-gray-600 text-sm sm:text-base">
+                    Belum punya akun?
+                    <a href="{{ route('pengajuan-akun') }}"
+                        class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
+                        Ajukan Akun Ke Admin
+                    </a>
+                </p>
+            </div>
         </form>
     </div>
 
     <script>
-
-
-        // password visibility
+        // Password visibility toggle
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const eyeShowIcon = document.getElementById('eye-icon-show');
@@ -194,116 +193,86 @@
             }
         }
 
+        // Show alert function
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.getElementById('alertMessage');
+            if (!alertDiv) return;
+            
+            alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'bg-blue-100', 
+                                      'text-green-800', 'text-red-800', 'text-yellow-800', 'text-blue-800');
+            
+            if (type === 'success') {
+                alertDiv.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'warning') {
+                alertDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+            } else if (type === 'info') {
+                alertDiv.classList.add('bg-blue-100', 'text-blue-800');
+            } else {
+                alertDiv.classList.add('bg-red-100', 'text-red-800');
+            }
+            
+            alertDiv.innerHTML = message;
+            alertDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                alertDiv.classList.add('hidden');
+            }, 5000);
+        }
 
-        // Dom
-        document.addEventListener('DOMContentLoaded', function () {
+        // Handle Enter key on login input
+        document.getElementById('login').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('loginForm').submit();
+            }
+        });
 
-            // Handle session success
+        // Handle Enter key on password input
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('loginForm').submit();
+            }
+        });
+
+        // Session success/error handling
+        document.addEventListener('DOMContentLoaded', function() {
             @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
+                showAlert('{{ session('success') }}', 'success');
             @endif
 
-            // Handle custom error messages
+            @if (session('error'))
+                showAlert('{{ session('error') }}', 'error');
+            @endif
+
             @if ($errors->any())
-                    @php
-                        $firstError = $errors->first();
-                    @endphp
+                @php
+                    $firstError = $errors->first();
+                @endphp
                 @if($firstError === 'PENGAJUAN_DIPROSES')
-                    showErrorAlert(
-                        'Pengajuan akun Anda sedang diproses. Mohon tunggu konfirmasi dari admin.',
-                        'info'
-                        );
+                    showAlert('Pengajuan akun Anda sedang diproses. Mohon tunggu konfirmasi dari admin.', 'warning');
                 @elseif($firstError === 'PENGAJUAN_DITOLAK')
-                    showErrorAlert(
-                        'Pengajuan akun Anda ditolak. Silakan hubungi admin untuk informasi lebih lanjut.',
-                        'error'
-                        );
+                    showAlert('Pengajuan akun Anda ditolak. Silakan hubungi admin untuk informasi lebih lanjut.', 'error');
                 @elseif($firstError === 'AKUN_DIBLOKIR')
-                    showErrorAlert(
-                        'Akun Anda diblokir. Silakan hubungi admin untuk informasi lebih lanjut.',
-                        'error'
-                        );
+                    showAlert('Akun Anda diblokir. Silakan hubungi admin untuk informasi lebih lanjut.', 'error');
                 @elseif(!in_array($firstError, ['PENGAJUAN_DIPROSES', 'PENGAJUAN_DITOLAK', 'AKUN_DIBLOKIR']))
-                    showErrorAlert('{{ $firstError }}');
+                    showAlert('{{ $firstError }}', 'error');
                 @endif
             @endif
-
-            // Optional: Auto-hide flash messages setelah beberapa detik
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 5000);
         });
 
         // Prevent double submit
-        const form = document.querySelector('form');
+        const form = document.getElementById('loginForm');
         if (form) {
-             form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function(e) {
                 const submitButton = this.querySelector('button[type="submit"]');
                 if (submitButton) {
                     submitButton.disabled = true;
-submitButton.innerHTML = 'Memproses...';
-                    
-                    // Optional: show loading
-                    showLoading('Memverifikasi akun...');
+                    submitButton.innerHTML = '<svg class="animate-spin inline h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle><path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...';
                 }
             });
-        }
-
-        // Handle input focus untuk menghilangkan error message
-        const loginInput = document.getElementById('login');
-        if (loginInput) {
-             loginInput.addEventListener('focus', function() {
-                const errorElement = this.parentElement.querySelector('.text-red-600');
-                if (errorElement) {
-                    errorElement.remove();
-                }
-            });
-        }
-
-        // Handle back button confirmation jika form sudah diisi
-        const backButton = document.querySelector('.back-button');
-const cancelButton = document.querySelector('a[href="{{ route('dashboard') }}"]');
-        
-        function handleBackClick(e) {
-            const formInputs = document.querySelectorAll('input[type="text"], input[type="password"]');
-let isFormFilled = false;
-            
-            formInputs.forEach(input => {
-                if (input.value.trim() !== '') {
-                    isFormFilled = true;
-                }
-});
-            
-            if (isFormFilled) {
-                e.preventDefault();
-                showConfirmAlert({
-                    title: 'Yakin ingin kembali?',
-                    text: 'Data yang sudah diisi akan hilang.',
-                    icon: 'question',
-                    confirmButtonText: 'Ya, Kembali',
-                    cancelButtonText: 'Tetap di Sini'
-                }).then((confirmed) => {
-                    if (confirmed) {
-                        window.location.href = '{{ route('dashboard') }}';
-                    }
-                });
-            }
-        }
-
-        if (backButton) {
-            backButton.addEventListener('click', handleBackClick);
-}
-        
-        if (cancelButton) {
-            cancelButton.addEventListener('click', handleBackClick);
         }
     </script>
-
 </body>
 
 </html>

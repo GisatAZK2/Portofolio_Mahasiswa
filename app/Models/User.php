@@ -15,8 +15,25 @@ use App\Models\Project;
 use App\Models\ProjectTask;
 use App\Models\Keahlian_Tambahan;
 
+
 class User extends Authenticatable
 {
+    /**
+     * Relasi ke passkeys
+     */
+    public function passkeys()
+    {
+        return $this->hasMany(Passkey::class);
+    }
+    
+    /**
+     * Cek apakah user punya passkey
+     */
+    public function hasPasskeys()
+    {
+        return $this->passkeys()->exists();
+    }
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

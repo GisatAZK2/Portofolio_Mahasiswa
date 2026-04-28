@@ -112,79 +112,89 @@ class UserController extends Controller
         return view('auth.login');
     }
 
-    // Proses login (email ATAU username)
-    public function login(Request $request)
-    {
-        $request->validate([
-            'login' => ['required', 'string'],
-            'password' => ['required', 'string'],
-        ]);
+  // Proses login (email ATAU username) dengan 2FA Passkey
+public function login(Request $request)
+{
+    $request->validate([
+        'login' => ['required', 'string'],
+        'password' => ['required', 'string'],
+    ]);
 
-        $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+    $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $user = User::where($fieldType, $request->login)->first();
+    $user = User::where($fieldType, $request->login)->first();
 
-        if (!$user) {
-            return back()->withErrors([
-                'login' => 'Akun tidak ditemukan.',
-            ])->onlyInput('login');
-        }
+    if (!$user) {
+        return back()->withErrors([
+            'login' => 'Akun tidak ditemukan.',
+        ])->onlyInput('login');
+    }
 
-        if ($user->is_active == 0 && empty($user->status_pengajuan)) {
-            return back()->withErrors([
-                'login' => 'AKUN_DIBLOKIR',
-            ])->onlyInput('login');
-        }
+    // Cek status user
+    if ($user->is_active == 0 && empty($user->status_pengajuan)) {
+        return back()->withErrors([
+            'login' => 'AKUN_DIBLOKIR',
+        ])->onlyInput('login');
+    }
 
-        if ($user->status_pengajuan === 'Sedang Di Ajukan') {
-            return back()->withErrors([
-                'login' => 'PENGAJUAN_DIPROSES',
-            ])->onlyInput('login');
-        }
+    if ($user->status_pengajuan === 'Sedang Di Ajukan') {
+        return back()->withErrors([
+            'login' => 'PENGAJUAN_DIPROSES',
+        ])->onlyInput('login');
+    }
 
-        if ($user->status_pengajuan === 'Di Tolak') {
-            return back()->withErrors([
-                'login' => 'PENGAJUAN_DITOLAK',
-            ])->onlyInput('login');
-        }
+    if ($user->status_pengajuan === 'Di Tolak') {
+        return back()->withErrors([
+            'login' => 'PENGAJUAN_DITOLAK',
+        ])->onlyInput('login');
+    }
 
-        if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
-            return back()->withErrors([
-                'login' => 'AKUN_DIBLOKIR',
-            ])->onlyInput('login');
-        }
+    if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
+        return back()->withErrors([
+            'login' => 'AKUN_DIBLOKIR',
+        ])->onlyInput('login');
+    }
 
-        $credentials = [
-            $fieldType => $request->login,
-            'password' => $request->password,
-        ];
-
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-
-
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.index')
-                    ->with('success', 'Login berhasil! Selamat datang Admin.');
-            }
-
-            if ($user->role === 'dosen') {
-                return redirect()->route('dosen.dashboard')
-                    ->with('success', 'Login berhasil! Selamat datang Dosen.');
-            }
-
-            // Default mahasiswa
-            return redirect()->route('dashboard.me')
-                ->with('success', 'Login berhasil! Selamat datang kembali.');
-        }
-
+    // Cek password
+    if (!Hash::check($request->password, $user->password)) {
         return back()->withErrors([
             'login' => 'Password yang Anda masukkan salah.',
         ])->onlyInput('login');
     }
+
+    // ============ 2FA PASSKEY ============
+    // Cek apakah user memiliki passkey
+    $hasPasskey = $user->passkeys()->count() > 0;
+
+    if ($hasPasskey) {
+        // Simpan user ID ke session untuk verifikasi 2FA
+        // Jangan login dulu, hanya simpan data sementara
+        session(['2fa_user_id' => $user->id]);
+        session(['2fa_requires_verification' => true]);
+        session(['2fa_remember' => $request->boolean('remember')]);
+        
+        // Redirect ke halaman verifikasi passkey
+        return redirect()->route('2fa.verify');
+    }
+
+    // ============ Tanpa 2FA (langsung login) ============
+    Auth::login($user, $request->boolean('remember'));
+    $request->session()->regenerate();
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.index')
+            ->with('success', 'Login berhasil! Selamat datang Admin.');
+    }
+
+    if ($user->role === 'dosen') {
+        return redirect()->route('dosen.dashboard')
+            ->with('success', 'Login berhasil! Selamat datang Dosen.');
+    }
+
+    // Default mahasiswa
+    return redirect()->route('dashboard.me')
+        ->with('success', 'Login berhasil! Selamat datang kembali.');
+}
 
     public function forgotpasswordpage(){
         return view('auth.forgot-password');
