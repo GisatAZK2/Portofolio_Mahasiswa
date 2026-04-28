@@ -339,6 +339,10 @@ Route::post('/toggle-sidebar', function (Request $request) {
     Session::put('sidebar_collapsed', $request->collapsed);
     return response()->json(['success' => true]);
 })->middleware('web');
+Route::post('/sidebar/toggle', function () {
+    session(['sidebar_collapsed' => request('collapsed')]);
+    return response()->json(['success' => true]);
+})->name('sidebar.toggle');
 
 // Auth routes (bisa di luar middleware auth)
 Route::get('/register', [UserController::class, 'showRegister'])->name('register');
