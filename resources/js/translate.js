@@ -430,6 +430,7 @@ export const translations = {
       admin_dashboard_title: 'Dashboard Admin',
       admin_dashboard_desc: 'Ringkasan aktivitas sistem dan statistik utama.',
       button_add_user: 'Tambah User',
+      tambah_user_form : 'Tambah User Baru',
       title_jurusan: 'Daftar Jurusan',
       tambah_jurusan: 'Tambah Jurusan',
       tambah_jurusan_title: 'Tambah Jurusan Baru',

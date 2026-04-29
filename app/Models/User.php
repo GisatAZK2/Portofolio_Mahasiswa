@@ -46,6 +46,8 @@ class User extends Authenticatable
     protected $fillable = [
     'nama_mahasiswa',
     'email',
+    'nim',
+    'tanggal_lahir',
     'photo_profile',
     'username',
     'password',
@@ -60,13 +62,14 @@ class User extends Authenticatable
     'is_active',
     'status_pengajuan',
     'role',
-    'video_url'
+    'video_url',
     ];
     
     protected $casts = [
     'keahlian_tambahan' => 'array',
     'email_verified_at' => 'datetime',
     'password' => 'hashed',
+    'tanggal_lahir'=> 'date',
     ];
 
 public function jurusan()

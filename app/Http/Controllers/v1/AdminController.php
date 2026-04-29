@@ -223,85 +223,109 @@ class AdminController extends Controller
     }
 
     public function AddUser(Request $request)
-    {
-        $this->authorizeAccess();
-        $validated = $request->validate([
-            'nama_mahasiswa' => ['required', 'string', 'max:100'],
-            'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
-            'username' => [
-                'required',
-                'string',
-                'max:100',
-                'unique:users,username',
-                'regex:/^[a-zA-Z0-9_]+$/'
-            ],
+{
+    $this->authorizeAccess();
+    
+    // Dynamic validation rules based on role and registration type
+    $rules = [
+        'role' => ['required', 'in:mahasiswa,dosen,admin'],
+        'nama_mahasiswa' => ['required', 'string', 'max:100'],
+        'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+        'username' => [
+            'nullable',
+            'string',
+            'max:100',
+            'unique:users,username',
+            'regex:/^[a-zA-Z0-9_]+$/'
+        ],
+        'password' => [
+            'nullable',
+            'confirmed',
+            Password::min(8)->mixedCase()
+        ],
+        'photo_profile' => [
+            'nullable',
+            'image',
+            'mimes:jpeg,png,jpg,webp',
+            'max:2048'
+        ],
+    ];
 
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)->mixedCase()
-            ],
-
-            'role' => [
-                'required',
-                'in:mahasiswa,dosen,admin'
-            ],
-
-            'id_jurusan' => [
-                'nullable',
-                'required_if:role,mahasiswa,dosen',
-                'exists:jurusan,id_jurusan'
-            ],
-
-            'id_keahlian' => [
-                'nullable',
-                'required_if:role,mahasiswa,dosen',
-                'exists:keahlian,id_keahlian'
-            ],
-
-            'id_angkatan' => [
-                'nullable',
-                'required_if:role,mahasiswa,dosen',
-                'exists:angkatan,id'
-            ],
-
-            'photo_profile' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg,webp',
-                'max:2048'
-            ],
+    // Case: Admin role
+    if ($request->role === 'admin') {
+        $rules['tanggal_lahir'] = ['nullable', 'date'];
+        $rules['nim'] = ['nullable', 'string', 'max:50', 'unique:users,nim'];
+        
+    } 
+    // Case: Dosen role
+    else if ($request->role === 'dosen') {
+        $rules['tanggal_lahir'] = ['required', 'date'];
+        $rules['nim'] = ['nullable', 'string', 'max:50', 'unique:users,nim'];
+        
+        $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
+        $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
+        $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
+    } 
+    // Case: Mahasiswa role - with registration type
+    else if ($request->role === 'mahasiswa') {
+        // Validate registration_type
+        $request->validate([
+            'registration_type' => ['required', 'in:full,simple']
         ]);
-
-
-        $photoPath = null;
-
-        if ($request->hasFile('photo_profile')) {
-            $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+        
+        // Tanggal lahir is required for both types
+        $rules['tanggal_lahir'] = ['required', 'date'];
+        
+        // Check registration type
+        if ($request->registration_type === 'full') {
+            // Complete registration: all fields required
+            $rules['nim'] = ['required', 'string', 'max:50', 'unique:users,nim'];
+            $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
+            $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
+            $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
+        } else {
+            // Simple registration: only NIM required
+            $rules['nim'] = ['required', 'string', 'max:50', 'unique:users,nim'];
+            $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
+            $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
+            $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
         }
-
-        User::create([
-            'nama_mahasiswa' => $validated['nama_mahasiswa'],
-            'email' => $validated['email'] ?? null,
-            'username' => $validated['username'],
-            'password' => Hash::make($validated['password']),
-
-            'photo_profile' => $photoPath,
-
-            'role' => $validated['role'],
-
-            'id_jurusan' => $validated['id_jurusan'] ?? null,
-            'id_keahlian' => $validated['id_keahlian'] ?? null,
-            'id_angkatan' => $validated['id_angkatan'] ?? null,
-
-            'status_pengajuan' => 'Di Terima',
-            'is_active' => 1,
-        ]);
-
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'User berhasil ditambahkan.');
     }
+
+    $validated = $request->validate($rules);
+
+    $photoPath = null;
+    if ($request->hasFile('photo_profile')) {
+        $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+    }
+
+    // Prepare data for creation
+    $userData = [
+        'nama_mahasiswa' => $validated['nama_mahasiswa'],
+        'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+        'email' => $validated['email'] ?? null,
+        'username' => $validated['username'] ?? null,
+        'password' => isset($validated['password']) ? Hash::make($validated['password']) : null,
+        'photo_profile' => $photoPath,
+        'role' => $validated['role'],
+        'id_jurusan' => $validated['id_jurusan'] ?? null,
+        'id_keahlian' => $validated['id_keahlian'] ?? null,
+        'id_angkatan' => $validated['id_angkatan'] ?? null,
+        'status_pengajuan' => 'Di Terima',
+        'is_active' => 1,
+    ];
+
+    // Add NIM only if provided (for admin/dosen it might be null)
+    if (isset($validated['nim'])) {
+        $userData['nim'] = $validated['nim'];
+    }
+
+    User::create($userData);
+
+    return redirect()
+        ->route('admin.users.index')
+        ->with('success', 'User berhasil ditambahkan.');
+}
 
     // DetailsUser - ambil id dari query parameter
     public function DetailsUser(Request $request)
