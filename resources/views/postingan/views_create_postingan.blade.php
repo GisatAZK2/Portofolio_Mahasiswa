@@ -58,7 +58,6 @@
 
             <!-- Form -->
             <form method="POST" action="{{ route('postingan.store') }}" enctype="multipart/form-data">
-            <form method="POST" action="{{ route('postingan.store') }}" enctype="multipart/form-data">
                 @csrf
                 
                 <!-- Main Card -->
@@ -75,49 +74,7 @@
                                 <p class="mt-1 text-xs text-red-500">{{ autoTranslate($message) }}</p>
                             @enderror
                         </div>
-                
-                <!-- Main Card -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    
-                    <!-- Content Area -->
-                    <div class="p-5 sm:p-6">
-                        <!-- Judul Input -->
-                        <div class="mb-5">
-                            <textarea name="judul" id="judul" rows="1" placeholder="{{ autoTranslate('Judul postingan...') }}"
-                                class="w-full px-0 py-2 text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-0 resize-none overflow-hidden transition-colors @error('judul') border-red-500 @enderror"
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('judul') }}</textarea>
-                            @error('judul')
-                                <p class="mt-1 text-xs text-red-500">{{ autoTranslate($message) }}</p>
-                            @enderror
-                        </div>
 
-                        <!-- Deskripsi Input -->
-                        <div class="mb-2">
-                            <textarea name="deskripsi" id="deskripsi" rows="3" placeholder="{{ autoTranslate('Tulis sesuatu yang menarik...') }}"
-                                class="w-full px-0 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 focus:ring-0 resize-none text-base leading-relaxed @error('deskripsi') border-red-500 @enderror"
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('deskripsi') }}</textarea>
-                            @error('deskripsi')
-                                <p class="mt-1 text-xs text-red-500">{{ autoTranslate($message) }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Items Section -->
-                    <div class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                        <div id="items-container" class="divide-y divide-gray-100 dark:divide-gray-700">
-                            <!-- Items will be added here -->
-                        </div>
-                        
-                        <!-- Add Item Button -->
-                        <div class="p-4 flex justify-center border-t border-gray-100 dark:border-gray-700">
-                            <button type="button" id="add-item"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-700 transition-all shadow-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                                <span data-translate="add" data-translate-page="add_post">Tambah Media atau Link</span>
-                            </button>
-                        </div>
                         <!-- Deskripsi Input -->
                         <div class="mb-2">
                             <textarea name="deskripsi" id="deskripsi" rows="3" placeholder="{{ autoTranslate('Tulis sesuatu yang menarik...') }}"
@@ -299,21 +256,9 @@
             const container = document.getElementById('items-container');
             const newItem = document.createElement('div');
             newItem.className = 'item p-5 bg-white dark:bg-gray-800 relative group';
-            newItem.className = 'item p-5 bg-white dark:bg-gray-800 relative group';
             newItem.dataset.index = itemIndex;
 
             newItem.innerHTML = `
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center" id="icon-container-${itemIndex}">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <select name="items[${itemIndex}][type]" class="type-select px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="image">{{ autoTranslate('Gambar') }}</option>
-                            <option value="link">{{ autoTranslate('Link') }}</option>
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center" id="icon-container-${itemIndex}">
@@ -345,10 +290,6 @@
                     <!-- Teks default -->
                     <textarea name="items[${itemIndex}][content]" rows="2" class="text-input w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 resize-none"
                         placeholder="{{ autoTranslate('Tulis keterangan...') }}"></textarea>
-                <div class="content-area pl-11">
-                    <!-- Teks default -->
-                    <textarea name="items[${itemIndex}][content]" rows="2" class="text-input w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 resize-none"
-                        placeholder="{{ autoTranslate('Tulis keterangan...') }}"></textarea>
 
                     <!-- File upload dengan preview -->
                     <div class="file-input hidden mt-3">
@@ -370,22 +311,6 @@
                         </div>
                     </div>
 
-                    <!-- Link (hidden awal) -->
-                    <div class="link-input hidden mt-3">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 000-5.656l-4-4a4 4 0 00-5.656 5.656L6.343 9.17"></path>
-                                </svg>
-                            </div>
-                            <input type="url" name="items[${itemIndex}][content]" 
-                                class="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="https://example.com">
-                        </div>
-                    </div>
-                </div>
-            `;
                     <!-- Link (hidden awal) -->
                     <div class="link-input hidden mt-3">
                         <div class="relative">
@@ -482,7 +407,6 @@
             const fileDiv = itemElement.querySelector('.file-input');
             const linkInput = itemElement.querySelector('.link-input');
             const iconContainer = itemElement.querySelector('[id^="icon-container"]');
-            const iconContainer = itemElement.querySelector('[id^="icon-container"]');
 
             function toggleFields() {
                 const type = select.value;
@@ -508,7 +432,6 @@
                 linkInput.classList.toggle('hidden', type !== 'link');
 
                 textInput.disabled = type !== 'image';
-                textInput.disabled = type !== 'image';
                 linkInput.disabled = type !== 'link';
                 
                 
@@ -518,15 +441,10 @@
                 } else if (type === 'link') {
                     textInput.name = `items[${itemElement.dataset.index}][dummy]`;
                     linkInput.name = `items[${itemElement.dataset.index}][content]`;
-                    linkInput.name = `items[${itemElement.dataset.index}][dummy]`;
-                } else if (type === 'link') {
-                    textInput.name = `items[${itemElement.dataset.index}][dummy]`;
-                    linkInput.name = `items[${itemElement.dataset.index}][content]`;
                 }
             }
 
             select.addEventListener('change', toggleFields);
-            toggleFields();
             toggleFields();
         }
 
@@ -571,11 +489,6 @@
         document.getElementById('add-item').addEventListener('click', addItem);
 
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.remove-item')) {
-                const item = e.target.closest('.item');
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(-10px)';
-                setTimeout(() => item.remove(), 150);
             if (e.target.closest('.remove-item')) {
                 const item = e.target.closest('.item');
                 item.style.opacity = '0';

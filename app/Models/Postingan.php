@@ -25,7 +25,7 @@ class Postingan extends Model
 
     protected $casts = [
         'content' => 'array',
-        'tanggal' => 'date',
+        'tanggal' => 'datetime',
     ];
 
     public function user()

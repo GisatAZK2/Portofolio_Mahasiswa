@@ -25,7 +25,7 @@ class Komentar extends Model
     ];
 
     protected $casts = [
-        'tanggal' => 'date',
+        'tanggal' => 'datetime',
     ];
 
     public function user()
