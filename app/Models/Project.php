@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Project_User;
@@ -11,7 +10,7 @@ use App\Models\ProjectTask;
 
 class Project extends Model
 {
-    use HasFactory,Cachable;
+    use HasFactory;
 
     protected $table = 'projects';
     
