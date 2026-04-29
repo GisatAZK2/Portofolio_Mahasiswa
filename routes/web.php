@@ -23,6 +23,8 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 // ========== AUTH ROUTES ==========
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
+Route::get('/register/complete', [UserController::class, 'showCompleteRegistration'])->name('register.complete');
+Route::post('/register/complete', [UserController::class, 'register'])->name('register.complete.submit');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
@@ -33,12 +35,6 @@ Route::post('/verify-otp', [App\Http\Controllers\Auth\ForgotPasswordController::
 Route::post('/resend-otp', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resendOtp'])->name('password.resendOtp');
 Route::get('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
 Route::post('/reset-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
-
-// Register routes
-Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
-Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('register');
-Route::get('/register', [UserController::class, 'showRegister'])->name('register');
-Route::post('/register', [UserController::class, 'register']);
 
 // ========== 2FA PASSKEY ROUTES (di luar locale group) ==========
 Route::middleware(['web'])->group(function () {

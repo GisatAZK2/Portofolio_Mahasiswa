@@ -153,13 +153,6 @@
                         </div>
                     </div>
 
-                    <p class="text-center mt-4 text-gray-600 text-sm sm:text-base">
-                        Belum punya akun?
-                        <a href="{{ route('pengajuan-akun') }}"
-                            class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
-                            Ajukan Akun Ke Admin
-                        </a>
-                    </p>
                 </div>
             </form>
         </div>

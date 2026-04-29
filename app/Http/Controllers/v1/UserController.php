@@ -16,45 +16,105 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use App\Services\ImageConversionService;
 use App\Http\Controllers\v1\NotificationController;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    // Tampilkan form registrasi
-       public function showRegister()
+    // Tampilkan form register Complete (untuk user yang login dengan password sementara)
+    public function showCompleteRegistration()
     {
+        $tempUserData = session('temp_user_data');
+        $userId = session('temp_user_id');
+
+        if (!$tempUserData || !$userId) {
+            return redirect()->route('login')
+                ->with('error', 'Sesi tidak valid. Silakan login kembali.');
+        }
+
+        $user = User::find($userId);
+
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', 'Data user tidak ditemukan.');
+        }
+
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
 
-        return view('auth.register', compact('jurusans', 'keahlians', 'angkatans'));
+        $jurusanName = $user->jurusan ? $user->jurusan->nama_jurusan : '-';
+        $keahlianName = $user->keahlian ? $user->keahlian->nama_keahlian : '-';
+        $angkatanName = $user->angkatan ? $user->angkatan->nama_angkatan : '-';
+
+        return view('auth.complete-registration', compact('tempUserData', 'user', 'jurusans', 'keahlians', 'angkatans', 'jurusanName', 'keahlianName', 'angkatanName'));
     }
 
+    // Proses register (normal flow)
     public function register(Request $request)
     {
-        $ipAddress = $request->ip();
-        $userAgent = $request->userAgent();
-        $sessionId = $request->session()->getId();
+        // Check if this is completing incomplete registration
+        $isCompleting = $request->has('completing_registration') && $request->completing_registration == 'true';
 
-        $guestIdentifier = md5($ipAddress . $userAgent . $sessionId);
+        if ($isCompleting) {
+            // Get user from session
+            $userId = $request->session()->get('temp_user_id');
+            $user = User::find($userId);
 
-        $registrationCount = Cache::remember("registration_count_{$guestIdentifier}", 3600, function () {
-            return 0;
-        });
+            if (!$user) {
+                return redirect()->route('login')
+                    ->with('error', 'Sesi tidak valid. Silakan login kembali.');
+            }
 
-        $sessionCount = $request->session()->get('registration_attempts', 0);
-        $totalAttempts = max($registrationCount, $sessionCount);
+            // Validate only the additional fields
+            $validated = $request->validate([
+                'username' => ['required', 'string', 'max:100', 'unique:users,username,' . $user->id, 'regex:/^[a-zA-Z0-9_]+$/'],
+                'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
+                'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+                'description' => ['nullable', 'string', 'max:500'],
+                'video_url' => ['nullable', 'url', 'max:255'],
+                'background_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'], // Max 10MB
+                'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5012']
+            ]);
 
-        if ($totalAttempts >= 3) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Anda telah mencapai batas maksimal 3 kali pengajuan registrasi. Silakan hubungi admin untuk bantuan lebih lanjut.');
+            // Handle background image upload
+            $backgroundPath = null;
+            if ($request->hasFile('background_image')) {
+                $backgroundPath = ImageConversionService::storeWebp($request->file('background_image'), 'backgrounds');
+            }
+
+            // Handle Photo_profile
+            $photoProfilePath = null;
+            if ($request->hasFile('photo_profile')) {
+                $photoProfilePath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+            }
+
+            // Update user
+            $user->update([
+                'username' => $validated['username'],
+                'email' => $validated['email'] ?? $user->email,
+                'password' => Hash::make($validated['password']),
+                'deskripsi' => $validated['description'] ?? null,
+                'video_url' => $validated['video_url'] ?? null,
+                'background_url' => $backgroundPath,
+                'photo_profile' => $photoProfilePath,
+            ]);
+
+            // Kirim notifikasi ke admin
+            $this->sendNotifications($user);
+
+            // Clear session
+            $request->session()->forget(['temp_user_id', 'temp_user_data', 'incomplete_registration_data']);
+
+            return redirect()->route('login')
+                ->with('success', 'Data berhasil dilengkapi! Silakan Login Dengan Password Yang Sudah Anda Buat');
         }
 
+        // Normal registration flow
         $validated = $request->validate([
             'nama_mahasiswa' => ['required', 'string', 'max:100'],
+            'nim' => ['required', 'string', 'max:50', 'unique:users,nim'],
+            'tanggal_lahir' => ['required', 'date', 'before_or_equal:today'],
             'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
-            'username' => ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
             'id_jurusan' => ['required', 'exists:jurusan,id_jurusan'],
             'id_keahlian' => ['required', 'exists:keahlian,id_keahlian'],
             'id_angkatan' => ['required', 'exists:angkatan,id'],
@@ -62,14 +122,12 @@ class UserController extends Controller
         ]);
 
         $validated['role'] = 'mahasiswa';
+        $validated['is_active'] = true;
+        $validated['password'] = null; // Password will be set later
 
         if ($request->hasFile('photo_profile')) {
             $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
         }
-
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = true;
-        $validated['status_pengajuan'] = 'Sedang Di Ajukan';
 
         $user = User::create($validated);
         $user->load('jurusan', 'angkatan', 'keahlian');
@@ -87,24 +145,22 @@ class UserController extends Controller
     }
 
     private function sendNotifications($user)
-{
-    $jurusanNama = $user->jurusan->nama_jurusan ?? '-';
-    $angkatanNama = $user->angkatan->nama_angkatan ?? '-';
+    {
+        $jurusanNama = $user->jurusan->nama_jurusan ?? '-';
+        $angkatanNama = $user->angkatan->nama_angkatan ?? '-';
 
-    NotificationController::add(
-        'user-registered',
-        [
-            'title' => 'Mahasiswa Baru Mendaftar',
-            'message' => "{$user->nama_mahasiswa} ({$jurusanNama} - {$angkatanNama})",
-            'user_id' => $user->id,
-            'user_name' => $user->nama_mahasiswa,
-            'link' => url(app()->getLocale() . '/admin/manageUser'),
-
-        ],
-        'high'
-    );
-}
-
+        NotificationController::add(
+            'user-registered',
+            [
+                'title' => 'Mahasiswa Menyelesaikan Pendaftaran',
+                'message' => "Mahasiswa telah menyelesaikan pendaftarannya: {$user->nama_mahasiswa} ({$jurusanNama} - {$angkatanNama})",
+                'user_id' => $user->id,
+                'user_name' => $user->nama_mahasiswa,
+                'link' => url(app()->getLocale() . '/admin/manageUser'),
+            ],
+            'high'
+        );
+    }
 
     // Tampilkan form login
     public function showLogin()
@@ -112,91 +168,142 @@ class UserController extends Controller
         return view('auth.login');
     }
 
-  // Proses login (email ATAU username) dengan 2FA Passkey
-public function login(Request $request)
-{
-    $request->validate([
-        'login' => ['required', 'string'],
-        'password' => ['required', 'string'],
-    ]);
+    // Proses login (email ATAU username ATAU NIM) dengan 2FA Passkey
+    public function login(Request $request)
+    {
+        $request->validate([
+            'login' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
 
-    $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        // Cek apakah login menggunakan email, username, atau NIM
+        $fieldType = 'email';
+        if (filter_var($request->login, FILTER_VALIDATE_EMAIL)) {
+            $fieldType = 'email';
+        } else {
+            // Cek apakah login adalah NIM (hanya angka)
+            if (preg_match('/^\d+$/', $request->login)) {
+                $fieldType = 'nim';
+            } else {
+                $fieldType = 'username';
+            }
+        }
 
-    $user = User::where($fieldType, $request->login)->first();
+        $user = User::where($fieldType, $request->login)->first();
 
-    if (!$user) {
-        return back()->withErrors([
-            'login' => 'Akun tidak ditemukan.',
-        ])->onlyInput('login');
+        if (!$user) {
+            return back()->withErrors([
+                'login' => 'Akun tidak ditemukan.',
+            ])->onlyInput('login');
+        }
+
+        // Cek status user
+        if ($user->is_active == 0 && empty($user->status_pengajuan)) {
+            return back()->withErrors([
+                'login' => 'AKUN_DIBLOKIR',
+            ])->onlyInput('login');
+        }
+
+        if ($user->status_pengajuan === 'Sedang Di Ajukan') {
+            return back()->withErrors([
+                'login' => 'PENGAJUAN_DIPROSES',
+            ])->onlyInput('login');
+        }
+
+        if ($user->status_pengajuan === 'Di Tolak') {
+            return back()->withErrors([
+                'login' => 'PENGAJUAN_DITOLAK',
+            ])->onlyInput('login');
+        }
+
+        if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
+            return back()->withErrors([
+                'login' => 'AKUN_DIBLOKIR',
+            ])->onlyInput('login');
+        }
+
+        // ============ PASSWORD VALIDATION ============
+        $passwordValid = false;
+
+        // Check if password is empty in database
+        if (empty($user->password)) {
+            // Use tanggal_lahir as temporary password
+            $tempPassword = $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->format('Y-m-d') : null;
+
+            if ($tempPassword && $request->password === $tempPassword) {
+                $passwordValid = true;
+
+                // Store user data in session for completion
+                $userData = [
+                    'id' => $user->id,
+                    'nama_mahasiswa' => $user->nama_mahasiswa,
+                    'nim' => $user->nim,
+                    'tanggal_lahir' => $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->format('Y-m-d') : null,
+                    'email' => $user->email,
+                    'id_jurusan' => $user->id_jurusan,
+                    'id_keahlian' => $user->id_keahlian,
+                    'id_angkatan' => $user->id_angkatan,
+                    'photo_profile' => $user->photo_profile,
+                ];
+
+                session([
+                    'temp_user_id' => $user->id,
+                    'temp_user_data' => $userData,
+                    'incomplete_registration_data' => $userData
+                ]);
+
+                // Redirect to complete registration
+                return redirect()->route('register.complete')
+                    ->with('warning', 'Silakan lengkapi data akun Anda (username, password, dll) untuk melanjutkan.');
+            }
+        } else {
+            // Normal password check
+            if (Hash::check($request->password, $user->password)) {
+                $passwordValid = true;
+            }
+        }
+
+        if (!$passwordValid) {
+            return back()->withErrors([
+                'login' => 'Password yang Anda masukkan salah.',
+            ])->onlyInput('login');
+        }
+
+        // ============ 2FA PASSKEY ============
+        // Cek apakah user memiliki passkey
+        $hasPasskey = $user->passkeys()->count() > 0;
+
+        if ($hasPasskey) {
+            // Simpan user ID ke session untuk verifikasi 2FA
+            session(['2fa_user_id' => $user->id]);
+            session(['2fa_requires_verification' => true]);
+            session(['2fa_remember' => $request->boolean('remember')]);
+
+            // Redirect ke halaman verifikasi passkey
+            return redirect()->route('2fa.verify');
+        }
+
+        // ============ Tanpa 2FA (langsung login) ============
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.index')
+                ->with('success', 'Login berhasil! Selamat datang Admin.');
+        }
+
+        if ($user->role === 'dosen') {
+            return redirect()->route('dosen.dashboard')
+                ->with('success', 'Login berhasil! Selamat datang Dosen.');
+        }
+
+        // Default mahasiswa
+        return redirect()->route('dashboard.me')
+            ->with('success', 'Login berhasil! Selamat datang kembali.');
     }
 
-    // Cek status user
-    if ($user->is_active == 0 && empty($user->status_pengajuan)) {
-        return back()->withErrors([
-            'login' => 'AKUN_DIBLOKIR',
-        ])->onlyInput('login');
-    }
-
-    if ($user->status_pengajuan === 'Sedang Di Ajukan') {
-        return back()->withErrors([
-            'login' => 'PENGAJUAN_DIPROSES',
-        ])->onlyInput('login');
-    }
-
-    if ($user->status_pengajuan === 'Di Tolak') {
-        return back()->withErrors([
-            'login' => 'PENGAJUAN_DITOLAK',
-        ])->onlyInput('login');
-    }
-
-    if ($user->status_pengajuan === 'Di Terima' && $user->is_active == 0) {
-        return back()->withErrors([
-            'login' => 'AKUN_DIBLOKIR',
-        ])->onlyInput('login');
-    }
-
-    // Cek password
-    if (!Hash::check($request->password, $user->password)) {
-        return back()->withErrors([
-            'login' => 'Password yang Anda masukkan salah.',
-        ])->onlyInput('login');
-    }
-
-    // ============ 2FA PASSKEY ============
-    // Cek apakah user memiliki passkey
-    $hasPasskey = $user->passkeys()->count() > 0;
-
-    if ($hasPasskey) {
-        // Simpan user ID ke session untuk verifikasi 2FA
-        // Jangan login dulu, hanya simpan data sementara
-        session(['2fa_user_id' => $user->id]);
-        session(['2fa_requires_verification' => true]);
-        session(['2fa_remember' => $request->boolean('remember')]);
-        
-        // Redirect ke halaman verifikasi passkey
-        return redirect()->route('2fa.verify');
-    }
-
-    // ============ Tanpa 2FA (langsung login) ============
-    Auth::login($user, $request->boolean('remember'));
-    $request->session()->regenerate();
-
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.index')
-            ->with('success', 'Login berhasil! Selamat datang Admin.');
-    }
-
-    if ($user->role === 'dosen') {
-        return redirect()->route('dosen.dashboard')
-            ->with('success', 'Login berhasil! Selamat datang Dosen.');
-    }
-
-    // Default mahasiswa
-    return redirect()->route('dashboard.me')
-        ->with('success', 'Login berhasil! Selamat datang kembali.');
-}
-
-    public function forgotpasswordpage(){
+    public function forgotpasswordpage()
+    {
         return view('auth.forgot-password');
     }
 
@@ -408,44 +515,44 @@ public function login(Request $request)
         return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
     }
     /**
- * Remove the specified keahlian tambahan from storage.
- */
-public function destroyKeahlianTambahan(Request $request)
-{
-    $id = $request->query('id');
-    
-    if (!$id) {
-        return response()->json([
-            'success' => false,
-            'message' => 'ID keahlian tambahan diperlukan'
-        ], 400);
+     * Remove the specified keahlian tambahan from storage.
+     */
+    public function destroyKeahlianTambahan(Request $request)
+    {
+        $id = $request->query('id');
+
+        if (!$id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ID keahlian tambahan diperlukan'
+            ], 400);
+        }
+
+        $user = Auth::user();
+
+        try {
+            $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
+                ->findOrFail($id);
+
+            $keahlianTambahan->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Keahlian tambahan berhasil dihapus'
+            ]);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data keahlian tambahan tidak ditemukan'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
-    
-    $user = Auth::user();
-
-    try {
-        $keahlianTambahan = Keahlian_Tambahan::where('id_user', $user->id)
-            ->findOrFail($id);
-
-        $keahlianTambahan->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Keahlian tambahan berhasil dihapus'
-        ]);
-
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Data keahlian tambahan tidak ditemukan'
-        ], 404);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-        ], 500);
-    }
-}
     public function keahliantambahanlist()
     {
         try {
