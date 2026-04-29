@@ -265,7 +265,7 @@
 <script>
     const currentLocale = document.documentElement.lang || 'id';
     // Notification Bell Component
-    function notificationBell(data) {
+  function notificationBell(data) {
     return {
         userId: data.userId,
         userRole: data.userRole,
@@ -274,27 +274,27 @@
         unreadCount: 0,
         page: 1,
         pollingInterval: null,
+        isLoading: false,
 
+        // Filter notifikasi: hanya yang BELUM DIBACA dan sesuai target user
         filterNotifications(notifications) {
             if (!notifications || !Array.isArray(notifications)) return [];
             
             return notifications.filter(item => {
-             if (item.read === 1 || item.read === true) {
-            return false;
-        }
+                // ✅ Langsung exclude notifikasi yang sudah dibaca
+                if (item.read === 1 || item.read === true) {
+                    return false;
+                }
+
                 const notifData = item.data || {};
                 const selected = notifData.selected_users;
 
-                // Jika notifikasi khusus user tertentu
+                // Notifikasi khusus user tertentu
                 if (notifData.target_type === 'specific') {
                     if (!selected) return false;
-
-                    // array
                     if (Array.isArray(selected)) {
                         return selected.map(Number).includes(Number(this.userId));
                     }
-
-                    // string JSON array "[38,2]"
                     if (typeof selected === 'string' && selected.startsWith('[')) {
                         try {
                             const parsed = JSON.parse(selected);
@@ -303,29 +303,25 @@
                                 : false;
                         } catch (e) {}
                     }
-
-                    // string biasa "13"
                     return Number(selected) === Number(this.userId);
                 }
 
-                // broadcast semua
-                if (notifData.target_type === 'all') {
-                    return true;
-                }
+                // Broadcast ke semua
+                if (notifData.target_type === 'all') return true;
 
-                // role tertentu
+                // Notifikasi berdasarkan role
                 if (notifData.target_role) {
                     return notifData.target_role === this.userRole;
                 }
 
-                // notifikasi admin system
+                // Notifikasi admin system
                 if (!notifData.admin_id && !notifData.sender_id) {
                     return this.userRole === 'admin';
                 }
                 return false;
             });
         },
-        
+
         async init() {
             await this.loadNotifications();
             this.startPolling();
@@ -333,12 +329,10 @@
         },
 
         getCurrentNotificationIds() {
-            // Ambil semua ID notifikasi yang tampil di dropdown
             return this.notifications.map(n => n.id);
         },
 
         getUnreadNotificationIds() {
-            // Ambil ID notifikasi yang belum dibaca
             return this.notifications.filter(n => !n.read).map(n => n.id);
         },
 
@@ -364,15 +358,18 @@
 
         toggleDropdown() { 
             this.isOpen = !this.isOpen; 
+            if (this.isOpen && this.unreadCount > 0) {
+                this.loadNotifications();
+            }
         },
 
         startPolling() {
+            if (this.pollingInterval) clearInterval(this.pollingInterval);
             this.pollingInterval = setInterval(async () => {
                 try {
                     const res = await fetch(`/${currentLocale}/api/notifications/unread-count`);
                     const data = await res.json();
-                    if (data.count > this.unreadCount) { 
-                        this.page = 1; 
+                    if (data.count !== this.unreadCount) { 
                         await this.loadNotifications(); 
                     }
                 } catch (e) {
@@ -382,6 +379,8 @@
         },
 
         async loadNotifications() {
+            if (this.isLoading) return;
+            this.isLoading = true;
             try {
                 const res = await fetch(`/${currentLocale}/api/notifications?page=${this.page}`);
                 const data = await res.json();
@@ -389,19 +388,21 @@
                 this.updateUnreadCount();
             } catch (error) {
                 console.error('Load notifications error:', error);
+            } finally {
+                this.isLoading = false;
             }
         },
 
         async handleNotificationClick(item) {
-            if (!item.read) await this.markAsRead(item.id);
-            
+            // Tandai sebagai read jika belum
+            if (!item.read) {
+                await this.markAsRead(item.id);
+            }
+            // Redirect setelah sukses ditandai
             const locale = document.documentElement.lang || 'id';
-            
-            // Redirect berdasarkan tipe notifikasi
             if (item.data.link) {
                 window.location.href = item.data.link;
             } else {
-                // Fallback route berdasarkan tipe
                 const routes = {
                     'user-registered': `/${locale}/admin/manageUser`,
                     'project-created': `/${locale}/admin/manageProject`,
@@ -414,8 +415,7 @@
         async markAsRead(id) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const url = `/${currentLocale}/api/notifications/notifications/mark-read?id=${id}`;
-                
+                const url = `/${currentLocale}/api/notifications/mark-read?id=${id}`;
                 const response = await fetch(url, { 
                     method: 'POST', 
                     headers: { 
@@ -425,19 +425,10 @@
                     },
                     credentials: 'same-origin'
                 });
-                
                 const result = await response.json();
-                
                 if (result.success) {
-                    // Update local state
-                    const notif = this.notifications.find(n => n.id === id);
-                    if (notif) {
-                        notif.read = true;
-                        notif.read_at = new Date().toISOString();
-                    }
-                    this.updateUnreadCount();
-                    
-                    console.log('Notification marked as read');
+                    // ✅ Refresh daftar notifikasi agar notifikasi yang sudah read langsung hilang
+                    await this.loadNotifications();
                 } else {
                     console.error('Failed to mark as read:', result.message);
                 }
@@ -447,23 +438,14 @@
         },
 
         async markAllAsRead() {
-            // Ambil semua ID notifikasi yang belum dibaca
             const unreadIds = this.getUnreadNotificationIds();
-            
             if (unreadIds.length === 0) {
-                // Tampilkan pesan bahwa tidak ada notifikasi yang perlu ditandai
-                const noNotifMsg = document.createElement('div');
-                noNotifMsg.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
-                noNotifMsg.textContent = 'Tidak ada notifikasi yang belum dibaca';
-                document.body.appendChild(noNotifMsg);
-                setTimeout(() => noNotifMsg.remove(), 2000);
+                this.showToast('Tidak ada notifikasi yang belum dibaca', 'info');
                 return;
             }
-            
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
                 const url = `/${currentLocale}/api/notifications/mark-all-read`;
-                
                 const response = await fetch(url, { 
                     method: 'POST', 
                     headers: { 
@@ -474,57 +456,30 @@
                     credentials: 'same-origin',
                     body: JSON.stringify({ notification_ids: unreadIds })
                 });
-                
                 const result = await response.json();
-                
                 if (result.success) {
-                    // Update semua notifikasi yang belum dibaca menjadi read
-                    this.notifications.forEach(n => {
-                        if (!n.read) {
-                            n.read = true;
-                            n.read_at = new Date().toISOString();
-                        }
-                    });
-                    this.updateUnreadCount();
-                    
-                    // Show success message
-                    const successMsg = document.createElement('div');
-                    successMsg.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
-                    successMsg.textContent = result.message || 'Semua notifikasi telah ditandai dibaca';
-                    document.body.appendChild(successMsg);
-                    setTimeout(() => successMsg.remove(), 2000);
-                    
-                    console.log('All notifications marked as read');
+                    await this.loadNotifications(); // ✅ Refresh otomatis
+                    this.showToast(result.message || 'Semua notifikasi telah ditandai dibaca', 'success');
                 } else {
                     console.error('Failed to mark all as read:', result.message);
+                    this.showToast('Gagal menandai notifikasi', 'error');
                 }
             } catch(e) {
                 console.error('Mark all as read error:', e);
-                alert('Gagal menandai notifikasi. Silakan coba lagi.');
+                this.showToast('Gagal menandai notifikasi. Silakan coba lagi.', 'error');
             }
         },
 
         async clearAll() {
-            // Ambil semua ID notifikasi yang tampil
             const allIds = this.getCurrentNotificationIds();
-            
             if (allIds.length === 0) {
-                const noNotifMsg = document.createElement('div');
-                noNotifMsg.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
-                noNotifMsg.textContent = 'Tidak ada notifikasi yang dapat dihapus';
-                document.body.appendChild(noNotifMsg);
-                setTimeout(() => noNotifMsg.remove(), 2000);
+                this.showToast('Tidak ada notifikasi yang dapat dihapus', 'info');
                 return;
             }
-            
-            // Konfirmasi sebelum hapus
-            const confirmed = confirm(`Apakah Anda yakin ingin menghapus ${allIds.length} notifikasi?`);
-            if (!confirmed) return;
-            
+            if (!confirm(`Apakah Anda yakin ingin menghapus ${allIds.length} notifikasi?`)) return;
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
                 const url = `/${currentLocale}/api/notifications/clear-all`;
-                
                 const response = await fetch(url, { 
                     method: 'POST', 
                     headers: { 
@@ -535,38 +490,35 @@
                     credentials: 'same-origin',
                     body: JSON.stringify({ notification_ids: allIds })
                 });
-                
                 const result = await response.json();
-                
                 if (result.success) {
-                    // Kosongkan array notifikasi
-                    this.notifications = [];
-                    this.updateUnreadCount();
-                    
-                    // Tampilkan pesan sukses
-                    const successMsg = document.createElement('div');
-                    successMsg.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
-                    successMsg.textContent = result.message || 'Notifikasi yang dipilih telah dihapus';
-                    document.body.appendChild(successMsg);
-                    setTimeout(() => successMsg.remove(), 2000);
-                    
-                    console.log('Selected notifications cleared');
+                    await this.loadNotifications(); // Refresh setelah hapus
+                    this.showToast(result.message || 'Notifikasi yang dipilih telah dihapus', 'success');
                 } else {
                     console.error('Failed to clear notifications:', result.message);
-                    alert('Gagal menghapus notifikasi. Silakan coba lagi.');
+                    this.showToast('Gagal menghapus notifikasi', 'error');
                 }
             } catch(e) {
                 console.error('Clear all error:', e);
-                alert('Gagal menghapus notifikasi. Silakan coba lagi.');
+                this.showToast('Gagal menghapus notifikasi. Silakan coba lagi.', 'error');
             }
         },
 
         updateUnreadCount() { 
             this.unreadCount = this.notifications.filter(n => !n.read).length; 
+        },
+
+        showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm ${
+                type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-gray-800')
+            } text-white`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
     };
 }
-
     // Placeholder typing effect
     function getPlaceholderTexts() {
         const lang = localStorage.getItem('lang') || 'id';
