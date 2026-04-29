@@ -170,7 +170,9 @@
                                 </h3>
 
                                 <div class="space-y-2">
+                                    
                                     @forelse($project->members as $member)
+                                    <a href="{{ route('portfolio.show', ['user' => $member->username]) }}">
                                         @if($member->id !== $project->leader_id)
                                             <div
                                                 class="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 max-w-max">
@@ -190,6 +192,7 @@
                                                 </a>
                                             </div>
                                         @endif
+                                    </a>
                                     @empty
                                         <p class="text-gray-500 dark:text-gray-400 text-sm italic" data-translate="empty_tim" data-translate-page="pjt_detail">Belum ada anggota tim</p>
                                     @endforelse

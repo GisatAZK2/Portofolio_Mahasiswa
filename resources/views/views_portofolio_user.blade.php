@@ -414,7 +414,7 @@
                                                         <div class="flex-1 min-w-0">
                                                             <p class="text-xs text-gray-500 dark:text-gray-400">Project Leader</p>
                                                             @if($leader)
-                                                                <a href="{{ route('portfolio.show', $leader->id) }}" 
+                                                                <a href="{{ route('portfolio.show', ['user' => $leader->username]) }}" 
                                                                 class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                                     {{ $leader->nama_mahasiswa }}
                                                                     @if(auth()->check() && auth()->id() === $leader->id)
@@ -446,23 +446,29 @@
                                                         </div>
                                                         <div class="flex-1 min-w-0">
                                                             <p class="text-xs text-gray-500 dark:text-gray-400">Project Owner</p>
-                                                            @if($owner)
-                                                                <a href="{{ route('portfolio.show', $owner->username) }}" 
-                                                                class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
-                                                                    {{ $owner->nama_mahasiswa }}
-                                                                    @if(auth()->check() && auth()->id() === $owner->username)
-                                                                        <span class="ml-1 text-xs text-purple-600">(Anda)</span>
-                                                                    @endif
-                                                                </a>
-                                                            @else
-                                                                <p data-translate="pjt_ownnone" data-translate-page="portofolio_user" class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                                                                    No owner
-                                                                </p>
-                                                            @endif
+                                                         @if($owner)
+                                                        <div class="flex items-center"> 
+                                                            <a href="{{ route('portfolio.show', ['user' => $owner->username]) }}" 
+                                                            class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                {{ $owner->nama_mahasiswa }}
+                                                                
+                                                                @if(auth()->check() && auth()->user()->username === $owner->username)
+                                                                    <span class="ml-1 text-xs text-purple-600 dark:text-purple-400">(Anda)</span>
+                                                                @endif
+                                                            </a>
                                                         </div>
+                                                    @else
+                                                        <div class="flex items-center">
+                                                            <p data-translate="pjt_ownnone" data-translate-page="portofolio_user" 
+                                                            class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                No owner
+                                                            </p>
+                                                        </div>
+                                                    @endif
+                                                       </div>
                                                     </div>
                                                 @endif
-                                                    </div>
+
                                                 </div>
                                             </div>
                                             
@@ -510,8 +516,9 @@
                                                         </a>
                                                     </div>
                                                 @endif
-                                            </div>                                            <!-- Members Section (Anggota Tim) -->
-                                            @if($project->members->isNotEmpty())
+                                            </div>@if($project->members->isNotEmpty())
+                                            <a href="{{ route('portfolio.show', ['user' => $project->members->first()->username]) }}">
+    
                                                 <div class="mt-2">
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Anggota Tim ({{ $project->members->count() }})</p>
                                                     <div class="flex flex-wrap gap-3">
@@ -535,6 +542,7 @@
                                                                     @endif
                                                                 </span>
                                                             </div>
+                                                            </a>
                                                         @endforeach
                                                         
                                                         @if($project->members->count() > 5)
