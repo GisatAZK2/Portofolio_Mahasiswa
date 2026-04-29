@@ -302,623 +302,665 @@
             : null;
     @endphp
 
-    <script>
-        let allUsers = @json($users->items());
-        const currentUser = @json($currentUserData);
-        const userSelectionStorageKey = 'project_selected_users';
+ <script>
+    let allUsers = []; // Akan diisi dari berbagai halaman
+    let allUsersMap = new Map(); // Untuk menyimpan user dari semua halaman
+    const currentUser = @json($currentUserData);
+    const userSelectionStorageKey = 'project_selected_users';
 
-        let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+    let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+    let currentPage = 1;
+    let totalUsersLoaded = false;
 
-        // State permanen (sudah di-confirm)
-        let selectedUsers = { owner: null, leader: null, members: [] };
+    // State permanen (sudah di-confirm)
+    let selectedUsers = { owner: null, leader: null, members: [] };
 
-        // State sementara di dalam modal (sebelum confirm)
-        // Ini supaya saat pindah pagination, pilihan tidak hilang tapi juga tidak langsung commit
-        let pendingUsers = { owner: null, leader: null, members: [] };
+    // State sementara di dalam modal (sebelum confirm)
+    let pendingUsers = { owner: null, leader: null, members: [] };
 
-        let taskIndex = 0;
+    let taskIndex = 0;
 
-        // ─── Storage helpers ────────────────────────────────────────────────────────
+    // ─── Storage helpers ────────────────────────────────────────────────────────
 
-        function saveSelectedUsersToStorage() {
-            localStorage.setItem(userSelectionStorageKey, JSON.stringify({
-                owner: selectedUsers.owner,
-                leader: selectedUsers.leader,
-                members: selectedUsers.members
-            }));
+    function saveSelectedUsersToStorage() {
+        localStorage.setItem(userSelectionStorageKey, JSON.stringify({
+            owner: selectedUsers.owner,
+            leader: selectedUsers.leader,
+            members: selectedUsers.members
+        }));
+    }
+
+    function restoreSelectedUsersFromStorage() {
+        const stored = localStorage.getItem(userSelectionStorageKey);
+        if (!stored) return false;
+        try {
+            const parsed = JSON.parse(stored);
+            if (parsed.owner)  selectedUsers.owner   = parsed.owner;
+            if (parsed.leader) selectedUsers.leader  = parsed.leader;
+            if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
+            return true;
+        } catch (e) {
+            console.warn('Unable to restore selected users:', e);
+            return false;
         }
+    }
 
-        function restoreSelectedUsersFromStorage() {
-            const stored = localStorage.getItem(userSelectionStorageKey);
-            if (!stored) return false;
-            try {
-                const parsed = JSON.parse(stored);
-                if (parsed.owner)  selectedUsers.owner   = parsed.owner;
-                if (parsed.leader) selectedUsers.leader  = parsed.leader;
-                if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
-                return true;
-            } catch (e) {
-                console.warn('Unable to restore selected users:', e);
-                return false;
+    // ─── Update allUsers dari berbagai halaman ─────────────────────────────────
+
+    function addUsersToAllUsers(usersArray) {
+        if (!Array.isArray(usersArray)) return;
+        usersArray.forEach(user => {
+            if (!allUsersMap.has(String(user.id))) {
+                allUsersMap.set(String(user.id), user);
+                allUsers.push(user);
             }
+        });
+    }
+
+    function getUserById(id) {
+        const userId = String(id);
+        if (allUsersMap.has(userId)) {
+            return allUsersMap.get(userId);
         }
+        return null;
+    }
 
-        // ─── pendingUsers helpers ────────────────────────────────────────────────────
+    // ─── pendingUsers helpers ────────────────────────────────────────────────────
 
-        /** Salin state permanen ke pending saat modal dibuka */
-        function syncPendingFromSelected() {
-            pendingUsers = {
-                owner:   selectedUsers.owner   ? { ...selectedUsers.owner }   : null,
-                leader:  selectedUsers.leader  ? { ...selectedUsers.leader }  : null,
-                members: selectedUsers.members.map(m => ({ ...m }))
-            };
+    function syncPendingFromSelected() {
+        pendingUsers = {
+            owner:   selectedUsers.owner   ? { ...selectedUsers.owner }   : null,
+            leader:  selectedUsers.leader  ? { ...selectedUsers.leader }  : null,
+            members: selectedUsers.members.map(m => ({ ...m }))
+        };
+    }
+
+    function applyPendingToSelected() {
+        selectedUsers.owner   = pendingUsers.owner   ? { ...pendingUsers.owner }   : null;
+        selectedUsers.leader  = pendingUsers.leader  ? { ...pendingUsers.leader }  : null;
+        selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
+    }
+
+    function discardPending() {
+        pendingUsers = { owner: null, leader: null, members: [] };
+    }
+
+    // ─── Modal open/close ────────────────────────────────────────────────────────
+
+    function openUserModal() {
+        const toggle = document.getElementById('project-collaborative-toggle');
+        if (!toggle || !toggle.checked) {
+            alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
+            return;
         }
+        syncPendingFromSelected();
+        document.getElementById('userModal').classList.remove('hidden');
+        fetchUsers(1);
+    }
 
-        /** Terapkan pending ke selected saat Simpan */
-        function applyPendingToSelected() {
-            selectedUsers.owner   = pendingUsers.owner   ? { ...pendingUsers.owner }   : null;
-            selectedUsers.leader  = pendingUsers.leader  ? { ...pendingUsers.leader }  : null;
-            selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
-        }
+    function closeUserModal() {
+        document.getElementById('userModal').classList.add('hidden');
+        discardPending();
+    }
 
-        /** Buang pending (Batal) */
-        function discardPending() {
-            pendingUsers = { owner: null, leader: null, members: [] };
-        }
+    function cancelUserModal() {
+        discardPending();
+        document.getElementById('userModal').classList.add('hidden');
+    }
 
-        // ─── Modal open/close ────────────────────────────────────────────────────────
+    function confirmUserSelection() {
+        applyPendingToSelected();
+        updateFormInputs();
+        renderSelectedUsers();
+        updateTaskSectionVisibility();
+        updateTaskUserOptions();
+        updateSelectedUsersBadge();
+        saveSelectedUsersToStorage();
+        document.getElementById('userModal').classList.add('hidden');
+        discardPending();
+    }
 
-        function openUserModal() {
-            const toggle = document.getElementById('project-collaborative-toggle');
-            if (!toggle || !toggle.checked) {
-                alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
-                return;
-            }
-            // Salin state permanen ke pending saat buka modal
-            syncPendingFromSelected();
-            document.getElementById('userModal').classList.remove('hidden');
-            fetchUsers();
-        }
+    // ─── Fetch users (AJAX) ──────────────────────────────────────────────────────
 
-        function closeUserModal() {
-            document.getElementById('userModal').classList.add('hidden');
-            discardPending();
-        }
+    function fetchUsers(page = 1) {
+        currentPage = page;
+        const params = new URLSearchParams({
+            page: page,
+            search:   currentModalFilters.search,
+            angkatan: currentModalFilters.angkatan,
+            jurusan:  currentModalFilters.jurusan,
+            keahlian: currentModalFilters.keahlian
+        });
 
-        /** Tombol Batal: buang pending, tutup modal */
-        function cancelUserModal() {
-            discardPending();
-            document.getElementById('userModal').classList.add('hidden');
-        }
-
-        /** Tombol Simpan: terapkan pending ke selected, lalu tutup modal */
-        function confirmUserSelection() {
-            applyPendingToSelected();
-            updateFormInputs();
-            renderSelectedUsers();
-            updateTaskSectionVisibility();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-            document.getElementById('userModal').classList.add('hidden');
-            discardPending();
-        }
-
-        // ─── Fetch users (AJAX) ──────────────────────────────────────────────────────
-
-        function fetchUsers(page = 1) {
-            const params = new URLSearchParams({
-                page: page,
-                search:   currentModalFilters.search,
-                angkatan: currentModalFilters.angkatan,
-                jurusan:  currentModalFilters.jurusan,
-                keahlian: currentModalFilters.keahlian
-            });
-
-            fetch(`{{ route('project.create') }}?${params}`, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('modal-user-list').innerHTML   = data.userListHtml;
-                document.getElementById('modal-pagination').innerHTML  = data.paginationHtml;
-
-                // Refresh role selections berdasarkan pendingUsers (bukan selectedUsers)
-                refreshRoleSelections();
-
-                if (typeof window.refreshTranslations === 'function') {
-                    window.refreshTranslations();
+        fetch(`{{ route('project.create') }}?${params}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Parse HTML untuk mendapatkan data user
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.userListHtml;
+            
+            const userElements = tempDiv.querySelectorAll('[data-user-id]');
+            const usersInPage = [];
+            
+            userElements.forEach(el => {
+                const userId = el.getAttribute('data-user-id');
+                const nameEl = el.querySelector('.font-medium');
+                const emailEl = el.querySelector('.text-sm.text-gray-500');
+                const imgEl = el.querySelector('img');
+                
+                if (userId && nameEl) {
+                    const user = {
+                        id: parseInt(userId),
+                        nama_mahasiswa: nameEl.textContent.trim(),
+                        email: emailEl ? emailEl.textContent.trim() : '',
+                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                    };
+                    usersInPage.push(user);
                 }
             });
+            
+            // Tambahkan ke allUsers
+            addUsersToAllUsers(usersInPage);
+            
+            // Render ulang dengan user yang sudah lengkap
+            renderUserListWithRoles(data.userListHtml);
+            
+            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+            
+            // Refresh role selections berdasarkan pendingUsers
+            refreshRoleSelections();
+            
+            if (typeof window.refreshTranslations === 'function') {
+                window.refreshTranslations();
+            }
+        });
+    }
+    
+    function renderUserListWithRoles(html) {
+        const container = document.getElementById('modal-user-list');
+        container.innerHTML = html;
+        
+        // Set nilai dropdown berdasarkan pendingUsers
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId = String(select.dataset.userId);
+            const user = getUserById(userId);
+            
+            if (user) {
+                // Ganti data jika perlu
+                const userDiv = select.closest('[data-user-id]');
+                if (userDiv) {
+                    const nameDiv = userDiv.querySelector('.font-medium');
+                    if (nameDiv && nameDiv.textContent !== user.nama_mahasiswa) {
+                        nameDiv.textContent = user.nama_mahasiswa;
+                    }
+                }
+            }
+        });
+    }
+
+    // ─── Role assignment ────────────────────────────────────────────────────────
+
+    function updateUserRole(selectElement, userId, role) {
+        const user = getUserById(userId);
+        if (!user) {
+            console.error('User not found:', userId);
+            return;
         }
 
-        // ─── Role assignment (bekerja pada pendingUsers, bukan selectedUsers) ────────
+        const isOwner         = pendingUsers.owner  && String(pendingUsers.owner.id)  === String(userId);
+        const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
 
-        /**
-         * Dipanggil saat user mengubah dropdown role di dalam modal.
-         * Perubahan disimpan ke pendingUsers, BUKAN langsung ke selectedUsers.
-         * Modal TIDAK ditutup sampai user klik Simpan.
-         */
-        function updateUserRole(selectElement, userId, role) {
-            const user = allUsers.find(u => u.id == userId);
-            if (!user) return;
+        if (isOwner && role === 'member') {
+            alert('Owner tidak bisa menjadi member.');
+            selectElement.value = isCurrentLeader ? 'leader' : '';
+            refreshRoleSelections();
+            return;
+        }
 
-            const isOwner         = pendingUsers.owner  && String(pendingUsers.owner.id)  === String(userId);
-            const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
-
-            // Owner tidak boleh jadi member
-            if (isOwner && role === 'member') {
-                alert('Owner tidak bisa menjadi member.');
+        if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
+            const confirmChange = confirm(
+                `Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`
+            );
+            if (!confirmChange) {
                 selectElement.value = isCurrentLeader ? 'leader' : '';
                 refreshRoleSelections();
                 return;
             }
+            pendingUsers.leader = null;
+        }
 
-            // Ganti leader jika sudah ada leader lain
-            if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
-                const confirmChange = confirm(
-                    `Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`
-                );
-                if (!confirmChange) {
-                    selectElement.value = isCurrentLeader ? 'leader' : '';
-                    refreshRoleSelections();
-                    return;
-                }
-                pendingUsers.leader = null;
-            }
+        if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+            pendingUsers.leader = null;
+        }
+        pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
 
-            // Hapus dari role sebelumnya
-            if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                pendingUsers.leader = null;
-            }
-            pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
-
-            // Tambahkan ke role baru
-            if (role === 'leader') {
-                pendingUsers.leader = user;
-            } else if (role === 'member') {
+        if (role === 'leader') {
+            pendingUsers.leader = user;
+        } else if (role === 'member') {
+            // Cek duplikasi
+            if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
                 pendingUsers.members.push(user);
             }
-            // Jika role == '' (none), user sudah di-remove dari pendingUsers di atas
-
-            // Refresh tampilan dropdown di modal (tanpa menutup modal!)
-            refreshRoleSelections();
         }
 
-        // ─── Refresh tampilan dropdown di modal ──────────────────────────────────────
+        refreshRoleSelections();
+    }
 
-        /**
-         * Memperbarui semua dropdown .user-role-select berdasarkan pendingUsers.
-         * Dipanggil setiap kali fetchUsers() selesai atau setelah updateUserRole().
-         */
-        function refreshRoleSelections() {
-            const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
-            const ownerId  = pendingUsers.owner  ? String(pendingUsers.owner.id)  : null;
-            const hasSeparateLeader = leaderId && ownerId && leaderId !== ownerId;
+    function refreshRoleSelections() {
+        const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
+        const ownerId  = pendingUsers.owner  ? String(pendingUsers.owner.id)  : null;
 
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId   = String(select.dataset.userId);
-                const isOwner  = ownerId  === userId;
-                const isLeader = leaderId === userId;
-                const isMember = pendingUsers.members.some(m => String(m.id) === userId);
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId   = String(select.dataset.userId);
+            const isOwner  = ownerId  === userId;
+            const isLeader = leaderId === userId;
+            const isMember = pendingUsers.members.some(m => String(m.id) === userId);
 
-                // Set nilai dropdown
-                if (isLeader) {
-                    select.value = 'leader';
-                } else if (isMember) {
-                    select.value = 'member';
-                } else {
-                    select.value = '';
-                }
-
-                // Atur disabled/enabled opsi
-                const leaderOption = select.querySelector('option[value="leader"]');
-                const memberOption = select.querySelector('option[value="member"]');
-
-                if (leaderOption) {
-                    // Disable leader option jika sudah ada leader lain dan user ini bukan leader saat ini
-                    leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
-                    leaderOption.title    = leaderOption.disabled ? 'Leader sudah dipilih' : '';
-                }
-
-                if (memberOption) {
-                    memberOption.disabled = false;
-                }
-
-                // Jangan disable select sepenuhnya — user harus bisa mengubah role
-                select.disabled = false;
-                select.title    = '';
-            });
-        }
-
-        // ─── Form inputs & rendering ─────────────────────────────────────────────────
-
-        function updateSelectedUsersBadge() {
-            const badge = document.getElementById('selected-users-badge');
-            if (!badge) return;
-            let count = 0;
-            if (selectedUsers.owner)  count++;
-            if (selectedUsers.leader) count++;
-            count += selectedUsers.members.length;
-            badge.innerHTML = count === 0
-                ? ''
-                : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
-        }
-
-        function updateTaskSectionVisibility() {
-            const taskSection = document.getElementById('task-section');
-            if (!taskSection) return;
-            const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
-            if (hasUsers) {
-                taskSection.classList.remove('hidden');
+            if (isLeader) {
+                select.value = 'leader';
+            } else if (isMember) {
+                select.value = 'member';
             } else {
-                taskSection.classList.add('hidden');
-                const container = document.getElementById('tasks-container');
-                if (container) { container.innerHTML = ''; taskIndex = 0; }
+                select.value = '';
             }
+
+            const leaderOption = select.querySelector('option[value="leader"]');
+            const memberOption = select.querySelector('option[value="member"]');
+
+            if (leaderOption) {
+                leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
+                leaderOption.title    = leaderOption.disabled ? 'Leader sudah dipilih' : '';
+            }
+
+            if (memberOption) {
+                memberOption.disabled = false;
+            }
+
+            select.disabled = false;
+        });
+    }
+
+    // ─── Form inputs & rendering ─────────────────────────────────────────────────
+
+    function updateSelectedUsersBadge() {
+        const badge = document.getElementById('selected-users-badge');
+        if (!badge) return;
+        let count = 0;
+        if (selectedUsers.owner)  count++;
+        if (selectedUsers.leader) count++;
+        count += selectedUsers.members.length;
+        badge.innerHTML = count === 0
+            ? ''
+            : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
+    }
+
+    function updateTaskSectionVisibility() {
+        const taskSection = document.getElementById('task-section');
+        if (!taskSection) return;
+        const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
+        if (hasUsers) {
+            taskSection.classList.remove('hidden');
+        } else {
+            taskSection.classList.add('hidden');
+            const container = document.getElementById('tasks-container');
+            if (container) { container.innerHTML = ''; taskIndex = 0; }
+        }
+    }
+
+    function updateFormInputs() {
+        document.getElementById('selected-owner-id').value   = selectedUsers.owner?.id  || '';
+        document.getElementById('selected-leader-id').value  = selectedUsers.leader?.id || '';
+        document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
+
+        const memberInputs = document.getElementById('selected-members-inputs');
+        if (memberInputs) {
+            memberInputs.innerHTML = selectedUsers.members
+                .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
+                .join('');
+        }
+    }
+
+    function renderSelectedUsers() {
+        const container    = document.getElementById('selected-users-container');
+        const noUsersMsg   = document.getElementById('no-users-message');
+        if (!container || !noUsersMsg) return;
+
+        const selected = [];
+        if (selectedUsers.owner) {
+            const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id
+                ? 'Owner & Leader' : 'Owner';
+            selected.push({ ...selectedUsers.owner, role });
+        }
+        if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+            selected.push({ ...selectedUsers.leader, role: 'Leader' });
+        }
+        selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
+
+        if (!selected.length) {
+            container.innerHTML = '';
+            noUsersMsg.classList.remove('hidden');
+            return;
         }
 
-        function updateFormInputs() {
-            document.getElementById('selected-owner-id').value   = selectedUsers.owner?.id  || '';
-            document.getElementById('selected-leader-id').value  = selectedUsers.leader?.id || '';
-            document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
+        noUsersMsg.classList.add('hidden');
+        container.innerHTML = selected.map(user => {
+            const styles = {
+                'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
 
-            const memberInputs = document.getElementById('selected-members-inputs');
-            if (memberInputs) {
-                memberInputs.innerHTML = selectedUsers.members
-                    .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
-                    .join('');
-            }
-        }
-
-        function renderSelectedUsers() {
-            const container    = document.getElementById('selected-users-container');
-            const noUsersMsg   = document.getElementById('no-users-message');
-            if (!container || !noUsersMsg) return;
-
-            const selected = [];
-            if (selectedUsers.owner) {
-                const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id
-                    ? 'Owner & Leader' : 'Owner';
-                selected.push({ ...selectedUsers.owner, role });
-            }
-            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
-                selected.push({ ...selectedUsers.leader, role: 'Leader' });
-            }
-            selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
-
-            if (!selected.length) {
-                container.innerHTML = '';
-                noUsersMsg.classList.remove('hidden');
-                return;
-            }
-
-            noUsersMsg.classList.add('hidden');
-            container.innerHTML = selected.map(user => {
-                const styles = {
-                    'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                    'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-                }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
-
-                return `
-                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                        <div class="flex items-center gap-3">
-                            ${user.photo_profile
-                                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                       <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                   </div>`
-                            }
-                            <div>
-                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </button>
-                            ${user.role !== 'Owner' ? `
-                            <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>` : ''}
+            return `
+                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                    <div class="flex items-center gap-3">
+                        ${user.photo_profile
+                            ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                            : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                   <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                               </div>`
+                        }
+                        <div>
+                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
                         </div>
                     </div>
-                `;
-            }).join('');
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        ${user.role !== 'Owner' ? `
+                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function deleteTasksForUser(userId) {
+        const userIdStr = String(userId);
+        document.querySelectorAll('.task-item').forEach(taskItem => {
+            const select = taskItem.querySelector('.task-user-select');
+            if (select && String(select.value) === userIdStr) taskItem.remove();
+        });
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function removeUser(userId) {
+        deleteTasksForUser(userId);
+        if (selectedUsers.leader?.id == userId)  selectedUsers.leader  = null;
+        selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
+        updateFormInputs();
+        renderSelectedUsers();
+        updateTaskUserOptions();
+        updateSelectedUsersBadge();
+        saveSelectedUsersToStorage();
+    }
+
+    function editUser(userId) {
+        openUserModal();
+        setTimeout(() => {
+            const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
+            if (userElement) {
+                userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                userElement.style.backgroundColor = '#fef3c7';
+                setTimeout(() => userElement.style.backgroundColor = '', 2000);
+            }
+        }, 500);
+    }
+
+    // ─── Task helpers ────────────────────────────────────────────────────────────
+
+    function getAllowedTaskUsers() {
+        const users = [];
+        const added = new Set();
+        const add = user => {
+            if (!user || added.has(user.id)) return;
+            added.add(user.id);
+            users.push({ id: user.id, name: user.nama_mahasiswa });
+        };
+        add(selectedUsers.owner);
+        add(selectedUsers.leader);
+        selectedUsers.members.forEach(add);
+        return users;
+    }
+
+    function renderTaskUserOptions(selectedId = '') {
+        const users = getAllowedTaskUsers();
+        let html = '<option value="">{{ autoTranslate("Pilih Penanggung Jawab") }}</option>';
+        users.forEach(user => {
+            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+        });
+        return html;
+    }
+
+    function addTaskRow(taskData = null) {
+        const container = document.getElementById('tasks-container');
+        if (!container) return;
+        const index    = taskIndex++;
+        const userId   = taskData?.user_id ?? '';
+        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+        const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+        taskItem.innerHTML = `
+            ${hiddenId}
+            <div class="grid gap-4 md:grid-cols-3 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Penanggung Jawab') }}</label>
+                    <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                        ${renderTaskUserOptions(userId)}
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Nama Tugas') }}</label>
+                    <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                        class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                        placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
+                </div>
+                <button type="button" onclick="removeTaskRow(this)"
+                    class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+            </div>
+        `;
+        container.appendChild(taskItem);
+        taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
+    }
+
+    function removeTaskRow(button) {
+        button.closest('.task-item')?.remove();
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function cleanupInvalidTaskRows() {
+        const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
+        document.querySelectorAll('.task-item').forEach(taskItem => {
+            const select = taskItem.querySelector('.task-user-select');
+            if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
+        });
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function updateTaskUserOptions() {
+        document.querySelectorAll('.task-user-select').forEach(select => {
+            const currentValue = select.value;
+            select.innerHTML   = renderTaskUserOptions(currentValue);
+            if (currentValue) select.value = currentValue;
+        });
+        cleanupInvalidTaskRows();
+    }
+
+    function initializeTaskRows(existingTasks = []) {
+        const container = document.getElementById('tasks-container');
+        if (!container) return;
+        container.innerHTML = '';
+        taskIndex = 0;
+        if (Array.isArray(existingTasks) && existingTasks.length) {
+            existingTasks.forEach(task => { if (task.user_id || task.name_task) addTaskRow(task); });
+        } else {
+            addTaskRow();
         }
+        updateTaskUserOptions();
+    }
 
-        // ─── Remove user (dari selectedUsers, bukan pendingUsers) ────────────────────
+    // ─── Modal filters ───────────────────────────────────────────────────────────
 
-        function deleteTasksForUser(userId) {
-            const userIdStr = String(userId);
-            document.querySelectorAll('.task-item').forEach(taskItem => {
-                const select = taskItem.querySelector('.task-user-select');
-                if (select && String(select.value) === userIdStr) taskItem.remove();
-            });
-            if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    function setupModalFilters() {
+        document.getElementById('modal-search')?.addEventListener('input', function () {
+            currentModalFilters.search = this.value;
+            fetchUsers(1);
+        });
+        document.getElementById('modal-angkatan')?.addEventListener('change', function () {
+            currentModalFilters.angkatan = this.value;
+            fetchUsers(1);
+        });
+        document.getElementById('modal-jurusan')?.addEventListener('change', function () {
+            currentModalFilters.jurusan = this.value;
+            fetchUsers(1);
+        });
+        document.getElementById('modal-keahlian')?.addEventListener('change', function () {
+            currentModalFilters.keahlian = this.value;
+            fetchUsers(1);
+        });
+    }
+
+    // ─── Pagination click ────────────────────────────────────────────────────────
+
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('#modal-pagination a');
+        if (link) {
+            e.preventDefault();
+            const url  = link.getAttribute('href');
+            if (!url) return;
+            const page = new URL(url).searchParams.get('page') || 1;
+            fetchUsers(page);
         }
+    });
 
-        function removeUser(userId) {
-            deleteTasksForUser(userId);
-            if (selectedUsers.leader?.id == userId)  selectedUsers.leader  = null;
-            selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
+    // ─── Collaborative toggle ────────────────────────────────────────────────────
+
+    function toggleUserSelectionSection() {
+        const toggle             = document.getElementById('project-collaborative-toggle');
+        const userSelectionSection = document.getElementById('user-selection-section');
+
+        if (!toggle || !userSelectionSection) return;
+
+        if (toggle.checked) {
+            userSelectionSection.style.display = 'block';
+
+            if (
+                selectedUsers.leader &&
+                selectedUsers.owner &&
+                String(selectedUsers.leader.id) === String(selectedUsers.owner.id) &&
+                selectedUsers.members.length === 0
+            ) {
+                selectedUsers.leader = null;
+                updateFormInputs();
+                renderSelectedUsers();
+                updateSelectedUsersBadge();
+                saveSelectedUsersToStorage();
+            }
+        } else {
+            userSelectionSection.style.display = 'none';
+            selectedUsers.owner   = currentUser;
+            selectedUsers.leader  = currentUser;
+            selectedUsers.members = [];
             updateFormInputs();
             renderSelectedUsers();
             updateTaskUserOptions();
             updateSelectedUsersBadge();
             saveSelectedUsersToStorage();
         }
+    }
 
-        function editUser(userId) {
-            openUserModal();
-            setTimeout(() => {
-                const userElement = document.querySelector(`[data-user-id="${userId}"]`) ||
-                                    document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('.flex');
-                if (userElement) {
-                    userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    userElement.style.backgroundColor = '#fef3c7';
-                    setTimeout(() => userElement.style.backgroundColor = '', 2000);
+    // ─── Date validation ─────────────────────────────────────────────────────────
+
+    function setupDateValidation() {
+        const tanggalMulaiInput  = document.getElementById('tanggal_mulai');
+        const tanggalAkhirInput  = document.getElementById('tanggal_akhir');
+        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
+
+        if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
+
+        tanggalMulaiInput.addEventListener('change', function () {
+            if (this.value) {
+                tanggalAkhirInput.min = this.value;
+                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
+                    tanggalAkhirInput.value = '';
                 }
-            }, 500);
-        }
-
-        // ─── User list helper ────────────────────────────────────────────────────────
-
-        function getUserById(id) {
-            return allUsers.find(u => String(u.id) === String(id)) || null;
-        }
-
-        // ─── Task helpers ────────────────────────────────────────────────────────────
-
-        function getAllowedTaskUsers() {
-            const users = [];
-            const added = new Set();
-            const add = user => {
-                if (!user || added.has(user.id)) return;
-                added.add(user.id);
-                users.push({ id: user.id, name: user.nama_mahasiswa });
-            };
-            add(selectedUsers.owner);
-            add(selectedUsers.leader);
-            selectedUsers.members.forEach(add);
-            return users;
-        }
-
-        function renderTaskUserOptions(selectedId = '') {
-            const users = getAllowedTaskUsers();
-            let html = '<option value="">{{ autoTranslate("Pilih Penanggung Jawab") }}</option>';
-            users.forEach(user => {
-                html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-            });
-            return html;
-        }
-
-        function addTaskRow(taskData = null) {
-            const container = document.getElementById('tasks-container');
-            if (!container) return;
-            const index    = taskIndex++;
-            const userId   = taskData?.user_id ?? '';
-            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
-            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
-
-            const taskItem = document.createElement('div');
-            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Penanggung Jawab') }}</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Nama Tugas') }}</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                            class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                            placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
-                    </div>
-                    <button type="button" onclick="removeTaskRow(this)"
-                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-                </div>
-            `;
-            container.appendChild(taskItem);
-            taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
-        }
-
-        function removeTaskRow(button) {
-            button.closest('.task-item')?.remove();
-            if (!document.querySelectorAll('.task-item').length) addTaskRow();
-        }
-
-        function cleanupInvalidTaskRows() {
-            const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
-            document.querySelectorAll('.task-item').forEach(taskItem => {
-                const select = taskItem.querySelector('.task-user-select');
-                if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
-            });
-            if (!document.querySelectorAll('.task-item').length) addTaskRow();
-        }
-
-        function updateTaskUserOptions() {
-            document.querySelectorAll('.task-user-select').forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML   = renderTaskUserOptions(currentValue);
-                if (currentValue) select.value = currentValue;
-            });
-            cleanupInvalidTaskRows();
-        }
-
-        function initializeTaskRows(existingTasks = []) {
-            const container = document.getElementById('tasks-container');
-            if (!container) return;
-            container.innerHTML = '';
-            taskIndex = 0;
-            if (Array.isArray(existingTasks) && existingTasks.length) {
-                existingTasks.forEach(task => { if (task.user_id || task.name_task) addTaskRow(task); });
             } else {
-                addTaskRow();
-            }
-            updateTaskUserOptions();
-        }
-
-        // ─── Modal filters ───────────────────────────────────────────────────────────
-
-        function setupModalFilters() {
-            document.getElementById('modal-search')?.addEventListener('input', function () {
-                currentModalFilters.search = this.value;
-                fetchUsers();
-            });
-            document.getElementById('modal-angkatan')?.addEventListener('change', function () {
-                currentModalFilters.angkatan = this.value;
-                fetchUsers();
-            });
-            document.getElementById('modal-jurusan')?.addEventListener('change', function () {
-                currentModalFilters.jurusan = this.value;
-                fetchUsers();
-            });
-            document.getElementById('modal-keahlian')?.addEventListener('change', function () {
-                currentModalFilters.keahlian = this.value;
-                fetchUsers();
-            });
-        }
-
-        // ─── Pagination click ────────────────────────────────────────────────────────
-
-        document.addEventListener('click', function (e) {
-            const link = e.target.closest('#modal-pagination a');
-            if (link) {
-                e.preventDefault();
-                const url  = link.getAttribute('href');
-                if (!url) return;
-                const page = new URL(url).searchParams.get('page') || 1;
-                fetchUsers(page);
+                tanggalAkhirInput.min = '';
             }
         });
 
-        // ─── Collaborative toggle ────────────────────────────────────────────────────
-
-        function toggleUserSelectionSection() {
-            const toggle             = document.getElementById('project-collaborative-toggle');
-            const userSelectionSection = document.getElementById('user-selection-section');
-            const leaderInput        = document.getElementById('selected-leader-id');
-
-            if (!toggle || !userSelectionSection) return;
-
-            if (toggle.checked) {
-                userSelectionSection.style.display = 'block';
-                if (leaderInput) leaderInput.removeAttribute('required');
-
-                // Jika sebelumnya leader == owner dan tidak ada member, reset leader
-                if (
-                    selectedUsers.leader &&
-                    selectedUsers.owner &&
-                    String(selectedUsers.leader.id) === String(selectedUsers.owner.id) &&
-                    selectedUsers.members.length === 0
-                ) {
-                    selectedUsers.leader = null;
-                    updateFormInputs();
-                    renderSelectedUsers();
-                    updateSelectedUsersBadge();
-                    saveSelectedUsersToStorage();
-                }
-            } else {
-                userSelectionSection.style.display = 'none';
-                selectedUsers.owner   = currentUser;
-                selectedUsers.leader  = currentUser;
-                selectedUsers.members = [];
-                updateFormInputs();
-                renderSelectedUsers();
-                updateTaskUserOptions();
-                updateSelectedUsersBadge();
-                saveSelectedUsersToStorage();
-                if (leaderInput) leaderInput.removeAttribute('required');
+        tanggalAkhirInput.addEventListener('change', function () {
+            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
+                this.value = '';
+                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
             }
+        });
+    }
+
+    // ─── Form submit ─────────────────────────────────────────────────────────────
+
+    function onSubmitProjectForm() {
+        if (currentUser) selectedUsers.owner = currentUser;
+        if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
+            selectedUsers.leader = selectedUsers.owner;
         }
+        updateFormInputs();
+        cleanupInvalidTaskRows();
+        updateTaskUserOptions();
+    }
 
-        // ─── Date validation ─────────────────────────────────────────────────────────
+    // ─── Init ────────────────────────────────────────────────────────────────────
 
-        function setupDateValidation() {
-            const tanggalMulaiInput  = document.getElementById('tanggal_mulai');
-            const tanggalAkhirInput  = document.getElementById('tanggal_akhir');
-            if (!tanggalMulaiInput || !tanggalAkhirInput) return;
-
-            if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
-
-            tanggalMulaiInput.addEventListener('change', function () {
-                if (this.value) {
-                    tanggalAkhirInput.min = this.value;
-                    if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
-                        tanggalAkhirInput.value = '';
-                    }
-                } else {
-                    tanggalAkhirInput.min = '';
-                }
-            });
-
-            tanggalAkhirInput.addEventListener('change', function () {
-                if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
-                    this.value = '';
-                    alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
-                }
-            });
-        }
-
-        // ─── Form submit ─────────────────────────────────────────────────────────────
-
-        function onSubmitProjectForm() {
-            if (currentUser) selectedUsers.owner = currentUser;
-            if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
-                selectedUsers.leader = selectedUsers.owner;
-            }
+    function loadSelectedUsersFromForm() {
+        if (restoreSelectedUsersFromStorage()) {
             updateFormInputs();
-            cleanupInvalidTaskRows();
-            updateTaskUserOptions();
+            return;
         }
+        const leaderId  = document.getElementById('selected-leader-id')?.value;
+        const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
+        if (leaderId) selectedUsers.leader = getUserById(leaderId);
+        selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+    }
 
-        // ─── Init ────────────────────────────────────────────────────────────────────
+    // Tambahkan current user ke allUsers
+    if (currentUser) {
+        addUsersToAllUsers([currentUser]);
+    }
 
-        function loadSelectedUsersFromForm() {
-            if (restoreSelectedUsersFromStorage()) {
-                updateFormInputs();
-                return;
-            }
-            const leaderId  = document.getElementById('selected-leader-id')?.value;
-            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
-            if (leaderId) selectedUsers.leader = getUserById(leaderId);
-            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
-        }
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSelectedUsersFromForm();
+        renderSelectedUsers();
+        setupModalFilters();
+        setupDateValidation();
+        updateTaskSectionVisibility();
+        updateSelectedUsersBadge();
+        initializeTaskRows(@json(old('tasks', [])));
+        document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
 
-        document.addEventListener('DOMContentLoaded', function () {
-            loadSelectedUsersFromForm();
-            renderSelectedUsers();
-            setupModalFilters();
-            setupDateValidation();
-            updateTaskSectionVisibility();
-            updateSelectedUsersBadge();
-            initializeTaskRows(@json(old('tasks', [])));
-            document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
-
-            const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-            const toggleLabel         = document.getElementById('toggle-label');
-            if (collaborativeToggle && toggleLabel) {
-                toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
+        const collaborativeToggle = document.getElementById('project-collaborative-toggle');
+        const toggleLabel         = document.getElementById('toggle-label');
+        if (collaborativeToggle && toggleLabel) {
+            toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
+            toggleUserSelectionSection();
+            collaborativeToggle.addEventListener('change', function () {
+                toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
                 toggleUserSelectionSection();
-                collaborativeToggle.addEventListener('change', function () {
-                    toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
-                    toggleUserSelectionSection();
-                });
-            }
-        });
-    </script>
-
+            });
+        }
+    });
+</script>
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {

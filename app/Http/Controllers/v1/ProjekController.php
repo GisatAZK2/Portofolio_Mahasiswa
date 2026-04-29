@@ -153,7 +153,7 @@ class ProjekController extends Controller
     }
 
     // FORM TAMBAH
-   public function create(Request $request)
+    public function create(Request $request)
 {
     $search    = $request->query('search', '');
     $angkatan  = $request->query('angkatan', '');
@@ -221,10 +221,9 @@ class ProjekController extends Controller
 
     // Untuk AJAX request dengan pagination
     if ($request->ajax()) {
-        $perPage = 10; // Atur jumlah per page
+        $perPage = 10;
         $users = $usersQuery->paginate($perPage, ['*'], 'page', $page);
         
-        // Render pagination view khusus
         $paginationHtml = '';
         if ($users->hasPages()) {
             $paginationHtml = view('vendor.pagination.custom_ajax', [
@@ -291,7 +290,6 @@ class ProjekController extends Controller
     $jurusanList  = Jurusan::orderBy('nama_jurusan')->get();
     $keahlianList = Keahlian::orderBy('nama_keahlian')->get();
     
-    // Initial data dengan pagination
     $users = $usersQuery->paginate(10);
 
     return view('project.views_create_project', compact(
@@ -575,15 +573,12 @@ class ProjekController extends Controller
     if ($request->ajax()) {
 
         $leaderId = optional($project->leader)->id;
-
         $memberIds = $project->members->pluck('id')->toArray();
 
         $userListHtml = '';
 
         if ($users->count() > 0) {
             foreach ($users as $u) {
-
-                // default role kosong
                 $selectedRole = '';
 
                 if ($leaderId == $u->id) {
@@ -593,11 +588,8 @@ class ProjekController extends Controller
                 }
 
                 $userListHtml .= '
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                     data-user-id="' . $u->id . '">
-
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2" data-user-id="' . $u->id . '">
                     <div class="flex items-center gap-3">
-
                         ' . ($u->photo_profile
                     ? '<img src="/storage/' . $u->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
                     : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
@@ -606,39 +598,25 @@ class ProjekController extends Controller
                     '</span>
                        </div>'
                 ) . '
-
                         <div>
                             <div class="font-medium text-gray-900 dark:text-gray-100">'
                     . e($u->nama_mahasiswa) .
                     '</div>
-
                             <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none"
                                  title="' . e($u->email) . '">'
                     . e($u->email) .
                     '</div>
                         </div>
                     </div>
-
-                    <div class="flex items-center gap-2">
-                        <select
-                            class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
-                            data-user-id="' . $u->id . '"
-                            onchange="updateUserRole(this, ' . $u->id . ', this.value)">
-
+                    <div>
+                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
+                            data-user-id="' . $u->id . '">
                             <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
-
-                            <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt"' . ($selectedRole == 'leader' ? 'selected' : '') . '>
-                                Leader
-                            </option>
-
-                            <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt" ' . ($selectedRole == 'member' ? 'selected' : '') . '>
-                                Member
-                            </option>
-
+                            <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt"' . ($selectedRole == 'leader' ? 'selected' : '') . '>Leader</option>
+                            <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt"' . ($selectedRole == 'member' ? 'selected' : '') . '>Member</option>
                         </select>
                     </div>
-                </div>
-                ';
+                </div>';
             }
         } else {
             $userListHtml = '
