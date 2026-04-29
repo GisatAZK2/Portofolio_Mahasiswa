@@ -234,6 +234,7 @@ function saveCurrentModalRoles() {
     });
 }
 
+
 function restoreModalRoles() {
     document.querySelectorAll('.user-role-select').forEach(select => {
         const userId = select.dataset.userId;
@@ -375,7 +376,8 @@ function restoreModalRoles() {
 
 
         // ====================== AJAX FUNCTIONS ======================
-       function fetchUsers(page = 1) {
+       // Update fetchUsers untuk restore roles setelah load
+function fetchUsers(page = 1) {
     const params = new URLSearchParams({
         id: {{ $project->id }},
         page: page,
@@ -397,6 +399,9 @@ function restoreModalRoles() {
 
         attachRoleSelectEvents();
         
+        // RESTORE ROLES YANG TERSIMPAN
+        restoreModalRoles();
+        
         // Set value untuk setiap select berdasarkan selectedUsers
         document.querySelectorAll('.user-role-select').forEach(select => {
             const userId = select.dataset.userId;
@@ -411,7 +416,6 @@ function restoreModalRoles() {
             }
         });
         
-        // Baru panggil refreshLeaderOptions untuk disable option leader yang sudah dipilih
         refreshLeaderOptions();
 
         if (typeof window.refreshTranslations === 'function') {
@@ -421,21 +425,66 @@ function restoreModalRoles() {
     .catch(error => console.error('Error fetching users:', error));
 }
 
-       function attachRoleSelectEvents() {
+    // Update attachRoleSelectEvents dengan handler yang save state
+function attachRoleSelectEvents() {
     document.querySelectorAll('.user-role-select').forEach(select => {
         const userId = select.getAttribute('data-user-id');
         if (userId) {
             // Hapus event lama jika ada
             select.removeEventListener('change', select._handler);
-            // Buat handler baru
+            // Buat handler baru dengan save state
             const handler = function() { 
-                updateUserRole(this, userId, this.value); 
+                updateUserRole(this, userId, this.value);
+                // Simpan state setelah update
+                saveCurrentModalRoles();
             };
             select.addEventListener('change', handler);
             select._handler = handler;
         }
     });
 }
+
+// Update setupModalFilters
+function setupModalFilters() {
+    const searchInput = document.getElementById('modal-search');
+    const angkatanSelect = document.getElementById('modal-angkatan');
+    const jurusanSelect = document.getElementById('modal-jurusan');
+    const keahlianSelect = document.getElementById('modal-keahlian');
+    
+    const fetchWithSave = (page) => {
+        saveCurrentModalRoles(); // Simpan role saat ini
+        fetchUsers(page);
+    };
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            currentModalFilters.search = this.value;
+            fetchWithSave(1);
+        });
+    }
+    
+    if (angkatanSelect) {
+        angkatanSelect.addEventListener('change', function() {
+            currentModalFilters.angkatan = this.value;
+            fetchWithSave(1);
+        });
+    }
+    
+    if (jurusanSelect) {
+        jurusanSelect.addEventListener('change', function() {
+            currentModalFilters.jurusan = this.value;
+            fetchWithSave(1);
+        });
+    }
+    
+    if (keahlianSelect) {
+        keahlianSelect.addEventListener('change', function() {
+            currentModalFilters.keahlian = this.value;
+            fetchWithSave(1);
+        });
+    }
+}
+
 
         // ====================== USER SELECTION ======================
         function openUserModal() {
@@ -882,7 +931,7 @@ function refreshLeaderOptions() {
     }
 }
 
-// Handle pagination clicks dengan save state
+// Handle pagination clicks dengan save stat
 document.addEventListener('click', function(e) {
     const link = e.target.closest('#modal-pagination a');
     if (link) {
