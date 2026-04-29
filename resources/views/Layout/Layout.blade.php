@@ -43,7 +43,6 @@
         .content-wrapper {
             width: 100%;
             max-width: 100%;
-            overflow-x: auto;
         }
         @media (max-width: 1023px) {
             main {
@@ -80,9 +79,9 @@
                 </div>
             </main>
 
+            @include('components.up-page')
             @include('components.footer')
             @include('components.chat-bot')
-            @include('components.up-page')
         </div>
     </div>
 

@@ -1,13 +1,20 @@
+
+<div class="relative z-10 text-center -mb-3">
+    <button id="toggleFooterBtn" 
+            class="inline-flex items-center justify-center w-6 h-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg transition-all duration-300 focus:outline-none">
+        <svg id="toggleIcon" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+</div>
+
 <footer class="dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-all duration-300" id="mainFooter">
-    <!-- Mobile View (compact) -->
+    <!-- Mobile View -->
     <div class="block md:hidden px-4 py-4">
-        <!-- Baris atas: logo + link utama -->
         <div class="flex justify-between items-start">
-            <!-- Logo -->
             <div class="bg-black rounded-md p-1.5">
                 <img src="{{ asset('assets/logoFooter.webp') }}" alt="POLMIND Logo" class="h-7 w-auto">
             </div>
-            <!-- Link utama -->
             <div class="flex gap-4 text-xs">
                 <a href="https://www.polmind.ac.id/beranda" target="_blank"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
@@ -24,9 +31,7 @@
             </div>
         </div>
 
-        <!-- Kontak dan sosial media dalam satu baris (flex wrap) -->
         <div class="flex flex-wrap justify-between items-center gap-2 mt-3">
-            <!-- Kontak (WhatsApp, Email, Maps) -->
             <div class="flex flex-wrap gap-3 text-xs">
                 <a href="https://wa.me/{{ env('CONTACT_PHONE', '6282113296897') }}?text=Halo%20saya%20butuh%20informasi%20mengenai%20POLMIND"
                    target="_blank" class="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-green-600">
@@ -51,7 +56,6 @@
                     <span>Maps</span>
                 </a>
             </div>
-            <!-- Social Icons (lebih kecil) -->
             <div class="flex gap-2">
                 <a href="{{ env('SOCIAL_WEBSITE', 'https://polmind.ac.id') }}" target="_blank"
                    class="w-6 h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-transform hover:scale-105">
@@ -80,7 +84,6 @@
             </div>
         </div>
 
-        <!-- Copyright -->
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
@@ -89,10 +92,9 @@
         </div>
     </div>
 
-    <!-- Desktop View (compact) -->
+    <!-- Desktop View -->
     <div class="hidden md:block px-6 py-3">
         <div class="flex items-center justify-between gap-4 flex-wrap">
-            <!-- Left: Logo + Links -->
             <div class="flex items-center gap-4">
                 <div class="bg-black rounded-md p-1.5">
                     <img src="{{ asset('assets/logoFooter.webp') }}" alt="POLMIND Logo" class="h-7 w-auto">
@@ -107,7 +109,6 @@
                 </div>
             </div>
 
-            <!-- Right: Contacts + Social -->
             <div class="flex items-center gap-5 text-sm">
                 <div class="flex gap-3">
                     <a href="https://wa.me/{{ env('CONTACT_PHONE', '6282113296897') }}" target="_blank"
@@ -133,7 +134,6 @@
                         <span>Maps</span>
                     </a>
                 </div>
-                <!-- Social Icons compact -->
                 <div class="flex gap-2">
                     <a href="{{ env('SOCIAL_WEBSITE', 'https://polmind.ac.id') }}" target="_blank"
                        class="w-7 h-7 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-transform hover:scale-105">
@@ -163,7 +163,6 @@
             </div>
         </div>
 
-        <!-- Copyright -->
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
@@ -173,11 +172,31 @@
     </div>
 </footer>
 
-<!-- Optional: hapus atau sederhanakan script jika tidak diperlukan -->
 <script>
-    // Hanya untuk memastikan footer tidak memiliki perilaku aneh
-    document.addEventListener("DOMContentLoaded", function () {
-        // Tidak ada toggle footer agar tidak mengganggu tinggi
-        console.log("Footer compact loaded");
-    });
+    (function() {
+        const footer = document.getElementById('mainFooter');
+        const toggleBtn = document.getElementById('toggleFooterBtn');
+        const icon = document.getElementById('toggleIcon');
+        let isFooterHidden = false;
+
+        if (footer && toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                if (!isFooterHidden) {
+                    footer.style.display = 'none';
+                    if (icon) icon.classList.add('rotate-180');
+                    isFooterHidden = true;
+                } else {
+                    footer.style.display = 'block';
+                    if (icon) icon.classList.remove('rotate-180');
+                    isFooterHidden = false;
+                }
+            });
+        }
+    })();
 </script>
+
+<style>
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+</style>
