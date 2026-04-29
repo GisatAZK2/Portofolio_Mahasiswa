@@ -1545,14 +1545,14 @@ public function EditProjects(Request $request)
     $jurusan = $request->input('jurusan');
     $keahlian = $request->input('keahlian');
 
-    // Query untuk mendapatkan user dengan role mahasiswa beserta relasinya
-    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+    // Query dasar untuk mendapatkan user dengan role mahasiswa beserta relasinya
+    $baseQuery = User::with(['jurusan', 'angkatan', 'keahlian'])
         ->where('role', 'mahasiswa')
         ->where('status_pengajuan', 'Di Terima');
 
     // Filter pencarian berdasarkan nama mahasiswa, username, atau email
     if ($search) {
-        $query->where(function ($q) use ($search) {
+        $baseQuery->where(function ($q) use ($search) {
             $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
                 ->orWhere('username', 'like', '%' . $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%');
@@ -1561,24 +1561,21 @@ public function EditProjects(Request $request)
 
     // Filter berdasarkan angkatan
     if ($angkatan) {
-        $query->where('id_angkatan', $angkatan);
+        $baseQuery->where('id_angkatan', $angkatan);
     }
 
     // Filter berdasarkan jurusan
     if ($jurusan) {
-        $query->where('id_jurusan', $jurusan);
+        $baseQuery->where('id_jurusan', $jurusan);
     }
 
     // Filter berdasarkan keahlian
     if ($keahlian) {
-        $query->where('id_keahlian', $keahlian);
+        $baseQuery->where('id_keahlian', $keahlian);
     }
 
-    // Ambil data dengan pagination
-    $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
     // Ambil semua user untuk JavaScript (untuk mendukung multiple members dari semua halaman)
-    $allUsers = $query->orderBy('created_at', 'desc')->get();
+    $allUsers = $baseQuery->orderBy('created_at', 'desc')->get();
 
     // Ambil data untuk dropdown filter
     $angkatans = Angkatan::all();
@@ -1591,6 +1588,10 @@ public function EditProjects(Request $request)
         ->firstOrFail();
 
     if ($request->ajax()) {
+        // Clone query untuk pagination (agar tidak mempengaruhi $allUsers)
+        $paginatedQuery = clone $baseQuery;
+        $users = $paginatedQuery->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
         // Return JSON for AJAX requests
         $userListHtml = '';
         if ($users->count() > 0) {
@@ -1633,6 +1634,10 @@ public function EditProjects(Request $request)
             'lastPage' => $users->lastPage(),
         ]);
     }
+
+    // Untuk non-AJAX request, buat query pagination lagi
+    $usersQuery = clone $baseQuery;
+    $users = $usersQuery->orderBy('created_at', 'desc')->paginate(20)->withQueryString();
 
     return view('admin.projects.views_edit_project', compact(
         'project',

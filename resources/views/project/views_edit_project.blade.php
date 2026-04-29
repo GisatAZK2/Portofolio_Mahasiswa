@@ -223,7 +223,7 @@
     let isCollaborativeMode = false;
 
     // Data dari Laravel
-    const initialUsers = @json($users->items());
+    const initialUsers = @json($users);
     const currentUser = @json(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa]);
     const existingTasksData = @json($existingTasks);
     const projectLeaderId = @json(optional($project->leader)->id);

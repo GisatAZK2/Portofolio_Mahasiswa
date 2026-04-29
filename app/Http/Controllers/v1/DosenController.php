@@ -1077,13 +1077,13 @@ public function EditProjects(Request $request)
     $keahlian  = $request->input('keahlian');
 
     // Base query mahasiswa
-    $query = User::with(['jurusan', 'angkatan', 'keahlian'])
+    $baseQuery = User::with(['jurusan', 'angkatan', 'keahlian'])
         ->where('role', 'mahasiswa')
         ->where('status_pengajuan', 'Di Terima');
 
     // Search nama / username / email
     if ($search) {
-        $query->where(function ($q) use ($search) {
+        $baseQuery->where(function ($q) use ($search) {
             $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
                 ->orWhere('username', 'like', '%' . $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%');
@@ -1092,24 +1092,19 @@ public function EditProjects(Request $request)
 
     // Filter dropdown
     if ($angkatan) {
-        $query->where('id_angkatan', $angkatan);
+        $baseQuery->where('id_angkatan', $angkatan);
     }
 
     if ($jurusan) {
-        $query->where('id_jurusan', $jurusan);
+        $baseQuery->where('id_jurusan', $jurusan);
     }
 
     if ($keahlian) {
-        $query->where('id_keahlian', $keahlian);
+        $baseQuery->where('id_keahlian', $keahlian);
     }
 
-    // Pagination
-    $users = $query->orderBy('created_at', 'desc')
-        ->paginate(10)
-        ->withQueryString();
-
     // Semua user untuk JS multi select semua halaman
-    $allUsers = (clone $query)->orderBy('created_at', 'desc')->get();
+    $allUsers = (clone $baseQuery)->orderBy('created_at', 'desc')->get();
 
     // Dropdown filter data
     $angkatans = Angkatan::all();
@@ -1133,6 +1128,11 @@ public function EditProjects(Request $request)
 
     // AJAX Request
     if ($request->ajax()) {
+        // Clone query untuk pagination
+        $paginatedQuery = clone $baseQuery;
+        $users = $paginatedQuery->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         $userListHtml = '';
 
@@ -1193,6 +1193,12 @@ public function EditProjects(Request $request)
             'lastPage'       => $users->lastPage(),
         ]);
     }
+
+    // Untuk non-AJAX request (first load)
+    $usersQuery = clone $baseQuery;
+    $users = $usersQuery->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
 
     return view('dosen.projects.views_edit_project', compact(
         'project',

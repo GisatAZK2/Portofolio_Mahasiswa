@@ -495,7 +495,7 @@ class ProjekController extends Controller
     }
 
     // Ubah method edit untuk menerima query parameter 'id' dan 'user'
-    public function edit(Request $request)
+ public function edit(Request $request)
 {
     $id = $request->query('id');
     $username = $request->query('user');
@@ -534,7 +534,8 @@ class ProjekController extends Controller
 
     $authId = auth()->id();
 
-    $query = User::with(['angkatan', 'jurusan', 'keahlian'])
+    // Base query (tanpa pagination dulu)
+    $baseQuery = User::with(['angkatan', 'jurusan', 'keahlian'])
         ->select(
             'id',
             'nama_mahasiswa',
@@ -550,27 +551,27 @@ class ProjekController extends Controller
         ->where('id', '!=', $authId);
 
     if (!empty($search)) {
-        $query->where('nama_mahasiswa', 'like', '%' . $search . '%');
+        $baseQuery->where('nama_mahasiswa', 'like', '%' . $search . '%');
     }
 
     if (!empty($angkatan)) {
-        $query->where('id_angkatan', $angkatan);
+        $baseQuery->where('id_angkatan', $angkatan);
     }
 
     if (!empty($jurusan)) {
-        $query->where('id_jurusan', $jurusan);
+        $baseQuery->where('id_jurusan', $jurusan);
     }
 
     if (!empty($keahlian)) {
-        $query->where('id_keahlian', $keahlian);
+        $baseQuery->where('id_keahlian', $keahlian);
     }
 
-    $users = $query->paginate(10);
-
     // ==================================================
-    // AJAX REQUEST
+    // AJAX REQUEST (dengan pagination)
     // ==================================================
     if ($request->ajax()) {
+        // Untuk AJAX, gunakan paginate
+        $users = $baseQuery->paginate(10); // 10 per halaman untuk AJAX
 
         $leaderId = optional($project->leader)->id;
         $memberIds = $project->members->pluck('id')->toArray();
@@ -639,8 +640,14 @@ class ProjekController extends Controller
     }
 
     // ==================================================
-    // NORMAL VIEW
+    // NORMAL VIEW (tanpa pagination - ambil semua user)
     // ==================================================
+    // Untuk initial load, ambil semua user tanpa pagination
+    $users = $baseQuery->get(); // get() = semua data, bukan paginate
+    
+    // Atau jika tetap ingin pagination tapi lebih banyak:
+    // $users = $baseQuery->paginate(100);
+
     $angkatans = Angkatan::all();
     $jurusans = Jurusan::all();
     $keahlians = Keahlian::all();
