@@ -78,8 +78,9 @@
                 </div>
             </main>
 
-            @include('components.up-page')
+            
             @include('components.footer')
+            @include('components.up-page')
             @include('components.chat-bot')
         </div>
     </div>
