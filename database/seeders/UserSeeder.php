@@ -29,9 +29,8 @@ class UserSeeder extends Seeder
             'https://marketplace.canva.com/EAGQ4hBhXII/1/0/1600w/canva-blue-abstract-desktop-wallpaper-htGu4av79Lo.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX0SGKvMmF-7SHP-G8BNd5rvG4zYqwn-R26g&s',
             'https://www.shutterstock.com/image-vector/abstract-technology-background-motion-neon-600nw-2744966321.jpg',
-            null,      
+            null,
         ];
-
 
         $videoUrls = [
             'https://www.youtube.com/watch?v=V9Kg2y2585E',
@@ -47,17 +46,18 @@ class UserSeeder extends Seeder
         $angkatans = Angkatan::all();
 
         if ($jurusans->isEmpty() || $keahlians->isEmpty() || $angkatans->isEmpty()) {
-            $this->command->error('Pastikan data Jurusan, Keahlian, dan Angkatan sudah ada sebelum menjalankan seeder ini.');
+            $this->command->error('Pastikan data Jurusan, Keahlian, dan Angkatan sudah ada.');
             return;
         }
 
-        $this->command->info('Membuat 100 user dummy dengan background baru...');
+        $this->command->info('Membuat 100 user dummy...');
 
         $users = [];
         $batchSize = 100;
 
         for ($i = 0; $i < 100; $i++) {
             $nama = $faker->name;
+
             $baseUsername = 'user_' . ($i + 1) . '_' . strtolower(str_replace([' ', '.'], '_', $nama));
             $username = $baseUsername;
             $email = $username . '@example.com';
@@ -65,11 +65,21 @@ class UserSeeder extends Seeder
             while (User::where('username', $username)->exists()) {
                 $username = $baseUsername . '_' . $faker->unique()->numberBetween(1, 999);
             }
+
             while (User::where('email', $email)->exists()) {
                 $email = $username . '_' . $faker->unique()->numberBetween(1, 9999) . '@example.com';
             }
 
             $role = $faker->randomElement(['mahasiswa', 'dosen', 'admin']);
+
+            // NIM hanya untuk mahasiswa
+            $nim = null;
+            if ($role === 'mahasiswa') {
+                $nim = $faker->unique()->numerify('##########'); // 10 digit angka
+            }
+
+            // tanggal lahir tidak lebih dari hari ini
+            $tanggalLahir = $faker->dateTimeBetween('-30 years', 'today')->format('Y-m-d');
 
             $users[] = [
                 'nama_mahasiswa'   => $nama,
@@ -87,6 +97,8 @@ class UserSeeder extends Seeder
                 'is_active'        => true,
                 'role'             => $role,
                 'video_url'        => $faker->randomElement($videoUrls),
+                'nim'              => $nim,
+                'tanggal_lahir'    => $tanggalLahir,
                 'remember_token'   => null,
                 'created_at'       => now(),
                 'updated_at'       => now(),
@@ -104,9 +116,6 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info('✅ Berhasil membuat 100 user dummy!');
-        $this->command->info('Password default     : password123');
-        $this->command->info('Photo profile       : 2 link yang kamu tentukan (random)');
-        $this->command->info('Background URL      : 4 link abstract yang baru ditambahkan (random)');
-        $this->command->info('Video URL           : Contoh dari YouTube (random)');
+        $this->command->info('Password default : password123');
     }
 }

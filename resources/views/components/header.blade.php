@@ -279,6 +279,9 @@
             if (!notifications || !Array.isArray(notifications)) return [];
             
             return notifications.filter(item => {
+             if (item.read === 1 || item.read === true) {
+            return false;
+        }
                 const notifData = item.data || {};
                 const selected = notifData.selected_users;
 
