@@ -750,7 +750,7 @@ class DashboardController extends Controller
                     'type' => 'postingan',
                     'id' => $postingan->id_postingan,
                     'name' => $title,
-                    'url' => route('postingan.show', $postingan->id_postingan),
+                    'url' => route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]),
                     'label' => 'Postingan'
                 ];
             }
