@@ -18,9 +18,9 @@
     
     <div class="gradient-overlay" id="gradientOverlay" style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(59, 130, 246, 0.2), transparent); opacity: 0; z-index: 5;"></div>
     
-    <div class="welcome-text" id="welcomeText" style="position: absolute; bottom: 2.5rem; left: 0; right: 0; text-align: center; color: white; opacity: 0; transition: opacity 0.5s; transition-delay: 0.7s; z-index: 10;">
+    <div class="welcome-text" id="welcomeText" style="position: absolute; bottom: 10rem; left: 0; right: 0; text-align: center; color: white; opacity: 0; transition: opacity 0.5s; transition-delay: 0.7s; z-index: 10;">
         <p class="welcome-title" style="font-size: 1.25rem; font-weight: 300; letter-spacing: 2px;" >{{ autoTranslate('SELAMAT DATANG') }}</p>
-        <p class="welcome-subtitle" style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);" >{{ autoTranslate('DI POLMIND PORTOFOLIO') }}</p>
+        <p class="welcome-subtitle" style="font-size: 2rem; font-weight: 700; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);" >{{ autoTranslate('DI POLMIND PORTOFOLIO') }}</p>
     </div>
     
     <button class="skip-button" id="skipButton" style="position: absolute; bottom: 1.5rem; right: 1.5rem; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1.25rem; border-radius: 50px; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease; opacity: 0; z-index: 20;">{{ autoTranslate('Lewati') }} →</button>
