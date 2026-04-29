@@ -79,7 +79,7 @@
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ autoTranslate('Pemilihan User Project') }}</h3>
                         <div class="flex gap-2">
-                            <button type="button" onclick="openUserModal()" 
+                            <button type="button" onclick="openUserModal()"
                                 class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@
                                     {{ autoTranslate('Tambah User') }}
                                 </span>
                             </button>
-                            <button type="button" onclick="openUserModal()" 
+                            <button type="button" onclick="openUserModal()"
                                 class="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,9 +101,7 @@
                     </div>
 
                     <!-- Selected Users Display -->
-                    <div id="selected-users-container" class="space-y-3">
-                        <!-- Users will be displayed here -->
-                    </div>
+                    <div id="selected-users-container" class="space-y-3"></div>
 
                     <div id="no-users-message" class="text-center py-8 text-gray-500 dark:text-gray-400">
                         {{ autoTranslate('Belum ada leader atau member yang dipilih. Klik "Tambah User" untuk memulai.') }}
@@ -117,130 +115,93 @@
             <div id="selected-members-inputs" class="hidden"></div>
 
             <!-- User selection modal -->
-<div id="userModal"
-    class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+            <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
 
-    <!-- Overlay -->
-    <div class="fixed inset-0 bg-black/40" onclick="closeUserModal()"></div>
+                <!-- Overlay: klik overlay TIDAK close modal, supaya user bisa pilih role dulu -->
+                <div class="fixed inset-0 bg-black/40"></div>
 
-    <!-- Modal Box -->
-    <div
-    class="relative w-full max-w-xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-        <!-- Header -->
-        <div
-            class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100" data-translate="add_user" data-translate-page="dosen_add_pjt">
-            </h2>
-
-            <button type="button"
-                onclick="closeUserModal()"
-                class="text-gray-500 hover:text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    class="w-5 h-5" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor" 
-                    stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6" />
-                </svg>
-
-            </button>
-        </div>
-
-        <!-- Main Content Scrollbar 1 -->
-        <div class="flex-1 overflow-y-auto">
-
-            <div class="p-5 space-y-5">
-
-                <!-- Filter -->
-                <div class="grid gap-4 sm:grid-cols-2">
-                     <input id="modal-search"
-                    type="text"
-                    placeholder="{{ autoTranslate('Cari nama atau email...') }}"
-                    data-translate-placeholder="search_name_placeholder"
-                    data-translate-page="dosen_add_pjt"
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-
-                    <select id="modal-angkatan"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="" data-translate="all_angkatan" data-translate-page="dosen_add_pjt"></option>
-                        @foreach($angkatanList as $angkatanItem)
-                            <option value="{{ $angkatanItem->id }}">
-                                {{ $angkatanItem->nama_angkatan }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <select id="modal-jurusan"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="" data-translate="all_jurusan" data-translate-page="dosen_add_pjt"></option>
-                        @foreach($jurusanList as $jurusanItem)
-                            <option value="{{ $jurusanItem->id_jurusan }}">
-                                {{ autoTranslate($jurusanItem->nama_jurusan) }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <select id="modal-keahlian"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-                        <option value="" data-translate="all_keahlian" data-translate-page="dosen_add_pjt"></option>
-                        @foreach($keahlianList as $keahlianItem)
-                            <option value="{{ $keahlianItem->id_keahlian }}">
-                                {{ autoTranslate($keahlianItem->nama_keahlian) }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                </div>
-
-                <!-- User List Area -->
-                <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
-
-                    <!-- Title -->
-                    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                        <h3 data-translate="daftar_user" data-translate-page="project_create" class="font-medium text-gray-700 dark:text-white">
-                        </h3>
+                <!-- Modal Box -->
+                <div class="relative w-full max-w-xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100" data-translate="add_user" data-translate-page="dosen_add_pjt"></h2>
+                        <button type="button" onclick="closeUserModal()"
+                            class="text-gray-500 hover:text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <!-- Scrollbar 2 -->
-                    <div id="modal-user-list"
-                        class="max-h-[320px] overflow-y-auto p-4 space-y-3 bg-white dark:bg-gray-900">
+                    <!-- Main Content -->
+                    <div class="flex-1 overflow-y-auto">
+                        <div class="p-5 space-y-5">
+
+                            <!-- Filter -->
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <input id="modal-search" type="text"
+                                    placeholder="{{ autoTranslate('Cari nama atau email...') }}"
+                                    data-translate-placeholder="search_name_placeholder"
+                                    data-translate-page="dosen_add_pjt"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+
+                                <select id="modal-angkatan"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                                    <option value="" data-translate="all_angkatan" data-translate-page="dosen_add_pjt"></option>
+                                    @foreach($angkatanList as $angkatanItem)
+                                        <option value="{{ $angkatanItem->id }}">{{ $angkatanItem->nama_angkatan }}</option>
+                                    @endforeach
+                                </select>
+
+                                <select id="modal-jurusan"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                                    <option value="" data-translate="all_jurusan" data-translate-page="dosen_add_pjt"></option>
+                                    @foreach($jurusanList as $jurusanItem)
+                                        <option value="{{ $jurusanItem->id_jurusan }}">{{ autoTranslate($jurusanItem->nama_jurusan) }}</option>
+                                    @endforeach
+                                </select>
+
+                                <select id="modal-keahlian"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
+                                    <option value="" data-translate="all_keahlian" data-translate-page="dosen_add_pjt"></option>
+                                    @foreach($keahlianList as $keahlianItem)
+                                        <option value="{{ $keahlianItem->id_keahlian }}">{{ autoTranslate($keahlianItem->nama_keahlian) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- User List Area -->
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+                                <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                                    <h3 data-translate="daftar_user" data-translate-page="project_create" class="font-medium text-gray-700 dark:text-white"></h3>
+                                </div>
+                                <div id="modal-user-list" class="max-h-[320px] overflow-y-auto p-4 space-y-3 bg-white dark:bg-gray-900"></div>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div id="modal-pagination" class="pt-2"></div>
+                        </div>
                     </div>
 
+                    <!-- Footer -->
+                    <div class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+                        <button type="button" onclick="cancelUserModal()"
+                            data-translate="cancel" data-translate-page="dosen_add_pjt"
+                            class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">
+                            Batal
+                        </button>
+                        <button type="button" onclick="confirmUserSelection()"
+                            data-translate="confirm" data-translate-page="dosen_add_pjt"
+                            class="px-4 py-3 bg-indigo-600 text-white rounded-xl">
+                            Simpan
+                        </button>
+                    </div>
                 </div>
-
-                <!-- Pagination -->
-                <div id="modal-pagination" class="pt-2"></div>
-
             </div>
-        </div>
-
-        <!-- Footer -->
-        <div
-            class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
-            <button type="button"
-                onclick="closeUserModal()"
-                data-translate="cancel" data-translate-page="dosen_add_pjt"
-                class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl">
-                Batal
-            </button>
-
-            <button type="button"
-                onclick="confirmUserSelection()"
-                data-translate="confirm" data-translate-page="dosen_add_pjt"
-                class="px-4 py-3 bg-indigo-600 text-white rounded-xl">
-                Simpan
-            </button>
-        </div>
-
-    </div>
-</div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <span class="text-black dark:text-white" data-translate="tanggal_mulai"
-                        data-translate-page="project_create"></span> <span class="text-red-500">*</span>
+                    <span class="text-black dark:text-white" data-translate="tanggal_mulai" data-translate-page="project_create"></span> <span class="text-red-500">*</span>
                     <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}" required
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
@@ -252,8 +213,7 @@
                     @enderror
                 </div>
                 <div>
-                    <span class="text-black dark:text-white" data-translate="tanggal_selesai"
-                        data-translate-page="project_create"></span>
+                    <span class="text-black dark:text-white" data-translate="tanggal_selesai" data-translate-page="project_create"></span>
                     <input type="date" id="tanggal_akhir" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
@@ -267,8 +227,7 @@
             </div>
 
             <div>
-                <span class="text-black dark:text-white" data-translate="link_project_opsional"
-                    data-translate-page="project_create"></span>
+                <span class="text-black dark:text-white" data-translate="link_project_opsional" data-translate-page="project_create"></span>
                 <input type="url" name="link_project" value="{{ old('link_project') }}"
                     class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
@@ -324,8 +283,7 @@
                 <div id="tasks-container" class="space-y-4"></div>
                 <button type="button" onclick="addTaskRow()"
                     class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                    <span class="text-xl">+</span> <span data-translate="add_task_opt"
-                        data-translate-page="dosen_add_pjt">Tambah Tugas</span>
+                    <span class="text-xl">+</span> <span data-translate="add_task_opt" data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                 </button>
             </div>
 
@@ -343,132 +301,152 @@
             ? Auth::user()->only(['id', 'nama_mahasiswa', 'photo_profile', 'email'])
             : null;
     @endphp
+
     <script>
         let allUsers = @json($users->items());
         const currentUser = @json($currentUserData);
         const userSelectionStorageKey = 'project_selected_users';
+
         let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+
+        // State permanen (sudah di-confirm)
         let selectedUsers = { owner: null, leader: null, members: [] };
+
+        // State sementara di dalam modal (sebelum confirm)
+        // Ini supaya saat pindah pagination, pilihan tidak hilang tapi juga tidak langsung commit
+        let pendingUsers = { owner: null, leader: null, members: [] };
+
         let taskIndex = 0;
 
+        // ─── Storage helpers ────────────────────────────────────────────────────────
+
         function saveSelectedUsersToStorage() {
-            const payload = {
+            localStorage.setItem(userSelectionStorageKey, JSON.stringify({
                 owner: selectedUsers.owner,
                 leader: selectedUsers.leader,
                 members: selectedUsers.members
-            };
-            localStorage.setItem(userSelectionStorageKey, JSON.stringify(payload));
+            }));
         }
 
         function restoreSelectedUsersFromStorage() {
             const stored = localStorage.getItem(userSelectionStorageKey);
             if (!stored) return false;
-
             try {
                 const parsed = JSON.parse(stored);
-                if (parsed.owner) selectedUsers.owner = parsed.owner;
-                if (parsed.leader) selectedUsers.leader = parsed.leader;
+                if (parsed.owner)  selectedUsers.owner   = parsed.owner;
+                if (parsed.leader) selectedUsers.leader  = parsed.leader;
                 if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
                 return true;
-            } catch (error) {
-                console.warn('Unable to restore selected users from storage:', error);
+            } catch (e) {
+                console.warn('Unable to restore selected users:', e);
                 return false;
             }
         }
 
-        function updateSelectedUsersBadge() {
-            const badge = document.getElementById('selected-users-badge');
-            if (!badge) return;
+        // ─── pendingUsers helpers ────────────────────────────────────────────────────
 
-            let count = 0;
-            if (selectedUsers.owner) count++;
-            if (selectedUsers.leader) count++;
-            count += selectedUsers.members.length;
-
-            if (count === 0) {
-                badge.innerHTML = '';
-            } else {
-                badge.innerHTML = `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
-            }
+        /** Salin state permanen ke pending saat modal dibuka */
+        function syncPendingFromSelected() {
+            pendingUsers = {
+                owner:   selectedUsers.owner   ? { ...selectedUsers.owner }   : null,
+                leader:  selectedUsers.leader  ? { ...selectedUsers.leader }  : null,
+                members: selectedUsers.members.map(m => ({ ...m }))
+            };
         }
 
-        function updateTaskSectionVisibility() {
-            const taskSection = document.getElementById('task-section');
-            if (!taskSection) return;
-
-            let hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
-
-            if (hasUsers) {
-                taskSection.classList.remove('hidden');
-            } else {
-                taskSection.classList.add('hidden');
-                // Clear tasks saat tidak ada users
-                const container = document.getElementById('tasks-container');
-                if (container) {
-                    container.innerHTML = '';
-                    taskIndex = 0;
-                }
-            }
+        /** Terapkan pending ke selected saat Simpan */
+        function applyPendingToSelected() {
+            selectedUsers.owner   = pendingUsers.owner   ? { ...pendingUsers.owner }   : null;
+            selectedUsers.leader  = pendingUsers.leader  ? { ...pendingUsers.leader }  : null;
+            selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
         }
+
+        /** Buang pending (Batal) */
+        function discardPending() {
+            pendingUsers = { owner: null, leader: null, members: [] };
+        }
+
+        // ─── Modal open/close ────────────────────────────────────────────────────────
 
         function openUserModal() {
-            // Cek apakah toggle aktif sebelum membuka modal
             const toggle = document.getElementById('project-collaborative-toggle');
             if (!toggle || !toggle.checked) {
                 alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
                 return;
             }
+            // Salin state permanen ke pending saat buka modal
+            syncPendingFromSelected();
             document.getElementById('userModal').classList.remove('hidden');
             fetchUsers();
         }
 
         function closeUserModal() {
             document.getElementById('userModal').classList.add('hidden');
+            discardPending();
         }
-        
-        function filterUsersForModal() {
-            return allUsers.filter(user => {
-                // Exclude current user only if not already selected as owner
-                if (currentUser && String(user.id) === String(currentUser.id) && !selectedUsers.owner) {
-                    return false;
+
+        /** Tombol Batal: buang pending, tutup modal */
+        function cancelUserModal() {
+            discardPending();
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        /** Tombol Simpan: terapkan pending ke selected, lalu tutup modal */
+        function confirmUserSelection() {
+            applyPendingToSelected();
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
+            document.getElementById('userModal').classList.add('hidden');
+            discardPending();
+        }
+
+        // ─── Fetch users (AJAX) ──────────────────────────────────────────────────────
+
+        function fetchUsers(page = 1) {
+            const params = new URLSearchParams({
+                page: page,
+                search:   currentModalFilters.search,
+                angkatan: currentModalFilters.angkatan,
+                jurusan:  currentModalFilters.jurusan,
+                keahlian: currentModalFilters.keahlian
+            });
+
+            fetch(`{{ route('project.create') }}?${params}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('modal-user-list').innerHTML   = data.userListHtml;
+                document.getElementById('modal-pagination').innerHTML  = data.paginationHtml;
+
+                // Refresh role selections berdasarkan pendingUsers (bukan selectedUsers)
+                refreshRoleSelections();
+
+                if (typeof window.refreshTranslations === 'function') {
+                    window.refreshTranslations();
                 }
-                const keyword = currentModalFilters.search.toLowerCase().trim();
-
-                // Search (nama atau email)
-                const matchesSearch = !keyword || 
-                    user.nama_mahasiswa.toLowerCase().includes(keyword) || 
-                    (user.email && user.email.toLowerCase().includes(keyword));
-
-                // Angkatan
-                const matchesAngkatan = !currentModalFilters.angkatan || 
-                    String(user.id_angkatan) === String(currentModalFilters.angkatan);
-
-                // Jurusan - lebih aman (bisa dari relation atau field langsung)
-                const userJurusanId = (user.jurusan && user.jurusan.id_jurusan) 
-                              ? user.jurusan.id_jurusan 
-                              : user.id_jurusan;
-                const matchesJurusan = !currentModalFilters.jurusan || 
-                    String(userJurusanId) === String(currentModalFilters.jurusan);
-
-                // Keahlian - lebih aman
-                const userKeahlianId = (user.keahlian && user.keahlian.id_keahlian) 
-                               ? user.keahlian.id_keahlian 
-                               : user.id_keahlian;
-                const matchesKeahlian = !currentModalFilters.keahlian || 
-                    String(userKeahlianId) === String(currentModalFilters.keahlian);
-
-                return matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
             });
         }
 
+        // ─── Role assignment (bekerja pada pendingUsers, bukan selectedUsers) ────────
+
+        /**
+         * Dipanggil saat user mengubah dropdown role di dalam modal.
+         * Perubahan disimpan ke pendingUsers, BUKAN langsung ke selectedUsers.
+         * Modal TIDAK ditutup sampai user klik Simpan.
+         */
         function updateUserRole(selectElement, userId, role) {
             const user = allUsers.find(u => u.id == userId);
             if (!user) return;
 
-            const isOwner = selectedUsers.owner && String(selectedUsers.owner.id) === String(userId);
-            const isCurrentLeader = selectedUsers.leader && String(selectedUsers.leader.id) === String(userId);
+            const isOwner         = pendingUsers.owner  && String(pendingUsers.owner.id)  === String(userId);
+            const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
 
-            // Owner may become leader at the same time, but should not be assigned member.
+            // Owner tidak boleh jadi member
             if (isOwner && role === 'member') {
                 alert('Owner tidak bisa menjadi member.');
                 selectElement.value = isCurrentLeader ? 'leader' : '';
@@ -476,58 +454,113 @@
                 return;
             }
 
-            // Jika owner menjadi leader sekaligus, biarkan fleksibel.
-            if (role === 'leader' && selectedUsers.leader && String(selectedUsers.leader.id) !== String(userId)) {
-                const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${selectedUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
+            // Ganti leader jika sudah ada leader lain
+            if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
+                const confirmChange = confirm(
+                    `Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`
+                );
                 if (!confirmChange) {
                     selectElement.value = isCurrentLeader ? 'leader' : '';
                     refreshRoleSelections();
                     return;
                 }
-                selectedUsers.leader = null;
+                pendingUsers.leader = null;
             }
 
-            if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
-                selectedUsers.leader = null;
+            // Hapus dari role sebelumnya
+            if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+                pendingUsers.leader = null;
             }
-            selectedUsers.members = selectedUsers.members.filter(
-                m => String(m.id) !== String(userId)
-            );
+            pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
 
+            // Tambahkan ke role baru
             if (role === 'leader') {
-                selectedUsers.leader = user;
+                pendingUsers.leader = user;
             } else if (role === 'member') {
-                selectedUsers.members.push(user);
+                pendingUsers.members.push(user);
             }
+            // Jika role == '' (none), user sudah di-remove dari pendingUsers di atas
 
-            updateFormInputs();
-            renderSelectedUsers();
-            updateTaskSectionVisibility();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
+            // Refresh tampilan dropdown di modal (tanpa menutup modal!)
             refreshRoleSelections();
-
-            const modal = document.getElementById('userModal');
-            if (modal && !modal.classList.contains('hidden')) {
-                closeUserModal();
-            }
         }
-        
-        function confirmUserSelection() {
-            updateFormInputs();
-            renderSelectedUsers();
-            // Refresh task UI
-            updateTaskSectionVisibility();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-            closeUserModal();
+
+        // ─── Refresh tampilan dropdown di modal ──────────────────────────────────────
+
+        /**
+         * Memperbarui semua dropdown .user-role-select berdasarkan pendingUsers.
+         * Dipanggil setiap kali fetchUsers() selesai atau setelah updateUserRole().
+         */
+        function refreshRoleSelections() {
+            const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
+            const ownerId  = pendingUsers.owner  ? String(pendingUsers.owner.id)  : null;
+            const hasSeparateLeader = leaderId && ownerId && leaderId !== ownerId;
+
+            document.querySelectorAll('.user-role-select').forEach(select => {
+                const userId   = String(select.dataset.userId);
+                const isOwner  = ownerId  === userId;
+                const isLeader = leaderId === userId;
+                const isMember = pendingUsers.members.some(m => String(m.id) === userId);
+
+                // Set nilai dropdown
+                if (isLeader) {
+                    select.value = 'leader';
+                } else if (isMember) {
+                    select.value = 'member';
+                } else {
+                    select.value = '';
+                }
+
+                // Atur disabled/enabled opsi
+                const leaderOption = select.querySelector('option[value="leader"]');
+                const memberOption = select.querySelector('option[value="member"]');
+
+                if (leaderOption) {
+                    // Disable leader option jika sudah ada leader lain dan user ini bukan leader saat ini
+                    leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
+                    leaderOption.title    = leaderOption.disabled ? 'Leader sudah dipilih' : '';
+                }
+
+                if (memberOption) {
+                    memberOption.disabled = false;
+                }
+
+                // Jangan disable select sepenuhnya — user harus bisa mengubah role
+                select.disabled = false;
+                select.title    = '';
+            });
+        }
+
+        // ─── Form inputs & rendering ─────────────────────────────────────────────────
+
+        function updateSelectedUsersBadge() {
+            const badge = document.getElementById('selected-users-badge');
+            if (!badge) return;
+            let count = 0;
+            if (selectedUsers.owner)  count++;
+            if (selectedUsers.leader) count++;
+            count += selectedUsers.members.length;
+            badge.innerHTML = count === 0
+                ? ''
+                : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
+        }
+
+        function updateTaskSectionVisibility() {
+            const taskSection = document.getElementById('task-section');
+            if (!taskSection) return;
+            const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
+            if (hasUsers) {
+                taskSection.classList.remove('hidden');
+            } else {
+                taskSection.classList.add('hidden');
+                const container = document.getElementById('tasks-container');
+                if (container) { container.innerHTML = ''; taskIndex = 0; }
+            }
         }
 
         function updateFormInputs() {
-            document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
-            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+            document.getElementById('selected-owner-id').value   = selectedUsers.owner?.id  || '';
+            document.getElementById('selected-leader-id').value  = selectedUsers.leader?.id || '';
             document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
 
             const memberInputs = document.getElementById('selected-members-inputs');
@@ -539,15 +572,14 @@
         }
 
         function renderSelectedUsers() {
-            const container = document.getElementById('selected-users-container');
-            const noUsersMsg = document.getElementById('no-users-message');
+            const container    = document.getElementById('selected-users-container');
+            const noUsersMsg   = document.getElementById('no-users-message');
             if (!container || !noUsersMsg) return;
 
             const selected = [];
             if (selectedUsers.owner) {
                 const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id
-                    ? 'Owner & Leader'
-                    : 'Owner';
+                    ? 'Owner & Leader' : 'Owner';
                 selected.push({ ...selectedUsers.owner, role });
             }
             if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
@@ -564,19 +596,20 @@
             noUsersMsg.classList.add('hidden');
             container.innerHTML = selected.map(user => {
                 const styles = {
-                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
+                    'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                    'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
+
                 return `
                     <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
                         <div class="flex items-center gap-3">
-                            ${user.photo_profile ?
-                                `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
-                                `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                </div>`
+                            ${user.photo_profile
+                                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                       <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                                   </div>`
                             }
                             <div>
                                 <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
@@ -594,35 +627,28 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
-                            </button>
-                            ` : ''}
+                            </button>` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
+        // ─── Remove user (dari selectedUsers, bukan pendingUsers) ────────────────────
+
         function deleteTasksForUser(userId) {
             const userIdStr = String(userId);
             document.querySelectorAll('.task-item').forEach(taskItem => {
                 const select = taskItem.querySelector('.task-user-select');
-                if (select && String(select.value) === userIdStr) {
-                    taskItem.remove();
-                }
+                if (select && String(select.value) === userIdStr) taskItem.remove();
             });
-            if (!document.querySelectorAll('.task-item').length) {
-                addTaskRow();
-            }
+            if (!document.querySelectorAll('.task-item').length) addTaskRow();
         }
 
         function removeUser(userId) {
             deleteTasksForUser(userId);
-
-            if (selectedUsers.leader?.id == userId) {
-                selectedUsers.leader = null;
-            }
+            if (selectedUsers.leader?.id == userId)  selectedUsers.leader  = null;
             selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
-
             updateFormInputs();
             renderSelectedUsers();
             updateTaskUserOptions();
@@ -631,65 +657,25 @@
         }
 
         function editUser(userId) {
-            // Open modal and focus on the specific user
             openUserModal();
-            // Scroll to the user in modal after a short delay
             setTimeout(() => {
-                const userElement = document.querySelector(`[data-user-id="${userId}"]`) || 
-                                   document.querySelector(`.user-role-select[onchange*="${userId}"]`)?.closest('.flex.items-center.justify-between');
+                const userElement = document.querySelector(`[data-user-id="${userId}"]`) ||
+                                    document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('.flex');
                 if (userElement) {
                     userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Highlight temporarily
                     userElement.style.backgroundColor = '#fef3c7';
                     setTimeout(() => userElement.style.backgroundColor = '', 2000);
                 }
             }, 500);
         }
-        function fetchUsers(page = 1) {
-    const params = new URLSearchParams({
-        page: page,
-        search: currentModalFilters.search,
-        angkatan: currentModalFilters.angkatan,
-        jurusan: currentModalFilters.jurusan,
-        keahlian: currentModalFilters.keahlian
-    });
 
-    fetch(`{{ route('project.create') }}?${params}`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-    document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-    document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-
-    refreshRoleSelections();
-
-    // jalankan ulang translate
-        if (typeof window.refreshTranslations === 'function') {
-                    window.refreshTranslations();
-                }
-});
-}
-
-        function loadSelectedUsersFromForm() {
-            if (restoreSelectedUsersFromStorage()) {
-                updateFormInputs();
-                return;
-            }
-
-            selectedUsers.owner = currentUser || null;
-            const leaderId = document.getElementById('selected-leader-id')?.value;
-            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
-
-            if (leaderId) selectedUsers.leader = getUserById(leaderId);
-            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
-        }
+        // ─── User list helper ────────────────────────────────────────────────────────
 
         function getUserById(id) {
             return allUsers.find(u => String(u.id) === String(id)) || null;
         }
+
+        // ─── Task helpers ────────────────────────────────────────────────────────────
 
         function getAllowedTaskUsers() {
             const users = [];
@@ -699,7 +685,6 @@
                 added.add(user.id);
                 users.push({ id: user.id, name: user.nama_mahasiswa });
             };
-
             add(selectedUsers.owner);
             add(selectedUsers.leader);
             selectedUsers.members.forEach(add);
@@ -718,9 +703,8 @@
         function addTaskRow(taskData = null) {
             const container = document.getElementById('tasks-container');
             if (!container) return;
-
-            const index = taskIndex++;
-            const userId = taskData?.user_id ?? '';
+            const index    = taskIndex++;
+            const userId   = taskData?.user_id ?? '';
             const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
             const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
 
@@ -737,30 +721,28 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ autoTranslate('Nama Tugas') }}</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                            class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                            placeholder="{{ autoTranslate('Deskripsikan tugas...') }}">
                     </div>
-                    <button type="button" onclick="removeTaskRow(this)" class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                    <button type="button" onclick="removeTaskRow(this)"
+                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
                 </div>
             `;
-
             container.appendChild(taskItem);
-            const select = taskItem.querySelector('.task-user-select');
-            if (select) select.addEventListener('change', updateTaskUserOptions);
+            taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
         }
 
         function removeTaskRow(button) {
-            const taskItem = button.closest('.task-item');
-            if (taskItem) taskItem.remove();
+            button.closest('.task-item')?.remove();
             if (!document.querySelectorAll('.task-item').length) addTaskRow();
         }
 
         function cleanupInvalidTaskRows() {
-            const allowedIds = getAllowedTaskUsers().map(user => String(user.id));
+            const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
             document.querySelectorAll('.task-item').forEach(taskItem => {
                 const select = taskItem.querySelector('.task-user-select');
-                if (!select || !select.value || !allowedIds.includes(select.value)) {
-                    taskItem.remove();
-                }
+                if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
             });
             if (!document.querySelectorAll('.task-item').length) addTaskRow();
         }
@@ -768,7 +750,7 @@
         function updateTaskUserOptions() {
             document.querySelectorAll('.task-user-select').forEach(select => {
                 const currentValue = select.value;
-                select.innerHTML = renderTaskUserOptions(currentValue);
+                select.innerHTML   = renderTaskUserOptions(currentValue);
                 if (currentValue) select.value = currentValue;
             });
             cleanupInvalidTaskRows();
@@ -779,179 +761,100 @@
             if (!container) return;
             container.innerHTML = '';
             taskIndex = 0;
-
             if (Array.isArray(existingTasks) && existingTasks.length) {
-                existingTasks.forEach(task => {
-                    if (task.user_id || task.name_task) addTaskRow(task);
-                });
+                existingTasks.forEach(task => { if (task.user_id || task.name_task) addTaskRow(task); });
             } else {
                 addTaskRow();
             }
             updateTaskUserOptions();
         }
 
+        // ─── Modal filters ───────────────────────────────────────────────────────────
+
         function setupModalFilters() {
-            document.getElementById('modal-search')?.addEventListener('input', function() {
+            document.getElementById('modal-search')?.addEventListener('input', function () {
                 currentModalFilters.search = this.value;
                 fetchUsers();
             });
-            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
+            document.getElementById('modal-angkatan')?.addEventListener('change', function () {
                 currentModalFilters.angkatan = this.value;
                 fetchUsers();
             });
-            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
+            document.getElementById('modal-jurusan')?.addEventListener('change', function () {
                 currentModalFilters.jurusan = this.value;
                 fetchUsers();
             });
-            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
+            document.getElementById('modal-keahlian')?.addEventListener('change', function () {
                 currentModalFilters.keahlian = this.value;
                 fetchUsers();
             });
         }
 
-        function onSubmitProjectForm(event) {
-            // Pastikan owner diisi dengan current user saat submit
-            if (currentUser) {
-                selectedUsers.owner = currentUser;
+        // ─── Pagination click ────────────────────────────────────────────────────────
+
+        document.addEventListener('click', function (e) {
+            const link = e.target.closest('#modal-pagination a');
+            if (link) {
+                e.preventDefault();
+                const url  = link.getAttribute('href');
+                if (!url) return;
+                const page = new URL(url).searchParams.get('page') || 1;
+                fetchUsers(page);
             }
+        });
 
-            // Jika ada members tapi belum ada leader, jadikan owner sebagai leader saat submit.
-            if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
-                selectedUsers.leader = selectedUsers.owner;
-            }
+        // ─── Collaborative toggle ────────────────────────────────────────────────────
 
-            updateFormInputs();
-            cleanupInvalidTaskRows();
-            updateTaskUserOptions();
-        }
+        function toggleUserSelectionSection() {
+            const toggle             = document.getElementById('project-collaborative-toggle');
+            const userSelectionSection = document.getElementById('user-selection-section');
+            const leaderInput        = document.getElementById('selected-leader-id');
 
-        // Fungsi untuk mengontrol visibilitas section user selection
-       function toggleUserSelectionSection() {
-    const toggle = document.getElementById('project-collaborative-toggle');
-    const userSelectionSection = document.getElementById('user-selection-section');
-    const leaderInput = document.getElementById('selected-leader-id');
-    
-    if (toggle && userSelectionSection) {
-        if (toggle.checked) {
-            userSelectionSection.style.display = 'block';
-            // Jika toggle diaktifkan, pastikan leader bisa dipilih dari modal
-            if (leaderInput) {
-                leaderInput.removeAttribute('required');
-                // Jangan otomatis set leader = currentUser
-                // Biarkan user memilih leader dari modal
-            }
+            if (!toggle || !userSelectionSection) return;
 
-            if (selectedUsers.leader && selectedUsers.owner && String(selectedUsers.leader.id) === String(selectedUsers.owner.id) && selectedUsers.members.length === 0) {
-                selectedUsers.leader = null;
+            if (toggle.checked) {
+                userSelectionSection.style.display = 'block';
+                if (leaderInput) leaderInput.removeAttribute('required');
+
+                // Jika sebelumnya leader == owner dan tidak ada member, reset leader
+                if (
+                    selectedUsers.leader &&
+                    selectedUsers.owner &&
+                    String(selectedUsers.leader.id) === String(selectedUsers.owner.id) &&
+                    selectedUsers.members.length === 0
+                ) {
+                    selectedUsers.leader = null;
+                    updateFormInputs();
+                    renderSelectedUsers();
+                    updateSelectedUsersBadge();
+                    saveSelectedUsersToStorage();
+                }
+            } else {
+                userSelectionSection.style.display = 'none';
+                selectedUsers.owner   = currentUser;
+                selectedUsers.leader  = currentUser;
+                selectedUsers.members = [];
                 updateFormInputs();
                 renderSelectedUsers();
+                updateTaskUserOptions();
                 updateSelectedUsersBadge();
                 saveSelectedUsersToStorage();
-            }
-        } else {
-            userSelectionSection.style.display = 'none';
-            // Ketika toggle dimatikan, user auth menjadi owner + leader
-            selectedUsers.owner = currentUser;
-            selectedUsers.leader = currentUser; // Hanya ini yang otomatis
-            selectedUsers.members = [];
-            updateFormInputs();
-            renderSelectedUsers();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-            if (leaderInput) leaderInput.removeAttribute('required');
-        }
-    }
-}
-function refreshRoleSelections() {
-    const leaderId = selectedUsers.leader 
-        ? String(selectedUsers.leader.id) 
-        : null;
-    const ownerId = selectedUsers.owner 
-        ? String(selectedUsers.owner.id) 
-        : null;
-    const hasSeparateLeader = leaderId && ownerId && leaderId !== ownerId;
-
-    document.querySelectorAll('.user-role-select').forEach(select => {
-        const userId = String(select.dataset.userId);
-        const isOwner = ownerId === userId;
-        const isLeader = leaderId === userId;
-
-        select.value = '';
-
-        if (isLeader) {
-            select.value = 'leader';
-        } else if (selectedUsers.members.some(m => String(m.id) === userId)) {
-            select.value = 'member';
-        }
-
-        const leaderOption = select.querySelector('option[value="leader"]');
-        const memberOption = select.querySelector('option[value="member"]');
-
-        if (leaderOption) {
-            if (leaderId && leaderId !== userId && !isOwner) {
-                leaderOption.disabled = true;
-                leaderOption.title = 'Leader sudah dipilih';
-            } else {
-                leaderOption.disabled = false;
-                leaderOption.title = '';
+                if (leaderInput) leaderInput.removeAttribute('required');
             }
         }
 
-        if (memberOption) {
-            memberOption.disabled = false;
-        }
+        // ─── Date validation ─────────────────────────────────────────────────────────
 
-        if (hasSeparateLeader && isLeader) {
-            select.disabled = true;
-            select.title = 'Leader telah ditetapkan';
-        } else {
-            select.disabled = false;
-            select.title = '';
-        }
-
-        if (hasSeparateLeader && isOwner) {
-            const ownerLeaderOption = select.querySelector('option[value="leader"]');
-            if (ownerLeaderOption) {
-                ownerLeaderOption.disabled = true;
-                ownerLeaderOption.title = 'Leader sudah ditetapkan';
-            }
-        }
-    });
-}
-
-function loadSelectedUsersFromStorage() {
-    if (restoreSelectedUsersFromStorage()) {
-        updateFormInputs();
-        return;
-    }
-
-    // Jangan set owner default di sini, biarkan user memilih saat menyimpan
-    // selectedUsers.owner = currentUser || null; // HAPUS BARIS INI
-    
-    const leaderId = document.getElementById('selected-leader-id')?.value;
-    const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
-
-    if (leaderId) selectedUsers.leader = getUserById(leaderId);
-    selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
-}
-        // Fungsi untuk update min date pada tanggal_akhir berdasarkan tanggal_mulai
         function setupDateValidation() {
-            const tanggalMulaiInput = document.getElementById('tanggal_mulai');
-            const tanggalAkhirInput = document.getElementById('tanggal_akhir');
-
+            const tanggalMulaiInput  = document.getElementById('tanggal_mulai');
+            const tanggalAkhirInput  = document.getElementById('tanggal_akhir');
             if (!tanggalMulaiInput || !tanggalAkhirInput) return;
 
-            // Set minimum date pada tanggal_akhir saat halaman dimuat (jika tanggal_mulai sudah ada)
-            if (tanggalMulaiInput.value) {
-                tanggalAkhirInput.min = tanggalMulaiInput.value;
-            }
+            if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
 
-            // Update minimum date ketika tanggal_mulai berubah
             tanggalMulaiInput.addEventListener('change', function () {
                 if (this.value) {
                     tanggalAkhirInput.min = this.value;
-                    // Reset tanggal_akhir jika lebih kecil dari tanggal_mulai
                     if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
                         tanggalAkhirInput.value = '';
                     }
@@ -960,7 +863,6 @@ function loadSelectedUsersFromStorage() {
                 }
             });
 
-            // Optional: Validasi saat tanggal_akhir berubah
             tanggalAkhirInput.addEventListener('change', function () {
                 if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
                     this.value = '';
@@ -969,20 +871,30 @@ function loadSelectedUsersFromStorage() {
             });
         }
 
-        document.addEventListener('click', function (e) {
-    const link = e.target.closest('#modal-pagination a');
+        // ─── Form submit ─────────────────────────────────────────────────────────────
 
-    if (link) {
-        e.preventDefault();
+        function onSubmitProjectForm() {
+            if (currentUser) selectedUsers.owner = currentUser;
+            if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
+                selectedUsers.leader = selectedUsers.owner;
+            }
+            updateFormInputs();
+            cleanupInvalidTaskRows();
+            updateTaskUserOptions();
+        }
 
-        const url = link.getAttribute('href');
-        if (!url) return;
+        // ─── Init ────────────────────────────────────────────────────────────────────
 
-        const page = new URL(url).searchParams.get('page') || 1;
-        fetchUsers(page);
-    }
-});
-
+        function loadSelectedUsersFromForm() {
+            if (restoreSelectedUsersFromStorage()) {
+                updateFormInputs();
+                return;
+            }
+            const leaderId  = document.getElementById('selected-leader-id')?.value;
+            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
+            if (leaderId) selectedUsers.leader = getUserById(leaderId);
+            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             loadSelectedUsersFromForm();
@@ -995,13 +907,10 @@ function loadSelectedUsersFromStorage() {
             document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
 
             const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-            const toggleLabel = document.getElementById('toggle-label');
+            const toggleLabel         = document.getElementById('toggle-label');
             if (collaborativeToggle && toggleLabel) {
                 toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
-                
-                // Panggil fungsi toggle saat halaman dimuat untuk menyembunyikan section jika perlu
                 toggleUserSelectionSection();
-                
                 collaborativeToggle.addEventListener('change', function () {
                     toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
                     toggleUserSelectionSection();

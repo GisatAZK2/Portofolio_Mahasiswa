@@ -229,6 +229,7 @@ class ProjekController extends Controller
         if ($users->hasPages()) {
             $paginationHtml = view('vendor.pagination.custom_ajax', [
                 'paginator' => $users,
+                'elements' => $users->links()->elements,
                 'groupName' => 'user-modal-pagination'
             ])->render();
         }
