@@ -36,7 +36,18 @@
                             @endif
                         </div>
                         <div>
-                            <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg">{{ $postingan->user->nama_mahasiswa }}</h3>
+                            <div>
+                                <div class="gap-2 mt-1 mb-1">
+                                    <a href="{{ route('portfolio.show', ['user' => $postingan->user->username]) }}"
+                                                    class="font-bold text-gray-900 dark:text-gray-100 text-lg hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $postingan->user->nama_mahasiswa }}</a>
+                                    @if(!empty($postingan->user->jurusan))
+                                        <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">{{ $postingan->user->jurusan['nama_jurusan'] ?? '-' }}</span>
+                                    @endif
+                                    @if(!empty($postingan->user->angkatan))
+                                        <span class="text-[14px] px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full">{{ $postingan->user->angkatan['nama_angkatan'] ?? '-' }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -172,7 +183,7 @@
                                 @if($item['type'] === 'image' && isset($item['content']))
                                     <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow">
                                         <img src="{{ asset('storage/' . $item['content']) }}" 
-                                            class="w-full h-auto object-cover" alt="Gambar postingan">
+                                            class="w-full h-auto object-cover" alt="Gambar postingan" id="logo-zoom">
                                     </div>
                                 @elseif($item['type'] === 'text' && isset($item['content']))
                                     <div class="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
@@ -337,7 +348,8 @@
                                     <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl px-4 py-2 {{ $isOwnComment ? 'bg-indigo-100 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800' : '' }}">
                                         <div class="flex items-baseline gap-2 flex-wrap">
                                             <span class="font-semibold text-sm text-gray-900 dark:text-white">
-                                                {{ $komentar->user->nama_mahasiswa }}
+                                                <a href="{{ route('portfolio.show', ['user' => $komentar->user->username]) }}"
+                                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $komentar->user->nama_mahasiswa }}</a>
                                                 @if($isOwnComment)
                                                     <span class="text-xs font-normal text-indigo-600 dark:text-indigo-400 ml-1">({{ autoTranslate('Anda') }})</span>
                                                 @endif
