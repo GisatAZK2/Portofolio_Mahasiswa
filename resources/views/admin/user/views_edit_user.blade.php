@@ -20,19 +20,58 @@
                     @csrf
                     @method('PATCH')
 
+                    <!-- Role (Readonly) -->
+                    <div class="mb-6">
+                        <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Role <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="role" value="{{ ucfirst($user->role) }}" readonly
+                            class="w-full px-4 py-2 border rounded-lg bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 cursor-not-allowed">
+                        <input type="hidden" name="role" value="{{ $user->role }}">
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- NIM (Hanya untuk Mahasiswa) -->
+                        <div id="nimField" class="col-span-2 md:col-span-1" style="{{ $user->role != 'mahasiswa' ? 'display: none;' : '' }}">
+                            <label for="nim" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                NIM <span class="text-red-500" id="nimRequired">*</span>
+                            </label>
+                            <input type="text" name="nim" id="nim" value="{{ old('nim', $user->nim) }}"
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('nim') border-red-500 @enderror"
+                                placeholder="Masukkan NIM" {{ $user->role == 'mahasiswa' ? '' : 'disabled' }}>
+                            @error('nim')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Nama Mahasiswa -->
                         <div class="col-span-2 md:col-span-1">
                             <label for="nama_mahasiswa"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="nm_lgkp" data-translate-page="admin"></span> <span
-                                    class="text-red-500">*</span>
+                                Nama Lengkap <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="nama_mahasiswa" id="nama_mahasiswa"
                                 value="{{ old('nama_mahasiswa', $user->nama_mahasiswa) }}"
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('nama_mahasiswa') border-red-500 @enderror"
                                 placeholder="Masukkan nama lengkap" required>
                             @error('nama_mahasiswa')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Tanggal Lahir (Untuk Mahasiswa dan Dosen) -->
+                        <div id="tanggalLahirField" class="col-span-2 md:col-span-1" style="{{ !in_array($user->role, ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
+                            <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Tanggal Lahir <span class="text-red-500" id="tanggalLahirRequired">
+                                    {{ $user->role == 'admin' ? '' : '*' }}
+                                </span>
+                            </label>
+                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" 
+                                value="{{ old('tanggal_lahir', $user->tanggal_lahir ? \Carbon\Carbon::parse($user->tanggal_lahir)->format('Y-m-d') : '') }}"
+                                max="{{ date('Y-m-d') }}"
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('tanggal_lahir') border-red-500 @enderror"
+                                {{ in_array($user->role, ['mahasiswa', 'dosen']) ? 'required' : '' }}>
+                            @error('tanggal_lahir')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror
                         </div>
@@ -63,38 +102,15 @@
                             @enderror
                         </div>
 
-                        <!-- Role -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Role <span class="text-red-500">*</span>
-                            </label>
-                            <select name="role" id="role"
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('role') border-red-500 @enderror"
-                                required>
-                                <option value="">Pilih Role</option>
-                                <option value="mahasiswa" {{ old('role', $user->role) == 'mahasiswa' ? 'selected' : '' }}>
-                                    Mahasiswa</option>
-                                <option value="dosen" {{ old('role', $user->role) == 'dosen' ? 'selected' : '' }}>Dosen
-                                </option>
-                                <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin
-                                </option>
-                            </select>
-                            @error('role')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Jurusan (ditampilkan jika role = mahasiswa/dosen) -->
-                        <div class="col-span-2 md:col-span-1 role-dependent" data-roles="mahasiswa,dosen"
-                            style="{{ !in_array(old('role', $user->role), ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
+                        <!-- Jurusan (Hanya untuk Mahasiswa dan Dosen) -->
+                        <div id="jurusanField" class="col-span-2 md:col-span-1" style="{{ !in_array($user->role, ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
                             <label for="id_jurusan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="jrs_addusr" data-translate-page="admin"></span> <span
-                                    class="text-red-500">*</span>
+                                Jurusan <span class="text-red-500" id="jurusanRequired">*</span>
                             </label>
                             <select name="id_jurusan" id="id_jurusan"
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_jurusan') border-red-500 @enderror">
-                                <option data-translate="chs_jrs_addusr" data-translate-page="admin" value="">Pilih Jurusan
-                                </option>
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_jurusan') border-red-500 @enderror"
+                                {{ in_array($user->role, ['mahasiswa', 'dosen']) ? 'required' : 'disabled' }}>
+                                <option value="">Pilih Jurusan</option>
                                 @foreach($jurusans as $jurusan)
                                     <option value="{{ $jurusan->id_jurusan }}" {{ old('id_jurusan', $user->id_jurusan) == $jurusan->id_jurusan ? 'selected' : '' }}>
                                         {{ $jurusan->nama_jurusan }}
@@ -106,18 +122,16 @@
                             @enderror
                         </div>
 
-                        <!-- Keahlian (ditampilkan jika role = mahasiswa/dosen) -->
-                        <div class="col-span-2 md:col-span-1 role-dependent" data-roles="mahasiswa,dosen"
-                            style="{{ !in_array(old('role', $user->role), ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
+                        <!-- Keahlian (Hanya untuk Mahasiswa dan Dosen) -->
+                        <div id="keahlianField" class="col-span-2 md:col-span-1" style="{{ !in_array($user->role, ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
                             <label for="id_keahlian"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="exp_addusr" data-translate-page="admin"></span> <span
-                                    class="text-red-500">*</span>
+                                Bidang Keahlian <span class="text-red-500" id="keahlianRequired">*</span>
                             </label>
                             <select name="id_keahlian" id="id_keahlian"
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_keahlian') border-red-500 @enderror">
-                                <option data-translate="chs_exp_addusr" data-translate-page="admin" value="">Pilih Keahlian
-                                </option>
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_keahlian') border-red-500 @enderror"
+                                {{ in_array($user->role, ['mahasiswa', 'dosen']) ? 'required' : 'disabled' }}>
+                                <option value="">Pilih Keahlian</option>
                                 @foreach($keahlians as $keahlian)
                                     <option value="{{ $keahlian->id_keahlian }}" {{ old('id_keahlian', $user->id_keahlian) == $keahlian->id_keahlian ? 'selected' : '' }}>
                                         {{ $keahlian->nama_keahlian }}
@@ -129,18 +143,16 @@
                             @enderror
                         </div>
 
-                        <!-- Angkatan (ditampilkan jika role = mahasiswa/dosen) -->
-                        <div class="col-span-2 md:col-span-1 role-dependent" data-roles="mahasiswa,dosen"
-                            style="{{ !in_array(old('role', $user->role), ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
+                        <!-- Angkatan (Hanya untuk Mahasiswa dan Dosen) -->
+                        <div id="angkatanField" class="col-span-2 md:col-span-1" style="{{ !in_array($user->role, ['mahasiswa', 'dosen']) ? 'display: none;' : '' }}">
                             <label for="id_angkatan"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="agkt_addusr" data-translate-page="admin"></span> <span
-                                    class="text-red-500">*</span>
+                                Angkatan <span class="text-red-500" id="angkatanRequired">*</span>
                             </label>
                             <select name="id_angkatan" id="id_angkatan"
-                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_angkatan') border-red-500 @enderror">
-                                <option data-translate="chs_agkt_addusr" data-translate-page="admin" value="">Pilih Angkatan
-                                </option>
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('id_angkatan') border-red-500 @enderror"
+                                {{ in_array($user->role, ['mahasiswa', 'dosen']) ? 'required' : 'disabled' }}>
+                                <option value="">Pilih Angkatan</option>
                                 @foreach($angkatans as $angkatan)
                                     <option value="{{ $angkatan->id }}" {{ old('id_angkatan', $user->id_angkatan) == $angkatan->id ? 'selected' : '' }}>
                                         {{ $angkatan->nama_angkatan }}
@@ -156,16 +168,13 @@
                         <div class="col-span-2 md:col-span-1">
                             <label for="status_pengajuan"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="stat_pengajuan" data-translate-page="admin"></span> <span
-                                    class="text-red-500">*</span>
+                                Status Pengajuan <span class="text-red-500">*</span>
                             </label>
                             <select name="status_pengajuan" id="status_pengajuan"
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('status_pengajuan') border-red-500 @enderror"
                                 required>
-                                <option data-translate="stat_diterima" data-translate-page="admin" value="Di Terima" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Terima' ? 'selected' : '' }}>Di
-                                    Terima</option>
-                                <option data-translate="stat_ditolak" data-translate-page="admin" value="Di Tolak" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Tolak' ? 'selected' : '' }}>Di
-                                    Tolak</option>
+                                <option value="Di Terima" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Terima' ? 'selected' : '' }}>Di Terima</option>
+                                <option value="Di Tolak" {{ old('status_pengajuan', $user->status_pengajuan) == 'Di Tolak' ? 'selected' : '' }}>Di Tolak</option>
                             </select>
                             @error('status_pengajuan')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -175,14 +184,13 @@
                         <!-- Status Aktif -->
                         <div class="col-span-2 md:col-span-1">
                             <label for="is_active" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="stat_acc" data-translate-page="admin"></span> <span
-                                    class="text-red-500">*</span>
+                                Status Akun <span class="text-red-500">*</span>
                             </label>
                             <select name="is_active" id="is_active"
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('is_active') border-red-500 @enderror"
                                 required>
-                                <option data-translate="stat_aktif" data-translate-page="admin" value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
-                                <option data-translate="stat_non_aktif" data-translate-page="admin" value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Non Aktif</option>
+                                <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>Non Aktif</option>
                             </select>
                             @error('is_active')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -192,26 +200,17 @@
                         <!-- Password Baru (opsional) -->
                         <div class="col-span-2 md:col-span-1">
                             <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="pw_new" data-translate-page="admin"></span>
+                                Password Baru
                             </label>
                             <input type="password" name="password" id="password"
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('password') border-red-500 @enderror"
                                 placeholder="Masukkan password baru">
-                             <div class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                            <div class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
                                 <p class="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-1">Syarat Password:</p>
                                 <ul class="text-xs text-blue-800 dark:text-blue-200 space-y-0.5">
-                                    <li class="flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-600 flex items-center justify-center text-xs">✓</span>
-                                        Minimal 8 karakter
-                                    </li>
-                                    <li class="flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-600 flex items-center justify-center text-xs">✓</span>
-                                        Harus ada huruf besar (A-Z)
-                                    </li>
-                                    <li class="flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-600 flex items-center justify-center text-xs">✓</span>
-                                        Tidak boleh ada spasi
-                                    </li>
+                                    <li class="flex items-center gap-2">✓ Minimal 8 karakter</li>
+                                    <li class="flex items-center gap-2">✓ Harus ada huruf besar (A-Z)</li>
+                                    <li class="flex items-center gap-2">✓ Tidak boleh ada spasi</li>
                                 </ul>
                             </div>
                             @error('password')
@@ -223,7 +222,7 @@
                         <div class="col-span-2 md:col-span-1">
                             <label for="password_confirmation"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="pw_new_confirm" data-translate-page="admin"></span>
+                                Konfirmasi Password Baru
                             </label>
                             <input type="password" name="password_confirmation" id="password_confirmation"
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -234,7 +233,7 @@
                         <div class="col-span-2">
                             <label for="photo_profile"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <span data-translate="pfp_new" data-translate-page="admin"></span>
+                                Photo Profile
                             </label>
 
                             <!-- Preview Foto Lama -->
@@ -256,9 +255,8 @@
                             <input type="file" name="photo_profile" id="photo_profile"
                                 accept="image/jpeg,image/png,image/jpg"
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('photo_profile') border-red-500 @enderror">
-                            <p data-translate="pfp_frmt" data-translate-page="admin"
-                                class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Format yang didukung: JPG, JPEG, PNG. Maksimal 2MB.
                             </p>
                             @error('photo_profile')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -268,13 +266,13 @@
 
                     <!-- Submit Button -->
                     <div class="mt-8 flex justify-end space-x-4">
-                        <button type="reset"
+                        <a href="{{ route('admin.users.index') }}"
                             class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-200">
-                            Reset
-                        </button>
+                            Batal
+                        </a>
                         <button type="submit"
                             class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                            <i data-translate="save_new" data-translate-page="admin" class="fas fa-save mr-2"></i>
+                            <i class="fas fa-save mr-2"></i> Simpan Perubahan
                         </button>
                     </div>
                 </form>
@@ -286,80 +284,53 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const roleSelect = document.getElementById('role');
-            const roleDependentFields = document.querySelectorAll('.role-dependent');
-
-            function toggleRoleDependentFields() {
-                const selectedRole = roleSelect.value;
-
-                roleDependentFields.forEach(field => {
-                    const allowedRoles = field.dataset.roles.split(',');
-
-                    if (allowedRoles.includes(selectedRole)) {
-                        field.style.display = 'block';
-                        // Enable dan required semua input di dalam field
-                        field.querySelectorAll('input, select').forEach(input => {
-                            input.disabled = false;
-                            if (input.tagName === 'SELECT' || input.type === 'text' || input.type === 'number') {
-                                input.required = true;
-                            }
-                        });
-                    } else {
-                        field.style.display = 'none';
-                        // Disable dan hapus required semua input di dalam field
-                        field.querySelectorAll('input, select').forEach(input => {
-                            input.disabled = true;
-                            input.required = false;
-                        });
-                    }
-                });
-            }
-
-            // Initial toggle
-            toggleRoleDependentFields();
-
-            // Toggle on change
-            roleSelect.addEventListener('change', toggleRoleDependentFields);
-
             // Preview photo profile
             const photoInput = document.getElementById('photo_profile');
             const photoPreview = document.getElementById('photoPreview');
             const previewImage = document.getElementById('previewImage');
 
-            photoInput.addEventListener('change', function () {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        previewImage.src = e.target.result;
-                        photoPreview.classList.remove('hidden');
+            if (photoInput) {
+                photoInput.addEventListener('change', function () {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            previewImage.src = e.target.result;
+                            photoPreview.classList.remove('hidden');
+                        }
+                        reader.readAsDataURL(this.files[0]);
+                    } else {
+                        photoPreview.classList.add('hidden');
+                        previewImage.src = '#';
                     }
+                });
+            }
 
-                    reader.readAsDataURL(this.files[0]);
-                } else {
-                    photoPreview.classList.add('hidden');
-                    previewImage.src = '#';
-                }
-            });
+            
 
-            // Reset form confirmation
-            const resetBtn = document.querySelector('button[type="reset"]');
-            resetBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (confirm('Apakah Anda yakin ingin mereset semua perubahan?')) {
-                    document.querySelector('form').reset();
-                    photoPreview.classList.add('hidden');
-                    previewImage.src = '#';
-                    toggleRoleDependentFields();
-                }
-            });
-        });
+            // Validasi tanggal lahir tidak boleh melebihi hari ini
+           const tanggalLahirInput = document.getElementById('tanggal_lahir');
+
+if (tanggalLahirInput) {
+    tanggalLahirInput.addEventListener('change', function () {
+        const selectedDate = this.value; // format YYYY-MM-DD
+
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];
+
+        if (selectedDate > todayString) {
+            alert('Tanggal lahir tidak boleh melebihi tanggal hari ini!');
+            this.value = '';
+        }
+    });
+}
     </script>
 
     <!-- Page Info -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.edit_user");
+            if (typeof showPageInfo === 'function') {
+                showPageInfo("popup.edit_user");
+            }
         });
     </script>
 @endpush

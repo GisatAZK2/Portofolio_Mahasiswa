@@ -165,8 +165,11 @@
 
     <input type="date" name="tanggal_lahir" id="tanggalLahirInput"
         value="{{ old('tanggal_lahir') }}"
+        max="{{ date('Y-m-d') }}"
         class="w-full px-5 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
 
+    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Tanggal lahir tidak boleh melebihi tanggal hari ini</p>
+    
     @error('tanggal_lahir')
         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
     @enderror
@@ -414,6 +417,31 @@
     const photoField = document.getElementById('photoField');
     const nimField = document.getElementById('nimField');
     const tanggalLahirField = document.getElementById('tanggalLahirField');
+
+    document.getElementById('tanggalLahirInput').addEventListener('change', function () {
+    const selectedDate = this.value; // format: YYYY-MM-DD
+
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+
+    // hapus error lama
+    const existingError = document.getElementById('tanggalLahirClientError');
+    if (existingError) existingError.remove();
+
+    if (selectedDate > todayString) {
+        this.classList.add('border-red-500');
+
+        const errorMsg = document.createElement('p');
+        errorMsg.id = 'tanggalLahirClientError';
+        errorMsg.className = 'mt-1 text-sm text-red-500';
+        errorMsg.textContent = 'Tanggal lahir tidak boleh melebihi tanggal hari ini';
+
+        this.parentNode.appendChild(errorMsg);
+        this.value = '';
+    } else {
+        this.classList.remove('border-red-500');
+    }
+});
     
     if (role === 'mahasiswa') {
         regTypeContainer.classList.remove('hidden');

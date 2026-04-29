@@ -391,6 +391,18 @@ class AdminController extends Controller
                 'sometimes',
                 'boolean'
             ],
+            'nim' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('users')->ignore($user->id)
+            ],
+            'tanggal_lahir' => [
+                'sometimes',
+                'nullable',
+                'date'
+            ],
             'id_jurusan' => [
                 'sometimes',
                 'nullable',
@@ -441,7 +453,9 @@ class AdminController extends Controller
             'is_active',
             'id_jurusan',
             'id_keahlian',
-            'id_angkatan'
+            'id_angkatan',
+            'nim',
+            'tanggal_lahir',
         ] as $field) {
             if ($request->has($field)) {
                 $updateData[$field] = $validated[$field] ?? null;
@@ -455,9 +469,15 @@ class AdminController extends Controller
 
         // Role logic
         if ($request->has('role') && $validated['role'] === 'admin') {
+            $updateData['nim'] = null;
+            $updateData['tanggal_lahir'] = null;
             $updateData['id_jurusan'] = null;
             $updateData['id_keahlian'] = null;
             $updateData['id_angkatan'] = null;
+        }
+
+        if ($request->has('role') && $validated['role'] === 'dosen') {
+            $updateData['nim'] = null;
         }
 
         // Photo upload
