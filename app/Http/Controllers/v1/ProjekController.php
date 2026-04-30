@@ -645,9 +645,6 @@ class ProjekController extends Controller
     // Untuk initial load, ambil semua user tanpa pagination
     $users = $baseQuery->get(); // get() = semua data, bukan paginate
     
-    // Atau jika tetap ingin pagination tapi lebih banyak:
-    // $users = $baseQuery->paginate(100);
-
     $angkatans = Angkatan::all();
     $jurusans = Jurusan::all();
     $keahlians = Keahlian::all();

@@ -1196,9 +1196,7 @@ public function EditProjects(Request $request)
 
     // Untuk non-AJAX request (first load)
     $usersQuery = clone $baseQuery;
-    $users = $usersQuery->orderBy('created_at', 'desc')
-        ->paginate(10)
-        ->withQueryString();
+    $users = $usersQuery->orderBy('created_at', 'desc')->get();
 
     return view('dosen.projects.views_edit_project', compact(
         'project',

@@ -34,7 +34,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_jurusan')->nullable();
             $table->unsignedBigInteger('id_keahlian')->nullable();
             $table->unsignedBigInteger('id_angkatan')->nullable();
-            $table->date('tanggal_lahir');
+            $table->date('tanggal_lahir')->nullable();
 
             
             $table->boolean('is_active')->default(true);

@@ -166,7 +166,7 @@
                             <span class="auw-required">*</span>
                         </label>
                         <input type="text" name="nama_mahasiswa" value="{{ old('nama_mahasiswa') }}"
-                            placeholder="Nama lengkap sesuai KTP"
+                            placeholder="Nama Lengkap Anda"
                             class="auw-input @error('nama_mahasiswa') auw-input-error @enderror"
                             required>
                         @error('nama_mahasiswa')
@@ -1126,33 +1126,47 @@ function selectRole(role) {
         regTypeContainer.classList.add('hidden');
 
         if (role === 'admin') {
+            // Admin: sembunyikan NIM dan Tanggal Lahir
             f.nim.style.display  = 'none';
             f.tgl.style.display  = 'none';
             if (f.nimInput) f.nimInput.required = false;
             if (f.tglInput) f.tglInput.required = false;
+            
+            // Pastikan username dan password required
+            setRequired(f.username, 'input', true);
+            setRequired(f.password, 'input', true);
+            setRequired(f.confirm, 'input', true);
+            
+            // Email opsional untuk admin
+            if (f.email) {
+                const emailInput = f.email.querySelector('input');
+                if (emailInput) emailInput.required = false;
+            }
 
         } else if (role === 'dosen') {
+            // Dosen: sembunyikan NIM, TAMPILKAN Tanggal Lahir (required)
             f.nim.style.display  = 'none';
             f.tgl.style.display  = 'block';
             if (f.nimInput) f.nimInput.required = false;
-            if (f.tglInput) f.tglInput.required = true;
-            if (f.nimReq)   f.nimReq.style.display = 'none';
+            if (f.tglInput) {
+                f.tglInput.required = true;
+                f.tglInput.disabled = false;
+            }
             if (f.tglReq)   f.tglReq.style.display = 'inline';
+            
+            // Username dan password required
+            setRequired(f.username, 'input', true);
+            setRequired(f.password, 'input', true);
+            setRequired(f.confirm, 'input', true);
 
             additionalFields.classList.remove('hidden');
             document.querySelectorAll('#additionalFields select').forEach(s => s.required = true);
         }
-
-        /* username & password always required for admin & dosen */
-        setRequired(document.getElementById('usernameField'), 'input', true);
-        setRequired(document.getElementById('passwordField'), 'input', true);
-        setRequired(document.getElementById('passwordConfirmationField'), 'input', true);
     }
 
     document.getElementById('submitBtn').disabled = false;
 }
 
-/* ─── toggleRegistrationType ─── */
 function toggleRegistrationType(type) {
     currentRegistrationType = type;
     document.getElementById('registrationType').value = type;

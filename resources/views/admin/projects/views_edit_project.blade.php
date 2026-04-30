@@ -250,7 +250,9 @@
                             </div>
                         </div>
                         <div class="mt-4" id="modal-pagination-container">
-                            {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection']) }}
+                             @if($users instanceof \Illuminate\Pagination\AbstractPaginator)
+        {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection']) }}
+    @endif
                         </div>
                     </div>
                 </div>
@@ -326,7 +328,7 @@
     @endphp
 
     <script>
-        const allUsers = @json($users->items());
+        const allUsers = @json($users);
         const userSelectionStorageKey = 'admin_project_edit_selected_users';
         let selectedUsers = { owner: null, leader: null, members: [] };
         let taskIndex = 0;
