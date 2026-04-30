@@ -90,7 +90,6 @@
             50% { opacity: 0.6; }
         }
 
-        /* Search Styles */
         .search-container {
             transition: all 0.3s ease;
         }
@@ -130,6 +129,69 @@
 
         .dark .search-highlight {
             background-color: rgba(99, 102, 241, 0.4);
+        }
+
+        /* Comment Styles */
+        .comment-item {
+            transition: all 0.2s ease;
+        }
+        
+        .replies-container {
+            border-left: 2px solid #e5e7eb;
+            margin-left: 28px;
+            padding-left: 12px;
+        }
+        
+        .dark .replies-container {
+            border-left-color: #374151;
+        }
+        
+        .edit-form textarea, .reply-form-container textarea {
+            transition: all 0.2s ease;
+        }
+        
+        .comment-text {
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        
+        /* Loading spinner */
+        .comment-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 12px;
+        }
+        
+        .dark .loading-overlay {
+            background: rgba(31, 41, 55, 0.8);
+        }
+        
+        .btn-loading {
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 
@@ -194,7 +256,7 @@
                                 data-translate-page="dashboard">{{ autoTranslate('Postingan Mahasiswa') }}</h3>
                         </div>
 
-                        <!-- Postingan Skeleton (DI LUAR loop) -->
+                        <!-- Postingan Skeleton -->
                         <div id="postingan-skeleton" class="space-y-6">
                             @for($i = 0; $i < 2; $i++)
                             <div class="skeleton-card skeleton-pulse">
@@ -227,7 +289,6 @@
                                 <div id="postingan-container" class="space-y-6">
                                     @foreach($postinganTerbaru as $post)
                                         @php
-                                            // Extract title and description from content JSON
                                             $postTitle = '';
                                             $postDescription = '';
                                             $contentArray = is_array($post->content) ? $post->content : json_decode($post->content, true);
@@ -242,13 +303,15 @@
                                                     }
                                                 }
                                             }
+                                            $commentCount = \App\Models\Komentar::getCommentCount($post->id_postingan);
                                         @endphp
-                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 post-card" 
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 post-card relative" 
                                             data-post-title="{{ strtolower($postTitle) }}" 
                                             data-post-description="{{ strtolower($postDescription) }}" 
                                             data-post-author="{{ strtolower($post->user->nama_mahasiswa ?? '') }}" 
                                             data-post-id="{{ $post->id_postingan }}"
-                                             data-share-url="{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}">
+                                            data-share-url="{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}">
+                                            
                                             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                                 <div class="flex items-center gap-3">
                                                     <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" class="flex items-center gap-3">
@@ -338,54 +401,50 @@
                                                             <span class="text-sm">{{ $post->likes->count() }}</span>
                                                         </button>
                                                     @endauth
-                                                    <button onclick="toggleComments(this)" class="comment-toggle flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition">
+                                                    <button class="comment-toggle flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition" data-postingan-id="{{ $post->id_postingan }}">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                                                        <span class="text-sm">{{ $post->komentar->count() }}</span>
+                                                        <span class="comment-count text-sm">{{ $commentCount }}</span>
                                                     </button>
-                                                    <button onclick="toggleShare(this)" class="comment-toggle flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition">
-                                                    <svg fill="none" class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
-                                                       <path d="M21.707,11.293l-8-8A.99991.99991,0,0,0,12,4V7.54492A11.01525,11.01525,0,0,0,2,18.5V20a1,1,0,0,0,1.78418.62061,11.45625,11.45625,0,0,1,7.88672-4.04932c.0498-.00635.1748-.01611.3291-.02588V20a.99991.99991,0,0,0,1.707.707l8-8A.99962.99962,0,0,0,21.707,11.293ZM14,17.58594V15.5a.99974.99974,0,0,0-1-1c-.25488,0-1.2959.04932-1.56152.085A14.00507,14.00507,0,0,0,4.05176,17.5332,9.01266,9.01266,0,0,1,13,9.5a.99974.99974,0,0,0,1-1V6.41406L19.58594,12Z"/></svg>
+                                                    <button class="share-btn flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition">
+                                                        <svg fill="none" class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M21.707,11.293l-8-8A.99991.99991,0,0,0,12,4V7.54492A11.01525,11.01525,0,0,0,2,18.5V20a1,1,0,0,0,1.78418.62061,11.45625,11.45625,0,0,1,7.88672-4.04932c.0498-.00635.1748-.01611.3291-.02588V20a.99991.99991,0,0,0,1.707.707l8-8A.99962.99962,0,0,0,21.707,11.293ZM14,17.58594V15.5a.99974.99974,0,0,0-1-1c-.25488,0-1.2959.04932-1.56152.085A14.00507,14.00507,0,0,0,4.05176,17.5332,9.01266,9.01266,0,0,1,13,9.5a.99974.99974,0,0,0,1-1V6.41406L19.58594,12Z"/>
+                                                        </svg>
                                                     </button>
                                                 </div>
                                                 <span onclick="window.location.href='{{ route('postingan.show', ['id' => $post->id_postingan]) }}'" class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600 transition">{{ autoTranslate('Lihat detail') }} →</span>
                                             </div>
 
+                                            <!-- Comment Section -->
                                             <div class="comment-section px-4 pb-4 bg-white dark:bg-gray-800 hidden" id="comments-{{ $post->id_postingan }}">
                                                 @auth
-                                                    <form action="{{ route('komentar.store') }}" method="POST" class="mb-4">
-                                                        @csrf
-                                                        <input type="hidden" name="id_postingan" value="{{ $post->id_postingan }}">
+                                                    <div class="mb-4">
                                                         <div class="flex gap-3">
                                                             @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
                                                                 <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1">
                                                             @else
-                                                                <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1"><span class="text-indigo-600 dark:text-indigo-400 text-sm">{{ strtoupper(substr(auth()->user()->nama_mahasiswa ?? 'U', 0, 1)) }}</span></div>
+                                                                <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
+                                                                    <span class="text-indigo-600 dark:text-indigo-400 text-sm">{{ strtoupper(substr(auth()->user()->nama_mahasiswa ?? 'U', 0, 1)) }}</span>
+                                                                </div>
                                                             @endif
                                                             <div class="flex-1">
-                                                                <textarea name="komentar" rows="2" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y" placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
-                                                                <div class="flex justify-end mt-2"><button type="submit" class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">{{ autoTranslate('Kirim') }}</button></div>
+                                                                <textarea id="comment-input-{{ $post->id_postingan }}" rows="2" class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y" placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
+                                                                <div class="flex justify-end mt-2">
+                                                                    <button onclick="window.submitComment({{ $post->id_postingan }})" class="submit-comment-btn px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+                                                                        {{ autoTranslate('Kirim') }}
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                @else
-                                                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3"><a href="{{ route('login') }}" class="text-indigo-600 hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}</p>
-                                                @endauth
-                                                @if($post->komentar->count() > 0)
-                                                    <div class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                                                        @foreach($post->komentar->sortByDesc('tanggal') as $komentar)
-                                                            <div class="flex gap-3">
-                                                                @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
-                                                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5">
-                                                                @else
-                                                                    <div class="w-8 h-8 rounded-full text-gray-600 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 flex items-center justify-center mt-0.5"><span class="text-gray-600 dark:text-gray-200 text-sm">{{ strtoupper(substr($komentar->user->nama_mahasiswa ?? 'U', 0, 1)) }}</span></div>
-                                                                @endif
-                                                                <div class="flex-1"><div class="flex items-center text-gray-600 dark:text-gray-200 gap-2"><span class="font-medium text-sm">{{ autoTranslate($komentar->user->nama_mahasiswa) }}</span><span class="text-xs text-gray-500">{{ $komentar->tanggal?->translatedFormat('d M Y') }}</span></div><p class="text-sm text-gray-700 dark:text-gray-300 mt-0.5">{{ autoTranslate($komentar->komentar) }}</p></div>
-                                                            </div>
-                                                        @endforeach
                                                     </div>
                                                 @else
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">{{ autoTranslate('Belum ada komentar') }}</p>
-                                                @endif
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
+                                                        <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}
+                                                    </p>
+                                                @endauth
+                                                
+                                                <div id="comments-container-{{ $post->id_postingan }}" class="comments-container space-y-4 max-h-96 overflow-y-auto pr-2">
+                                                    <div class="text-center py-4 text-gray-500">Loading comments...</div>
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach
@@ -550,82 +609,484 @@
     </div>
 
     <script>
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('postingan-skeleton').classList.add('hidden');
-                document.getElementById('postingan-content-wrapper').classList.remove('hidden');
-                
-                document.getElementById('project-skeleton').classList.add('hidden');
-                document.getElementById('project-content-wrapper').classList.remove('hidden');
-                
-                document.getElementById('sertifikat-skeleton').classList.add('hidden');
-                document.getElementById('sertifikat-content-wrapper').classList.remove('hidden');
-                
-                document.getElementById('learning-skeleton').classList.add('hidden');
-                document.getElementById('learning-content-wrapper').classList.remove('hidden');
-                
-                sortPostinganByGame();
-            }, 800);
-        });
-
-        function toggleComments(btn) {
-            const postCard = btn.closest('.post-card');
-            const commentSection = postCard.querySelector('.comment-section');
-            commentSection.style.display = commentSection.style.display === 'block' ? 'none' : 'block';
+        // Global variables
+        window.currentUserId = {{ auth()->id() ?? 'null' }};
+        window.currentUserPhoto = "{{ auth()->user()?->photo_profile ?? '' }}";
+        window.currentUserName = "{{ auth()->user()?->nama_mahasiswa ?? '' }}";
+        window.locale = document.querySelector('html').getAttribute('lang') || 'id';
+        
+        // Helper functions
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
-
-       function toggleShare(btn) {
-    const postCard = btn.closest('.post-card');
-    if (!postCard) return;
-    
-    // Ambil URL dari data attribute yang sudah disimpan di post card
-    let url = postCard.dataset.shareUrl || window.location.href;
-    
-    const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
-    
-    if (navigator.share) {
-        navigator.share({
-            title: title,
-            url: url
-        }).catch(() => {});
-    } else {
-        navigator.clipboard.writeText(url).then(() => {
-            btn.innerHTML = `
-                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 13l4 4L19 7"/>
-                </svg>
+        
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        
+        function getAvatarHtml(user, size = 'w-8 h-8', textSize = 'text-sm') {
+            if (user && user.photo_profile && user.photo_profile !== 'null') {
+                const photoPath = user.photo_profile.startsWith('http') ? user.photo_profile : `/storage/${user.photo_profile}`;
+                return `<img src="${photoPath}" class="${size} rounded-full object-cover" onerror="this.src='https://ui-avatars.com/api/?background=6366f1&color=fff&size=100&name=${encodeURIComponent(user.nama_mahasiswa || 'U')}'">`;
+            }
+            const name = user?.nama_mahasiswa || window.currentUserName || 'User';
+            const initial = name.charAt(0).toUpperCase();
+            return `<div class="${size} rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
+                        <span class="text-indigo-600 dark:text-indigo-400 ${textSize} font-semibold">${initial}</span>
+                    </div>`;
+        }
+        
+        // Main function to load comments for a postingan
+        window.loadComments = async function(postinganId) {
+            const container = document.getElementById(`comments-container-${postinganId}`);
+            if (!container) return;
+            
+            container.innerHTML = '<div class="text-center py-4 text-gray-500"><div class="comment-loading"></div> Loading comments...</div>';
+            
+            try {
+                const response = await fetch(`/${window.locale}/komentar?id_postingan=${postinganId}`);
+                const data = await response.json();
+                
+                if (data && data.success === true) {
+                    let commentsArray = [];
+                    if (data.comments && Array.isArray(data.comments)) {
+                        commentsArray = data.comments;
+                    } else if (data.comments && data.comments.comments && Array.isArray(data.comments.comments)) {
+                        commentsArray = data.comments.comments;
+                    }
+                    
+                    if (commentsArray.length === 0) {
+                        container.innerHTML = '<p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">Belum ada komentar</p>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    commentsArray.forEach(comment => {
+                        html += renderCommentWithReplies(comment, 0, postinganId);
+                    });
+                    container.innerHTML = html;
+                    
+                    // Attach event listeners for this container
+                    attachCommentEventListeners(container, postinganId);
+                } else {
+                    container.innerHTML = '<p class="text-center text-red-500">Gagal memuat komentar</p>';
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                container.innerHTML = '<p class="text-center text-red-500">Gagal memuat komentar: ' + error.message + '</p>';
+            }
+        };
+        
+        // Render a single comment thread
+        function renderCommentWithReplies(comment, level, postinganId) {
+            const marginLeft = Math.min(level * 24, 60);
+            const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
+            const userName = escapeHtml(comment.user?.nama_mahasiswa || 'User');
+            
+            let html = `
+                <div class="comment-item mb-3" data-comment-id="${comment.id_komentar}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
+                    <div class="flex gap-3">
+                        ${getAvatarHtml(comment.user, 'w-8 h-8', 'text-sm')}
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-medium text-sm text-gray-900 dark:text-gray-100">${userName}</span>
+                                <span class="text-xs text-gray-500">${formatDate(comment.tanggal || comment.created_at)}</span>
+                                ${isOwnComment ? `
+                                    <button onclick="window.showEditForm(${comment.id_komentar}, ${postinganId})" class="text-xs text-blue-500 hover:text-blue-700 ml-2">Edit</button>
+                                    <button onclick="window.deleteComment(${comment.id_komentar}, ${postinganId}, 'full')" class="text-xs text-red-500 hover:text-red-700">Hapus</button>
+                                ` : ''}
+                            </div>
+                            <p class="comment-text text-sm text-gray-700 dark:text-gray-300 mt-1" id="comment-text-${comment.id_komentar}">${escapeHtml(comment.komentar)}</p>
+                            <div class="flex gap-3 mt-2">
+                                <button onclick="window.showReplyForm(${comment.id_komentar}, ${postinganId})" class="reply-btn text-xs text-indigo-500 hover:text-indigo-700">Balas</button>
+                                ${isOwnComment ? `
+                                    <button onclick="window.deleteComment(${comment.id_komentar}, ${postinganId}, 'single')" class="text-xs text-red-500 hover:text-red-700">Hapus Balasan Ini Saja</button>
+                                ` : ''}
+                            </div>
+                            <div id="reply-form-${comment.id_komentar}" class="reply-form-container hidden mt-3"></div>
+                        </div>
+                    </div>
+                </div>
             `;
             
-            setTimeout(() => {
-                btn.innerHTML = `
-                <svg fill="none" class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M21.707,11.293l-8-8A1,1,0,0,0,12,4V7.545A11.015,11.015,0,0,0,2,18.5V20a1,1,0,0,0,1.784.621a11.456,11.456,0,0,1,7.887-4.049c.05-.006.175-.016.329-.026V20a1,1,0,0,0,1.707.707l8-8A1,1,0,0,0,21.707,11.293Z"/>
-                </svg>
-                `;
-            }, 2000);
-        }).catch(() => {
-            alert('Gagal menyalin URL');
-        });
-    }
-}
-        function sortPostinganByGame() {
-            const container = document.getElementById('postingan-container');
-            if (!container) return;
-            const posts = Array.from(container.children);
-            posts.sort((a, b) => {
-                const aHasGame = a.querySelector('.bg-teal-600') !== null;
-                const bHasGame = b.querySelector('.bg-teal-600') !== null;
-                if (aHasGame && !bHasGame) return -1;
-                if (!aHasGame && bHasGame) return 1;
-                return 0;
-            });
-            container.innerHTML = '';
-            posts.forEach(post => container.appendChild(post));
+            // Render replies
+            if (comment.balasan && comment.balasan.length > 0) {
+                html += `<div class="replies-container ml-6">`;
+                comment.balasan.forEach(reply => {
+                    html += renderCommentWithReplies(reply, level + 1, postinganId);
+                });
+                html += `</div>`;
+            }
+            
+            return html;
         }
-
-        // ============ SEARCH FUNCTIONALITY - FIXED VERSION ============
-        document.addEventListener('DOMContentLoaded', function() {
+        
+        // Attach event listeners for dynamic elements (buttons that need custom handlers)
+        function attachCommentEventListeners(container, postinganId) {
+            // No need for complex listeners since we use onclick attributes
+            // But we need to handle reply form submissions
+            const replyForms = container.querySelectorAll('.reply-submit-form');
+            replyForms.forEach(form => {
+                if (!form.hasAttribute('data-listener')) {
+                    form.setAttribute('data-listener', 'true');
+                    form.onsubmit = async (e) => {
+                        e.preventDefault();
+                        await submitReply(form, postinganId);
+                    };
+                }
+            });
+        }
+        
+        // Submit a new comment (top-level)
+        window.submitComment = async function(postinganId) {
+            const textarea = document.getElementById(`comment-input-${postinganId}`);
+            const commentText = textarea.value.trim();
+            
+            if (!commentText) {
+                alert('Komentar tidak boleh kosong');
+                return;
+            }
+            
+            const submitBtn = textarea.closest('div')?.querySelector('.submit-comment-btn');
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.innerHTML = '<div class="comment-loading" style="width:16px;height:16px;"></div> {{ autoTranslate("Mengirim...") }}';
+            }
+            
+            try {
+                const response = await fetch(`/${window.locale}/komentar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        id_postingan: postinganId,
+                        komentar: commentText
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    textarea.value = '';
+                    await window.loadComments(postinganId);
+                    await updateCommentCount(postinganId, 1);
+                } else {
+                    alert(data.message || 'Gagal menambahkan komentar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.innerHTML = '{{ autoTranslate("Kirim") }}';
+                }
+            }
+        };
+        
+        // Show reply form
+        window.showReplyForm = function(parentCommentId, postinganId) {
+            const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
+            if (!replyFormContainer) return;
+            
+            if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
+                replyFormContainer.classList.add('hidden');
+                return;
+            }
+            
+            replyFormContainer.innerHTML = `
+                <form class="reply-submit-form mt-2">
+                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
+                    <input type="hidden" name="parent_id" value="${parentCommentId}">
+                    <div class="flex gap-2">
+                        <textarea name="komentar" rows="2" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="Tulis balasan..."></textarea>
+                        <button type="submit" class="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700">Kirim</button>
+                        <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden')" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-400">Batal</button>
+                    </div>
+                </form>
+            `;
+            replyFormContainer.classList.remove('hidden');
+            
+            const form = replyFormContainer.querySelector('form');
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                await submitReply(form, postinganId);
+            };
+        };
+        
+        // Submit a reply
+        async function submitReply(form, postinganId) {
+            const textarea = form.querySelector('textarea[name="komentar"]');
+            const commentText = textarea.value.trim();
+            const parentId = form.querySelector('input[name="parent_id"]').value;
+            
+            if (!commentText) {
+                alert('Balasan tidak boleh kosong');
+                return;
+            }
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;"></div>';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`/${window.locale}/komentar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        id_postingan: postinganId,
+                        komentar: commentText,
+                        parent_id: parentId,
+                        reply_to_id: parentId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await window.loadComments(postinganId);
+                    await updateCommentCount(postinganId, 1);
+                    const replyContainer = document.getElementById(`reply-form-${parentId}`);
+                    if (replyContainer) {
+                        replyContainer.classList.add('hidden');
+                        replyContainer.innerHTML = '';
+                    }
+                } else {
+                    alert(data.message || 'Gagal menambahkan balasan');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // Show edit form
+        window.showEditForm = function(commentId, postinganId) {
+            const commentTextEl = document.getElementById(`comment-text-${commentId}`);
+            const originalText = commentTextEl.innerText;
+            const commentItem = commentTextEl.closest('.comment-item');
+            
+            const editForm = document.createElement('div');
+            editForm.className = 'edit-form mt-2';
+            editForm.id = `edit-form-${commentId}`;
+            editForm.innerHTML = `
+                <textarea class="edit-textarea w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg" rows="2">${escapeHtml(originalText)}</textarea>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="window.saveEdit(${commentId}, ${postinganId})" class="save-edit-btn px-3 py-1 bg-green-600 text-white text-sm rounded-lg">Simpan</button>
+                    <button onclick="window.cancelEdit(${commentId})" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded-lg">Batal</button>
+                </div>
+            `;
+            
+            commentTextEl.style.display = 'none';
+            commentTextEl.parentNode.insertBefore(editForm, commentTextEl.nextSibling);
+            
+            const editBtn = commentItem.querySelector('.edit-comment-btn');
+            if (editBtn) editBtn.style.display = 'none';
+        };
+        
+        // Save edit
+        window.saveEdit = async function(commentId, postinganId) {
+            const editForm = document.getElementById(`edit-form-${commentId}`);
+            const newText = editForm.querySelector('.edit-textarea').value.trim();
+            
+            if (!newText) {
+                alert('Komentar tidak boleh kosong');
+                return;
+            }
+            
+            const saveBtn = editForm.querySelector('.save-edit-btn');
+            saveBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;"></div>';
+            saveBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`/${window.locale}/komentar/update?id=${commentId}&id_postingan=${postinganId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ komentar: newText })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await window.loadComments(postinganId);
+                } else {
+                    alert(data.message || 'Gagal mengupdate komentar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+            } finally {
+                saveBtn.innerHTML = 'Simpan';
+                saveBtn.disabled = false;
+            }
+        };
+        
+        // Cancel edit
+        window.cancelEdit = function(commentId) {
+            const commentTextEl = document.getElementById(`comment-text-${commentId}`);
+            const editForm = document.getElementById(`edit-form-${commentId}`);
+            const commentItem = commentTextEl.closest('.comment-item');
+            
+            commentTextEl.style.display = 'block';
+            if (editForm) editForm.remove();
+            
+            const editBtn = commentItem.querySelector('.edit-comment-btn');
+            if (editBtn) editBtn.style.display = 'inline-block';
+        };
+        
+        // Delete comment
+        window.deleteComment = async function(commentId, postinganId, type = 'full') {
+            const confirmMessage = type === 'single' 
+                ? 'Apakah Anda yakin ingin menghapus balasan ini saja? Balasan di dalamnya akan naik satu level.'
+                : 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?';
+            
+            if (!confirm(confirmMessage)) return;
+            
+            try {
+                const response = await fetch(`/${window.locale}/komentar/destroy?id=${commentId}&id_postingan=${postinganId}&type=${type}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await window.loadComments(postinganId);
+                    await updateCommentCount(postinganId, -1);
+                } else {
+                    alert(data.message || 'Gagal menghapus komentar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+            }
+        };
+        
+        // Update comment count
+        async function updateCommentCount(postinganId, delta) {
+            const commentCountSpan = document.querySelector(`.comment-toggle[data-postingan-id="${postinganId}"] .comment-count`);
+            if (commentCountSpan) {
+                const currentCount = parseInt(commentCountSpan.innerText) || 0;
+                commentCountSpan.innerText = Math.max(0, currentCount + delta);
+            }
+        }
+        
+        // Toggle comment section
+        function setupCommentToggleListeners() {
+            document.querySelectorAll('.comment-toggle').forEach(btn => {
+                btn.removeEventListener('click', window.handleCommentToggle);
+                btn.addEventListener('click', window.handleCommentToggle);
+            });
+        }
+        
+        window.handleCommentToggle = async function(event) {
+            const btn = event.currentTarget;
+            const postCard = btn.closest('.post-card');
+            const commentSection = postCard.querySelector('.comment-section');
+            const isHidden = commentSection.style.display !== 'block';
+            
+            commentSection.style.display = isHidden ? 'block' : 'none';
+            
+            if (isHidden) {
+                const postinganId = btn.dataset.postinganId;
+                if (postinganId) {
+                    await window.loadComments(postinganId);
+                }
+            }
+        };
+        
+        // Share functionality
+        function setupShareListeners() {
+            document.querySelectorAll('.share-btn').forEach(btn => {
+                btn.removeEventListener('click', window.handleShare);
+                btn.addEventListener('click', window.handleShare);
+            });
+        }
+        
+        window.handleShare = function(event) {
+            const btn = event.currentTarget;
+            const postCard = btn.closest('.post-card');
+            if (!postCard) return;
+            
+            let url = postCard.dataset.shareUrl || window.location.href;
+            const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
+            
+            if (navigator.share) {
+                navigator.share({ title: title, url: url }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+                    setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+                }).catch(() => { alert('Gagal menyalin URL'); });
+            }
+        };
+        
+        // Like functionality
+        function setupLikeListeners() {
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.removeEventListener('click', window.handleLike);
+                btn.addEventListener('click', window.handleLike);
+            });
+        }
+        
+        window.handleLike = async function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const likeBtn = event.currentTarget;
+            const postinganId = likeBtn.getAttribute('data-postingan-id');
+            
+            try {
+                const response = await fetch(`/${window.locale}/postingan/toggle-like?id=${postinganId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const countEl = likeBtn.querySelector('.like-count');
+                    countEl.textContent = data.like_count;
+                    const svg = likeBtn.querySelector('svg');
+                    if (data.liked) {
+                        likeBtn.classList.add('text-red-500');
+                        svg.classList.add('fill-current', 'text-red-500');
+                    } else {
+                        likeBtn.classList.remove('text-red-500');
+                        svg.classList.remove('fill-current', 'text-red-500');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+        
+        // Search functionality
+        function setupSearch() {
             const searchInput = document.getElementById('searchPostinganInput');
             const clearBtn = document.getElementById('clearSearchBtn');
             const searchResultInfo = document.getElementById('searchResultInfo');
@@ -641,23 +1102,16 @@
                 const paginationDiv = document.getElementById('postingan-pagination');
                 
                 if (searchTerm.length < 2) {
-                    // Reset to show all posts
-                    allPosts.forEach(post => {
-                        post.style.display = '';
-                    });
+                    allPosts.forEach(post => post.style.display = '');
                     if (paginationDiv) paginationDiv.style.display = '';
-                    searchResultInfo.classList.add('hidden');
-                    clearBtn.classList.add('hidden');
-                    
-                    // Remove no results message if exists
+                    searchResultInfo?.classList.add('hidden');
+                    clearBtn?.classList.add('hidden');
                     const noResultsMsg = document.getElementById('noResultsMessage');
                     if (noResultsMsg) noResultsMsg.remove();
                     return;
                 }
                 
-                clearBtn.classList.remove('hidden');
-                
-                // Hide pagination when searching
+                clearBtn?.classList.remove('hidden');
                 if (paginationDiv) paginationDiv.style.display = 'none';
                 
                 let visibleCount = 0;
@@ -667,25 +1121,18 @@
                     const description = post.getAttribute('data-post-description') || '';
                     const author = post.getAttribute('data-post-author') || '';
                     
-                    const titleMatch = title.includes(searchTerm);
-                    const descMatch = description.includes(searchTerm);
-                    const authorMatch = author.includes(searchTerm);
-                    const hasMatch = titleMatch || descMatch || authorMatch;
+                    const hasMatch = title.includes(searchTerm) || description.includes(searchTerm) || author.includes(searchTerm);
                     
                     if (hasMatch) {
                         post.style.display = '';
                         visibleCount++;
                         
-                        // Highlight title if match
-                        if (titleMatch && searchTerm.length >= 2) {
+                        if (title.includes(searchTerm) && searchTerm.length >= 2) {
                             const titleElement = post.querySelector('h3');
                             if (titleElement && titleElement.innerText) {
                                 const originalTitle = titleElement.innerText;
                                 const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-                                const highlightedTitle = originalTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
-                                if (titleElement.innerHTML !== highlightedTitle) {
-                                    titleElement.innerHTML = highlightedTitle;
-                                }
+                                titleElement.innerHTML = originalTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
                             }
                         }
                     } else {
@@ -693,11 +1140,9 @@
                     }
                 });
                 
-                // Update search result info
-                searchResultCount.textContent = visibleCount;
-                searchResultInfo.classList.remove('hidden');
+                if (searchResultCount) searchResultCount.textContent = visibleCount;
+                searchResultInfo?.classList.remove('hidden');
                 
-                // Show/hide no results message
                 let noResultsMsg = document.getElementById('noResultsMessage');
                 if (visibleCount === 0) {
                     const container = document.getElementById('postingan-container');
@@ -707,132 +1152,122 @@
                         noResultsMsg.className = 'text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm no-results-animation';
                         noResultsMsg.innerHTML = `
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
                             <p class="text-gray-500 dark:text-gray-400 text-lg font-medium mb-2">Tidak ada postingan ditemukan</p>
                             <p class="text-gray-400 dark:text-gray-500 text-sm">Coba dengan kata kunci lain</p>
                         `;
                         container.appendChild(noResultsMsg);
-                    } else if (noResultsMsg && visibleCount === 0) {
-                        noResultsMsg.style.display = 'block';
-                    }
-                } else if (noResultsMsg) {
-                    noResultsMsg.style.display = 'none';
-                }
+                    } else if (noResultsMsg) noResultsMsg.style.display = 'block';
+                } else if (noResultsMsg) noResultsMsg.style.display = 'none';
             }
             
             function resetSearch() {
-                if (searchInput) searchInput.value = '';
-                if (clearBtn) clearBtn.classList.add('hidden');
-                if (searchResultInfo) searchResultInfo.classList.add('hidden');
+                searchInput.value = '';
+                clearBtn?.classList.add('hidden');
+                searchResultInfo?.classList.add('hidden');
                 
-                const allPosts = document.querySelectorAll('#postingan-container .post-card');
-                const paginationDiv = document.getElementById('postingan-pagination');
-                
-                allPosts.forEach(post => {
+                document.querySelectorAll('#postingan-container .post-card').forEach(post => {
                     post.style.display = '';
-                    // Remove highlight from titles
                     const titleElement = post.querySelector('h3');
                     if (titleElement && titleElement.innerHTML.includes('search-highlight')) {
                         titleElement.innerHTML = titleElement.innerText;
                     }
                 });
                 
+                const paginationDiv = document.getElementById('postingan-pagination');
                 if (paginationDiv) paginationDiv.style.display = '';
                 
-                // Remove no results message
                 const noResultsMsg = document.getElementById('noResultsMessage');
                 if (noResultsMsg) noResultsMsg.remove();
             }
             
-            // Event listeners
             searchInput.addEventListener('input', function() {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(performSearch, 300);
             });
             
-            if (clearBtn) {
-                clearBtn.addEventListener('click', resetSearch);
-            }
-        });
+            if (clearBtn) clearBtn.addEventListener('click', resetSearch);
+        }
         
-        // Like button handler
-        document.addEventListener('click', function(e) {
-            const likeBtn = e.target.closest('.like-btn');
-            if (likeBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const postinganId = likeBtn.getAttribute('data-postingan-id');
-                const locale = document.querySelector('html').getAttribute('lang') || 'id';
-                fetch(`/${locale}/postingan/toggle-like?id=${postinganId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        const countEl = likeBtn.querySelector('.like-count');
-                        countEl.textContent = data.like_count;
-                        const svg = likeBtn.querySelector('svg');
-                        if (data.liked) { 
-                            likeBtn.classList.add('text-red-500'); 
-                            svg.classList.add('fill-current', 'text-red-500'); 
-                        } else { 
-                            likeBtn.classList.remove('text-red-500'); 
-                            svg.classList.remove('fill-current', 'text-red-500'); 
-                        }
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        });
-
+        // Sort posts by game
+        function sortPostinganByGame() {
+            const container = document.getElementById('postingan-container');
+            if (!container) return;
+            const posts = Array.from(container.children);
+            posts.sort((a, b) => {
+                const aHasGame = a.querySelector('.bg-teal-600') !== null;
+                const bHasGame = b.querySelector('.bg-teal-600') !== null;
+                if (aHasGame && !bHasGame) return -1;
+                if (!aHasGame && bHasGame) return 1;
+                return 0;
+            });
+            container.innerHTML = '';
+            posts.forEach(post => container.appendChild(post));
+        }
+        
         // Dosen Carousel
-        const dosenCards = document.querySelectorAll('.dosen-card');
-        const dots = document.querySelectorAll('.dot');
-        let current = 0;
-        const visibleDots = 4;
-        const dotSize = 20;
-
-        function updateCarousel() {
+        function initDosenCarousel() {
+            const dosenCards = document.querySelectorAll('.dosen-card');
+            const dots = document.querySelectorAll('.dot');
             if (!dosenCards.length) return;
-            dosenCards.forEach((card, i) => {
-                let offset = i - current;
-                const name = card.querySelector('.dosen-name');
-                card.style.zIndex = offset === 0 ? '3' : (Math.abs(offset) === 1 ? '2' : '1');
-                card.style.opacity = offset === 0 ? '1' : (Math.abs(offset) === 1 ? '0.6' : '0');
-                card.style.transform = offset === 0 ? 'translateX(0) scale(1)' : (offset === -1 ? 'translateX(-120px) scale(0.8)' : (offset === 1 ? 'translateX(120px) scale(0.8)' : 'translateX(0) scale(0.5)'));
-                if (name) name.style.opacity = offset === 0 ? '1' : '0';
-            });
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('bg-blue-500', i === current);
-                dot.classList.toggle('opacity-100', i === current);
-                dot.classList.toggle('bg-gray-300', i !== current);
-                dot.classList.toggle('opacity-40', i !== current);
-            });
-            let offsetIndex = Math.max(0, Math.min(current - Math.floor(visibleDots / 2), dots.length - visibleDots));
-            const dotsTrack = document.getElementById('dosenDotsTrack');
-            if (dotsTrack) {
-                dotsTrack.style.transform = `translateX(${-(offsetIndex * dotSize)}px)`;
+            
+            let current = 0;
+            const visibleDots = 4;
+            const dotSize = 20;
+            
+            function updateCarousel() {
+                dosenCards.forEach((card, i) => {
+                    let offset = i - current;
+                    const name = card.querySelector('.dosen-name');
+                    card.style.zIndex = offset === 0 ? '3' : (Math.abs(offset) === 1 ? '2' : '1');
+                    card.style.opacity = offset === 0 ? '1' : (Math.abs(offset) === 1 ? '0.6' : '0');
+                    card.style.transform = offset === 0 ? 'translateX(0) scale(1)' : (offset === -1 ? 'translateX(-120px) scale(0.8)' : (offset === 1 ? 'translateX(120px) scale(0.8)' : 'translateX(0) scale(0.5)'));
+                    if (name) name.style.opacity = offset === 0 ? '1' : '0';
+                });
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('bg-blue-500', i === current);
+                    dot.classList.toggle('opacity-100', i === current);
+                    dot.classList.toggle('bg-gray-300', i !== current);
+                    dot.classList.toggle('opacity-40', i !== current);
+                });
+                let offsetIndex = Math.max(0, Math.min(current - Math.floor(visibleDots / 2), dots.length - visibleDots));
+                const dotsTrack = document.getElementById('dosenDotsTrack');
+                if (dotsTrack) {
+                    dotsTrack.style.transform = `translateX(${-(offsetIndex * dotSize)}px)`;
+                }
             }
-        }
-
-        const nextBtn = document.getElementById('dosenNextBtn');
-        const prevBtn = document.getElementById('dosenPrevBtn');
-        if (nextBtn && dosenCards.length) {
-            nextBtn.onclick = () => { current = (current + 1) % dosenCards.length; updateCarousel(); };
-        }
-        if (prevBtn && dosenCards.length) {
-            prevBtn.onclick = () => { current = (current - 1 + dosenCards.length) % dosenCards.length; updateCarousel(); };
-        }
-        if (dots.length) {
-            dots.forEach(dot => { 
-                dot.onclick = () => { current = parseInt(dot.dataset.index); updateCarousel(); }; 
-            });
-        }
-        if (dosenCards.length) {
+            
+            const nextBtn = document.getElementById('dosenNextBtn');
+            const prevBtn = document.getElementById('dosenPrevBtn');
+            if (nextBtn) nextBtn.onclick = () => { current = (current + 1) % dosenCards.length; updateCarousel(); };
+            if (prevBtn) prevBtn.onclick = () => { current = (current - 1 + dosenCards.length) % dosenCards.length; updateCarousel(); };
+            dots.forEach(dot => { dot.onclick = () => { current = parseInt(dot.dataset.index); updateCarousel(); }; });
+            
             updateCarousel();
             setInterval(() => { current = (current + 1) % dosenCards.length; updateCarousel(); }, 5000);
         }
+        
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show skeletons then hide them
+            setTimeout(function() {
+                const skeletonElements = ['postingan-skeleton', 'project-skeleton', 'sertifikat-skeleton', 'learning-skeleton'];
+                skeletonElements.forEach(id => {
+                    const skeleton = document.getElementById(id);
+                    const wrapper = document.getElementById(id.replace('-skeleton', '-content-wrapper'));
+                    if (skeleton && wrapper) {
+                        skeleton.classList.add('hidden');
+                        wrapper.classList.remove('hidden');
+                    }
+                });
+                sortPostinganByGame();
+                setupCommentToggleListeners();
+                setupShareListeners();
+                setupLikeListeners();
+                setupSearch();
+                initDosenCarousel();
+            }, 800);
+        });
     </script>
 @endsection

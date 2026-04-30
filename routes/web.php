@@ -98,9 +98,14 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
         Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
         
-        Route::resource('komentar', KomentarController::class)->only([
-            'index', 'create', 'store',
-        ]);
+        // Di dalam locale group, ganti route komentar menjadi:
+Route::controller(KomentarController::class)->prefix('komentar')->group(function () {
+    Route::get('/', 'index')->name('komentar.index');
+    Route::post('/', 'store')->name('komentar.store');  // <- Perhatikan: tanpa /store
+    Route::get('/edit', 'edit')->name('komentar.edit');
+    Route::put('/update', 'update')->name('komentar.update');
+    Route::delete('/destroy', 'destroy')->name('komentar.destroy');
+});
 
         // ========== MAHASISWA ROUTES (dengan 2FA) ==========
         Route::middleware(['auth', 'role:mahasiswa', '2fa'])->group(function () {
@@ -285,11 +290,6 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::delete('/learning-corner/delete', [LearningCornerController::class, 'destroy'])->name('learning-corner.destroy');
         Route::post('/learning-corner/mass-destroy', [LearningCornerController::class, 'massDestroy'])->name('learning-corner.mass-destroy');
 
-        // ========== KOMENTAR ROUTES ==========
-        Route::get('/komentar/edit', [KomentarController::class, 'edit'])->name('komentar.edit');
-        Route::put('/komentar/update', [KomentarController::class, 'update'])->name('komentar.update');
-        Route::delete('/komentar/delete', [KomentarController::class, 'destroy'])->name('komentar.destroy');
-
         // ========== LIKE ROUTES ==========
         Route::post('/postingan/toggle-like', [LikedPostinganController::class, 'toggle'])->name('postingan.toggle-like');
 
@@ -325,6 +325,7 @@ Route::middleware(['web', 'auth'])->group(function () {
 // ========== ADDITIONAL ROUTES (di luar locale) ==========
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
+
 
 // ========== AUTHENTICATED TASK ROUTES ==========
 Route::middleware(['auth', '2fa'])->group(function () {

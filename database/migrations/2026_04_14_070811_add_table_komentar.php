@@ -13,17 +13,10 @@ return new class extends Migration
     {
         Schema::create('komentar', function (Blueprint $table) {
             $table->id('id_komentar');
-            $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_postingan');
-            $table->longText('komentar');
-            $table->timestamp('tanggal');
+            $table->json('komentar_data'); // JSON structure for nested comments
             $table->timestamps();
             
-            $table->foreign('id_user')
-              ->references('id')
-              ->on('users')
-              ->onDelete('cascade');
-
             $table->foreign('id_postingan')
                 ->references('id_postingan')
                 ->on('postingan')
@@ -36,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
+        Schema::dropIfExists('komentar');
     }
 };
