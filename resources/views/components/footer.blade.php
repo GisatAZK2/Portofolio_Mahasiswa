@@ -1,13 +1,3 @@
-
-<div class="relative z-10 text-center -mb-3">
-    <button id="toggleFooterBtn" 
-            class="inline-flex items-center justify-center w-6 h-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg transition-all duration-300 focus:outline-none">
-        <svg id="toggleIcon" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-    </button>
-</div>
-
 <footer class="dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-all duration-300" id="mainFooter">
     <!-- Mobile View -->
     <div class="block md:hidden px-4 py-4">
@@ -171,32 +161,3 @@
         </div>
     </div>
 </footer>
-
-<script>
-    (function() {
-        const footer = document.getElementById('mainFooter');
-        const toggleBtn = document.getElementById('toggleFooterBtn');
-        const icon = document.getElementById('toggleIcon');
-        let isFooterHidden = false;
-
-        if (footer && toggleBtn) {
-            toggleBtn.addEventListener('click', function() {
-                if (!isFooterHidden) {
-                    footer.style.display = 'none';
-                    if (icon) icon.classList.add('rotate-180');
-                    isFooterHidden = true;
-                } else {
-                    footer.style.display = 'block';
-                    if (icon) icon.classList.remove('rotate-180');
-                    isFooterHidden = false;
-                }
-            });
-        }
-    })();
-</script>
-
-<style>
-    .rotate-180 {
-        transform: rotate(180deg);
-    }
-</style>

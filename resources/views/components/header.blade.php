@@ -34,6 +34,8 @@
 
             <!-- Mobile: Hamburger + Search Icon (left side) -->
             <div class="flex items-center gap-3 lg:hidden">
+            @auth
+                @if(Auth::user()->role !== 'mahasiswa')
                 <button id="toggle-sidebar" class="text-gray-700 dark:text-gray-300 focus:outline-none">
                     <svg id="sidebar-hamburger" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -42,6 +44,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
+                @endauth
+                @endif
                 <button id="toggle-search-mobile" class="text-gray-700 dark:text-gray-300 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
