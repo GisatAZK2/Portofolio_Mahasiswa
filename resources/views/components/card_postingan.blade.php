@@ -367,7 +367,7 @@
                             class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
                             <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
                                 <path
-                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                             </svg>
                             GitHub
                         </a>
@@ -618,18 +618,38 @@
 
     <!-- Footer -->
     <div class="mt-3 sm:mt-4 pt-2 sm:pt-4 border-t border-gray-100 dark:border-gray-900">
-        <p class="text-xs text-gray-500 dark:text-gray-50 line-clamp-2">
-            <span>{{ autoTranslate('Diposting') }}</span>
-            {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
-            <span>{{ autoTranslate('oleh') }}</span>
-            {{ autoTranslate($userName) }}
-            @if($relatedProject)
-                <span>{{ autoTranslate('untuk project') }}</span>
-                <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
-                    class="text-indigo-600 hover:text-indigo-800 transition-colors font-medium">
-                    {{ autoTranslate(Str::limit($relatedProjectData['nama_project'] ?? 'Project', 30)) }}
-                </a>
-            @endif
-        </p>
+        @if($post->type === 'project' || $post->type === 'project_user')
+            <!-- Untuk project: tampilkan baris dengan flex justify-between -->
+            <div class="flex justify-between items-center">
+                <p class="text-xs text-gray-500 dark:text-gray-50">
+                    <span>{{ autoTranslate('Diposting') }}</span>
+                    {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
+                    <span>{{ autoTranslate('oleh') }}</span>
+                    {{ autoTranslate($userName) }}
+                </p>
+                <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>{{ $post->unique_views_count ?? 0 }} dilihat</span>
+                </div>
+            </div>
+        @else
+            <!-- Untuk tipe lain: tampilkan teks lengkap dengan kemungkinan link project terkait -->
+            <p class="text-xs text-gray-500 dark:text-gray-50 line-clamp-2">
+                <span>{{ autoTranslate('Diposting') }}</span>
+                {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
+                <span>{{ autoTranslate('oleh') }}</span>
+                {{ autoTranslate($userName) }}
+                @if($relatedProject)
+                    <span>{{ autoTranslate('untuk project') }}</span>
+                    <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
+                        class="text-indigo-600 hover:text-indigo-800 transition-colors font-medium">
+                        {{ autoTranslate(Str::limit($relatedProjectData['nama_project'] ?? 'Project', 30)) }}
+                    </a>
+                @endif
+            </p>
+        @endif
     </div>
 </div>

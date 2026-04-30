@@ -109,6 +109,21 @@ Route::middleware(['web', 'auth'])->group(function () {
                 return view('views_profile_page');
             })->name('profile-page');
 
+            // Pendidikan
+            Route::prefix('pendidikan')->middleware('auth')->group(function () {
+                Route::post('/store', [UserController::class, 'storePendidikan'])->name('pendidikan.store');
+                Route::delete('/destroy', [UserController::class, 'destroyPendidikan'])->name('pendidikan.destroy');
+            });
+
+            // Pengalaman Kerja
+            Route::prefix('pengalaman-kerja')->middleware('auth')->group(function () {
+                Route::post('/store', [UserController::class, 'storePengalamanKerja'])->name('pengalaman-kerja.store');
+                Route::delete('/destroy', [UserController::class, 'destroyPengalamanKerja'])->name('pengalaman-kerja.destroy');
+            });
+
+            // Search Sekolah (public)
+            Route::get('/sekolah/search', [UserController::class, 'searchSekolah'])->name('sekolah.search');
+            
             // CRUD Project
             Route::resource('project', ProjekController::class)->only([
                 'index', 'create', 'store'

@@ -25,7 +25,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Passkey::class);
     }
-    
+
     /**
      * Cek apakah user punya passkey
      */
@@ -42,52 +42,55 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-
     protected $fillable = [
-    'nama_mahasiswa',
-    'email',
-    'nim',
-    'tanggal_lahir',
-    'photo_profile',
-    'username',
-    'password',
-    'jenis_kelamin',
-    'background_url',
-    'id_jurusan',
-    'keahlian_tambahan',
-    'keterangan',
-    'id_keahlian',
-    'id_angkatan',
-    'deskripsi',
-    'is_active',
-    'status_pengajuan',
-    'role',
-    'video_url',
+        'nama_mahasiswa',
+        'email',
+        'nim',
+        'tanggal_lahir',
+        'photo_profile',
+        'username',
+        'password',
+        'jenis_kelamin',
+        'background_url',
+        'id_jurusan',
+        'keahlian_tambahan',
+        'keterangan',
+        'id_keahlian',
+        'id_angkatan',
+        'deskripsi',
+        'is_active',
+        'status_pengajuan',
+        'role',
+        'video_url',
+        'pengalaman_kerja',  // JSON: [{nama_pt, bagian_kerja, sertifikat_pendukung, tahun_mulai, tahun_akhir}]
+        'pendidikan',         // JSON: [{nama_sekolah, jenjang, jurusan, tahun_masuk, tahun_lulus}]
     ];
-    
+
     protected $casts = [
-    'keahlian_tambahan' => 'array',
-    'email_verified_at' => 'datetime',
-    'password' => 'hashed',
-    'tanggal_lahir'=> 'date',
+        'keahlian_tambahan'  => 'array',
+        'email_verified_at'  => 'datetime',
+        'password'           => 'hashed',
+        'tanggal_lahir'      => 'date',
+        'pengalaman_kerja'   => 'array',
+        'pendidikan'         => 'array',
     ];
 
-public function jurusan()
-{
-    return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
-}
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
+    }
 
-public function postingans()
-{
-    return $this->hasMany(Postingan::class, 'id_user', 'id');
-}
+    public function postingans()
+    {
+        return $this->hasMany(Postingan::class, 'id_user', 'id');
+    }
 
-   public function keahlian()
-{
-    return $this->belongsTo(Keahlian::class, 'id_keahlian');
-}
+    public function keahlian()
+    {
+        return $this->belongsTo(Keahlian::class, 'id_keahlian');
+    }
 
-public function keahlianTambahan()
+    public function keahlianTambahan()
     {
         return $this->belongsToMany(
             Keahlian::class,
@@ -98,55 +101,55 @@ public function keahlianTambahan()
          ->withTimestamps();
     }
 
-public function angkatan() {
-    return $this->belongsTo(Angkatan::class, 'id_angkatan', 'id');
-}
+    public function angkatan()
+    {
+        return $this->belongsTo(Angkatan::class, 'id_angkatan', 'id');
+    }
 
+    public function learning_corners()
+    {
+        return $this->hasMany(LearningCorner::class, 'id_mahasiswa');
+    }
 
-public function learning_corners()
-{
-    return $this->hasMany(LearningCorner::class, 'id_mahasiswa');
-}
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'id_mahasiswa', 'id');
+    }
 
-public function projects()
-{
-    return $this->hasMany(Project::class, 'id_mahasiswa', 'id');
-}
+    public function memberProjects()
+    {
+        return $this->belongsToMany(
+            Project::class,
+            'project_user',
+            'user_id',
+            'project_id'
+        );
+    }
 
-public function memberProjects()
-{
-    return $this->belongsToMany(
-        Project::class,
-        'project_user',
-        'user_id',
-        'project_id'
-    );
-}
+    public function leadingProjects()
+    {
+        return $this->hasMany(Project::class, 'leader_id');
+    }
 
-public function leadingProjects()
-{
-    return $this->hasMany(Project::class, 'leader_id');
-}
+    public function assignedTasks()
+    {
+        return $this->hasMany(ProjectTask::class, 'user_id');
+    }
 
-public function assignedTasks()
-{
-    return $this->hasMany(ProjectTask::class, 'user_id');
-}
+    public function sertifikats()
+    {
+        return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
+    }
 
-public function sertifikats()
-{
-    return $this->hasMany(Sertifikat::class, 'id_mahasiswa', 'id');
-}
+    public function likedPostings()
+    {
+        return $this->hasMany(LikedPostingan::class, 'id_user', 'id');
+    }
 
-public function likedPostings()
-{
-    return $this->hasMany(LikedPostingan::class, 'id_user', 'id');
-}
-
-public function komentars()
-{
-    return $this->hasMany(Komentar::class, 'id_user', 'id');
-}
+    public function komentars()
+    {
+        return $this->hasMany(Komentar::class, 'id_user', 'id');
+    }
 
     protected static function booted(): void
     {
@@ -157,6 +160,15 @@ public function komentars()
 
             if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
                 Storage::disk('public')->delete($user->background_url);
+            }
+
+            // Hapus file sertifikat pendukung pengalaman kerja
+            if ($user->pengalaman_kerja) {
+                foreach ($user->pengalaman_kerja as $pengalaman) {
+                    if (!empty($pengalaman['sertifikat_pendukung']) && Storage::disk('public')->exists($pengalaman['sertifikat_pendukung'])) {
+                        Storage::disk('public')->delete($pengalaman['sertifikat_pendukung']);
+                    }
+                }
             }
 
             $user->sertifikats()->get()->each->delete();
@@ -172,7 +184,6 @@ public function komentars()
             $projects->each->delete();
         });
     }
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -193,11 +204,11 @@ public function komentars()
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
-        public function getJenisKelaminFormattedAttribute()
+    public function getJenisKelaminFormattedAttribute()
     {
         if ($this->jenis_kelamin == 'L' || $this->jenis_kelamin == 'Laki-laki') {
             return 'Laki-laki';
