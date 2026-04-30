@@ -28,6 +28,7 @@ class Project extends Model
         'isi_content' => 'array',
         'tanggal_mulai' => 'date',
         'tanggal_akhir' => 'date',
+        'viewer_ids' => 'array', 
     ];
 
     // Relasi ke User
@@ -43,6 +44,42 @@ class Project extends Model
               ->orWhere('leader_id', $userId);
         });
     }
+
+    public function recordView(int $userId): bool
+    {
+    $viewers = $this->viewer_ids ?? [];
+    
+    if (!in_array($userId, $viewers)) {
+        $viewers[] = $userId;
+        $this->viewer_ids = $viewers;
+        $this->save();
+        return true;
+    }
+    
+    return false;
+}
+
+    /**
+     * Hitung jumlah views unik
+     *
+     * @return int
+     */
+    public function getUniqueViewsCountAttribute(): int
+    {
+        return count($this->viewer_ids ?? []);
+    }
+
+    /**
+     * Cek apakah user tertentu sudah pernah melihat
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function hasBeenViewedBy(int $userId): bool
+    {
+        return in_array($userId, $this->viewer_ids ?? []);
+    }
+
 
     // Helper: apakah user ini bisa edit/hapus project ini
     public function canBeEditedByUser(?User $user): bool

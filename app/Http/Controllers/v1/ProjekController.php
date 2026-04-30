@@ -926,6 +926,13 @@ class ProjekController extends Controller
         $canSeeAllTasks = false;
         $visibleTasks = collect();
 
+        if (Auth::check()) {
+        $project->recordView(Auth::id());
+        $project->refresh(); 
+        }
+
+
+
         if ($user) {
             $isOwner = $project->id_mahasiswa === $user->id;
             $isLeader = $project->leader_id === $user->id;
