@@ -17,38 +17,64 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@10/dist/bundle/index.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <style>
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
-        .flex.h-screen {
-            overflow-x: hidden;
+
+        /* Wrapper utama: sidebar kiri + konten kanan, membentang penuh */
+        .app-layout {
+            display: flex;
             min-height: 100vh;
-            height: 100%;
+            align-items: stretch;
         }
-        main {
-            position: relative;
-            min-width: 0;   
-            width: 100%;
-            overflow-x: auto;
-            flex: 1 1 auto;
-        }
+
+        /* Sidebar tetap di sisi kiri, tinggi penuh layar, sticky */
         #sidebar {
             z-index: 40;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            flex-shrink: 0;
+            overflow-y: auto;
         }
+
+        /* Kolom kanan: header + main + footer mengalir secara natural */
+        .main-column {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 1 auto;
+            min-width: 0;
+            width: 100%;
+            overflow-x: auto;
+        }
+
         .content-wrapper {
             width: 100%;
             max-width: 100%;
         }
+
         @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+            }
+
             main {
                 z-index: 1;
             }
         }
-        
     </style>
 
     <script>
@@ -66,20 +92,20 @@
 
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
 
-    <div class="flex h-screen">
+    <div class="app-layout">
         @include('components.sidebar')
 
-        <div class="flex-1 flex flex-col min-w-0 h-full">
+        <div class="main-column">
             @include('components.header')
 
-            <main class="overflow-x-auto flex-1">
+            <main>
                 <div class="content-wrapper">
                     @yield('content')
                 </div>
             </main>
 
-            
             @include('components.footer')
+            @include('components.navigation_mahasiswa_mobile')
             @include('components.up-page')
             @include('components.chat-bot')
         </div>
