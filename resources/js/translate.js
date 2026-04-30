@@ -1,5 +1,9 @@
 import { all } from "axios";
 
+window.autoTranslateSync = function(text) {
+    return text; // fallback sementara biar tidak async crash
+};
+
 export const translations = {
   id: {
     profile: {
@@ -292,9 +296,9 @@ export const translations = {
     },
 
     confirm_delete_title: 'Ingin menghapus ini?',
-      confirm_delete_text: 'Aksi ini tidak bisa dikembalikan!',
-      confirm_delete_yes: 'Ya, Hapus',
-      cancel: 'Batal',
+    confirm_delete_text: 'Aksi ini tidak bisa dikembalikan!',
+    confirm_delete_yes: 'Ya, Hapus',
+    cancel: 'Batal',
       
 
     dosen_stk: {

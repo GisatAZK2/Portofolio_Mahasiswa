@@ -1,7 +1,7 @@
-
 import './bootstrap';
 import Alpine from 'alpinejs';
 import { showSuccessAlert, showErrorAlert, showLoading, closeLoading, showConfirm, showInfoAlert } from './alert.js';
+import './alert.js'
 import './translate';
 
 window.showSuccessAlert = showSuccessAlert;

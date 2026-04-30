@@ -1,0 +1,112 @@
+[33m07bc247[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mFauzan[m[33m, [m[1;31morigin/Fauzan[m[33m)[m HEAD@{0}: commit: Modified some models, and fixed/added features in postingan
+[33m16c1f5d[m[33m ([m[1;31morigin/Main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: pull origin Main: Fast-forward
+[33m5d57d9f[m HEAD@{2}: pull origin Main --rebase: Fast-forward
+[33mc318508[m HEAD@{3}: commit: Pushh
+[33m4498743[m HEAD@{4}: commit (merge): Merge branch 'Fauzan' of https://github.com/GisatAZK2/Portofolio_Mahasiswa into Fauzan
+[33m4f2c4de[m HEAD@{5}: rebase (finish): returning to refs/heads/Fauzan
+[33m4f2c4de[m HEAD@{6}: rebase (pick): merge
+[33m55fca22[m HEAD@{7}: commit: Added skeleton loading
+[33ma62a621[m HEAD@{8}: pull origin Main --rebase: Fast-forward
+[33m6a45d1f[m HEAD@{9}: pull origin Main --rebase (start): checkout 6a45d1f08142525aac0e43ddee21cecc35cf294f
+[33m7b08fe8[m HEAD@{10}: pull origin Fauzan --rebase (finish): returning to refs/heads/Fauzan
+[33m7b08fe8[m HEAD@{11}: pull origin Fauzan --rebase (pick): merge
+[33m6a22c10[m HEAD@{12}: pull origin Fauzan --rebase (pick): fix Add Projects On Admin And Translate.js fix
+[33m08e3cad[m HEAD@{13}: pull origin Fauzan --rebase (pick): Merge Branche Fauzan And Dimas
+[33m0da6dec[m HEAD@{14}: pull origin Fauzan --rebase (pick): fix route+up-page, remake design admin+dosen+ add splash+chatbot
+[33m2c49e58[m HEAD@{15}: pull origin Fauzan --rebase (pick): Fix Keahlian User
+[33m218dd5c[m HEAD@{16}: pull origin Fauzan --rebase (pick): Merge Branch Dimas
+[33m5b5b8d4[m HEAD@{17}: pull origin Fauzan --rebase (pick): fix design
+[33m93c2e4a[m HEAD@{18}: pull origin Fauzan --rebase (pick): add feature Post Game For Dosen
+[33m8d42c44[m HEAD@{19}: pull origin Fauzan --rebase (pick): Fix Forgot Password Email
+[33m035ee53[m HEAD@{20}: pull origin Fauzan --rebase (pick): fix route+dashboard me
+[33m1a58ba5[m HEAD@{21}: pull origin Fauzan --rebase (pick): Fix Password Forgot
+[33m1763f3f[m HEAD@{22}: pull origin Fauzan --rebase (pick): fix route not found
+[33m59cd536[m HEAD@{23}: pull origin Fauzan --rebase (pick): fix route not found
+[33m9af2736[m HEAD@{24}: pull origin Fauzan --rebase (pick): remake learning corner empty
+[33m974dd86[m HEAD@{25}: pull origin Fauzan --rebase (pick): fix remake button
+[33m8481bea[m HEAD@{26}: pull origin Fauzan --rebase (pick): Add Schema Forgot Password
+[33m963c447[m HEAD@{27}: pull origin Fauzan --rebase (pick): Filter Game Leaderboard
+[33m3501345[m HEAD@{28}: pull origin Fauzan --rebase (pick): Leaderboard Page Games
+[33ma45808e[m HEAD@{29}: pull origin Fauzan --rebase (pick): fix offline page loop
+[33md7df750[m HEAD@{30}: pull origin Fauzan --rebase (pick): Add Button LeaderBoard Game
+[33mf05e281[m HEAD@{31}: pull origin Fauzan --rebase (pick): fix page games
+[33m6a58c4d[m HEAD@{32}: pull origin Fauzan --rebase (pick): Fix Update Post Game Reset Score
+[33ma92cd4f[m HEAD@{33}: pull origin Fauzan --rebase (start): checkout a92cd4f1ce557fd767741bd9070f1a21254de627
+[33me631dd8[m HEAD@{34}: commit: merge
+[33m6a45d1f[m HEAD@{35}: pull origin Main --rebase: Fast-forward
+[33ma92cd4f[m HEAD@{36}: commit: Added questions for Help Page
+[33mf708c67[m HEAD@{37}: pull origin Main --rebase: Fast-forward
+[33mb89417e[m HEAD@{38}: pull origin Main: Fast-forward
+[33m7eeb8f0[m HEAD@{39}: commit: added dosen card
+[33md1f1fd7[m HEAD@{40}: pull origin Main: Merge made by the 'ort' strategy.
+[33ma6e30b7[m HEAD@{41}: pull origin Main: Merge made by the 'ort' strategy.
+[33mb1cf4a1[m HEAD@{42}: commit: Fixed error pages dark mode
+[33m02d887a[m HEAD@{43}: commit: Reworked Dashboards
+[33md60af80[m HEAD@{44}: commit: Translation
+[33m70d50c2[m HEAD@{45}: pull origin Main --rebase: Fast-forward
+[33m619361c[m HEAD@{46}: reset: moving to 619361c
+[33m369b4af[m HEAD@{47}: commit: merge
+[33m619361c[m HEAD@{48}: commit: Revised/added english translations
+[33m5b26d7f[m HEAD@{49}: pull origin Main: Fast-forward
+[33mf66ff10[m HEAD@{50}: pull origin Main --rebase: Fast-forward
+[33ma97230b[m HEAD@{51}: pull origin Main --rebase: Fast-forward
+[33m8bfb84a[m HEAD@{52}: commit: revisioned translation
+[33m4de37b7[m HEAD@{53}: commit: Added Introduction Vid for Students
+[33mbaf0798[m HEAD@{54}: pull origin Main --rebase: Fast-forward
+[33mf974c55[m HEAD@{55}: pull origin Main --rebase: Fast-forward
+[33m3f05e7e[m HEAD@{56}: commit: Added english translations
+[33m75b1619[m HEAD@{57}: pull origin Main --rebase: Fast-forward
+[33maf0a917[m HEAD@{58}: commit: Added translations for popups
+[33mb718abc[m HEAD@{59}: commit: failed popup translation
+[33m921e0cd[m HEAD@{60}: commit: failed popup translation
+[33mc707055[m HEAD@{61}: commit: failed to make translation for popups
+[33m798e316[m HEAD@{62}: commit: Added english translation
+[33m34f6f1a[m HEAD@{63}: pull origin Main: Merge made by the 'ort' strategy.
+[33ma2a03a7[m HEAD@{64}: commit: English
+[33meebeb1e[m HEAD@{65}: commit: Formatted the code
+[33mc59ee4f[m HEAD@{66}: commit (merge): merge/pull
+[33m57d00e7[m HEAD@{67}: commit: Merge
+[33m39c4984[m HEAD@{68}: pull origin Main --rebase: Fast-forward
+[33m7b7ddd3[m HEAD@{69}: commit: Added English Translations
+[33mcf33f73[m HEAD@{70}: commit: Added English Translations
+[33mdb4709a[m HEAD@{71}: pull origin Main --rebase: Fast-forward
+[33mdee08f0[m HEAD@{72}: commit: Added translation
+[33m260f645[m HEAD@{73}: commit: Removed @Pwash
+[33mcca7725[m HEAD@{74}: commit: Added icons for dosen sidebar
+[33m9ec602c[m HEAD@{75}: commit: Made the sidebar for dosen have dropdown
+[33mbd46be7[m HEAD@{76}: commit (merge): Merge
+[33m20e48e9[m HEAD@{77}: commit: merge
+[33m5e4b4dc[m HEAD@{78}: commit: Edited the login message from 'Daftar sekarang' to 'Hubungi admin'
+[33m5836cec[m HEAD@{79}: commit: Made mahasiswa to be forbidden from the registration page
+[33m65c8a1b[m HEAD@{80}: commit: Made the Learning Corner delete-able by users with the role dosen
+[33me782e0d[m HEAD@{81}: commit: Made users that does not have dosen as their role to be forbidden from accessing the admin pages
+[33mafe64a6[m HEAD@{82}: commit: Added admin exclusive card in myDashboard, still W.I.P
+[33mf48bd4b[m HEAD@{83}: commit: Added dark theme
+[33mf073a6b[m HEAD@{84}: commit: Changed the form for leader from optional to required
+[33m7dd9ac5[m HEAD@{85}: commit: fixed pfp letter initial not showing for leader
+[33m8ef3b27[m HEAD@{86}: commit: Added dark Theme, check controller i polished it
+[33mb227b0f[m HEAD@{87}: commit: Removed the register button
+[33m8f4d3f3[m HEAD@{88}: commit: Added Dark Theme
+[33mfa450a8[m HEAD@{89}: commit: Added Dark Theme
+[33m42f88f3[m HEAD@{90}: commit: Cleaned up the Mentioned Accounts
+[33m4792755[m HEAD@{91}: commit: added the settings menu
+[33m78ca334[m HEAD@{92}: commit: Made the Associates clickable
+[33mecbed77[m HEAD@{93}: commit: Made the views_project_user projects card clickable
+[33m9398a8f[m HEAD@{94}: commit: Grouped learning-corner to be one with projects
+[33m326e3d8[m HEAD@{95}: commit: moved the Learning corner into the Project Details, cant be shown yet
+[33m55e9927[m HEAD@{96}: commit: Added Project Details and Team leaders/members
+[33m0537c4f[m HEAD@{97}: commit: modified README
+[33mac20d86[m HEAD@{98}: commit: modified README
+[33m568276f[m HEAD@{99}: commit: modified README
+[33m4d47a28[m HEAD@{100}: commit: modified README
+[33m69ca557[m HEAD@{101}: commit: modified README
+[33m993b0c3[m HEAD@{102}: commit: Add Gender Selection Form
+[33m3f29e0c[m HEAD@{103}: pull origin Aftan: Merge made by the 'ort' strategy.
+[33ma3ce39f[m HEAD@{104}: pull origin Main: Fast-forward
+[33m428b394[m HEAD@{105}: commit: made the change cover functional
+[33mc55fe02[m HEAD@{106}: commit: Add the edit cover button, not funcitonal yet
+[33mfd3f9d3[m HEAD@{107}: commit: add description menu in profile
+[33m3144275[m HEAD@{108}: commit: add description menu in profile
+[33m84b7105[m HEAD@{109}: pull origin Aftan: Merge made by the 'ort' strategy.
+[33me490910[m HEAD@{110}: commit: merge
+[33me25f714[m HEAD@{111}: commit: Menambahkan link
