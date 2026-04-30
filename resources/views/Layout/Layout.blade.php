@@ -98,7 +98,7 @@
         <div class="main-column">
             @include('components.header')
 
-            <main>
+            <main class="overflow-auto">
                 <div class="content-wrapper">
                     @yield('content')
                 </div>

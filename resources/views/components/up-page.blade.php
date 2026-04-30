@@ -7,27 +7,19 @@
 </button>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.getElementById("backToTop");
+    window.addEventListener("scroll", function () {
+        if (window.scrollY > 200) {
+            btn.classList.remove("hidden");
+        } else {
+            btn.classList.add("hidden");
+        }
+    });
 
-        const btn = document.getElementById("backToTop");
-        const main = document.querySelector("main.overflow-auto");
-
-        if (!btn || !main) return;
-
-        main.addEventListener("scroll", function () {
-            if (main.scrollTop > 200) {
-                btn.classList.remove("hidden");
-            } else {
-                btn.classList.add("hidden");
-            }
+    btn.addEventListener("click", function () {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
         });
-
-        btn.addEventListener("click", function () {
-            main.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-        });
-
     });
 </script>

@@ -13,7 +13,18 @@ function translate(key) {
     const lang = getCurrentLang();
     return getTranslation(lang, key) || key;
 }
+
 setTimeout(() => {
+    if (window.flashSuccess) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: window.flashSuccess,
+        });
+    }
+}, 50);
+
+/* setTimeout(() => {
     showSuccessAlert(@json(session('success')));
         Swal.fire({
             icon: 'success',
@@ -35,7 +46,7 @@ setTimeout(() => {
             timer: 4000,
             timerProgressBar: true
         });
-}, 50);
+}, 50); */
 /*export function showSuccessAlert(message) {
     Swal.fire({
         icon: 'success',
