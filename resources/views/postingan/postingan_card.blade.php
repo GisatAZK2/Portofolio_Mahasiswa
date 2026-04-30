@@ -21,9 +21,11 @@
         </div>
 
         @if (session('success'))
-            <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300 rounded-xl">
-                {{ session('success') }}
-            </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                showSuccessAlert(@json(session('success')));
+            });
+        </script>
         @endif
 
         @if (session('error'))
@@ -239,15 +241,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             showPageInfo("popup.semua_postingan");
-
-            // Handle delete button clicks
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                });
-            });
         });
     </script>
 @endsection

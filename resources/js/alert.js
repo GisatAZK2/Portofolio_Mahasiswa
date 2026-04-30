@@ -14,7 +14,40 @@ function translate(key) {
     return getTranslation(lang, key) || key;
 }
 
-export function showSuccessAlert(message) {
+setTimeout(() => {
+    if (window.flashSuccess) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: window.flashSuccess,
+        });
+    }
+}, 50);
+
+/* setTimeout(() => {
+    showSuccessAlert(@json(session('success')));
+        Swal.fire({
+            icon: 'success',
+            title: showPageInfo('Berhasil!', 'success', 3000),
+            text: message,
+            position: 'center',
+            showConfirmButton: true,
+            confirmButtonColor: '#4f46e5',
+            confirmButtonText: t('Oke, Lanjut'),
+            allowOutsideClick: true,
+            backdrop: 'rgba(0,0,0,0.6)',
+            customClass: {
+                popup: 'rounded-2xl shadow-2xl bg-white/95 backdrop-blur-md border border-indigo-100/50 p-6 sm:p-8',
+                title: 'text-gray-900 font-bold text-xl sm:text-2xl mb-3',
+                htmlContainer: 'text-gray-700 text-base sm:text-lg',
+                icon: 'text-indigo-600',
+                confirmButton: 'px-8 py-3 text-base font-medium rounded-xl'
+            },
+            timer: 4000,
+            timerProgressBar: true
+        });
+}, 50); */
+/*export function showSuccessAlert(message) {
     Swal.fire({
         icon: 'success',
         title: showPageInfo('Berhasil!', 'success', 3000),
@@ -22,7 +55,7 @@ export function showSuccessAlert(message) {
         position: 'center',
         showConfirmButton: true,
         confirmButtonColor: '#4f46e5',
-        confirmButtonText: 'Oke, Lanjut',
+        confirmButtonText: t('Oke, Lanjut'),
         allowOutsideClick: true,
         backdrop: 'rgba(0,0,0,0.6)',
         customClass: {
@@ -35,17 +68,17 @@ export function showSuccessAlert(message) {
         timer: 4000,
         timerProgressBar: true
     });
-}
+} */
 
 export function showErrorAlert(message) {
     Swal.fire({
         icon: 'error',
         title: showPageInfo('Ada Masalah...', 'error', 3000),
-        text: message,
+        text: t(message),
         position: 'center',
         showConfirmButton: true,
         confirmButtonColor: '#dc2626',
-        confirmButtonText: 'Coba Lagi',
+        confirmButtonText: t('Coba Lagi'),
         allowOutsideClick: true,
         backdrop: 'rgba(0,0,0,0.6)',
         customClass: {
@@ -247,7 +280,7 @@ export function showInfoAlert(message) {
     Swal.fire({
         icon: 'info',
         title: translate('info') || 'Info',
-        text: message,
+        text: t(message),
         confirmButtonColor: '#2563eb',
         confirmButtonText: translate('oke') || 'Oke',
         allowOutsideClick: true,
