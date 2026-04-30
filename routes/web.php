@@ -136,7 +136,6 @@ Route::middleware(['web', 'auth'])->group(function () {
             });
             Route::delete('/keahlian-tambahan/destroy', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
         });
-
         // ========== ADMIN ROUTES ==========
         Route::middleware(['auth', 'role:admin', '2fa'])->prefix('admin')->name('admin.')->group(function () {
             Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
