@@ -242,6 +242,7 @@ class UserController extends Controller
         }
 
         Auth::login($user, $request->boolean('remember'));
+        session(['user_role' => $user->role]);
         $request->session()->regenerate();
 
         if ($user->role === 'admin') {

@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // TAMBAHKAN INI (paling penting)
         $middleware->web(append: [
+            \App\Http\Middleware\CheckDatabaseRole::class, 
             \App\Http\Middleware\SetLocale::class,
         ]);
         
