@@ -3,6 +3,142 @@
 @section('title', autoTranslate('Detail Postingan'))
 
 @section('content')
+<style>
+    /* Comment Section Enhanced Styles */
+    .comment-item {
+        transition: all 0.2s ease;
+        background: transparent;
+    }
+    
+    .comment-item:hover {
+        background: rgba(0, 0, 0, 0.02);
+    }
+    
+    .dark .comment-item:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .replies-container {
+        border-left: 2px solid #e5e7eb;
+        margin-left: 28px;
+        padding-left: 16px;
+    }
+    
+    .dark .replies-container {
+        border-left-color: #374151;
+    }
+    
+    .comments-container {
+        max-height: 600px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+    
+    .comments-container::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .comments-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .comments-container::-webkit-scrollbar-thumb {
+        background: #c7d2fe;
+        border-radius: 10px;
+    }
+    
+    .dark .comments-container::-webkit-scrollbar-track {
+        background: #374151;
+    }
+    
+    .dark .comments-container::-webkit-scrollbar-thumb {
+        background: #6366f1;
+    }
+    
+    .comment-text {
+        word-break: break-word;
+        white-space: pre-wrap;
+        line-height: 1.5;
+    }
+    
+    /* Loading spinner */
+    .comment-loading {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #e5e7eb;
+        border-top: 2px solid #6366f1;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .btn-loading {
+        opacity: 0.7;
+        pointer-events: none;
+        position: relative;
+    }
+    
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        top: 50%;
+        left: 50%;
+        margin-left: -7px;
+        margin-top: -7px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    
+    /* Comment action buttons */
+    .comment-action-btn {
+        transition: all 0.2s ease;
+        opacity: 0.7;
+    }
+    
+    .comment-action-btn:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+    }
+    
+    /* Smooth transitions */
+    .reply-form-container {
+        transition: all 0.2s ease;
+    }
+    
+    .reply-form-container.hidden {
+        display: none;
+    }
+    
+    /* Comment input focus */
+    .comment-input:focus, .reply-form-container textarea:focus, .edit-textarea:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Delete button hover effect */
+    .delete-comment-btn:hover {
+        color: #ef4444;
+    }
+    
+    .edit-comment-btn:hover {
+        color: #3b82f6;
+    }
+    
+    .reply-btn:hover {
+        color: #6366f1;
+    }
+</style>
+
 <div class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 min-h-screen py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6">
         <!-- Tombol Kembali -->
@@ -52,7 +188,6 @@
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                {{-- PERBAIKAN: Pastikan tanggal + jam tampil dengan benar --}}
                                 <span>{{ \Carbon\Carbon::parse($postingan->tanggal)->translatedFormat('d F Y \j\a\m H:i') }}</span>
                             </div>
                         </div>
@@ -102,14 +237,13 @@
                 </div>
             </div>
 
-            <!-- Konten Postingan (sama seperti kode Anda, tidak diubah) -->
+            <!-- Konten Postingan -->
             <div class="p-6 space-y-6">
                 @php
                     $content = $postingan->content;
                     $title = '';
                     $deskripsi = '';
                     $items = [];
-                    $gameThumbnail = null;
 
                     if (is_array($content)) {
                         foreach ($content as $item) {
@@ -128,9 +262,9 @@
                     $game = $postingan->game ?? null;
                     $gameThumbnailMap = [
                         'matematika' => 'assets/game-angka.svg',
-                        'math' => 'assets/game-angka.svg',
-                        'puzzle' => 'assets/game-puzzle.svg',
-                        'tts' => 'assets/game-tts.svg',
+                        'math'       => 'assets/game-angka.svg',
+                        'puzzle'     => 'assets/game-puzzle.svg',
+                        'tts'        => 'assets/game-tts.svg',
                         'teka-teki silang' => 'assets/game-tts.svg',
                     ];
 
@@ -264,150 +398,61 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
-                        <span class="font-medium">{{ $postingan->komentar->count() }}</span>
+                        <span class="comment-total-count font-medium">{{ $postingan->komentar->count() }}</span>
                         <span class="hidden sm:inline">{{ autoTranslate('Komentar') }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Bagian Komentar -->
+            <!-- ===================== BAGIAN KOMENTAR (AJAX - sama dengan file ke-1) ===================== -->
             <div id="comments" class="px-6 py-6 space-y-6">
                 <h3 class="font-bold text-xl text-gray-900 dark:text-white flex items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                     </svg>
-                    {{ autoTranslate('Komentar') }} ({{ $postingan->komentar->count() }})
+                    {{ autoTranslate('Komentar') }}
+                    (<span class="comment-total-count-heading">{{ $postingan->komentar->count() }}</span>)
                 </h3>
 
-                <!-- Form Tambah Komentar -->
+                <!-- Form Tambah Komentar (AJAX) -->
                 @auth
-                    <form action="{{ route('komentar.store') }}" method="POST" class="mb-6">
-                        @csrf
-                        <input type="hidden" name="id_postingan" value="{{ $postingan->id_postingan }}">
+                    <div class="mb-4">
                         <div class="flex gap-3">
-                            @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
-                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}"
-                                    class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-indigo-100 dark:ring-indigo-900">
-                            @else
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shrink-0">
-                                    <span class="text-white font-semibold text-sm">
-                                        {{ strtoupper(substr(auth()->user()->nama_mahasiswa, 0, 1)) }}
-                                    </span>
-                                </div>
-                            @endif
                             <div class="flex-1">
-                                <textarea name="komentar" rows="2"
-                                    class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-transparent rounded-2xl focus:bg-white dark:focus:bg-gray-900 focus:border-indigo-300 dark:focus:border-indigo-700 outline-none transition text-gray-900 dark:text-white placeholder-gray-500"
-                                    placeholder="{{ autoTranslate('Tulis komentar...') }}">{{ old('komentar') }}</textarea>
-                                @error('komentar')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                @enderror
-                                <div class="flex justify-end gap-2 mt-2">
-                                    <button type="reset" 
-                                        class="px-4 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition">
-                                        {{ autoTranslate('Batal') }}
-                                    </button>
-                                    <button type="submit" 
-                                        class="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition shadow-sm">
+                                <textarea id="comment-input-{{ $postingan->id_postingan }}" 
+                                    rows="2" 
+                                    class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition text-gray-900 dark:text-white placeholder-gray-500" 
+                                    placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
+                                <div class="flex justify-end mt-2">
+                                    <button onclick="window.submitComment({{ $postingan->id_postingan }})" 
+                                        id="submit-comment-btn-{{ $postingan->id_postingan }}"
+                                        class="submit-comment-btn px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow">
                                         {{ autoTranslate('Kirim') }}
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 @else
                     <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 text-center">
                         <p class="text-sm text-blue-800 dark:text-blue-300">
-                            {{ autoTranslate('Silakan') }} <a href="{{ route('login') }}" class="font-semibold underline hover:no-underline">{{ autoTranslate('masuk') }}</a> {{ autoTranslate('untuk berkomentar.') }}
+                            {{ autoTranslate('Silakan') }}
+                            <a href="{{ route('login') }}" class="font-semibold underline hover:no-underline">{{ autoTranslate('masuk') }}</a>
+                            {{ autoTranslate('untuk berkomentar.') }}
                         </p>
                     </div>
                 @endauth
 
-                <!-- Daftar Komentar -->
-                @if($postingan->komentar->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($postingan->komentar->sortByDesc('tanggal') as $komentar)
-                            @php
-                                $isOwnComment = auth()->check() && auth()->id() == $komentar->id_user;
-                            @endphp
-                            <div class="group flex gap-3 p-3 rounded-xl transition-all duration-200 {{ $isOwnComment ? 'bg-indigo-50/50 dark:bg-indigo-950/20 border-l-4 border-indigo-500' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30' }}">
-                                <!-- Avatar -->
-                                @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
-                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}"
-                                        class="w-8 h-8 rounded-full object-cover shrink-0">
-                                @else
-                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shrink-0">
-                                        <span class="text-white font-bold text-xs">
-                                            {{ strtoupper(substr($komentar->user->nama_mahasiswa, 0, 1)) }}
-                                        </span>
-                                    </div>
-                                @endif
-
-                                <div class="flex-1 min-w-0">
-                                    <!-- Bubble Komentar -->
-                                    <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl px-4 py-2 {{ $isOwnComment ? 'bg-indigo-100 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800' : '' }}">
-                                        <div class="flex items-baseline gap-2 flex-wrap">
-                                            <span class="font-semibold text-sm text-gray-900 dark:text-white">
-                                                <a href="{{ route('portfolio.show', ['user' => $komentar->user->username]) }}"
-                                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $komentar->user->nama_mahasiswa }}</a>
-                                                @if($isOwnComment)
-                                                    <span class="text-xs font-normal text-indigo-600 dark:text-indigo-400 ml-1">({{ autoTranslate('Anda') }})</span>
-                                                @endif
-                                            </span>
-                                            {{-- PERBAIKAN: Tampilkan tanggal komentar dalam format absolut (bukan relative time) --}}
-                                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($komentar->tanggal)->translatedFormat('d F Y \j\a\m H:i') }}</span>
-                                        </div>
-                                        <div id="comment-content-{{ $komentar->id_komentar }}" class="text-sm text-gray-700 dark:text-gray-300 mt-1 break-words">
-                                            {{ autoTranslate($komentar->komentar) }}
-                                        </div>
-                                        <!-- Form Edit -->
-                                        <form id="edit-form-{{ $komentar->id_komentar }}" action="{{ route('komentar.update', ['id' => $komentar->id_komentar]) }}" method="POST" class="hidden mt-2">
-                                            @csrf @method('PUT')
-                                            <textarea name="komentar" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-xl text-sm">{{ $komentar->komentar }}</textarea>
-                                            <div class="flex justify-end gap-2 mt-1">
-                                                <button type="button" onclick="cancelEdit({{ $komentar->id_komentar }})" 
-                                                    class="px-3 py-1 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full">
-                                                    {{ autoTranslate('Batal') }}
-                                                </button>
-                                                <button type="submit" 
-                                                    class="px-3 py-1 text-xs bg-indigo-600 text-white rounded-full hover:bg-indigo-700">
-                                                    {{ autoTranslate('Simpan') }}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <!-- Action Buttons -->
-                                    @auth
-                                        @if($isOwnComment)
-                                            <div class="flex items-center gap-2 mt-1 ml-2 opacity-0 group-hover:opacity-100 transition">
-                                                <button onclick="editComment({{ $komentar->id_komentar }})" 
-                                                    class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium">
-                                                    {{ autoTranslate('Edit') }}
-                                                </button>
-                                                <span class="text-gray-300 dark:text-gray-700">•</span>
-                                                <form action="{{ route('komentar.destroy', ['id' => $komentar->id_komentar]) }}" method="POST" class="inline">
-                                                    @csrf @method('DELETE')
-                                                    <button type="button" onclick="if(confirm('{{ autoTranslate('Hapus komentar ini?') }}')) this.form.submit();" 
-                                                        class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 font-medium">
-                                                        {{ autoTranslate('Hapus') }}
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        @endif
-                                    @endauth
-                                </div>
-                            </div>
-                        @endforeach
+                <!-- Daftar Komentar (AJAX Loaded) -->
+                <div id="comments-container-{{ $postingan->id_postingan }}" class="comments-container space-y-4 pr-2">
+                    <div class="text-center py-6 text-gray-400 text-sm">
+                        <div class="comment-loading inline-block mr-2"></div>
+                        <span>{{ autoTranslate('Memuat komentar...') }}</span>
                     </div>
-                @else
-                    <div class="text-center py-8">
-                        <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                        <p class="text-gray-500 dark:text-gray-400">{{ autoTranslate('Belum ada komentar. Jadilah yang pertama!') }}</p>
-                    </div>
-                @endif
+                </div>
             </div>
+            <!-- ===================== END BAGIAN KOMENTAR ===================== -->
+
         </div>
     </div>
 </div>
@@ -415,25 +460,506 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>
-const postMenuBtn = document.getElementById('postMenuButton');
-const postMenuDropdown = document.getElementById('postMenuDropdown');
+    // ===================== GLOBAL CONFIG =====================
+    window.currentUserId   = {{ auth()->id() ?? 'null' }};
+    window.currentUserName = "{{ auth()->user()?->nama_mahasiswa ?? '' }}";
+    window.currentUserPhoto = "{{ auth()->user()?->photo_profile ?? '' }}";
+    window.locale = document.querySelector('html').getAttribute('lang') || 'id';
+    window.commentLastUpdated = {};
 
-    if (postMenuBtn && postMenuDropdown) {
-        postMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            postMenuDropdown.classList.toggle('hidden');
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!postMenuContainer.contains(e.target)) {
-                postMenuDropdown.classList.add('hidden');
+    const POSTINGAN_ID = {{ $postingan->id_postingan }};
+
+    // ===================== HELPERS =====================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function getAvatarHtml(user, size = 'w-8 h-8', textSize = 'text-xs') {
+        if (user && user.photo_profile && user.photo_profile !== 'null' && user.photo_profile !== '') {
+            const photoPath = user.photo_profile.startsWith('http') ? user.photo_profile : `/storage/${user.photo_profile}`;
+            return `<img src="${photoPath}" class="${size} rounded-full object-cover flex-shrink-0" onerror="this.src='https://ui-avatars.com/api/?background=6366f1&color=fff&size=100&name=${encodeURIComponent(user.nama_mahasiswa || 'U')}'">`;
+        }
+        const name = user?.nama_mahasiswa || window.currentUserName || 'User';
+        const initial = name.charAt(0).toUpperCase();
+        return `<div class="${size} rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
+                    <span class="text-indigo-600 dark:text-indigo-400 ${textSize} font-semibold">${initial}</span>
+                </div>`;
+    }
+
+    function getHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+        };
+    }
+
+    // ===================== LOAD COMMENTS =====================
+    window.loadComments = async function(postinganId) {
+        const container = document.getElementById(`comments-container-${postinganId}`);
+        if (!container) return;
+
+        container.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm"><div class="comment-loading inline-block mr-2"></div> Memuat komentar...</div>';
+
+        try {
+            const response = await fetch(`/${window.locale}/komentar?id_postingan=${postinganId}`);
+            const data = await response.json();
+
+            if (data && data.success === true) {
+                window.commentLastUpdated[postinganId] = data.last_updated ?? null;
+
+                let commentsArray = [];
+                if (data.comments && Array.isArray(data.comments)) {
+                    commentsArray = data.comments;
+                } else if (data.comments && data.comments.comments && Array.isArray(data.comments.comments)) {
+                    commentsArray = data.comments.comments;
+                }
+
+                if (commentsArray.length === 0) {
+                    const noCommentsText = (window.locale === 'id')
+                        ? '✨ Belum ada komentar. Jadilah yang pertama!'
+                        : '✨ No comments yet. Be the first!';
+                    container.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">${noCommentsText}</p>`;
+                    return;
+                }
+
+                let html = '<div class="space-y-4">';
+                commentsArray.forEach(comment => {
+                    html += renderCommentWithReplies(comment, 0, postinganId);
+                });
+                html += '</div>';
+                container.innerHTML = html;
+
+                attachCommentEventListeners(container, postinganId);
+            } else {
+                container.innerHTML = '<p class="text-center text-red-500 text-sm py-4">⚠️ Gagal memuat komentar</p>';
             }
-        });
-        
-        postMenuDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
+        } catch (error) {
+            console.error('Error loading comments:', error);
+            container.innerHTML = '<p class="text-center text-red-500 text-sm py-4">⚠️ Gagal memuat komentar: ' + error.message + '</p>';
+        }
+    };
+
+    // ===================== RENDER COMMENT =====================
+    function renderCommentWithReplies(comment, level, postinganId) {
+        const marginLeft = Math.min(level * 28, 56);
+        const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
+        const isLoggedIn = window.currentUserId !== null && window.currentUserId !== 'null';
+        const userName = escapeHtml(comment.user?.nama_mahasiswa || 'User');
+        const commentText = escapeHtml(comment.komentar);
+        const commentId = String(comment.id_komentar);
+        postinganId = String(postinganId);
+
+        const replyText  = (window.locale === 'id') ? 'Balas'  : 'Reply';
+        const editText   = (window.locale === 'id') ? 'Edit'   : 'Edit';
+        const deleteText = (window.locale === 'id') ? 'Hapus'  : 'Delete';
+
+        let html = `
+            <div class="comment-item transition-all duration-200 py-2" data-comment-id="${commentId}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
+                <div class="flex gap-3">
+                    ${getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-semibold text-sm text-gray-900 dark:text-gray-100">${userName}</span>
+                            <span class="text-xs text-gray-500">${formatDate(comment.tanggal || comment.created_at)}</span>
+                        </div>
+                        <p class="comment-text text-sm text-gray-700 dark:text-gray-300 mt-1.5 leading-relaxed" id="comment-text-${commentId}">${commentText}</p>
+                        <div class="flex flex-wrap gap-3 mt-2">
+        `;
+
+        if (isLoggedIn) {
+            html += `
+                            <button class="reply-btn text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors inline-flex items-center gap-1"
+                                data-action="reply" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                ${replyText}
+                            </button>
+            `;
+        }
+
+        if (isOwnComment) {
+            html += `
+                            <button class="edit-comment-btn text-xs text-blue-500 hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+                                data-action="edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                ${editText}
+                            </button>
+                            <button class="delete-comment-btn text-xs text-red-500 hover:text-red-700 transition-colors inline-flex items-center gap-1"
+                                data-action="delete" data-comment-id="${commentId}" data-postingan-id="${postinganId}" data-type="full">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                ${deleteText}
+                            </button>
+            `;
+        }
+
+        html += `
+                        </div>
+                    </div>
+                </div>
+                <div id="reply-form-${commentId}" class="reply-form-container hidden mt-3 ml-11"></div>
+            </div>
+        `;
+
+        if (comment.balasan && comment.balasan.length > 0) {
+            html += `<div class="replies-container ml-4 mt-1">`;
+            comment.balasan.forEach(reply => {
+                html += renderCommentWithReplies(reply, level + 1, postinganId);
+            });
+            html += `</div>`;
+        }
+
+        return html;
+    }
+
+    // ===================== EVENT DELEGATION =====================
+    function attachCommentEventListeners(container, postinganId) {
+        if (!container.hasAttribute('data-delegated')) {
+            container.setAttribute('data-delegated', 'true');
+            container.addEventListener('click', function(e) {
+                const btn = e.target.closest('[data-action]');
+                if (!btn) return;
+
+                const commentId  = btn.getAttribute('data-comment-id');
+                const pid        = btn.getAttribute('data-postingan-id');
+                const action     = btn.getAttribute('data-action');
+
+                if (action === 'reply')       window.showReplyForm(commentId, pid);
+                else if (action === 'edit')   window.showEditForm(commentId, pid);
+                else if (action === 'delete') window.deleteComment(commentId, pid, btn.getAttribute('data-type') || 'full');
+                else if (action === 'save-edit')   window.saveEdit(commentId, pid);
+                else if (action === 'cancel-edit') window.cancelEdit(commentId);
+            });
+        }
+    }
+
+    // ===================== SUBMIT COMMENT =====================
+    window.submitComment = async function(postinganId) {
+        const textarea  = document.getElementById(`comment-input-${postinganId}`);
+        const commentText = textarea.value.trim();
+
+        if (!commentText) {
+            if (window.showPageInfo) window.showPageInfo('Komentar tidak boleh kosong', 'warning', 2000);
+            else alert('Komentar tidak boleh kosong');
+            return;
+        }
+
+        const submitBtn = document.getElementById(`submit-comment-btn-${postinganId}`);
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) {
+            submitBtn.classList.add('btn-loading');
+            submitBtn.innerHTML = 'Mengirim...';
+            submitBtn.disabled = true;
+        }
+
+        try {
+            const response = await fetch(`/${window.locale}/komentar`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify({ id_postingan: postinganId, komentar: commentText })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                textarea.value = '';
+                await window.loadComments(postinganId);
+                updateTotalCommentCount(1);
+                if (window.showPageInfo) window.showPageInfo('Komentar berhasil ditambahkan', 'success', 2000);
+            } else {
+                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal menambahkan komentar');
+                else alert(data.message || 'Gagal menambahkan komentar');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+            else alert('Terjadi kesalahan: ' + error.message);
+        } finally {
+            if (submitBtn) {
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+    };
+
+    // ===================== SUBMIT REPLY =====================
+    async function submitReply(form, postinganId) {
+        if (form.hasAttribute('data-submitting')) return;
+        form.setAttribute('data-submitting', 'true');
+
+        const textarea   = form.querySelector('textarea[name="komentar"]');
+        const commentText = textarea.value.trim();
+        const parentId   = form.querySelector('input[name="parent_id"]').value;
+
+        if (!commentText) {
+            if (window.showPageInfo) window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
+            else alert('Balasan tidak boleh kosong');
+            form.removeAttribute('data-submitting');
+            return;
+        }
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const cancelBtn = form.querySelector('button[type="button"]');
+        submitBtn.disabled = true;
+        if (cancelBtn) cancelBtn.disabled = true;
+
+        try {
+            const response = await fetch(`/${window.locale}/komentar`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    id_postingan: postinganId,
+                    komentar: commentText,
+                    parent_id: parentId,
+                    reply_to_id: parentId
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                await window.loadComments(postinganId);
+                updateTotalCommentCount(1);
+                const replyContainer = document.getElementById(`reply-form-${parentId}`);
+                if (replyContainer) {
+                    replyContainer.classList.add('hidden');
+                    replyContainer.innerHTML = '';
+                }
+                if (window.showPageInfo) window.showPageInfo('Balasan berhasil ditambahkan', 'success', 2000);
+            } else {
+                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal menambahkan balasan');
+                else alert(data.message || 'Gagal menambahkan balasan');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+            else alert('Terjadi kesalahan: ' + error.message);
+        } finally {
+            submitBtn.disabled = false;
+            if (cancelBtn) cancelBtn.disabled = false;
+            form.removeAttribute('data-submitting');
+        }
+    }
+
+    // ===================== SHOW REPLY FORM =====================
+    window.showReplyForm = function(parentCommentId, postinganId) {
+        parentCommentId = String(parentCommentId);
+        const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
+        if (!replyFormContainer) return;
+
+        const sendText        = (window.locale === 'id') ? 'Kirim'  : 'Send';
+        const cancelText      = (window.locale === 'id') ? 'Batal'  : 'Cancel';
+        const placeholderText = (window.locale === 'id') ? 'Tulis balasan...' : 'Write a reply...';
+
+        if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
+            replyFormContainer.classList.add('hidden');
+            replyFormContainer.innerHTML = '';
+            return;
+        }
+
+        replyFormContainer.innerHTML = `
+            <form class="reply-submit-form mt-3">
+                <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
+                <input type="hidden" name="parent_id" value="${parentCommentId}">
+                <div class="flex flex-col gap-2">
+                    <textarea name="komentar" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none text-gray-900 dark:text-white" placeholder="${placeholderText}"></textarea>
+                    <div class="flex gap-2 justify-end">
+                        <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">${sendText}</button>
+                        <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden'); this.closest('.reply-form-container').innerHTML = '';" class="px-4 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">${cancelText}</button>
+                    </div>
+                </div>
+            </form>
+        `;
+        replyFormContainer.classList.remove('hidden');
+
+        const form = replyFormContainer.querySelector('form');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await submitReply(form, postinganId);
+        };
+    };
+
+    // ===================== SHOW EDIT FORM =====================
+    window.showEditForm = function(commentId, postinganId) {
+        commentId   = String(commentId);
+        postinganId = String(postinganId);
+
+        const commentTextEl = document.getElementById(`comment-text-${commentId}`);
+        if (!commentTextEl) return;
+
+        const originalText = commentTextEl.innerText;
+        const commentItem  = commentTextEl.closest('.comment-item');
+
+        const existingEditForm = document.getElementById(`edit-form-${commentId}`);
+        if (existingEditForm) {
+            existingEditForm.remove();
+            commentTextEl.style.display = 'block';
+            const editBtn = commentItem.querySelector('.edit-comment-btn');
+            if (editBtn) editBtn.style.display = 'inline-flex';
+            return;
+        }
+
+        const saveText   = (window.locale === 'id') ? 'Simpan' : 'Save';
+        const cancelText = (window.locale === 'id') ? 'Batal'  : 'Cancel';
+
+        const editForm = document.createElement('div');
+        editForm.className = 'edit-form mt-2';
+        editForm.id = `edit-form-${commentId}`;
+        editForm.innerHTML = `
+            <textarea class="edit-textarea w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none text-gray-900 dark:text-white" rows="2">${escapeHtml(originalText)}</textarea>
+            <div class="flex gap-2 mt-2">
+                <button class="save-edit-btn px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
+                    data-action="save-edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">${saveText}</button>
+                <button class="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 transition-colors"
+                    data-action="cancel-edit" data-comment-id="${commentId}">${cancelText}</button>
+            </div>
+        `;
+
+        commentTextEl.style.display = 'none';
+        commentTextEl.parentNode.insertBefore(editForm, commentTextEl.nextSibling);
+
+        const editBtn = commentItem.querySelector('.edit-comment-btn');
+        if (editBtn) editBtn.style.display = 'none';
+    };
+
+    // ===================== SAVE EDIT =====================
+    window.saveEdit = async function(commentId, postinganId) {
+        commentId = String(commentId);
+        const editForm = document.getElementById(`edit-form-${commentId}`);
+        if (!editForm) return;
+
+        const editTextarea = editForm.querySelector('.edit-textarea');
+        if (!editTextarea) return;
+
+        const newText = editTextarea.value.trim();
+        if (!newText) {
+            if (window.showPageInfo) window.showPageInfo('Komentar tidak boleh kosong', 'warning', 2000);
+            else alert('Komentar tidak boleh kosong');
+            return;
+        }
+
+        const saveBtn = editForm.querySelector('.save-edit-btn');
+        if (!saveBtn) return;
+
+        const originalBtnHtml = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;"></div>';
+        saveBtn.disabled = true;
+
+        try {
+            const lastUpdated = window.commentLastUpdated?.[postinganId] ?? '';
+            const response = await fetch(
+                `/${window.locale}/komentar/update?id=${commentId}&id_postingan=${postinganId}&last_updated=${encodeURIComponent(lastUpdated)}`,
+                {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ komentar: newText })
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                await window.loadComments(postinganId);
+                if (window.showPageInfo) window.showPageInfo('Komentar berhasil diperbarui', 'success', 2000);
+            } else if (data.code === 'STALE_DATA') {
+                await window.loadComments(postinganId);
+                if (window.showPageInfo) window.showPageInfo('Komentar diperbarui pengguna lain. Edit ulang jika perlu.', 'warning', 3000);
+            } else {
+                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal mengupdate komentar');
+                else alert(data.message || 'Gagal mengupdate komentar');
+                saveBtn.innerHTML = originalBtnHtml;
+                saveBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+            else alert('Terjadi kesalahan: ' + error.message);
+            saveBtn.innerHTML = originalBtnHtml;
+            saveBtn.disabled = false;
+        }
+    };
+
+    // ===================== CANCEL EDIT =====================
+    window.cancelEdit = function(commentId) {
+        commentId = String(commentId);
+        const commentTextEl = document.getElementById(`comment-text-${commentId}`);
+        const editForm      = document.getElementById(`edit-form-${commentId}`);
+        if (!commentTextEl) return;
+
+        const commentItem = commentTextEl.closest('.comment-item');
+        commentTextEl.style.display = 'block';
+        if (editForm) editForm.remove();
+
+        const editBtn = commentItem.querySelector('.edit-comment-btn');
+        if (editBtn) editBtn.style.display = 'inline-flex';
+    };
+
+    // ===================== DELETE COMMENT =====================
+    window.deleteComment = async function(commentId, postinganId, type = 'full') {
+        commentId   = String(commentId);
+        postinganId = String(postinganId);
+
+        const confirmMessageSingle = (window.locale === 'id')
+            ? 'Apakah Anda yakin ingin menghapus balasan ini saja?'
+            : 'Are you sure you want to delete this reply only?';
+        const confirmMessageFull = (window.locale === 'id')
+            ? 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?'
+            : 'Are you sure you want to delete this comment and all its replies?';
+        const confirmMessage = type === 'single' ? confirmMessageSingle : confirmMessageFull;
+
+        if (window.showConfirm) {
+            const confirmed = await window.showConfirm(confirmMessage);
+            if (!confirmed) return;
+        } else {
+            if (!confirm(confirmMessage)) return;
+        }
+
+        if (window.showLoading) window.showLoading('Menghapus...');
+
+        try {
+            const response = await fetch(
+                `/${window.locale}/komentar/destroy?id=${commentId}&id_postingan=${postinganId}&type=${type}`,
+                { method: 'DELETE', headers: getHeaders() }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                await window.loadComments(postinganId);
+                updateTotalCommentCount(-1);
+                if (window.showPageInfo) window.showPageInfo('Komentar berhasil dihapus', 'success', 2000);
+            } else {
+                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal menghapus komentar');
+                else alert(data.message || 'Gagal menghapus komentar');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+            else alert('Terjadi kesalahan: ' + error.message);
+        } finally {
+            if (window.closeLoading) window.closeLoading();
+        }
+    };
+
+    // ===================== UPDATE TOTAL COUNT (heading + engagement bar) =====================
+    function updateTotalCommentCount(delta) {
+        document.querySelectorAll('.comment-total-count, .comment-total-count-heading').forEach(el => {
+            const current = parseInt(el.textContent) || 0;
+            el.textContent = Math.max(0, current + delta);
         });
     }
+
+    // ===================== SHARE =====================
     function toggleShare(btn) {
         const url = window.location.href;
         if (navigator.share) {
@@ -444,27 +970,38 @@ const postMenuDropdown = document.getElementById('postMenuDropdown');
             const original = btn.innerHTML;
             btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
             setTimeout(() => { btn.innerHTML = original; }, 2000);
+            if (window.showPageInfo) window.showPageInfo('Link berhasil disalin!', 'success', 1500);
         }).catch(() => alert('Gagal menyalin link'));
     }
 
-    function editComment(id) {
-        document.getElementById('comment-content-' + id).classList.add('hidden');
-        document.getElementById('edit-form-' + id).classList.remove('hidden');
+    // ===================== POST MENU (3-dot) =====================
+    const postMenuBtn       = document.getElementById('postMenuButton');
+    const postMenuDropdown  = document.getElementById('postMenuDropdown');
+    const postMenuContainer = document.getElementById('postMenuContainer');
+
+    if (postMenuBtn && postMenuDropdown) {
+        postMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            postMenuDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', function(e) {
+            if (postMenuContainer && !postMenuContainer.contains(e.target)) {
+                postMenuDropdown.classList.add('hidden');
+            }
+        });
+        postMenuDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     }
 
-    function cancelEdit(id) {
-        document.getElementById('comment-content-' + id).classList.remove('hidden');
-        document.getElementById('edit-form-' + id).classList.add('hidden');
-    }
-
+    // ===================== LIKE =====================
     document.addEventListener('DOMContentLoaded', function() {
         const likeBtn = document.querySelector('.like-btn');
         if (likeBtn) {
             likeBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const postinganId = this.dataset.postinganId;
-                const locale = document.querySelector('html').getAttribute('lang') || 'id';
-                fetch(`/${locale}/postingan/toggle-like?id=${postinganId}`, {
+                fetch(`/${window.locale}/postingan/toggle-like?id=${postinganId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -474,14 +1011,13 @@ const postMenuDropdown = document.getElementById('postMenuDropdown');
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        const btn = document.querySelector('.like-btn');
-                        const icon = btn.querySelector('svg');
-                        const countSpan = btn.querySelector('.like-count-text');
+                        const icon      = likeBtn.querySelector('svg');
+                        const countSpan = likeBtn.querySelector('.like-count-text');
                         if (data.liked) {
-                            btn.classList.add('text-red-500', 'dark:text-red-400');
+                            likeBtn.classList.add('text-red-500', 'dark:text-red-400');
                             icon.classList.add('fill-current');
                         } else {
-                            btn.classList.remove('text-red-500', 'dark:text-red-400');
+                            likeBtn.classList.remove('text-red-500', 'dark:text-red-400');
                             icon.classList.remove('fill-current');
                         }
                         if (countSpan) countSpan.textContent = data.like_count;
@@ -490,6 +1026,9 @@ const postMenuDropdown = document.getElementById('postMenuDropdown');
                 .catch(error => console.error('Error:', error));
             });
         }
+
+        // Auto-load comments on page load
+        window.loadComments(POSTINGAN_ID);
     });
 </script>
 @endsection

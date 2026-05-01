@@ -737,7 +737,9 @@ export const translations = {
       ttl_lrn: 'Learning Corner',
       empty_lrn: 'Belum ada learning corner.',
       empty_pjt: 'Belum ada postingan proyek.',
-      empty_stk: 'Belum ada sertifikat.'
+      empty_stk: 'Belum ada sertifikat.',
+      login : 'Masuk',
+      untuk_berkomentar : 'Untuk Berkomentar'
     },
     dashboard_me: {
       learning_corner: 'Learning Corner',
@@ -1905,7 +1907,9 @@ export const translations = {
       ttl_lrn: 'Learning Corner',
       empty_lrn: 'There is no learning corner yet.',
       empty_pjt: 'There is no project posts yet.',
-      empty_stk: 'There is no Certificate posts yet.'
+      empty_stk: 'There is no Certificate posts yet.',
+      login : 'Login',
+      untuk_berkomentar: 'to comment on this post.',
     },
     dashboard_me: {
       learning_corner: 'Learning Corner',
