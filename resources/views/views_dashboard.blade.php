@@ -43,127 +43,125 @@
             border-radius: 0.5rem;
         }
 
+        .skeleton-circle {
+    border-radius: 50%;
+}
+
+.skeleton-text {
+    height: 14px;
+    margin-bottom: 8px;
+}
+
+.skeleton-title {
+    height: 20px;
+    width: 60%;
+    margin-bottom: 12px;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+}
+
+.skeleton-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+.dark .skeleton-card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+.skeleton-pulse {
+    animation: skeletonPulse 2s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
         .dark .skeleton {
             background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
             background-size: 200px 100%;
         }
 
-        .skeleton-circle {
-            border-radius: 50%;
-        }
-
-        .skeleton-text {
-            height: 14px;
-            margin-bottom: 8px;
-        }
-
-        .skeleton-title {
-            height: 20px;
-            width: 60%;
-            margin-bottom: 12px;
-        }
-
-        .skeleton-image {
-            width: 100%;
-            height: 200px;
-            border-radius: 12px;
-        }
-
-        .skeleton-card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .dark .skeleton-card {
-            background: #1f2937;
-            border-color: #374151;
-        }
-
-        .skeleton-pulse {
-            animation: skeletonPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes skeletonPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        .search-container {
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .search-clear-btn {
-            transition: all 0.2s ease;
-        }
-
-        .search-clear-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .no-results-animation {
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .search-highlight {
-            background-color: rgba(99, 102, 241, 0.2);
-            border-radius: 4px;
-            padding: 0 2px;
-        }
-
-        .dark .search-highlight {
-            background-color: rgba(99, 102, 241, 0.4);
-        }
-
-        /* Comment Styles */
+        /* Comment Section Enhanced Styles */
         .comment-item {
             transition: all 0.2s ease;
+            background: transparent;
+        }
+        
+        .comment-item:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        
+        .dark .comment-item:hover {
+            background: rgba(255, 255, 255, 0.03);
         }
         
         .replies-container {
             border-left: 2px solid #e5e7eb;
             margin-left: 28px;
-            padding-left: 12px;
+            padding-left: 16px;
         }
         
         .dark .replies-container {
             border-left-color: #374151;
         }
         
+        .comments-container {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        
+        .comments-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .comments-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .comments-container::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+        
+        .dark .comments-container::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        
+        .dark .comments-container::-webkit-scrollbar-thumb {
+            background: #6366f1;
+        }
+        
         .edit-form textarea, .reply-form-container textarea {
             transition: all 0.2s ease;
+            font-size: 0.875rem;
         }
         
         .comment-text {
             word-break: break-word;
             white-space: pre-wrap;
+            line-height: 1.5;
         }
         
         /* Loading spinner */
         .comment-loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e5e7eb;
             border-top: 2px solid #6366f1;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.6s linear infinite;
         }
         
         @keyframes spin {
@@ -171,27 +169,64 @@
             100% { transform: rotate(360deg); }
         }
         
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            border-radius: 12px;
-        }
-        
-        .dark .loading-overlay {
-            background: rgba(31, 41, 55, 0.8);
-        }
-        
         .btn-loading {
-            opacity: 0.6;
+            opacity: 0.7;
             pointer-events: none;
+            position: relative;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            top: 50%;
+            left: 50%;
+            margin-left: -7px;
+            margin-top: -7px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        /* Comment action buttons */
+        .comment-action-btn {
+            transition: all 0.2s ease;
+            opacity: 0.7;
+        }
+        
+        .comment-action-btn:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+        
+        /* Smooth transitions */
+        .reply-form-container {
+            transition: all 0.2s ease;
+        }
+        
+        .reply-form-container.hidden {
+            display: none;
+        }
+        
+        /* Comment input focus */
+        .comment-input:focus, .reply-form-container textarea:focus, .edit-textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        
+        /* Delete button hover effect */
+        .delete-comment-btn:hover {
+            color: #ef4444;
+        }
+        
+        .edit-comment-btn:hover {
+            color: #3b82f6;
+        }
+        
+        .reply-btn:hover {
+            color: #6366f1;
         }
     </style>
 
@@ -414,22 +449,22 @@
                                                 <span onclick="window.location.href='{{ route('postingan.show', ['id' => $post->id_postingan]) }}'" class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600 transition">{{ autoTranslate('Lihat detail') }} →</span>
                                             </div>
 
-                                            <!-- Comment Section -->
-                                            <div class="comment-section px-4 pb-4 bg-white dark:bg-gray-800 hidden" id="comments-{{ $post->id_postingan }}">
+                                            <!-- Comment Section - Enhanced -->
+                                            <div class="comment-section px-4 pb-4 bg-white dark:bg-gray-800 hidden rounded-b-xl" id="comments-{{ $post->id_postingan }}">
                                                 @auth
                                                     <div class="mb-4">
                                                         <div class="flex gap-3">
                                                             @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
-                                                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1">
+                                                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-9 h-9 rounded-full object-cover mt-1">
                                                             @else
-                                                                <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
-                                                                    <span class="text-indigo-600 dark:text-indigo-400 text-sm">{{ strtoupper(substr(auth()->user()->nama_mahasiswa ?? 'U', 0, 1)) }}</span>
+                                                                <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1 flex-shrink-0">
+                                                                    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">{{ strtoupper(substr(auth()->user()->nama_mahasiswa ?? 'U', 0, 1)) }}</span>
                                                                 </div>
                                                             @endif
                                                             <div class="flex-1">
-                                                                <textarea id="comment-input-{{ $post->id_postingan }}" rows="2" class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y" placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
+                                                                <textarea id="comment-input-{{ $post->id_postingan }}" rows="2" class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition" placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
                                                                 <div class="flex justify-end mt-2">
-                                                                    <button onclick="window.submitComment({{ $post->id_postingan }})" class="submit-comment-btn px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+                                                                    <button onclick="window.submitComment({{ $post->id_postingan }})" class="submit-comment-btn px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow">
                                                                         {{ autoTranslate('Kirim') }}
                                                                     </button>
                                                                 </div>
@@ -437,13 +472,18 @@
                                                         </div>
                                                     </div>
                                                 @else
-                                                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
-                                                        <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}
-                                                    </p>
+                                                    <div class="text-center py-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-700 font-medium hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}
+                                                        </p>
+                                                    </div>
                                                 @endauth
                                                 
-                                                <div id="comments-container-{{ $post->id_postingan }}" class="comments-container space-y-4 max-h-96 overflow-y-auto pr-2">
-                                                    <div class="text-center py-4 text-gray-500">Loading comments...</div>
+                                                <div id="comments-container-{{ $post->id_postingan }}" class="comments-container space-y-4 pr-2">
+                                                    <div class="text-center py-6 text-gray-400 text-sm">
+                                                        <div class="comment-loading inline-block mr-2"></div>
+                                                        {{ autoTranslate('Memuat komentar...') }}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -626,11 +666,12 @@
         function formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
         }
         
         function getAvatarHtml(user, size = 'w-8 h-8', textSize = 'text-sm') {
-            if (user && user.photo_profile && user.photo_profile !== 'null') {
+            if (user && user.photo_profile && user.photo_profile !== 'null' && user.photo_profile !== '') {
                 const photoPath = user.photo_profile.startsWith('http') ? user.photo_profile : `/storage/${user.photo_profile}`;
                 return `<img src="${photoPath}" class="${size} rounded-full object-cover" onerror="this.src='https://ui-avatars.com/api/?background=6366f1&color=fff&size=100&name=${encodeURIComponent(user.nama_mahasiswa || 'U')}'">`;
             }
@@ -640,159 +681,300 @@
                         <span class="text-indigo-600 dark:text-indigo-400 ${textSize} font-semibold">${initial}</span>
                     </div>`;
         }
+
+       window.commentLastUpdated = {};
+
+window.loadComments = async function(postinganId) {
+    const container = document.getElementById(`comments-container-${postinganId}`);
+    if (!container) return;
+    
+    container.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm"><div class="comment-loading inline-block mr-2"></div> Memuat komentar...</div>';
+    
+    try {
+        const response = await fetch(`/komentar?id_postingan=${postinganId}`);
+        const data = await response.json();
         
-        // Main function to load comments for a postingan
-        window.loadComments = async function(postinganId) {
-            const container = document.getElementById(`comments-container-${postinganId}`);
-            if (!container) return;
-            
-            container.innerHTML = '<div class="text-center py-4 text-gray-500"><div class="comment-loading"></div> Loading comments...</div>';
-            
-            try {
-                const response = await fetch(`/${window.locale}/komentar?id_postingan=${postinganId}`);
-                const data = await response.json();
-                
-                if (data && data.success === true) {
-                    let commentsArray = [];
-                    if (data.comments && Array.isArray(data.comments)) {
-                        commentsArray = data.comments;
-                    } else if (data.comments && data.comments.comments && Array.isArray(data.comments.comments)) {
-                        commentsArray = data.comments.comments;
-                    }
-                    
-                    if (commentsArray.length === 0) {
-                        container.innerHTML = '<p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">Belum ada komentar</p>';
-                        return;
-                    }
-                    
-                    let html = '';
-                    commentsArray.forEach(comment => {
-                        html += renderCommentWithReplies(comment, 0, postinganId);
-                    });
-                    container.innerHTML = html;
-                    
-                    // Attach event listeners for this container
-                    attachCommentEventListeners(container, postinganId);
-                } else {
-                    container.innerHTML = '<p class="text-center text-red-500">Gagal memuat komentar</p>';
-                }
-            } catch (error) {
-                console.error('Error loading comments:', error);
-                container.innerHTML = '<p class="text-center text-red-500">Gagal memuat komentar: ' + error.message + '</p>';
+        if (data && data.success === true) {
+            // ✅ Simpan timestamp untuk stale data check
+            window.commentLastUpdated[postinganId] = data.last_updated ?? null;
+
+            let commentsArray = [];
+            if (data.comments && Array.isArray(data.comments)) {
+                commentsArray = data.comments;
+            } else if (data.comments && data.comments.comments && Array.isArray(data.comments.comments)) {
+                commentsArray = data.comments.comments;
             }
-        };
+            
+            if (commentsArray.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">✨ Belum ada komentar. Jadilah yang pertama!</p>';
+                return;
+            }
+            
+            let html = '<div class="space-y-4">';
+            commentsArray.forEach(comment => {
+                html += renderCommentWithReplies(comment, 0, postinganId);
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            
+            attachCommentEventListeners(container, postinganId);
+        } else {
+            container.innerHTML = '<p class="text-center text-red-500 text-sm py-4">⚠️ Gagal memuat komentar</p>';
+        }
+    } catch (error) {
+        console.error('Error loading comments:', error);
+        container.innerHTML = '<p class="text-center text-red-500 text-sm py-4">⚠️ Gagal memuat komentar: ' + error.message + '</p>';
+    }
+};
         
         // Render a single comment thread
         function renderCommentWithReplies(comment, level, postinganId) {
-            const marginLeft = Math.min(level * 24, 60);
-            const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
-            const userName = escapeHtml(comment.user?.nama_mahasiswa || 'User');
-            
-            let html = `
-                <div class="comment-item mb-3" data-comment-id="${comment.id_komentar}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
-                    <div class="flex gap-3">
-                        ${getAvatarHtml(comment.user, 'w-8 h-8', 'text-sm')}
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-medium text-sm text-gray-900 dark:text-gray-100">${userName}</span>
-                                <span class="text-xs text-gray-500">${formatDate(comment.tanggal || comment.created_at)}</span>
-                                ${isOwnComment ? `
-                                    <button onclick="window.showEditForm(${comment.id_komentar}, ${postinganId})" class="text-xs text-blue-500 hover:text-blue-700 ml-2">Edit</button>
-                                    <button onclick="window.deleteComment(${comment.id_komentar}, ${postinganId}, 'full')" class="text-xs text-red-500 hover:text-red-700">Hapus</button>
-                                ` : ''}
-                            </div>
-                            <p class="comment-text text-sm text-gray-700 dark:text-gray-300 mt-1" id="comment-text-${comment.id_komentar}">${escapeHtml(comment.komentar)}</p>
-                            <div class="flex gap-3 mt-2">
-                                <button onclick="window.showReplyForm(${comment.id_komentar}, ${postinganId})" class="reply-btn text-xs text-indigo-500 hover:text-indigo-700">Balas</button>
-                                ${isOwnComment ? `
-                                    <button onclick="window.deleteComment(${comment.id_komentar}, ${postinganId}, 'single')" class="text-xs text-red-500 hover:text-red-700">Hapus Balasan Ini Saja</button>
-                                ` : ''}
-                            </div>
-                            <div id="reply-form-${comment.id_komentar}" class="reply-form-container hidden mt-3"></div>
-                        </div>
+    const marginLeft = Math.min(level * 28, 56);
+    const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
+    const userName = escapeHtml(comment.user?.nama_mahasiswa || 'User');
+    const commentText = escapeHtml(comment.komentar);
+
+    // ✅ Konversi ke string SEKALI di sini, pakai terus di bawah
+    const commentId = String(comment.id_komentar);
+    postinganId = String(postinganId);
+    
+    let html = `
+        <div class="comment-item transition-all duration-200 py-2" data-comment-id="${commentId}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
+            <div class="flex gap-3">
+                ${getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-sm text-gray-900 dark:text-gray-100">${userName}</span>
+                        <span class="text-xs text-gray-500">${formatDate(comment.tanggal || comment.created_at)}</span>
                     </div>
+                    <p class="comment-text text-sm text-gray-700 dark:text-gray-300 mt-1.5 leading-relaxed" id="comment-text-${commentId}">${commentText}</p>
+                   <button class="reply-btn text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors"
+            data-action="reply" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
+            <svg class="w-3.5 h-3.5 inline mr-1" .../>
+            Balas
+        </button>
+    `;
+    
+    if (isOwnComment) {
+        html += `
+         <button class="edit-comment-btn text-xs text-blue-500 hover:text-blue-700 transition-colors"
+            data-action="edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
+             <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            Edit
+        </button>
+        <button class="delete-comment-btn text-xs text-red-500 hover:text-red-700 transition-colors"
+            data-action="delete" data-comment-id="${commentId}" data-postingan-id="${postinganId}" data-type="full">
+             <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Hapus
+        </button>
+                        
+        `;
+    }
+    
+    html += `
+                    </div>
+                    <div id="reply-form-${commentId}" class="reply-form-container hidden mt-3"></div>
                 </div>
-            `;
-            
-            // Render replies
-            if (comment.balasan && comment.balasan.length > 0) {
-                html += `<div class="replies-container ml-6">`;
-                comment.balasan.forEach(reply => {
-                    html += renderCommentWithReplies(reply, level + 1, postinganId);
-                });
-                html += `</div>`;
-            }
-            
-            return html;
-        }
+            </div>
+        </div>
+    `;
+    
+    if (comment.balasan && comment.balasan.length > 0) {
+        html += `<div class="replies-container ml-4 mt-1">`;
+        comment.balasan.forEach(reply => {
+            html += renderCommentWithReplies(reply, level + 1, postinganId);
+        });
+        html += `</div>`;
+    }
+    
+    return html;
+}
         
-        // Attach event listeners for dynamic elements (buttons that need custom handlers)
+        // Attach event listeners for dynamic elements
         function attachCommentEventListeners(container, postinganId) {
-            // No need for complex listeners since we use onclick attributes
-            // But we need to handle reply form submissions
-            const replyForms = container.querySelectorAll('.reply-submit-form');
-            replyForms.forEach(form => {
-                if (!form.hasAttribute('data-listener')) {
-                    form.setAttribute('data-listener', 'true');
-                    form.onsubmit = async (e) => {
-                        e.preventDefault();
-                        await submitReply(form, postinganId);
-                    };
-                }
-            });
+    // Reply form listeners (existing)
+    const replyForms = container.querySelectorAll('.reply-submit-form');
+    replyForms.forEach(form => {
+        if (!form.hasAttribute('data-listener')) {
+            form.setAttribute('data-listener', 'true');
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                await submitReply(form, postinganId);
+            };
+        }
+    });
+
+    // ✅ TAMBAHKAN: Event delegation untuk reply/edit/delete
+    if (!container.hasAttribute('data-delegated')) {
+        container.setAttribute('data-delegated', 'true');
+        container.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+
+    // Baca sebagai STRING
+    const commentId = btn.getAttribute('data-comment-id');
+    const pid = btn.getAttribute('data-postingan-id');
+    const action = btn.getAttribute('data-action');
+
+    if (action === 'reply') {
+        window.showReplyForm(commentId, pid);
+    } else if (action === 'edit') {
+        window.showEditForm(commentId, pid);
+    } else if (action === 'delete') {
+    const type = btn.getAttribute('data-type') || 'full';
+    console.log('DELETE clicked:', { commentId, pid, type }); // ← tambah ini
+    window.deleteComment(commentId, pid, type);
+    } else if (action === 'save-edit') {   // ✅ TAMBAH INI
+        window.saveEdit(commentId, pid);
+    } else if (action === 'cancel-edit') { // ✅ TAMBAH INI
+        window.cancelEdit(commentId);
+    }
+});
+    }
+}
+        
+        // Helper: common fetch headers
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            };
         }
         
         // Submit a new comment (top-level)
         window.submitComment = async function(postinganId) {
             const textarea = document.getElementById(`comment-input-${postinganId}`);
             const commentText = textarea.value.trim();
-            
+        
             if (!commentText) {
-                alert('Komentar tidak boleh kosong');
+                if (window.showPageInfo) {
+                    window.showPageInfo('Komentar tidak boleh kosong', 'warning', 2000);
+                } else {
+                    alert('Komentar tidak boleh kosong');
+                }
                 return;
             }
-            
-            const submitBtn = textarea.closest('div')?.querySelector('.submit-comment-btn');
+        
+            const submitBtn = textarea.closest('.flex-1')?.querySelector('.submit-comment-btn');
+            const originalText = submitBtn ? submitBtn.innerHTML : '';
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
-                submitBtn.innerHTML = '<div class="comment-loading" style="width:16px;height:16px;"></div> {{ autoTranslate("Mengirim...") }}';
+                submitBtn.innerHTML = 'Mengirim...';
+                submitBtn.disabled = true;
             }
-            
+        
             try {
-                const response = await fetch(`/${window.locale}/komentar`, {
+                const response = await fetch(`/komentar`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
+                    headers: getHeaders(),
                     body: JSON.stringify({
                         id_postingan: postinganId,
                         komentar: commentText
                     })
                 });
-                
+        
                 const data = await response.json();
-                
+        
                 if (data.success) {
                     textarea.value = '';
                     await window.loadComments(postinganId);
                     await updateCommentCount(postinganId, 1);
+                    if (window.showPageInfo) {
+                        window.showPageInfo('Komentar berhasil ditambahkan', 'success', 2000);
+                    }
                 } else {
-                    alert(data.message || 'Gagal menambahkan komentar');
+                    if (window.showErrorAlert) {
+                        window.showErrorAlert(data.message || 'Gagal menambahkan komentar');
+                    } else {
+                        alert(data.message || 'Gagal menambahkan komentar');
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan: ' + error.message);
+                if (window.showErrorAlert) {
+                    window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+                } else {
+                    alert('Terjadi kesalahan: ' + error.message);
+                }
             } finally {
                 if (submitBtn) {
                     submitBtn.classList.remove('btn-loading');
-                    submitBtn.innerHTML = '{{ autoTranslate("Kirim") }}';
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
             }
         };
         
+        // Submit a reply
+        async function submitReply(form, postinganId) {
+            const textarea = form.querySelector('textarea[name="komentar"]');
+            const commentText = textarea.value.trim();
+            const parentId = form.querySelector('input[name="parent_id"]').value;
+        
+            if (!commentText) {
+                if (window.showPageInfo) {
+                    window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
+                } else {
+                    alert('Balasan tidak boleh kosong');
+                }
+                return;
+            }
+        
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;display:inline-block;"></div>';
+            submitBtn.disabled = true;
+        
+            try {
+                const response = await fetch(`/komentar`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({
+                        id_postingan: postinganId,
+                        komentar: commentText,
+                        parent_id: parentId,
+                        reply_to_id: parentId
+                    })
+                });
+        
+                const data = await response.json();
+        
+                if (data.success) {
+                    await window.loadComments(postinganId);
+                    await updateCommentCount(postinganId, 1);
+                    const replyContainer = document.getElementById(`reply-form-${parentId}`);
+                    if (replyContainer) {
+                        replyContainer.classList.add('hidden');
+                        replyContainer.innerHTML = '';
+                    }
+                    if (window.showPageInfo) {
+                        window.showPageInfo('Balasan berhasil ditambahkan', 'success', 2000);
+                    }
+                } else {
+                    if (window.showErrorAlert) {
+                        window.showErrorAlert(data.message || 'Gagal menambahkan balasan');
+                    } else {
+                        alert(data.message || 'Gagal menambahkan balasan');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                if (window.showErrorAlert) {
+                    window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+                } else {
+                    alert('Terjadi kesalahan: ' + error.message);
+                }
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
         // Show reply form
         window.showReplyForm = function(parentCommentId, postinganId) {
+            parentCommentId = String(parentCommentId);
             const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
             if (!replyFormContainer) return;
             
@@ -805,10 +987,12 @@
                 <form class="reply-submit-form mt-2">
                     <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
                     <input type="hidden" name="parent_id" value="${parentCommentId}">
-                    <div class="flex gap-2">
-                        <textarea name="komentar" rows="2" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="Tulis balasan..."></textarea>
-                        <button type="submit" class="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700">Kirim</button>
-                        <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden')" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-400">Batal</button>
+                    <div class="flex gap-2 items-start">
+                        <textarea name="komentar" rows="2" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none" placeholder="Tulis balasan..."></textarea>
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button type="submit" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">Kirim</button>
+                            <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden')" class="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">Batal</button>
+                        </div>
                     </div>
                 </form>
             `;
@@ -821,125 +1005,125 @@
             };
         };
         
-        // Submit a reply
-        async function submitReply(form, postinganId) {
-            const textarea = form.querySelector('textarea[name="komentar"]');
-            const commentText = textarea.value.trim();
-            const parentId = form.querySelector('input[name="parent_id"]').value;
-            
-            if (!commentText) {
-                alert('Balasan tidak boleh kosong');
-                return;
-            }
-            
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;"></div>';
-            submitBtn.disabled = true;
-            
-            try {
-                const response = await fetch(`/${window.locale}/komentar`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        id_postingan: postinganId,
-                        komentar: commentText,
-                        parent_id: parentId,
-                        reply_to_id: parentId
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    await window.loadComments(postinganId);
-                    await updateCommentCount(postinganId, 1);
-                    const replyContainer = document.getElementById(`reply-form-${parentId}`);
-                    if (replyContainer) {
-                        replyContainer.classList.add('hidden');
-                        replyContainer.innerHTML = '';
-                    }
-                } else {
-                    alert(data.message || 'Gagal menambahkan balasan');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan: ' + error.message);
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        }
-        
         // Show edit form
         window.showEditForm = function(commentId, postinganId) {
-            const commentTextEl = document.getElementById(`comment-text-${commentId}`);
-            const originalText = commentTextEl.innerText;
-            const commentItem = commentTextEl.closest('.comment-item');
-            
-            const editForm = document.createElement('div');
-            editForm.className = 'edit-form mt-2';
-            editForm.id = `edit-form-${commentId}`;
-            editForm.innerHTML = `
-                <textarea class="edit-textarea w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg" rows="2">${escapeHtml(originalText)}</textarea>
-                <div class="flex gap-2 mt-2">
-                    <button onclick="window.saveEdit(${commentId}, ${postinganId})" class="save-edit-btn px-3 py-1 bg-green-600 text-white text-sm rounded-lg">Simpan</button>
-                    <button onclick="window.cancelEdit(${commentId})" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded-lg">Batal</button>
-                </div>
-            `;
-            
-            commentTextEl.style.display = 'none';
-            commentTextEl.parentNode.insertBefore(editForm, commentTextEl.nextSibling);
-            
-            const editBtn = commentItem.querySelector('.edit-comment-btn');
-            if (editBtn) editBtn.style.display = 'none';
-        };
+    commentId = String(commentId);
+    postinganId = String(postinganId);
+    
+    const commentTextEl = document.getElementById(`comment-text-${commentId}`);
+    if (!commentTextEl) return;
+    
+    const originalText = commentTextEl.innerText;
+    const commentItem = commentTextEl.closest('.comment-item');
+    
+    const existingEditForm = document.getElementById(`edit-form-${commentId}`);
+    if (existingEditForm) {
+        existingEditForm.remove();
+        commentTextEl.style.display = 'block';
+        const editBtn = commentItem.querySelector('.edit-comment-btn');
+        if (editBtn) editBtn.style.display = 'inline-flex';
+        return; // toggle off jika sudah terbuka
+    }
+    
+    const editForm = document.createElement('div');
+    editForm.className = 'edit-form mt-2';
+    editForm.id = `edit-form-${commentId}`;
+    
+    // ✅ PAKAI data-attribute, BUKAN onclick dengan number literal
+    editForm.innerHTML = `
+        <textarea class="edit-textarea w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none" rows="2">${escapeHtml(originalText)}</textarea>
+        <div class="flex gap-2 mt-2">
+            <button class="save-edit-btn px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
+                data-action="save-edit"
+                data-comment-id="${commentId}"
+                data-postingan-id="${postinganId}">Simpan</button>
+            <button class="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 transition-colors"
+                data-action="cancel-edit"
+                data-comment-id="${commentId}">Batal</button>
+        </div>
+    `;
+    
+    commentTextEl.style.display = 'none';
+    commentTextEl.parentNode.insertBefore(editForm, commentTextEl.nextSibling);
+    
+    const editBtn = commentItem.querySelector('.edit-comment-btn');
+    if (editBtn) editBtn.style.display = 'none';
+};
         
         // Save edit
-        window.saveEdit = async function(commentId, postinganId) {
-            const editForm = document.getElementById(`edit-form-${commentId}`);
-            const newText = editForm.querySelector('.edit-textarea').value.trim();
-            
-            if (!newText) {
-                alert('Komentar tidak boleh kosong');
-                return;
+      // Save edit
+window.saveEdit = async function(commentId, postinganId) {
+    commentId = String(commentId);
+    const editForm = document.getElementById(`edit-form-${commentId}`);
+    if (!editForm) return;
+
+    const editTextarea = editForm.querySelector('.edit-textarea');
+    if (!editTextarea) return;
+
+    const newText = editTextarea.value.trim();
+    if (!newText) {
+        if (window.showPageInfo) {
+            window.showPageInfo('Komentar tidak boleh kosong', 'warning', 2000);
+        } else {
+            alert('Komentar tidak boleh kosong');
+        }
+        return;
+    }
+
+    const saveBtn = editForm.querySelector('.save-edit-btn');
+    if (!saveBtn) return;
+
+    const originalBtnHtml = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;"></div>';
+    saveBtn.disabled = true;
+
+    try {
+        const lastUpdated = window.commentLastUpdated?.[postinganId] ?? '';
+        const response = await fetch(
+            `/komentar/update?id=${commentId}&id_postingan=${postinganId}&last_updated=${encodeURIComponent(lastUpdated)}`,
+            {
+                method: 'PUT',
+                headers: getHeaders(),
+                body: JSON.stringify({ komentar: newText })
             }
-            
-            const saveBtn = editForm.querySelector('.save-edit-btn');
-            saveBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;"></div>';
-            saveBtn.disabled = true;
-            
-            try {
-                const response = await fetch(`/${window.locale}/komentar/update?id=${commentId}&id_postingan=${postinganId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ komentar: newText })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    await window.loadComments(postinganId);
-                } else {
-                    alert(data.message || 'Gagal mengupdate komentar');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan: ' + error.message);
-            } finally {
-                saveBtn.innerHTML = 'Simpan';
-                saveBtn.disabled = false;
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+            await window.loadComments(postinganId);
+            if (window.showPageInfo) {
+                window.showPageInfo('Komentar berhasil diperbarui', 'success', 2000);
             }
-        };
+        } else if (data.code === 'STALE_DATA') {
+            await window.loadComments(postinganId);
+            if (window.showPageInfo) {
+                window.showPageInfo('Komentar diperbarui pengguna lain. Edit ulang jika perlu.', 'warning', 3000);
+            }
+        } else {
+            if (window.showErrorAlert) {
+                window.showErrorAlert(data.message || 'Gagal mengupdate komentar');
+            } else {
+                alert(data.message || 'Gagal mengupdate komentar');
+            }
+            saveBtn.innerHTML = originalBtnHtml;
+            saveBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        if (window.showErrorAlert) {
+            window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+        } else {
+            alert('Terjadi kesalahan: ' + error.message);
+        }
+        saveBtn.innerHTML = originalBtnHtml;
+        saveBtn.disabled = false;
+    }
+};  // ← tutup di sini, setelah semua logika selesai
         
         // Cancel edit
         window.cancelEdit = function(commentId) {
+             commentId = String(commentId);
             const commentTextEl = document.getElementById(`comment-text-${commentId}`);
             const editForm = document.getElementById(`edit-form-${commentId}`);
             const commentItem = commentTextEl.closest('.comment-item');
@@ -948,37 +1132,58 @@
             if (editForm) editForm.remove();
             
             const editBtn = commentItem.querySelector('.edit-comment-btn');
-            if (editBtn) editBtn.style.display = 'inline-block';
+            if (editBtn) editBtn.style.display = 'inline-flex';
         };
         
         // Delete comment
         window.deleteComment = async function(commentId, postinganId, type = 'full') {
-            const confirmMessage = type === 'single' 
-                ? 'Apakah Anda yakin ingin menghapus balasan ini saja? Balasan di dalamnya akan naik satu level.'
+            commentId = String(commentId);
+             postinganId = String(postinganId);
+            const confirmMessage = type === 'single'
+                ? 'Apakah Anda yakin ingin menghapus balasan ini saja?'
                 : 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?';
             
-            if (!confirm(confirmMessage)) return;
-            
+            // Use SweetAlert if available, otherwise fallback to confirm
+            if (window.showConfirm) {
+                const confirmed = await window.showConfirm();
+                if (!confirmed) return;
+            } else {
+                if (!confirm(confirmMessage)) return;
+            }
+        
+            if (window.showLoading) window.showLoading('Menghapus...');
+        
             try {
-                const response = await fetch(`/${window.locale}/komentar/destroy?id=${commentId}&id_postingan=${postinganId}&type=${type}`, {
+                const lastUpdated = window.commentLastUpdated[postinganId] ?? '';
+                const response = await fetch(`/komentar/destroy?id=${commentId}&id_postingan=${postinganId}&type=${type}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
+                    headers: getHeaders(),
                 });
-                
+        
                 const data = await response.json();
-                
+        
                 if (data.success) {
                     await window.loadComments(postinganId);
                     await updateCommentCount(postinganId, -1);
+                    if (window.showPageInfo) {
+                        window.showPageInfo('Komentar berhasil dihapus', 'success', 2000);
+                    }
                 } else {
-                    alert(data.message || 'Gagal menghapus komentar');
+                    if (window.showErrorAlert) {
+                        window.showErrorAlert(data.message || 'Gagal menghapus komentar');
+                    } else {
+                        alert(data.message || 'Gagal menghapus komentar');
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan: ' + error.message);
+                if (window.showErrorAlert) {
+                    window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+                } else {
+                    alert('Terjadi kesalahan: ' + error.message);
+                }
+            } finally {
+                if (window.closeLoading) window.closeLoading();
             }
         };
         
@@ -1038,7 +1243,16 @@
                     const originalHtml = btn.innerHTML;
                     btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
                     setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
-                }).catch(() => { alert('Gagal menyalin URL'); });
+                    if (window.showPageInfo) {
+                        window.showPageInfo('Link berhasil disalin!', 'success', 1500);
+                    }
+                }).catch(() => {
+                    if (window.showErrorAlert) {
+                        window.showErrorAlert('Gagal menyalin URL');
+                    } else {
+                        alert('Gagal menyalin URL');
+                    }
+                });
             }
         };
         

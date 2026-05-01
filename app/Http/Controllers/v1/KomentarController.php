@@ -14,41 +14,40 @@ class KomentarController extends Controller
      * Display comments for a postingan
      */
     public function index(Request $request)
-    {
-        $id_postingan = $request->query('id_postingan');
-        
-        if (!$id_postingan) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'ID Postingan is required'
-                ], 400);
-            }
-            abort(404);
-        }
-        
-        try {
-            $commentsData = Komentar::getCommentsForPostingan($id_postingan);
-            $comments = isset($commentsData['comments']) ? $commentsData['comments'] : [];
-            
-            // Load user data for all comments
-            $comments = $this->loadUserDataForComments($comments);
-            
-            return response()->json([
-                'success' => true,
-                'comments' => $comments,
-                'total_count' => Komentar::getCommentCount($id_postingan)
-            ]);
-            
-        } catch (\Exception $e) {
-            \Log::error('Error loading comments: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ], 500);
-        }
+{
+    $id_postingan = $request->query('id_postingan');
+
+    if (!$id_postingan) {
+        return response()->json([
+            'success' => false,
+            'message' => 'ID Postingan is required'
+        ], 400);
     }
-    
+
+    try {
+        // ✅ Ambil $komentar dulu untuk dapat updated_at
+        $komentar     = Komentar::where('id_postingan', $id_postingan)->first();
+        $commentsData = Komentar::getCommentsForPostingan($id_postingan);
+        $comments     = isset($commentsData['comments']) ? $commentsData['comments'] : [];
+
+        $comments = $this->loadUserDataForComments($comments);
+
+        return response()->json([
+            'success'      => true,
+            'comments'     => $comments,
+            'last_updated' => $komentar?->updated_at?->timestamp, // ✅
+            'total_count'  => Komentar::getCommentCount($id_postingan)
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Error loading comments: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
     /**
      * Load user data for all comments recursively
      */
@@ -57,17 +56,17 @@ class KomentarController extends Controller
         if (!is_array($comments)) {
             return [];
         }
-        
+
         foreach ($comments as &$comment) {
             $comment = $this->loadUserDataForComment($comment);
             if (isset($comment['balasan']) && is_array($comment['balasan'])) {
                 $comment['balasan'] = $this->loadUserDataForComments($comment['balasan']);
             }
         }
-        
+
         return $comments;
     }
-    
+
     private function loadUserDataForComment($comment)
     {
         if (isset($comment['id_user'])) {
@@ -95,160 +94,160 @@ class KomentarController extends Controller
                 'photo_profile' => null,
             ];
         }
-        
+
         return $comment;
     }
-    
+
     /**
      * Store a new comment
      */
     public function store(Request $request)
     {
+        // Pastikan user sudah login
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda harus login terlebih dahulu'
+            ], 401);
+        }
+
         try {
-            $request->validate([
+            $validated = $request->validate([
                 'id_postingan' => 'required|exists:postingan,id_postingan',
-                'komentar' => 'required|string|max:1000',
-                'parent_id' => 'nullable|integer',
-                'reply_to_id' => 'nullable|integer',
+                'komentar'     => 'required|string|max:1000',
+                'parent_id'    => 'nullable|integer',
+                'reply_to_id'  => 'nullable|integer',
             ]);
-            
+
             $comment = Komentar::addComment(
-                $request->id_postingan,
+                $validated['id_postingan'],
                 Auth::id(),
-                $request->komentar,
-                $request->parent_id,
-                $request->reply_to_id
+                $validated['komentar'],
+                $validated['parent_id'] ?? null,
+                $validated['reply_to_id'] ?? null
             );
-            
+
             // Load user data for the new comment
-            $comment = $this->loadUserDataForComment((array)$comment);
-            
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Komentar berhasil ditambahkan!',
-                    'comment' => $comment,
-                ]);
-            }
-            
-            return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
+            $comment = $this->loadUserDataForComment((array) $comment);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Komentar berhasil ditambahkan!',
+                'comment' => $comment,
+            ]);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal',
-                    'errors' => $e->errors()
-                ], 422);
-            }
-            throw $e;
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             \Log::error('Error storing comment: ' . $e->getMessage());
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-                ], 500);
-            }
-            throw $e;
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
-    
+
     /**
      * Update a comment
      */
+
     public function update(Request $request)
-    {
-        $id = $request->query('id');
-        $postinganId = $request->query('id_postingan');
-        
-        if (!$id || !$postinganId) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Comment ID and Postingan ID are required'
-                ], 400);
-            }
-            abort(404);
+{
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'Anda harus login terlebih dahulu'], 401);
+    }
+
+    $id          = $request->query('id');
+    $postinganId = $request->query('id_postingan');
+    $lastUpdated = $request->query('last_updated');
+
+    if (!$id || !$postinganId) {
+        return response()->json(['success' => false, 'message' => 'Comment ID and Postingan ID are required'], 400);
+    }
+
+    try {
+        $request->validate(['komentar' => 'required|string|max:1000']);
+
+        // ✅ Cek stale data SEBELUM panggil model (tanpa nested transaction)
+        $komentar = Komentar::where('id_postingan', $postinganId)->first();
+        if (!$komentar) {
+            return response()->json(['success' => false, 'message' => 'Data komentar tidak ditemukan'], 404);
         }
-        
-        $request->validate([
-            'komentar' => 'required|string|max:1000',
+        if ($lastUpdated && $komentar->updated_at->timestamp > (int)$lastUpdated) {
+            return response()->json([
+                'success' => false,
+                'code'    => 'STALE_DATA',
+                'message' => 'Komentar telah diperbarui oleh pengguna lain. Memuat ulang...'
+            ], 409);
+        }
+
+        $updated = Komentar::updateComment($postinganId, $id, Auth::id(), $request->komentar);
+
+        if (!$updated) {
+            return response()->json(['success' => false, 'message' => 'Komentar tidak ditemukan atau anda tidak memiliki akses'], 403);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Komentar berhasil diperbarui!']);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['success' => false, 'message' => 'Validasi gagal', 'errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        \Log::error('Error updating comment: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+    }
+}
+
+public function destroy(Request $request)
+{
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'Anda harus login terlebih dahulu'], 401);
+    }
+
+    $id          = $request->query('id');
+    $postinganId = $request->query('id_postingan');
+    $type        = $request->query('type', 'full');
+    $lastUpdated = $request->query('last_updated');
+
+    if (!$id || !$postinganId) {
+        return response()->json(['success' => false, 'message' => 'Comment ID and Postingan ID are required'], 400);
+    }
+
+    try {
+        // ✅ Cek stale data SEBELUM panggil model
+        $komentar = Komentar::where('id_postingan', $postinganId)->first();
+        if (!$komentar) {
+            return response()->json(['success' => false, 'message' => 'Data komentar tidak ditemukan'], 404);
+        }
+        if ($lastUpdated && $komentar->updated_at->timestamp > (int)$lastUpdated) {
+            return response()->json([
+                'success' => false,
+                'code'    => 'STALE_DATA',
+                'message' => 'Komentar telah diperbarui oleh pengguna lain. Memuat ulang...'
+            ], 409);
+        }
+
+        $deleted = $type === 'single'
+            ? Komentar::deleteSingleReply($postinganId, $id, Auth::id())
+            : Komentar::deleteComment($postinganId, $id, Auth::id());
+
+        if (!$deleted) {
+            return response()->json(['success' => false, 'message' => 'Komentar tidak ditemukan atau anda tidak memiliki akses'], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $type === 'single' ? 'Balasan komentar berhasil dihapus!' : 'Komentar berhasil dihapus!'
         ]);
-        
-        try {
-            $updated = Komentar::updateComment($postinganId, $id, Auth::id(), $request->komentar);
-            
-            if (!$updated) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Komentar tidak ditemukan atau anda tidak memiliki akses'
-                ], 403);
-            }
-            
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Komentar berhasil diperbarui!'
-                ]);
-            }
-            
-            return redirect()->back()->with('success', 'Komentar berhasil diperbarui!');
-        } catch (\Exception $e) {
-            \Log::error('Error updating comment: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+
+    } catch (\Exception $e) {
+        \Log::error('Error deleting comment: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
     }
+}
     
-    /**
-     * Delete a comment
-     */
-    public function destroy(Request $request)
-    {
-        $id = $request->query('id');
-        $postinganId = $request->query('id_postingan');
-        $type = $request->query('type', 'full'); // 'full' or 'single'
-        
-        if (!$id || !$postinganId) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Comment ID and Postingan ID are required'
-                ], 400);
-            }
-            abort(404);
-        }
-        
-        try {
-            if ($type === 'single') {
-                $deleted = Komentar::deleteSingleReply($postinganId, $id, Auth::id());
-            } else {
-                $deleted = Komentar::deleteComment($postinganId, $id, Auth::id());
-            }
-            
-            if (!$deleted) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Komentar tidak ditemukan atau anda tidak memiliki akses'
-                ], 403);
-            }
-            
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => $type === 'single' ? 'Balasan komentar berhasil dihapus!' : 'Komentar berhasil dihapus!'
-                ]);
-            }
-            
-            return redirect()->back()->with('success', 'Komentar berhasil dihapus!');
-        } catch (\Exception $e) {
-            \Log::error('Error deleting comment: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+
 }

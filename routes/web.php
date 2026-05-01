@@ -98,14 +98,7 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
         Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
         
-        // Di dalam locale group, ganti route komentar menjadi:
-Route::controller(KomentarController::class)->prefix('komentar')->group(function () {
-    Route::get('/', 'index')->name('komentar.index');
-    Route::post('/', 'store')->name('komentar.store');  // <- Perhatikan: tanpa /store
-    Route::get('/edit', 'edit')->name('komentar.edit');
-    Route::put('/update', 'update')->name('komentar.update');
-    Route::delete('/destroy', 'destroy')->name('komentar.destroy');
-});
+       
 
         // ========== MAHASISWA ROUTES (dengan 2FA) ==========
         Route::middleware(['auth', 'role:mahasiswa', '2fa'])->group(function () {
@@ -341,7 +334,16 @@ Route::controller(KomentarController::class)->prefix('komentar')->group(function
 Route::get('/learning-corner-mahasiswa', [LearningCornerController::class, 'learning_corner_user'])->name('learning-corner-mahasiswa');
 Route::get('/sertifikat-mahasiswa', [SertifikatController::class, 'sertifikat_user'])->name('sertifikat-mahasiswa');
 
-
+Route::controller(KomentarController::class)
+    ->prefix('komentar')
+    ->middleware(['web'])   // <-- pastikan web middleware aktif agar session/CSRF bekerja
+    ->group(function () {
+        Route::get('/',        'index')->name('komentar.index');
+        Route::post('/',       'store')->name('komentar.store');
+        Route::put('/update',  'update')->name('komentar.update');
+        Route::delete('/destroy', 'destroy')->name('komentar.destroy');
+    });
+ 
 // ========== AUTHENTICATED TASK ROUTES ==========
 Route::middleware(['auth', '2fa'])->group(function () {
     Route::post('/project/{project}/tasks', [ProjekController::class, 'storeTask'])->name('project.tasks.store');
