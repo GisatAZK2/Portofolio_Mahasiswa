@@ -176,7 +176,6 @@ class User extends Authenticatable
             $user->assignedTasks()->delete();
             $user->postingans()->delete();
             $user->likedPostings()->delete();
-            $user->komentars()->delete();
             $user->keahlianTambahan()->detach();
             $user->memberProjects()->detach();
 

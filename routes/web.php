@@ -259,10 +259,11 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::get('/', [DosenController::class, 'ListUser'])->name('index');
                 Route::get('/AddUser', [DosenController::class, 'ViewAddUser'])->name('ViewCreate');
                 Route::post('/StoreUser', [DosenController::class, 'AddUser'])->name('StoreUser');
-                Route::get('/Details', [DosenController::class, 'DetailsUser'])->name('details');
+                 Route::get('/Details', [DosenController::class, 'DetailsUser'])->name('details');  // ✅ Sudah b
                 Route::patch('/edit', [DosenController::class, 'UpdateUser'])->name('edit');
                 Route::delete('/DeleteUser', [DosenController::class, 'destroyUser'])->name('destroy');
                 Route::patch('/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
+                Route::post('/import-excel', [DosenController::class, 'importExcel'])->name('importExcel');
             });
 
             Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {

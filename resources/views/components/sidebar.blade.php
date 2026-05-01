@@ -41,7 +41,7 @@
     <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden scrollbar-thin">
 
         {{-- ---------- SECTION: UTAMA ---------- --}}
-        <p class="sb-section-label">Utama</p>
+        <p class="sb-section-label" data-translate="utama"></p>
 
         {{-- Home --}}
         <a href="{{ route('dashboard', ['locale' => app()->getLocale()]) }}"
@@ -79,7 +79,7 @@
                 </a>
 
                 {{-- ---------- SECTION: MANAJEMEN DATA ---------- --}}
-                <p class="sb-section-label mt-4">Manajemen Data</p>
+                <p class="sb-section-label mt-4" data-translate="manajemen_data">Manajemen Data</p>
 
                 {{-- Users --}}
                 <div x-data="{ open: {{ request()->routeIs('admin.users.*') ? 'true' : 'false' }} }">
@@ -203,7 +203,7 @@
                 </div>
 
                 {{-- ---------- SECTION: KONTEN ---------- --}}
-                <p class="sb-section-label mt-4">Konten</p>
+                <p class="sb-section-label mt-4" data-translate="konten"></p>
 
                 {{-- Projects --}}
                 <div x-data="{ open: {{ request()->routeIs('admin.projects.*') ? 'true' : 'false' }} }">
@@ -342,7 +342,7 @@
                 </a>
 
                 {{-- ---------- SECTION: BIMBINGAN ---------- --}}
-                <p class="sb-section-label mt-4">Bimbingan</p>
+                <p class="sb-section-label mt-4" data-translate="bimingan"></p>
 
                 {{-- Mahasiswa Bimbingan --}}
                 <div x-data="{ open: {{ request()->routeIs('dosen.users.*') ? 'true' : 'false' }} }">
@@ -435,7 +435,7 @@
                 </div>
 
                 {{-- Postingan --}}
-                <p class="sb-section-label mt-4">Konten</p>
+                <p class="sb-section-label mt-4" data-translate="konten"></p>
                 <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }">
                     <button @click="open = !open"
                         class="sb-item w-full {{ request()->routeIs('postingan.*') ? 'sb-active' : '' }}">
@@ -473,7 +473,7 @@
             @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
 
                 {{-- ---------- SECTION: AKADEMIK ---------- --}}
-                <p class="sb-section-label mt-4">Akademik</p>
+                <p class="sb-section-label mt-4" data-translate="akademik"></p>
 
                 {{-- Project --}}
                 <div x-data="{ open: {{ request()->routeIs('project.*') ? 'true' : 'false' }} }">

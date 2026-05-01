@@ -605,6 +605,29 @@ private function parseDate($date): ?string
     $ts = strtotime($date);
     return $ts !== false ? date('Y-m-d', $ts) : null;
 }
+
+ // DetailsUser - ambil id dari query parameter
+    public function DetailsUser(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
+
+        if (!$id) {
+            abort(404, 'User ID is required');
+        }
+
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+        $angkatans = Angkatan::all();
+        $user = User::with(['jurusan', 'keahlian', 'angkatan'])->findOrFail($id);
+
+        return view('admin.user.views_edit_user', compact(
+            'user',
+            'jurusans',
+            'keahlians',
+            'angkatans'
+        ));
+    }
     // UpdateUser - ambil id dari query parameter
     public function UpdateUser(Request $request)
     {
