@@ -356,7 +356,7 @@
                         @if(!empty($pendidikanList))
                             <div class="space-y-4">
                                 @foreach($pendidikanList as $pend)
-                                    <div class="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800/30 hover:border-blue-300 dark:hover:border-blue-600 transition group">
+                                    <div class="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800/30 hover:border-blue-300 dark:hover:border-blue-600 transition  group cursor-pointer"  onclick="openDetailPendidikan('{{ $pend['id'] ?? '' }}')">
                                         <div class="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
                                             @php
                                                 $jenjangIcons = [
@@ -387,9 +387,6 @@
                                                         @endif
                                                     </p>
                                                 </div>
-                                                <button type="button" onclick="deletePendidikan('{{ $pend['id'] ?? '' }}')" class="opacity-0 group-hover:opacity-100 transition p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -425,7 +422,7 @@
                         @if(!empty($pengalamanList))
                             <div class="space-y-4">
                                 @foreach($pengalamanList as $pkj)
-                                    <div class="flex items-start gap-4 p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-600 transition group">
+                                    <div class="flex items-start gap-4 p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-600 transition group cursor-pointer" onclick="openDetailPengalaman('{{ $pkj['id'] ?? '' }}')">
                                         <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
                                             <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                                         </div>
@@ -450,9 +447,6 @@
                                                         </a>
                                                     @endif
                                                 </div>
-                                                <button type="button" onclick="deletePengalaman('{{ $pkj['id'] ?? '' }}')" class="opacity-0 group-hover:opacity-100 transition p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -748,6 +742,152 @@
         </div>
     </div>
 
+    <!-- ===== MODAL DETAIL / EDIT PENDIDIKAN ===== -->
+    <div id="modal-detail-pendidikan" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPendidikan()"></div>
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pendidikan-content">
+            
+            <!-- Header -->
+            <div class="sticky top-0 bg-white dark:bg-gray-900 px-6 py-5 border-b border-gray-100 dark:border-gray-700 rounded-t-2xl z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                             <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                                </svg>
+                        </div>
+                        <div>
+                            <h3 id="modal-pend-title" class="text-lg font-bold text-gray-900 dark:text-white" data-translate="detail_pend_title" data-translate-page="profile">Detail Pendidikan</h3>
+                            <p id="modal-pend-mode-label" class="text-xs text-blue-600 dark:text-blue-400" data-translate="mode_view" data-translate-page="profile">Mode Lihat</p>
+                        </div>
+                    </div>
+                    <button onclick="closeDetailPendidikan()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-6 space-y-5">
+                <!-- SKELETON LOADING -->
+                <div id="pend-skeleton" class="hidden space-y-4 animate-pulse">
+                    <div class="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
+                        <div class="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                        <div class="flex-1">
+                            <div class="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+                            <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+                            <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <div class="flex-1 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                        <div class="flex-1 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                    </div>
+                </div>
+                <input type="hidden" id="pend-edit-id">
+
+                <!-- VIEW MODE -->
+                <div id="pend-view-mode" class="space-y-4">
+                    <div class="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
+                        <div id="pend-view-icon" class="text-4xl">🎓</div>
+                        <div>
+                            <h4 id="pend-view-nama" class="text-xl font-bold text-gray-900 dark:text-white"></h4>
+                            <span id="pend-view-jenjang" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 mt-1"></span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="jurusan" data-translate-page="profile">Jurusan</p>
+                            <p id="pend-view-jurusan" class="text-sm font-medium text-gray-800 dark:text-gray-200">-</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="periode" data-translate-page="profile">Periode</p>
+                            <p id="pend-view-periode" class="text-sm font-medium text-gray-800 dark:text-gray-200"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDIT MODE -->
+                <div id="pend-edit-mode" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="nama_institusi" data-translate-page="profile">Nama Institusi / Sekolah</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="pend-edit-nama_sekolah" placeholder="{{ autoTranslate('Nama sekolah/universitas...') }}" required
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="jenjang_pendidikan" data-translate-page="profile">Jenjang Pendidikan</span> <span class="text-red-500">*</span>
+                        </label>
+                        <select id="pend-edit-jenjang" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                            <option value="" data-translate="pilih_jenjang" data-translate-page="profile">-- Pilih Jenjang --</option>
+                            <option>SD</option><option>SMP</option><option>SMA/SMK</option>
+                            <option>D1</option><option>D2</option><option>D3</option><option>D4</option>
+                            <option>S1</option><option>S2</option><option>S3</option><option>Kursus/Pelatihan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="jurusan_prodi" data-translate-page="profile">Jurusan / Program Studi</span>
+                            <span class="text-xs font-normal text-gray-400">(<span data-translate="opsional" data-translate-page="profile">opsional</span>)</span>
+                        </label>
+                        <input type="text" id="pend-edit-jurusan_sek" placeholder="{{ autoTranslate('Contoh: Teknik Informatika') }}"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="tahun_masuk" data-translate-page="profile">Tahun Masuk</span> <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" id="pend-edit-tahun_masuk" placeholder="2020" min="1950" max="{{ date('Y') + 1 }}" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        </div>
+                        <div id="pend-edit-tahun-lulus-field">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="tahun_lulus" data-translate-page="profile">Tahun Lulus</span>
+                            </label>
+                            <input type="number" id="pend-edit-tahun_lulus" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
+                        <input type="checkbox" id="pend-edit-masih_kuliah" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            onchange="toggleEditTahunLulus(this)">
+                        <label for="pend-edit-masih_kuliah" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="masih_kuliah" data-translate-page="profile">Masih bersekolah / kuliah di sini</label>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="pend-view-actions" class="flex gap-3 pt-2">
+                    <button type="button" onclick="switchToPendidikanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <span data-translate="edit" data-translate-page="profile">Edit</span>
+                    </button>
+                    <button type="button" onclick="confirmDeletePendidikan()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span data-translate="hapus" data-translate-page="profile">Hapus</span>
+                    </button>
+                </div>
+                <div id="pend-edit-actions" class="hidden flex gap-3 pt-2">
+                    <button type="button" onclick="switchToPendidikanView()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="batal" data-translate-page="profile">Batal</button>
+                    <button type="button" onclick="savePendidikanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm" data-translate="simpan_perubahan" data-translate-page="profile">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
     {{-- ================================================================ --}}
     {{-- MODAL TAMBAH PENGALAMAN KERJA --}}
     {{-- ================================================================ --}}
@@ -845,10 +985,160 @@
         </div>
     </div>
 
+    <!-- ===== MODAL DETAIL / EDIT PENGALAMAN KERJA ===== -->
+    <div id="modal-detail-pengalaman" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPengalaman()"></div>
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pengalaman-content">
+            
+            <!-- Header -->
+            <div class="sticky top-0 bg-white dark:bg-gray-900 px-6 py-5 border-b border-gray-100 dark:border-gray-700 rounded-t-2xl z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 id="modal-pkj-title" class="text-lg font-bold text-gray-900 dark:text-white" data-translate="detail_pkj_title" data-translate-page="profile">Detail Pengalaman Kerja</h3>
+                            <p id="modal-pkj-mode-label" class="text-xs text-emerald-600 dark:text-emerald-400" data-translate="mode_view" data-translate-page="profile">Mode Lihat</p>
+                        </div>
+                    </div>
+                    <button onclick="closeDetailPengalaman()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-6 space-y-5">
+                <input type="hidden" id="pkj-edit-id">
+
+                <!-- SKELETON LOADING -->
+                <div id="pkj-skeleton" class="hidden space-y-4 animate-pulse">
+                    <div class="p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
+                        <div class="h-6 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+                            <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+                            <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <div class="flex-1 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                        <div class="flex-1 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                    </div>
+                </div>
+
+                <!-- VIEW MODE -->
+                <div id="pkj-view-mode" class="space-y-4">
+                    <div class="p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
+                        <h4 id="pkj-view-nama" class="text-xl font-bold text-gray-900 dark:text-white"></h4>
+                        <p id="pkj-view-bagian" class="text-emerald-700 dark:text-emerald-400 font-medium mt-1"></p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="periode" data-translate-page="profile">Periode</p>
+                            <p id="pkj-view-periode" class="text-sm font-medium text-gray-800 dark:text-gray-200"></p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="status" data-translate-page="profile">Status</p>
+                            <p id="pkj-view-status" class="text-sm font-medium text-gray-800 dark:text-gray-200"></p>
+                        </div>
+                    </div>
+                    <div id="pkj-view-sertifikat-wrap" class="hidden">
+                        <a id="pkj-view-sertifikat-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                            <span data-translate="lihat_sertifikat_pendukung" data-translate-page="profile">Lihat Sertifikat Pendukung</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- EDIT MODE -->
+                <div id="pkj-edit-mode" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="nama_pt" data-translate-page="profile">Nama Perusahaan / Instansi</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="pkj-edit-nama_pt" placeholder="{{ autoTranslate('Contoh: PT. Telkom Indonesia') }}" required
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="bagian_kerja" data-translate-page="profile">Posisi / Bagian Kerja</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="pkj-edit-bagian_kerja" placeholder="{{ autoTranslate('Contoh: Software Engineer') }}" required
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="tahun_mulai" data-translate-page="profile">Tahun Mulai</span> <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" id="pkj-edit-tahun_mulai" placeholder="2022" min="1950" max="{{ date('Y') + 1 }}" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        </div>
+                        <div id="pkj-edit-tahun-akhir-field">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="tahun_selesai" data-translate-page="profile">Tahun Selesai</span>
+                            </label>
+                            <input type="number" id="pkj-edit-tahun_akhir" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
+                        <input type="checkbox" id="pkj-edit-masih_bekerja" class="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                            onchange="toggleEditTahunAkhir(this)">
+                        <label for="pkj-edit-masih_bekerja" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="masih_bekerja" data-translate-page="profile">Masih bekerja di sini</label>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="pkj-view-actions" class="flex gap-3 pt-2">
+                    <button type="button" onclick="switchToPengalamanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <span data-translate="edit" data-translate-page="profile">Edit</span>
+                    </button>
+                    <button type="button" onclick="confirmDeletePengalaman()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span data-translate="hapus" data-translate-page="profile">Hapus</span>
+                    </button>
+                </div>
+                <div id="pkj-edit-actions" class="hidden flex gap-3 pt-2">
+                    <button type="button" onclick="switchToPengalamanView()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="batal" data-translate-page="profile">Batal</button>
+                    <button type="button" onclick="savePengalamanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm" data-translate="simpan_perubahan" data-translate-page="profile">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        const csrfToken = '{{ csrf_token() }}';
+
+        const successMessages = {
+            pendidikan_updated: '{{ autoTranslate('Pendidikan Berhasil diperbarui!') }}',
+            pengalaman_updated: '{{ autoTranslate('Pengalaman Berhasil diperbarui!') }}',
+            pendidikan_deleted: '{{ autoTranslate('Pendidikan Berhasil dihapus!') }}',
+            pengalaman_deleted: '{{ autoTranslate('Pengalaman Berhasil dihapus!') }}'
+        };
+
         // ===================== SKELETON =====================
         document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const pendId = params.get('pend');
+            const pkjId  = params.get('pkj');
+            if (pendId) openDetailPendidikan(pendId);
+            if (pkjId)  openDetailPengalaman(pkjId);
             setTimeout(function() {
                 const skeleton = document.getElementById('skeleton-loading');
                 const content = document.getElementById('actual-content');
@@ -858,6 +1148,347 @@
                 }
             }, 500);
         });
+
+        function updateUrlParam(key, value) {
+    const url = new URL(window.location.href);
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
+    window.history.replaceState({}, '', url.toString());
+}
+
+// ============================================================
+// MODAL DETAIL PENDIDIKAN
+// ============================================================
+async function openDetailPendidikan(id) {
+    updateUrlParam('pend', id);
+    const modal   = document.getElementById('modal-detail-pendidikan');
+    const content = document.getElementById('modal-detail-pendidikan-content');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => {
+        content.classList.remove('scale-95','opacity-0');
+        content.classList.add('scale-100','opacity-100');
+    });
+
+    // ✅ Tampilkan skeleton dulu
+    document.getElementById('pend-view-mode').classList.add('hidden');
+    document.getElementById('pend-view-actions').classList.add('hidden');
+    document.getElementById('pend-edit-mode').classList.add('hidden');
+    document.getElementById('pend-edit-actions').classList.add('hidden');
+    document.getElementById('pend-skeleton').classList.remove('hidden');
+
+    try {
+        const res  = await fetch(`/${locale}/pendidikan/detail?id=${id}`, {
+            headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+        });
+        const json = await res.json();
+        
+        // ✅ Sembunyikan skeleton
+        document.getElementById('pend-skeleton').classList.add('hidden');
+        
+        if (!json.success) return;
+        const d = json.data;
+
+        document.getElementById('pend-edit-id').value = d.id;
+        const jenjangIcons = {
+            'S1':'🎓','S2':'🎓','S3':'🎓',
+            'D1':'📚','D2':'📚','D3':'📚','D4':'📚',
+            'SMA/SMK':'🏫','SMP':'🏫','SD':'🏫',
+            'Kursus/Pelatihan':'📖'
+        };
+        document.getElementById('pend-view-icon').textContent  = jenjangIcons[d.jenjang] || '🏛️';
+        document.getElementById('pend-view-nama').textContent  = d.nama_sekolah || '-';
+        document.getElementById('pend-view-jenjang').textContent = d.jenjang || '';
+        document.getElementById('pend-view-jurusan').textContent = d.jurusan_sek || '-';
+        const lulusText = d.masih_kuliah ? 'Sekarang' : (d.tahun_lulus || 'Belum selesai');
+        document.getElementById('pend-view-periode').textContent = `${d.tahun_masuk || '-'} — ${lulusText}`;
+
+        document.getElementById('pend-edit-nama_sekolah').value = d.nama_sekolah || '';
+        document.getElementById('pend-edit-jenjang').value      = d.jenjang || '';
+        document.getElementById('pend-edit-jurusan_sek').value  = d.jurusan_sek || '';
+        document.getElementById('pend-edit-tahun_masuk').value  = d.tahun_masuk || '';
+        document.getElementById('pend-edit-tahun_lulus').value  = d.tahun_lulus || '';
+        const masihKuliah = !!d.masih_kuliah;
+        document.getElementById('pend-edit-masih_kuliah').checked = masihKuliah;
+        const lulusField = document.getElementById('pend-edit-tahun-lulus-field');
+        lulusField.style.opacity = masihKuliah ? '0.4' : '1';
+        document.getElementById('pend-edit-tahun_lulus').disabled = masihKuliah;
+
+        switchToPendidikanView();
+    } catch(e) {
+        document.getElementById('pend-skeleton').classList.add('hidden');
+        console.error(e);
+    }
+}
+
+function closeDetailPendidikan() {
+    updateUrlParam('pend', null);
+    const modal   = document.getElementById('modal-detail-pendidikan');
+    const content = document.getElementById('modal-detail-pendidikan-content');
+    content.classList.remove('scale-100','opacity-100');
+    content.classList.add('scale-95','opacity-0');
+    setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
+}
+
+function switchToPendidikanEdit() {
+    document.getElementById('pend-view-mode').classList.add('hidden');
+    document.getElementById('pend-edit-mode').classList.remove('hidden');
+    document.getElementById('pend-view-actions').classList.add('hidden');
+    document.getElementById('pend-edit-actions').classList.remove('hidden');
+    document.getElementById('modal-pend-mode-label').textContent = 'Mode Edit';
+    document.getElementById('modal-pend-mode-label').classList.replace('text-blue-600','text-amber-600');
+}
+
+function switchToPendidikanView() {
+    document.getElementById('pend-view-mode').classList.remove('hidden');
+    document.getElementById('pend-edit-mode').classList.add('hidden');
+    document.getElementById('pend-view-actions').classList.remove('hidden');
+    document.getElementById('pend-edit-actions').classList.add('hidden');
+    document.getElementById('modal-pend-mode-label').textContent = 'Mode Lihat';
+    document.getElementById('modal-pend-mode-label').classList.replace('text-amber-600','text-blue-600');
+}
+
+function toggleEditTahunLulus(checkbox) {
+    const field = document.getElementById('pend-edit-tahun-lulus-field');
+    const input = document.getElementById('pend-edit-tahun_lulus');
+    field.style.opacity  = checkbox.checked ? '0.4' : '1';
+    input.disabled       = checkbox.checked;
+    if (checkbox.checked) input.value = '';
+}
+
+async function savePendidikanEdit() {
+    const id           = document.getElementById('pend-edit-id').value;
+    const nama_sekolah = document.getElementById('pend-edit-nama_sekolah').value.trim();
+    const jenjang      = document.getElementById('pend-edit-jenjang').value;
+    const jurusan_sek  = document.getElementById('pend-edit-jurusan_sek').value.trim();
+    const tahun_masuk  = document.getElementById('pend-edit-tahun_masuk').value;
+    const tahun_lulus  = document.getElementById('pend-edit-tahun_lulus').value;
+    const masih_kuliah = document.getElementById('pend-edit-masih_kuliah').checked ? '1' : '0';
+
+    if (!nama_sekolah || !jenjang || !tahun_masuk) {
+        if (window.showErrorAlert) {
+            window.showErrorAlert('Harap isi field yang wajib diisi.');
+        } else {
+            alert('Harap isi field yang wajib diisi.');
+        }
+        return;
+    }
+
+    // Buat FormData untuk mengirim file jika ada
+    const formData = new FormData();
+    formData.append('_method', 'PATCH');
+    formData.append('nama_sekolah', nama_sekolah);
+    formData.append('jenjang', jenjang);
+    formData.append('jurusan_sek', jurusan_sek);
+    formData.append('tahun_masuk', tahun_masuk);
+    formData.append('tahun_lulus', tahun_lulus);
+    formData.append('masih_kuliah', masih_kuliah);
+
+    try {
+        const response = await fetch(`/${locale}/pendidikan/update?id=${id}`, {
+            method: 'POST', // Tetap pakai POST, tapi dengan _method=PATCH di FormData
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+            },
+            body: formData
+        });
+        
+        const json = await response.json();
+        
+        if (json.success) {
+            closeDetailPendidikan();
+            if (window.showSuccessAlert) {
+                window.showSuccessAlert(successMessages.pendidikan_updated);
+            }
+            setTimeout(() => window.location.reload(), 1800);
+        } else {
+            if (window.showErrorAlert) {
+                window.showErrorAlert(json.message || 'Gagal menyimpan perubahan.');
+            }
+        }
+    } catch(e) {
+        console.error('Error:', e);
+        if (window.showErrorAlert) {
+            window.showErrorAlert('Terjadi kesalahan jaringan.');
+        }
+    }
+}
+
+async function confirmDeletePendidikan() {
+    const id = document.getElementById('pend-edit-id').value;
+    const confirmed = await window.showConfirm();
+    if (!confirmed) return;
+    try {
+        const res  = await fetch(`/${locale}/pendidikan/destroy?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+        });
+        const json = await res.json();
+        if (json.success) {
+            closeDetailPendidikan();
+            if (window.showSuccessAlert) window.showSuccessAlert(successMessages.pendidikan_deleted);
+            setTimeout(() => window.location.reload(), 1800);
+        } else {
+            if (window.showErrorAlert) window.showErrorAlert(json.message || 'Gagal menghapus.');
+        }
+    } catch(e) {
+        if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan jaringan.');
+    }
+}
+
+// ============================================================
+// MODAL DETAIL PENGALAMAN KERJA
+// ============================================================
+async function openDetailPengalaman(id) {
+    updateUrlParam('pkj', id);
+    const modal   = document.getElementById('modal-detail-pengalaman');
+    const content = document.getElementById('modal-detail-pengalaman-content');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => {
+        content.classList.remove('scale-95','opacity-0');
+        content.classList.add('scale-100','opacity-100');
+    });
+
+    document.getElementById('pkj-view-mode').classList.add('hidden');
+    document.getElementById('pkj-view-actions').classList.add('hidden');
+    document.getElementById('pkj-edit-mode').classList.add('hidden');
+    document.getElementById('pkj-edit-actions').classList.add('hidden');
+    document.getElementById('pkj-skeleton').classList.remove('hidden');
+
+    try {
+        const res  = await fetch(`/${locale}/pengalaman-kerja/detail?id=${id}`, {
+            headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+        });
+        const json = await res.json();
+        if (!json.success) return;
+        const d = json.data;
+
+        document.getElementById('pkj-skeleton').classList.add('hidden');
+
+        document.getElementById('pkj-edit-id').value = d.id;
+
+        document.getElementById('pkj-view-nama').textContent   = d.nama_pt || '-';
+        document.getElementById('pkj-view-bagian').textContent = d.bagian_kerja || '-';
+        const akhirText = d.masih_bekerja ? 'Sekarang' : (d.tahun_akhir || 'Selesai');
+        document.getElementById('pkj-view-periode').textContent = `${d.tahun_mulai || '-'} — ${akhirText}`;
+        document.getElementById('pkj-view-status').textContent  = d.masih_bekerja ? '🟢 Aktif bekerja' : '✅ Selesai';
+
+        const sertWrap = document.getElementById('pkj-view-sertifikat-wrap');
+        if (d.sertifikat_pendukung) {
+            document.getElementById('pkj-view-sertifikat-link').href = `/storage/${d.sertifikat_pendukung}`;
+            sertWrap.classList.remove('hidden');
+        } else {
+            sertWrap.classList.add('hidden');
+        }
+
+        document.getElementById('pkj-edit-nama_pt').value      = d.nama_pt || '';
+        document.getElementById('pkj-edit-bagian_kerja').value = d.bagian_kerja || '';
+        document.getElementById('pkj-edit-tahun_mulai').value  = d.tahun_mulai || '';
+        document.getElementById('pkj-edit-tahun_akhir').value  = d.tahun_akhir || '';
+        const masihBekerja = !!d.masih_bekerja;
+        document.getElementById('pkj-edit-masih_bekerja').checked = masihBekerja;
+        const akhirField = document.getElementById('pkj-edit-tahun-akhir-field');
+        akhirField.style.opacity = masihBekerja ? '0.4' : '1';
+        document.getElementById('pkj-edit-tahun_akhir').disabled = masihBekerja;
+
+        switchToPengalamanView();
+    } catch(e) { console.error(e); }
+}
+
+function closeDetailPengalaman() {
+    updateUrlParam('pkj', null);
+    const modal   = document.getElementById('modal-detail-pengalaman');
+    const content = document.getElementById('modal-detail-pengalaman-content');
+    content.classList.remove('scale-100','opacity-100');
+    content.classList.add('scale-95','opacity-0');
+    setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
+}
+
+function switchToPengalamanEdit() {
+    document.getElementById('pkj-view-mode').classList.add('hidden');
+    document.getElementById('pkj-edit-mode').classList.remove('hidden');
+    document.getElementById('pkj-view-actions').classList.add('hidden');
+    document.getElementById('pkj-edit-actions').classList.remove('hidden');
+    document.getElementById('modal-pkj-mode-label').textContent = 'Mode Edit';
+    document.getElementById('modal-pkj-mode-label').classList.replace('text-emerald-600','text-amber-600');
+}
+
+function switchToPengalamanView() {
+    document.getElementById('pkj-view-mode').classList.remove('hidden');
+    document.getElementById('pkj-edit-mode').classList.add('hidden');
+    document.getElementById('pkj-view-actions').classList.remove('hidden');
+    document.getElementById('pkj-edit-actions').classList.add('hidden');
+    document.getElementById('modal-pkj-mode-label').textContent = 'Mode Lihat';
+    document.getElementById('modal-pkj-mode-label').classList.replace('text-amber-600','text-emerald-600');
+}
+
+function toggleEditTahunAkhir(checkbox) {
+    const field = document.getElementById('pkj-edit-tahun-akhir-field');
+    const input = document.getElementById('pkj-edit-tahun_akhir');
+    field.style.opacity = checkbox.checked ? '0.4' : '1';
+    input.disabled      = checkbox.checked;
+    if (checkbox.checked) input.value = '';
+}
+
+async function savePengalamanEdit() {
+    const id           = document.getElementById('pkj-edit-id').value;
+    const nama_pt      = document.getElementById('pkj-edit-nama_pt').value.trim();
+    const bagian_kerja = document.getElementById('pkj-edit-bagian_kerja').value.trim();
+    const tahun_mulai  = document.getElementById('pkj-edit-tahun_mulai').value;
+    const tahun_akhir  = document.getElementById('pkj-edit-tahun_akhir').value;
+    const masih_bekerja = document.getElementById('pkj-edit-masih_bekerja').checked ? '1' : '0';
+
+    if (!nama_pt || !bagian_kerja || !tahun_mulai) {
+        if (window.showErrorAlert) window.showErrorAlert('Harap isi field yang wajib diisi.');
+        return;
+    }
+
+    const body = new URLSearchParams({ nama_pt, bagian_kerja, tahun_mulai, tahun_akhir, masih_bekerja, _method: 'PATCH' });
+
+    try {
+        const res  = await fetch(`/${locale}/pengalaman-kerja/update?id=${id}`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString()
+        });
+        const json = await res.json();
+        if (json.success) {
+    closeDetailPengalaman();
+    if (window.showSuccessAlert) window.showSuccessAlert(successMessages.pengalaman_updated);
+    setTimeout(() => window.location.reload(), 1800);
+
+        } else {
+            if (window.showErrorAlert) window.showErrorAlert(json.message || 'Gagal menyimpan perubahan.');
+        }
+    } catch(e) {
+        if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan jaringan.');
+    }
+}
+
+async function confirmDeletePengalaman() {
+    const id = document.getElementById('pkj-edit-id').value;
+    const confirmed = await window.showConfirm();
+    if (!confirmed) return;
+    try {
+        const res  = await fetch(`/${locale}/pengalaman-kerja/destroy?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+        });
+        const json = await res.json();
+        if (json.success) {
+    closeDetailPengalaman();
+    if (window.showSuccessAlert) window.showSuccessAlert(successMessages.pengalaman_deleted);
+    setTimeout(() => window.location.reload(), 1800);
+
+        } else {
+            if (window.showErrorAlert) window.showErrorAlert(json.message || 'Gagal menghapus.');
+        }
+    } catch(e) {
+        if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan jaringan.');
+    }
+}
 
         // ===================== TOGGLE EDIT =====================
         function toggleEdit(field) {

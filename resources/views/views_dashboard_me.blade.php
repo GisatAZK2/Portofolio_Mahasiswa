@@ -1134,6 +1134,7 @@
             <form method="POST" action="{{ route('postingan.store') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="post_type" value="photo">
+                <input type="hidden" name="items[0][type]" value="image">
                 <div class="cp-field">
                     <label class="cp-label">Judul <span class="cp-req">*</span></label>
                     <input type="text" name="judul" placeholder="Judul postingan foto..." class="cp-input">

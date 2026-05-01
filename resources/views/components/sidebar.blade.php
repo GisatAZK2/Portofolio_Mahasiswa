@@ -314,13 +314,13 @@
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/>
                             </svg>
-                            <span data-translate="postingan">Postingan</span>
+                            <span data-translate="postingan"></span>
                         </a>
                         <a href="{{ route('postingan.create') }}" class="sb-sub {{ request()->routeIs('postingan.create') ? 'sb-sub-active' : '' }}">
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
-                            <span data-translate="postingan_tambah">Tambah Postingan</span>
+                            <span data-translate="postingan_tambah"></span>
                         </a>
                     </div>
                 </div>
@@ -454,13 +454,13 @@
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/>
                             </svg>
-                            <span>Postingan</span>
+                            <span data-translate="postingan"></span>
                         </a>
                         <a href="{{ route('postingan.create') }}" class="sb-sub {{ request()->routeIs('postingan.create') ? 'sb-sub-active' : '' }}">
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
-                            <span>Tambah Postingan</span>
+                            <span data-translate="postingan_tambah"></span>
                         </a>
                     </div>
                 </div>
@@ -554,13 +554,13 @@
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/>
                             </svg>
-                            <span>Postingan</span>
+                            <span data-translate="postingan"></span>
                         </a>
                         <a href="{{ route('postingan.create') }}" class="sb-sub {{ request()->routeIs('postingan.create') ? 'sb-sub-active' : '' }}">
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
-                            <span>Tambah Postingan</span>
+                            <span data-translate="postingan_tambah"></span>
                         </a>
                     </div>
                 </div>

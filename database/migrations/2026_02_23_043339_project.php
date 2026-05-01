@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->json('isi_content');
-            $table->json('viewer_ids');
+            $table->json('viewer_ids')->nullable();
             $table->date('tanggal_mulai');
             $table->date('tanggal_akhir')->nullable();
             //pemimpin project

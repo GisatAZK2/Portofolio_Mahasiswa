@@ -121,12 +121,16 @@ Route::middleware(['web', 'auth'])->group(function () {
             // Pendidikan
             Route::prefix('pendidikan')->middleware('auth')->group(function () {
                 Route::post('/store', [UserController::class, 'storePendidikan'])->name('pendidikan.store');
+                Route::get('/detail', [UserController::class, 'detailPendidikan'])->name('pendidikan.detail');      // ✅ fix: hapus duplikasi /pendidikan/
+                Route::patch('/update', [UserController::class, 'updatePendidikan'])->name('pendidikan.update');    // ✅ fix: POST bukan PATCH (JS kirim POST + _method)
                 Route::delete('/destroy', [UserController::class, 'destroyPendidikan'])->name('pendidikan.destroy');
             });
 
             // Pengalaman Kerja
             Route::prefix('pengalaman-kerja')->middleware('auth')->group(function () {
                 Route::post('/store', [UserController::class, 'storePengalamanKerja'])->name('pengalaman-kerja.store');
+                Route::get('/detail', [UserController::class, 'detailPengalamanKerja'])->name('pengalaman-kerja.detail');   // ✅ fix
+                Route::patch('/update', [UserController::class, 'updatePengalamanKerja'])->name('pengalaman-kerja.update'); // ✅ fix
                 Route::delete('/destroy', [UserController::class, 'destroyPengalamanKerja'])->name('pengalaman-kerja.destroy');
             });
 

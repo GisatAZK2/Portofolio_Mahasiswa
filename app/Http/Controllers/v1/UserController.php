@@ -713,4 +713,102 @@ class UserController extends Controller
 
         return response()->json(array_values($filtered));
     }
+
+    public function detailPengalamanKerja(Request $request)
+{
+    $id = $request->query('id');
+    $user = Auth::user();
+    $list = $user->pengalaman_kerja ?? [];
+    $item = collect($list)->firstWhere('id', $id);
+    if (!$item) return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    return response()->json(['success' => true, 'data' => $item]);
+}
+
+public function updatePengalamanKerja(Request $request)
+{
+    $id   = $request->query('id');
+    $user = Auth::user();
+
+    $request->validate([
+        'nama_pt'       => 'required|string|max:200',
+        'bagian_kerja'  => 'required|string|max:200',
+        'tahun_mulai'   => 'required|digits:4|integer|min:1950|max:'.(date('Y')+1),
+        'tahun_akhir'   => 'nullable|digits:4|integer|min:1950|max:'.(date('Y')+1),
+        'masih_bekerja' => 'nullable|boolean',
+    ]);
+
+    $list  = $user->pengalaman_kerja ?? [];
+    $found = false;
+
+    foreach ($list as &$entry) {   // ✅ pakai &
+        if ($entry['id'] === $id) {
+            $entry['nama_pt']       = $request->nama_pt;
+            $entry['bagian_kerja']  = $request->bagian_kerja;
+            $entry['tahun_mulai']   = $request->tahun_mulai;
+            $entry['masih_bekerja'] = $request->boolean('masih_bekerja');
+            $entry['tahun_akhir']   = $request->boolean('masih_bekerja') ? null : $request->tahun_akhir;
+            $found = true;
+            break;
+        }
+    }
+    unset($entry); // ✅ wajib
+
+    if (!$found) {
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $user->update(['pengalaman_kerja' => $list]);
+    return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil diperbarui']);
+}
+
+public function detailPendidikan(Request $request)
+{
+    $id = $request->query('id');
+    $user = Auth::user();
+    $list = $user->pendidikan ?? [];
+    $item = collect($list)->firstWhere('id', $id);
+    if (!$item) return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    return response()->json(['success' => true, 'data' => $item]);
+}
+
+public function updatePendidikan(Request $request)
+{
+    $id   = $request->query('id');
+    $user = Auth::user();
+
+    $request->validate([
+        'nama_sekolah' => 'required|string|max:300',
+        'jenjang'      => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
+        'jurusan_sek'  => 'nullable|string|max:200',
+        'tahun_masuk'  => 'required|digits:4|integer|min:1950|max:'.(date('Y')+1),
+        'tahun_lulus'  => 'nullable|digits:4|integer|min:1950|max:'.(date('Y')+1),
+        'masih_kuliah' => 'nullable|boolean',
+    ]);
+
+    $list  = $user->pendidikan ?? [];
+    $found = false;
+
+    foreach ($list as &$entry) {   // ✅ pakai & (reference) dan nama berbeda
+        if ($entry['id'] === $id) {
+            $entry['nama_sekolah'] = $request->nama_sekolah;
+            $entry['jenjang']      = $request->jenjang;
+            $entry['jurusan_sek']  = $request->jurusan_sek;
+            $entry['tahun_masuk']  = $request->tahun_masuk;
+            $entry['masih_kuliah'] = $request->boolean('masih_kuliah');
+            $entry['tahun_lulus']  = $request->boolean('masih_kuliah') ? null : $request->tahun_lulus;
+            $found = true;
+            break;
+        }
+    }
+    unset($entry); // ✅ wajib lepas reference
+
+    if (!$found) {
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $user->update(['pendidikan' => $list]);
+    return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil diperbarui']);
+}
+
+
 }

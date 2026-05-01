@@ -18,6 +18,8 @@ function translate(key) {
     return getTranslation(lang, key) || key;
 }
 
+const t = translate;
+
 setTimeout(() => {
     if (window.flashSuccess) {
         Swal.fire({
