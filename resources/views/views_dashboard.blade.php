@@ -654,6 +654,8 @@
         window.currentUserPhoto = "{{ auth()->user()?->photo_profile ?? '' }}";
         window.currentUserName = "{{ auth()->user()?->nama_mahasiswa ?? '' }}";
         window.locale = document.querySelector('html').getAttribute('lang') || 'id';
+
+        const isLoggedIn = window.currentUserId !== null && window.currentUserId !== 'null';
         
         // Helper functions
         function escapeHtml(text) {
@@ -728,13 +730,13 @@ window.loadComments = async function(postinganId) {
 };
         
         // Render a single comment thread
-        function renderCommentWithReplies(comment, level, postinganId) {
+       function renderCommentWithReplies(comment, level, postinganId) {
     const marginLeft = Math.min(level * 28, 56);
     const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
+    const isLoggedIn = window.currentUserId !== null && window.currentUserId !== 'null';
     const userName = escapeHtml(comment.user?.nama_mahasiswa || 'User');
     const commentText = escapeHtml(comment.komentar);
 
-    // ✅ Konversi ke string SEKALI di sini, pakai terus di bawah
     const commentId = String(comment.id_komentar);
     postinganId = String(postinganId);
     
@@ -748,34 +750,40 @@ window.loadComments = async function(postinganId) {
                         <span class="text-xs text-gray-500">${formatDate(comment.tanggal || comment.created_at)}</span>
                     </div>
                     <p class="comment-text text-sm text-gray-700 dark:text-gray-300 mt-1.5 leading-relaxed" id="comment-text-${commentId}">${commentText}</p>
-                   <button class="reply-btn text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors"
-            data-action="reply" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
-            <svg class="w-3.5 h-3.5 inline mr-1" .../>
-            Balas
-        </button>
+                    <div class="flex flex-wrap gap-3 mt-2">
     `;
+    
+    // Tampilkan tombol reply HANYA jika user sudah login
+    if (isLoggedIn) {
+        html += `
+                        <button class="reply-btn text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors inline-flex items-center gap-1"
+                            data-action="reply" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                            Balas
+                        </button>
+        `;
+    }
     
     if (isOwnComment) {
         html += `
-         <button class="edit-comment-btn text-xs text-blue-500 hover:text-blue-700 transition-colors"
-            data-action="edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
-             <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        <button class="edit-comment-btn text-xs text-blue-500 hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+                            data-action="edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             Edit
-        </button>
-        <button class="delete-comment-btn text-xs text-red-500 hover:text-red-700 transition-colors"
-            data-action="delete" data-comment-id="${commentId}" data-postingan-id="${postinganId}" data-type="full">
-             <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                        <button class="delete-comment-btn text-xs text-red-500 hover:text-red-700 transition-colors inline-flex items-center gap-1"
+                            data-action="delete" data-comment-id="${commentId}" data-postingan-id="${postinganId}" data-type="full">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                             Hapus
-        </button>
-                        
+                        </button>
         `;
     }
     
     html += `
                     </div>
-                    <div id="reply-form-${commentId}" class="reply-form-container hidden mt-3"></div>
                 </div>
             </div>
+            <div id="reply-form-${commentId}" class="reply-form-container hidden mt-3 ml-11"></div>
         </div>
     `;
     
@@ -788,21 +796,9 @@ window.loadComments = async function(postinganId) {
     }
     
     return html;
-}
-        
+}        
         // Attach event listeners for dynamic elements
         function attachCommentEventListeners(container, postinganId) {
-    // Reply form listeners (existing)
-    const replyForms = container.querySelectorAll('.reply-submit-form');
-    replyForms.forEach(form => {
-        if (!form.hasAttribute('data-listener')) {
-            form.setAttribute('data-listener', 'true');
-            form.onsubmit = async (e) => {
-                e.preventDefault();
-                await submitReply(form, postinganId);
-            };
-        }
-    });
 
     // ✅ TAMBAHKAN: Event delegation untuk reply/edit/delete
     if (!container.hasAttribute('data-delegated')) {
@@ -908,102 +904,115 @@ window.loadComments = async function(postinganId) {
         };
         
         // Submit a reply
-        async function submitReply(form, postinganId) {
-            const textarea = form.querySelector('textarea[name="komentar"]');
-            const commentText = textarea.value.trim();
-            const parentId = form.querySelector('input[name="parent_id"]').value;
-        
-            if (!commentText) {
-                if (window.showPageInfo) {
-                    window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
-                } else {
-                    alert('Balasan tidak boleh kosong');
-                }
-                return;
+// Submit a reply - TANPA EFEK LOADING PADA TOMBOL
+async function submitReply(form, postinganId) {
+    // ✅ Guard: cegah double submit
+    if (form.hasAttribute('data-submitting')) return;
+    form.setAttribute('data-submitting', 'true');
+
+    const textarea = form.querySelector('textarea[name="komentar"]');
+    const commentText = textarea.value.trim();
+    const parentId = form.querySelector('input[name="parent_id"]').value;
+
+    if (!commentText) {
+        if (window.showPageInfo) {
+            window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
+        } else {
+            alert('Balasan tidak boleh kosong');
+        }
+        form.removeAttribute('data-submitting');
+        return;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const cancelBtn = form.querySelector('button[type="button"]');
+    
+    // Hanya disable tombol, TANPA mengubah teks atau menampilkan loading
+    submitBtn.disabled = true;
+    if (cancelBtn) cancelBtn.disabled = true;
+
+    try {
+        const response = await fetch(`/komentar`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+                id_postingan: postinganId,
+                komentar: commentText,
+                parent_id: parentId,
+                reply_to_id: parentId
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            await window.loadComments(postinganId);
+            await updateCommentCount(postinganId, 1);
+            const replyContainer = document.getElementById(`reply-form-${parentId}`);
+            if (replyContainer) {
+                replyContainer.classList.add('hidden');
+                replyContainer.innerHTML = '';
             }
-        
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<div class="comment-loading" style="width:14px;height:14px;display:inline-block;"></div>';
-            submitBtn.disabled = true;
-        
-            try {
-                const response = await fetch(`/komentar`, {
-                    method: 'POST',
-                    headers: getHeaders(),
-                    body: JSON.stringify({
-                        id_postingan: postinganId,
-                        komentar: commentText,
-                        parent_id: parentId,
-                        reply_to_id: parentId
-                    })
-                });
-        
-                const data = await response.json();
-        
-                if (data.success) {
-                    await window.loadComments(postinganId);
-                    await updateCommentCount(postinganId, 1);
-                    const replyContainer = document.getElementById(`reply-form-${parentId}`);
-                    if (replyContainer) {
-                        replyContainer.classList.add('hidden');
-                        replyContainer.innerHTML = '';
-                    }
-                    if (window.showPageInfo) {
-                        window.showPageInfo('Balasan berhasil ditambahkan', 'success', 2000);
-                    }
-                } else {
-                    if (window.showErrorAlert) {
-                        window.showErrorAlert(data.message || 'Gagal menambahkan balasan');
-                    } else {
-                        alert(data.message || 'Gagal menambahkan balasan');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                if (window.showErrorAlert) {
-                    window.showErrorAlert('Terjadi kesalahan: ' + error.message);
-                } else {
-                    alert('Terjadi kesalahan: ' + error.message);
-                }
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+            if (window.showPageInfo) {
+                window.showPageInfo('Balasan berhasil ditambahkan', 'success', 2000);
+            }
+        } else {
+            if (window.showErrorAlert) {
+                window.showErrorAlert(data.message || 'Gagal menambahkan balasan');
+            } else {
+                alert(data.message || 'Gagal menambahkan balasan');
             }
         }
-        
-        // Show reply form
-        window.showReplyForm = function(parentCommentId, postinganId) {
-            parentCommentId = String(parentCommentId);
-            const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
-            if (!replyFormContainer) return;
-            
-            if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
-                replyFormContainer.classList.add('hidden');
-                return;
-            }
-            
-            replyFormContainer.innerHTML = `
-                <form class="reply-submit-form mt-2">
-                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
-                    <input type="hidden" name="parent_id" value="${parentCommentId}">
-                    <div class="flex gap-2 items-start">
-                        <textarea name="komentar" rows="2" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none" placeholder="Tulis balasan..."></textarea>
-                        <div class="flex gap-2 flex-shrink-0">
-                            <button type="submit" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">Kirim</button>
-                            <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden')" class="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">Batal</button>
-                        </div>
-                    </div>
-                </form>
-            `;
-            replyFormContainer.classList.remove('hidden');
-            
-            const form = replyFormContainer.querySelector('form');
-            form.onsubmit = async (e) => {
-                e.preventDefault();
-                await submitReply(form, postinganId);
-            };
-        };
+    } catch (error) {
+        console.error('Error:', error);
+        if (window.showErrorAlert) {
+            window.showErrorAlert('Terjadi kesalahan: ' + error.message);
+        } else {
+            alert('Terjadi kesalahan: ' + error.message);
+        }
+    } finally {
+        submitBtn.disabled = false;
+        if (cancelBtn) cancelBtn.disabled = false;
+        form.removeAttribute('data-submitting');
+    }
+}
+    
+// SHOW REPLY FORM - VERTICAL LAYOUT (DI BAWAH)
+window.showReplyForm = function(parentCommentId, postinganId) {
+    parentCommentId = String(parentCommentId);
+    const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
+    if (!replyFormContainer) return;
+    
+    // Toggle hide if already open
+    if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
+        replyFormContainer.classList.add('hidden');
+        replyFormContainer.innerHTML = '';
+        return;
+    }
+    
+    replyFormContainer.innerHTML = `
+        <form class="reply-submit-form mt-3">
+            <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
+            <input type="hidden" name="parent_id" value="${parentCommentId}">
+            <div class="flex flex-col gap-2">
+                <textarea name="komentar" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none" placeholder="Tulis balasan..."></textarea>
+                <div class="flex gap-2 justify-end">
+                    <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">Kirim</button>
+                    <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden'); this.closest('.reply-form-container').innerHTML = '';" class="px-4 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">Batal</button>
+                </div>
+            </div>
+        </form>
+    `;
+    replyFormContainer.classList.remove('hidden');
+    
+    const form = replyFormContainer.querySelector('form');
+    // Remove existing listener to prevent duplicate
+    form.onsubmit = null;
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        await submitReply(form, postinganId);
+    };
+};
         
         // Show edit form
         window.showEditForm = function(commentId, postinganId) {
