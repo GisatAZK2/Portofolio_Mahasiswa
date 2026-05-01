@@ -1060,6 +1060,255 @@
 let selectedRole = '';
 let currentRegistrationType = 'simple';
 let excelData = [];
+let importResult = null;
+
+// Modifikasi handleExcelUpload
+function handleExcelUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    // Cek ukuran file (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Ukuran file terlalu besar! Maksimal 5MB.');
+        input.value = '';
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+            const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+            
+            if (!json.length) { 
+                alert('File Excel kosong!'); 
+                return; 
+            }
+            
+            excelData = json;
+            displayExcelPreview(json);
+        } catch (error) {
+            console.error('Error parsing Excel:', error);
+            alert('Gagal membaca file Excel. Pastikan format file benar.');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function validateExcelData() {
+    if (!excelData.length) return false;
+    
+    const errors = [];
+    const nims = new Set();
+    
+    excelData.forEach((row, index) => {
+        const nim = row.NIM || row.nim;
+        const nama = row['Nama Lengkap'] || row.nama || row.Nama;
+        
+        if (!nim) errors.push(`Baris ${index + 2}: NIM tidak boleh kosong`);
+        if (!nama) errors.push(`Baris ${index + 2}: Nama tidak boleh kosong`);
+        if (nims.has(nim)) errors.push(`Baris ${index + 2}: NIM duplikat dalam file`);
+        nims.add(nim);
+    });
+    
+    if (errors.length > 0) {
+        alert('Validasi gagal:\n' + errors.join('\n'));
+        return false;
+    }
+    
+    return true;
+}
+
+// Fungsi baru untuk import massal
+async function importExcelData() {
+    if (!excelData.length) {
+        alert('Tidak ada data Excel untuk diimport!');
+        return;
+    }
+
+     if (!validateExcelData()) return;
+    
+    // Konfirmasi import
+    const confirmed = confirm(`Anda akan mengimport ${excelData.length} data mahasiswa.\n\nPastikan data sudah benar.\n\nLanjutkan?`);
+    if (!confirmed) return;
+    
+    // Buat FormData
+    const formData = new FormData();
+    const excelFile = document.getElementById('excelFile').files[0];
+    if (!excelFile) {
+        alert('File Excel tidak ditemukan!');
+        return;
+    }
+    formData.append('excel_file', excelFile);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]')?.value);
+    
+    // Tampilkan loading
+    showImportLoading();
+    
+    try {
+        const response = await fetch('{{ route("admin.users.importExcel") }}', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showImportResult(result);
+        } else {
+            alert('Gagal import: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error import:', error);
+        alert('Terjadi kesalahan saat mengimport data.');
+    } finally {
+        hideImportLoading();
+    }
+}
+
+// Tampilkan loading indicator
+function showImportLoading() {
+    const dropzone = document.getElementById('excelDropzone');
+    const originalContent = dropzone.innerHTML;
+    
+    dropzone.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <div class="spinner" style="display: inline-block; width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 1rem; color: #065f46;">Sedang mengimport data...</p>
+        </div>
+    `;
+    dropzone.style.pointerEvents = 'none';
+    
+    // Tambahkan style spinner jika belum ada
+    if (!document.querySelector('#spinner-style')) {
+        const style = document.createElement('style');
+        style.id = 'spinner-style';
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Simpan original content untuk restore
+    dropzone.dataset.originalContent = originalContent;
+}
+
+// Hide loading indicator
+function hideImportLoading() {
+    const dropzone = document.getElementById('excelDropzone');
+    if (dropzone.dataset.originalContent) {
+        dropzone.innerHTML = dropzone.dataset.originalContent;
+        delete dropzone.dataset.originalContent;
+    }
+    dropzone.style.pointerEvents = 'auto';
+}
+
+// Tampilkan hasil import
+function showImportResult(result) {
+    let message = result.message;
+    
+    if (result.warnings && result.warnings.length > 0) {
+        message += '\n\n⚠️ Peringatan:\n' + result.warnings.join('\n');
+    }
+    
+    if (result.failedRows && result.failedRows.length > 0) {
+        message += '\n\n❌ Gagal di baris:\n';
+        result.failedRows.slice(0, 10).forEach(failed => {
+            message += `Baris ${failed.row}: ${failed.reason}\n`;
+        });
+        if (result.failedRows.length > 10) {
+            message += `\n... dan ${result.failedRows.length - 10} baris lainnya`;
+        }
+    }
+    
+    message += `\n\n📊 Statistik:\n- Berhasil: ${result.stats.success}\n- Gagal: ${result.stats.failed}\n- Total: ${result.stats.total}`;
+    
+    alert(message);
+    
+    // Refresh halaman jika ada yang berhasil
+    if (result.stats.success > 0) {
+        if (confirm('Import selesai! Apakah Anda ingin me-refresh halaman untuk melihat data terbaru?')) {
+            window.location.reload();
+        }
+    }
+}
+
+// Tambahkan tombol import massal di UI
+function addImportButton() {
+    const excelSection = document.getElementById('excelImportSection');
+    if (!excelSection) return;
+    
+    const excelBox = excelSection.querySelector('.auw-excel-box');
+    if (!excelBox) return;
+    
+    // Cek apakah tombol sudah ada
+    if (excelBox.querySelector('.auw-btn-mass-import')) return;
+    
+    // Buat container untuk actions
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'auw-excel-actions';
+    actionsDiv.style.marginTop = '15px';
+    actionsDiv.style.display = 'flex';
+    actionsDiv.style.gap = '10px';
+    actionsDiv.style.justifyContent = 'flex-end';
+    
+    // Tombol Import Massal
+    const importBtn = document.createElement('button');
+    importBtn.type = 'button';
+    importBtn.className = 'auw-btn-mass-import';
+    importBtn.style.cssText = `
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #059669, #047857);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.15s;
+    `;
+    importBtn.innerHTML = `
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+        </svg>
+        Import Massal ke Database
+    `;
+    importBtn.onclick = importExcelData;
+    
+    // Tombol Reset Preview
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'auw-btn-reset';
+    resetBtn.style.cssText = `
+        padding: 10px 20px;
+        background: #6b7280;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+    `;
+    resetBtn.innerHTML = 'Reset Preview';
+    resetBtn.onclick = () => {
+        excelData = [];
+        document.getElementById('excelPreview').classList.add('hidden');
+        document.getElementById('excelFile').value = '';
+        const dropzoneText = document.querySelector('#excelDropzone p:first-of-type');
+        if (dropzoneText) dropzoneText.textContent = 'Klik atau seret file Excel ke sini';
+    };
+    
+    actionsDiv.appendChild(resetBtn);
+    actionsDiv.appendChild(importBtn);
+    excelBox.appendChild(actionsDiv);
+}
 
 /* ─── tanggal lahir validation (global, run once) ─── */
 document.getElementById('tanggalLahirInput').addEventListener('change', function () {
@@ -1376,8 +1625,8 @@ function matchSelectByText(name, text) {
 
 function downloadTemplate() {
     const data = [
-        { 'NIM': '20230010001', 'Nama Lengkap': 'Ahmad Budi Santoso', 'Tanggal Lahir': '2000-01-15', 'Email': 'ahmad@example.com', 'Username': 'ahmad.budi', 'Jurusan': 'Teknik Informatika', 'Keahlian': 'Web Development', 'Angkatan': '2023' },
-        { 'NIM': '20230010002', 'Nama Lengkap': 'Siti Nurhaliza', 'Tanggal Lahir': '2000-02-20', 'Email': 'siti@example.com', 'Username': 'siti.nur', 'Jurusan': 'Sistem Informasi', 'Keahlian': 'Mobile Development', 'Angkatan': '2023' }
+        { 'NIM': '20250010001', 'Nama Lengkap': 'Ahmad Budi Santoso', 'Jurusan': 'Bisnis Digital', 'Keahlian': 'Web Development', 'Angkatan': '2025' },
+        { 'NIM': '20250010002', 'Nama Lengkap': 'Siti Nurhaliza', 'Jurusan': 'Teknologi Rekayasa Perangkat Lunak', 'Keahlian': 'Mobile Development', 'Angkatan': '2025' }
     ];
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -1392,6 +1641,8 @@ document.addEventListener('DOMContentLoaded', () => {
     @elseif(auth()->check() && auth()->user()->role === 'admin')
         selectRole('admin');
     @endif
+
+    addImportButton();
 });
 </script>
 

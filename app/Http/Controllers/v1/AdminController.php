@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
 use App\Services\ImageConversionService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 
 class AdminController extends Controller
@@ -348,339 +349,262 @@ public function AddUser(Request $request)
 public function importExcel(Request $request)
 {
     $this->authorizeAccess();
-    
+
     $request->validate([
-        'excel_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'] // Max 5MB
+        'excel_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
     ]);
-    
+
     try {
         $file = $request->file('excel_file');
         $data = $this->parseExcelFile($file);
-        
+
         if (empty($data)) {
             return response()->json([
                 'success' => false,
-                'message' => 'File Excel kosong atau format tidak sesuai'
+                'message' => 'File Excel kosong atau format tidak sesuai.',
             ], 400);
         }
-        
-        // Ambil data referensi dari database
-        $jurusanList = Jurusan::pluck('nama_jurusan', 'id_jurusan')->toArray();
-        $keahlianList = Keahlian::pluck('nama_keahlian', 'id_keahlian')->toArray();
-        $angkatanList = Angkatan::pluck('nama_angkatan', 'id')->toArray();
-        
-        // Untuk tracking data yang tidak ditemukan
-        $notFound = [
-            'jurusan' => [],
-            'keahlian' => [],
-            'angkatan' => []
-        ];
-        
+
+        // Ambil referensi dari DB (key = nama lowercase => id)
+        $jurusanMap  = Jurusan::pluck('id_jurusan', 'nama_jurusan')
+                              ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                              ->toArray();
+        $keahlianMap = Keahlian::pluck('id_keahlian', 'nama_keahlian')
+                               ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                               ->toArray();
+        $angkatanMap = Angkatan::pluck('id', 'nama_angkatan')
+                               ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                               ->toArray();
+
         $successCount = 0;
-        $failedCount = 0;
-        $failedRows = [];
-        
+        $failedCount  = 0;
+        $failedRows   = [];
+        $warnings     = [];
+
+        $notFoundJurusan  = [];
+        $notFoundKeahlian = [];
+        $notFoundAngkatan = [];
+
         DB::beginTransaction();
-        
+
         foreach ($data as $index => $row) {
-            $rowNumber = $index + 2; // +2 karena Excel mulai dari baris 1 (header) + index 0
-            
+            $rowNumber = $index + 2; // baris 1 = header
+
             try {
-                // Mapping kolom Excel
-                $nim = trim($row['NIM'] ?? $row['nim'] ?? '');
-                $nama = trim($row['Nama Lengkap'] ?? $row['nama'] ?? $row['Nama'] ?? '');
-                $tanggalLahir = $this->parseDate($row['Tanggal Lahir'] ?? $row['tanggal_lahir'] ?? '');
-                $email = trim($row['Email'] ?? $row['email'] ?? '');
-                $namaJurusan = trim($row['Jurusan'] ?? $row['jurusan'] ?? '');
-                $namaKeahlian = trim($row['Keahlian'] ?? $row['keahlian'] ?? '');
-                $namaAngkatan = trim($row['Angkatan'] ?? $row['angkatan'] ?? '');
-                
-                // Validasi required fields
+                // --- Mapping kolom ---
+                $nim  = trim($row['nim']  ?? $row['NIM']  ?? '');
+                $nama = trim($row['nama'] ?? $row['Nama'] ?? $row['Nama Lengkap'] ?? '');
+                $tanggalLahir = $this->parseDate($row['tanggal_lahir'] ?? $row['Tanggal Lahir'] ?? '');
+                $namaJurusan  = strtolower(trim($row['jurusan']  ?? $row['Jurusan']  ?? ''));
+                $namaKeahlian = strtolower(trim($row['keahlian'] ?? $row['Keahlian'] ?? ''));
+                $namaAngkatan = strtolower(trim($row['angkatan'] ?? $row['Angkatan'] ?? ''));
+
+                // --- Validasi wajib ---
                 if (empty($nim) || empty($nama)) {
                     $failedCount++;
-                    $failedRows[] = [
-                        'row' => $rowNumber,
-                        'reason' => 'NIM atau Nama tidak boleh kosong'
-                    ];
+                    $failedRows[] = ['row' => $rowNumber, 'reason' => 'NIM atau Nama tidak boleh kosong'];
                     continue;
                 }
-                
-                // Cek duplikat NIM di database
+
+                // --- Cek duplikat NIM ---
                 if (User::where('nim', $nim)->exists()) {
                     $failedCount++;
-                    $failedRows[] = [
-                        'row' => $rowNumber,
-                        'reason' => "NIM {$nim} sudah terdaftar"
-                    ];
+                    $failedRows[] = ['row' => $rowNumber, 'reason' => "NIM {$nim} sudah terdaftar"];
                     continue;
                 }
-                
-                // Cek duplikat Username (jika ada email, generate dari email, fallback dari nama)
-                $username = $this->generateUniqueUsername($email ?: $nama, $nim);
-                if (User::where('username', $username)->exists()) {
-                    $username = $this->generateUniqueUsername($username, $nim, true);
-                }
-                
-                // Dapatkan ID Jurusan
+
+                // --- Resolve FK (nullable jika tidak ditemukan) ---
                 $idJurusan = null;
                 if (!empty($namaJurusan)) {
-                    $found = false;
-                    foreach ($jurusanList as $id => $nama) {
-                        if (strtolower(trim($nama)) === strtolower($namaJurusan)) {
-                            $idJurusan = $id;
-                            $found = true;
-                            break;
-                        }
-                    }
-                    if (!$found) {
-                        $notFound['jurusan'][] = $namaJurusan;
+                    if (isset($jurusanMap[$namaJurusan])) {
+                        $idJurusan = $jurusanMap[$namaJurusan];
+                    } else {
+                        $notFoundJurusan[] = $row['jurusan'] ?? $row['Jurusan'] ?? $namaJurusan;
                     }
                 }
-                
-                // Dapatkan ID Keahlian
+
                 $idKeahlian = null;
                 if (!empty($namaKeahlian)) {
-                    $found = false;
-                    foreach ($keahlianList as $id => $nama) {
-                        if (strtolower(trim($nama)) === strtolower($namaKeahlian)) {
-                            $idKeahlian = $id;
-                            $found = true;
-                            break;
-                        }
-                    }
-                    if (!$found) {
-                        $notFound['keahlian'][] = $namaKeahlian;
+                    if (isset($keahlianMap[$namaKeahlian])) {
+                        $idKeahlian = $keahlianMap[$namaKeahlian];
+                    } else {
+                        $notFoundKeahlian[] = $row['keahlian'] ?? $row['Keahlian'] ?? $namaKeahlian;
                     }
                 }
-                
-                // Dapatkan ID Angkatan
+
                 $idAngkatan = null;
                 if (!empty($namaAngkatan)) {
-                    $found = false;
-                    foreach ($angkatanList as $id => $nama) {
-                        if (strtolower(trim($nama)) === strtolower($namaAngkatan)) {
-                            $idAngkatan = $id;
-                            $found = true;
-                            break;
-                        }
-                    }
-                    if (!$found) {
-                        $notFound['angkatan'][] = $namaAngkatan;
+                    if (isset($angkatanMap[$namaAngkatan])) {
+                        $idAngkatan = $angkatanMap[$namaAngkatan];
+                    } else {
+                        $notFoundAngkatan[] = $row['angkatan'] ?? $row['Angkatan'] ?? $namaAngkatan;
                     }
                 }
-                
-                // Generate password default (NIM atau nim@123)
-                $defaultPassword = Hash::make($nim);
-                
-                // Buat user
+
+                // --- Buat user ---
+                // Password default = NIM (di-hash)
+                // username = null, tidak di-generate
                 User::create([
-                    'nim' => $nim,
-                    'nama_mahasiswa' => $nama,
-                    'username' => $username,
-                    'email' => !empty($email) ? $email : null,
-                    'password' => $defaultPassword,
-                    'tanggal_lahir' => $tanggalLahir,
-                    'id_jurusan' => $idJurusan,
-                    'id_keahlian' => $idKeahlian,
-                    'id_angkatan' => $idAngkatan,
-                    'role' => 'mahasiswa',
+                    'nim'              => $nim,
+                    'nama_mahasiswa'   => $nama,
+                    'username'         => null,
+                    'email'            => null,
+                    'password'         => Hash::make($nim),
+                    'tanggal_lahir'    => $tanggalLahir,
+                    'id_jurusan'       => $idJurusan,
+                    'id_keahlian'      => $idKeahlian,
+                    'id_angkatan'      => $idAngkatan,
+                    'role'             => 'mahasiswa',
                     'status_pengajuan' => 'Di Terima',
-                    'is_active' => 1,
-                    'photo_profile' => null
+                    'is_active'        => 1,
+                    'photo_profile'    => null,
                 ]);
-                
+
                 $successCount++;
-                
+
             } catch (\Exception $e) {
                 $failedCount++;
-                $failedRows[] = [
-                    'row' => $rowNumber,
-                    'reason' => 'Error: ' . $e->getMessage()
-                ];
-                Log::error("Error import baris {$rowNumber}: " . $e->getMessage());
+                $failedRows[] = ['row' => $rowNumber, 'reason' => 'Error: ' . $e->getMessage()];
+                \Log::error("Import baris {$rowNumber}: " . $e->getMessage());
             }
         }
-        
+
         DB::commit();
-        
-        // Siapkan pesan response
-        $message = "Import selesai: {$successCount} berhasil, {$failedCount} gagal.";
-        $warnings = [];
-        
-        if (!empty($notFound['jurusan'])) {
-            $warnings[] = "Jurusan tidak ditemukan: " . implode(', ', array_unique($notFound['jurusan']));
+
+        // --- Kumpulkan warning referensi tidak ditemukan ---
+        if (!empty($notFoundJurusan)) {
+            $warnings[] = 'Jurusan tidak ditemukan: ' . implode(', ', array_unique($notFoundJurusan));
         }
-        if (!empty($notFound['keahlian'])) {
-            $warnings[] = "Keahlian tidak ditemukan: " . implode(', ', array_unique($notFound['keahlian']));
+        if (!empty($notFoundKeahlian)) {
+            $warnings[] = 'Keahlian tidak ditemukan: ' . implode(', ', array_unique($notFoundKeahlian));
         }
-        if (!empty($notFound['angkatan'])) {
-            $warnings[] = "Angkatan tidak ditemukan: " . implode(', ', array_unique($notFound['angkatan']));
+        if (!empty($notFoundAngkatan)) {
+            $warnings[] = 'Angkatan tidak ditemukan: ' . implode(', ', array_unique($notFoundAngkatan));
         }
-        
+
         return response()->json([
-            'success' => true,
-            'message' => $message,
-            'warnings' => $warnings,
+            'success'    => true,
+            'message'    => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
+            'warnings'   => $warnings,
             'failedRows' => $failedRows,
-            'stats' => [
+            'stats'      => [
                 'success' => $successCount,
-                'failed' => $failedCount,
-                'total' => count($data)
-            ]
+                'failed'  => $failedCount,
+                'total'   => count($data),
+            ],
         ]);
-        
+
     } catch (\Exception $e) {
         DB::rollBack();
-        Log::error("Error import Excel: " . $e->getMessage());
-        
+        \Log::error('Import Excel error: ' . $e->getMessage());
+
         return response()->json([
             'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
         ], 500);
     }
 }
 
-/**
- * Parse Excel file manually tanpa package tambahan
- */
-private function parseExcelFile($file)
+// ============================================================
+// Helper: parse file Excel → array of associative arrays
+// ============================================================
+private function parseExcelFile($file): array
 {
     try {
-        // Gunakan PhpSpreadsheet jika tersedia, atau library lain
-        // Alternatif: simpan sementara dan baca dengan library Excel
-        
-        $path = $file->getRealPath();
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
-        $worksheet = $spreadsheet->getActiveSheet();
-        $rows = $worksheet->toArray();
-        
-        if (empty($rows) || count($rows) < 2) {
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+        $rows        = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
+
+        if (count($rows) < 2) {
             return [];
         }
-        
-        // Baris pertama sebagai header
-        $headers = array_map('trim', $rows[0]);
-        $data = [];
-        
-        // Mapping header ke index
-        $headerMap = [];
-        foreach ($headers as $index => $header) {
-            $headerLower = strtolower($header);
-            if (strpos($headerLower, 'nim') !== false || strpos($headerLower, 'n i m') !== false) {
-                $headerMap['nim'] = $index;
-            } elseif (strpos($headerLower, 'nama') !== false) {
-                $headerMap['nama'] = $index;
-            } elseif (strpos($headerLower, 'tanggal lahir') !== false || strpos($headerLower, 'tgl lahir') !== false) {
-                $headerMap['tanggal_lahir'] = $index;
-            } elseif (strpos($headerLower, 'email') !== false) {
-                $headerMap['email'] = $index;
-            } elseif (strpos($headerLower, 'jurusan') !== false) {
-                $headerMap['jurusan'] = $index;
-            } elseif (strpos($headerLower, 'keahlian') !== false || strpos($headerLower, 'skill') !== false) {
-                $headerMap['keahlian'] = $index;
-            } elseif (strpos($headerLower, 'angkatan') !== false || strpos($headerLower, 'thn') !== false) {
-                $headerMap['angkatan'] = $index;
-            }
-        }
-        
-        // Proses setiap baris data
-        for ($i = 1; $i < count($rows); $i++) {
-            $row = $rows[$i];
-            $rowData = [];
-            
-            // Cek apakah baris kosong
-            $isEmpty = true;
-            foreach ($row as $cell) {
-                if (!empty(trim($cell))) {
-                    $isEmpty = false;
+
+        // Baris pertama = header, normalize ke lowercase
+        $rawHeaders = array_map(fn($h) => strtolower(trim((string) $h)), $rows[0]);
+
+        // Map header ke key standar yang dikenali importExcel()
+        $headerAliases = [
+            'nim'           => ['nim', 'n i m'],
+            'Nama Lengkap'  => ['nama lengkap', 'nama', 'full name'],
+            'Tanggal Lahir' => ['tanggal lahir', 'tgl lahir', 'birth date', 'birthdate'],
+            'Jurusan'       => ['jurusan', 'department', 'prodi'],
+            'Keahlian'      => ['keahlian', 'bidang keahlian', 'skill'],
+            'Angkatan'      => ['angkatan', 'tahun masuk', 'year'],
+        ];
+
+        // Buat peta: index kolom => key standar
+        $colMap = [];
+        foreach ($rawHeaders as $colIndex => $rawHeader) {
+            foreach ($headerAliases as $standardKey => $aliases) {
+                if (in_array($rawHeader, $aliases, true)) {
+                    $colMap[$colIndex] = $standardKey;
                     break;
                 }
             }
-            if ($isEmpty) continue;
-            
-            foreach ($headerMap as $key => $index) {
-                $rowData[$key] = isset($row[$index]) ? trim($row[$index]) : '';
+        }
+
+        $data = [];
+        for ($i = 1; $i < count($rows); $i++) {
+            $row = $rows[$i];
+
+            // Lewati baris kosong
+            $allEmpty = true;
+            foreach ($row as $cell) {
+                if (!empty(trim((string) $cell))) {
+                    $allEmpty = false;
+                    break;
+                }
             }
-            
-            if (!empty($rowData['nim'])) {
-                $data[] = $rowData;
+            if ($allEmpty) {
+                continue;
+            }
+
+            $mapped = [];
+            foreach ($colMap as $colIndex => $standardKey) {
+                $mapped[$standardKey] = isset($row[$colIndex]) ? trim((string) $row[$colIndex]) : '';
+            }
+
+            // Hanya masukkan baris yang punya NIM
+            if (!empty($mapped['nim'] ?? $mapped['NIM'] ?? '')) {
+                $data[] = $mapped;
             }
         }
-        
+
         return $data;
-        
+
     } catch (\Exception $e) {
-        Log::error("Error parsing Excel: " . $e->getMessage());
+        \Log::error('parseExcelFile error: ' . $e->getMessage());
         return [];
     }
 }
 
-/**
- * Parse date dari berbagai format Excel
- */
-private function parseDate($date)
+// ============================================================
+// Helper: parse tanggal dari berbagai format
+// ============================================================
+private function parseDate($date): ?string
 {
     if (empty($date)) {
         return null;
     }
-    
-    try {
-        // Jika berupa angka Excel (serial date)
-        if (is_numeric($date)) {
-            $unix = ($date - 25569) * 86400;
-            return date('Y-m-d', $unix);
-        }
-        
-        // Coba parse dengan berbagai format
-        $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y'];
-        foreach ($formats as $format) {
-            $parsed = \DateTime::createFromFormat($format, $date);
-            if ($parsed && $parsed->format($format) === $date) {
-                return $parsed->format('Y-m-d');
-            }
-        }
-        
-        // Fallback ke strtotime
-        $timestamp = strtotime($date);
-        if ($timestamp !== false) {
-            return date('Y-m-d', $timestamp);
-        }
-        
-        return null;
-        
-    } catch (\Exception $e) {
-        return null;
-    }
-}
 
-/**
- * Generate unique username
- */
-private function generateUniqueUsername($base, $nim, $forceUnique = false)
-{
-    // Bersihkan base string
-    $username = strtolower(preg_replace('/[^a-zA-Z0-9]/', '_', $base));
-    $username = substr($username, 0, 50);
-    
-    if (empty($username)) {
-        $username = 'user_' . $nim;
+    // Serial date Excel (angka)
+    if (is_numeric($date)) {
+        $unix = ((int) $date - 25569) * 86400;
+        return date('Y-m-d', $unix);
     }
-    
-    if ($forceUnique) {
-        $username = $username . '_' . substr($nim, -4);
-    }
-    
-    // Pastikan benar-benar unique
-    $original = $username;
-    $counter = 1;
-    while (User::where('username', $username)->exists()) {
-        $username = $original . '_' . $counter;
-        $counter++;
-    }
-    
-    return $username;
-}
 
+    $date = trim((string) $date);
+
+    $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd/m/y', 'Y/m/d'];
+    foreach ($formats as $format) {
+        $parsed = \DateTime::createFromFormat($format, $date);
+        if ($parsed && $parsed->format($format) === $date) {
+            return $parsed->format('Y-m-d');
+        }
+    }
+
+    $ts = strtotime($date);
+    return $ts !== false ? date('Y-m-d', $ts) : null;
+}
     // UpdateUser - ambil id dari query parameter
     public function UpdateUser(Request $request)
     {

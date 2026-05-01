@@ -177,7 +177,7 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::delete('/DeleteUser', [AdminController::class, 'destroyUser'])->name('destroy');
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyUsers'])->name('bulkDestroy');
                 Route::patch('/update-status', [UserController::class, 'updateStatus'])->name('update-status');
-                Route::post('/import-excel', [UserController::class, 'importExcel'])->name('admin.users.importExcel');
+                Route::post('/import-excel', [AdminController::class, 'importExcel'])->name('importExcel');
             });
 
             Route::prefix('manageUserKeahlianTambahan')->name('users.keahlian-tambahan.')->group(function () {
