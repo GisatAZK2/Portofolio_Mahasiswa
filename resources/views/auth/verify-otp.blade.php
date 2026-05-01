@@ -146,76 +146,11 @@
     </main>
 
     <script>
-        // Storage key for form persistence
-        const STORAGE_KEY = 'otp_verification_data';
-        
-        // Timer variables
+        // Timer variables - selalu reset ke 5 menit setiap halaman dimuat
         let timerInterval;
-        let timeLeft = 300; // 5 minutes in seconds
+        let timeLeft = 300; // 5 minutes in seconds (RESET setiap load)
         let canResend = false;
         let isTimerRunning = true;
-        
-        // Save OTP data to sessionStorage
-        function saveOtpData() {
-            const formData = {
-                otp: document.getElementById('otp')?.value || '',
-                email: document.getElementById('email-input')?.value || '',
-                timeLeft: timeLeft,
-                lastSaved: Date.now(),
-                isActive: true
-            };
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-        }
-        
-        // Load OTP data from sessionStorage
-        function loadOtpData() {
-            const savedData = sessionStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    const otpInput = document.getElementById('otp');
-                    const emailInput = document.getElementById('email-input');
-                    const emailDisplay = document.getElementById('email-display');
-                    
-                    // Restore OTP value
-                    if (otpInput && data.otp) {
-                        otpInput.value = data.otp;
-                        // Trigger input event to show clear button
-                        const event = new Event('input', { bubbles: true });
-                        otpInput.dispatchEvent(event);
-                    }
-                    
-                    // Restore email
-                    if (emailInput && data.email && !emailInput.value) {
-                        emailInput.value = data.email;
-                        if (emailDisplay) emailDisplay.textContent = data.email;
-                    }
-                    
-                    // Calculate remaining time based on last saved timestamp
-                    if (data.timeLeft && data.lastSaved) {
-                        const elapsedSeconds = Math.floor((Date.now() - data.lastSaved) / 1000);
-                        const remainingTime = Math.max(0, data.timeLeft - elapsedSeconds);
-                        if (remainingTime > 0 && data.isActive) {
-                            timeLeft = remainingTime;
-                            isTimerRunning = true;
-                            startTimer();
-                        } else if (remainingTime <= 0) {
-                            timeLeft = 0;
-                            isTimerRunning = false;
-                            updateTimerDisplay();
-                            enableResendButton();
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error loading saved data:', e);
-                }
-            }
-        }
-        
-        // Clear saved data
-        function clearOtpData() {
-            sessionStorage.removeItem(STORAGE_KEY);
-        }
         
         // Format time as MM:SS
         function formatTime(seconds) {
@@ -266,7 +201,6 @@
             if (!isTimerRunning) return;
             
             updateTimerDisplay();
-            saveOtpData();
             
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
@@ -288,7 +222,7 @@
             }
         }
         
-        // Start timer
+        // Start timer (selalu mulai dari 5 menit)
         function startTimer() {
             clearInterval(timerInterval);
             
@@ -311,13 +245,12 @@
             }, 1000);
         }
         
-        // Reset timer
+        // Reset timer ke 5 menit
         function resetTimer() {
             clearInterval(timerInterval);
             timeLeft = 300;
             isTimerRunning = true;
             startTimer();
-            saveOtpData();
         }
 
         // Resend OTP function
@@ -382,7 +315,6 @@
                     // Clear OTP input
                     const otpInput = document.getElementById('otp');
                     if (otpInput) otpInput.value = '';
-                    saveOtpData();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -409,7 +341,6 @@
             if (otpInput) {
                 otpInput.value = '';
                 otpInput.focus();
-                saveOtpData();
             }
         }
         
@@ -424,7 +355,6 @@
                 timer: 2000,
                 timerProgressBar: true
             }).then(() => {
-                clearOtpData();
                 const email = document.getElementById('email-input').value;
                 window.location.href = '{{ route("password.reset.form") }}?email=' + encodeURIComponent(email);
             });
@@ -452,13 +382,8 @@
         
         // DOM Ready
         document.addEventListener('DOMContentLoaded', function () {
-            // Load saved data (including after refresh)
-            loadOtpData();
-            
-            // If no saved timer, start fresh
-            if (!sessionStorage.getItem(STORAGE_KEY)) {
-                startTimer();
-            }
+            // Mulai timer dari 5 menit (RESET setiap halaman dimuat)
+            startTimer();
             
             // Auto-format OTP input (only numbers)
             const otpInput = document.getElementById('otp');
@@ -484,8 +409,6 @@
                             clearBtn.classList.add('opacity-0', 'pointer-events-none');
                         }
                     }
-                    
-                    saveOtpData();
                 });
                 
                 // Add paste event handler
@@ -582,7 +505,6 @@
                     cancelButtonText: 'Tetap di Sini'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        clearOtpData();
                         window.location.href = '{{ route("password.forgot") }}';
                     }
                 });
@@ -592,11 +514,6 @@
         if (cancelButton) {
             cancelButton.addEventListener('click', handleBackClick);
         }
-        
-        // Save before page unload (refresh)
-        window.addEventListener('beforeunload', function() {
-            saveOtpData();
-        });
         
         // Add keyboard support for OTP input (Enter key)
         if (otpField) {

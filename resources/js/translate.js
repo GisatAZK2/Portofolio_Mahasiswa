@@ -58,6 +58,7 @@ export const translations = {
       tahun_mulai: 'Tahun Mulai',
       tahun_selesai: 'Tahun Selesai',
       masih_bekerja : 'Masih bekerja',
+      tgl_lahir: 'Tanggal Lahir',
       edit : 'Edit',
       hapus : 'Hapus',
       batal : 'Batal',
@@ -995,6 +996,8 @@ export const translations = {
       empty_sertifikat: 'Belum Ada Sertifikat Yang Dapat Ditampilkan',
       not_yet : 'Tidak ada preview Tersedia',
 
+      post_empty: 'Belum ada postingan untuk ditampilkan',
+
       team: 'Anggota Tim',
       start: 'Mulai',
       end: 'Selesai',
@@ -1296,6 +1299,7 @@ export const translations = {
       tahun_mulai: 'Start Year',
       tahun_selesai: 'End Year',
       masih_bekerja: 'Still Working',
+      tgl_lahir: 'Date of Birth',
       edit: 'Edit',
       hapus: 'Delete',
       batal: 'Cancel',
@@ -2070,6 +2074,8 @@ curr_photo: 'Current Photo',
       pjt_vidprev: 'Preview Video',
       empty_sertifikat: 'There is no certificates to be shown',
       not_yet : 'No Preview Available',
+
+      post_empty: 'There is no content to be shown',
 
       team: 'Team Members',
       start: 'Start',

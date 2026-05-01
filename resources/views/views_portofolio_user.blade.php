@@ -825,7 +825,9 @@
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <p class="mt-3 text-gray-500 dark:text-gray-400">Belum ada postingan yang dibuat.</p>
+                                <p class="mt-3 text-gray-500 dark:text-gray-400" data-translate="post_empty" data-translate-page="portofolio_user">
+                                    Belum ada postingan yang dibuat.
+                                </p>
                             </div>
                         @else
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
