@@ -449,44 +449,47 @@
                                                 <span onclick="window.location.href='{{ route('postingan.show', ['id' => $post->id_postingan]) }}'" class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600 transition">{{ autoTranslate('Lihat detail') }} →</span>
                                             </div>
 
+                                        
                                             <!-- Comment Section - Enhanced -->
-                                            <div class="comment-section px-4 pb-4 bg-white dark:bg-gray-800 hidden rounded-b-xl" id="comments-{{ $post->id_postingan }}">
-                                                @auth
-                                                    <div class="mb-4">
-                                                        <div class="flex gap-3">
-                                                            @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
-                                                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-9 h-9 rounded-full object-cover mt-1">
-                                                            @else
-                                                                <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1 flex-shrink-0">
-                                                                    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">{{ strtoupper(substr(auth()->user()->nama_mahasiswa ?? 'U', 0, 1)) }}</span>
-                                                                </div>
-                                                            @endif
-                                                            <div class="flex-1">
-                                                                <textarea id="comment-input-{{ $post->id_postingan }}" rows="2" class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition" placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
-                                                                <div class="flex justify-end mt-2">
-                                                                    <button onclick="window.submitComment({{ $post->id_postingan }})" class="submit-comment-btn px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow">
-                                                                        {{ autoTranslate('Kirim') }}
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="text-center py-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-700 font-medium hover:underline">{{ autoTranslate('Masuk') }}</a> {{ autoTranslate('untuk berkomentar') }}
-                                                        </p>
-                                                    </div>
-                                                @endauth
-                                                
-                                                <div id="comments-container-{{ $post->id_postingan }}" class="comments-container space-y-4 pr-2">
-                                                    <div class="text-center py-6 text-gray-400 text-sm">
-                                                        <div class="comment-loading inline-block mr-2"></div>
-                                                        {{ autoTranslate('Memuat komentar...') }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                             <!-- Comment Section - Enhanced -->
+<div class="comment-section px-4 pb-4 bg-white dark:bg-gray-800 hidden rounded-b-xl" id="comments-{{ $post->id_postingan }}">
+    @auth
+        <div class="mb-4">
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <textarea id="comment-input-{{ $post->id_postingan }}" 
+                        rows="2" 
+                        class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition" 
+                        placeholder="{{ autoTranslate('Tulis komentar...') }}"
+                        data-translate-placeholder="Tulis komentar..."
+                        data-translate-page="dashboard"></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button onclick="window.submitComment({{ $post->id_postingan }})" 
+                            class="submit-comment-btn px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow">
+                            <span data-translate="kirim" data-translate-page="dashboard">{{ autoTranslate('Kirim') }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="text-center py-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-700 font-medium hover:underline">
+                    <span data-translate="masuk" data-translate-page="dashboard">{{ autoTranslate('Masuk') }}</span>
+                </a> 
+                <span data-translate="untuk_berkomentar" data-translate-page="dashboard">{{ autoTranslate('untuk berkomentar') }}</span>
+            </p>
+        </div>
+    @endauth
+    
+    <div id="comments-container-{{ $post->id_postingan }}" class="comments-container space-y-4 pr-2">
+        <div class="text-center py-6 text-gray-400 text-sm">
+            <div class="comment-loading inline-block mr-2"></div>
+            <span data-translate="memuat_komentar" data-translate-page="dashboard">{{ autoTranslate('Memuat komentar...') }}</span>
+        </div>
+    </div>
+</div>
                                     @endforeach
                                 </div>
                                 <div id="postingan-pagination" class="mt-8">
@@ -693,7 +696,7 @@ window.loadComments = async function(postinganId) {
     container.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm"><div class="comment-loading inline-block mr-2"></div> Memuat komentar...</div>';
     
     try {
-        const response = await fetch(`/komentar?id_postingan=${postinganId}`);
+        const response = await fetch(`/${window.locale}/komentar?id_postingan=${postinganId}`);
         const data = await response.json();
         
         if (data && data.success === true) {
@@ -707,10 +710,13 @@ window.loadComments = async function(postinganId) {
                 commentsArray = data.comments.comments;
             }
             
-            if (commentsArray.length === 0) {
-                container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">✨ Belum ada komentar. Jadilah yang pertama!</p>';
-                return;
-            }
+if (commentsArray.length === 0) {
+    const noCommentsText = (window.locale === 'id') 
+        ? '✨ Belum ada komentar. Jadilah yang pertama!'
+        : '✨ No comments yet. Be the first!';
+    container.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">${noCommentsText}</p>`;
+    return;
+}
             
             let html = '<div class="space-y-4">';
             commentsArray.forEach(comment => {
@@ -740,6 +746,11 @@ window.loadComments = async function(postinganId) {
     const commentId = String(comment.id_komentar);
     postinganId = String(postinganId);
     
+    // Translate button labels based on current locale
+    const replyText = (window.locale === 'id') ? 'Balas' : 'Reply';
+    const editText = (window.locale === 'id') ? 'Edit' : 'Edit';
+    const deleteText = (window.locale === 'id') ? 'Hapus' : 'Delete';
+    
     let html = `
         <div class="comment-item transition-all duration-200 py-2" data-comment-id="${commentId}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
             <div class="flex gap-3">
@@ -753,13 +764,12 @@ window.loadComments = async function(postinganId) {
                     <div class="flex flex-wrap gap-3 mt-2">
     `;
     
-    // Tampilkan tombol reply HANYA jika user sudah login
     if (isLoggedIn) {
         html += `
                         <button class="reply-btn text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors inline-flex items-center gap-1"
                             data-action="reply" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-                            Balas
+                            ${replyText}
                         </button>
         `;
     }
@@ -769,12 +779,12 @@ window.loadComments = async function(postinganId) {
                         <button class="edit-comment-btn text-xs text-blue-500 hover:text-blue-700 transition-colors inline-flex items-center gap-1"
                             data-action="edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            Edit
+                            ${editText}
                         </button>
                         <button class="delete-comment-btn text-xs text-red-500 hover:text-red-700 transition-colors inline-flex items-center gap-1"
                             data-action="delete" data-comment-id="${commentId}" data-postingan-id="${postinganId}" data-type="full">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            Hapus
+                            ${deleteText}
                         </button>
         `;
     }
@@ -796,7 +806,7 @@ window.loadComments = async function(postinganId) {
     }
     
     return html;
-}        
+}  
         // Attach event listeners for dynamic elements
         function attachCommentEventListeners(container, postinganId) {
 
@@ -862,7 +872,7 @@ window.loadComments = async function(postinganId) {
             }
         
             try {
-                const response = await fetch(`/komentar`, {
+                const response = await fetch(`/${window.locale}/komentar`, {
                     method: 'POST',
                     headers: getHeaders(),
                     body: JSON.stringify({
@@ -932,7 +942,7 @@ async function submitReply(form, postinganId) {
     if (cancelBtn) cancelBtn.disabled = true;
 
     try {
-        const response = await fetch(`/komentar`, {
+        const response = await fetch(`/${window.locale}/komentar`, {
             method: 'POST',
             headers: getHeaders(),
             body: JSON.stringify({
@@ -983,6 +993,11 @@ window.showReplyForm = function(parentCommentId, postinganId) {
     const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
     if (!replyFormContainer) return;
     
+    // Translate labels
+    const sendText = (window.locale === 'id') ? 'Kirim' : 'Send';
+    const cancelText = (window.locale === 'id') ? 'Batal' : 'Cancel';
+    const placeholderText = (window.locale === 'id') ? 'Tulis balasan...' : 'Write a reply...';
+    
     // Toggle hide if already open
     if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
         replyFormContainer.classList.add('hidden');
@@ -995,10 +1010,10 @@ window.showReplyForm = function(parentCommentId, postinganId) {
             <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
             <input type="hidden" name="parent_id" value="${parentCommentId}">
             <div class="flex flex-col gap-2">
-                <textarea name="komentar" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none" placeholder="Tulis balasan..."></textarea>
+                <textarea name="komentar" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none" placeholder="${placeholderText}"></textarea>
                 <div class="flex gap-2 justify-end">
-                    <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">Kirim</button>
-                    <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden'); this.closest('.reply-form-container').innerHTML = '';" class="px-4 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">Batal</button>
+                    <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">${sendText}</button>
+                    <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden'); this.closest('.reply-form-container').innerHTML = '';" class="px-4 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">${cancelText}</button>
                 </div>
             </div>
         </form>
@@ -1006,14 +1021,12 @@ window.showReplyForm = function(parentCommentId, postinganId) {
     replyFormContainer.classList.remove('hidden');
     
     const form = replyFormContainer.querySelector('form');
-    // Remove existing listener to prevent duplicate
     form.onsubmit = null;
     form.onsubmit = async (e) => {
         e.preventDefault();
         await submitReply(form, postinganId);
     };
-};
-        
+};        
         // Show edit form
         window.showEditForm = function(commentId, postinganId) {
     commentId = String(commentId);
@@ -1031,24 +1044,27 @@ window.showReplyForm = function(parentCommentId, postinganId) {
         commentTextEl.style.display = 'block';
         const editBtn = commentItem.querySelector('.edit-comment-btn');
         if (editBtn) editBtn.style.display = 'inline-flex';
-        return; // toggle off jika sudah terbuka
+        return;
     }
+    
+    // Translate button labels
+    const saveText = (window.locale === 'id') ? 'Simpan' : 'Save';
+    const cancelText = (window.locale === 'id') ? 'Batal' : 'Cancel';
     
     const editForm = document.createElement('div');
     editForm.className = 'edit-form mt-2';
     editForm.id = `edit-form-${commentId}`;
     
-    // ✅ PAKAI data-attribute, BUKAN onclick dengan number literal
     editForm.innerHTML = `
         <textarea class="edit-textarea w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none" rows="2">${escapeHtml(originalText)}</textarea>
         <div class="flex gap-2 mt-2">
             <button class="save-edit-btn px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
                 data-action="save-edit"
                 data-comment-id="${commentId}"
-                data-postingan-id="${postinganId}">Simpan</button>
+                data-postingan-id="${postinganId}">${saveText}</button>
             <button class="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 transition-colors"
                 data-action="cancel-edit"
-                data-comment-id="${commentId}">Batal</button>
+                data-comment-id="${commentId}">${cancelText}</button>
         </div>
     `;
     
@@ -1058,6 +1074,7 @@ window.showReplyForm = function(parentCommentId, postinganId) {
     const editBtn = commentItem.querySelector('.edit-comment-btn');
     if (editBtn) editBtn.style.display = 'none';
 };
+
         
         // Save edit
       // Save edit
@@ -1088,8 +1105,8 @@ window.saveEdit = async function(commentId, postinganId) {
 
     try {
         const lastUpdated = window.commentLastUpdated?.[postinganId] ?? '';
-        const response = await fetch(
-            `/komentar/update?id=${commentId}&id_postingan=${postinganId}&last_updated=${encodeURIComponent(lastUpdated)}`,
+         const response = await fetch(
+            `/${window.locale}/komentar/update?id=${commentId}&id_postingan=${postinganId}&last_updated=${encodeURIComponent(lastUpdated)}`,
             {
                 method: 'PUT',
                 headers: getHeaders(),
@@ -1146,25 +1163,32 @@ window.saveEdit = async function(commentId, postinganId) {
         
         // Delete comment
         window.deleteComment = async function(commentId, postinganId, type = 'full') {
-            commentId = String(commentId);
-             postinganId = String(postinganId);
-            const confirmMessage = type === 'single'
-                ? 'Apakah Anda yakin ingin menghapus balasan ini saja?'
-                : 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?';
-            
-            // Use SweetAlert if available, otherwise fallback to confirm
-            if (window.showConfirm) {
-                const confirmed = await window.showConfirm();
-                if (!confirmed) return;
-            } else {
-                if (!confirm(confirmMessage)) return;
-            }
+    commentId = String(commentId);
+    postinganId = String(postinganId);
+    
+    // Translate confirmation messages
+    const confirmMessageSingle = (window.locale === 'id') 
+        ? 'Apakah Anda yakin ingin menghapus balasan ini saja?'
+        : 'Are you sure you want to delete this reply only?';
+    const confirmMessageFull = (window.locale === 'id')
+        ? 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?'
+        : 'Are you sure you want to delete this comment and all its replies?';
+    const confirmMessage = type === 'single' ? confirmMessageSingle : confirmMessageFull;
+    
+    if (window.showConfirm) {
+        const confirmed = await window.showConfirm(confirmMessage);
+        if (!confirmed) return;
+    } else {
+        if (!confirm(confirmMessage)) return;
+    }
+    
         
             if (window.showLoading) window.showLoading('Menghapus...');
         
             try {
                 const lastUpdated = window.commentLastUpdated[postinganId] ?? '';
-                const response = await fetch(`/komentar/destroy?id=${commentId}&id_postingan=${postinganId}&type=${type}`, {
+               const response = await fetch(
+            `/${window.locale}/komentar/destroy?id=${commentId}&id_postingan=${postinganId}&type=${type}`, {
                     method: 'DELETE',
                     headers: getHeaders(),
                 });
