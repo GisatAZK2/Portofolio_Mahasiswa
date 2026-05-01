@@ -992,6 +992,8 @@ export const translations = {
       pjt_noteam: 'Belum ada anggota tim',
       pjt_desc: 'Deskripsi',
       pjt_vidprev: 'Pratinjau Video',
+      empty_sertifikat: 'Belum Ada Sertifikat Yang Dapat Ditampilkan',
+      not_yet : 'Tidak ada preview Tersedia',
 
       team: 'Anggota Tim',
       start: 'Mulai',
@@ -1001,7 +1003,22 @@ export const translations = {
       note: 'Catatan',
       empty_content: 'Tidak ada konten yang dapat ditampilkan',
       lrn_origin: 'Dari proyek: ',
-      empty_lrn: 'Belum ada learning corner'
+      empty_lrn: 'Belum ada learning corner',
+
+      exp_title : 'Pengalaman',
+      exp_count : 'Pengalaman',
+      exp_active : 'Aktif',
+      exp_now : 'Sekarang',
+      exp_dur_yr : 'Tahun',
+      exp_sertif : 'Sertifikat',
+      exp_empty : 'Belum ada pengalaman yang dapat ditampilkan',
+      edu_title : 'Pendidikan',
+      edu_count : 'Riwayat',
+      edu_active : 'Aktif',
+      edu_enter : 'Masuk',
+      edu_now : 'Sekarang',
+      edu_empty : 'Belum ada riwayat pendidikan yang dapat ditampilkan',
+
     },
     search: {
       search: 'Cari',
@@ -2021,6 +2038,8 @@ export const translations = {
       pjt_noteam: 'No team members',
       pjt_desc: 'Description',
       pjt_vidprev: 'Preview Video',
+      empty_sertifikat: 'There is no certificates to be shown',
+      not_yet : 'No Preview Available',
 
       team: 'Team Members',
       start: 'Start',
@@ -2030,7 +2049,23 @@ export const translations = {
       note: 'Notes',
       empty_content: 'There is no content to be shown',
       lrn_origin: 'From project: ',
-      empty_lrn: 'There is no learning corner yet'
+      empty_lrn: 'There is no learning corner yet',
+
+      exp_title : 'Experience',
+      exp_count : 'Experience',
+      exp_active : 'Active',
+      exp_now : 'Present',
+      exp_dur_yr  : 'Year(s)',
+      exp_sertif : 'Certificate',
+      exp_empty : 'No experience to display',
+
+
+      edu_title : 'Education',
+      edu_count : 'History',
+      edu_active : 'Active',
+      edu_enter : 'Started',
+      edu_now : 'Present',
+      edu_empty : 'No education history to display',
     },
     project: {
       project_saya: 'My Projects',
