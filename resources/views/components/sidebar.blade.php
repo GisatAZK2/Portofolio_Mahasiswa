@@ -1055,7 +1055,7 @@ if (searchInput) {
             searchResults.innerHTML = `<div class="px-4 py-3 text-gray-500 text-sm text-center">{{ autoTranslate('Menu tidak ditemukan') }}</div>`;
         } else {
             searchResults.innerHTML = filtered.map(m =>
-                `<a href="${m.url}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-700 text-gray-300 text-sm transition-colors">
+                `<a href="${m.url}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-700 text-black dark:text-white text-sm transition-colors">
                     <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>

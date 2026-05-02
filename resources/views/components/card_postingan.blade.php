@@ -31,7 +31,86 @@
         font-weight: 600;
         margin-left: 8px;
     }
+
+    /* Video preview styles */
+    .video-preview-wrapper {
+        position: relative;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .video-preview-wrapper .play-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.35);
+        transition: background 0.2s;
+        z-index: 2;
+    }
+
+    .video-preview-wrapper:hover .play-overlay {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .video-preview-wrapper .play-btn-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+        transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .video-preview-wrapper:hover .play-btn-circle {
+        transform: scale(1.1);
+        box-shadow: 0 6px 28px rgba(0,0,0,0.45);
+    }
+
+    .video-preview-wrapper .play-btn-circle svg {
+        width: 22px;
+        height: 22px;
+        color: #4f46e5;
+        margin-left: 3px;
+    }
+
+    .video-preview-wrapper .yt-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .video-embed-container {
+        display: none;
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #000;
+    }
+
+    .video-embed-container iframe,
+    .video-embed-container video {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+    }
+
+    /* When video is active, hide thumbnail and show embed */
+    .video-preview-wrapper.playing .play-overlay,
+    .video-preview-wrapper.playing .yt-thumbnail {
+        display: none;
+    }
+
+    .video-preview-wrapper.playing .video-embed-container {
+        display: block;
+    }
 </style>
+
 <div
     class="flex flex-col rounded-lg sm:rounded-xl overflow-hidden border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-all duration-300 p-2 sm:p-3 md:p-4 lg:p-6 h-full">
     @php
@@ -67,10 +146,8 @@
         $ownerId = null;
 
         if ($post->type === 'learning') {
-            // Ambil data dari learning_corner
             if (isset($post->content) && is_array($post->content)) {
                 $learningContent = $post->content;
-                // Pisahkan konten berdasarkan tipe
                 foreach ($learningContent as $item) {
                     if ($item['type'] === 'title') {
                         $learningTitle = $item['content'] ?? '';
@@ -84,14 +161,12 @@
                 }
             }
 
-            // Data user pembuat learning corner
             if (isset($post->mahasiswa)) {
                 $userPhoto = $post->mahasiswa->photo_profile;
                 $userName = $post->mahasiswa->nama_mahasiswa ?? autoTranslate('Pengguna');
                 $userId = $post->mahasiswa->id;
             }
 
-            // Data project terkait
             if (isset($post->project)) {
                 $relatedProject = $post->project;
                 if ($relatedProject && $relatedProject->isi_content) {
@@ -100,7 +175,6 @@
                         (is_array($relatedProject->isi_content) ? $relatedProject->isi_content : []);
                 }
 
-                // Ambil data leader dari project jika ada
                 if ($relatedProject && isset($relatedProject->leader) && $relatedProject->leader) {
                     $leaderPhoto = $relatedProject->leader->photo_profile;
                     $leaderName = $relatedProject->leader->nama_mahasiswa ?? autoTranslate('Leader');
@@ -108,7 +182,6 @@
                     $isLeaderAvailable = true;
                 }
 
-                // Ambil data owner (pembuat project) dari id_mahasiswa
                 if ($relatedProject && isset($relatedProject->mahasiswa) && $relatedProject->mahasiswa) {
                     $ownerPhoto = $relatedProject->mahasiswa->photo_profile;
                     $ownerName = $relatedProject->mahasiswa->nama_mahasiswa ?? autoTranslate('Owner');
@@ -116,14 +189,12 @@
                 }
             }
         } elseif ($post->type === 'project' || $post->type === 'project_user') {
-            // Data untuk project
             if ($post->mahasiswa) {
                 $userPhoto = $post->mahasiswa->photo_profile;
                 $userName = $post->mahasiswa->nama_mahasiswa ?? autoTranslate('Pengguna');
                 $userId = $post->mahasiswa->id;
             }
         } elseif ($post->type === 'sertifikat') {
-            // Data untuk sertifikat
             if ($post->mahasiswa) {
                 $userPhoto = $post->mahasiswa->photo_profile;
                 $userName = $post->mahasiswa->nama_mahasiswa ?? autoTranslate('Pengguna');
@@ -131,29 +202,26 @@
             }
         }
 
-        // Data untuk project card
         $nama_project = $projectData['nama_project'] ?? ($relatedProjectData['nama_project'] ?? autoTranslate('(Nama Project Tidak Tersedia)'));
         $link_project = $projectData['link_project'] ?? $relatedProjectData['link_project'] ?? '';
         $link_github = $projectData['link_github'] ?? $relatedProjectData['link_github'] ?? '';
         $link_video = $projectData['link_video'] ?? $relatedProjectData['link_video'] ?? '';
 
-        // Ekstrak youtube_id jika link_video adalah YouTube
         $youtube_id = '';
         $isValidVideo = false;
-        
+
         if ($link_video && !empty(trim($link_video))) {
-            // Cek apakah link adalah YouTube
             if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link_video, $matches)) {
                 $youtube_id = $matches[1];
                 $isValidVideo = true;
-            } 
-            // Cek apakah link adalah video langsung (mp4, etc)
-            elseif (preg_match('/\.(mp4|webm|ogg)$/i', $link_video)) {
+            } elseif (preg_match('/\.(mp4|webm|ogg)$/i', $link_video)) {
                 $isValidVideo = true;
             }
         }
 
-        // Tentukan data yang akan ditampilkan untuk leader/owner
+        // Unique ID untuk video element di card ini
+        $videoCardId = 'video-card-' . ($post->id_postingan ?? $post->id ?? uniqid());
+
         $displayPhoto = $isLeaderAvailable ? $leaderPhoto : $ownerPhoto;
         $displayName = $isLeaderAvailable ? $leaderName : $ownerName;
         $displayId = $isLeaderAvailable ? $leaderId : $ownerId;
@@ -213,7 +281,6 @@
     <!-- Konten utama -->
     <div class="flex-1 mt-1 sm:mt-3">
         @if($post->type === 'learning')
-            <!-- Title - Clickable ke Project -->
             @if($relatedProject)
                 <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
                     class="block hover:text-indigo-700 transition-colors">
@@ -229,7 +296,6 @@
                 </h3>
             @endif
 
-            <!-- Text with expand/collapse -->
             @if($learningText)
                 <div class="relative">
                     <p class="text-gray-700 dark:text-gray-300 mb-1 sm:mb-2 text-xs sm:text-sm line-clamp-3">
@@ -238,7 +304,6 @@
                 </div>
             @endif
 
-            <!-- Images -->
             @if(count($learningImages) > 0)
                 <div class="space-y-1.5 sm:space-y-2 mt-1.5 sm:mt-2">
                     @php $firstImage = $learningImages[0]; @endphp
@@ -250,7 +315,6 @@
                 </div>
             @endif
 
-            <!-- Links -->
             @if(count($learningLinks) > 0)
                 <div class="mt-1 sm:mt-2 space-y-0.5">
                     @foreach($learningLinks as $link)
@@ -262,7 +326,6 @@
                 </div>
             @endif
 
-            <!-- Related Project Info -->
             @if($relatedProject)
                 <div class="mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-gray-100 dark:border-gray-800">
                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">{{ autoTranslate('Terkait:') }}</p>
@@ -283,14 +346,12 @@
                 </h3>
             </a>
 
-            <!-- Deskripsi Project -->
             @if(!empty($projectData['deskripsi']))
                 <p class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-1 sm:mt-2 line-clamp-2">
                     {{ autoTranslate($projectData['deskripsi']) }}
                 </p>
             @endif
 
-            <!-- Periode -->
             @if(!empty($projectData['tanggal_mulai']) || $post->tanggal_mulai)
                 <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-200 mt-1 sm:mt-2">
                     <p><span class="font-medium">{{ autoTranslate('Periode:') }}</span>
@@ -313,33 +374,84 @@
                 </div>
             @endif
 
-            <!-- YouTube Video atau Preview Kosong -->
+            {{-- ============================================================
+                 VIDEO PREVIEW SECTION — Inline Playable
+                 Klik thumbnail → video langsung play di dalam card.
+                 YouTube: embed iframe dengan autoplay.
+                 MP4/direct: native <video> element.
+                 ============================================================ --}}
             @if($isValidVideo && $youtube_id)
-                <!-- Video Preview untuk YouTube -->
-                @include('components.video_preview', [
-                    'link_video' => $link_video,
-                    'alt' => autoTranslate('Video ') . autoTranslate($nama_project),
-                    'class' => 'rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm mt-3 sm:mt-4'
-                ])
-            @elseif($isValidVideo && !$youtube_id)
-                <!-- Video Preview untuk video langsung (mp4, etc) -->
-                <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm bg-gray-100 dark:bg-gray-800">
-                    <video class="w-full h-32 sm:h-40 md:h-48 object-cover" controls>
-                        <source src="{{ $link_video }}" type="video/mp4">
-                        {{ autoTranslate('Browser Anda tidak mendukung video.') }}
-                    </video>
+                {{-- YouTube: tampilkan thumbnail HQ, klik → embed iframe --}}
+                <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm"
+                     style="aspect-ratio: 16/9;">
+                    <div class="video-preview-wrapper w-full h-full" id="{{ $videoCardId }}"
+                         onclick="playVideoInCard('{{ $videoCardId }}', 'youtube', '{{ $youtube_id }}')">
+
+                        {{-- Thumbnail YouTube kualitas tinggi --}}
+                        <img class="yt-thumbnail w-full h-full object-cover"
+                             src="https://img.youtube.com/vi/{{ $youtube_id }}/hqdefault.jpg"
+                             alt="{{ autoTranslate('Video ') . autoTranslate($nama_project) }}"
+                             loading="lazy"
+                             onerror="this.src='https://img.youtube.com/vi/{{ $youtube_id }}/0.jpg'">
+
+                        {{-- Play overlay --}}
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        {{-- iframe embed (tersembunyi sampai diklik) --}}
+                        <div class="video-embed-container">
+                            {{-- iframe diisi via JS saat diklik agar tidak autoload --}}
+                        </div>
+                    </div>
                 </div>
+
+            @elseif($isValidVideo && !$youtube_id)
+                {{-- Video langsung (MP4/WebM/OGG): native player dengan poster --}}
+                <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm"
+                     style="aspect-ratio: 16/9;">
+                    <div class="video-preview-wrapper w-full h-full" id="{{ $videoCardId }}"
+                         onclick="playVideoInCard('{{ $videoCardId }}', 'direct', '{{ $link_video }}')">
+
+                        {{-- Poster placeholder --}}
+                        <div class="yt-thumbnail w-full h-full bg-gray-900 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+
+                        {{-- Play overlay --}}
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        {{-- video element container (tersembunyi sampai diklik) --}}
+                        <div class="video-embed-container">
+                            {{-- video diisi via JS saat diklik --}}
+                        </div>
+                    </div>
+                </div>
+
             @else
                 <!-- Preview Kosong ketika tidak ada video -->
                 <div class="relative mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50">
                     <div class="flex flex-col items-center justify-center py-6 sm:py-8 px-4 text-center">
                         <svg class="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Tidak ada video preview') }}</p>
                         @if($link_video && !empty(trim($link_video)))
-                            <a href="{{ $link_video }}" target="_blank" 
+                            <a href="{{ $link_video }}" target="_blank"
                                 class="mt-2 text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
                                 {{ autoTranslate('Lihat Video') }} →
                             </a>
@@ -373,7 +485,7 @@
                         </a>
                     @endif
 
-                    @if($link_video && !$youtube_id)
+                    @if($link_video)
                         <a href="{{ $link_video }}" target="_blank" rel="noopener noreferrer"
                             class="inline-flex hover:underline items-center text-orange-600 hover:text-orange-800 font-medium transition-colors">
                             <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -382,7 +494,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            {{ autoTranslate('Video') }}
+                            {{ autoTranslate('Buka Video') }}
                         </a>
                     @endif
                 </div>
@@ -416,7 +528,6 @@
                 <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ autoTranslate(Str::limit($deskripsi, 150)) }}</p>
             @endif
 
-            {{-- Game preview (if posting contains game) --}}
             @php
                 $game = null;
                 if (method_exists($post, 'game')) {
@@ -485,7 +596,7 @@
                         <span class="text-sm">{{ $post->komentar ? $post->komentar->count() : 0 }}</span>
                     </button>
                 </div>
-                <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan ?? $post->id) }}'" 
+                <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan ?? $post->id) }}'"
                       class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
                     {{ autoTranslate('Lihat detail') }}
                 </span>
@@ -507,11 +618,11 @@
                                 </div>
                             @endif
                             <div class="flex-1">
-                                <textarea name="komentar" rows="2" 
+                                <textarea name="komentar" rows="2"
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y text-sm"
                                     placeholder="{{ autoTranslate('Tulis komentar...') }}"></textarea>
                                 <div class="flex justify-end mt-2">
-                                    <button type="submit" 
+                                    <button type="submit"
                                         class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition submit-btn"
                                         data-current-user-id="{{ auth()->id() }}">
                                         {{ autoTranslate('Kirim') }}
@@ -526,7 +637,6 @@
                     </p>
                 @endauth
 
-                <!-- List Komentar -->
                 <div class="comment-list space-y-4 max-h-96 overflow-y-auto pr-2">
                     @if($post->komentar && $post->komentar->count() > 0)
                         @foreach($post->komentar->sortByDesc('tanggal') as $komentar)
@@ -561,31 +671,26 @@
             </div>
 
         @elseif($post->type === 'sertifikat')
-            <!-- Sertifikat Title -->
             <h3
                 class="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight mb-1 sm:mb-2">
                 {{ autoTranslate($post->nama_sertifikat) }}
             </h3>
 
-            <!-- Lembaga Penerbit -->
             @if($post->lembaga_penerbit)
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2">
                     <span class="font-medium">{{ autoTranslate('Lembaga:') }}</span> {{ autoTranslate($post->lembaga_penerbit) }}
                 </p>
             @endif
 
-            <!-- Tanggal Terbit -->
             @if($post->tanggal_terbit)
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2 sm:mb-3">
                     <span class="font-medium">{{ autoTranslate('Terbit:') }}</span> {{ autoTranslate(\Carbon\Carbon::parse($post->tanggal_terbit)->translatedFormat('d M Y')) }}
                 </p>
             @endif
 
-            <!-- Status Badge -->
             <div class="flex items-center gap-2 mb-3">
                 @if($post->status_pengajuan === 'Di Terima')
-                    <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         ✓ {{ autoTranslate('Diterima') }}
                     </span>
                 @elseif($post->status_pengajuan === 'Ditolak')
@@ -593,14 +698,12 @@
                         ✗ {{ autoTranslate('Ditolak') }}
                     </span>
                 @else
-                    <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                         ⊙ {{ autoTranslate('Pengajuan') }}
                     </span>
                 @endif
             </div>
 
-            <!-- Link Sertifikat -->
             @if($post->link_sertifikat)
                 <div class="mt-3 sm:mt-4">
                     <a href="{{ asset('storage/' . $post->link_sertifikat) }}" target="_blank" rel="noopener noreferrer"
@@ -619,7 +722,6 @@
     <!-- Footer -->
     <div class="mt-3 sm:mt-4 pt-2 sm:pt-4 border-t border-gray-100 dark:border-gray-900">
         @if($post->type === 'project' || $post->type === 'project_user')
-            <!-- Untuk project: tampilkan baris dengan flex justify-between -->
             <div class="flex justify-between items-center">
                 <p class="text-xs text-gray-500 dark:text-gray-50">
                     <span>{{ autoTranslate('Diposting') }}</span>
@@ -636,7 +738,6 @@
                 </div>
             </div>
         @else
-            <!-- Untuk tipe lain: tampilkan teks lengkap dengan kemungkinan link project terkait -->
             <p class="text-xs text-gray-500 dark:text-gray-50 line-clamp-2">
                 <span>{{ autoTranslate('Diposting') }}</span>
                 {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
@@ -653,3 +754,58 @@
         @endif
     </div>
 </div>
+
+{{-- ============================================================
+     SCRIPT: playVideoInCard
+     Letakkan satu kali di layout utama (sebelum </body>),
+     atau include di sini — script duplikat tidak masalah karena
+     fungsi hanya didefinisikan ulang (idempotent).
+     ============================================================ --}}
+<script>
+if (typeof playVideoInCard === 'undefined') {
+    /**
+     * Mainkan video langsung di dalam card tanpa navigasi.
+     *
+     * @param {string} wrapperId  - ID dari elemen .video-preview-wrapper
+     * @param {string} type       - 'youtube' | 'direct'
+     * @param {string} src        - YouTube video ID atau URL video langsung
+     */
+    window.playVideoInCard = function(wrapperId, type, src) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+
+        const embedContainer = wrapper.querySelector('.video-embed-container');
+        if (!embedContainer) return;
+
+        if (type === 'youtube') {
+            // Buat iframe YouTube dengan autoplay
+            const iframe = document.createElement('iframe');
+            iframe.src = 'https://www.youtube.com/embed/' + src + '?autoplay=1&rel=0&modestbranding=1';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            embedContainer.innerHTML = '';
+            embedContainer.appendChild(iframe);
+        } else if (type === 'direct') {
+            // Buat native video element
+            const video = document.createElement('video');
+            video.src = src;
+            video.controls = true;
+            video.autoplay = true;
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'contain';
+            video.style.background = '#000';
+            embedContainer.innerHTML = '';
+            embedContainer.appendChild(video);
+        }
+
+        // Tandai wrapper sebagai playing → sembunyikan thumbnail & overlay
+        wrapper.classList.add('playing');
+        // Hapus onclick agar tidak re-trigger
+        wrapper.onclick = null;
+    };
+}
+</script>

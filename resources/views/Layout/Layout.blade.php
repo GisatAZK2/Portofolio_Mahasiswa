@@ -64,6 +64,45 @@
             max-width: 100%;
         }
 
+        /* 1. Pastikan parent chain mendukung tinggi penuh */
+.dashboard-container {
+    height: auto;        /* biarkan fleksibel */
+    min-height: 0;       /* penting untuk overflow */
+}
+
+/* 2. Untuk layar >= 1024px (desktop) */
+@media (min-width: 1024px) {
+    .dashboard-container {
+        align-items: start;     /* agar sticky bekerja */
+        gap: 1.5rem;
+    }
+
+    /* Kolom kiri: scroll independen */
+    .feed-column {
+        overflow-y: auto;
+        max-height: calc(100vh - 120px); /* sesuaikan 120px dengan tinggi header + padding */
+        scrollbar-width: thin;
+    }
+
+    /* Kolom kanan: tetap di posisi saat scroll kiri */
+    .sidebar-column {
+        position: sticky;
+        top: 20px;      /* sesuai sticky top-6 di dalamnya */
+        align-self: start;
+    }
+}
+
+/* 3. Opsional: untuk mobile, tetap tumpuk (grid 1fr) */
+@media (max-width: 1023px) {
+    .feed-column {
+        overflow-y: visible;
+        max-height: none;
+    }
+    .sidebar-column {
+        position: static;
+    }
+}
+
         @media (max-width: 1023px) {
             #sidebar {
                 position: fixed;

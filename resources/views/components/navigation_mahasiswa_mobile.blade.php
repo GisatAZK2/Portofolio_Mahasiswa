@@ -524,7 +524,7 @@
     @endif
 @endauth
 
-{{-- ===================== GUEST BOTTOM NAV (simple) ===================== --}}
+{{-- ===================== GUEST BOTTOM NAV (dengan menu dropdown) ===================== --}}
 @guest
 <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg">
     <div class="flex items-center justify-around px-2 py-1 h-16">
@@ -544,13 +544,182 @@
             <span class="text-[10px] font-medium" data-translate="project_mahasiswa">Project</span>
         </a>
 
-        <a href="{{ route('login', ['locale' => app()->getLocale()]) }}"
-           class="flex flex-col items-center justify-center gap-0.5 flex-1 py-1 rounded-xl transition text-gray-500 hover:text-blue-600">
+        {{-- Tombol menu untuk guest (Login, Register, Dark Mode, Bahasa) --}}
+        <button type="button" id="guest-menu-btn"
+                class="flex flex-col items-center justify-center gap-0.5 flex-1 py-1 rounded-xl transition text-gray-500 hover:text-blue-600">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
-            <span class="text-[10px] font-medium" data-translate="login">Masuk</span>
-        </a>
+            <span class="text-[10px] font-medium" data-translate="account">Akun</span>
+        </button>
     </div>
 </nav>
+
+{{-- ===================== GUEST BOTTOM SHEET ===================== --}}
+<div id="guest-sheet-overlay" onclick="closeGuestSheet()"
+     class="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden transition-all duration-300 opacity-0">
+</div>
+
+<div id="guest-sheet"
+     class="lg:hidden bg-white dark:bg-gray-900 fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
+
+    <div class="flex justify-center pt-3 pb-1">
+        <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+    </div>
+
+    <div class="px-6 pb-2 pt-1">
+        <p class="text-xs font-semibold text-black dark:text-white uppercase tracking-wider">Menu Tamu</p>
+    </div>
+
+    <div class="px-4 pb-4 space-y-2">
+        {{-- Tombol Login --}}
+        <a href="{{ route('login', ['locale' => app()->getLocale()]) }}"
+           class="flex items-center gap-4 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition active:scale-[0.98]">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="login">Masuk</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="login_to_account">Login ke akun Anda</p>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+
+        {{-- Tombol Register (jika tersedia) --}}
+        @if(Route::has('register'))
+        <a href="{{ route('register', ['locale' => app()->getLocale()]) }}"
+           class="flex items-center gap-4 px-4 py-3 rounded-xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition active:scale-[0.98]">
+            <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="register">Daftar</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="create_account">Buat akun baru</p>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+        @endif
+
+        <div class="border-t border-gray-100 dark:border-gray-800 my-2"></div>
+
+        {{-- Dark Mode Toggle --}}
+        <button type="button" onclick="toggleGuestDarkMode()"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+            <span class="text-sm text-gray-700 dark:text-gray-200 flex-1 text-left" data-translate="mode">Dark Mode</span>
+            <div id="guest-dark-toggle" class="relative inline-block w-10 h-5 rounded-full bg-gray-200 dark:bg-blue-600 transition-colors duration-300">
+                <span class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 dark:translate-x-5"></span>
+            </div>
+        </button>
+
+        {{-- Language Selector --}}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl">
+            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+            </svg>
+            <span class="text-sm text-gray-700 dark:text-gray-200 flex-1" data-translate="bahasa">Bahasa</span>
+            <select onchange="changeGuestLanguage(this.value)"
+                    class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-1 rounded-lg border-0 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="id" {{ app()->getLocale() === 'id' ? 'selected' : '' }}>🇮🇩 Indonesia</option>
+                <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧 English</option>
+            </select>
+        </div>
+    </div>
+    <div class="h-16"></div>
+</div>
+
+<script>
+    // Guest bottom sheet functions
+    function toggleGuestSheet() {
+        const sheet = document.getElementById('guest-sheet');
+        const overlay = document.getElementById('guest-sheet-overlay');
+
+        const isOpen = !sheet.classList.contains('translate-y-full');
+
+        if (isOpen) {
+            closeGuestSheet();
+        } else {
+            sheet.classList.remove('translate-y-full');
+            overlay.classList.remove('hidden');
+            overlay.offsetHeight; // force reflow
+            overlay.classList.remove('opacity-0');
+        }
+    }
+
+    function closeGuestSheet() {
+        const sheet = document.getElementById('guest-sheet');
+        const overlay = document.getElementById('guest-sheet-overlay');
+
+        sheet.classList.add('translate-y-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+    }
+
+    function toggleGuestDarkMode() {
+        const html = document.documentElement;
+        html.classList.toggle('dark');
+        localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        syncGuestDarkToggle();
+    }
+
+    function syncGuestDarkToggle() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const toggleSpan = document.querySelector('#guest-dark-toggle span');
+        if (toggleSpan) {
+            if (isDark) {
+                toggleSpan.classList.add('translate-x-5');
+            } else {
+                toggleSpan.classList.remove('translate-x-5');
+            }
+        }
+    }
+
+    function changeGuestLanguage(lang) {
+        localStorage.setItem('lang', lang);
+        window.location.href = `${window.location.origin}/${lang}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const guestMenuBtn = document.getElementById('guest-menu-btn');
+        if (guestMenuBtn) {
+            guestMenuBtn.addEventListener('click', toggleGuestSheet);
+        }
+
+        syncGuestDarkToggle();
+
+        // Swipe to close sheet
+        const guestSheet = document.getElementById('guest-sheet');
+        if (guestSheet) {
+            let startY = 0;
+            guestSheet.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+            guestSheet.addEventListener('touchend', (e) => {
+                const deltaY = e.changedTouches[0].clientY - startY;
+                if (deltaY > 60) {
+                    closeGuestSheet();
+                }
+            }, { passive: true });
+        }
+
+        // Sinkronkan tema dari localStorage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+        syncGuestDarkToggle();
+    });
+</script>
 @endguest
