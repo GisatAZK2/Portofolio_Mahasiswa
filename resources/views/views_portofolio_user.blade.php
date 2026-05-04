@@ -175,7 +175,372 @@
                             @endif
                         </div>
                     </div>
+                </div>
+                {{-- END SIDEBAR --}}
 
+                {{-- ===== KONTEN UTAMA ===== --}}
+                <div class="lg:col-span-2 space-y-6">
+
+                     {{-- ==================== POSTINGAN ==================== --}}
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
+                                </svg>
+                                Postingannya
+                            </h3>
+                            <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                                {{ $postingans->total() ?? 0 }} postingan
+                            </span>
+                        </div>
+
+                        @if($postingans->isEmpty())
+                            <div class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="mt-3 text-gray-500 dark:text-gray-400" data-translate="post_empty" data-translate-page="portofolio_user">
+                                    Belum ada postingan yang dibuat.
+                                </p>
+                            </div>
+                        @else
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                @foreach($postingans as $post)
+                                    @php
+                                        $content = $post->content ?? [];
+                                        $title = '';
+                                        $deskripsi = '';
+                                        $items = [];
+
+                                        if (is_array($content)) {
+                                            foreach ($content as $item) {
+                                                if (isset($item['type']) && $item['type'] === 'title') {
+                                                    $title = $item['content'] ?? '';
+                                                } elseif (isset($item['type']) && $item['type'] === 'description') {
+                                                    $deskripsi = $item['content'] ?? '';
+                                                } else {
+                                                    $items[] = $item;
+                                                }
+                                            }
+                                        }
+                                    @endphp
+
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-200 group">
+                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
+                                            @if(!empty($items))
+                                                @foreach($items as $item)
+                                                    @if(isset($item['type']) && $item['type'] === 'image' && !empty($item['content']))
+                                                        <img src="{{ asset('storage/' . $item['content']) }}"
+                                                             alt="Preview postingan"
+                                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                             onerror="this.src='https://via.placeholder.com/600x400?text=Postingan'">
+                                                        @break
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <div class="w-full h-full flex items-center justify-center">
+                                                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <div class="p-5">
+                                            @if($title)
+                                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2 group-hover:text-purple-600 transition-colors">
+                                                    {{ $title }}
+                                                </h4>
+                                            @endif
+
+                                            @if($deskripsi)
+                                                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+                                                    {{ Str::limit($deskripsi, 130) }}
+                                                </p>
+                                            @endif
+
+                                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                <span>{{ $post->created_at?->format('d M Y') }}</span>
+                                                <a href="{{ route('postingan.show', ['id' => $post->id_postingan]) }}"
+                                                   class="text-purple-600 hover:text-purple-700 dark:text-purple-400 font-medium flex items-center gap-1">
+                                                    Baca selengkapnya
+                                                    <span class="text-lg leading-none">→</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div class="mt-8 flex justify-center">
+                                {{ $postingans->appends(request()->query())->links() }}
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- ==================== PENDIDIKAN ==================== --}}
+                    @php
+                        $pendidikanList = $user->pendidikan ?? [];
+                        $jenjangIcons = [
+                            'S1' => '🎓', 'S2' => '🎓', 'S3' => '🎓',
+                            'D1' => '📚', 'D2' => '📚', 'D3' => '📚', 'D4' => '📚',
+                            'SMA/SMK' => '🏫', 'SMP' => '🏫', 'SD' => '🏫',
+                            'Kursus/Pelatihan' => '📖',
+                        ];
+                    @endphp
+
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.083 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                                </svg>
+                                <span data-translate="edu_title" data-translate-page="portofolio_user">Pendidikan</span>
+                            </h3>
+                            @if(!empty($pendidikanList))
+                                <span class="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                                    {{ count($pendidikanList) }} <span data-translate="edu_count" data-translate-page="portofolio_user">riwayat</span>
+                                </span>
+                            @endif
+                        </div>
+
+                        @if(!empty($pendidikanList))
+                            <div class="relative">
+                                {{-- Timeline line --}}
+                                <div class="absolute left-5 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" style="margin-left: 1px;"></div>
+
+                                <div class="space-y-0">
+                                    @foreach($pendidikanList as $index => $pend)
+                                        @php
+                                            $isLast = $index === count($pendidikanList) - 1;
+                                            $masihKuliah = !empty($pend['masih_kuliah']) && $pend['masih_kuliah'];
+                                            $icon = $jenjangIcons[$pend['jenjang'] ?? ''] ?? '🏛️';
+                                        @endphp
+
+                                        <div class="relative flex gap-4 sm:gap-5 pb-{{ $isLast ? '0' : '6' }}">
+                                            {{-- Timeline dot --}}
+                                            <div class="flex-shrink-0 relative z-10">
+                                                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-50 dark:bg-blue-900/20 border-2 {{ $masihKuliah ? 'border-blue-500 dark:border-blue-400' : 'border-gray-300 dark:border-gray-600' }} flex items-center justify-center shadow-sm text-xl">
+                                                    {{ $icon }}
+                                                </div>
+                                            </div>
+
+                                            {{-- Content --}}
+                                            <div class="flex-1 min-w-0 pb-{{ $isLast ? '2' : '6' }}">
+                                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors duration-200">
+                                                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                                                        <div class="flex-1 min-w-0">
+                                                            {{-- Nama sekolah + badge --}}
+                                                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                                                <h4 class="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
+                                                                    {{ $pend['nama_sekolah'] ?? '-' }}
+                                                                </h4>
+                                                                @if($masihKuliah)
+                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap"
+                                                                        data-translate="edu_active" data-translate-page="portofolio_user">
+                                                                        Aktif
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+
+                                                            {{-- Jenjang + Jurusan --}}
+                                                            <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
+                                                                @if(!empty($pend['jenjang']))
+                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300">
+                                                                        {{ $pend['jenjang'] }}
+                                                                    </span>
+                                                                @endif
+                                                                @if(!empty($pend['jurusan_sek']))
+                                                                    <span class="text-sm text-gray-600 dark:text-gray-300">
+                                                                        {{ $pend['jurusan_sek'] }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+
+                                                            {{-- Periode --}}
+                                                            <div class="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                                                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                </svg>
+                                                                <span data-translate="edu_enter" data-translate-page="portofolio_user">Masuk</span>:
+                                                                <span>{{ $pend['tahun_masuk'] ?? '-' }}</span>
+                                                                <span>—</span>
+                                                                @if($masihKuliah)
+                                                                    <span class="text-blue-600 dark:text-blue-400 font-medium"
+                                                                        data-translate="edu_now" data-translate-page="portofolio_user">
+                                                                        Sekarang
+                                                                    </span>
+                                                                @else
+                                                                    <span>{{ $pend['tahun_lulus'] ?? '-' }}</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-10 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                                <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.083 0 01.665-6.479L12 14z" />
+                                </svg>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic"
+                                    data-translate="edu_empty" data-translate-page="portofolio_user">
+                                    Belum ada riwayat pendidikan
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- ==================== PENGALAMAN KERJA ==================== --}}
+                    @php
+                        $pengalamanList = $user->pengalaman_kerja ?? [];
+                    @endphp
+
+                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span data-translate="exp_title" data-translate-page="portofolio_user">Pengalaman</span>
+                            </h3>
+                            @if(!empty($pengalamanList))
+                                <span class="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+                                    {{ count($pengalamanList) }} <span data-translate="exp_count" data-translate-page="portofolio_user">pengalaman</span>
+                                </span>
+                            @endif
+                        </div>
+
+                        @if(!empty($pengalamanList))
+                            <div class="relative">
+                                {{-- Timeline line --}}
+                                <div class="absolute left-5 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" style="margin-left: 1px;"></div>
+
+                                <div class="space-y-0">
+                                    @foreach($pengalamanList as $index => $pkj)
+                                        @php
+                                            $isLast = $index === count($pengalamanList) - 1;
+                                            $masihBekerja = !empty($pkj['masih_bekerja']) && $pkj['masih_bekerja'];
+
+                                            $tahunMulai = $pkj['tahun_mulai'] ?? null;
+                                            $tahunAkhir = $masihBekerja ? date('Y') : ($pkj['tahun_akhir'] ?? null);
+
+                                            // Hitung selisih tahun saja, teks durasi di-render di blade agar bisa data-translate
+                                            $selisihTahun = null;
+                                            if ($tahunMulai && $tahunAkhir) {
+                                                $selisihTahun = (int)$tahunAkhir - (int)$tahunMulai;
+                                            }
+                                        @endphp
+
+                                        <div class="relative flex gap-4 sm:gap-5 pb-{{ $isLast ? '0' : '6' }}">
+                                            {{-- Timeline dot --}}
+                                            <div class="flex-shrink-0 relative z-10">
+                                                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border-2 {{ $masihBekerja ? 'border-emerald-500 dark:border-emerald-400' : 'border-gray-300 dark:border-gray-600' }} flex items-center justify-center shadow-sm">
+                                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 {{ $masihBekerja ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+
+                                            {{-- Content --}}
+                                            <div class="flex-1 min-w-0 pb-{{ $isLast ? '2' : '6' }}">
+                                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors duration-200">
+                                                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                                                        <div class="flex-1 min-w-0">
+                                                            {{-- Nama Perusahaan + badge --}}
+                                                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                                                <h4 class="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
+                                                                    {{ $pkj['nama_pt'] ?? '-' }}
+                                                                </h4>
+                                                                @if($masihBekerja)
+                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 whitespace-nowrap"
+                                                                        data-translate="exp_active" data-translate-page="portofolio_user">
+                                                                        Aktif
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+
+                                                            {{-- Posisi --}}
+                                                            <p class="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1.5">
+                                                                {{ $pkj['bagian_kerja'] ?? '-' }}
+                                                            </p>
+
+                                                            {{-- Periode & durasi --}}
+                                                            <div class="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                                                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                </svg>
+                                                                <span>{{ $pkj['tahun_mulai'] ?? '-' }}</span>
+                                                                <span>—</span>
+                                                                @if($masihBekerja)
+                                                                    <span class="text-emerald-600 dark:text-emerald-400 font-medium"
+                                                                        data-translate="exp_now" data-translate-page="portofolio_user">
+                                                                        Saat ini
+                                                                    </span>
+                                                                @else
+                                                                    <span>{{ $pkj['tahun_akhir'] ?? '-' }}</span>
+                                                                @endif
+
+                                                                {{-- Durasi (di-translate per case) --}}
+                                                                @if($selisihTahun !== null)
+                                                                    <span class="text-gray-400 dark:text-gray-500">·</span>
+                                                                    @if($selisihTahun == 0)
+                                                                        <span class="text-gray-400 dark:text-gray-500"
+                                                                            data-translate="exp_dur_less1" data-translate-page="portofolio_user">
+                                                                            Kurang dari 1 tahun
+                                                                        </span>
+                                                                    @elseif($selisihTahun == 1)
+                                                                        <span class="text-gray-400 dark:text-gray-500"
+                                                                            data-translate="exp_dur_1yr" data-translate-page="portofolio_user">
+                                                                            1 tahun
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="text-gray-400 dark:text-gray-500">
+                                                                            {{ $selisihTahun }} <span data-translate="exp_dur_yr" data-translate-page="portofolio_user">tahun</span>
+                                                                        </span>
+                                                                    @endif
+                                                                @endif
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- Sertifikat link --}}
+                                                        @if(!empty($pkj['sertifikat_pendukung']))
+                                                            <div class="flex-shrink-0">
+                                                                <a href="{{ asset('storage/' . $pkj['sertifikat_pendukung']) }}" target="_blank" rel="noopener noreferrer"
+                                                                    class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
+                                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                                    </svg>
+                                                                    <span data-translate="exp_sertif" data-translate-page="portofolio_user">Sertifikat</span>
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-10 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                                <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 italic"
+                                    data-translate="exp_empty" data-translate-page="portofolio_user">
+                                    Belum ada pengalaman kerja
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+
+                    
                     {{-- Keahlian --}}
                     <div class="bg-white rounded-2xl border border-gray-200 dark:border-gray-900 dark:bg-gray-900 shadow-sm p-5">
                         <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-4" data-translate="khl" data-translate-page="portofolio_user">Keahlian</h3>
@@ -215,13 +580,7 @@
                         @endif
                     </div>
 
-                </div>
-                {{-- END SIDEBAR --}}
-
-                {{-- ===== KONTEN UTAMA ===== --}}
-                <div class="lg:col-span-2 space-y-6">
-
-                    {{-- ==================== PROJECTS ==================== --}}
+                      {{-- ==================== PROJECTS ==================== --}}
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
 
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
@@ -546,360 +905,87 @@
                         @endif
                     </div>
 
-                    {{-- ==================== PENGALAMAN KERJA ==================== --}}
-                    @php
-    $pengalamanList = $user->pengalaman_kerja ?? [];
-@endphp
-
-<div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
-    <div class="flex items-center justify-between mb-5">
-        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <span data-translate="exp_title" data-translate-page="portofolio_user">Pengalaman</span>
-        </h3>
-        @if(!empty($pengalamanList))
-            <span class="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
-                {{ count($pengalamanList) }} <span data-translate="exp_count" data-translate-page="portofolio_user">pengalaman</span>
-            </span>
-        @endif
-    </div>
-
-    @if(!empty($pengalamanList))
-        <div class="relative">
-            {{-- Timeline line --}}
-            <div class="absolute left-5 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" style="margin-left: 1px;"></div>
-
-            <div class="space-y-0">
-                @foreach($pengalamanList as $index => $pkj)
-                    @php
-                        $isLast = $index === count($pengalamanList) - 1;
-                        $masihBekerja = !empty($pkj['masih_bekerja']) && $pkj['masih_bekerja'];
-
-                        $tahunMulai = $pkj['tahun_mulai'] ?? null;
-                        $tahunAkhir = $masihBekerja ? date('Y') : ($pkj['tahun_akhir'] ?? null);
-
-                        // Hitung selisih tahun saja, teks durasi di-render di blade agar bisa data-translate
-                        $selisihTahun = null;
-                        if ($tahunMulai && $tahunAkhir) {
-                            $selisihTahun = (int)$tahunAkhir - (int)$tahunMulai;
-                        }
-                    @endphp
-
-                    <div class="relative flex gap-4 sm:gap-5 pb-{{ $isLast ? '0' : '6' }}">
-                        {{-- Timeline dot --}}
-                        <div class="flex-shrink-0 relative z-10">
-                            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border-2 {{ $masihBekerja ? 'border-emerald-500 dark:border-emerald-400' : 'border-gray-300 dark:border-gray-600' }} flex items-center justify-center shadow-sm">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 {{ $masihBekerja ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        {{-- Content --}}
-                        <div class="flex-1 min-w-0 pb-{{ $isLast ? '2' : '6' }}">
-                            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors duration-200">
-                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                                    <div class="flex-1 min-w-0">
-                                        {{-- Nama Perusahaan + badge --}}
-                                        <div class="flex flex-wrap items-center gap-2 mb-1">
-                                            <h4 class="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
-                                                {{ $pkj['nama_pt'] ?? '-' }}
-                                            </h4>
-                                            @if($masihBekerja)
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 whitespace-nowrap"
-                                                    data-translate="exp_active" data-translate-page="portofolio_user">
-                                                    Aktif
-                                                </span>
-                                            @endif
-                                        </div>
-
-                                        {{-- Posisi --}}
-                                        <p class="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1.5">
-                                            {{ $pkj['bagian_kerja'] ?? '-' }}
-                                        </p>
-
-                                        {{-- Periode & durasi --}}
-                                        <div class="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-                                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span>{{ $pkj['tahun_mulai'] ?? '-' }}</span>
-                                            <span>—</span>
-                                            @if($masihBekerja)
-                                                <span class="text-emerald-600 dark:text-emerald-400 font-medium"
-                                                    data-translate="exp_now" data-translate-page="portofolio_user">
-                                                    Saat ini
-                                                </span>
-                                            @else
-                                                <span>{{ $pkj['tahun_akhir'] ?? '-' }}</span>
-                                            @endif
-
-                                            {{-- Durasi (di-translate per case) --}}
-                                            @if($selisihTahun !== null)
-                                                <span class="text-gray-400 dark:text-gray-500">·</span>
-                                                @if($selisihTahun == 0)
-                                                    <span class="text-gray-400 dark:text-gray-500"
-                                                        data-translate="exp_dur_less1" data-translate-page="portofolio_user">
-                                                        Kurang dari 1 tahun
-                                                    </span>
-                                                @elseif($selisihTahun == 1)
-                                                    <span class="text-gray-400 dark:text-gray-500"
-                                                        data-translate="exp_dur_1yr" data-translate-page="portofolio_user">
-                                                        1 tahun
-                                                    </span>
-                                                @else
-                                                    <span class="text-gray-400 dark:text-gray-500">
-                                                        {{ $selisihTahun }} <span data-translate="exp_dur_yr" data-translate-page="portofolio_user">tahun</span>
-                                                    </span>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    {{-- Sertifikat link --}}
-                                    @if(!empty($pkj['sertifikat_pendukung']))
-                                        <div class="flex-shrink-0">
-                                            <a href="{{ asset('storage/' . $pkj['sertifikat_pendukung']) }}" target="_blank" rel="noopener noreferrer"
-                                                class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                                                </svg>
-                                                <span data-translate="exp_sertif" data-translate-page="portofolio_user">Sertifikat</span>
-                                            </a>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @else
-        <div class="text-center py-10 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
-            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400 italic"
-                data-translate="exp_empty" data-translate-page="portofolio_user">
-                Belum ada pengalaman kerja
-            </p>
-        </div>
-    @endif
-</div>
-                    {{-- ==================== PENDIDIKAN ==================== --}}
-                    @php
-                        $pendidikanList = $user->pendidikan ?? [];
-                        $jenjangIcons = [
-                            'S1' => '🎓', 'S2' => '🎓', 'S3' => '🎓',
-                            'D1' => '📚', 'D2' => '📚', 'D3' => '📚', 'D4' => '📚',
-                            'SMA/SMK' => '🏫', 'SMP' => '🏫', 'SD' => '🏫',
-                            'Kursus/Pelatihan' => '📖',
-                        ];
-                    @endphp
-
+                    
+                    {{-- ==================== LEARNING CORNERS ==================== --}}
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
-                        <div class="flex items-center justify-between mb-5">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.083 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                                </svg>
-                                <span data-translate="edu_title" data-translate-page="portofolio_user">Pendidikan</span>
-                            </h3>
-                            @if(!empty($pendidikanList))
-                                <span class="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                                    {{ count($pendidikanList) }} <span data-translate="edu_count" data-translate-page="portofolio_user">riwayat</span>
-                                </span>
-                            @endif
+                        <div class="flex justify-between items-center mb-5">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Learning Corners</h3>
+                            <span class="text-sm text-indigo-600 dark:text-indigo-400">{{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="portofolio_user">catatan</span></span>
                         </div>
 
-                        @if(!empty($pendidikanList))
-                            <div class="relative">
-                                {{-- Timeline line --}}
-                                <div class="absolute left-5 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" style="margin-left: 1px;"></div>
-
-                                <div class="space-y-0">
-                                    @foreach($pendidikanList as $index => $pend)
-                                        @php
-                                            $isLast = $index === count($pendidikanList) - 1;
-                                            $masihKuliah = !empty($pend['masih_kuliah']) && $pend['masih_kuliah'];
-                                            $icon = $jenjangIcons[$pend['jenjang'] ?? ''] ?? '🏛️';
-                                        @endphp
-
-                                        <div class="relative flex gap-4 sm:gap-5 pb-{{ $isLast ? '0' : '6' }}">
-                                            {{-- Timeline dot --}}
-                                            <div class="flex-shrink-0 relative z-10">
-                                                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-50 dark:bg-blue-900/20 border-2 {{ $masihKuliah ? 'border-blue-500 dark:border-blue-400' : 'border-gray-300 dark:border-gray-600' }} flex items-center justify-center shadow-sm text-xl">
-                                                    {{ $icon }}
-                                                </div>
-                                            </div>
-
-                                            {{-- Content --}}
-                                            <div class="flex-1 min-w-0 pb-{{ $isLast ? '2' : '6' }}">
-                                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors duration-200">
-                                                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                                                        <div class="flex-1 min-w-0">
-                                                            {{-- Nama sekolah + badge --}}
-                                                            <div class="flex flex-wrap items-center gap-2 mb-1">
-                                                                <h4 class="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
-                                                                    {{ $pend['nama_sekolah'] ?? '-' }}
-                                                                </h4>
-                                                                @if($masihKuliah)
-                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap"
-                                                                        data-translate="edu_active" data-translate-page="portofolio_user">
-                                                                        Aktif
-                                                                    </span>
-                                                                @endif
-                                                            </div>
-
-                                                            {{-- Jenjang + Jurusan --}}
-                                                            <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
-                                                                @if(!empty($pend['jenjang']))
-                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300">
-                                                                        {{ $pend['jenjang'] }}
-                                                                    </span>
-                                                                @endif
-                                                                @if(!empty($pend['jurusan_sek']))
-                                                                    <span class="text-sm text-gray-600 dark:text-gray-300">
-                                                                        {{ $pend['jurusan_sek'] }}
-                                                                    </span>
-                                                                @endif
-                                                            </div>
-
-                                                            {{-- Periode --}}
-                                                            <div class="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-                                                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                                </svg>
-                                                                <span data-translate="edu_enter" data-translate-page="portofolio_user">Masuk</span>:
-                                                                <span>{{ $pend['tahun_masuk'] ?? '-' }}</span>
-                                                                <span>—</span>
-                                                                @if($masihKuliah)
-                                                                    <span class="text-blue-600 dark:text-blue-400 font-medium"
-                                                                        data-translate="edu_now" data-translate-page="portofolio_user">
-                                                                        Sekarang
-                                                                    </span>
-                                                                @else
-                                                                    <span>{{ $pend['tahun_lulus'] ?? '-' }}</span>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @else
-                            <div class="text-center py-10 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
-                                <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.083 0 01.665-6.479L12 14z" />
-                                </svg>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 italic"
-                                    data-translate="edu_empty" data-translate-page="portofolio_user">
-                                    Belum ada riwayat pendidikan
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- ==================== POSTINGAN ==================== --}}
-                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
-                                </svg>
-                                Postingannya
-                            </h3>
-                            <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">
-                                {{ $postingans->total() ?? 0 }} postingan
-                            </span>
-                        </div>
-
-                        @if($postingans->isEmpty())
-                            <div class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p class="mt-3 text-gray-500 dark:text-gray-400" data-translate="post_empty" data-translate-page="portofolio_user">
-                                    Belum ada postingan yang dibuat.
-                                </p>
-                            </div>
-                        @else
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                @foreach($postingans as $post)
-                                    @php
-                                        $content = $post->content ?? [];
-                                        $title = '';
-                                        $deskripsi = '';
-                                        $items = [];
-
-                                        if (is_array($content)) {
-                                            foreach ($content as $item) {
-                                                if (isset($item['type']) && $item['type'] === 'title') {
-                                                    $title = $item['content'] ?? '';
-                                                } elseif (isset($item['type']) && $item['type'] === 'description') {
-                                                    $deskripsi = $item['content'] ?? '';
+                        @if($user->learning_corners->isNotEmpty())
+                            <div class="space-y-6">
+                                @foreach($user->learning_corners as $entry)
+                                    <div class="border border-gray-100 dark:border-gray-700 dark:text-gray-100 rounded-xl p-5 hover:shadow-md transition">
+                                        <div class="space-y-4">
+                                            @php
+                                                $rawContent = $entry->content ?? [];
+                                                if (is_string($rawContent) && !empty($rawContent)) {
+                                                    $items = json_decode($rawContent, true) ?? [];
                                                 } else {
-                                                    $items[] = $item;
+                                                    $items = is_array($rawContent) ? $rawContent : [];
                                                 }
-                                            }
-                                        }
-                                    @endphp
+                                            @endphp
 
-                                    <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-200 group">
-                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
-                                            @if(!empty($items))
+                                            @if(!empty($items) && is_array($items))
                                                 @foreach($items as $item)
-                                                    @if(isset($item['type']) && $item['type'] === 'image' && !empty($item['content']))
-                                                        <img src="{{ asset('storage/' . $item['content']) }}"
-                                                             alt="Preview postingan"
-                                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                             onerror="this.src='https://via.placeholder.com/600x400?text=Postingan'">
-                                                        @break
+                                                    @if(($item['type'] ?? '') === 'title')
+                                                        <h4 class="text-base font-bold text-gray-900 dark:text-gray-100">
+                                                            {{ $item['content'] ?? 'Judul tidak tersedia' }}
+                                                        </h4>
+                                                    @elseif(($item['type'] ?? '') === 'text')
+                                                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                                            {{ $item['content'] ?? '' }}
+                                                        </p>
+                                                    @elseif(($item['type'] ?? '') === 'image' && !empty($item['content']))
+                                                        <div class="my-3">
+                                                            <img id="logo-zoom" src="{{ asset('storage/' . $item['content']) }}" alt="Gambar learning corner"
+                                                                class="cursor-pointer w-30 rounded-lg shadow-sm object-cover max-h-[500px]" loading="lazy"
+                                                                onerror="this.src='https://st4.depositphotos.com/17828278/24401/v/450/depositphotos_244011872-stock-illustration-image-vector-symbol-missing-available.jpg'">
+                                                        </div>
+                                                    @elseif(($item['type'] ?? '') === 'link' && !empty($item['content']))
+                                                        <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
+                                                            class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                                            </svg>
+                                                            {{ $item['text'] ?? $item['content'] }}
+                                                        </a>
                                                     @endif
                                                 @endforeach
                                             @else
-                                                <div class="w-full h-full flex items-center justify-center">
-                                                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        <div class="p-5">
-                                            @if($title)
-                                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-2 group-hover:text-purple-600 transition-colors">
-                                                    {{ $title }}
-                                                </h4>
-                                            @endif
-
-                                            @if($deskripsi)
-                                                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
-                                                    {{ Str::limit($deskripsi, 130) }}
+                                                <p class="text-sm text-gray-600 italic" data-translate="empty_content" data-translate-page="portofolio_user">
+                                                    Tidak ada konten yang dapat ditampilkan
                                                 </p>
                                             @endif
 
-                                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                                                <span>{{ $post->created_at?->format('d M Y') }}</span>
-                                                <a href="{{ route('postingan.show', ['id' => $post->id_postingan]) }}"
-                                                   class="text-purple-600 hover:text-purple-700 dark:text-purple-400 font-medium flex items-center gap-1">
-                                                    Baca selengkapnya
-                                                    <span class="text-lg leading-none">→</span>
-                                                </a>
-                                            </div>
+                                            @if($entry->project)
+                                                <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                        <span data-translate="lrn_origin" data-translate-page="portofolio_user">Dari project:</span>
+                                                        <a href="{{ route('project.show', ['id' => $entry->project->id]) }}" class="text-indigo-600 hover:underline">
+                                                            {{ $entry->project->isi_content['nama_project'] ?? 'Project' }}
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            @endif
+
+                                            <p class="text-xs dark:text-gray-200 text-gray-500 mt-3">
+                                                {{ $entry->created_at?->format('d M Y H:i') }}
+                                            </p>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
+                        @else
+                            <p class="text-sm text-center text-gray-500 italic" data-translate="empty_lrn" data-translate-page="portofolio_user">
+                                Belum ada catatan learning corner
+                            </p>
+                        @endif
 
-                            <div class="mt-8 flex justify-center">
-                                {{ $postingans->appends(request()->query())->links() }}
+                        @if(method_exists($user->learning_corners, 'hasPages') && $user->learning_corners->hasPages())
+                            <div class="mt-4">
+                                {!! $user->learning_corners->render('vendor.pagination.custom_ajax', ['groupName' => 'user_learning_corners']) !!}
                             </div>
                         @endif
                     </div>
@@ -995,90 +1081,6 @@
                         @if(method_exists($user->sertifikats, 'hasPages') && $user->sertifikats->hasPages())
                             <div class="mt-4">
                                 {!! $user->sertifikats->render('vendor.pagination.custom_ajax', ['groupName' => 'user_sertifikats']) !!}
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- ==================== LEARNING CORNERS ==================== --}}
-                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
-                        <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Learning Corners</h3>
-                            <span class="text-sm text-indigo-600 dark:text-indigo-400">{{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="portofolio_user">catatan</span></span>
-                        </div>
-
-                        @if($user->learning_corners->isNotEmpty())
-                            <div class="space-y-6">
-                                @foreach($user->learning_corners as $entry)
-                                    <div class="border border-gray-100 dark:border-gray-700 dark:text-gray-100 rounded-xl p-5 hover:shadow-md transition">
-                                        <div class="space-y-4">
-                                            @php
-                                                $rawContent = $entry->content ?? [];
-                                                if (is_string($rawContent) && !empty($rawContent)) {
-                                                    $items = json_decode($rawContent, true) ?? [];
-                                                } else {
-                                                    $items = is_array($rawContent) ? $rawContent : [];
-                                                }
-                                            @endphp
-
-                                            @if(!empty($items) && is_array($items))
-                                                @foreach($items as $item)
-                                                    @if(($item['type'] ?? '') === 'title')
-                                                        <h4 class="text-base font-bold text-gray-900 dark:text-gray-100">
-                                                            {{ $item['content'] ?? 'Judul tidak tersedia' }}
-                                                        </h4>
-                                                    @elseif(($item['type'] ?? '') === 'text')
-                                                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                                                            {{ $item['content'] ?? '' }}
-                                                        </p>
-                                                    @elseif(($item['type'] ?? '') === 'image' && !empty($item['content']))
-                                                        <div class="my-3">
-                                                            <img id="logo-zoom" src="{{ asset('storage/' . $item['content']) }}" alt="Gambar learning corner"
-                                                                class="cursor-pointer w-30 rounded-lg shadow-sm object-cover max-h-[500px]" loading="lazy"
-                                                                onerror="this.src='https://st4.depositphotos.com/17828278/24401/v/450/depositphotos_244011872-stock-illustration-image-vector-symbol-missing-available.jpg'">
-                                                        </div>
-                                                    @elseif(($item['type'] ?? '') === 'link' && !empty($item['content']))
-                                                        <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
-                                                            class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                                            </svg>
-                                                            {{ $item['text'] ?? $item['content'] }}
-                                                        </a>
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                                <p class="text-sm text-gray-600 italic" data-translate="empty_content" data-translate-page="portofolio_user">
-                                                    Tidak ada konten yang dapat ditampilkan
-                                                </p>
-                                            @endif
-
-                                            @if($entry->project)
-                                                <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                        <span data-translate="lrn_origin" data-translate-page="portofolio_user">Dari project:</span>
-                                                        <a href="{{ route('project.show', ['id' => $entry->project->id]) }}" class="text-indigo-600 hover:underline">
-                                                            {{ $entry->project->isi_content['nama_project'] ?? 'Project' }}
-                                                        </a>
-                                                    </p>
-                                                </div>
-                                            @endif
-
-                                            <p class="text-xs dark:text-gray-200 text-gray-500 mt-3">
-                                                {{ $entry->created_at?->format('d M Y H:i') }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <p class="text-sm text-center text-gray-500 italic" data-translate="empty_lrn" data-translate-page="portofolio_user">
-                                Belum ada catatan learning corner
-                            </p>
-                        @endif
-
-                        @if(method_exists($user->learning_corners, 'hasPages') && $user->learning_corners->hasPages())
-                            <div class="mt-4">
-                                {!! $user->learning_corners->render('vendor.pagination.custom_ajax', ['groupName' => 'user_learning_corners']) !!}
                             </div>
                         @endif
                     </div>

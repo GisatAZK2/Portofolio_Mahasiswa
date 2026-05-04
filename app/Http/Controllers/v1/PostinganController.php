@@ -120,6 +120,7 @@ class PostinganController extends Controller
         $postingan = Postingan::with(['user', 'komentar.user', 'likes'])
             ->where('id_postingan', $id)
             ->firstOrFail();
+        
 
         return view('postingan.views_detail_postingan', compact('postingan'));
     }
