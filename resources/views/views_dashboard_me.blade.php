@@ -577,7 +577,7 @@
                     <div id="total-lrn-wrapper" class="hidden">
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Semua Learning Corner</h3>
+                                <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">{{autotranslate("Semua Learning Corner")}}</h3>
                                 <span class="text-purple-500">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
@@ -669,27 +669,27 @@
                             <svg class="btn-photo-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            Foto
+                            {{autotranslate("Foto")}} 
                         </button>
                         <button class="post-action-btn btn-article" onclick="cpOpenModal('cpModalArtikel')">
                             <svg class="btn-article-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
-                            Tulis artikel
+                            {{autotranslate("Tulis Artikel")}} 
                         </button>
                     </div>
                 </div>
 
                 <!-- Konten Saya Title -->
                 <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Konten Saya</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{autotranslate("Konten Saya")}}</h2>
                 </div>
 
                 <!-- Postingan Sendiri -->
                 <div id="postingan-section" class="feed-section mb-10">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
-                        <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">Postingan Anda</h3>
+                        <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">{{autotranslate("Postingan Anda")}} </h3>
                     </div>
 
                     <div id="postingan-skeleton" class="space-y-6">
@@ -717,7 +717,7 @@
                     <div class="hidden" id="postingan-content-wrapper">
                         @if($postinganTerbaru->isEmpty())
                             <div class="text-center py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada postingan mahasiswa</p>
+                                <p class="text-gray-500 dark:text-gray-400">{{autotranslate("Belum ada postingan mahasiswa")}}</p>
                             </div>
                         @else
                             <div id="postingan-container" class="space-y-6">
@@ -868,7 +868,7 @@
                                                 </button>
                                             </div>
                                             <span onclick="window.location.href='{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}'"
-                                                  class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">Lihat detail →</span>
+                                                  class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600"><span>{{ autoTranslate('Lihat detail') }}</span> →</span>
                                         </div>
 
                                         <!-- Comment Section (AJAX-powered, same as file-1) -->
@@ -922,7 +922,7 @@
                 <div id="projects-section" class="mb-10">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
-                        <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300">Project</h3>
+                        <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300">{{autotranslate("Project")}} </h3>
                     </div>
                     <div id="project-skeleton" class="space-y-4">
                         @for($i = 0; $i < 2; $i++)
@@ -942,7 +942,7 @@
                                 <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                                 </svg>
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada Project</p>
+                                <p class="text-gray-500 dark:text-gray-400">{{autotranslate("Belum Ada Project")}}</p>
                             </div>
                         @else
                             <div data-pagination-group="project">
@@ -963,7 +963,7 @@
                 <div id="sertifikat-section" class="mb-10">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-green-600 rounded-full"></div>
-                        <h3 class="text-lg font-semibold text-green-700 dark:text-green-300">Sertifikat</h3>
+                        <h3 class="text-lg font-semibold text-green-700 dark:text-green-300">{{autotranslate("Sertifikat")}}</h3>
                     </div>
                     <div id="sertifikat-skeleton" class="space-y-4">
                         @for($i = 0; $i < 2; $i++)
@@ -982,7 +982,7 @@
                                 <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
                                 </svg>
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada Sertifikat</p>
+                                <p class="text-gray-500 dark:text-gray-400">{{autotranslate("Belum Ada Sertifikat")}}</p>
                             </div>
                         @else
                             <div data-pagination-group="sertifikat">
@@ -1001,7 +1001,7 @@
 
                 <!-- Timestamp -->
                 <div class="text-center text-gray-500 dark:text-gray-400 text-sm mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    Terakhir diperbarui {{ now()->format('d F Y H:i') }}
+                    <span>{{autotranslate("Terakhir diperbarui")}}</span> {{ now()->format('d F Y H:i') }}
                 </div>
             </div>
 
@@ -1012,7 +1012,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
-                        <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300">Learning Corner</h3>
+                        <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300">{{autotranslate("Learning Corner")}}</h3>
                     </div>
                     <div id="learning-skeleton-sidebar" class="space-y-4">
                         @for($i = 0; $i < 3; $i++)
@@ -1025,7 +1025,7 @@
                     <div id="learning-content-wrapper-sidebar" class="hidden">
                         @if($learningCorners->isEmpty())
                             <div class="text-center py-8">
-                                <p class="text-gray-500 dark:text-gray-400">Belum ada Learning Corner</p>
+                                <p class="text-gray-500 dark:text-gray-400">{{autotranslate("Belum Ada Learning Corner")}}</p>
                             </div>
                         @else
                             <div id="learning-corner-list" class="space-y-4">
@@ -1060,10 +1060,10 @@
                     <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                     </svg>
-                    Postingan Baru
+                    {{autotranslate("Postingan Baru")}}
                 </div>
-                <h2 class="cp-modal-title">Buat postingan baru</h2>
-                <p class="cp-modal-sub">Bagikan pemikiran, cerita, atau pengalaman Anda</p>
+                <h2 class="cp-modal-title">{{autotranslate("Buat Postingan Baru")}}</h2>
+                <p class="cp-modal-sub">{{autotranslate("Bagikan pemikiran, cerita, atau pengalaman Anda")}}</p>
             </div>
             <button class="cp-close-btn" onclick="cpCloseModal('cpModalPost')">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -1075,33 +1075,33 @@
             <form method="POST" action="{{ route('postingan.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="cp-field">
-                    <label class="cp-label">Judul Postingan <span class="cp-req">*</span></label>
+                    <label class="cp-label">{{autotranslate("Judul Postingan")}} <span class="cp-req">*</span></label>
                     <input type="text" name="judul" value="{{ old('judul') }}"
                            placeholder="Judul postingan Anda..."
                            class="cp-input">
                     @error('judul')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
                 <div class="cp-field">
-                    <label class="cp-label">Deskripsi <span class="cp-opt">(opsional)</span></label>
+                    <label class="cp-label">{{autotranslate("Deskripsi")}} <span class="cp-opt">(opsional)</span></label>
                     <textarea name="deskripsi" class="cp-textarea" rows="4"
                               placeholder="Apa yang ingin Anda bagikan?">{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
                 <div class="cp-extra-section">
                     <div class="cp-extra-header">
-                        <span class="cp-extra-title">Konten tambahan <span class="cp-opt">(opsional)</span></span>
+                        <span class="cp-extra-title">{{autotranslate("Konten Tambahan")}} <span class="cp-opt">(opsional)</span></span>
                         <button type="button" id="cp-add-item-post" class="cp-add-item-btn">
                             <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
-                            Tambah item
+                            {{autotranslate("Tambah Item")}}
                         </button>
                     </div>
                     <div id="cp-items-post"></div>
                 </div>
                 <div class="cp-modal-footer" style="padding-left:0;padding-right:0;border-top:none;margin-top:1rem;">
-                    <button type="button" class="cp-btn-cancel" onclick="cpCloseModal('cpModalPost')">Batal</button>
-                    <button type="submit" class="cp-btn-submit submit-post">Buat postingan</button>
+                    <button type="button" class="cp-btn-cancel" onclick="cpCloseModal('cpModalPost')">{{autotranslate("Batal")}}</button>
+                    <button type="submit" class="cp-btn-submit submit-post">{{autotranslate("Buat Postingan")}}</button>
                 </div>
             </form>
         </div>
@@ -1119,10 +1119,10 @@
                     <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
-                    Postingan Foto
+                    {{autotranslate("Postingan Foto")}}
                 </div>
-                <h2 class="cp-modal-title">Bagikan foto</h2>
-                <p class="cp-modal-sub">Unggah gambar untuk postingan Anda</p>
+                <h2 class="cp-modal-title">{{autotranslate("Bagikan Foto")}}</h2>
+                <p class="cp-modal-sub">{{autotranslate("Unggah Gambar Untuk Postingan Anda")}}</p>
             </div>
             <button class="cp-close-btn" onclick="cpCloseModal('cpModalPhoto')">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -1136,20 +1136,20 @@
                 <input type="hidden" name="post_type" value="photo">
                 <input type="hidden" name="items[0][type]" value="image">
                 <div class="cp-field">
-                    <label class="cp-label">Judul <span class="cp-req">*</span></label>
+                    <label class="cp-label">{{autotranslate("Judul")}} <span class="cp-req">*</span></label>
                     <input type="text" name="judul" placeholder="Judul postingan foto..." class="cp-input">
                 </div>
                 <div class="cp-field">
-                    <label class="cp-label">Deskripsi <span class="cp-opt">(opsional)</span></label>
+                    <label class="cp-label">{{autotranslate("Deskripsi")}} <span class="cp-opt">(opsional)</span></label>
                     <textarea name="deskripsi" class="cp-textarea" rows="3" placeholder="Ceritakan tentang foto ini..."></textarea>
                 </div>
                 <div class="cp-field">
-                    <label class="cp-label">Upload Foto <span class="cp-req">*</span></label>
+                    <label class="cp-label">{{autotranslate("Upload Foto")}} <span class="cp-req">*</span></label>
                     <label class="cp-upload-label" for="cp-file-photo">
                         <svg class="cp-upload-icon w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                         </svg>
-                        <p class="cp-upload-main">Klik untuk pilih foto</p>
+                        <p class="cp-upload-main">{{autotranslate("Klik untuk pilih foto")}}</p>
                         <p class="cp-upload-hint">JPG, PNG, GIF, WEBP — maks 5MB</p>
                     </label>
                     <input type="file" id="cp-file-photo" name="items[0][file]" accept="image/*"
@@ -1161,8 +1161,8 @@
                     </div>
                 </div>
                 <div class="cp-modal-footer" style="padding-left:0;padding-right:0;border-top:none;margin-top:1rem;">
-                    <button type="button" class="cp-btn-cancel" onclick="cpCloseModal('cpModalPhoto')">Batal</button>
-                    <button type="submit" class="cp-btn-submit submit-photo">Posting foto</button>
+                    <button type="button" class="cp-btn-cancel" onclick="cpCloseModal('cpModalPhoto')">{{autotranslate("Batal")}}</button>
+                    <button type="submit" class="cp-btn-submit submit-photo">{{autotranslate("Posting Foto")}}</button>
                 </div>
             </form>
         </div>
@@ -1180,10 +1180,10 @@
                     <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
-                    Artikel
+                    {{autotranslate("Artikel")}}
                 </div>
-                <h2 class="cp-modal-title">Tulis artikel</h2>
-                <p class="cp-modal-sub">Buat konten panjang yang informatif</p>
+                <h2 class="cp-modal-title">{{autotranslate("Tulis Artikel")}}</h2>
+                <p class="cp-modal-sub">{{autotranslate("Buat konten panjang yang informatif")}}</p>
             </div>
             <button class="cp-close-btn" onclick="cpCloseModal('cpModalArtikel')">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -1196,26 +1196,26 @@
                 @csrf
                 <input type="hidden" name="post_type" value="article">
                 <div class="cp-field">
-                    <label class="cp-label">Judul Artikel <span class="cp-req">*</span></label>
+                    <label class="cp-label">{{autotranslate("Judul")}} <span class="cp-req">*</span></label>
                     <input type="text" name="judul" placeholder="Judul artikel Anda..." class="cp-input">
                 </div>
                 <div class="cp-field">
-                    <label class="cp-label">Deskripsi <span class="cp-opt">(opsional)</span></label>
+                    <label class="cp-label">{{autotranslate("Deskripsi")}} <span class="cp-opt">(opsional)</span></label>
                     <textarea name="deskripsi" class="cp-textarea" rows="4"
                               placeholder="Tuliskan ringkasan atau isi artikel..."></textarea>
                 </div>
                 <div class="cp-field">
-                    <label class="cp-label">Link / Referensi <span class="cp-opt">(opsional)</span></label>
+                    <label class="cp-label">{{autotranslate("Link / Referensi")}} <span class="cp-opt">(opsional)</span></label>
                     <div class="cp-link-wrap">
                         <span class="cp-link-prefix">https://</span>
                         <input type="text" name="items[0][content]" class="cp-link-field" placeholder="contoh.com/artikel-saya">
                     </div>
                     <input type="hidden" name="items[0][type]" value="link">
-                    <p class="cp-link-hint">Sertakan sumber referensi artikel jika ada</p>
+                    <p class="cp-link-hint">{{autotranslate("Sertakan sumber referensi artikel jika ada")}} </p>
                 </div>
                 <div class="cp-modal-footer" style="padding-left:0;padding-right:0;border-top:none;margin-top:1rem;">
-                    <button type="button" class="cp-btn-cancel" onclick="cpCloseModal('cpModalArtikel')">Batal</button>
-                    <button type="submit" class="cp-btn-submit submit-article">Buat artikel</button>
+                    <button type="button" class="cp-btn-cancel" onclick="cpCloseModal('cpModalArtikel')">{{autotranslate("Batal")}} </button>
+                    <button type="submit" class="cp-btn-submit submit-article">{{autotranslate("Buat Artikel")}} </button>
                 </div>
             </form>
         </div>
@@ -1849,12 +1849,13 @@ window.addEventListener('load', function () {
 // Typing animation for create-post trigger
 // =============================================
 (function () {
-    const phrases = [
-        'Apa yang ingin Anda bagikan hari ini?',
-        'Bagikan pengalaman terbaru Anda...',
-        'Ceritakan sesuatu yang menarik...',
-        'Tulis postingan baru sekarang...'
-    ];
+   const phrases = [
+    "{{ autoTranslate('Apa yang ingin Anda bagikan hari ini?') }}",
+    "{{ autoTranslate('Bagikan pengalaman terbaru Anda...') }}",
+    "{{ autoTranslate('Ceritakan sesuatu yang menarik...') }}",
+    "{{ autoTranslate('Tulis postingan baru sekarang...') }}"
+];
+
     let pIdx = 0, cIdx = 0, deleting = false;
     const el = document.getElementById('cp-typed-text');
     if (!el) return;
