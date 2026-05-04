@@ -343,7 +343,7 @@
                                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 post-card relative" 
                                             data-post-title="{{ strtolower($postTitle) }}" 
                                             data-post-description="{{ strtolower($postDescription) }}" 
-                                            data-post-author="{{ strtolower($post->user->nama_mahasiswa ?? '') }}" 
+                                            data-post-author="{{ strtolower($post->user->nama_mahasiswa ?? '') }} " 
                                             data-post-id="{{ $post->id_postingan }}"
                                             data-share-url="{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}">
                                             
@@ -358,7 +358,7 @@
                                                             </div>
                                                         @endif
                                                         <div>
-                                                            <h4 class="font-semibold text-lg text-gray-900 dark:text-gray-100">{{ autoTranslate($post->user->nama_mahasiswa) }}</h4>
+                                                            <h4 class="font-semibold text-lg text-gray-900 dark:text-gray-100">{{ $post->user->nama_mahasiswa }}</h4>
                                                             <div class="flex flex-wrap gap-2 mt-1">
                                                                 @if(!empty($post->user->jurusan))
                                                                     <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">{{ $post->user->jurusan['nama_jurusan'] ?? '-' }}</span>

@@ -944,12 +944,12 @@
                                                                 onerror="this.src='https://st4.depositphotos.com/17828278/24401/v/450/depositphotos_244011872-stock-illustration-image-vector-symbol-missing-available.jpg'">
                                                         </div>
                                                     @elseif(($item['type'] ?? '') === 'link' && !empty($item['content']))
-                                                        <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
-                                                            class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                       <a href="{{ $item['content'] }}" target="_blank" rel="noopener noreferrer"
+                                                            class="inline-flex items-start text-sm text-blue-600 hover:text-blue-800 hover:underline break-all">
+                                                            <svg class="w-4 h-4 mr-1.5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                                             </svg>
-                                                            {{ $item['text'] ?? $item['content'] }}
+                                                            <span class="break-all">{{ $item['text'] ?? $item['content'] }}</span>
                                                         </a>
                                                     @endif
                                                 @endforeach
@@ -1084,6 +1084,8 @@
                             </div>
                         @endif
                     </div>
+
+                    
 
                 </div>
                 {{-- END KONTEN UTAMA --}}

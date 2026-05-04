@@ -104,7 +104,10 @@
                 </div>
             </main>
 
-            @include('components.footer')
+            <div class ="hidden md:block">
+                 @include('components.footer')
+            </div>
+
             @include('components.navigation_mahasiswa_mobile')
             @include('components.up-page')
             @include('components.chat-bot')
@@ -178,7 +181,7 @@
                     }
                 });
             }
-
+            /*
             function deteksiJaringan() {
                 if (navigator.onLine) {
                     console.log("Status: Online");
@@ -193,6 +196,7 @@
             deteksiJaringan();
             window.addEventListener('online', () => console.log("Kembali Online"));
             window.addEventListener('offline', deteksiJaringan);
+            */
 
             document.addEventListener('click', (e) => {
                 if (!searchDrop || !toggleSearch) return;

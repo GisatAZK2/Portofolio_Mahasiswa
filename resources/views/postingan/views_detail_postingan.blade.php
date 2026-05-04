@@ -179,18 +179,17 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->user->id_posti
                             @endif
                         </div>
                         <div>
-                            <div>
-                                <div class="gap-2 mt-1 mb-1">
-                                    <a href="{{ route('portfolio.show', ['user' => $postingan->user->username]) }}"
+                            <div class="flex flex-wrap gap-2 mt-1">
+				<a href="{{ route('portfolio.show', ['user' => $postingan->user->username]) }}"
                                                     class="font-bold text-gray-900 dark:text-gray-100 text-lg hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $postingan->user->nama_mahasiswa }}</a>
-                                    @if(!empty($postingan->user->jurusan))
-                                        <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">{{ $postingan->user->jurusan['nama_jurusan'] ?? '-' }}</span>
-                                    @endif
-                                    @if(!empty($postingan->user->angkatan))
-                                        <span class="text-[14px] px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full">{{ $postingan->user->angkatan['nama_angkatan'] ?? '-' }}</span>
-                                    @endif
-                                </div>
+                                @if(!empty($postingan->user->jurusan))
+                                    <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">{{ $postingan->user->jurusan['nama_jurusan'] ?? '-' }}</span>
+                                @endif
+                                @if(!empty($postingan->user->angkatan))
+                                    <span class="text-[14px] px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full">{{ $postingan->user->angkatan['nama_angkatan'] ?? '-' }}</span>
+                                @endif
                             </div>
+
                             <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>

@@ -70,7 +70,7 @@ class DashboardController extends Controller
             ->select('postingan.*')
             ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
             ->orderBy('postingan.created_at', 'desc')
-            ->paginate(6, ['*'], 'postingan_page');
+            ->paginate(10, ['*'], 'postingan_page');
             
         $projects = Project::with('mahasiswa')
             ->latest()
@@ -344,7 +344,7 @@ class DashboardController extends Controller
 
         $postingans = $user->postingans()
                    ->latest()          
-                   ->paginate(6);
+                   ->paginate(3);
 
         $projectsQuery = Project::with(['owner', 'leader', 'members'])
             ->where(function ($query) use ($user) {
