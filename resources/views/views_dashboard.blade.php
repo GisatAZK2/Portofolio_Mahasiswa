@@ -350,13 +350,23 @@
                                             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                                 <div class="flex items-center gap-3">
                                                     <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}" class="flex items-center gap-3">
-                                                        @if($post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile)))
-                                                            <img src="{{ asset('storage/' . $post->user->photo_profile) }}" class="w-10 h-10 rounded-full object-cover">
+                                                        @php
+                                                            $hasPhoto = $post->user->photo_profile && file_exists(public_path('storage/' . $post->user->photo_profile));
+                                                        @endphp
+
+                                                        @if($hasPhoto)
+                                                            <img src="{{ asset('storage/' . $post->user->photo_profile) }}" 
+                                                                class="w-10 h-10 rounded-full object-cover" 
+                                                                alt="{{ $post->user->username }}">
                                                         @else
-                                                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                                                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm">{{ strtoupper(substr($post->user->nama_mahasiswa ?? 'U', 0, 1)) }}</span>
+                                                            {{-- Jika foto tidak ada, tampilkan Inisial atau Avatar Generator berdasarkan username --}}
+                                                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center overflow-hidden">
+                                                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm">
+                                                                    {{ strtoupper(substr($post->user->nama_mahasiswa ?? 'U', 0, 1)) }}
+                                                                </span>
                                                             </div>
                                                         @endif
+                                                                
                                                         <div>
                                                             <h4 class="font-semibold text-lg text-gray-900 dark:text-gray-100">{{ $post->user->nama_mahasiswa }}</h4>
                                                             <div class="flex flex-wrap gap-2 mt-1">

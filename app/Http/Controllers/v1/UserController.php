@@ -20,8 +20,9 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
+
     // Tampilkan form register Complete (untuk user yang login dengan password sementara)
-    public function showCompleteRegistration()
+    public function shownotCompleteRegistration()
     {
         $tempUserData = session('temp_user_data');
         $userId = session('temp_user_id');
@@ -50,7 +51,7 @@ class UserController extends Controller
     }
 
     // Proses register (normal flow)
-    public function register(Request $request)
+    public function notcompleteregister(Request $request)
     {
         $isCompleting = $request->has('completing_registration') && $request->completing_registration == 'true';
 
@@ -126,6 +127,75 @@ class UserController extends Controller
         $user->load('jurusan', 'angkatan', 'keahlian');
 
         $this->sendNotifications($user);
+
+        return redirect()->route('login')
+            ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');
+    }
+
+    // Tampilkan form registrasi
+       public function showRegister()
+    {
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+        $angkatans = Angkatan::all();
+
+        return view('auth.register', compact('jurusans', 'keahlians', 'angkatans'));
+    }
+
+    public function register(Request $request)
+    {
+        $ipAddress = $request->ip();
+        $userAgent = $request->userAgent();
+        $sessionId = $request->session()->getId();
+
+        $guestIdentifier = md5($ipAddress . $userAgent . $sessionId);
+
+        $registrationCount = Cache::remember("registration_count_{$guestIdentifier}", 3600, function () {
+            return 0;
+        });
+
+        $sessionCount = $request->session()->get('registration_attempts', 0);
+        $totalAttempts = max($registrationCount, $sessionCount);
+
+        if ($totalAttempts >= 3) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Anda telah mencapai batas maksimal 3 kali pengajuan registrasi. Silakan hubungi admin untuk bantuan lebih lanjut.');
+        }
+
+        $validated = $request->validate([
+            'nama_mahasiswa' => ['required', 'string', 'max:100'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+            'username' => ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
+            'id_jurusan' => ['required', 'exists:jurusan,id_jurusan'],
+            'id_keahlian' => ['required', 'exists:keahlian,id_keahlian'],
+            'id_angkatan' => ['required', 'exists:angkatan,id'],
+            'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'nim' => ['required', 'string', 'max:50', 'unique:users,nim'],
+            'tanggal_lahir' => ['required', 'date']
+        ]);
+
+        $validated['role'] = 'mahasiswa';
+
+        if ($request->hasFile('photo_profile')) {
+            $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+        }
+
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['is_active'] = true;
+        $validated['status_pengajuan'] = 'Sedang Di Ajukan';
+
+        $user = User::create($validated);
+        $user->load('jurusan', 'angkatan', 'keahlian');
+
+        // Kirim notifikasi ke admin
+        $this->sendNotifications($user);
+
+        $newCount = $totalAttempts + 1;
+        Cache::put("registration_count_{$guestIdentifier}", $newCount, now()->addHours(24));
+        $request->session()->put('registration_attempts', $newCount);
+        $request->session()->put('last_registration_time', now());
 
         return redirect()->route('login')
             ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');

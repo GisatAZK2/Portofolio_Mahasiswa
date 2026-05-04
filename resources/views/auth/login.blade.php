@@ -94,32 +94,6 @@
                 <!-- Action Buttons -->
                 <div class="mt-8 flex flex-col gap-6 sm:gap-8">
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center sm:justify-between">
-                        
-                        <div class="flex gap-3 sm:gap-4 justify-center sm:justify-start">
-                            <!-- Website -->
-                            <a href="{{ env('SOCIAL_WEBSITE', 'https://example.com') }}" target="_blank"
-                                class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br rounded-full flex items-center justify-center border-2 border-blue-300 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform">
-                                <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" fill="#000000" class="w-5 h-5">
-                                    <path d="M498.183 .005c-147.445 .678 -291.229 66.62 -387.347 186.018l153.958 236.639c38.92 -110.963 150.567 -181.877 267.325 -170.051l414.127 22.061c-42.323 -84.026 -108.752 -157.098 -196.299 -207.641-79.421 -45.855 -166.209 -67.42 -251.763 -67.026zm-416.533 226.203c-51.608 78.666 -81.65 172.734 -81.65 273.825 0 249.758 183.248 456.794 422.595 493.996l127.929 -251.638c-115.557 21.774 -232.78 -39.492 -280.918 -146.521l-187.956 -369.662zm884.812 93.837l-281.918 14.999c76.637 89.189 82.213 221.338 13.593 316.541l-226.172 347.6c93.931 5.361 190.433 -15.638 277.98 -66.183 216.297 -124.878 303.971 -387.076 216.516 -612.956zm-466.498 11.374c-93.11 0 -168.613 75.503 -168.613 168.613s75.503 168.613 168.613 168.613 168.613 -75.503 168.613 -168.613 -75.503 -168.613 -168.613 -168.613z" fill="#0e63ec"></path>
-                                </svg>  
-                            </a>
-
-                            <!-- Instagram -->
-                            <a href="{{ env('SOCIAL_INSTAGRAM', 'https://instagram.com') }}" target="_blank"
-                                class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-400 via-pink-500 to-red-500 rounded-full flex items-center justify-center border-2 border-pink-300 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M7 2H17C19.7614 2 22 4.23858 22 7V17C22 19.7614 19.7614 22 17 22H7C4.23858 22 2 19.7614 2 17V7C2 4.23858 4.23858 2 7 2ZM12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7ZM19.5 6.5C19.5 7.328 18.828 8 18 8C17.172 8 16.5 7.328 16.5 6.5C16.5 5.672 17.172 5 18 5C18.828 5 19.5 5.672 19.5 6.5ZM12 9C13.657 9 15 10.343 15 12C15 13.657 13.657 15 12 15C10.343 15 9 13.657 9 12C9 10.343 10.343 9 12 9Z"></path>
-                                </svg>
-                            </a>
-
-                            <!-- YouTube -->
-                            <a href="{{ env('SOCIAL_YOUTUBE', 'https://youtube.com') }}" target="_blank"
-                                class="group w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center border-2 border-red-400 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-6.605-.476c-.945-.266-1.687-1.04-1.938-2.022C3 15.72 3 12 3 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 6.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15l6-3-6-3v6z"></path>
-                                </svg>
-                            </a>
-                        </div>
 
                         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                             <!-- Cancel Button -->
@@ -135,6 +109,14 @@
                             </button>
                         </div>
                     </div>
+
+                    <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
+                        Belum punya akun?
+                        <a href="{{ route('pengajuan-akun') }}"
+                            class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+                            Ajukan Akun Ke Admin
+                        </a>
+                    </p>
 
                     <!-- Info Passkey 2FA -->
                     <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">

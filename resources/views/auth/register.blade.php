@@ -123,12 +123,29 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-7 lg:gap-12">
                 <div class="space-y-6">
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">NIM </label>
+                        <input type="text" name="nim" required value="{{ old('nim') }}"
+                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('nim') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                            placeholder="NIM" {{ $isBlocked ? 'disabled' : '' }}>
+                        @error('nim') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
                         <input type="text" name="nama_mahasiswa" required value="{{ old('nama_mahasiswa') }}"
                             class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('nama_mahasiswa') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
                             placeholder="Nama lengkapmu..." {{ $isBlocked ? 'disabled' : '' }}>
                         @error('nama_mahasiswa') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>
+
+                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Lahir</label>
+                        <input type="date" name="tanggal_lahir" required value="{{ old('tanggal_lahir') }}"
+                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('tanggal_lahir') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                            placeholder="Tanggal Lahir" {{ $isBlocked ? 'disabled' : '' }}>
+                        @error('tanggal_lahir') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
 
                     <div>

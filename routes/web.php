@@ -23,8 +23,10 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 // ========== AUTH ROUTES ==========
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
-Route::get('/register/complete', [UserController::class, 'showCompleteRegistration'])->name('register.complete');
-Route::post('/register/complete', [UserController::class, 'register'])->name('register.complete.submit');
+Route::get('/register/complete', [UserController::class, 'shownotCompleteRegistration'])->name('register.complete');
+Route::post('/register/complete', [UserController::class, 'notcompleteregister'])->name('register.complete.submit');
+Route::get('/pengajuan-akun', [UserController::class, 'showRegister'])->name('pengajuan-akun');
+Route::post('/pengajuan-akun', [UserController::class, 'register'])->name('register');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
