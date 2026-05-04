@@ -167,16 +167,21 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                     <div class="flex items-center gap-4">
                         <!-- Avatar -->
                         <div class="relative">
-                            @if($postingan->user->photo_profile && file_exists(public_path('storage/' . $postingan->user->photo_profile)))
-                                <img src="{{ asset('storage/' . $postingan->user->photo_profile) }}"
-                                    class="w-14 h-14 rounded-full object-cover ring-2 ring-indigo-200 dark:ring-indigo-800 shadow-md">
-                            @else
-                                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md ring-2 ring-indigo-200 dark:ring-indigo-800">
-                                    <span class="text-white font-bold text-xl">
-                                        {{ strtoupper(substr($postingan->user->nama_mahasiswa, 0, 1)) }}
-                                    </span>
-                                </div>
-                            @endif
+                            <!-- Image -->
+                            <img 
+                                src="{{ asset('storage/' . $postingan->user->photo_profile) }}"
+                                class="w-14 h-14 rounded-full object-cover ring-2 ring-indigo-200 dark:ring-indigo-800 shadow-md"
+                                alt="{{ $postingan->user->nama_mahasiswa }}"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                            >
+                        
+                            <!-- Fallback -->
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 
+                                        items-center justify-center shadow-md ring-2 ring-indigo-200 dark:ring-indigo-800 hidden">
+                                <span class="text-white font-bold text-xl">
+                                    {{ strtoupper(substr($postingan->user->nama_mahasiswa ?? 'U', 0, 1)) }}
+                                </span>
+                            </div>
                         </div>
                         <div>
                             <div class="flex flex-wrap gap-2 mt-1">
