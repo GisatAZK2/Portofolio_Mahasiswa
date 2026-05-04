@@ -23,6 +23,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            scroll-behavior: smooth !important;
         }
 
         /* Wrapper utama: sidebar kiri + konten kanan, membentang penuh */

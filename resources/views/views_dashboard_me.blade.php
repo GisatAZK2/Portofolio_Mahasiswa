@@ -686,7 +686,7 @@
                 </div>
 
                 <!-- Postingan Sendiri -->
-                <div class="feed-section mb-10">
+                <div id="postingan-section" class="feed-section mb-10">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
                         <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">Postingan Anda</h3>
@@ -919,7 +919,7 @@
                 </div>
 
                 <!-- Project -->
-                <div class="mb-10">
+                <div id="projects-section" class="mb-10">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
                         <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300">Project</h3>
@@ -960,7 +960,7 @@
                 </div>
 
                 <!-- Sertifikat -->
-                <div class="mb-10">
+                <div id="sertifikat-section" class="mb-10">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-green-600 rounded-full"></div>
                         <h3 class="text-lg font-semibold text-green-700 dark:text-green-300">Sertifikat</h3>

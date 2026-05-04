@@ -81,7 +81,7 @@
         @if($hasResults)
             <!-- Mahasiswa -->
             @if($mahasiswa->count() > 0)
-                <div class="mb-12" id="mahasiswa-section" data-pagination-group="mahasiswa">
+                <div id="mahasiswa-section" class="mb-12" id="mahasiswa-section" data-pagination-group="mahasiswa">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-gray-900 dark:text-gray-50 flex items-center gap-3" data-translate="hasil_pencarian"
                             data-translate-page="result_search">
@@ -240,7 +240,7 @@
 
             <!-- Project -->
             @if($projects->count() > 0)
-                <div class="mb-12" id="project-section" data-pagination-group="project">
+                <div id="projects-section" class="mb-12" id="project-section" data-pagination-group="project">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
                             <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-800 font-medium text-base"
@@ -330,7 +330,7 @@
 
             <!-- Sertifikat -->
             @if($sertifikats->count() > 0)
-                <div class="mb-12" id="sertifikat-section" data-pagination-group="sertifikat">
+                <div id="sertifikat-section" class="mb-12" id="sertifikat-section" data-pagination-group="sertifikat">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
                             <span class="inline-flex px-4 py-2 rounded-full bg-amber-100 text-amber-800 font-medium text-base">

@@ -42,7 +42,7 @@ class DashboardController extends Controller
 
         $learningCorners = LearningCorner::with(['mahasiswa', 'project'])
             ->latest()
-            ->paginate(6, ['*'], 'learning_page');
+            ->paginate(6, ['*'], 'learning_page')->fragment('learning-corner-list');
 
         if ($learningCorners && $learningCorners->isNotEmpty()) {
             $learningCorners->getCollection()->transform(function ($item) {
@@ -70,11 +70,11 @@ class DashboardController extends Controller
             ->select('postingan.*')
             ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
             ->orderBy('postingan.created_at', 'desc')
-            ->paginate(10, ['*'], 'postingan_page');
+            ->paginate(10, ['*'], 'postingan_page')->fragment('postingan-content-wrapper');
             
         $projects = Project::with('mahasiswa')
             ->latest()
-            ->paginate(6, ['*'], 'project_page');
+            ->paginate(6, ['*'], 'project_page')->fragment('projects-page');
 
         if ($projects && $projects->isNotEmpty()) {
             $projects->getCollection()->transform(function ($item) {
@@ -93,7 +93,7 @@ class DashboardController extends Controller
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
             ->latest()
-            ->paginate(6, ['*'], 'sertifikat_page');
+            ->paginate(6, ['*'], 'sertifikat_page')->fragment('sertifikats-section');
 
         if ($projectUsers && $projectUsers->isNotEmpty()) {
             $projectUsers->getCollection()->transform(function ($item) {
@@ -143,6 +143,7 @@ class DashboardController extends Controller
             ->inRandomOrder()
             ->take(3)
             ->get();
+
         $learning = LearningCorner::with('mahasiswa')
             ->where('id_mahasiswa', $user->id)
             ->inRandomOrder()
@@ -183,13 +184,13 @@ class DashboardController extends Controller
         $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes'])
             ->where('id_user', $user->id)
             ->latest()
-            ->paginate(6, ['*'], 'postingan_page');
+            ->paginate(6, ['*'], 'postingan_page')->fragment('postingan-section');
 
 
         $learningCorners = LearningCorner::with('mahasiswa', 'project')
             ->where('id_mahasiswa', $user->id)
             ->latest()
-            ->paginate(6, ['*'], 'learning_page');
+            ->paginate(6, ['*'], 'learning_page')->fragment('learning-corner-list');
 
         $learningCorners->transform(function ($item) {
             $item->type = 'learning';
@@ -205,7 +206,7 @@ class DashboardController extends Controller
                     });
             })
             ->latest()
-            ->paginate(6, ['*'], 'project_page');
+            ->paginate(6, ['*'], 'project_page')->fragment('projects-section');
 
         $projects->transform(function ($item) {
             $item->type = 'project';
@@ -217,7 +218,7 @@ class DashboardController extends Controller
             ->where('is_active', true)
             ->where('status_pengajuan', 'Di Terima')
             ->latest()
-            ->paginate(6, ['*'], 'sertifikat_page');
+            ->paginate(6, ['*'], 'sertifikat_page')->fragment('sertifikat-section');
 
         $projectUsers->transform(function ($item) {
             $item->type = 'sertifikat';
@@ -344,7 +345,7 @@ class DashboardController extends Controller
 
         $postingans = $user->postingans()
                    ->latest()          
-                   ->paginate(3);
+                   ->paginate(3)->fragment('postingan-section');
 
         $projectsQuery = Project::with(['owner', 'leader', 'members'])
             ->where(function ($query) use ($user) {
@@ -377,7 +378,8 @@ class DashboardController extends Controller
         $projects = $projectsQuery
             ->latest()
             ->paginate(5)
-            ->withQueryString();
+            ->withQueryString()
+            ->fragment('project-section');
 
         return view('views_portofolio_user', compact(
             'user',
@@ -453,7 +455,8 @@ class DashboardController extends Controller
                 )
 
                 ->paginate(9)
-                ->withQueryString();
+                ->withQueryString()
+                ->fragment('mahasiswa-section');
 
             $users->getCollection()->transform(function ($item) {
                 $item->project_total_count = Project::where(function ($q) use ($item) {
@@ -527,7 +530,8 @@ class DashboardController extends Controller
                 )
 
                 ->paginate(9)
-                ->withQueryString();
+                ->withQueryString()
+                 ->fragment('projects-section');
 
             $projects->getCollection()->transform(function ($project) {
                 $content = $project->isi_content ?? [];
@@ -601,7 +605,8 @@ class DashboardController extends Controller
                 )
 
                 ->paginate(9)
-                ->withQueryString();
+                ->withQueryString()
+                 ->fragment('sertifikat-section');
 
             $sertifikats->getCollection()->transform(function ($item) {
                 $item->type = 'sertifikat';

@@ -166,7 +166,7 @@
         <div
             class="w-7 h-7 sm:w-8 md:w-9 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm shrink-0 relative">
             @if($userPhoto)
-                <img src="{{ asset('storage/' . ltrim($userPhoto, '/')) }}" alt="{{ autoTranslate($userName) }}"
+                <img src="{{ asset('storage/' . ltrim($userPhoto, '/')) }}" alt="$userName"
                     class="w-full h-full object-cover" loading="lazy"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div
@@ -182,7 +182,7 @@
         </div>
         <div class="min-w-0 flex-1">
             <p class="font-semibold text-xs sm:text-sm md:text-base text-gray-900 dark:text-gray-300 truncate">
-                {{ autoTranslate($userName) }}
+              {{ $userName }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-200 truncate">
                 {{ autoTranslate($post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru saja') }}
@@ -544,7 +544,7 @@
                                 @endif
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
-                                        <span class="font-medium text-sm">{{ autoTranslate($komentar->user->nama_mahasiswa ?? $komentar->user->name) }}</span>
+                                        <span class="font-medium text-sm">{{ $komentar->user->nama_mahasiswa ?? $komentar->user->name }}</span>
                                         @if(auth()->check() && auth()->id() === $komentar->id_user)
                                             <span class="user-comment-badge">{{ autoTranslate('Anda') }}</span>
                                         @endif
@@ -625,7 +625,7 @@
                     <span>{{ autoTranslate('Diposting') }}</span>
                     {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
                     <span>{{ autoTranslate('oleh') }}</span>
-                    {{ autoTranslate($userName) }}
+                    {{ $userName }}
                 </p>
                 <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -641,7 +641,7 @@
                 <span>{{ autoTranslate('Diposting') }}</span>
                 {{ autoTranslate($post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—') }}
                 <span>{{ autoTranslate('oleh') }}</span>
-                {{ autoTranslate($userName) }}
+                {{ $userName }}
                 @if($relatedProject)
                     <span>{{ autoTranslate('untuk project') }}</span>
                     <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"

@@ -1,6 +1,7 @@
 {{-- ini Portofolio Page --}}
 @extends('Layout.Layout')
 
+
 @section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
 
 @section('meta')
@@ -182,7 +183,7 @@
                 <div class="lg:col-span-2 space-y-6">
 
                      {{-- ==================== POSTINGAN ==================== --}}
-                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                    <div id="postingan-section" class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -581,7 +582,7 @@
                     </div>
 
                       {{-- ==================== PROJECTS ==================== --}}
-                    <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
+                    <div id="project-section" class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
 
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-0" data-translate="pjt" data-translate-page="portofolio_user">Projects</h3>
