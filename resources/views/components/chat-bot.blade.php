@@ -342,16 +342,26 @@
         }
         
         function onTouchEnd(e) {
-            chatButton.classList.remove('dragging');
-            
-            if (isDragging && dragDistance > 5) {
-                saveButtonPosition(chatButton.style.left, chatButton.style.top);
-                e.preventDefault();
+    chatButton.classList.remove('dragging');
+
+    if (isDragging && dragDistance > 5) {
+        saveButtonPosition(chatButton.style.left, chatButton.style.top);
+        e.preventDefault();
+    } else {
+        // 👉 TAMBAHAN INI (fix mobile click)
+        if (isChatOpen) {
+            closeChat();
+        } else {
+            if (notificationBubble) {
+                notificationBubble.style.display = 'none';
             }
-            
-            isDragging = false;
-            dragDistance = 0;
+            openChat();
         }
+    }
+
+    isDragging = false;
+    dragDistance = 0;
+}
         
         // ============ BUBBLE LOGIC - PERMANENT HIDE ============
         // Cek localStorage untuk status bubble
@@ -755,6 +765,7 @@
 
         if (chatButton) {
             chatButton.addEventListener('click', (e) => {
+                if ('ontouchstart' in window) return; 
                 if (isDragging && dragDistance > 5) {
                     e.stopPropagation();
                     return;
