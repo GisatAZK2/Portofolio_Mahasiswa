@@ -276,6 +276,30 @@
                     @enderror
                 </div>
 
+                <!-- Sertifikat Berlaku Permanen -->
+                <div class="flex items-center gap-3 mb-4">
+                    <input type="checkbox" id="permanent" name="permanent" value="1"
+                        {{ old('permanent', true) ? 'checked' : '' }}
+                        class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="permanent" class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                        <span data-translate="permanent_cert" data-translate-page="dosen_stk_add">Sertifikat Berlaku Permanen</span>
+                    </label>
+                </div>
+
+                <!-- Tanggal Expired -->
+                <div id="expired-date-container">
+                    <label for="expired_date"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="exp_date" data-translate-page="dosen_stk_add">Tanggal Expired</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="expired_date" id="expired_date" value="{{ old('expired_date') }}"
+                        class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('expired_date') border-red-500 @enderror">
+                    @error('expired_date')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Upload File Sertifikat -->
                 <div>
                     <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -363,6 +387,71 @@
 
     <!-- JavaScript -->
     <script>
+        // ── Permanent toggle ────────────────────────────────────────────────
+        const permanentCheckbox    = document.getElementById('permanent');
+        const expiredDateContainer = document.getElementById('expired-date-container');
+        const expiredDateInput     = document.getElementById('expired_date');
+
+        function updateExpiredDateState() {
+            if (permanentCheckbox.checked) {
+                expiredDateContainer.style.display = 'none';
+                expiredDateInput.required           = false;
+                expiredDateInput.value              = '';
+            } else {
+                expiredDateContainer.style.display = 'block';
+                expiredDateInput.required           = true;
+            }
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+            updateExpiredDateState(); // run on page load
+        }
+
+        // ── Date validation (expired_date must be after tanggal_terbit) ───────
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+
+        function updateMinExpiredDate() {
+            if (tanggalTerbitInput.value) {
+                // Set minimum date untuk expired_date ke hari setelah tanggal_terbit
+                const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+                const minDate = new Date(terbitDate);
+                minDate.setDate(minDate.getDate() + 1);
+                
+                expiredDateInput.min = minDate.toISOString().split('T')[0];
+                
+                // Jika expired_date sudah dipilih dan lebih awal dari tanggal_terbit, kosongkan
+                if (expiredDateInput.value) {
+                    const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+                    if (expiredDate <= terbitDate) {
+                        expiredDateInput.value = '';
+                    }
+                }
+            }
+        }
+
+        function validateExpiredDate() {
+            if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
+            
+            const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+            const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+            
+            if (expiredDate <= terbitDate) {
+                expiredDateInput.value = '';
+                alert('Tanggal expired harus setelah tanggal terbit');
+            }
+        }
+
+        if (tanggalTerbitInput) {
+            tanggalTerbitInput.addEventListener('change', updateMinExpiredDate);
+            // Validasi saat halaman dimuat
+            updateMinExpiredDate();
+        }
+
+        if (expiredDateInput) {
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+        }
+
         // Function to apply filters
         function applyFilters() {
             const search = document.getElementById('search-input').value;

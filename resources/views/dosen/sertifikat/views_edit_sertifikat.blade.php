@@ -96,6 +96,35 @@
                     @enderror
                 </div>
 
+                <!-- Sertifikat Berlaku Permanen -->
+                <div class="flex items-center gap-3 mb-4">
+                    <input type="checkbox" id="permanent" name="permanent" value="1"
+                        {{ old('permanent', $sertifikat->expired_date ? false : true) ? 'checked' : '' }}
+                        class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="permanent" class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                        <span data-translate="permanent_cert" data-translate-page="dosen_stk_edit">Sertifikat Berlaku Permanen</span>
+                    </label>
+                </div>
+
+                <!-- Tanggal Expired -->
+                <div class="col-span-2" id="expired-date-container">
+                    <label for="expired_date"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="exp_date" data-translate-page="dosen_stk_edit">Tanggal Expired</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="expired_date" id="expired_date"
+                        value="{{ old('expired_date', $sertifikat->expired_date ? \Carbon\Carbon::parse($sertifikat->expired_date)->format('Y-m-d') : '') }}"
+                        class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                            focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                            text-gray-700 dark:text-gray-300
+                                            placeholder-gray-500 dark:placeholder-gray-400
+                                            shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('expired_date') border-red-500 @enderror">
+                    @error('expired_date')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Current File Information -->
                 @if($sertifikat->link_sertifikat)
                     <div class="bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
@@ -223,7 +252,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end gap-4 pt-8 border-t border-gray-200">
-                    <a href="{{ route('admin.sertifikat.index') }}"
+                    <a href="{{ route('dosen.sertifikat.index') }}"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white rounded-lg transition duration-200 font-medium shadow-sm hover:shadow-md"
                         data-translate="cancel" data-translate-page="dosen_stk_edit">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,6 +276,72 @@
 
     <!-- JavaScript untuk Preview dan Upload -->
     <script>
+        // ── Permanent toggle ────────────────────────────────────────────────
+        const permanentCheckbox    = document.getElementById('permanent');
+        const expiredDateContainer = document.getElementById('expired-date-container');
+        const expiredDateInput     = document.getElementById('expired_date');
+
+        function updateExpiredDateState() {
+            if (permanentCheckbox.checked) {
+                expiredDateContainer.style.display = 'none';
+                expiredDateInput.required           = false;
+                expiredDateInput.value              = '';
+            } else {
+                expiredDateContainer.style.display = 'block';
+                expiredDateInput.required           = true;
+            }
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+            updateExpiredDateState(); // run on page load
+        }
+
+        // ── Date validation (expired_date must be after tanggal_terbit) ───────
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+
+        function updateMinExpiredDate() {
+            if (tanggalTerbitInput.value) {
+                // Set minimum date untuk expired_date ke hari setelah tanggal_terbit
+                const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+                const minDate = new Date(terbitDate);
+                minDate.setDate(minDate.getDate() + 1);
+                
+                expiredDateInput.min = minDate.toISOString().split('T')[0];
+                
+                // Jika expired_date sudah dipilih dan lebih awal dari tanggal_terbit, kosongkan
+                if (expiredDateInput.value) {
+                    const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+                    if (expiredDate <= terbitDate) {
+                        expiredDateInput.value = '';
+                    }
+                }
+            }
+        }
+
+        function validateExpiredDate() {
+            if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
+            
+            const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+            const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+            
+            if (expiredDate <= terbitDate) {
+                expiredDateInput.value = '';
+                alert('Tanggal expired harus setelah tanggal terbit');
+            }
+        }
+
+        if (tanggalTerbitInput) {
+            tanggalTerbitInput.addEventListener('change', updateMinExpiredDate);
+            // Validasi saat halaman dimuat
+            updateMinExpiredDate();
+        }
+
+        if (expiredDateInput) {
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+        }
+
+        // ── File upload helpers ─────────────────────────────────────────────
         function updateFileLabel(input) {
             const fileName = input.files[0]?.name;
             const fileNameElement = document.getElementById('file-name');

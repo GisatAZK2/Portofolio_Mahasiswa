@@ -18,7 +18,7 @@
 
             <!-- Form Edit Sertifikat -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <form method="POST" action="{{ route('admin.sertifikat.update') }}?id={{ $sertifikat->id }}">
+                <form method="POST" action="{{ route('admin.sertifikat.update') }}?id={{ $sertifikat->id }}"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
@@ -78,7 +78,7 @@
                                 {{ old('permanent', $sertifikat->expired_date ? false : true) ? 'checked' : '' }}
                                 class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                             <label for="permanent" class="text-sm font-medium text-gray-900 dark:text-gray-300">
-                                Sertifikat Berlaku Permanen
+                                <span data-translate="permanent_cert" data-translate-page="stk_admin_edit">Sertifikat Berlaku Permanen</span>
                             </label>
                         </div>
 
@@ -91,7 +91,6 @@
                             </label>
                             <input type="date" name="expired_date" id="expired_date"
                                 value="{{ old('expired_date', $sertifikat->expired_date ? \Carbon\Carbon::parse($sertifikat->expired_date)->format('Y-m-d') : '') }}"
-                                required
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('expired_date') border-red-500 @enderror">
                             @error('expired_date')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -260,28 +259,89 @@
 
 @push('scripts')
     <script>
+        // ── Permanent toggle ────────────────────────────────────────────────
+        const permanentCheckbox    = document.getElementById('permanent');
+        const expiredDateContainer = document.getElementById('expired-date-container');
+        const expiredDateInput     = document.getElementById('expired_date');
+
+        function updateExpiredDateState() {
+            if (permanentCheckbox.checked) {
+                expiredDateContainer.style.display = 'none';
+                expiredDateInput.required           = false;
+                expiredDateInput.value              = '';
+            } else {
+                expiredDateContainer.style.display = 'block';
+                expiredDateInput.required           = true;
+            }
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+            updateExpiredDateState(); // run on page load
+        }
+
+        // ── Date validation (expired_date must be after tanggal_terbit) ───────
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+
+        function updateMinExpiredDate() {
+            if (tanggalTerbitInput.value) {
+                // Set minimum date untuk expired_date ke hari setelah tanggal_terbit
+                const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+                const minDate = new Date(terbitDate);
+                minDate.setDate(minDate.getDate() + 1);
+                
+                expiredDateInput.min = minDate.toISOString().split('T')[0];
+                
+                // Jika expired_date sudah dipilih dan lebih awal dari tanggal_terbit, kosongkan
+                if (expiredDateInput.value) {
+                    const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+                    if (expiredDate <= terbitDate) {
+                        expiredDateInput.value = '';
+                    }
+                }
+            }
+        }
+
+        function validateExpiredDate() {
+            if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
+            
+            const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+            const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+            
+            if (expiredDate <= terbitDate) {
+                expiredDateInput.value = '';
+                alert('Tanggal expired harus setelah tanggal terbit');
+            }
+        }
+
+        if (tanggalTerbitInput) {
+            tanggalTerbitInput.addEventListener('change', updateMinExpiredDate);
+            // Validasi saat halaman dimuat
+            updateMinExpiredDate();
+        }
+
+        if (expiredDateInput) {
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+        }
+
+        // ── File upload helpers ─────────────────────────────────────────────
         function updateFileLabel(input) {
-            const fileName = input.files[0]?.name;
+            const fileName        = input.files[0]?.name;
             const fileNameElement = document.getElementById('file-name');
             const previewContainer = document.getElementById('image-preview-container');
-            const previewImage = document.getElementById('image-preview');
-            const currentPreview = document.getElementById('current-image-preview');
+            const previewImage    = document.getElementById('image-preview');
+            const currentPreview  = document.getElementById('current-image-preview');
 
             if (fileName) {
                 fileNameElement.textContent = fileName;
 
-                // Preview image
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         previewImage.src = e.target.result;
                         previewContainer.classList.remove('hidden');
-
-                        // Hide current preview if exists
-                        if (currentPreview) {
-                            currentPreview.classList.add('hidden');
-                        }
-                    }
+                        if (currentPreview) currentPreview.classList.add('hidden');
+                    };
                     reader.readAsDataURL(input.files[0]);
                 }
             } else {
@@ -293,25 +353,18 @@
 
                 previewContainer.classList.add('hidden');
                 previewImage.src = '#';
-
-                // Show current preview again
-                if (currentPreview) {
-                    currentPreview.classList.remove('hidden');
-                }
+                if (currentPreview) currentPreview.classList.remove('hidden');
             }
         }
 
         function toggleFileUpload(checkbox) {
             const fileUploadSection = document.getElementById('file-upload-section');
-            const currentPreview = document.getElementById('current-image-preview');
+            const currentPreview    = document.getElementById('current-image-preview');
 
             if (checkbox.checked) {
                 fileUploadSection.classList.remove('hidden');
-                if (currentPreview) {
-                    currentPreview.classList.add('hidden');
-                }
+                if (currentPreview) currentPreview.classList.add('hidden');
 
-                // Reset file input
                 const fileInput = document.getElementById('link_sertifikat_input');
                 if (fileInput) {
                     fileInput.value = '';
@@ -319,29 +372,24 @@
                 }
             } else {
                 fileUploadSection.classList.add('hidden');
-                if (currentPreview) {
-                    currentPreview.classList.remove('hidden');
-                }
+                if (currentPreview) currentPreview.classList.remove('hidden');
 
-                // Clear preview container
                 const previewContainer = document.getElementById('image-preview-container');
                 previewContainer.classList.add('hidden');
             }
         }
 
-        // Handle drag and drop
+        // ── Drag and drop ───────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function () {
-            const dropZone = document.querySelector('.border-dashed');
+            const dropZone  = document.querySelector('.border-dashed');
             const fileInput = document.getElementById('link_sertifikat_input');
 
             if (dropZone && fileInput) {
-                // Prevent default drag behaviors
                 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                     dropZone.addEventListener(eventName, preventDefaults, false);
                     document.body.addEventListener(eventName, preventDefaults, false);
                 });
 
-                // Highlight drop zone
                 ['dragenter', 'dragover'].forEach(eventName => {
                     dropZone.addEventListener(eventName, highlight, false);
                 });
@@ -350,7 +398,6 @@
                     dropZone.addEventListener(eventName, unhighlight, false);
                 });
 
-                // Handle dropped files
                 dropZone.addEventListener('drop', handleDrop, false);
             }
 
@@ -368,11 +415,10 @@
             }
 
             function handleDrop(e) {
-                const dt = e.dataTransfer;
+                const dt    = e.dataTransfer;
                 const files = dt.files;
 
                 if (files && files.length > 0) {
-                    // If there's an existing file, make sure upload section is visible
                     @if($sertifikat->link_sertifikat)
                         const replaceCheckbox = document.getElementById('replace-file-checkbox');
                         if (replaceCheckbox && !replaceCheckbox.checked) {
@@ -384,7 +430,6 @@
                     fileInput.files = files;
                     updateFileLabel(fileInput);
 
-                    // Trigger change event
                     const event = new Event('change', { bubbles: true });
                     fileInput.dispatchEvent(event);
                 }

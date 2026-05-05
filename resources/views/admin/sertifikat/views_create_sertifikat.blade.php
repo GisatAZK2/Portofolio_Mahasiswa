@@ -318,7 +318,7 @@
                         {{ old('permanent') ? 'checked' : '' }}
                         class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="permanent" class="text-sm font-medium text-gray-900 dark:text-gray-300">
-                        Sertifikat Berlaku Permanen
+                        <span data-translate="permanent_cert" data-translate-page="admin">Sertifikat Berlaku Permanen</span>
                     </label>
                 </div>
 
@@ -450,9 +450,9 @@
 
         // File Upload & Preview
         function updateFileLabel(input) {
-            const fileNameEl = document.getElementById('file-name');
+            const fileNameEl       = document.getElementById('file-name');
             const previewContainer = document.getElementById('image-preview-container');
-            const previewImg = document.getElementById('image-preview');
+            const previewImg       = document.getElementById('image-preview');
 
             if (input.files && input.files[0]) {
                 const file = input.files[0];
@@ -467,9 +467,74 @@
             }
         }
 
-        // Drag and Drop
+        // ── Permanent Certificate Toggle ────────────────────────────────────
+        const permanentCheckbox    = document.getElementById('permanent');
+        const expiredDateContainer = document.getElementById('expired-date-container');
+        const expiredDateInput     = document.getElementById('expired_date');
+
+        function updateExpiredDateState() {
+            if (permanentCheckbox.checked) {
+                expiredDateContainer.style.display = 'none';
+                expiredDateInput.required           = false;
+                expiredDateInput.value              = '';
+            } else {
+                expiredDateContainer.style.display = 'block';
+                expiredDateInput.required           = true;
+            }
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+            updateExpiredDateState(); // run on page load
+        }
+
+        // ── Date validation (expired_date must be after tanggal_terbit) ───────
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+
+        function updateMinExpiredDate() {
+            if (tanggalTerbitInput.value) {
+                // Set minimum date untuk expired_date ke hari setelah tanggal_terbit
+                const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+                const minDate = new Date(terbitDate);
+                minDate.setDate(minDate.getDate() + 1);
+                
+                expiredDateInput.min = minDate.toISOString().split('T')[0];
+                
+                // Jika expired_date sudah dipilih dan lebih awal dari tanggal_terbit, kosongkan
+                if (expiredDateInput.value) {
+                    const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+                    if (expiredDate <= terbitDate) {
+                        expiredDateInput.value = '';
+                    }
+                }
+            }
+        }
+
+        function validateExpiredDate() {
+            if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
+            
+            const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+            const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+            
+            if (expiredDate <= terbitDate) {
+                expiredDateInput.value = '';
+                alert('Tanggal expired harus setelah tanggal terbit');
+            }
+        }
+
+        if (tanggalTerbitInput) {
+            tanggalTerbitInput.addEventListener('change', updateMinExpiredDate);
+            // Validasi saat halaman dimuat
+            updateMinExpiredDate();
+        }
+
+        if (expiredDateInput) {
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+        }
+
+        // ── Drag and Drop ───────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function () {
-            const dropZone = document.getElementById('drop-zone');
+            const dropZone  = document.getElementById('drop-zone');
             const fileInput = document.getElementById('link_sertifikat');
 
             if (dropZone && fileInput) {
@@ -497,18 +562,18 @@
             if (oldUserId) {
                 const radio = document.querySelector(`.user-radio[value="${oldUserId}"]`);
                 if (radio) {
-                    const row = radio.closest('tr');
+                    const row   = radio.closest('tr');
                     if (row) {
-                        const name = row.cells[2].querySelector('.font-semibold').textContent.trim();
-                        const email = row.cells[2].querySelector('.text-sm.text-gray-500').textContent.trim();
-                        const img = row.querySelector('img');
+                        const name  = row.cells[1].querySelector('.font-medium').textContent.trim();
+                        const email = row.cells[1].querySelector('.text-xs').textContent.trim();
+                        const img   = row.querySelector('img');
                         const photo = img ? img.src : '';
                         selectUser(oldUserId, name, photo, email);
                     }
                 }
             }
 
-            // Enter key on search
+            // Enter key on filter search
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function (e) {
@@ -519,49 +584,28 @@
                 });
             }
 
-            // User search functionality
+            // User search (client-side filter on table rows)
             const userSearchInput = document.getElementById('user-search');
             if (userSearchInput) {
-                userSearchInput.addEventListener('input', function() {
+                userSearchInput.addEventListener('input', function () {
                     const searchTerm = this.value.toLowerCase().trim();
-                    const rows = document.querySelectorAll('#user-table-body tr');
+                    const rows       = document.querySelectorAll('#user-table-body tr');
 
                     rows.forEach(row => {
-                        if (row.classList.contains('hidden')) return; // Skip empty state row
+                        if (!row.cells || row.cells.length < 2) return;
 
-                        const name = row.cells[1].querySelector('.font-medium').textContent.toLowerCase();
-                        const email = row.cells[1].querySelector('.text-xs').textContent.toLowerCase();
+                        const nameEl  = row.cells[1].querySelector('.font-medium');
+                        const emailEl = row.cells[1].querySelector('.text-xs');
+                        if (!nameEl) return;
 
-                        if (name.includes(searchTerm) || email.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
+                        const name  = nameEl.textContent.toLowerCase();
+                        const email = emailEl ? emailEl.textContent.toLowerCase() : '';
+
+                        row.style.display = (name.includes(searchTerm) || email.includes(searchTerm)) ? '' : 'none';
                     });
                 });
             }
         });
-
-        // Permanent Certificate Toggle
-        const permanentCheckbox = document.getElementById('permanent');
-        const expiredDateContainer = document.getElementById('expired-date-container');
-        const expiredDateInput = document.getElementById('expired_date');
-
-        function updateExpiredDateState() {
-            if (permanentCheckbox.checked) {
-                expiredDateContainer.style.display = 'none';
-                expiredDateInput.required = false;
-                expiredDateInput.value = '';
-            } else {
-                expiredDateContainer.style.display = 'block';
-                expiredDateInput.required = true;
-            }
-        }
-
-        if (permanentCheckbox) {
-            permanentCheckbox.addEventListener('change', updateExpiredDateState);
-            updateExpiredDateState(); // Initial state
-        }
     </script>
 
     <!-- Page Info -->
