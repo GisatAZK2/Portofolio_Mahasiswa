@@ -200,28 +200,41 @@ class PostinganController extends Controller
         }
 
         $rawItems = $request->input('items', []);
-        if (!empty($rawItems) && is_array($rawItems)) {
-            foreach ($rawItems as $index => $item) {
-                $processed = [
-                    'type' => $item['type'] ?? null,
-                    'content' => $item['content'] ?? null,
-                ];
+if (!empty($rawItems) && is_array($rawItems)) {
+    foreach ($rawItems as $index => $item) {
+        $type = $item['type'] ?? null;
 
-                if (($processed['type'] ?? '') === 'image' && $request->hasFile("items.$index.file")) {
-                    $path = ImageConversionService::storeWebp($request->file("items.$index.file"), 'postingan/images');
-                    $processed['content'] = $path;
-                }
+        if (!$type) continue;
 
-                if (!empty($processed['type'])) {
-                    // Skip image items without uploaded content
-                    if ($processed['type'] === 'image' && empty($processed['content'])) {
-                        continue;
-                    }
-                    $content[] = $processed;
-                }
+        $processed = [
+            'type' => $type,
+            'content' => null,
+        ];
+
+        if ($type === 'image') {
+            if ($request->hasFile("items.$index.file")) {
+                // Upload gambar baru
+                $path = ImageConversionService::storeWebp(
+                    $request->file("items.$index.file"),
+                    'postingan/images'
+                );
+                $processed['content'] = $path;
+            } elseif (!empty($item['existing_content'])) {
+                // ✅ Pakai gambar lama yang sudah ada
+                $processed['content'] = $item['existing_content'];
+            } else {
+                // Tidak ada gambar baru maupun lama → skip
+                continue;
             }
+        } elseif ($type === 'link') {
+            $linkContent = $item['content'] ?? null;
+            if (empty($linkContent)) continue; // link kosong → skip
+            $processed['content'] = $linkContent;
         }
-        
+
+        $content[] = $processed;
+    }
+}
         if ($isAllowedGame) {
             if ($request->hasFile('game_thumbnail')) {
             $thumbPath = ImageConversionService::storeWebp($request->file('game_thumbnail'), 'postingan/game_thumbnails');
