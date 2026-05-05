@@ -233,6 +233,60 @@
                 </div>
             @endif
 
+           @if($postingan->count() > 0)
+            <hr class="my-12 border-gray-200">
+            {{-- ✅ Fix Bug 4: hapus id duplikat, hanya satu id per div --}}
+            <div id="postingan-section" class="mb-12" data-pagination-group="postingan">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-50 flex items-center gap-3">
+                        <span class="inline-flex px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-base">
+                            Postingan ({{ $postingan->total() }})
+                        </span>
+                    </h3>
+                </div>
+
+                {{-- ✅ Fix Bug 3: tambahkan card grid --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($postingan as $item)
+                        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full border-t-4 border-gray-400">
+                            <div class="p-6 flex flex-col flex-1">
+                                <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mb-3 w-fit">
+                                    Postingan
+                                </span>
+                                @php
+                                    $content = $item->content ?? [];
+                                    $title = collect($content)->firstWhere('type', 'title')['content'] ?? 'Postingan Tanpa Judul';
+                                    $desc  = collect($content)->firstWhere('type', 'text')['content'] ?? '';
+                                @endphp
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 min-h-[56px]">
+                                    {{ $title }}
+                                </h3>
+                                @if($item->user)
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                        Oleh <strong>{{ $item->user->nama_mahasiswa ?? $item->user->name ?? '—' }}</strong>
+                                    </p>
+                                @endif
+                                @if($desc)
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4">{{ $desc }}</p>
+                                @endif
+                                <div class="mt-auto">
+                                    <a href="{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $item->id_postingan]) }}"
+                                        class="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-800 transition">
+                                        Lihat Postingan →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-8">
+                    {{ $postingan->render('vendor.pagination.custom_ajax', ['groupName' => 'postingan']) }}
+                </div>
+            </div>
+        @endif
+            
+
             <!-- Separator Project -->
             @if($projects->count() > 0)
                 <hr class="my-12 border-gray-200">

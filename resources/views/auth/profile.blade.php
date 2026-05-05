@@ -130,7 +130,7 @@
                                 <div class="relative group inline-block">
                                     <div id="nama-container">
                                         <h2 id="nama-display" class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white inline-block cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400" onclick="toggleEdit('nama')">
-                                            {{ autoTranslate(Auth::user()->nama_mahasiswa ?? 'Mahasiswa') }}
+                                           {{ Auth::user()->nama_mahasiswa ?? 'Mahasiswa' }}
                                         </h2>
                                         <button type="button" onclick="toggleEdit('nama')" class="ml-2 opacity-0 group-hover:opacity-100 transition text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400">
                                             <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -752,11 +752,11 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Masuk') }} <span class="text-red-500">*</span></label>
-                            <input type="number" name="tahun_masuk" placeholder="2020" min="1950" max="{{ date('Y') + 1 }}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                            <input type="date" name="tahun_masuk" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div id="tahun-lulus-field">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Lulus') }}</label>
-                            <input type="number" name="tahun_lulus" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                            <input type="date" name="tahun_lulus"  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                     </div>
 
@@ -884,14 +884,14 @@
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                                 <span data-translate="tahun_masuk" data-translate-page="profile">Tahun Masuk</span> <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" id="pend-edit-tahun_masuk" placeholder="2020" min="1950" max="{{ date('Y') + 1 }}" required
+                            <input type="date" id="pend-edit-tahun_masuk" placeholder="2020" min="1950" max="{{ date('Y') + 1 }}" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div id="pend-edit-tahun-lulus-field">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                                 <span data-translate="tahun_lulus" data-translate-page="profile">Tahun Lulus</span>
                             </label>
-                            <input type="number" id="pend-edit-tahun_lulus" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}"
+                            <input type="date" id="pend-edit-tahun_lulus" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                     </div>
@@ -961,15 +961,21 @@
                         <input type="text" name="bagian_kerja" placeholder="{{ autoTranslate('Contoh: Software Engineer') }}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                     </div>
 
+                    <!-- Deskripsi -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Deskripsi Pekerjaan') }}</label>
+                        <textarea name="deskripsi" placeholder="{{ autoTranslate('Tuliskan deskripsi pekerjaan Anda') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"></textarea>
+                    </div>
+
                     <!-- Tahun -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Mulai') }} <span class="text-red-500">*</span></label>
-                            <input type="number" name="tahun_mulai" placeholder="2022" min="1950" max="{{ date('Y') + 1 }}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                            <input type="date" name="tahun_mulai" placeholder="2022" min="1950" max="{{ date('Y') + 1 }}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div id="tahun-akhir-field">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Selesai') }}</label>
-                            <input type="number" name="tahun_akhir" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                            <input type="date" name="tahun_akhir" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                     </div>
 
@@ -1077,6 +1083,10 @@
                         <h4 id="pkj-view-nama" class="text-xl font-bold text-gray-900 dark:text-white"></h4>
                         <p id="pkj-view-bagian" class="text-emerald-700 dark:text-emerald-400 font-medium mt-1"></p>
                     </div>
+                    <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1" data-translate="deskripsi" data-translate-page="profile">Deskripsi Pekerjaan</p>
+                        <p id="pkj-view-deskripsi" class="text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-pre-wrap"></p>
+                    </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="periode" data-translate-page="profile">Periode</p>
@@ -1111,19 +1121,25 @@
                         <input type="text" id="pkj-edit-bagian_kerja" placeholder="{{ autoTranslate('Contoh: Software Engineer') }}" required
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                     </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="deskripsi" data-translate-page="profile">Deskripsi Pekerjaan</span>
+                        </label>
+                        <textarea id="pkj-edit-deskripsi" placeholder="{{ autoTranslate('Tuliskan deskripsi pekerjaan Anda') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"></textarea>
+                    </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                                 <span data-translate="tahun_mulai" data-translate-page="profile">Tahun Mulai</span> <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" id="pkj-edit-tahun_mulai" placeholder="2022" min="1950" max="{{ date('Y') + 1 }}" required
+                            <input type="date" id="pkj-edit-tahun_mulai" placeholder="2022" min="1950" max="{{ date('Y') + 1 }}" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div id="pkj-edit-tahun-akhir-field">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                                 <span data-translate="tahun_selesai" data-translate-page="profile">Tahun Selesai</span>
                             </label>
-                            <input type="number" id="pkj-edit-tahun_akhir" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}"
+                            <input type="date" id="pkj-edit-tahun_akhir" placeholder="{{ date('Y') }}" min="1950" max="{{ date('Y') + 1 }}"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                     </div>
@@ -1315,7 +1331,6 @@ async function savePendidikanEdit() {
     formData.append('jenjang', jenjang);
     formData.append('jurusan_sek', jurusan_sek);
     formData.append('tahun_masuk', tahun_masuk);
-    formData.append('tahun_lulus', tahun_lulus);
     formData.append('masih_kuliah', masih_kuliah);
 
     try {
