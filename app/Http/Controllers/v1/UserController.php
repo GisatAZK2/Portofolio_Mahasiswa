@@ -39,11 +39,11 @@ class UserController extends Controller
                 ->with('error', 'Data user tidak ditemukan.');
         }
 
-        $jurusans  = Jurusan::all();
+        $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
 
-        $jurusanName  = $user->jurusan  ? $user->jurusan->nama_jurusan   : '-';
+        $jurusanName = $user->jurusan ? $user->jurusan->nama_jurusan : '-';
         $keahlianName = $user->keahlian ? $user->keahlian->nama_keahlian : '-';
         $angkatanName = $user->angkatan ? $user->angkatan->nama_angkatan : '-';
 
@@ -57,7 +57,7 @@ class UserController extends Controller
 
         if ($isCompleting) {
             $userId = $request->session()->get('temp_user_id');
-            $user   = User::find($userId);
+            $user = User::find($userId);
 
             if (!$user) {
                 return redirect()->route('login')
@@ -65,16 +65,16 @@ class UserController extends Controller
             }
 
             $validated = $request->validate([
-                'username'         => ['required', 'string', 'max:100', 'unique:users,username,' . $user->id, 'regex:/^[a-zA-Z0-9_]+$/'],
-                'password'         => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
-                'email'            => ['nullable', 'email', 'max:100', 'unique:users,email'],
-                'description'      => ['nullable', 'string', 'max:500'],
-                'video_url'        => ['nullable', 'url', 'max:255'],
+                'username' => ['required', 'string', 'max:100', 'unique:users,username,' . $user->id, 'regex:/^[a-zA-Z0-9_]+$/'],
+                'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
+                'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+                'description' => ['nullable', 'string', 'max:500'],
+                'video_url' => ['nullable', 'url', 'max:255'],
                 'background_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
-                'photo_profile'    => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5012'],
+                'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5012'],
             ]);
 
-            $backgroundPath  = null;
+            $backgroundPath = null;
             $photoProfilePath = null;
 
             if ($request->hasFile('background_image')) {
@@ -86,13 +86,13 @@ class UserController extends Controller
             }
 
             $user->update([
-                'username'       => $validated['username'],
-                'email'          => $validated['email'] ?? $user->email,
-                'password'       => Hash::make($validated['password']),
-                'deskripsi'      => $validated['description'] ?? null,
-                'video_url'      => $validated['video_url'] ?? null,
+                'username' => $validated['username'],
+                'email' => $validated['email'] ?? $user->email,
+                'password' => Hash::make($validated['password']),
+                'deskripsi' => $validated['description'] ?? null,
+                'video_url' => $validated['video_url'] ?? null,
                 'background_url' => $backgroundPath,
-                'photo_profile'  => $photoProfilePath,
+                'photo_profile' => $photoProfilePath,
             ]);
 
             $this->sendNotifications($user);
@@ -106,18 +106,18 @@ class UserController extends Controller
         // Normal registration flow
         $validated = $request->validate([
             'nama_mahasiswa' => ['required', 'string', 'max:100'],
-            'nim'            => ['required', 'string', 'max:50', 'unique:users,nim'],
-            'tanggal_lahir'  => ['required', 'date', 'before_or_equal:today'],
-            'email'          => ['nullable', 'email', 'max:100', 'unique:users,email'],
-            'id_jurusan'     => ['required', 'exists:jurusan,id_jurusan'],
-            'id_keahlian'    => ['required', 'exists:keahlian,id_keahlian'],
-            'id_angkatan'    => ['required', 'exists:angkatan,id'],
-            'photo_profile'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'nim' => ['required', 'string', 'max:50', 'unique:users,nim'],
+            'tanggal_lahir' => ['required', 'date', 'before_or_equal:today'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+            'id_jurusan' => ['required', 'exists:jurusan,id_jurusan'],
+            'id_keahlian' => ['required', 'exists:keahlian,id_keahlian'],
+            'id_angkatan' => ['required', 'exists:angkatan,id'],
+            'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ]);
 
-        $validated['role']      = 'mahasiswa';
+        $validated['role'] = 'mahasiswa';
         $validated['is_active'] = true;
-        $validated['password']  = null;
+        $validated['password'] = null;
 
         if ($request->hasFile('photo_profile')) {
             $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
@@ -133,7 +133,7 @@ class UserController extends Controller
     }
 
     // Tampilkan form registrasi
-       public function showRegister()
+    public function showRegister()
     {
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
@@ -203,17 +203,17 @@ class UserController extends Controller
 
     private function sendNotifications($user)
     {
-        $jurusanNama  = $user->jurusan->nama_jurusan   ?? '-';
+        $jurusanNama = $user->jurusan->nama_jurusan ?? '-';
         $angkatanNama = $user->angkatan->nama_angkatan ?? '-';
 
         NotificationController::add(
             'user-registered',
             [
-                'title'     => 'Mahasiswa Menyelesaikan Pendaftaran',
-                'message'   => "Mahasiswa telah menyelesaikan pendaftarannya: {$user->nama_mahasiswa} ({$jurusanNama} - {$angkatanNama})",
-                'user_id'   => $user->id,
+                'title' => 'Mahasiswa Menyelesaikan Pendaftaran',
+                'message' => "Mahasiswa telah menyelesaikan pendaftarannya: {$user->nama_mahasiswa} ({$jurusanNama} - {$angkatanNama})",
+                'user_id' => $user->id,
                 'user_name' => $user->nama_mahasiswa,
-                'link'      => url(app()->getLocale() . '/admin/manageUser'),
+                'link' => url(app()->getLocale() . '/admin/manageUser'),
             ],
             'high'
         );
@@ -227,7 +227,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'login'    => ['required', 'string'],
+            'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
@@ -271,20 +271,20 @@ class UserController extends Controller
                 $passwordValid = true;
 
                 $userData = [
-                    'id'             => $user->id,
+                    'id' => $user->id,
                     'nama_mahasiswa' => $user->nama_mahasiswa,
-                    'nim'            => $user->nim,
-                    'tanggal_lahir'  => $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->format('Y-m-d') : null,
-                    'email'          => $user->email,
-                    'id_jurusan'     => $user->id_jurusan,
-                    'id_keahlian'    => $user->id_keahlian,
-                    'id_angkatan'    => $user->id_angkatan,
-                    'photo_profile'  => $user->photo_profile,
+                    'nim' => $user->nim,
+                    'tanggal_lahir' => $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir)->format('Y-m-d') : null,
+                    'email' => $user->email,
+                    'id_jurusan' => $user->id_jurusan,
+                    'id_keahlian' => $user->id_keahlian,
+                    'id_angkatan' => $user->id_angkatan,
+                    'photo_profile' => $user->photo_profile,
                 ];
 
                 session([
-                    'temp_user_id'               => $user->id,
-                    'temp_user_data'             => $userData,
+                    'temp_user_id' => $user->id,
+                    'temp_user_data' => $userData,
                     'incomplete_registration_data' => $userData,
                 ]);
 
@@ -304,9 +304,9 @@ class UserController extends Controller
         $hasPasskey = $user->passkeys()->count() > 0;
 
         if ($hasPasskey) {
-            session(['2fa_user_id'             => $user->id]);
+            session(['2fa_user_id' => $user->id]);
             session(['2fa_requires_verification' => true]);
-            session(['2fa_remember'             => $request->boolean('remember')]);
+            session(['2fa_remember' => $request->boolean('remember')]);
 
             return redirect()->route('2fa.verify');
         }
@@ -334,11 +334,11 @@ class UserController extends Controller
     public function updateStatusPengajuan(Request $request, $id)
     {
         $currentUser = Auth::user();
-        $user        = User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         if ($currentUser->role === 'dosen') {
             if (
-                $currentUser->id_jurusan  != $user->id_jurusan  ||
+                $currentUser->id_jurusan != $user->id_jurusan ||
                 $currentUser->id_angkatan != $user->id_angkatan ||
                 $currentUser->id_keahlian != $user->id_keahlian
             ) {
@@ -349,18 +349,18 @@ class UserController extends Controller
         }
 
         $request->validate([
-            'status_pengajuan'  => 'required|in:Di Terima,Di Tolak',
-            'keterangan_tolak'  => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:500',
+            'status_pengajuan' => 'required|in:Di Terima,Di Tolak',
+            'keterangan_tolak' => 'required_if:status_pengajuan,Di Tolak|nullable|string|max:500',
         ]);
 
         try {
             $updateData = ['status_pengajuan' => $request->status_pengajuan];
 
             if ($request->status_pengajuan === 'Di Terima') {
-                $updateData['is_active']  = true;
+                $updateData['is_active'] = true;
                 $updateData['keterangan'] = null;
             } else {
-                $updateData['is_active']  = false;
+                $updateData['is_active'] = false;
                 $updateData['keterangan'] = $request->keterangan_tolak;
             }
 
@@ -393,7 +393,7 @@ class UserController extends Controller
             'keahlianTambahan',
         ]);
 
-        $jurusans  = Jurusan::all();
+        $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
         $angkatans = Angkatan::all();
 
@@ -421,103 +421,103 @@ class UserController extends Controller
         }
 
         Keahlian_Tambahan::create([
-            'id_user'          => $user->id,
-            'id_keahlian'      => $id_keahlian,
-            'is_active'        => false,
+            'id_user' => $user->id,
+            'id_keahlian' => $id_keahlian,
+            'is_active' => false,
             'status_pengajuan' => 'Sedang Di Ajukan',
-            'keterangan'       => null,
+            'keterangan' => null,
         ]);
 
         return null;
     }
 
     public function updateProfile(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    // Quick upload foto saja
-    if ($request->hasFile('photo_profile') && count($request->all()) === 3) {
-        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
-            Storage::disk('public')->delete($user->photo_profile);
+        // Quick upload foto saja
+        if ($request->hasFile('photo_profile') && count($request->all()) === 3) {
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            $path = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+            $user->update(['photo_profile' => $path]);
+
+            return back()->with('success', 'Foto profil berhasil diperbarui!');
         }
-        $path = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-        $user->update(['photo_profile' => $path]);
 
-        return back()->with('success', 'Foto profil berhasil diperbarui!');
-    }
+        $rules = [
+            'nama_mahasiswa' => ['required', 'string', 'max:100'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email,' . $user->id],
+            'username' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z0-9_]+$/', 'unique:users,username,' . $user->id],
+            'id_jurusan' => ['nullable', 'exists:jurusan,id_jurusan'],
+            'id_keahlian' => ['nullable', 'exists:keahlian,id_keahlian'],
+            'id_angkatan' => ['nullable', 'exists:angkatan,id'],
+            'deskripsi' => ['nullable', 'string', 'max:1500'],
+            'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
+            'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'background_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
+            'id_keahlian_tambahan' => ['nullable', 'exists:keahlian,id_keahlian'],
+            'video_url' => ['nullable', 'url'],
+            'tanggal_lahir' => ['nullable', 'date', 'before_or_equal:today', 'after:1900-01-01'], // Tambahkan validasi tanggal lahir
+        ];
 
-    $rules = [
-        'nama_mahasiswa'      => ['required', 'string', 'max:100'],
-        'email'               => ['nullable', 'email', 'max:100', 'unique:users,email,' . $user->id],
-        'username'            => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z0-9_]+$/', 'unique:users,username,' . $user->id],
-        'id_jurusan'          => ['nullable', 'exists:jurusan,id_jurusan'],
-        'id_keahlian'         => ['nullable', 'exists:keahlian,id_keahlian'],
-        'id_angkatan'         => ['nullable', 'exists:angkatan,id'],
-        'deskripsi'           => ['nullable', 'string', 'max:1500'],
-        'jenis_kelamin'       => ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
-        'photo_profile'       => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-        'background_url'      => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
-        'id_keahlian_tambahan'=> ['nullable', 'exists:keahlian,id_keahlian'],
-        'video_url'           => ['nullable', 'url'],
-        'tanggal_lahir'       => ['nullable', 'date', 'before_or_equal:today', 'after:1900-01-01'], // Tambahkan validasi tanggal lahir
-    ];
-
-    if ($request->filled('password')) {
-        $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()->numbers(), 'regex:/^\S*$/'];
-    }
-
-    $validated = $request->validate($rules);
-
-    // Handle upload background
-    if ($request->hasFile('background_url')) {
-        if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
-            Storage::disk('public')->delete($user->background_url);
+        if ($request->filled('password')) {
+            $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()->numbers(), 'regex:/^\S*$/'];
         }
-        $validated['background_url'] = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
-    }
 
-    // Handle upload photo
-    if ($request->hasFile('photo_profile')) {
-        if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
-            Storage::disk('public')->delete($user->photo_profile);
+        $validated = $request->validate($rules);
+
+        // Handle upload background
+        if ($request->hasFile('background_url')) {
+            if ($user->background_url && Storage::disk('public')->exists($user->background_url)) {
+                Storage::disk('public')->delete($user->background_url);
+            }
+            $validated['background_url'] = ImageConversionService::storeWebp($request->file('background_url'), 'covers');
         }
-        $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-    }
 
-    // Handle password
-    if ($request->filled('password')) {
-        $validated['password'] = Hash::make($request->password);
-    } else {
-        unset($validated['password']);
-    }
-
-    // Handle tanggal_lahir - format ke Y-m-d jika ada
-    if ($request->filled('tanggal_lahir')) {
-        $validated['tanggal_lahir'] = Carbon::parse($request->tanggal_lahir)->format('Y-m-d');
-    } else {
-        // Jika tidak diisi, set ke null (opsional, tergantung kebutuhan)
-        $validated['tanggal_lahir'] = null;
-    }
-
-    // Handle keahlian tambahan
-    if ($request->filled('id_keahlian_tambahan')) {
-        $error = $this->addKeahlianTambahan($user, $request->id_keahlian_tambahan);
-        if ($error) {
-            return back()->with('error', $error);
+        // Handle upload photo
+        if ($request->hasFile('photo_profile')) {
+            if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
+                Storage::disk('public')->delete($user->photo_profile);
+            }
+            $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
         }
+
+        // Handle password
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
+        }
+
+        // Handle tanggal_lahir - format ke Y-m-d jika ada
+        if ($request->filled('tanggal_lahir')) {
+            $validated['tanggal_lahir'] = Carbon::parse($request->tanggal_lahir)->format('Y-m-d');
+        } else {
+            // Jika tidak diisi, set ke null (opsional, tergantung kebutuhan)
+            $validated['tanggal_lahir'] = null;
+        }
+
+        // Handle keahlian tambahan
+        if ($request->filled('id_keahlian_tambahan')) {
+            $error = $this->addKeahlianTambahan($user, $request->id_keahlian_tambahan);
+            if ($error) {
+                return back()->with('error', $error);
+            }
+        }
+
+        // Hapus nim dari validated array jika ada (karena NIM tidak boleh diupdate)
+        unset($validated['nim']);
+
+        // Hapus field yang tidak boleh diupdate atau tidak ada di tabel users
+        // id_keahlian_tambahan sudah ditangani terpisah, jadi hapus dari validated
+        unset($validated['id_keahlian_tambahan']);
+
+        $user->update($validated);
+
+        return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');
     }
-
-    // Hapus nim dari validated array jika ada (karena NIM tidak boleh diupdate)
-    unset($validated['nim']);
-    
-    // Hapus field yang tidak boleh diupdate atau tidak ada di tabel users
-    // id_keahlian_tambahan sudah ditangani terpisah, jadi hapus dari validated
-    unset($validated['id_keahlian_tambahan']);
-
-    $user->update($validated);
-
-    return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');
-}
 
     // =========================================================
     // PENGALAMAN KERJA
@@ -531,12 +531,12 @@ class UserController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'nama_pt'               => 'required|string|max:200',
-            'bagian_kerja'          => 'required|string|max:200',
-            'tahun_mulai'           => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'tahun_akhir'           => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'masih_bekerja'         => 'nullable|boolean',
-            'sertifikat_pendukung'  => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:5120',
+            'nama_pt' => 'required|string|max:200',
+            'bagian_kerja' => 'required|string|max:200',
+            'tahun_mulai' => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'tahun_akhir' => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'masih_bekerja' => 'nullable|boolean',
+            'sertifikat_pendukung' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:5120',
         ]);
 
         $sertifikatPath = null;
@@ -546,13 +546,13 @@ class UserController extends Controller
 
         $pengalamanLama = $user->pengalaman_kerja ?? [];
         $pengalamanBaru = [
-            'id'                    => uniqid(),
-            'nama_pt'               => $request->nama_pt,
-            'bagian_kerja'          => $request->bagian_kerja,
-            'tahun_mulai'           => $request->tahun_mulai,
-            'tahun_akhir'           => $request->boolean('masih_bekerja') ? null : $request->tahun_akhir,
-            'masih_bekerja'         => $request->boolean('masih_bekerja'),
-            'sertifikat_pendukung'  => $sertifikatPath,
+            'id' => uniqid(),
+            'nama_pt' => $request->nama_pt,
+            'bagian_kerja' => $request->bagian_kerja,
+            'tahun_mulai' => $request->tahun_mulai,
+            'tahun_akhir' => $request->boolean('masih_bekerja') ? null : $request->tahun_akhir,
+            'masih_bekerja' => $request->boolean('masih_bekerja'),
+            'sertifikat_pendukung' => $sertifikatPath,
         ];
 
         $pengalamanLama[] = $pengalamanBaru;
@@ -567,7 +567,7 @@ class UserController extends Controller
      */
     public function destroyPengalamanKerja(Request $request)
     {
-        $id   = $request->query('id');
+        $id = $request->query('id');
         $user = Auth::user();
 
         if (!$id) {
@@ -575,7 +575,7 @@ class UserController extends Controller
         }
 
         $pengalamanList = $user->pengalaman_kerja ?? [];
-        $found          = false;
+        $found = false;
 
         foreach ($pengalamanList as $key => $item) {
             if ($item['id'] === $id) {
@@ -611,21 +611,22 @@ class UserController extends Controller
 
         $request->validate([
             'nama_sekolah' => 'required|string|max:300',
-            'jenjang'      => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
-            'jurusan_sek'  => 'nullable|string|max:200',
-            'tahun_masuk'  => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'tahun_lulus'  => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'jenjang' => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
+            'jurusan_sek' => 'nullable|string|max:200',
+            // tanggal-bulan-tahun
+            'tahun_masuk' => 'required|date|before_or_equal:today',
+            'tahun_lulus' => 'nullable|date|after:tahun_masuk|before_or_equal:today',
             'masih_kuliah' => 'nullable|boolean',
         ]);
 
         $pendidikanLama = $user->pendidikan ?? [];
         $pendidikanBaru = [
-            'id'           => uniqid(),
+            'id' => uniqid(),
             'nama_sekolah' => $request->nama_sekolah,
-            'jenjang'      => $request->jenjang,
-            'jurusan_sek'  => $request->jurusan_sek,
-            'tahun_masuk'  => $request->tahun_masuk,
-            'tahun_lulus'  => $request->boolean('masih_kuliah') ? null : $request->tahun_lulus,
+            'jenjang' => $request->jenjang,
+            'jurusan_sek' => $request->jurusan_sek,
+            'tahun_masuk' => $request->tahun_masuk,
+            'tahun_lulus' => $request->boolean('masih_kuliah') ? null : $request->tahun_lulus,
             'masih_kuliah' => $request->boolean('masih_kuliah'),
         ];
 
@@ -644,7 +645,7 @@ class UserController extends Controller
      */
     public function destroyPendidikan(Request $request)
     {
-        $id   = $request->query('id');
+        $id = $request->query('id');
         $user = Auth::user();
 
         if (!$id) {
@@ -652,7 +653,7 @@ class UserController extends Controller
         }
 
         $pendidikanList = $user->pendidikan ?? [];
-        $found          = false;
+        $found = false;
 
         foreach ($pendidikanList as $key => $item) {
             if ($item['id'] === $id) {
@@ -750,7 +751,7 @@ class UserController extends Controller
 
         try {
             // Coba gunakan API eksternal Sekolah Indonesia
-            $client   = new \Illuminate\Http\Client\Factory();
+            $client = new \Illuminate\Http\Client\Factory();
             $response = \Illuminate\Support\Facades\Http::timeout(5)
                 ->get('https://api-sekolah-indonesia.vercel.app/sekolah', [
                     's' => $query,
@@ -764,10 +765,10 @@ class UserController extends Controller
                 $sekolahList = collect($data['dataSekolah'] ?? [])
                     ->take(10)
                     ->map(fn($s) => [
-                        'nama'      => $s['sekolah'] ?? $s['nama'] ?? '',
-                        'kota'      => $s['kabkota']  ?? $s['kota'] ?? '',
-                        'provinsi'  => $s['propinsi']  ?? $s['provinsi'] ?? '',
-                        'jenjang'   => $s['bentuk']    ?? '',
+                        'nama' => $s['sekolah'] ?? $s['nama'] ?? '',
+                        'kota' => $s['kabkota'] ?? $s['kota'] ?? '',
+                        'provinsi' => $s['propinsi'] ?? $s['provinsi'] ?? '',
+                        'jenjang' => $s['bentuk'] ?? '',
                     ])
                     ->filter(fn($s) => !empty($s['nama']))
                     ->values();
@@ -798,106 +799,108 @@ class UserController extends Controller
         ];
 
         $queryLower = strtolower($query);
-        $filtered   = array_filter($sekolahStatis, fn($s) => str_contains(strtolower($s['nama']), $queryLower));
+        $filtered = array_filter($sekolahStatis, fn($s) => str_contains(strtolower($s['nama']), $queryLower));
 
         return response()->json(array_values($filtered));
     }
 
     public function detailPengalamanKerja(Request $request)
-{
-    $id = $request->query('id');
-    $user = Auth::user();
-    $list = $user->pengalaman_kerja ?? [];
-    $item = collect($list)->firstWhere('id', $id);
-    if (!$item) return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-    return response()->json(['success' => true, 'data' => $item]);
-}
+    {
+        $id = $request->query('id');
+        $user = Auth::user();
+        $list = $user->pengalaman_kerja ?? [];
+        $item = collect($list)->firstWhere('id', $id);
+        if (!$item)
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        return response()->json(['success' => true, 'data' => $item]);
+    }
 
-public function updatePengalamanKerja(Request $request)
-{
-    $id   = $request->query('id');
-    $user = Auth::user();
+    public function updatePengalamanKerja(Request $request)
+    {
+        $id = $request->query('id');
+        $user = Auth::user();
 
-    $request->validate([
-        'nama_pt'       => 'required|string|max:200',
-        'bagian_kerja'  => 'required|string|max:200',
-        'tahun_mulai'   => 'required|digits:4|integer|min:1950|max:'.(date('Y')+1),
-        'tahun_akhir'   => 'nullable|digits:4|integer|min:1950|max:'.(date('Y')+1),
-        'masih_bekerja' => 'nullable|boolean',
-    ]);
+        $request->validate([
+            'nama_pt' => 'required|string|max:200',
+            'bagian_kerja' => 'required|string|max:200',
+            'tahun_mulai' => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'tahun_akhir' => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'masih_bekerja' => 'nullable|boolean',
+        ]);
 
-    $list  = $user->pengalaman_kerja ?? [];
-    $found = false;
+        $list = $user->pengalaman_kerja ?? [];
+        $found = false;
 
-    foreach ($list as &$entry) {   // ✅ pakai &
-        if ($entry['id'] === $id) {
-            $entry['nama_pt']       = $request->nama_pt;
-            $entry['bagian_kerja']  = $request->bagian_kerja;
-            $entry['tahun_mulai']   = $request->tahun_mulai;
-            $entry['masih_bekerja'] = $request->boolean('masih_bekerja');
-            $entry['tahun_akhir']   = $request->boolean('masih_bekerja') ? null : $request->tahun_akhir;
-            $found = true;
-            break;
+        foreach ($list as &$entry) {   // ✅ pakai &
+            if ($entry['id'] === $id) {
+                $entry['nama_pt'] = $request->nama_pt;
+                $entry['bagian_kerja'] = $request->bagian_kerja;
+                $entry['tahun_mulai'] = $request->tahun_mulai;
+                $entry['masih_bekerja'] = $request->boolean('masih_bekerja');
+                $entry['tahun_akhir'] = $request->boolean('masih_bekerja') ? null : $request->tahun_akhir;
+                $found = true;
+                break;
+            }
         }
-    }
-    unset($entry); // ✅ wajib
+        unset($entry); // ✅ wajib
 
-    if (!$found) {
-        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-    }
-
-    $user->update(['pengalaman_kerja' => $list]);
-    return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil diperbarui']);
-}
-
-public function detailPendidikan(Request $request)
-{
-    $id = $request->query('id');
-    $user = Auth::user();
-    $list = $user->pendidikan ?? [];
-    $item = collect($list)->firstWhere('id', $id);
-    if (!$item) return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-    return response()->json(['success' => true, 'data' => $item]);
-}
-
-public function updatePendidikan(Request $request)
-{
-    $id   = $request->query('id');
-    $user = Auth::user();
-
-    $request->validate([
-        'nama_sekolah' => 'required|string|max:300',
-        'jenjang'      => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
-        'jurusan_sek'  => 'nullable|string|max:200',
-        'tahun_masuk'  => 'required|digits:4|integer|min:1950|max:'.(date('Y')+1),
-        'tahun_lulus'  => 'nullable|digits:4|integer|min:1950|max:'.(date('Y')+1),
-        'masih_kuliah' => 'nullable|boolean',
-    ]);
-
-    $list  = $user->pendidikan ?? [];
-    $found = false;
-
-    foreach ($list as &$entry) {   // ✅ pakai & (reference) dan nama berbeda
-        if ($entry['id'] === $id) {
-            $entry['nama_sekolah'] = $request->nama_sekolah;
-            $entry['jenjang']      = $request->jenjang;
-            $entry['jurusan_sek']  = $request->jurusan_sek;
-            $entry['tahun_masuk']  = $request->tahun_masuk;
-            $entry['masih_kuliah'] = $request->boolean('masih_kuliah');
-            $entry['tahun_lulus']  = $request->boolean('masih_kuliah') ? null : $request->tahun_lulus;
-            $found = true;
-            break;
+        if (!$found) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
-    }
-    unset($entry); // ✅ wajib lepas reference
 
-    if (!$found) {
-        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        $user->update(['pengalaman_kerja' => $list]);
+        return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil diperbarui']);
     }
 
-    $user->update(['pendidikan' => $list]);
-    return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil diperbarui']);
-}
+    public function detailPendidikan(Request $request)
+    {
+        $id = $request->query('id');
+        $user = Auth::user();
+        $list = $user->pendidikan ?? [];
+        $item = collect($list)->firstWhere('id', $id);
+        if (!$item)
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        return response()->json(['success' => true, 'data' => $item]);
+    }
+
+    public function updatePendidikan(Request $request)
+    {
+        $id = $request->query('id');
+        $user = Auth::user();
+
+        $request->validate([
+            'nama_sekolah' => 'required|string|max:300',
+            'jenjang' => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
+            'jurusan_sek' => 'nullable|string|max:200',
+            'tahun_masuk' => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'tahun_lulus' => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
+            'masih_kuliah' => 'nullable|boolean',
+        ]);
+
+        $list = $user->pendidikan ?? [];
+        $found = false;
+
+        foreach ($list as &$entry) {   // ✅ pakai & (reference) dan nama berbeda
+            if ($entry['id'] === $id) {
+                $entry['nama_sekolah'] = $request->nama_sekolah;
+                $entry['jenjang'] = $request->jenjang;
+                $entry['jurusan_sek'] = $request->jurusan_sek;
+                $entry['tahun_masuk'] = $request->tahun_masuk;
+                $entry['masih_kuliah'] = $request->boolean('masih_kuliah');
+                $entry['tahun_lulus'] = $request->boolean('masih_kuliah') ? null : $request->tahun_lulus;
+                $found = true;
+                break;
+            }
+        }
+        unset($entry); // ✅ wajib lepas reference
+
+        if (!$found) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $user->update(['pendidikan' => $list]);
+        return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil diperbarui']);
+    }
 
 
 }
