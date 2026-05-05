@@ -190,6 +190,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
                                 </svg>
                                 {{autotranslate('Postingannya')}}
+                                
                             </h3>
                             <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">
                                 {{ $postingans->total() ?? 0 }} postingan
