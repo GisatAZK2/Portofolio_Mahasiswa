@@ -1015,6 +1015,13 @@
                                             strtolower(pathinfo($linkSertif, PATHINFO_EXTENSION)),
                                             ['jpg', 'jpeg', 'png', 'gif', 'webp']
                                         );
+                                        $expiredAt = $sertifikat->expired_date ? \Carbon\Carbon::parse($sertifikat->expired_date) : null;
+                                        $statusBerlaku = $expiredAt
+                                            ? ($expiredAt->isFuture() || $expiredAt->isToday()
+                                                ? autoTranslate('Masih Berlaku')
+                                                : autoTranslate('Kadarluwasa'))
+                                            : autoTranslate('Permanen');
+                                        $expiredText = $expiredAt ? $expiredAt->format('d F Y') : null;
                                     @endphp
 
                                     <div class="border border-gray-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-md transition">
@@ -1029,7 +1036,14 @@
                                                     <div class="flex-1">
                                                         <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ $namaSertif }}</h4>
                                                         <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ $lembaga }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-200 mt-1">Diterbitkan {{ $tanggal }}</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-200 mt-1">{{ autoTranslate('Diterbitkan') }} {{ $tanggal }}</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-200 mt-1">
+                                                            <span class="font-semibold">{{ autoTranslate('Status Berlaku') }}:</span>
+                                                            <span class="ml-1 text-sm text-gray-700 dark:text-gray-300">{{ $statusBerlaku }}</span>
+                                                            @if($expiredText)
+                                                                | {{ autoTranslate('Tanggal Kadaluarsa') }} {{ $expiredText }}
+                                                            @endif
+                                                        </p>
                                                     </div>
                                                 </div>
 

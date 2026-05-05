@@ -305,13 +305,35 @@
                             class="text-red-500">*</span>
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
-                        required max="{{ date('Y-m-d') }}"
+                        required
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400"><span data-translate="max_tggl"
-                            data-translate-page="admin">Maksimal tanggal hari ini</span></p>
+                </div>
+
+                <!-- Sertifikat Berlaku Permanen -->
+                <div class="flex items-center gap-3 mb-4">
+                    <input type="checkbox" id="permanent" name="permanent" value="1"
+                        {{ old('permanent') ? 'checked' : '' }}
+                        class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="permanent" class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                        Sertifikat Berlaku Permanen
+                    </label>
+                </div>
+
+                <!-- Tanggal Expired -->
+                <div id="expired-date-container">
+                    <label for="expired_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="exp_date" data-translate-page="admin">Tanggal Expired</span> <span
+                            class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="expired_date" id="expired_date" value="{{ old('expired_date') }}"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition @error('expired_date') border-red-500 @enderror">
+                    @error('expired_date')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Upload File Sertifikat -->
@@ -519,6 +541,27 @@
                 });
             }
         });
+
+        // Permanent Certificate Toggle
+        const permanentCheckbox = document.getElementById('permanent');
+        const expiredDateContainer = document.getElementById('expired-date-container');
+        const expiredDateInput = document.getElementById('expired_date');
+
+        function updateExpiredDateState() {
+            if (permanentCheckbox.checked) {
+                expiredDateContainer.style.display = 'none';
+                expiredDateInput.required = false;
+                expiredDateInput.value = '';
+            } else {
+                expiredDateContainer.style.display = 'block';
+                expiredDateInput.required = true;
+            }
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+            updateExpiredDateState(); // Initial state
+        }
     </script>
 
     <!-- Page Info -->

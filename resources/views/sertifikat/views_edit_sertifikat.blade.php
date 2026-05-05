@@ -85,7 +85,7 @@
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
-                        required max="{{ date('Y-m-d') }}"
+                        required
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
@@ -94,7 +94,38 @@
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="max_date"
+                </div>
+
+                <!-- Sertifikat Berlaku Permanen -->
+                <div class="flex items-center gap-3 mb-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="permanent" name="permanent" value="1"
+                            {{ old('permanent', $sertifikat->expired_date ? false : true) ? 'checked' : '' }}
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">
+                            {{ autoTranslate('Sertifikat berlaku permanen') }}
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Expired Date -->
+                <div id="expired_date_block">
+                    <label for="expired_date" class="block text-sm font-medium dark:text-gray-100 text-gray-700 mb-2">
+                        <span data-translate="expired_date" data-translate-page="sertifikat_edit"></span> <span
+                            class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="expired_date" id="expired_date"
+                        value="{{ old('expired_date', $sertifikat->expired_date ? \Carbon\Carbon::parse($sertifikat->expired_date)->format('Y-m-d') : '') }}"
+                        required
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                      text-gray-700 dark:text-gray-300
+                                      placeholder-gray-500 dark:placeholder-gray-400
+                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('expired_date') border-red-500 @enderror">
+                    @error('expired_date')
+                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+                    @enderror
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="expired_date_desc"
                         data-translate-page="sertifikat_edit"></p>
                 </div>
 
@@ -312,6 +343,78 @@
             }
         }
 
+        // Validasi tanggal expired harus setelah tanggal terbit
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+        const expiredDateInput = document.getElementById('expired_date');
+        const permanentCheckbox = document.getElementById('permanent');
+        const expiredDateBlock = document.getElementById('expired_date_block');
+        
+        function updateExpiredDateState() {
+            if (!expiredDateInput) {
+                return;
+            }
+            const isPermanent = permanentCheckbox?.checked;
+
+            if (isPermanent) {
+                expiredDateInput.value = '';
+                expiredDateInput.disabled = true;
+                expiredDateInput.required = false;
+                expiredDateInput.classList.add('opacity-60');
+                expiredDateBlock.classList.add('opacity-60');
+            } else {
+                expiredDateInput.disabled = false;
+                expiredDateInput.required = true;
+                expiredDateInput.classList.remove('opacity-60');
+                expiredDateBlock.classList.remove('opacity-60');
+            }
+        }
+
+        function validateExpiredDate() {
+            if (permanentCheckbox?.checked) {
+                expiredDateInput.setCustomValidity('');
+                return true;
+            }
+
+            if (tanggalTerbitInput.value && expiredDateInput.value) {
+                const tanggalTerbit = new Date(tanggalTerbitInput.value);
+                const expiredDate = new Date(expiredDateInput.value);
+                
+                if (expiredDate <= tanggalTerbit) {
+                    expiredDateInput.setCustomValidity('Tanggal expired harus setelah tanggal terbit');
+                    expiredDateInput.reportValidity();
+                    return false;
+                } else {
+                    expiredDateInput.setCustomValidity('');
+                    return true;
+                }
+            }
+            return true;
+        }
+        
+        // Event listeners untuk validasi tanggal
+        if (tanggalTerbitInput && expiredDateInput) {
+            tanggalTerbitInput.addEventListener('change', function() {
+                // Set min attribute untuk expired_date
+                if (this.value) {
+                    const nextDay = new Date(this.value);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    expiredDateInput.min = nextDay.toISOString().split('T')[0];
+                }
+                validateExpiredDate();
+            });
+            
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+            
+            // Initial validation
+            validateExpiredDate();
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+        }
+
+        updateExpiredDateState();
+
         // Handle drag and drop
         document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.querySelector('.border-dashed');
@@ -375,20 +478,28 @@
         });
 
         // Konfirmasi sebelum submit jika ada perubahan file
-        document.querySelector('form').addEventListener('submit', function (e) {
-            const fileInput = document.getElementById('link_sertifikat');
-            @if($sertifikat->link_sertifikat)
-                const replaceCheckbox = document.getElementById('replace-file-checkbox');
-
-                if (fileInput.files.length > 0 && replaceCheckbox && !replaceCheckbox.checked) {
-                    // Auto check replace checkbox jika user memilih file tapi belum mencentang
-                    replaceCheckbox.checked = true;
-                    toggleFileUpload(replaceCheckbox);
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                // Validasi expired date sebelum submit
+                if (!validateExpiredDate()) {
+                    e.preventDefault();
+                    return false;
                 }
-            @endif
-            });
-    </script>
+                
+                const fileInput = document.getElementById('link_sertifikat');
+                @if($sertifikat->link_sertifikat)
+                    const replaceCheckbox = document.getElementById('replace-file-checkbox');
 
+                    if (fileInput.files.length > 0 && replaceCheckbox && !replaceCheckbox.checked) {
+                        // Auto check replace checkbox jika user memilih file tapi belum mencentang
+                        replaceCheckbox.checked = true;
+                        toggleFileUpload(replaceCheckbox);
+                    }
+                @endif
+            });
+        }
+    </script>
 
     <!-- Page Info -->
     <script>

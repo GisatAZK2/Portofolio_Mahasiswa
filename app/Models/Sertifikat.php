@@ -16,6 +16,7 @@ class Sertifikat extends Model
         'nama_sertifikat',
         'lembaga_penerbit',
         'tanggal_terbit',
+        'expired_date',
         'link_sertifikat',
         'id_mahasiswa',
         'status_pengajuan',

@@ -18,7 +18,7 @@
 
             <!-- Form Edit Sertifikat -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <form method="POST" action="{{ route('admin.sertifikat.update', $sertifikat->id) }}"
+                <form method="POST" action="{{ route('admin.sertifikat.update') }}?id={{ $sertifikat->id }}">
                     enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
@@ -65,13 +65,37 @@
                             </label>
                             <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                                 value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
-                                required max="{{ date('Y-m-d') }}"
+                                required
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('tanggal_terbit') border-red-500 @enderror">
                             @error('tanggal_terbit')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" data-translate="desc_launch"
-                                data-translate-page="stk_admin_edit">Maksimal tanggal hari ini</p>
+                        </div>
+
+                        <!-- Sertifikat Berlaku Permanen -->
+                        <div class="col-span-2 flex items-center gap-3 mb-4">
+                            <input type="checkbox" id="permanent" name="permanent" value="1"
+                                {{ old('permanent', $sertifikat->expired_date ? false : true) ? 'checked' : '' }}
+                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="permanent" class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                Sertifikat Berlaku Permanen
+                            </label>
+                        </div>
+
+                        <!-- Tanggal Expired -->
+                        <div class="col-span-2" id="expired-date-container">
+                            <label for="expired_date"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <span data-translate="exp_date" data-translate-page="stk_admin_edit">Tanggal Expired</span>
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="expired_date" id="expired_date"
+                                value="{{ old('expired_date', $sertifikat->expired_date ? \Carbon\Carbon::parse($sertifikat->expired_date)->format('Y-m-d') : '') }}"
+                                required
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('expired_date') border-red-500 @enderror">
+                            @error('expired_date')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- File Sertifikat -->

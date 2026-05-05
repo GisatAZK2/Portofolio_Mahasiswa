@@ -74,24 +74,54 @@
                 </div>
 
                 <!-- Tanggal Terbit -->
-                <div>
-                    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_create"></span> <span
-                            class="text-red-500">*</span>
-                    </label>
-                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
-                        required max="{{ date('Y-m-d') }}"
-                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                                      text-gray-700 dark:text-gray-300
-                                      placeholder-gray-500 dark:placeholder-gray-400
-                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
-                    @error('tanggal_terbit')
-                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
-                    @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50" data-translate="max_date"
-                        data-translate-page="sertifikat_create"></p>
-                </div>
+<div>
+    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_create"></span> <span
+            class="text-red-500">*</span>
+    </label>
+    <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
+        required
+        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                      text-gray-700 dark:text-gray-300
+                      placeholder-gray-500 dark:placeholder-gray-400
+                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
+    @error('tanggal_terbit')
+        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+    @enderror
+</div>
+
+<!-- Sertifikat Berlaku Permanen -->
+<div class="flex items-center gap-3 mb-4">
+    <label class="inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="permanent" name="permanent" value="1"
+            @checked(old('permanent'))
+            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+        <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">
+            {{ autoTranslate('Sertifikat berlaku permanen') }}
+        </span>
+    </label>
+</div>
+
+<!-- Expired Date -->
+<div id="expired_date_block">
+    <label for="expired_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+        <span data-translate="expired_date" data-translate-page="sertifikat_create"></span> <span
+            class="text-red-500">*</span>
+    </label>
+    <input type="date" name="expired_date" id="expired_date" value="{{ old('expired_date') }}"
+        required
+        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                      text-gray-700 dark:text-gray-300
+                      placeholder-gray-500 dark:placeholder-gray-400
+                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('expired_date') border-red-500 @enderror">
+    @error('expired_date')
+        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+    @enderror
+    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50" data-translate="expired_date_desc"
+        data-translate-page="sertifikat_create"></p>
+</div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
@@ -258,6 +288,85 @@
                     const event = new Event('change', { bubbles: true });
                     fileInput.dispatchEvent(event);
                 }
+            }
+        });
+    </script>
+    <script>
+        // Validasi tanggal expired harus setelah tanggal terbit
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+        const expiredDateInput = document.getElementById('expired_date');
+        const permanentCheckbox = document.getElementById('permanent');
+        const expiredDateBlock = document.getElementById('expired_date_block');
+        
+        function updateExpiredDateState() {
+            if (!expiredDateInput) {
+                return;
+            }
+            const isPermanent = permanentCheckbox?.checked;
+
+            if (isPermanent) {
+                expiredDateInput.value = '';
+                expiredDateInput.disabled = true;
+                expiredDateInput.required = false;
+                expiredDateInput.classList.add('opacity-60');
+                expiredDateBlock.classList.add('opacity-60');
+            } else {
+                expiredDateInput.disabled = false;
+                expiredDateInput.required = true;
+                expiredDateInput.classList.remove('opacity-60');
+                expiredDateBlock.classList.remove('opacity-60');
+            }
+        }
+
+        function validateExpiredDate() {
+            if (permanentCheckbox?.checked) {
+                expiredDateInput.setCustomValidity('');
+                return true;
+            }
+
+            if (tanggalTerbitInput.value && expiredDateInput.value) {
+                const tanggalTerbit = new Date(tanggalTerbitInput.value);
+                const expiredDate = new Date(expiredDateInput.value);
+                
+                if (expiredDate <= tanggalTerbit) {
+                    expiredDateInput.setCustomValidity('Tanggal expired harus setelah tanggal terbit');
+                    expiredDateInput.reportValidity();
+                    return false;
+                } else {
+                    expiredDateInput.setCustomValidity('');
+                    return true;
+                }
+            }
+            return true;
+        }
+        
+        // Event listeners
+        if (tanggalTerbitInput && expiredDateInput) {
+            tanggalTerbitInput.addEventListener('change', function() {
+                // Set min attribute untuk expired_date
+                if (this.value) {
+                    const nextDay = new Date(this.value);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    expiredDateInput.min = nextDay.toISOString().split('T')[0];
+                }
+                validateExpiredDate();
+            });
+            
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+        }
+
+        updateExpiredDateState();
+        
+        // Validasi sebelum submit form
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            updateExpiredDateState();
+            if (!validateExpiredDate()) {
+                e.preventDefault();
             }
         });
     </script>

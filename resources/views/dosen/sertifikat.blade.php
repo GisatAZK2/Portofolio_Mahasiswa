@@ -235,6 +235,16 @@
                                             $statusClass = 'bg-gray-100 text-gray-800';
                                             $statusText = $entry->status_pengajuan ?? 'Unknown';
                                         }
+
+                                        $expiredAt = $entry->expired_date ? \Carbon\Carbon::parse($entry->expired_date) : null;
+                                        $validityStatus = $expiredAt
+                                            ? ($expiredAt->isFuture() || $expiredAt->isToday()
+                                                ? autoTranslate('Masih Berlaku')
+                                                : autoTranslate('Kadarluwasa'))
+                                            : autoTranslate('Permanen');
+                                        $validityClass = $expiredAt
+                                            ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'text-green-600' : 'text-red-600')
+                                            : 'text-indigo-600';
                                     @endphp
 
                                     <span class="text-xs font-medium px-2 py-1 rounded-full {{ $statusClass }}">
@@ -244,6 +254,9 @@
                             </div>
 
                             <div class="p-6 flex-1 flex flex-col">
+                                @php
+                                    $expiredLabel = $expiredAt ? $expiredAt->format('d F Y') : null;
+                                @endphp
                                 <!-- Nama Sertifikat -->
                                 <div class="mb-3">
                                     <span class="text-xs text-gray-500 dark:text-gray-400" data-translate="nm_stk"
@@ -285,6 +298,18 @@
                                     <span
                                         class="text-sm">{{ \Carbon\Carbon::parse($entry->tanggal_terbit)->format('d F Y') }}</span>
                                 </div>
+
+                                <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
+                                    <span class="text-sm font-semibold">{{ autoTranslate('Status Berlaku') }}:</span>
+                                    <span class="ml-2 text-sm font-medium {{ $validityClass }}">{{ $validityStatus }}</span>
+                                </div>
+
+                                @if($expiredLabel)
+                                    <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
+                                        <span class="text-sm font-semibold">{{ autoTranslate('Tanggal Kadaluarsa') }}:</span>
+                                        <span class="ml-2 text-sm">{{ $expiredLabel }}</span>
+                                    </div>
+                                @endif
 
                                 <!-- Link Sertifikat -->
                                 @if($entry->link_sertifikat && $entry->status_pengajuan == 'Di Terima' && $entry->is_active == 1)

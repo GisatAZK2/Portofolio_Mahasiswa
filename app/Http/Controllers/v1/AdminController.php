@@ -121,6 +121,7 @@ class AdminController extends Controller
 
         return $savedTaskIds;
     }
+
     public function index()
     {
         $this->authorizeAccess();
@@ -1171,6 +1172,8 @@ private function parseDate($date): ?string
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
             'tanggal_terbit' => 'required|date',
+            'expired_date' => 'required_without:permanent|nullable|date|after:tanggal_terbit',
+            'permanent' => 'nullable|boolean',
             'link_sertifikat' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
             'user_id' => 'required|string|max:255'
         ]);
@@ -1194,6 +1197,7 @@ private function parseDate($date): ?string
             'nama_sertifikat' => $validated['nama_sertifikat'],
             'lembaga_penerbit' => $validated['lembaga_penerbit'],
             'tanggal_terbit' => $validated['tanggal_terbit'],
+            'expired_date' => $request->has('permanent') ? null : $validated['expired_date'],
             'link_sertifikat' => $validated['link_sertifikat'],
 
             'status_pengajuan' => 'Di Terima',
@@ -1221,6 +1225,8 @@ private function parseDate($date): ?string
             'nama_sertifikat' => 'required|string|max:255',
             'lembaga_penerbit' => 'required|string|max:255',
             'tanggal_terbit' => 'required|date',
+            'expired_date' => 'required_without:permanent|nullable|date|after:tanggal_terbit',
+            'permanent' => 'nullable|boolean',
             'link_sertifikat' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
         ]);
 
@@ -1232,6 +1238,8 @@ private function parseDate($date): ?string
         } else {
             $validated['link_sertifikat'] = $sertifikat->link_sertifikat;
         }
+
+        $validated['expired_date'] = $request->has('permanent') ? null : $validated['expired_date'];
 
         $sertifikat->update($validated);
 

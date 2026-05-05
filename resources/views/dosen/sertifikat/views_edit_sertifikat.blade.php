@@ -85,7 +85,7 @@
                     </label>
                     <input type="date" name="tanggal_terbit" id="tanggal_terbit"
                         value="{{ old('tanggal_terbit', $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->format('Y-m-d') : '') }}"
-                        required max="{{ date('Y-m-d') }}"
+                        required
                         class="w-full px-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                             focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                             text-gray-700 dark:text-gray-300
@@ -94,8 +94,6 @@
                     @error('tanggal_terbit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="maks_tggl"
-                        data-translate-page="dosen_stk_edit">Maksimal tanggal hari ini</p>
                 </div>
 
                 <!-- Current File Information -->

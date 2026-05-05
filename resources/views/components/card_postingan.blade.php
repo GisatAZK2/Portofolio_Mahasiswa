@@ -688,6 +688,19 @@
                 </p>
             @endif
 
+            @php
+                $expiredAt = $post->expired_date ? \Carbon\Carbon::parse($post->expired_date) : null;
+                $validityStatus = $expiredAt
+                    ? ($expiredAt->isFuture() || $expiredAt->isToday()
+                        ? autoTranslate('Masih Berlaku')
+                        : autoTranslate('Kadarluwasa'))
+                    : autoTranslate('Permanen');
+                $validityClass = $expiredAt
+                    ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'text-green-800' : 'text-red-800')
+                    : 'text-indigo-800';
+                $expiredText = $expiredAt ? $expiredAt->translatedFormat('d M Y') : null;
+            @endphp
+
             <div class="flex items-center gap-2 mb-3">
                 @if($post->status_pengajuan === 'Di Terima')
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -701,6 +714,14 @@
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                         ⊙ {{ autoTranslate('Pengajuan') }}
                     </span>
+                @endif
+            </div>
+
+            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3">
+                <span class="font-medium">{{ autoTranslate('Status Berlaku') }}:</span>
+                <span class="ml-1 font-medium {{ $validityClass }}">{{ $validityStatus }}</span>
+                @if($expiredText)
+                    | <span class="font-medium">{{ autoTranslate('Kadaluarsa:') }}</span> {{ $expiredText }}
                 @endif
             </div>
 

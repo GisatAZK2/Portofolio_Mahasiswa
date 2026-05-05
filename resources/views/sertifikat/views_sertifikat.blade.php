@@ -100,6 +100,18 @@
                         </div>
 
                         <div class="p-6 flex-1 flex flex-col">
+                            @php
+                                $expiredAt = $entry->expired_date ? \Carbon\Carbon::parse($entry->expired_date) : null;
+                                $validityStatus = $expiredAt
+                                    ? ($expiredAt->isFuture() || $expiredAt->isToday()
+                                        ? autoTranslate('Masih Berlaku')
+                                        : autoTranslate('Kadarluwasa'))
+                                    : autoTranslate('Permanen');
+                                $validityStatusClass = $expiredAt
+                                    ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'text-green-600' : 'text-red-600')
+                                    : 'text-indigo-600';
+                            @endphp
+
                             <!-- Nama Sertifikat -->
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
                                 {{ autoTranslate($entry->nama_sertifikat) }}
@@ -123,6 +135,18 @@
                                 </svg>
                                 <span class="text-sm">{{ \Carbon\Carbon::parse($entry->tanggal_terbit)->format('d F Y') }}</span>
                             </div>
+
+                            <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
+                                <span class="text-sm font-semibold">{{ autoTranslate('Status Berlaku') }}:</span>
+                                <span class="ml-2 text-sm font-medium {{ $validityStatusClass }}">{{ $validityStatus }}</span>
+                            </div>
+
+                            @if($expiredAt)
+                                <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
+                                    <span class="text-sm font-semibold">{{ autoTranslate('Tanggal Kadaluarsa') }}:</span>
+                                    <span class="ml-2 text-sm">{{ $expiredAt->format('d F Y') }}</span>
+                                </div>
+                            @endif
 
                             <!-- Link Sertifikat -->
                             @if($entry->link_sertifikat)

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama_sertifikat');
             $table->string('lembaga_penerbit');
             $table->date('tanggal_terbit');
+            $table->date('expired_date')->nullable();
             $table->string('link_sertifikat')->nullable();
             $table->unsignedBigInteger('id_mahasiswa');
                 $table->foreign('id_mahasiswa')

@@ -37,22 +37,6 @@
                             </ul>
                         </div>
                     </div>
-                <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-r-xl">
-                    <div class="flex items-start gap-3">
-                        <div class="flex-shrink-0 w-5 h-5 text-red-500 mt-0.5">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2">{{ autoTranslate('Terdapat kesalahan pada input:') }}</p>
-                            <ul class="text-sm text-red-700 dark:text-red-300 space-y-1 list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ autoTranslate($error) }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             @endif
 
@@ -104,49 +88,6 @@
                         </div>
                     </div>
 
-                    <!-- Game Option Section -->
-                    @if (Auth::user()->role !== 'mahasiswa')
-                        <div class="border-t border-gray-100 dark:border-gray-700 p-5 sm:p-6 bg-gray-50/30 dark:bg-gray-800/30">
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ autoTranslate('Tambahkan Game Interaktif') }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ autoTranslate('Buat postingan lebih menarik dengan game') }}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex flex-wrap items-center gap-3 sm:ml-auto">
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" name="game_enabled" id="game_enabled" value="on" class="sr-only peer">
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                                        <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">{{ autoTranslate('Aktifkan Game') }}</span>
-                                    </label>
-                                    
-                                    <select name="game_name" id="game_name" disabled
-                                        class="px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 focus:border-purple-500 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <option value="Matematika">{{ autoTranslate('Matematika') }}</option>
-                                        <option value="TTS">{{ autoTranslate('Teka-Teki Silang') }}</option>
-                                        <option value="Puzzle">{{ autoTranslate('Puzzle') }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4" id="thumbnail_container" style="display: none;">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ autoTranslate('Thumbnail Game') }}</label>
-                                <div class="relative">
-                                    <input type="file" name="game_thumbnail" id="game_thumbnail" accept="image/*" disabled
-                                        class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 dark:file:bg-purple-900/30 file:text-purple-700 dark:file:text-purple-300 hover:file:bg-purple-100 dark:hover:file:bg-purple-800/50 file:transition file:cursor-pointer">
-                                </div>
-                                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ autoTranslate('Maks 5MB • jpg, jpeg, png, gif, webp') }}</p>
-                            </div>
-                        </div>
-                    @endif
                     <!-- Game Option Section -->
                     @if (Auth::user()->role !== 'mahasiswa')
                         <div class="border-t border-gray-100 dark:border-gray-700 p-5 sm:p-6 bg-gray-50/30 dark:bg-gray-800/30">
@@ -278,21 +219,10 @@
                         </svg>
                     </button>
                 </div>
-                    </div>
-                    <button type="button" class="remove-item w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
 
                 <div class="content-area pl-11">
-                    <!-- Teks default -->
-                    <textarea name="items[${itemIndex}][content]" rows="2" class="text-input w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 resize-none"
-                        placeholder="{{ autoTranslate('Tulis keterangan...') }}"></textarea>
-
-                    <!-- File upload dengan preview -->
-                    <div class="file-input hidden mt-3">
+                    <!-- File upload dengan preview (tanpa keterangan) -->
+                    <div class="file-input">
                         <div class="relative border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors" id="drop-area-${itemIndex}">
                             <input type="file" name="items[${itemIndex}][file]" accept="image/*"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 file-input-trigger"
@@ -330,13 +260,6 @@
 
             container.appendChild(newItem);
             attachTypeListener(newItem);
-            
-            const textarea = newItem.querySelector('.text-input');
-            textarea.addEventListener('input', function() {
-                this.style.height = '';
-                this.style.height = this.scrollHeight + 'px';
-            });
-            
             itemIndex++;
         }
 
@@ -403,7 +326,6 @@
 
         function attachTypeListener(itemElement) {
             const select = itemElement.querySelector('.type-select');
-            const textInput = itemElement.querySelector('.text-input');
             const fileDiv = itemElement.querySelector('.file-input');
             const linkInput = itemElement.querySelector('.link-input');
             const iconContainer = itemElement.querySelector('[id^="icon-container"]');
@@ -427,20 +349,20 @@
                     `;
                 }
                 
-                textInput.classList.toggle('hidden', type !== 'image');
                 fileDiv.classList.toggle('hidden', type !== 'image');
                 linkInput.classList.toggle('hidden', type !== 'link');
-
-                textInput.disabled = type !== 'image';
-                linkInput.disabled = type !== 'link';
                 
-                
+                // Set proper name attributes for form submission
                 if (type === 'image') {
-                    textInput.name = `items[${itemElement.dataset.index}][content]`;
-                    linkInput.name = `items[${itemElement.dataset.index}][dummy]`;
+                    const fileInput = fileDiv.querySelector('input[type="file"]');
+                    if (fileInput) fileInput.name = `items[${itemElement.dataset.index}][file]`;
+                    if (linkInput) linkInput.querySelector('input').name = `items[${itemElement.dataset.index}][dummy]`;
                 } else if (type === 'link') {
-                    textInput.name = `items[${itemElement.dataset.index}][dummy]`;
-                    linkInput.name = `items[${itemElement.dataset.index}][content]`;
+                    if (fileDiv) {
+                        const fileInput = fileDiv.querySelector('input[type="file"]');
+                        if (fileInput) fileInput.name = `items[${itemElement.dataset.index}][dummy_file]`;
+                    }
+                    if (linkInput) linkInput.querySelector('input').name = `items[${itemElement.dataset.index}][content]`;
                 }
             }
 
