@@ -909,44 +909,57 @@ private function parseDate($date): ?string
         return view('admin.daftar-mahasiswa-keahlian-tambahan', compact('applications'));
     }
 
-    public function approveKeahlianTambahan($id)
-    {
-        $this->authorizeAccess();
-
-        $application = Keahlian_Tambahan::findOrFail($id);
-
-        if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
-            return redirect()->back()->with('error', 'Pengajuan tidak valid untuk approval.');
-        }
-
-        $application->update([
-            'status_pengajuan' => 'Di Terima',
-            'is_active' => true,
-            'keterangan' => null,
-        ]);
-
-        return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil diterima.');
+    public function approveKeahlianTambahan(Request $request)
+{
+    $this->authorizeAccess();
+    
+    $id = $request->query('user_id');
+    
+    if (!$id) {
+        return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
     }
-
-    public function rejectKeahlianTambahan(Request $request, $id)
-    {
-        $this->authorizeAccess();
-        $request->validate(['keterangan' => 'required|string|max:500']);
-
-        $application = Keahlian_Tambahan::findOrFail($id);
-
-        if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
-            return redirect()->back()->with('error', 'Pengajuan tidak valid untuk rejection.');
-        }
-
-        $application->update([
-            'status_pengajuan' => 'Di Tolak',
-            'is_active' => false,
-            'keterangan' => $request->keterangan,
-        ]);
-
-        return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil ditolak.');
+    
+    $application = Keahlian_Tambahan::findOrFail($id);
+    
+    if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
+        return redirect()->back()->with('error', 'Pengajuan tidak valid untuk approval.');
     }
+    
+    $application->update([
+        'status_pengajuan' => 'Di Terima',
+        'is_active' => true,
+        'keterangan' => null,
+    ]);
+    
+    return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil diterima.');
+}
+
+public function rejectKeahlianTambahan(Request $request)
+{
+    $this->authorizeAccess();
+    
+    $request->validate(['keterangan' => 'required|string|max:500']);
+    
+    $id = $request->query('user_id');
+    
+    if (!$id) {
+        return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
+    }
+    
+    $application = Keahlian_Tambahan::findOrFail($id);
+    
+    if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
+        return redirect()->back()->with('error', 'Pengajuan tidak valid untuk rejection.');
+    }
+    
+    $application->update([
+        'status_pengajuan' => 'Di Tolak',
+        'is_active' => false,
+        'keterangan' => $request->keterangan,
+    ]);
+    
+    return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil ditolak.');
+}
 
     //For Pages Sertifikat
     public function sertifikat(Request $request)

@@ -34,8 +34,12 @@
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-                <h2 class="text-xl sm:text-2xl font-bold dark:text-white">Kelola Pengajuan Keahlian Tambahan</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <h2 class="text-xl sm:text-2xl font-bold dark:text-white"
+                    data-translate="page_title"
+                    data-translate-page="keahlian_tambahan">Kelola Pengajuan Keahlian Tambahan</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1"
+                   data-translate="page_desc"
+                   data-translate-page="keahlian_tambahan">
                     Kelola pengajuan keahlian tambahan dari mahasiswa. Anda dapat menerima atau menolak pengajuan sesuai kebutuhan.
                 </p>
             </div>
@@ -46,7 +50,7 @@
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    Kembali
+                    <span data-translate="back" data-translate-page="keahlian_tambahan">Kembali</span>
                 </a>
             </div>
         </div>
@@ -57,11 +61,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- Search Input --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                               data-translate="search_label"
+                               data-translate-page="keahlian_tambahan">
                             Pencarian
                         </label>
                         <div class="relative">
                             <input type="text" name="search" value="{{ request('search') }}"
+                                data-translate-placeholder="search_placeholder"
+                                data-translate-page="keahlian_tambahan"
                                 placeholder="Cari berdasarkan nama, username, atau email..."
                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
                             <div class="absolute left-3 top-2.5">
@@ -84,10 +92,14 @@
                 </div>
                 <div class="flex justify-end mt-4 space-x-3">
                     <a href="{{ route('admin.users.keahlian-tambahan.index') }}"
-                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                        data-translate="reset"
+                        data-translate-page="keahlian_tambahan">
                         Reset
                     </a>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                            data-translate="search_btn"
+                            data-translate-page="keahlian_tambahan">
                         Cari
                     </button>
                 </div>
@@ -99,13 +111,27 @@
             <table class="min-w-full w-full table-auto bg-white dark:bg-gray-800 text-sm responsive-compact-table">
                 <thead>
                     <tr class="bg-gray-100 dark:bg-gray-700">
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Foto</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama / Username</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Keahlian Tambahan Diajukan</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Prodi</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Angkatan</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_foto"
+                            data-translate-page="keahlian_tambahan">Foto</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_nama"
+                            data-translate-page="keahlian_tambahan">Nama / Username</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_email"
+                            data-translate-page="keahlian_tambahan">Email</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_keahlian"
+                            data-translate-page="keahlian_tambahan">Keahlian Tambahan Diajukan</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_prodi"
+                            data-translate-page="keahlian_tambahan">Prodi</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_angkatan"
+                            data-translate-page="keahlian_tambahan">Angkatan</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                            data-translate="tbl_aksi"
+                            data-translate-page="keahlian_tambahan">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -149,7 +175,10 @@
                                 <div class="flex space-x-2">
                                     <button type="button"
                                         onclick="openApproveModal({{ $application->id }}, '{{ addslashes($application->mahasiswa->nama_mahasiswa ?? $application->mahasiswa->username) }}')"
-                                        class="text-green-500 hover:text-green-700 transition-colors" title="Terima">
+                                        class="text-green-500 hover:text-green-700 transition-colors"
+                                        data-translate="btn_approve_title"
+                                        data-translate-page="keahlian_tambahan"
+                                        title="Terima">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -158,7 +187,10 @@
                                     </button>
                                     <button type="button"
                                         onclick="openRejectModal({{ $application->id }}, '{{ addslashes($application->mahasiswa->nama_mahasiswa ?? $application->mahasiswa->username) }}')"
-                                        class="text-red-500 hover:text-red-700 transition-colors" title="Tolak">
+                                        class="text-red-500 hover:text-red-700 transition-colors"
+                                        data-translate="btn_reject_title"
+                                        data-translate-page="keahlian_tambahan"
+                                        title="Tolak">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -172,12 +204,17 @@
                         <tr>
                             <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                 @if(request('search'))
-                                    Tidak ada hasil pencarian.
+                                    <span data-translate="empty_search"
+                                          data-translate-page="keahlian_tambahan">Tidak ada hasil pencarian.</span>
                                     <div class="mt-2">
-                                        <a href="{{ route('admin.users.keahlian-tambahan.index') }}" class="text-blue-500 hover:underline">Reset Pencarian</a>
+                                        <a href="{{ route('admin.users.keahlian-tambahan.index') }}"
+                                           class="text-blue-500 hover:underline"
+                                           data-translate="reset_search"
+                                           data-translate-page="keahlian_tambahan">Reset Pencarian</a>
                                     </div>
                                 @else
-                                    Belum ada pengajuan keahlian tambahan.
+                                    <span data-translate="empty_data"
+                                          data-translate-page="keahlian_tambahan">Belum ada pengajuan keahlian tambahan.</span>
                                 @endif
                             </td>
                         </tr>
@@ -213,7 +250,9 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                             data-translate="mobile_keahlian_label"
+                             data-translate-page="keahlian_tambahan">
                             Keahlian Tambahan Diajukan:
                         </div>
                         @if($application->keahlian)
@@ -225,18 +264,30 @@
                         @endif
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-                        <span>Prodi: {{ $application->mahasiswa->jurusan?->nama_jurusan ?? '-' }}</span>
-                        <span>Angkatan: {{ $application->mahasiswa->angkatan?->nama_angkatan ?? '-' }}</span>
+                        <span>
+                            <span data-translate="mobile_prodi_label"
+                                  data-translate-page="keahlian_tambahan">Prodi:</span>
+                            {{ $application->mahasiswa->jurusan?->nama_jurusan ?? '-' }}
+                        </span>
+                        <span>
+                            <span data-translate="mobile_angkatan_label"
+                                  data-translate-page="keahlian_tambahan">Angkatan:</span>
+                            {{ $application->mahasiswa->angkatan?->nama_angkatan ?? '-' }}
+                        </span>
                     </div>
                     <div class="flex space-x-2 mt-3">
                         <button type="button"
                             onclick="openApproveModal({{ $application->id }}, '{{ addslashes($application->mahasiswa->nama_mahasiswa ?? $application->mahasiswa->username) }}')"
-                            class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm">
+                            class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm"
+                            data-translate="btn_approve"
+                            data-translate-page="keahlian_tambahan">
                             Terima
                         </button>
                         <button type="button"
                             onclick="openRejectModal({{ $application->id }}, '{{ addslashes($application->mahasiswa->nama_mahasiswa ?? $application->mahasiswa->username) }}')"
-                            class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm">
+                            class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm"
+                            data-translate="btn_reject"
+                            data-translate-page="keahlian_tambahan">
                             Tolak
                         </button>
                     </div>
@@ -244,12 +295,17 @@
             @empty
                 <div class="text-center text-gray-500 dark:text-gray-400 py-8">
                     @if(request('search'))
-                        Tidak ada hasil pencarian.
+                        <span data-translate="empty_search"
+                              data-translate-page="keahlian_tambahan">Tidak ada hasil pencarian.</span>
                         <div class="mt-2">
-                            <a href="{{ route('admin.users.keahlian-tambahan.index') }}" class="text-blue-500 hover:underline">Reset Pencarian</a>
+                            <a href="{{ route('admin.users.keahlian-tambahan.index') }}"
+                               class="text-blue-500 hover:underline"
+                               data-translate="reset_search"
+                               data-translate-page="keahlian_tambahan">Reset Pencarian</a>
                         </div>
                     @else
-                        Belum ada pengajuan keahlian tambahan.
+                        <span data-translate="empty_data"
+                              data-translate-page="keahlian_tambahan">Belum ada pengajuan keahlian tambahan.</span>
                     @endif
                 </div>
             @endforelse
@@ -260,19 +316,27 @@
     <div id="approveModal" class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div class="mt-3">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Terima Pengajuan Keahlian Tambahan</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4"
+                    data-translate="approve_modal_title"
+                    data-translate-page="keahlian_tambahan">Terima Pengajuan Keahlian Tambahan</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Apakah Anda yakin ingin menerima pengajuan keahlian tambahan dari <span id="approveUserName"></span>?
+                    <span data-translate="approve_modal_desc"
+                          data-translate-page="keahlian_tambahan">Apakah Anda yakin ingin menerima pengajuan keahlian tambahan dari</span>
+                    <span id="approveUserName"></span>?
                 </p>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeApproveModal()"
-                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+                        data-translate="btn_cancel"
+                        data-translate-page="keahlian_tambahan">
                         Batal
                     </button>
                     <form id="approveForm" method="POST" class="inline">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                                data-translate="btn_approve"
+                                data-translate-page="keahlian_tambahan">
                             Terima
                         </button>
                     </form>
@@ -285,27 +349,39 @@
     <div id="rejectModal" class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div class="mt-3">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tolak Pengajuan Keahlian Tambahan</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4"
+                    data-translate="reject_modal_title"
+                    data-translate-page="keahlian_tambahan">Tolak Pengajuan Keahlian Tambahan</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Berikan alasan penolakan untuk <span id="rejectUserName"></span>:
+                    <span data-translate="reject_modal_desc"
+                          data-translate-page="keahlian_tambahan">Berikan alasan penolakan untuk</span>
+                    <span id="rejectUserName"></span>:
                 </p>
                 <form id="rejectForm" method="POST">
                     @csrf
                     @method('PATCH')
                     <div class="mb-4">
-                        <label for="keterangan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label for="keterangan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                               data-translate="reject_reason_label"
+                               data-translate-page="keahlian_tambahan">
                             Alasan Penolakan
                         </label>
                         <textarea id="keterangan" name="keterangan" rows="3"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-gray-100"
+                            data-translate-placeholder="reject_reason_placeholder"
+                            data-translate-page="keahlian_tambahan"
                             placeholder="Masukkan alasan penolakan..." required></textarea>
                     </div>
                     <div class="flex justify-end space-x-3">
                         <button type="button" onclick="closeRejectModal()"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+                            data-translate="btn_cancel"
+                            data-translate-page="keahlian_tambahan">
                             Batal
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                                data-translate="btn_reject"
+                                data-translate-page="keahlian_tambahan">
                             Tolak
                         </button>
                     </div>
@@ -315,37 +391,45 @@
     </div>
 
     <script>
-        function openApproveModal(userId, userName) {
-            document.getElementById('approveUserName').textContent = userName;
-            document.getElementById('approveForm').action = `/admin/manageUserKeahlianTambahan/${userId}/approve`;
-            document.getElementById('approveModal').classList.remove('hidden');
-        }
+    function getCurrentLocale() {
+        const path = window.location.pathname;
+        const match = path.match(/^\/(id|en)\//);
+        return match ? match[1] : 'id'; // default ke id
+    }
 
-        function closeApproveModal() {
-            document.getElementById('approveModal').classList.add('hidden');
-        }
+    function openApproveModal(userId, userName) {
+        const locale = getCurrentLocale();
+        document.getElementById('approveUserName').textContent = userName;
+        document.getElementById('approveForm').action = `/${locale}/admin/manageUserKeahlianTambahan/approve?user_id=${userId}`;
+        document.getElementById('approveModal').classList.remove('hidden');
+    }
 
-        function openRejectModal(userId, userName) {
-            document.getElementById('rejectUserName').textContent = userName;
-            document.getElementById('rejectForm').action = `/admin/manageUserKeahlianTambahan/${userId}/reject`;
-            document.getElementById('rejectModal').classList.remove('hidden');
-        }
+    function closeApproveModal() {
+        document.getElementById('approveModal').classList.add('hidden');
+    }
 
-        function closeRejectModal() {
-            document.getElementById('rejectModal').classList.add('hidden');
-            document.getElementById('keterangan').value = '';
-        }
+    function openRejectModal(userId, userName) {
+        const locale = getCurrentLocale();
+        document.getElementById('rejectUserName').textContent = userName;
+        document.getElementById('rejectForm').action = `/${locale}/admin/manageUserKeahlianTambahan/reject?user_id=${userId}`;
+        document.getElementById('rejectModal').classList.remove('hidden');
+    }
 
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            const approveModal = document.getElementById('approveModal');
-            const rejectModal = document.getElementById('rejectModal');
-            if (event.target == approveModal) {
-                closeApproveModal();
-            }
-            if (event.target == rejectModal) {
-                closeRejectModal();
-            }
+    function closeRejectModal() {
+        document.getElementById('rejectModal').classList.add('hidden');
+        document.getElementById('keterangan').value = '';
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const approveModal = document.getElementById('approveModal');
+        const rejectModal = document.getElementById('rejectModal');
+        if (event.target == approveModal) {
+            closeApproveModal();
         }
-    </script>
+        if (event.target == rejectModal) {
+            closeRejectModal();
+        }
+    }
+</script>
 @endsection

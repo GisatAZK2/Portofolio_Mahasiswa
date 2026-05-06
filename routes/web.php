@@ -184,8 +184,8 @@ Route::middleware(['web', 'auth'])->group(function () {
 
             Route::prefix('manageUserKeahlianTambahan')->name('users.keahlian-tambahan.')->group(function () {
                 Route::get('/', [AdminController::class, 'ListUserKeahlianTambahan'])->name('index');
-                Route::patch('/{id}/approve', [AdminController::class, 'approveKeahlianTambahan'])->name('approve');
-                Route::patch('/{id}/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
+                Route::patch('/approve', [AdminController::class, 'approveKeahlianTambahan'])->name('approve');
+                Route::patch('/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
             });
 
             Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {

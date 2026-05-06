@@ -64,6 +64,58 @@ export const translations = {
       batal : 'Batal',
       simpan_perubahan : 'Simpan Perubahan',
     },
+
+    keahlian_tambahan: {
+  page_title: 'Kelola Pengajuan Keahlian Tambahan',
+  page_desc: 'Kelola pengajuan keahlian tambahan dari mahasiswa. Anda dapat menerima atau menolak pengajuan sesuai kebutuhan.',
+  back: 'Kembali',
+ 
+  // Search
+  search_label: 'Pencarian',
+  search_placeholder: 'Cari berdasarkan nama, username, atau email...',
+  reset: 'Reset',
+  search_btn: 'Cari',
+ 
+  // Table headers
+  tbl_foto: 'Foto',
+  tbl_nama: 'Nama / Username',
+  tbl_email: 'Email',
+  tbl_keahlian: 'Keahlian Tambahan Diajukan',
+  tbl_prodi: 'Prodi',
+  tbl_angkatan: 'Angkatan',
+  tbl_aksi: 'Aksi',
+ 
+  // Action button titles (tooltip)
+  btn_approve_title: 'Terima',
+  btn_reject_title: 'Tolak',
+ 
+  // Mobile card labels
+  mobile_keahlian_label: 'Keahlian Tambahan Diajukan:',
+  mobile_prodi_label: 'Prodi:',
+  mobile_angkatan_label: 'Angkatan:',
+ 
+  // Mobile action buttons
+  btn_approve: 'Terima',
+  btn_reject: 'Tolak',
+ 
+  // Empty states
+  empty_search: 'Tidak ada hasil pencarian.',
+  reset_search: 'Reset Pencarian',
+  empty_data: 'Belum ada pengajuan keahlian tambahan.',
+ 
+  // Approve modal
+  approve_modal_title: 'Terima Pengajuan Keahlian Tambahan',
+  approve_modal_desc: 'Apakah Anda yakin ingin menerima pengajuan keahlian tambahan dari',
+ 
+  // Reject modal
+  reject_modal_title: 'Tolak Pengajuan Keahlian Tambahan',
+  reject_modal_desc: 'Berikan alasan penolakan untuk',
+  reject_reason_label: 'Alasan Penolakan',
+  reject_reason_placeholder: 'Masukkan alasan penolakan...',
+ 
+  // Shared buttons
+  btn_cancel: 'Batal',
+},
     
     post: {
       ttl: 'Postingan Saya',
@@ -71,6 +123,17 @@ export const translations = {
       add: 'Buat Postingan',
       del: 'Hapus',
       success: 'Postingan berhasil dibuat',
+      section_my_posts: 'Postingan Saya',       // en: 'My Posts'
+      section_student_posts: 'Postingan Mahasiswa', // en: 'Student Posts'
+      badge_my_post: 'Postingan Saya',          // en: 'My Post'
+      badge_student_post: 'Postingan Mahasiswa',// en: 'Student Post'
+      empty_my_posts: 'Anda belum membuat postingan.', // en: 'You have not created any posts yet.'
+      empty_student_posts: 'Belum ada postingan dari mahasiswa.', // en: 'No student posts yet.'
+      game_label: 'Game',
+      play_game: 'Mainkan game',               // en: 'Play game'
+      best_score: 'Skor terbaik',              // en: 'Best score'
+      play_btn: 'Mainkan',
+      edit_btn: 'Edit',
       comment: 'Komentar',
       send: 'Kirim',
       cancel: 'Batal',
@@ -1329,6 +1392,58 @@ export const translations = {
       batal: 'Cancel',
       simpan_perubahan: 'Save Changes',
     },
+
+    keahlian_tambahan: {
+  page_title: 'Manage Additional Skill Submissions',
+  page_desc: 'Manage additional skill submissions from students. You can accept or reject submissions as needed.',
+  back: 'Back',
+ 
+  // Search
+  search_label: 'Search',
+  search_placeholder: 'Search by name, username, or email...',
+  reset: 'Reset',
+  search_btn: 'Search',
+ 
+  // Table headers
+  tbl_foto: 'Photo',
+  tbl_nama: 'Name / Username',
+  tbl_email: 'Email',
+  tbl_keahlian: 'Submitted Additional Skill',
+  tbl_prodi: 'Study Program',
+  tbl_angkatan: 'Cohort',
+  tbl_aksi: 'Action',
+ 
+  // Action button titles (tooltip)
+  btn_approve_title: 'Accept',
+  btn_reject_title: 'Reject',
+ 
+  // Mobile card labels
+  mobile_keahlian_label: 'Submitted Additional Skill:',
+  mobile_prodi_label: 'Study Program:',
+  mobile_angkatan_label: 'Cohort:',
+ 
+  // Mobile action buttons
+  btn_approve: 'Accept',
+  btn_reject: 'Reject',
+ 
+  // Empty states
+  empty_search: 'No search results found.',
+  reset_search: 'Reset Search',
+  empty_data: 'No additional skill submissions yet.',
+ 
+  // Approve modal
+  approve_modal_title: 'Accept Additional Skill Submission',
+  approve_modal_desc: 'Are you sure you want to accept the additional skill submission from',
+ 
+  // Reject modal
+  reject_modal_title: 'Reject Additional Skill Submission',
+  reject_modal_desc: 'Provide a reason for rejecting',
+  reject_reason_label: 'Rejection Reason',
+  reject_reason_placeholder: 'Enter the rejection reason...',
+ 
+  // Shared buttons
+  btn_cancel: 'Cancel',
+},
     
     post: {
       ttl: 'My Posts',
@@ -1336,6 +1451,17 @@ export const translations = {
       add: 'Create Post',
       del: 'Delete',
       success: 'The post has been created successfully.',
+      section_my_posts: 'My Posts',
+      section_student_posts: 'Student Posts',
+      badge_my_post: 'My Post',
+      badge_student_post: 'Student Post',
+      empty_my_posts: 'You have not created any posts yet.',
+      empty_student_posts: 'No student posts yet.',
+      game_label: 'Game',
+      play_game: 'Play game',
+      best_score: 'Best score',
+      play_btn: 'Play',
+      edit_btn: 'Edit',
       comment: 'Comments',
       send: 'Send',
       cancel: 'Cancel',

@@ -17,10 +17,23 @@ class PostinganController extends Controller
      */
     public function index()
     {
-        $postingan = Postingan::with('user', 'komentar.user', 'likes')
-            ->where('id_user', auth()->id())
-            ->latest()
-            ->paginate(10);
+        $user = auth()->user();
+        $query = Postingan::with('user', 'komentar.user', 'likes');
+
+        if ($user->role === 'mahasiswa') {
+            $query->where('id_user', $user->id);
+        } elseif ($user->role === 'dosen') {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('role', 'mahasiswa')
+                  ->where('id_angkatan', $user->id_angkatan)
+                  ->where('id_jurusan', $user->id_jurusan)
+                  ->where('id_keahlian', $user->id_keahlian);
+            });
+        } elseif ($user->role === 'admin') {
+            // Admin can see all postings
+        }
+
+        $postingan = $query->latest()->paginate(10);
 
         return view('postingan.postingan_card', compact('postingan'));
     }
@@ -117,10 +130,23 @@ class PostinganController extends Controller
             abort(404, 'Postingan ID is required');
         }
 
-        $postingan = Postingan::with(['user', 'komentar.user', 'likes'])
-            ->where('id_postingan', $id)
-            ->firstOrFail();
-        
+        $user = auth()->user();
+        $query = Postingan::with(['user', 'komentar.user', 'likes']);
+
+        if ($user->role === 'mahasiswa') {
+            $query->where('id_user', $user->id);
+        } elseif ($user->role === 'dosen') {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('role', 'mahasiswa')
+                  ->where('id_angkatan', $user->id_angkatan)
+                  ->where('id_jurusan', $user->id_jurusan)
+                  ->where('id_keahlian', $user->id_keahlian);
+            });
+        } elseif ($user->role === 'admin') {
+            // Admin can see all
+        }
+
+        $postingan = $query->where('id_postingan', $id)->firstOrFail();
 
         return view('postingan.views_detail_postingan', compact('postingan'));
     }
@@ -136,9 +162,23 @@ class PostinganController extends Controller
             abort(404, 'Postingan ID is required');
         }
 
-        $postingan = Postingan::where('id_postingan', $id)
-            ->where('id_user', auth()->id())
-            ->firstOrFail();
+        $user = auth()->user();
+        $query = Postingan::query();
+
+        if ($user->role === 'mahasiswa') {
+            $query->where('id_user', $user->id);
+        } elseif ($user->role === 'dosen') {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('role', 'mahasiswa')
+                  ->where('id_angkatan', $user->id_angkatan)
+                  ->where('id_jurusan', $user->id_jurusan)
+                  ->where('id_keahlian', $user->id_keahlian);
+            });
+        } elseif ($user->role === 'admin') {
+            // Admin can edit all
+        }
+
+        $postingan = $query->where('id_postingan', $id)->firstOrFail();
 
         return view('postingan.views_edit_postingan', compact('postingan'));
     }
@@ -154,11 +194,23 @@ class PostinganController extends Controller
             abort(404, 'Postingan ID is required');
         }
 
-        $postingan = Postingan::where('id_postingan', $id)
-            ->where('id_user', auth()->id())
-            ->firstOrFail();
-
         $user = auth()->user();
+        $query = Postingan::query();
+
+        if ($user->role === 'mahasiswa') {
+            $query->where('id_user', $user->id);
+        } elseif ($user->role === 'dosen') {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('role', 'mahasiswa')
+                  ->where('id_angkatan', $user->id_angkatan)
+                  ->where('id_jurusan', $user->id_jurusan)
+                  ->where('id_keahlian', $user->id_keahlian);
+            });
+        } elseif ($user->role === 'admin') {
+            // Admin can update all
+        }
+
+        $postingan = $query->where('id_postingan', $id)->firstOrFail();
 
         $isAllowedGame = in_array($user->role, ['admin', 'dosen']);
         
@@ -338,9 +390,23 @@ if (!empty($rawItems) && is_array($rawItems)) {
             abort(404, 'Postingan ID is required');
         }
 
-        $postingan = Postingan::where('id_postingan', $id)
-            ->where('id_user', auth()->id())
-            ->firstOrFail();
+        $user = auth()->user();
+        $query = Postingan::query();
+
+        if ($user->role === 'mahasiswa') {
+            $query->where('id_user', $user->id);
+        } elseif ($user->role === 'dosen') {
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('role', 'mahasiswa')
+                  ->where('id_angkatan', $user->id_angkatan)
+                  ->where('id_jurusan', $user->id_jurusan)
+                  ->where('id_keahlian', $user->id_keahlian);
+            });
+        } elseif ($user->role === 'admin') {
+            // Admin can delete all
+        }
+
+        $postingan = $query->where('id_postingan', $id)->firstOrFail();
 
         // Delete associated images
         if (is_array($postingan->content)) {
