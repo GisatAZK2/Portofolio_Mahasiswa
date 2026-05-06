@@ -13,7 +13,49 @@
                 @php
                     $currentUserId = auth()->id();
                     $canEdit = $currentUserId && ($project->id_mahasiswa == $currentUserId || $project->leader_id == $currentUserId);
+
+                    // === OVERDUE PROGRESS BAR LOGIC ===
+                    $today = \Carbon\Carbon::today();
+                    $endDate = $project->tanggal_akhir ? \Carbon\Carbon::parse($project->tanggal_akhir) : null;
+                    $isOverdue = $endDate && $today->gt($endDate) && $projectProgress < 100;
+
+                    // Cek apakah user adalah member proyek (owner / leader / anggota)
+                    $isProjectMemberForBar = auth()->check() && (
+                        auth()->id() === $project->id_mahasiswa ||
+                        auth()->id() === $project->leader_id ||
+                        $project->members->contains('id', auth()->id())
+                    );
+
+                    // Cek apakah user adalah admin atau dosen
+                    $isAdminOrDosen = auth()->check() && in_array(auth()->user()->role, ['admin', 'dosen']);
+
+                    // Tentukan warna dan nilai progress bar
+                    if ($isOverdue) {
+                        $displayProgress = 100;
+                        if ($isProjectMemberForBar) {
+                            // Member melihat: 100% merah dengan peringatan
+                            $barColor = 'bg-red-600 dark:bg-red-500';
+                            $showOverdueWarning = true;
+                        } else {
+                            // Publik / user lain melihat: 100% hijau
+                            $barColor = 'bg-green-600 dark:bg-green-500';
+                            $showOverdueWarning = false;
+                        }
+                    } else {
+                        $displayProgress = $projectProgress;
+                        $barColor = 'bg-indigo-600 dark:bg-indigo-500';
+                        $showOverdueWarning = false;
+                    }
+
+                    // Hitung task-based progress untuk task section
+                    $taskProgress = $taskTotalCount > 0 ? round(($taskDoneCount / $taskTotalCount) * 100) : 0;
+                    if ($isOverdue && $taskProgress < 100) {
+                        $taskBarColor = 'bg-red-600 dark:bg-red-500';
+                    } else {
+                        $taskBarColor = 'bg-indigo-600 dark:bg-indigo-500';
+                    }
                 @endphp
+
                 <div class="mb-6">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-3">
@@ -22,7 +64,7 @@
                                 {{ $statusText }}
                             </span>
                             <span class="text-sm text-gray-600 dark:text-gray-400">
-                                {{ $projectProgress }}% <span data-translate="progress_done"
+                                {{ $displayProgress }}% <span data-translate="progress_done"
                                     data-translate-page="project_detail">Selesai</span>
                             </span>
                         </div>
@@ -46,9 +88,31 @@
 
                     <!-- Progress Bar -->
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                        <div class="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full transition-all duration-500"
-                            style="width: {{ $projectProgress }}%"></div>
+                        <div class="{{ $barColor }} h-2.5 rounded-full transition-all duration-500"
+                            style="width: {{ $displayProgress }}%"></div>
                     </div>
+
+                    <!-- Overdue Warning (untuk member proyek, admin, dan dosen) -->
+                    @if($showOverdueWarning || ($isOverdue && $isAdminOrDosen))
+                        <div class="mt-3 flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl px-4 py-3">
+                            <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-semibold text-red-700 dark:text-red-400"
+                                    data-translate="overdue_warning_title"
+                                    data-translate-page="pjt_detail">
+                                    Proyek Melewati Batas Waktu!
+                                </p>
+                                <p class="text-xs text-red-600 dark:text-red-300 mt-0.5"
+                                    data-translate="overdue_warning_desc"
+                                    data-translate-page="pjt_detail">
+                                    Harap selesaikan semua tugas yang masih dalam proses secepatnya.
+                                </p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -166,11 +230,10 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
-                                    <span data-translate="tim_pjt" data-translate-page="pjt_detail">>Anggota Tim</span> ({{ $project->members->where('id', '!=', $project->leader_id)->count() }})
+                                    <span data-translate="tim_pjt" data-translate-page="pjt_detail">Anggota Tim</span> ({{ $project->members->where('id', '!=', $project->leader_id)->count() }})
                                 </h3>
 
                                 <div class="space-y-2">
-                                    
                                     @forelse($project->members as $member)
                                     <a href="{{ route('portfolio.show', ['user' => $member->username]) }}">
                                         @if($member->id !== $project->leader_id)
@@ -221,7 +284,7 @@
                                                         d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                                                 </svg>
                                             </div>
-                                            <div class="flex-1 min-w-0"> 
+                                            <div class="flex-1 min-w-0">
                                                 <p class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                                                     Website Proyek
                                                 </p>
@@ -294,7 +357,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                Timeline Proyek
+                                <span data-translate="timeline_pjt" data-translate-page="pjt_detail">Timeline Proyek</span>
                             </h3>
 
                             <div class="flex items-center gap-4 text-sm">
@@ -311,9 +374,14 @@
                                         d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                                 <div
-                                    class="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Selesai</p>
-                                    <p class="font-medium text-gray-900 dark:text-white">
+                                class="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg border {{ ($isOverdue && $isProjectMemberForBar) ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/10' : 'border-gray-200 dark:border-gray-600' }}">
+                                    <p class="text-xs {{ ($isOverdue && $isProjectMemberForBar) ? 'text-red-500 dark:text-red-400' : 'text-gray-500 dark:text-gray-400' }} mb-1">
+                                        <span data-translate="tgl_selesai" data-translate-page="pjt_detail">Selesai</span>
+                                        @if($isOverdue && $isProjectMemberForBar)
+                                            &mdash; <span class="font-semibold" data-translate="overdue_label" data-translate-page="pjt_detail">Terlambat</span>
+                                        @endif
+                                    </p>
+                                    <p class="font-medium {{ ($isOverdue && $isProjectMemberForBar) ? 'text-red-700 dark:text-red-300' : 'text-gray-900 dark:text-white' }}">
                                         {{ $project->tanggal_akhir
                                             ? \Carbon\Carbon::parse($project->tanggal_akhir)->format('d M Y')
                                             : 'Belum ditentukan' }}
@@ -331,20 +399,25 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 12l2 2 4-4m2 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            Task Proyek
+                                            <span data-translate="task_progress" data-translate-page="pjt_detail">Progress Task</span>
                                         </h3>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $taskDoneCount }} {{ autoTranslate('dari') }} {{ $taskTotalCount }} {{ autoTranslate('task selesai') }} 
+                                            {{ $taskDoneCount }} {{ autoTranslate('dari') }} {{ $taskTotalCount }} {{ autoTranslate('task selesai') }}
                                         </p>
                                     </div>
-                                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
-                                        {{ $projectProgress }}% Progress
+                                    <span class="text-xs font-semibold px-2 py-1 rounded-full
+                                        {{ $isOverdue && $taskProgress < 100
+                                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
+                                            : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200'
+                                        }}">
+                                        {{ $taskProgress }}% Progress
                                     </span>
                                 </div>
 
+                                <!-- Task Section Progress Bar -->
                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-4">
-                                    <div class="bg-indigo-600 dark:bg-indigo-500 h-2.5 rounded-full transition-all duration-500"
-                                        style="width: {{ $projectProgress }}%"></div>
+                                    <div class="{{ $taskBarColor }} h-2.5 rounded-full transition-all duration-500"
+                                        style="width: {{ $taskProgress }}%"></div>
                                 </div>
 
                                 @if($visibleTasks->isEmpty())
@@ -352,27 +425,49 @@
                                 @else
                                     <div class="space-y-3">
                                         @foreach($visibleTasks as $task)
-                                            <div class="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600">
+                                            <div class="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600
+                                                {{ $isOverdue && !$task->is_done ? 'border-l-4 border-l-red-500' : '' }}">
                                                 <div class="flex items-start justify-between gap-4">
                                                     <div class="min-w-0">
                                                         <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                                                             {{ $task->name_task }}
                                                         </p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                            Penanggung Jawab: {{ $task->user?->nama_mahasiswa ?? 'Belum ditetapkan' }}
+                                                            <span data-translate="task_pic" data-translate-page="pjt_detail">Penanggung Jawab</span>: {{ $task->user?->nama_mahasiswa ?? autoTranslate('Belum ditetapkan') }}
                                                         </p>
+                                                        @if($isOverdue && !$task->is_done)
+                                                            <p class="text-xs text-red-500 dark:text-red-400 font-medium mt-1"
+                                                                data-translate="task_overdue_note"
+                                                                data-translate-page="pjt_detail">
+                                                                ⚠ Harap selesaikan tugas ini
+                                                            </p>
+                                                        @endif
                                                     </div>
                                                     <div class="flex items-center gap-3">
-                                                        <span class="text-xs font-semibold px-2 py-1 rounded-full {{ $task->is_done ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' }}">
-                                                            {{ $task->is_done ? 'Selesai' : 'Dalam Proses' }}
+                                                        <span class="text-xs font-semibold px-2 py-1 rounded-full
+                                                            {{ $task->is_done
+                                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                                : ($isOverdue
+                                                                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                                                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400')
+                                                            }}">
+                                                            @if($task->is_done)
+                                                                <span data-translate="task_done" data-translate-page="pjt_detail">Selesai</span>
+                                                            @elseif($isOverdue)
+                                                                <span data-translate="task_overdue" data-translate-page="pjt_detail">Terlambat</span>
+                                                            @else
+                                                                <span data-translate="task_inprogress" data-translate-page="pjt_detail">Dalam Proses</span>
+                                                            @endif
                                                         </span>
                                                         @auth
                                                             @if(!$task->is_done && auth()->user()->role === 'mahasiswa' && auth()->id() === $task->user_id)
                                                                 <form method="POST" action="{{ route('project.tasks.complete', [$project->id, $task->id]) }}">
                                                                     @csrf
                                                                     @method('PATCH')
-                                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                                                                        Selesaikan
+                                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-white
+                                                                        {{ $isOverdue ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700' }}
+                                                                        rounded-lg transition">
+                                                                        <span data-translate="task_complete_btn" data-translate-page="pjt_detail">Selesaikan</span>
                                                                     </button>
                                                                 </form>
                                                             @endif
@@ -381,6 +476,21 @@
                                                 </div>
                                             </div>
                                         @endforeach
+                                    </div>
+                                @endif
+
+                                <!-- Overdue warning di dalam task section (untuk member, admin, dan dosen) -->
+                                @if($showOverdueWarning || ($isOverdue && $isAdminOrDosen))
+                                    <div class="mt-4 flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg px-3 py-2">
+                                        <svg class="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <p class="text-xs text-red-700 dark:text-red-300 font-medium"
+                                            data-translate="overdue_warning_desc"
+                                            data-translate-page="pjt_detail">
+                                            Harap selesaikan semua tugas yang masih dalam proses secepatnya.
+                                        </p>
                                     </div>
                                 @endif
                             </div>
@@ -794,7 +904,7 @@
             @if (session('error'))
                 showErrorAlert('{{ session('error') }}');
             @endif
-                });
+        });
 
         // Image Modal Functions
         function openImageModal(imageSrc) {
