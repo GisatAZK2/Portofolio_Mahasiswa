@@ -144,9 +144,23 @@
                 </div>
             </main>
 
-            <div class ="hidden md:block">
-                 @include('components.footer')
-            </div>
+            <!-- SESUDAH -->
+            @auth
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
+                    {{-- Admin & Dosen: tampil di semua ukuran layar --}}
+                    @include('components.footer')
+                @else
+                    {{-- Mahasiswa: hanya tampil di desktop --}}
+                    <div class="hidden md:block">
+                        @include('components.footer')
+                    </div>
+                @endif
+            @else
+                {{-- Guest/tidak login: hanya tampil di desktop --}}
+                <div class="hidden md:block">
+                    @include('components.footer')
+                </div>
+            @endauth
 
             @include('components.navigation_mahasiswa_mobile')
             @include('components.up-page')
