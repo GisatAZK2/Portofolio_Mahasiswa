@@ -146,7 +146,7 @@
                                                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
                                                     <span class="truncate"
-                                                        title="Angkatan {{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}">
+                                                        title="{{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}">
                                                         
                                                         {{ $item->angkatan->tahun_angkatan ?? $item->angkatan->nama_angkatan ?? $item->angkatan }}
                                                     </span>
@@ -330,7 +330,7 @@
                                             @if($item->mahasiswa->angkatan)
                                                 <span
                                                     class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700 whitespace-nowrap">
-                                                    Angkatan
+                        
                                                     {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
                                                 </span>
                                             @endif
@@ -413,7 +413,6 @@
                                             @if($item->mahasiswa->angkatan)
                                                 <span
                                                     class="inline-flex ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700 whitespace-nowrap">
-                                                    Angkatan
                                                     {{ $item->mahasiswa->angkatan->tahun_angkatan ?? $item->mahasiswa->angkatan->nama_angkatan ?? $item->mahasiswa->angkatan }}
                                                 </span>
                                             @endif

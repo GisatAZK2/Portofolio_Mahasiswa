@@ -1078,7 +1078,8 @@ export const translations = {
       pjt_vidprev: 'Pratinjau Video',
       empty_sertifikat: 'Belum Ada Sertifikat Yang Dapat Ditampilkan',
       not_yet : 'Tidak ada preview Tersedia',
-
+      pjt_created_by : 'Dibuat oleh',
+      pjt_leader : 'Pemimpin Projek',
       post_empty: 'Belum ada postingan untuk ditampilkan',
 
       team: 'Anggota Tim',
@@ -2244,7 +2245,8 @@ curr_photo: 'Current Photo',
       pjt_vidprev: 'Preview Video',
       empty_sertifikat: 'There is no certificates to be shown',
       not_yet : 'No Preview Available',
-
+      pjt_created_by : 'Created by ',
+      pjt_leader : 'Leader Project',
       post_empty: 'There is no content to be shown',
 
       team: 'Team Members',
