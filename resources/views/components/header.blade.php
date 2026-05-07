@@ -26,36 +26,6 @@
     .dark .overflow-y-auto::-webkit-scrollbar-thumb {
         background: #4b5563;
     }
-
-    /* ── Post Search (header) ── */
-    #unified-search-input::placeholder {
-        color: #9ca3af;
-    }
-    .post-search-wrapper {
-        position: relative;
-    }
-    #header-post-search-clear {
-        display: none;
-    }
-    /* result badge */
-    #header-post-search-badge {
-        display: none;
-        font-size: 11px;
-        white-space: nowrap;
-    }
-
-    /* Search suggestions dropdown */
-    #search-suggestions {
-        z-index: 9999;
-    }
-    #search-suggestions-mobile {
-        z-index: 9999;
-    }
-
-    /* Notification dropdown */
-    [x-data] [x-show] {
-        z-index: 9998;
-    }
 </style>
 
 <header class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">

@@ -687,17 +687,42 @@
 
                                         <!-- Links -->
                                         @if(!empty($links))
-                                            <div class="space-y-2 mt-3">
+                                            <div class="space-y-3 mt-3">
                                                 @foreach($links as $link)
-                                                    <a href="{{ $link }}" target="_blank" rel="noopener noreferrer"
-                                                        class="inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline break-all bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-lg">
-                                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                        </svg>
-                                                        <span class="break-all whitespace-normal max-w-xs">{{ $link }}</span>
-                                                    </a>
+                                                    @php
+                                                        // Detect YouTube URL and extract video ID
+                                                        $youtubeId = '';
+                                                        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link, $matches)) {
+                                                            $youtubeId = $matches[1];
+                                                        }
+                                                    @endphp
+
+                                                    @if($youtubeId)
+                                                        <!-- YouTube iframe -->
+                                                        <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
+                                                            <div class="aspect-video relative">
+                                                                <iframe width="100%" height="100%" style="position: absolute; top: 0; left: 0; border: none; border-radius: inherit;"
+                                                                    src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                                    title="YouTube video player" 
+                                                                    frameborder="0" 
+                                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                                                    referrerpolicy="strict-origin-when-cross-origin" 
+                                                                    allowfullscreen>
+                                                                </iframe>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <!-- Regular link -->
+                                                        <a href="{{ $link }}" target="_blank" rel="noopener noreferrer"
+                                                            class="inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline break-all bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-lg">
+                                                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                            </svg>
+                                                            <span class="break-all whitespace-normal max-w-xs">{{ $link }}</span>
+                                                        </a>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                         @endif

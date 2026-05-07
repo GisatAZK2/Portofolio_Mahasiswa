@@ -456,10 +456,9 @@
                                                                 <h4 class="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
                                                                     {{ $pkj['nama_pt'] ?? '-' }}
                                                                 </h4>
-                                                                @if($masihBekerja)
-                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 whitespace-nowrap"
-                                                                        data-translate="exp_active" data-translate-page="portofolio_user">
-                                                                        Aktif
+                                                                @if(!empty($pkj['jenis_pekerjaan']))
+                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 whitespace-nowrap">
+                                                                        {{ $pkj['jenis_pekerjaan'] }}
                                                                     </span>
                                                                 @endif
                                                             </div>
@@ -468,6 +467,15 @@
                                                             <p class="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1.5">
                                                                 {{ $pkj['bagian_kerja'] ?? '-' }}
                                                             </p>
+
+                                                            {{-- Deskripsi --}}
+                                                            @if(!empty($pkj['deskripsi']))
+                                                                <p class="text-xs text-gray-600 dark:text-gray-300 mb-2">
+                                                                    {{ $pkj['deskripsi'] }}
+                                                                </p>
+                                                            @else
+                                                                <p class="text-xs text-gray-400 dark:text-gray-500 mb-2">-</p>
+                                                            @endif
 
                                                             {{-- Periode & durasi --}}
                                                             <div class="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
@@ -485,25 +493,6 @@
                                                                     <span>{{ $pkj['tahun_akhir'] ?? '-' }}</span>
                                                                 @endif
 
-                                                                {{-- Durasi --}}
-                                                                @if($selisihTahun !== null)
-                                                                    <span class="text-gray-400 dark:text-gray-500">·</span>
-                                                                    @if($selisihTahun == 0)
-                                                                        <span class="text-gray-400 dark:text-gray-500"
-                                                                            data-translate="exp_dur_less1" data-translate-page="portofolio_user">
-                                                                            Kurang dari 1 tahun
-                                                                        </span>
-                                                                    @elseif($selisihTahun == 1)
-                                                                        <span class="text-gray-400 dark:text-gray-500"
-                                                                            data-translate="exp_dur_1yr" data-translate-page="portofolio_user">
-                                                                            1 tahun
-                                                                        </span>
-                                                                    @else
-                                                                        <span class="text-gray-400 dark:text-gray-500">
-                                                                            {{ $selisihTahun }} <span data-translate="exp_dur_yr" data-translate-page="portofolio_user">tahun</span>
-                                                                        </span>
-                                                                    @endif
-                                                                @endif
                                                             </div>
                                                         </div>
 
