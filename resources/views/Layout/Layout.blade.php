@@ -64,6 +64,10 @@
             max-width: 100%;
         }
 
+        #mobile-search-dropdown {
+    overflow: hidden;
+    }
+
         /* 1. Pastikan parent chain mendukung tinggi penuh */
 .dashboard-container {
     height: auto;        /* biarkan fleksibel */
@@ -216,25 +220,25 @@
             }
 
             if (toggleSearch && searchDrop) {
-                toggleSearch.addEventListener('click', () => {
-                    const isClosed = searchDrop.classList.contains('max-h-0');
-                    if (isClosed) {
-                        searchDrop.style.maxHeight = '0px';
-                        searchDrop.classList.remove('max-h-0', 'opacity-0', '-translate-y-2', 'scale-y-95');
-                        searchDrop.classList.add('opacity-100', 'translate-y-0', 'scale-y-100');
-                        requestAnimationFrame(() => {
-                            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
-                        });
-                    } else {
-                        searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
-                        requestAnimationFrame(() => {
-                            searchDrop.style.maxHeight = '0px';
-                        });
-                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95', 'max-h-0');
-                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
-                    }
-                });
-            }
+    toggleSearch.addEventListener('click', () => {
+        const isHidden = searchDrop.classList.contains('hidden');
+        if (isHidden) {
+            searchDrop.classList.remove('hidden');
+            searchDrop.style.maxHeight = '0px';
+            searchDrop.style.opacity   = '0';
+            requestAnimationFrame(() => {
+                searchDrop.style.transition = 'max-height 0.3s ease, opacity 0.25s ease';
+                searchDrop.style.maxHeight  = searchDrop.scrollHeight + 'px';
+                searchDrop.style.opacity    = '1';
+            });
+        } else {
+            searchDrop.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
+            searchDrop.style.maxHeight  = '0px';
+            searchDrop.style.opacity    = '0';
+            setTimeout(() => searchDrop.classList.add('hidden'), 250);
+        }
+    });
+}
             /*
             function deteksiJaringan() {
                 if (navigator.onLine) {
@@ -253,20 +257,16 @@
             */
 
             document.addEventListener('click', (e) => {
-                if (!searchDrop || !toggleSearch) return;
-                const isClickInsideSearch = searchDrop.contains(e.target);
-                const isClickOnToggle = toggleSearch.contains(e.target);
-                if (!isClickInsideSearch && !isClickOnToggle) {
-                    if (!searchDrop.classList.contains('max-h-0')) {
-                        searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
-                        requestAnimationFrame(() => {
-                            searchDrop.style.maxHeight = '0px';
-                        });
-                        searchDrop.classList.add('opacity-0', '-translate-y-2', 'scale-y-95', 'max-h-0');
-                        searchDrop.classList.remove('opacity-100', 'translate-y-0', 'scale-y-100');
-                    }
-                }
-            });
+    if (!searchDrop || !toggleSearch) return;
+    if (!searchDrop.contains(e.target) && !toggleSearch.contains(e.target)) {
+        if (!searchDrop.classList.contains('hidden')) {
+            searchDrop.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
+            searchDrop.style.maxHeight  = '0px';
+            searchDrop.style.opacity    = '0';
+            setTimeout(() => searchDrop.classList.add('hidden'), 250);
+        }
+    }
+});
 
             function openSidebar() {
                 if (!sidebar) return;

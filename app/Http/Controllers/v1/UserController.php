@@ -201,7 +201,7 @@ class UserController extends Controller
             ->with('success', 'Pengajuan telah berhasil dibuat, silahkan tunggu admin/dosen angkatan anda menyetujui.');
     }
 
-    private function sendNotifications($user)
+     private function sendNotifications($user)
     {
         $jurusanNama = $user->jurusan->nama_jurusan ?? '-';
         $angkatanNama = $user->angkatan->nama_angkatan ?? '-';
@@ -459,7 +459,7 @@ class UserController extends Controller
             'background_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
             'id_keahlian_tambahan' => ['nullable', 'exists:keahlian,id_keahlian'],
             'video_url' => ['nullable', 'url'],
-            'tanggal_lahir' => ['nullable', 'date', 'before_or_equal:today', 'after:1900-01-01'], // Tambahkan validasi tanggal lahir
+            'tanggal_lahir' => ['nullable', 'date', 'before_or_equal:today', 'after:1900-01-01'],
         ];
 
         if ($request->filled('password')) {
@@ -491,11 +491,10 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        // Handle tanggal_lahir - format ke Y-m-d jika ada
+        // Handle tanggal_lahir
         if ($request->filled('tanggal_lahir')) {
             $validated['tanggal_lahir'] = Carbon::parse($request->tanggal_lahir)->format('Y-m-d');
         } else {
-            // Jika tidak diisi, set ke null (opsional, tergantung kebutuhan)
             $validated['tanggal_lahir'] = null;
         }
 
@@ -507,11 +506,7 @@ class UserController extends Controller
             }
         }
 
-        // Hapus nim dari validated array jika ada (karena NIM tidak boleh diupdate)
         unset($validated['nim']);
-
-        // Hapus field yang tidak boleh diupdate atau tidak ada di tabel users
-        // id_keahlian_tambahan sudah ditangani terpisah, jadi hapus dari validated
         unset($validated['id_keahlian_tambahan']);
 
         $user->update($validated);
@@ -524,20 +519,73 @@ class UserController extends Controller
     // =========================================================
 
     /**
+     * Daftar jenis pekerjaan yang valid
+     */
+    private function getValidJenisPekerjaan(): array
+    {
+        return [
+            'Penuh waktu',
+            'Paruh waktu',
+            'Pekerja mandiri',
+            'Pekerja lepas',
+            'Kontrak',
+            'Magang jangka pendek',
+            'Magang',
+            'Musiman',
+        ];
+    }
+
+    /**
      * Tambah pengalaman kerja baru
+     * FIX: Perbaikan validasi boolean untuk masih_bekerja yang dikirim dari checkbox HTML
+     *      Tambah field jenis_pekerjaan
      */
     public function storePengalamanKerja(Request $request)
     {
         $user = Auth::user();
 
-        $request->validate([
-            'nama_pt' => 'required|string|max:200',
-            'bagian_kerja' => 'required|string|max:200',
-            'tahun_mulai' => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'tahun_akhir' => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'masih_bekerja' => 'nullable|boolean',
-            'sertifikat_pendukung' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:5120',
-        ]);
+        if (!$user) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Silakan login terlebih dahulu'], 401);
+            }
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
+        }
+
+        $validJenis = implode(',', $this->getValidJenisPekerjaan());
+
+        try {
+            $validated = $request->validate([
+                'nama_pt'              => 'required|string|max:200',
+                'bagian_kerja'         => 'required|string|max:200',
+                'jenis_pekerjaan'      => 'required|in:' . $validJenis,
+                'tahun_mulai'          => 'required|date|before_or_equal:today',
+                'tahun_akhir'          => 'nullable|date|after_or_equal:tahun_mulai',
+                'masih_bekerja'        => 'nullable|in:0,1,true,false',
+                'deskripsi'            => 'nullable|string|max:1000',
+                'sertifikat_pendukung' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:5120',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors'  => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput()
+                ->with('error', 'Validasi gagal. Silakan periksa kembali data Anda.');
+        }
+
+        // Normalisasi nilai masih_bekerja dari berbagai format
+        $masihBekerja = in_array($request->input('masih_bekerja'), ['1', 'true', true, 1], true);
+
+        // Simpan dalam format d-m-Y
+        $tahunMulai = Carbon::parse($request->tahun_mulai)->format('d-m-Y');
+        $tahunAkhir = (!$masihBekerja && $request->filled('tahun_akhir'))
+            ? Carbon::parse($request->tahun_akhir)->format('d-m-Y')
+            : null;
 
         $sertifikatPath = null;
         if ($request->hasFile('sertifikat_pendukung')) {
@@ -545,19 +593,26 @@ class UserController extends Controller
         }
 
         $pengalamanLama = $user->pengalaman_kerja ?? [];
+
         $pengalamanBaru = [
-            'id' => uniqid(),
-            'nama_pt' => $request->nama_pt,
-            'bagian_kerja' => $request->bagian_kerja,
-            'tahun_mulai' => $request->tahun_mulai,
-            'tahun_akhir' => $request->boolean('masih_bekerja') ? null : $request->tahun_akhir,
-            'masih_bekerja' => $request->boolean('masih_bekerja'),
+            'id'                   => uniqid(),
+            'nama_pt'              => $request->nama_pt,
+            'bagian_kerja'         => $request->bagian_kerja,
+            'jenis_pekerjaan'      => $request->jenis_pekerjaan,
+            'deskripsi'            => $request->deskripsi ?? null,
+            'tahun_mulai'          => $tahunMulai,
+            'tahun_akhir'          => $tahunAkhir,
+            'masih_bekerja'        => $masihBekerja,
             'sertifikat_pendukung' => $sertifikatPath,
         ];
 
         $pengalamanLama[] = $pengalamanBaru;
 
         $user->update(['pengalaman_kerja' => $pengalamanLama]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil ditambahkan!']);
+        }
 
         return redirect()->back()->with('success', 'Pengalaman kerja berhasil ditambahkan!');
     }
@@ -567,7 +622,7 @@ class UserController extends Controller
      */
     public function destroyPengalamanKerja(Request $request)
     {
-        $id = $request->query('id');
+        $id   = $request->query('id');
         $user = Auth::user();
 
         if (!$id) {
@@ -578,8 +633,7 @@ class UserController extends Controller
         $found = false;
 
         foreach ($pengalamanList as $key => $item) {
-            if ($item['id'] === $id) {
-                // Hapus file sertifikat pendukung jika ada
+            if (($item['id'] ?? null) === $id) {
                 if (!empty($item['sertifikat_pendukung']) && Storage::disk('public')->exists($item['sertifikat_pendukung'])) {
                     Storage::disk('public')->delete($item['sertifikat_pendukung']);
                 }
@@ -598,44 +652,171 @@ class UserController extends Controller
         return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil dihapus']);
     }
 
+    public function detailPengalamanKerja(Request $request)
+    {
+        $id   = $request->query('id');
+        $user = Auth::user();
+        $list = $user->pengalaman_kerja ?? [];
+        $item = collect($list)->firstWhere('id', $id);
+
+        if (!$item) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(['success' => true, 'data' => $item]);
+    }
+
+    /**
+     * Update pengalaman kerja berdasarkan ID
+     * FIX: Terima POST + _method=PATCH, perbaikan validasi masih_bekerja
+     *      Tambah field jenis_pekerjaan
+     */
+    public function updatePengalamanKerja(Request $request)
+    {
+        $id   = $request->query('id');
+        $user = Auth::user();
+
+        if (!$id) {
+            return response()->json(['success' => false, 'message' => 'ID diperlukan'], 400);
+        }
+
+        $validJenis = implode(',', $this->getValidJenisPekerjaan());
+
+        try {
+            $request->validate([
+                'nama_pt'          => 'required|string|max:200',
+                'bagian_kerja'     => 'required|string|max:200',
+                'jenis_pekerjaan'  => 'required|in:' . $validJenis,
+                'tahun_mulai'      => 'required|date|before_or_equal:today',
+                'tahun_akhir'      => 'nullable|date|after_or_equal:tahun_mulai',
+                'masih_bekerja'    => 'nullable|in:0,1,true,false',
+                'deskripsi'        => 'nullable|string|max:1000',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors(),
+            ], 422);
+        }
+
+        // Normalisasi nilai masih_bekerja
+        $masihBekerja = in_array($request->input('masih_bekerja'), ['1', 'true', true, 1], true);
+
+        // Simpan dalam format d-m-Y
+        $tahunMulai = Carbon::parse($request->tahun_mulai)->format('d-m-Y');
+        $tahunAkhir = (!$masihBekerja && $request->filled('tahun_akhir'))
+            ? Carbon::parse($request->tahun_akhir)->format('d-m-Y')
+            : null;
+
+        $list  = $user->pengalaman_kerja ?? [];
+        $found = false;
+
+        foreach ($list as &$entry) {
+            if (($entry['id'] ?? null) === $id) {
+                $entry['nama_pt']              = $request->nama_pt;
+                $entry['bagian_kerja']         = $request->bagian_kerja;
+                $entry['jenis_pekerjaan']      = $request->jenis_pekerjaan;
+                $entry['deskripsi']            = $request->deskripsi ?? null;
+                $entry['tahun_mulai']          = $tahunMulai;
+                $entry['masih_bekerja']        = $masihBekerja;
+                $entry['tahun_akhir']          = $tahunAkhir;
+                $entry['id']                   = $entry['id'] ?? $id;
+                $entry['sertifikat_pendukung'] = $entry['sertifikat_pendukung'] ?? null;
+                $found = true;
+                break;
+            }
+        }
+        unset($entry);
+
+        if (!$found) {
+            $list[] = [
+                'id'                   => $id,
+                'nama_pt'              => $request->nama_pt,
+                'bagian_kerja'         => $request->bagian_kerja,
+                'jenis_pekerjaan'      => $request->jenis_pekerjaan,
+                'deskripsi'            => $request->deskripsi ?? null,
+                'tahun_mulai'          => $tahunMulai,
+                'masih_bekerja'        => $masihBekerja,
+                'tahun_akhir'          => $tahunAkhir,
+                'sertifikat_pendukung' => null,
+            ];
+        }
+
+        $user->update(['pengalaman_kerja' => $list]);
+
+        return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil diperbarui']);
+    }
+
     // =========================================================
     // PENDIDIKAN
     // =========================================================
 
     /**
      * Tambah pendidikan baru
+     * FIX: Perbaikan validasi masih_kuliah dari checkbox HTML
      */
     public function storePendidikan(Request $request)
     {
         $user = Auth::user();
 
-        $request->validate([
-            'nama_sekolah' => 'required|string|max:300',
-            'jenjang' => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
-            'jurusan_sek' => 'nullable|string|max:200',
-            // tanggal-bulan-tahun
-            'tahun_masuk' => 'required|date|before_or_equal:today',
-            'tahun_lulus' => 'nullable|date|after:tahun_masuk|before_or_equal:today',
-            'masih_kuliah' => 'nullable|boolean',
-        ]);
+        try {
+            $request->validate([
+                'nama_sekolah' => 'required|string|max:300',
+                'jenjang'      => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
+                'jurusan_sek'  => 'nullable|string|max:200',
+                'tahun_masuk'  => 'required|date|before_or_equal:today',
+                'tahun_lulus'  => 'nullable|date|after_or_equal:tahun_masuk',
+                'masih_kuliah' => 'nullable|in:0,1,true,false',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors'  => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        }
+
+        // Normalisasi nilai masih_kuliah
+        $masihKuliah = in_array($request->input('masih_kuliah'), ['1', 'true', true, 1], true);
+
+        // Simpan sebagai format Y-m-d
+        $tahunMasuk = Carbon::parse($request->tahun_masuk)->format('Y-m-d');
+        $tahunLulus = (!$masihKuliah && $request->filled('tahun_lulus'))
+            ? Carbon::parse($request->tahun_lulus)->format('Y-m-d')
+            : null;
 
         $pendidikanLama = $user->pendidikan ?? [];
+
         $pendidikanBaru = [
-            'id' => uniqid(),
+            'id'           => uniqid(),
             'nama_sekolah' => $request->nama_sekolah,
-            'jenjang' => $request->jenjang,
-            'jurusan_sek' => $request->jurusan_sek,
-            'tahun_masuk' => $request->tahun_masuk,
-            'tahun_lulus' => $request->boolean('masih_kuliah') ? null : $request->tahun_lulus,
-            'masih_kuliah' => $request->boolean('masih_kuliah'),
+            'jenjang'      => $request->jenjang,
+            'jurusan_sek'  => $request->jurusan_sek,
+            'tahun_masuk'  => $tahunMasuk,
+            'tahun_lulus'  => $tahunLulus,
+            'masih_kuliah' => $masihKuliah,
         ];
 
         $pendidikanLama[] = $pendidikanBaru;
 
         // Urutkan dari tahun masuk terbaru
-        usort($pendidikanLama, fn($a, $b) => ($b['tahun_masuk'] ?? 0) - ($a['tahun_masuk'] ?? 0));
+        usort($pendidikanLama, function ($a, $b) {
+            $tA = isset($a['tahun_masuk']) ? Carbon::parse($a['tahun_masuk'])->timestamp : 0;
+            $tB = isset($b['tahun_masuk']) ? Carbon::parse($b['tahun_masuk'])->timestamp : 0;
+            return $tB - $tA;
+        });
 
         $user->update(['pendidikan' => $pendidikanLama]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil ditambahkan!']);
+        }
 
         return redirect()->back()->with('success', 'Data pendidikan berhasil ditambahkan!');
     }
@@ -645,7 +826,7 @@ class UserController extends Controller
      */
     public function destroyPendidikan(Request $request)
     {
-        $id = $request->query('id');
+        $id   = $request->query('id');
         $user = Auth::user();
 
         if (!$id) {
@@ -656,7 +837,7 @@ class UserController extends Controller
         $found = false;
 
         foreach ($pendidikanList as $key => $item) {
-            if ($item['id'] === $id) {
+            if (($item['id'] ?? null) === $id) {
                 unset($pendidikanList[$key]);
                 $found = true;
                 break;
@@ -672,8 +853,96 @@ class UserController extends Controller
         return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil dihapus']);
     }
 
+    public function detailPendidikan(Request $request)
+    {
+        $id   = $request->query('id');
+        $user = Auth::user();
+        $list = $user->pendidikan ?? [];
+        $item = collect($list)->firstWhere('id', $id);
+
+        if (!$item) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(['success' => true, 'data' => $item]);
+    }
+
+    /**
+     * Update pendidikan berdasarkan ID
+     * FIX: Terima POST + _method=PATCH, perbaikan validasi masih_kuliah
+     */
+    public function updatePendidikan(Request $request)
+    {
+        $id   = $request->query('id');
+        $user = Auth::user();
+
+        if (!$id) {
+            return response()->json(['success' => false, 'message' => 'ID diperlukan'], 400);
+        }
+
+        try {
+            $request->validate([
+                'nama_sekolah' => 'required|string|max:300',
+                'jenjang'      => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
+                'jurusan_sek'  => 'nullable|string|max:200',
+                'tahun_masuk'  => 'required|date|before_or_equal:today',
+                'tahun_lulus'  => 'nullable|date|after_or_equal:tahun_masuk',
+                'masih_kuliah' => 'nullable|in:0,1,true,false',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors(),
+            ], 422);
+        }
+
+        // Normalisasi nilai masih_kuliah
+        $masihKuliah = in_array($request->input('masih_kuliah'), ['1', 'true', true, 1], true);
+
+        // Simpan sebagai Y-m-d
+        $tahunMasuk = Carbon::parse($request->tahun_masuk)->format('Y-m-d');
+        $tahunLulus = (!$masihKuliah && $request->filled('tahun_lulus'))
+            ? Carbon::parse($request->tahun_lulus)->format('Y-m-d')
+            : null;
+
+        $list  = $user->pendidikan ?? [];
+        $found = false;
+
+        foreach ($list as &$entry) {
+            if (($entry['id'] ?? null) === $id) {
+                $entry['nama_sekolah'] = $request->nama_sekolah;
+                $entry['jenjang']      = $request->jenjang;
+                $entry['jurusan_sek']  = $request->jurusan_sek;
+                $entry['tahun_masuk']  = $tahunMasuk;
+                $entry['masih_kuliah'] = $masihKuliah;
+                $entry['tahun_lulus']  = $tahunLulus;
+                $entry['id']           = $entry['id'] ?? $id;
+                $found = true;
+                break;
+            }
+        }
+        unset($entry);
+
+        if (!$found) {
+            $list[] = [
+                'id'           => $id,
+                'nama_sekolah' => $request->nama_sekolah,
+                'jenjang'      => $request->jenjang,
+                'jurusan_sek'  => $request->jurusan_sek,
+                'tahun_masuk'  => $tahunMasuk,
+                'masih_kuliah' => $masihKuliah,
+                'tahun_lulus'  => $tahunLulus,
+            ];
+        }
+
+        $user->update(['pendidikan' => $list]);
+
+        return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil diperbarui']);
+    }
+
     // =========================================================
-    // KEAHLIAN TAMBAHAN (existing methods)
+    // KEAHLIAN TAMBAHAN
     // =========================================================
 
     public function storeKeahlianTambahan(Request $request)
@@ -733,7 +1002,6 @@ class UserController extends Controller
 
     /**
      * API endpoint: search nama sekolah dari seluruh Indonesia
-     * Menggunakan data statis yang komprehensif (atau bisa diganti ke API eksternal)
      */
     public function searchSekolah(Request $request)
     {
@@ -743,15 +1011,7 @@ class UserController extends Controller
             return response()->json([]);
         }
 
-        // Data sekolah dari API SIAP/Kemendikbud dapat diintegrasikan di sini.
-        // Untuk sementara menggunakan sample data yang bisa dikembangkan.
-        // Anda bisa mengganti ini dengan request ke:
-        // https://api-sekolah-indonesia.vercel.app/sekolah?s={query}&p=1&l=10
-        // atau https://sekolah.data.kemdikbud.go.id/index.php/Csekolah/
-
         try {
-            // Coba gunakan API eksternal Sekolah Indonesia
-            $client = new \Illuminate\Http\Client\Factory();
             $response = \Illuminate\Support\Facades\Http::timeout(5)
                 ->get('https://api-sekolah-indonesia.vercel.app/sekolah', [
                     's' => $query,
@@ -765,10 +1025,10 @@ class UserController extends Controller
                 $sekolahList = collect($data['dataSekolah'] ?? [])
                     ->take(10)
                     ->map(fn($s) => [
-                        'nama' => $s['sekolah'] ?? $s['nama'] ?? '',
-                        'kota' => $s['kabkota'] ?? $s['kota'] ?? '',
+                        'nama'     => $s['sekolah'] ?? $s['nama'] ?? '',
+                        'kota'     => $s['kabkota'] ?? $s['kota'] ?? '',
                         'provinsi' => $s['propinsi'] ?? $s['provinsi'] ?? '',
-                        'jenjang' => $s['bentuk'] ?? '',
+                        'jenjang'  => $s['bentuk'] ?? '',
                     ])
                     ->filter(fn($s) => !empty($s['nama']))
                     ->values();
@@ -776,10 +1036,10 @@ class UserController extends Controller
                 return response()->json($sekolahList);
             }
         } catch (\Exception $e) {
-            // Fallback ke data statis jika API gagal
+            // Fallback ke data statis
         }
 
-        // Fallback data statis universitas dan sekolah ternama Indonesia
+        // Fallback data statis
         $sekolahStatis = [
             ['nama' => 'Universitas Indonesia', 'kota' => 'Depok', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Universitas'],
             ['nama' => 'Institut Teknologi Bandung', 'kota' => 'Bandung', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Institut'],
@@ -803,104 +1063,4 @@ class UserController extends Controller
 
         return response()->json(array_values($filtered));
     }
-
-    public function detailPengalamanKerja(Request $request)
-    {
-        $id = $request->query('id');
-        $user = Auth::user();
-        $list = $user->pengalaman_kerja ?? [];
-        $item = collect($list)->firstWhere('id', $id);
-        if (!$item)
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        return response()->json(['success' => true, 'data' => $item]);
-    }
-
-    public function updatePengalamanKerja(Request $request)
-    {
-        $id = $request->query('id');
-        $user = Auth::user();
-
-        $request->validate([
-            'nama_pt' => 'required|string|max:200',
-            'bagian_kerja' => 'required|string|max:200',
-            'tahun_mulai' => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'tahun_akhir' => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'masih_bekerja' => 'nullable|boolean',
-        ]);
-
-        $list = $user->pengalaman_kerja ?? [];
-        $found = false;
-
-        foreach ($list as &$entry) {   // ✅ pakai &
-            if ($entry['id'] === $id) {
-                $entry['nama_pt'] = $request->nama_pt;
-                $entry['bagian_kerja'] = $request->bagian_kerja;
-                $entry['tahun_mulai'] = $request->tahun_mulai;
-                $entry['masih_bekerja'] = $request->boolean('masih_bekerja');
-                $entry['tahun_akhir'] = $request->boolean('masih_bekerja') ? null : $request->tahun_akhir;
-                $found = true;
-                break;
-            }
-        }
-        unset($entry); // ✅ wajib
-
-        if (!$found) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        }
-
-        $user->update(['pengalaman_kerja' => $list]);
-        return response()->json(['success' => true, 'message' => 'Pengalaman kerja berhasil diperbarui']);
-    }
-
-    public function detailPendidikan(Request $request)
-    {
-        $id = $request->query('id');
-        $user = Auth::user();
-        $list = $user->pendidikan ?? [];
-        $item = collect($list)->firstWhere('id', $id);
-        if (!$item)
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        return response()->json(['success' => true, 'data' => $item]);
-    }
-
-    public function updatePendidikan(Request $request)
-    {
-        $id = $request->query('id');
-        $user = Auth::user();
-
-        $request->validate([
-            'nama_sekolah' => 'required|string|max:300',
-            'jenjang' => 'required|in:SD,SMP,SMA/SMK,D1,D2,D3,D4,S1,S2,S3,Kursus/Pelatihan',
-            'jurusan_sek' => 'nullable|string|max:200',
-            'tahun_masuk' => 'required|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'tahun_lulus' => 'nullable|digits:4|integer|min:1950|max:' . (date('Y') + 1),
-            'masih_kuliah' => 'nullable|boolean',
-        ]);
-
-        $list = $user->pendidikan ?? [];
-        $found = false;
-
-        foreach ($list as &$entry) {   // ✅ pakai & (reference) dan nama berbeda
-            if ($entry['id'] === $id) {
-                $entry['nama_sekolah'] = $request->nama_sekolah;
-                $entry['jenjang'] = $request->jenjang;
-                $entry['jurusan_sek'] = $request->jurusan_sek;
-                $entry['tahun_masuk'] = $request->tahun_masuk;
-                $entry['masih_kuliah'] = $request->boolean('masih_kuliah');
-                $entry['tahun_lulus'] = $request->boolean('masih_kuliah') ? null : $request->tahun_lulus;
-                $found = true;
-                break;
-            }
-        }
-        unset($entry); // ✅ wajib lepas reference
-
-        if (!$found) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        }
-
-        $user->update(['pendidikan' => $list]);
-        return response()->json(['success' => true, 'message' => 'Data pendidikan berhasil diperbarui']);
-    }
-
-
 }

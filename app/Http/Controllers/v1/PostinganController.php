@@ -121,35 +121,44 @@ class PostinganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
-        // Get ID from query parameter
-        $id = $request->query('id');
+     
+     public function show(Request $request)
+{
+    // Get ID from query parameter
+    $id = $request->query('id');
 
-        if (!$id) {
-            abort(404, 'Postingan ID is required');
-        }
+    if (!$id) {
+        abort(404, 'Postingan ID is required');
+    }
 
-        $user = auth()->user();
-        $query = Postingan::with(['user', 'komentar.user', 'likes']);
+    $user = auth()->user();
+    $query = Postingan::with(['user', 'komentar.user', 'likes']);
 
-        if ($user->role === 'mahasiswa') {
-            $query->where('id_user', $user->id);
-        } elseif ($user->role === 'dosen') {
-            $query->whereHas('user', function ($q) use ($user) {
-                $q->where('role', 'mahasiswa')
-                  ->where('id_angkatan', $user->id_angkatan)
-                  ->where('id_jurusan', $user->id_jurusan)
-                  ->where('id_keahlian', $user->id_keahlian);
-            });
-        } elseif ($user->role === 'admin') {
-            // Admin can see all
-        }
-
+    // Jika user belum login (guest), tampilkan semua postingan
+    if (!$user) {
+        // Guest can see all posts
         $postingan = $query->where('id_postingan', $id)->firstOrFail();
-
         return view('postingan.views_detail_postingan', compact('postingan'));
     }
+
+    // User yang sudah login dengan role tertentu
+    if ($user->role === 'mahasiswa') {
+        $query->where('id_user', $user->id);
+    } elseif ($user->role === 'dosen') {
+        $query->whereHas('user', function ($q) use ($user) {
+            $q->where('role', 'mahasiswa')
+                ->where('id_angkatan', $user->id_angkatan)
+                ->where('id_jurusan', $user->id_jurusan)
+                ->where('id_keahlian', $user->id_keahlian);
+        });
+    } elseif ($user->role === 'admin') {
+        // Admin can see all
+    }
+
+    $postingan = $query->where('id_postingan', $id)->firstOrFail();
+
+    return view('postingan.views_detail_postingan', compact('postingan'));
+}
 
     /**
      * Show the form for editing the specified resource.
