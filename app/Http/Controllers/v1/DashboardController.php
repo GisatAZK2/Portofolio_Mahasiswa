@@ -273,12 +273,37 @@ class DashboardController extends Controller
         //  POSTINGAN
         // ════════════════════════
         if (!$type || $type === 'postingan') {
-            $q = Postingan::with(['user', 'komentar', 'likes', 'game']);
+            $q = Postingan::with(['user', 'komentar', 'likes', 'game'])
+                ->whereHas('user', fn($qq) => $qq->where('role', 'mahasiswa')
+                    ->where('status_pengajuan', 'Di Terima'));
 
             if ($keyword !== '') {
-                // Content disimpan sebagai JSON array of objects {type, content}
-                // Cari di seluruh string JSON (paling kompatibel untuk semua DB)
-                $q->where('content', 'like', "%{$keyword}%");
+                $q->where(function ($query) use ($keyword) {
+                    // Cari di konten postingan
+                    $query->where('content', 'like', "%{$keyword}%")
+                        // ATAU cari berdasarkan nama mahasiswa pemilik postingan
+                        ->orWhereHas('user', fn($qq) => $qq->where('nama_mahasiswa', 'like', "%{$keyword}%"));
+                });
+            }
+
+            if ($jurusan) {
+                $q->whereHas('user', fn($qq) => $qq->where('id_jurusan', $jurusan));
+            }
+
+            if ($angkatan) {
+                $q->whereHas('user', fn($qq) => $qq->where('id_angkatan', $angkatan));
+            }
+
+            if ($keahlian) {
+                $q->whereHas('user', function ($query) use ($keahlian) {
+                    $query->where(function ($qq) use ($keahlian) {
+                        $qq->where('id_keahlian', $keahlian)
+                        ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
+                            $qqq->where('keahlian.id_keahlian', $keahlian)
+                                ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                        });
+                    });
+                });
             }
 
             $postingan = $q->latest()
