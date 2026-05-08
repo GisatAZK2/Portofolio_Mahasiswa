@@ -968,20 +968,62 @@
             });
         }
 
-        window.handleShare = function (e) {
-            const postCard = e.currentTarget.closest('.post-card');
-            if (!postCard) return;
-            const url   = postCard.dataset.shareUrl || window.location.href;
-            const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
-            if (navigator.share) { navigator.share({ title, url }).catch(() => {}); }
-            else {
-                navigator.clipboard.writeText(url).then(() => {
-                    const btn = e.currentTarget;
+        function fallbackCopyToClipboard(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+
+            try {
+                textarea.select();
+                const successful = document.execCommand('copy');
+                if (successful) {
                     const origHtml = btn.innerHTML;
                     btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
                     setTimeout(() => { btn.innerHTML = origHtml; }, 2000);
                     window.showPageInfo?.('Link berhasil disalin!', 'success', 1500);
-                }).catch(() => window.showErrorAlert?.('Gagal menyalin URL') || alert('Gagal menyalin URL'));
+                } else {
+                    window.showErrorAlert?.('Gagal menyalin URL') || alert('Gagal menyalin URL');
+                }
+            } catch (err) {
+                console.error('Fallback copy error:', err);
+                window.showErrorAlert?.('Gagal menyalin URL') || alert('Gagal menyalin URL');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        window.handleShare = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const btn = e.currentTarget;
+            const postCard = btn.closest('.post-card');
+            if (!postCard) return;
+            const url   = postCard.dataset.shareUrl || window.location.href;
+            const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
+
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(() => {});
+            } else {
+                // Try modern clipboard API first
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url)
+                        .then(() => {
+                            const origHtml = btn.innerHTML;
+                            btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+                            setTimeout(() => { btn.innerHTML = origHtml; }, 2000);
+                            window.showPageInfo?.('Link berhasil disalin!', 'success', 1500);
+                        })
+                        .catch(err => {
+                            console.error('Clipboard error:', err);
+                            fallbackCopyToClipboard(url, btn);
+                        });
+                } else {
+                    // Fallback for older browsers
+                    fallbackCopyToClipboard(url, btn);
+                }
             }
         };
 
