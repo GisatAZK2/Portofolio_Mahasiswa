@@ -1222,7 +1222,6 @@
                 <div class="cp-field">
                     <label class="cp-label">{{autotranslate("Link / Referensi")}} <span class="cp-opt">(opsional)</span></label>
                     <div class="cp-link-wrap">
-                        <span class="cp-link-prefix">https://</span>
                         <input type="text" name="items[0][content]" class="cp-link-field" placeholder="contoh.com/artikel-saya">
                     </div>
                     <input type="hidden" name="items[0][type]" value="link">
