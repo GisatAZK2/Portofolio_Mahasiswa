@@ -1311,8 +1311,8 @@ window.loadComments = async function(postinganId) {
 
             if (commentsArray.length === 0) {
                 const noCommentsText = (window.locale === 'id')
-                    ? '✨ Belum ada komentar. Jadilah yang pertama!'
-                    : '✨ No comments yet. Be the first!';
+                    ? 'Belum ada komentar. Jadilah yang pertama!'
+                    : 'No comments yet. Be the first!';
                 container.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">${noCommentsText}</p>`;
                 return;
             }
