@@ -143,7 +143,7 @@
                                 <div class="text-gray-500 dark:text-gray-400 text-sm mb-8 relative group">
                                     <div id="username-container">
                                         <span id="username-display" class="cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400" onclick="toggleEdit('username')">
-                                            {{ Auth::user()->username ? '@' . autoTranslate(Auth::user()->username) : autoTranslate('(belum ada username)') }}
+                                            {{ Auth::user()->username ? '@' . Auth::user()->username : autoTranslate('(belum ada username)') }}
                                         </span>
                                         <button type="button" onclick="toggleEdit('username')" class="ml-2 opacity-0 group-hover:opacity-100 transition text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400">{{ autoTranslate('edit') }}</button>
                                     </div>
