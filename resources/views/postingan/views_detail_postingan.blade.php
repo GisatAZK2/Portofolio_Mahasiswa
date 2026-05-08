@@ -538,8 +538,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
 
                 if (commentsArray.length === 0) {
                     const noCommentsText = (window.locale === 'id')
-                        ? '✨ Belum ada komentar. Jadilah yang pertama!'
-                        : '✨ No comments yet. Be the first!';
+                        ? 'Belum ada komentar. Jadilah yang pertama!'
+                        : 'No comments yet. Be the first!';
                     container.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">${noCommentsText}</p>`;
                     return;
                 }
@@ -1023,18 +1023,51 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 .then(data => {
                     if (data.success) {
                         const icon      = likeBtn.querySelector('svg');
-                        const countSpan = likeBtn.querySelector('.like-count-text');
+                        const countSpan = likeBtn.querySelector('.like-count');
                         if (data.liked) {
                             likeBtn.classList.add('text-red-500', 'dark:text-red-400');
-                            icon.classList.add('fill-current');
+                            icon.classList.add('fill-current', 'text-red-500');
                         } else {
                             likeBtn.classList.remove('text-red-500', 'dark:text-red-400');
-                            icon.classList.remove('fill-current');
+                            icon.classList.remove('fill-current', 'text-red-500');
                         }
                         if (countSpan) countSpan.textContent = data.like_count;
                     }
                 })
                 .catch(error => console.error('Error:', error));
+            });
+        }
+
+        // Comment toggle button
+        const commentToggle = document.querySelector('.comment-toggle');
+        if (commentToggle) {
+            commentToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const commentsSection = document.getElementById('comments');
+                if (commentsSection) {
+                    commentsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+
+        // Share button
+        const shareBtn = document.querySelector('.share-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = `{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]) }}`;
+                if (navigator.share) {
+                    navigator.share({
+                        title: '{{ $postingan->user->nama_mahasiswa }}',
+                        text: 'Cek postingan ini!',
+                        url: url
+                    }).catch(err => console.log('Share cancelled:', err));
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert('Link disalin ke clipboard!');
+                    }).catch(err => console.error('Copy failed:', err));
+                }
             });
         }
 
