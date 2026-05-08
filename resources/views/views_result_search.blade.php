@@ -2,6 +2,35 @@
 @section('title', autoTranslate('Hasil Pencarian'))
 
 @section('content')
+    <style>
+        .comments-container {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .comments-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .comments-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .comments-container::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+
+        .dark .comments-container::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        .dark .comments-container::-webkit-scrollbar-thumb {
+            background: #6366f1;
+        }
+    </style>
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- Filter Aktif -->
@@ -1137,25 +1166,66 @@
         });
     }
 
-    window.handleShare = function (e) {
-        const postCard = e.currentTarget.closest('.post-card');
-        if (!postCard) return;
-        const url = postCard.dataset.shareUrl || window.location.href;
-        const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
-        if (navigator.share) {
-            navigator.share({ title, url }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(url).then(() => {
-                const btn = e.currentTarget;
+    function fallbackCopyToClipboard(text, btn) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+
+        try {
+            textarea.select();
+            const successful = document.execCommand('copy');
+            if (successful) {
                 const origHtml = btn.innerHTML;
                 btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
                 setTimeout(() => { btn.innerHTML = origHtml; }, 2000);
                 if (typeof showSuccessAlert === 'function') showSuccessAlert('Link berhasil disalin!');
                 else alert('Link berhasil disalin!');
-            }).catch(() => {
+            } else {
                 if (typeof showErrorAlert === 'function') showErrorAlert('Gagal menyalin URL');
                 else alert('Gagal menyalin URL');
-            });
+            }
+        } catch (err) {
+            console.error('Fallback copy error:', err);
+            if (typeof showErrorAlert === 'function') showErrorAlert('Gagal menyalin URL');
+            else alert('Gagal menyalin URL');
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+
+    window.handleShare = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const btn = e.currentTarget;
+        const postCard = btn.closest('.post-card');
+        if (!postCard) return;
+        const url = postCard.dataset.shareUrl || window.location.href;
+        const title = postCard.querySelector('h3')?.innerText || 'Postingan Menarik';
+
+        if (navigator.share) {
+            navigator.share({ title, url }).catch(() => {});
+        } else {
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                    .then(() => {
+                        const origHtml = btn.innerHTML;
+                        btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+                        setTimeout(() => { btn.innerHTML = origHtml; }, 2000);
+                        if (typeof showSuccessAlert === 'function') showSuccessAlert('Link berhasil disalin!');
+                        else alert('Link berhasil disalin!');
+                    })
+                    .catch(err => {
+                        console.error('Clipboard error:', err);
+                        fallbackCopyToClipboard(url, btn);
+                    });
+            } else {
+                // Fallback for older browsers
+                fallbackCopyToClipboard(url, btn);
+            }
         }
     };
 

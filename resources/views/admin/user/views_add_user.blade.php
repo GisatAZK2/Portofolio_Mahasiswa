@@ -1211,11 +1211,11 @@ function showImportResult(result) {
     let message = result.message;
     
     if (result.warnings && result.warnings.length > 0) {
-        message += '\n\n⚠️ Peringatan:\n' + result.warnings.join('\n');
+        message += '\n\n Peringatan:\n' + result.warnings.join('\n');
     }
     
     if (result.failedRows && result.failedRows.length > 0) {
-        message += '\n\n❌ Gagal di baris:\n';
+        message += '\n\nGagal di baris:\n';
         result.failedRows.slice(0, 10).forEach(failed => {
             message += `Baris ${failed.row}: ${failed.reason}\n`;
         });
@@ -1224,7 +1224,7 @@ function showImportResult(result) {
         }
     }
     
-    message += `\n\n📊 Statistik:\n- Berhasil: ${result.stats.success}\n- Gagal: ${result.stats.failed}\n- Total: ${result.stats.total}`;
+    message += `\n\nStatistik:\n- Berhasil: ${result.stats.success}\n- Gagal: ${result.stats.failed}\n- Total: ${result.stats.total}`;
     
     alert(message);
     
@@ -1625,8 +1625,8 @@ function matchSelectByText(name, text) {
 
 function downloadTemplate() {
     const data = [
-        { 'NIM': '20250010001', 'Nama Lengkap': 'Ahmad Budi Santoso', 'Jurusan': 'Bisnis Digital', 'Keahlian': 'Web Development', 'Angkatan': '2025' },
-        { 'NIM': '20250010002', 'Nama Lengkap': 'Siti Nurhaliza', 'Jurusan': 'Teknologi Rekayasa Perangkat Lunak', 'Keahlian': 'Mobile Development', 'Angkatan': '2025' }
+        { 'NIM': '20250010001', 'Nama Lengkap': 'Ahmad Budi Santoso', 'Jurusan': 'D4 Bisnis Digital', 'Keahlian': 'Web Development', 'Angkatan': 'Angkatan 2025' },
+        { 'NIM': '20250010002', 'Nama Lengkap': 'Siti Nurhaliza', 'Jurusan': 'D4 Teknologi Rekayasa Perangkat Lunak', 'Keahlian': 'Mobile Development', 'Angkatan': 'Angkatan 2025' }
     ];
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
