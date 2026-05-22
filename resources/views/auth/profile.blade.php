@@ -6,16 +6,47 @@
     <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css">
     <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
     <style>
+        #cropper-modal {
+            overflow-y: auto;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        #cropper-modal > div {
+            width: min(95vw, 42rem);
+            max-height: calc(90vh - 2rem);
+            display: flex;
+            flex-direction: column;
+        }
         #cropper-modal .cropper-container {
             max-width: 100%;
             height: 100%;
         }
+        #cropper-modal .cropper-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-bottom: 1rem;
+        }
+        #cropper-modal .cropper-footer {
+            flex-shrink: 0;
+            position: sticky;
+            bottom: 0;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        #cropper-modal .dark .cropper-footer,
+        #cropper-modal.dark .cropper-footer {
+            background: rgba(15,23,42,0.98);
+        }
         #cropper-preview-container {
-            min-height: 240px;
-            min-width: 240px;
+            min-height: 170px;
+            min-width: auto;
         }
         #cropper-preview-container .cropper-preview img {
             object-fit: cover;
+            width: 100%;
+            height: 100%;
         }
     </style>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
@@ -127,9 +158,9 @@
                                 </div>
                             </div>
 
-                            <div id="cropper-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-                                <div class="w-full max-w-4xl rounded-3xl bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
-                                    <div class="flex items-start justify-between gap-4 px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <div id="cropper-modal" class="hidden fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black/60 p-2 sm:p-4">
+                                <div class="w-full max-w-[42rem] rounded-3xl bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
+                                    <div class="flex items-start justify-between gap-3 px-4 py-4 border-b border-gray-200 dark:border-gray-700">
                                         <div>
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ autoTranslate('Sesuaikan Foto Profil') }}</h3>
                                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.') }}</p>
@@ -140,8 +171,8 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4 p-5">
-                                        <div class="min-h-[320px] rounded-3xl bg-gray-100 dark:bg-gray-800 overflow-hidden flex items-center justify-center">
+                                    <div class="cropper-body grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4 p-4 sm:p-5 min-h-0">
+                                        <div class="h-[min(45vh,320px)] rounded-3xl bg-gray-100 dark:bg-gray-800 overflow-hidden flex items-center justify-center">
                                             <img id="cropper-image" src="#" alt="Crop preview" class="max-w-full max-h-full object-contain" />
                                         </div>
                                         <div class="space-y-4">
@@ -164,7 +195,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex flex-col gap-3 sm:flex-row items-stretch justify-end border-t border-gray-200 dark:border-gray-700 px-5 py-4 bg-gray-50 dark:bg-gray-950/90">
+                                    <div class="cropper-footer flex flex-col gap-3 sm:flex-row items-stretch justify-end border-t border-gray-200 dark:border-gray-700 px-5 py-4 bg-gray-50 dark:bg-gray-950/90">
                                         <button type="button" onclick="cancelCropper()" class="w-full sm:w-auto rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">{{ autoTranslate('Batal') }}</button>
                                         <button type="button" onclick="confirmCrop()" class="w-full sm:w-auto rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition">{{ autoTranslate('Gunakan Foto') }}</button>
                                     </div>
