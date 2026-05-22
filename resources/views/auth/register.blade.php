@@ -282,9 +282,8 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Keahlian Utama</label>
-                        <select name="id_keahlian" required
-                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition appearance-none @error('id_keahlian') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
-                            {{ $isBlocked ? 'disabled' : '' }}>
+                        <select name="id_keahlian" {{ $isBlocked ? 'disabled' : '' }}
+                            class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition appearance-none @error('id_keahlian') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}">
                             <option value="">Pilih keahlian</option>
                             @foreach($keahlians as $k)
                                 <option value="{{ $k->id_keahlian }}" {{ old('id_keahlian') == $k->id_keahlian ? 'selected' : '' }}>
@@ -293,6 +292,14 @@
                             @endforeach
                         </select>
                         @error('id_keahlian') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+
+                        <div class="mt-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Atau masukkan skill sendiri</label>
+                            <input type="text" name="custom_keahlian" value="{{ old('custom_keahlian') }}"
+                                class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-blue-500 focus:ring-0 transition @error('custom_keahlian') border-red-400 @enderror {{ $isBlocked ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                                placeholder="Skill baru / khusus" {{ $isBlocked ? 'disabled' : '' }}>
+                            @error('custom_keahlian') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
                     </div>
                 </div>
             </div>

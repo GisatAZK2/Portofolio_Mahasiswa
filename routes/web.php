@@ -163,8 +163,10 @@ Route::middleware(['web', 'auth'])->group(function () {
             Route::prefix('keahlian-tambahan')->name('keahlian-tambahan.')->group(function () {
                 Route::get('/', [UserController::class, 'keahliantambahanlist'])->name('index');
                 Route::post('/', [UserController::class, 'storeKeahlianTambahan'])->name('store');
+                Route::post('/custom', [UserController::class, 'storeCustomKeahlianTambahan'])->name('custom');
             });
             Route::delete('/keahlian-tambahan/destroy', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
+            
         });
         // ========== ADMIN ROUTES ==========
         Route::middleware(['auth', 'role:admin', '2fa'])->prefix('admin')->name('admin.')->group(function () {

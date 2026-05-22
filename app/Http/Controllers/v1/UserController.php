@@ -10,10 +10,11 @@ use App\Models\Keahlian;
 use App\Models\Angkatan;
 use App\Models\Keahlian_Tambahan;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
 use App\Services\ImageConversionService;
 use App\Http\Controllers\v1\NotificationController;
 use Illuminate\Support\Facades\Http;
@@ -170,17 +171,26 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase(), 'regex:/^\S*$/'],
             'id_jurusan' => ['required', 'exists:jurusan,id_jurusan'],
-            'id_keahlian' => ['required', 'exists:keahlian,id_keahlian'],
+            'id_keahlian' => ['nullable', 'exists:keahlian,id_keahlian', 'required_without:custom_keahlian'],
+            'custom_keahlian' => ['nullable', 'string', 'max:100'],
             'id_angkatan' => ['required', 'exists:angkatan,id'],
             'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'nim' => ['required', 'string', 'max:50', 'unique:users,nim'],
             'tanggal_lahir' => ['required', 'date']
         ]);
 
+        if ($request->filled('custom_keahlian')) {
+            $validated['id_keahlian'] = $this->resolveOrCreateKeahlianByName($request->custom_keahlian);
+        }
+
         $validated['role'] = 'mahasiswa';
 
         if ($request->hasFile('photo_profile')) {
             $validated['photo_profile'] = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+        }
+
+        if (array_key_exists('custom_keahlian', $validated)) {
+            unset($validated['custom_keahlian']);
         }
 
         $validated['password'] = Hash::make($validated['password']);
@@ -432,6 +442,21 @@ class UserController extends Controller
         return null;
     }
 
+    private function resolveOrCreateKeahlianByName(string $namaKeahlian)
+    {
+        $namaKeahlian = trim($namaKeahlian);
+        if ($namaKeahlian === '') {
+            return null;
+        }
+
+        $existing = Keahlian::whereRaw('LOWER(nama_keahlian) = ?', [Str::lower($namaKeahlian)])->first();
+        if ($existing) {
+            return $existing->id_keahlian;
+        }
+
+        return Keahlian::create(['nama_keahlian' => $namaKeahlian])->id_keahlian;
+    }
+
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -453,6 +478,7 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z0-9_]+$/', 'unique:users,username,' . $user->id],
             'id_jurusan' => ['nullable', 'exists:jurusan,id_jurusan'],
             'id_keahlian' => ['nullable', 'exists:keahlian,id_keahlian'],
+            'custom_keahlian' => ['nullable', 'string', 'max:100'],
             'id_angkatan' => ['nullable', 'exists:angkatan,id'],
             'deskripsi' => ['nullable', 'string', 'max:1500'],
             'jenis_kelamin' => ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'],
@@ -497,6 +523,15 @@ class UserController extends Controller
             $validated['tanggal_lahir'] = Carbon::parse($request->tanggal_lahir)->format('Y-m-d');
         } else {
             $validated['tanggal_lahir'] = null;
+        }
+
+        // Handle custom keahlian utama
+        if ($request->filled('custom_keahlian')) {
+            $validated['id_keahlian'] = $this->resolveOrCreateKeahlianByName($request->custom_keahlian);
+        }
+
+        if (array_key_exists('custom_keahlian', $validated)) {
+            unset($validated['custom_keahlian']);
         }
 
         // Handle keahlian tambahan
@@ -951,17 +986,59 @@ class UserController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'id_keahlian' => 'required|exists:keahlian,id_keahlian',
+            'id_keahlian_tambahan' => ['nullable', 'exists:keahlian,id_keahlian', 'required_without:custom_keahlian_tambahan'],
+            'custom_keahlian_tambahan' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $error = $this->addKeahlianTambahan($user, $request->id_keahlian);
+        $idKeahlian = $request->filled('custom_keahlian_tambahan')
+            ? $this->resolveOrCreateKeahlianByName($request->custom_keahlian_tambahan)
+            : $request->id_keahlian_tambahan;
+
+        $error = $this->addKeahlianTambahan($user, $idKeahlian);
 
         if ($error) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $error], 422);
+            }
             return redirect()->back()->with('error', $error);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Pengajuan keahlian berhasil dikirim']);
         }
 
         return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
     }
+
+    // Tambahkan method ini di UserController.php (setelah method storeKeahlianTambahan)
+
+public function storeCustomKeahlianTambahan(Request $request)
+{
+    $user = Auth::user();
+    
+    $request->validate([
+        'custom_keahlian_tambahan' => 'required|string|max:100',
+    ]);
+    
+    $idKeahlian = $this->resolveOrCreateKeahlianByName($request->custom_keahlian_tambahan);
+    
+    $error = $this->addKeahlianTambahan($user, $idKeahlian);
+    
+    if ($error) {
+        if ($request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $error]);
+        }
+        return redirect()->back()->with('error', $error);
+    }
+    
+    if ($request->expectsJson()) {
+        return response()->json(['success' => true, 'message' => 'Pengajuan keahlian berhasil dikirim']);
+    }
+    
+    return redirect()->back()->with('success', 'Pengajuan keahlian berhasil dikirim');
+}
+
+
 
     public function destroyKeahlianTambahan(Request $request)
     {
