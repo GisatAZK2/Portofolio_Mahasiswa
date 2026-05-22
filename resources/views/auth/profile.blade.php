@@ -347,9 +347,6 @@
                                             <option value="{{ $keahlian->id_keahlian }}" {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}>{{ autoTranslate($keahlian->nama_keahlian) }}</option>
                                         @endforeach
                                     </select>
-                                    <input id="keahlian-custom-input" type="text" name="custom_keahlian" value="{{ old('custom_keahlian') }}"
-                                        class="hidden w-full mt-3 px-4 py-3 text-base font-medium dark:bg-gray-700 dark:text-white border border-indigo-500 rounded-xl focus:outline-none bg-white"
-                                        placeholder="{{ autoTranslate('Masukkan keahlian sendiri') }}">
                                 </div>
 
                                 <!-- Keahlian Tambahan -->
