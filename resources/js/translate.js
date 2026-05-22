@@ -63,6 +63,15 @@ export const translations = {
       hapus : 'Hapus',
       batal : 'Batal',
       simpan_perubahan : 'Simpan Perubahan',
+      '-- Pilih Jenis Pekerjaan --': '-- Pilih Jenis Pekerjaan --',
+      'Penuh waktu': 'Penuh waktu',
+      'Paruh waktu': 'Paruh waktu',
+      'Pekerja mandiri': 'Pekerja mandiri',
+      'Pekerja lepas': 'Pekerja lepas',
+      'Kontrak': 'Kontrak',
+      'Magang jangka pendek': 'Magang jangka pendek',
+      'Magang': 'Magang',
+      'Musiman': 'Musiman',
     },
 
     keahlian_tambahan: {
@@ -1392,6 +1401,15 @@ export const translations = {
       hapus: 'Delete',
       batal: 'Cancel',
       simpan_perubahan: 'Save Changes',
+      '-- Pilih Jenis Pekerjaan --': '-- Choose Job Type --',
+      'Penuh waktu': 'Full Time',
+      'Paruh waktu': 'Part Time',
+      'Pekerja mandiri': 'Freelancer',
+      'Pekerja lepas': 'Freelance',
+      'Kontrak': 'Contract',
+      'Magang jangka pendek': 'Short-term Internship',
+      'Magang': 'Internship',
+      'Musiman': 'Seasonal',
     },
 
     keahlian_tambahan: {

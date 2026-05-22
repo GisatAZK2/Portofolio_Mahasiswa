@@ -1214,9 +1214,9 @@
                             </label>
                             <select id="pkj-edit-jenis_pekerjaan" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
-                                <option value="">{{ autoTranslate('-- Pilih Jenis Pekerjaan --') }}</option>
+                                <option value="" data-translate="-- Pilih Jenis Pekerjaan --" data-translate-page="profile">-- Pilih Jenis Pekerjaan --</option>
                                 @foreach(['Penuh waktu','Paruh waktu','Pekerja mandiri','Pekerja lepas','Kontrak','Magang jangka pendek','Magang','Musiman'] as $jenis)
-                                    <option value="{{ $jenis }}">{{ autoTranslate($jenis) }}</option>
+                                    <option value="{{ $jenis }}" data-translate="{{ $jenis }}" data-translate-page="profile">{{ $jenis }}</option>
                                 @endforeach
                             </select>
                         </div>
