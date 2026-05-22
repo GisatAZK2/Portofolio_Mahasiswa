@@ -57,6 +57,7 @@
             min-width: 0;
             width: 100%;
             overflow-x: auto;
+            margin-bottom: 5rem;
         }
 
         .content-wrapper {
@@ -143,7 +144,7 @@
             @include('components.header')
 
             <main class="overflow-auto">
-                <div class="content-wrapper">
+                <div class="">
                     @yield('content')
                 </div>
             </main>
