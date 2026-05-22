@@ -178,6 +178,7 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::patch('/edit', [AdminController::class, 'UpdateUser'])->name('edit');
                 Route::delete('/DeleteUser', [AdminController::class, 'destroyUser'])->name('destroy');
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyUsers'])->name('bulkDestroy');
+                Route::patch('/bulk-approve', [AdminController::class, 'bulkApproveUsers'])->name('bulkApprove');
                 Route::patch('/update-status', [UserController::class, 'updateStatus'])->name('update-status');
                 Route::post('/import-excel', [AdminController::class, 'importExcel'])->name('importExcel');
             });

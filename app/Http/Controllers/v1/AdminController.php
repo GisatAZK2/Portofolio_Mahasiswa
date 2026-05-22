@@ -200,6 +200,17 @@ class AdminController extends Controller
             });
         }
 
+        // Filter berdasarkan jurusan (prodi)
+        if ($request->has('jurusan') && $request->input('jurusan') != '') {
+            $jurusanId = $request->input('jurusan');
+            $users = $users->filter(function ($user) use ($jurusanId) {
+                // Some users may store FK as id_jurusan, others via relation
+                if (isset($user->id_jurusan) && $user->id_jurusan == $jurusanId) return true;
+                if ($user->jurusan?->id_jurusan == $jurusanId) return true;
+                return false;
+            });
+        }
+
         // Filter berdasarkan status_pengajuan
         if ($request->has('status_pengajuan') && $request->input('status_pengajuan') != '') {
             $status = $request->input('status_pengajuan');
@@ -210,7 +221,9 @@ class AdminController extends Controller
 
         $pendingKeahlianTambahanCount = \App\Models\Keahlian_Tambahan::where('status_pengajuan', 'Sedang Di Ajukan')->count();
 
-        return view('admin.daftar-mahasiswa', compact('users', 'pendingKeahlianTambahanCount'));
+        $jurusan = Jurusan::all();
+
+        return view('admin.daftar-mahasiswa', compact('users', 'pendingKeahlianTambahanCount', 'jurusan'));
     }
 
     public function ViewAddUser()
@@ -883,6 +896,29 @@ private function parseDate($date): ?string
 
         return redirect()->route('admin.users.index')
             ->with('success', "{$count} pengguna berhasil dihapus secara permanen.");
+    }
+
+    // Bulk approve users: set status_pengajuan => 'Di Terima'
+    public function bulkApproveUsers(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $ids = $request->input('selected_ids');
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada pengguna yang dipilih untuk disetujui.');
+        }
+
+        // Only approve those that are currently awaiting approval
+        $affected = User::whereIn('id', $ids)
+            ->where('status_pengajuan', 'Sedang Di Ajukan')
+            ->update(['status_pengajuan' => 'Di Terima']);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "{$affected} pengguna berhasil disetujui.");
     }
 
     // For Pages User Keahlian Tambahan

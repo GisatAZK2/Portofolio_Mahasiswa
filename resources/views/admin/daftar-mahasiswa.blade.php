@@ -120,7 +120,7 @@
                 </button>
 
                 <form id="bulkDeleteForm" action="{{ route('admin.users.bulkDestroy', ['locale' => app()->getLocale()]) }}"
-                    method="POST" class="inline">
+                    method="POST" class="inline md:hidden">
                     @csrf
                     @method('DELETE')
                     <button type="button" onclick="confirmBulkDelete()"
@@ -133,6 +133,21 @@
                         <span class="hidden sm:inline" data-translate="del_user" data-translate-page="admin">Hapus
                             Terpilih</span>
                         <span class="sm:hidden">Hapus</span>
+                    </button>
+                </form>
+
+                <form id="bulkApproveForm" action="{{ route('admin.users.bulkApprove', ['locale' => app()->getLocale()]) }}" method="POST" class="inline md:hidden">
+                    @csrf
+                    @method('PATCH')
+                    <button type="button" onclick="confirmBulkApprove()"
+                        class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="hidden sm:inline">Setujui Terpilih</span>
+                        <span class="sm:hidden">Setujui</span>
                     </button>
                 </form>
 
@@ -168,7 +183,7 @@
         <!-- Filter Section -->
         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
             <form action="{{ route('admin.users.index') }}" method="GET" id="filterForm">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="lg:col-span-2">
                         <label data-translate="srch_usr" data-translate-page="admin"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -226,6 +241,18 @@
                             </option>
                         </select>
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Prodi
+                        </label>
+                        <select name="jurusan"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
+                            <option value="">Semua Prodi</option>
+                            @foreach($jurusan as $j)
+                                <option value="{{ $j->id_jurusan }}" {{ request('jurusan') == $j->id_jurusan ? 'selected' : '' }}>{{ $j->nama_jurusan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="flex justify-end mt-4 space-x-3">
                     <a href="{{ route('admin.users.index') }}"
@@ -252,6 +279,23 @@
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="plh_semua"
                                 data-translate-page="admin">Pilih Semua</span>
                         </label>
+                        
+                        <!-- Desktop bulk action buttons placed next to select-all -->
+                        <div class="hidden md:flex items-center space-x-2 ml-4">
+                            <button type="button" onclick="confirmBulkApprove()"
+                                class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                <span>Setujui Terpilih</span>
+                            </button>
+
+                            <button type="button" onclick="confirmBulkDelete()"
+                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6" /></svg>
+                                <span>Hapus Terpilih</span>
+                            </button>
+                        </div>
                     </div>
                     <span class="text-sm text-gray-500 dark:text-gray-400">
                         <span data-translate="total_dipilih" data-translate-page="admin">Total dipilih:</span> <span
@@ -1007,14 +1051,29 @@
             if (totalSelectedEl) totalSelectedEl.textContent = selectedIds.length;
 
             const bulkForm = document.getElementById('bulkDeleteForm');
-            bulkForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
-            selectedIds.forEach(id => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'selected_ids[]';
-                input.value = id;
-                bulkForm.appendChild(input);
-            });
+            if (bulkForm) {
+                bulkForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
+                selectedIds.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'selected_ids[]';
+                    input.value = id;
+                    bulkForm.appendChild(input);
+                });
+            }
+
+            // Also keep bulkApproveForm in sync if present
+            const bulkApproveForm = document.getElementById('bulkApproveForm');
+            if (bulkApproveForm) {
+                bulkApproveForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
+                selectedIds.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'selected_ids[]';
+                    input.value = id;
+                    bulkApproveForm.appendChild(input);
+                });
+            }
 
             const allCheckboxes = getAllCheckboxes();
             const allUniqueIds = [...new Set(allCheckboxes.map(cb => cb.value))];
@@ -1082,6 +1141,32 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) document.getElementById('bulkDeleteForm').submit();
+            });
+        }
+
+        function confirmBulkApprove() {
+            updateSelectedIds();
+            if (selectedIds.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tidak Ada Data Dipilih',
+                    text: 'Silakan pilih minimal satu pengguna.',
+                    confirmButtonColor: '#3b82f6'
+                });
+                return;
+            }
+            Swal.fire({
+                title: 'Setujui Pengguna Terpilih?',
+                html: `Anda akan menyetujui <strong>${selectedIds.length}</strong> pengajuan pengguna.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#059669',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Setujui',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) document.getElementById('bulkApproveForm').submit();
             });
         }
 

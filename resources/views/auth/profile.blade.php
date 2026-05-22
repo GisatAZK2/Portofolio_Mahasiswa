@@ -1051,12 +1051,12 @@
                     <div>
     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Jenis Pekerjaan') }} <span class="text-red-500">*</span></label>
     <select name="jenis_pekerjaan" id="form-jenis_pekerjaan" required
-        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
-        <option value="">{{ autoTranslate('-- Pilih Jenis Pekerjaan --') }}</option>
-        @foreach(['Penuh waktu','Paruh waktu','Pekerja mandiri','Pekerja lepas','Kontrak','Magang jangka pendek','Magang','Musiman'] as $jenis)
-            <option value="{{ $jenis }}">{{ autoTranslate($jenis) }}</option>
-        @endforeach
-    </select>
+    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+    <option value="" data-translate="-- Pilih Jenis Pekerjaan --" data-translate-page="profile">-- Pilih Jenis Pekerjaan --</option>
+    @foreach(['Penuh waktu','Paruh waktu','Pekerja mandiri','Pekerja lepas','Kontrak','Magang jangka pendek','Magang','Musiman'] as $jenis)
+        <option value="{{ $jenis }}" data-translate="{{ $jenis }}" data-translate-page="profile">{{ $jenis }}</option>
+    @endforeach
+</select>
 </div>
 
                     <div>
