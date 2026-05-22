@@ -364,7 +364,7 @@
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                                 </svg>
                                                                 <span data-translate="edu_enter" data-translate-page="portofolio_user">Masuk</span>:
-                                                                <span>{{ $pend['tahun_masuk'] ?? '-' }}</span>
+                                                                <span>{{ !empty($pend['tahun_masuk']) ? \Carbon\Carbon::parse($pend['tahun_masuk'])->translatedFormat('F Y') : '-' }}</span>
                                                                 <span>—</span>
                                                                 @if($masihKuliah)
                                                                     <span class="text-blue-600 dark:text-blue-400 font-medium"
@@ -372,7 +372,7 @@
                                                                         Sekarang
                                                                     </span>
                                                                 @else
-                                                                    <span>{{ $pend['tahun_lulus'] ?? '-' }}</span>
+                                                                    <span>{{ !empty($pend['tahun_lulus']) ? \Carbon\Carbon::parse($pend['tahun_lulus'])->translatedFormat('F Y') : '-' }}</span>
                                                                 @endif
                                                             </div>
                                                         </div>

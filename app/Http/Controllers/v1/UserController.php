@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use App\Services\ImageConversionService;
 use App\Http\Controllers\v1\NotificationController;
+use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -1000,67 +1001,55 @@ class UserController extends Controller
         }
     }
 
+   
     /**
-     * API endpoint: search nama sekolah dari seluruh Indonesia
-     */
-    public function searchSekolah(Request $request)
-    {
-        $query = $request->query('q', '');
+ * API endpoint: search nama sekolah dari seluruh Indonesia
+ */
+public function searchSekolah(Request $request)
+{
+    $query = trim($request->query('q', ''));
 
-        if (strlen($query) < 2) {
+    if (strlen($query) < 2) {
+        return response()->json([]);
+    }
+
+    try {
+
+        $response = Http::withoutVerifying()
+            ->withHeaders([
+                'User-Agent' => 'Mozilla/5.0',
+                'Accept' => 'application/json',
+            ])
+            ->timeout(20)
+            ->get('https://sekolah.devapi.id/sekolah', [
+                'nama' => $query,
+                'limit' => 10,
+            ]);
+
+        if (!$response->successful()) {
             return response()->json([]);
         }
 
-        try {
-            $response = \Illuminate\Support\Facades\Http::timeout(5)
-                ->get('https://api-sekolah-indonesia.vercel.app/sekolah', [
-                    's' => $query,
-                    'p' => 1,
-                    'l' => 10,
-                ]);
+        $json = $response->json();
 
-            if ($response->successful()) {
-                $data = $response->json();
+        $results = collect($json['data'] ?? [])
+            ->map(fn ($s) => [
+                'nama' => $s['nama'] ?? '',
+                'npsn' => $s['npsn'] ?? '',
+                'jenjang' => $s['bentukPendidikan'] ?? '',
+                'kabupaten' => $s['alamat']['nama_kabupaten'] ?? '',
+                'provinsi' => $s['alamat']['nama_provinsi'] ?? '',
+            ])
+            ->filter(fn ($s) => !empty($s['nama']))
+            ->values();
 
-                $sekolahList = collect($data['dataSekolah'] ?? [])
-                    ->take(10)
-                    ->map(fn($s) => [
-                        'nama'     => $s['sekolah'] ?? $s['nama'] ?? '',
-                        'kota'     => $s['kabkota'] ?? $s['kota'] ?? '',
-                        'provinsi' => $s['propinsi'] ?? $s['provinsi'] ?? '',
-                        'jenjang'  => $s['bentuk'] ?? '',
-                    ])
-                    ->filter(fn($s) => !empty($s['nama']))
-                    ->values();
+        return response()->json($results);
 
-                return response()->json($sekolahList);
-            }
-        } catch (\Exception $e) {
-            // Fallback ke data statis
-        }
+    } catch (\Throwable $e) {
 
-        // Fallback data statis
-        $sekolahStatis = [
-            ['nama' => 'Universitas Indonesia', 'kota' => 'Depok', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Universitas'],
-            ['nama' => 'Institut Teknologi Bandung', 'kota' => 'Bandung', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Institut'],
-            ['nama' => 'Universitas Gadjah Mada', 'kota' => 'Yogyakarta', 'provinsi' => 'DIY', 'jenjang' => 'Universitas'],
-            ['nama' => 'Institut Teknologi Sepuluh Nopember', 'kota' => 'Surabaya', 'provinsi' => 'Jawa Timur', 'jenjang' => 'Institut'],
-            ['nama' => 'Universitas Diponegoro', 'kota' => 'Semarang', 'provinsi' => 'Jawa Tengah', 'jenjang' => 'Universitas'],
-            ['nama' => 'Universitas Brawijaya', 'kota' => 'Malang', 'provinsi' => 'Jawa Timur', 'jenjang' => 'Universitas'],
-            ['nama' => 'Universitas Padjadjaran', 'kota' => 'Sumedang', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Universitas'],
-            ['nama' => 'Universitas Airlangga', 'kota' => 'Surabaya', 'provinsi' => 'Jawa Timur', 'jenjang' => 'Universitas'],
-            ['nama' => 'Universitas Bina Nusantara', 'kota' => 'Jakarta', 'provinsi' => 'DKI Jakarta', 'jenjang' => 'Universitas'],
-            ['nama' => 'Universitas Telkom', 'kota' => 'Bandung', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Universitas'],
-            ['nama' => 'SMAN 1 Jakarta', 'kota' => 'Jakarta', 'provinsi' => 'DKI Jakarta', 'jenjang' => 'SMA'],
-            ['nama' => 'SMAN 3 Bandung', 'kota' => 'Bandung', 'provinsi' => 'Jawa Barat', 'jenjang' => 'SMA'],
-            ['nama' => 'SMKN 1 Bandung', 'kota' => 'Bandung', 'provinsi' => 'Jawa Barat', 'jenjang' => 'SMK'],
-            ['nama' => 'Politeknik Negeri Bandung', 'kota' => 'Bandung', 'provinsi' => 'Jawa Barat', 'jenjang' => 'Politeknik'],
-            ['nama' => 'Politeknik Elektronika Negeri Surabaya', 'kota' => 'Surabaya', 'provinsi' => 'Jawa Timur', 'jenjang' => 'Politeknik'],
-        ];
-
-        $queryLower = strtolower($query);
-        $filtered = array_filter($sekolahStatis, fn($s) => str_contains(strtolower($s['nama']), $queryLower));
-
-        return response()->json(array_values($filtered));
+        return response()->json([
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 }

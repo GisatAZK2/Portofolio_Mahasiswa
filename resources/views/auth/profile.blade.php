@@ -3,6 +3,21 @@
 @section('title', autoTranslate('Profil Saya'))
 
 @section('content')
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css">
+    <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <style>
+        #cropper-modal .cropper-container {
+            max-width: 100%;
+            height: 100%;
+        }
+        #cropper-preview-container {
+            min-height: 240px;
+            min-width: 240px;
+        }
+        #cropper-preview-container .cropper-preview img {
+            object-fit: cover;
+        }
+    </style>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
 
@@ -108,6 +123,50 @@
                                             </label>
                                         </div>
                                         <input type="file" name="photo_profile" id="photo_profile_input" accept="image/*" class="hidden">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="cropper-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                                <div class="w-full max-w-4xl rounded-3xl bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
+                                    <div class="flex items-start justify-between gap-4 px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ autoTranslate('Sesuaikan Foto Profil') }}</h3>
+                                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.') }}</p>
+                                        </div>
+                                        <button type="button" onclick="closeCropperModal()" class="rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300 transition">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4 p-5">
+                                        <div class="min-h-[320px] rounded-3xl bg-gray-100 dark:bg-gray-800 overflow-hidden flex items-center justify-center">
+                                            <img id="cropper-image" src="#" alt="Crop preview" class="max-w-full max-h-full object-contain" />
+                                        </div>
+                                        <div class="space-y-4">
+                                            <div class="rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+                                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{{ autoTranslate('Pratinjau') }}</p>
+                                                <div id="cropper-preview-container" class="cropper-preview-box overflow-hidden rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-900/5"></div>
+                                            </div>
+                                            <div class="rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 space-y-3">
+                                                <div class="flex items-center justify-between gap-3">
+                                                    <div>
+                                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ autoTranslate('Zoom') }}</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ autoTranslate('Perbesar atau perkecil gambar.') }}</p>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <button type="button" onclick="cropperZoom(-0.1)" class="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">-</button>
+                                                        <button type="button" onclick="cropperZoom(0.1)" class="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">+</button>
+                                                    </div>
+                                                </div>
+                                                <input id="cropper-zoom-range" type="range" min="0.5" max="3" step="0.01" value="1" class="w-full accent-indigo-600">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-3 sm:flex-row items-stretch justify-end border-t border-gray-200 dark:border-gray-700 px-5 py-4 bg-gray-50 dark:bg-gray-950/90">
+                                        <button type="button" onclick="cancelCropper()" class="w-full sm:w-auto rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">{{ autoTranslate('Batal') }}</button>
+                                        <button type="button" onclick="confirmCrop()" class="w-full sm:w-auto rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition">{{ autoTranslate('Gunakan Foto') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -460,12 +519,12 @@
                                             <div class="flex items-start justify-between gap-2">
                                                 <div class="flex-1">
                                                    <div class="flex items-center gap-2 flex-wrap">
-    <h4 class="font-semibold text-gray-900 dark:text-white text-base">{{ $pkj['nama_pt'] ?? '-' }}</h4>
-    @if(!empty($pkj['jenis_pekerjaan']))
-        <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium">{{ $pkj['jenis_pekerjaan'] }}</span>
-    @endif
-</div>
-<p class="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-0.5">{{ $pkj['bagian_kerja'] ?? '-' }}</p>
+                                                        <h4 class="font-semibold text-gray-900 dark:text-white text-base">{{ $pkj['nama_pt'] ?? '-' }}</h4>
+                                                        @if(!empty($pkj['jenis_pekerjaan']))
+                                                            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium">{{ $pkj['jenis_pekerjaan'] }}</span>
+                                                        @endif
+                                                    </div>
+                                                    <p class="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-0.5">{{ $pkj['bagian_kerja'] ?? '-' }}</p>
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                                         {{ $pkj['tahun_mulai'] ?? '-' }} —
@@ -498,12 +557,18 @@
                     @if(Auth::check())
                     <!-- Projects Section -->
                     <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8" x-data="{ showAllProjects: false }">
+
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
                                 <span data-translate="pjt" data-translate-page="profile">{{ autoTranslate('Projects') }}</span>
                             </h2>
                             <div class="flex items-center gap-3">
+                                {{-- Button tambah projek --}}
+                                <a href="{{ route('project.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    {{ autoTranslate('Tambah Projek') }}
+                                </a>
                                 <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->projects->count() }} {{ autoTranslate('proyek') }}</span>
                                 @if($user->projects->count() > 3)
                                     <button @click="showAllProjects = !showAllProjects" class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium flex items-center gap-1">
@@ -600,7 +665,14 @@
                                 <svg class="w-8 h-8 mr-2 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
                                 <span data-translate="stk" data-translate-page="profile">{{ autoTranslate('Sertifikat') }}</span>
                             </h2>
+                            {{-- tombol tambah sertifikat dan jumlah serti di samping --}}
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('sertifikat.create') }}" class="bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    {{ autoTranslate('Tambah Sertifikat') }}
+                                </a>
                             <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->sertifikats?->count() ?? 0 }} {{ autoTranslate('sertifikat') }}</span>
+                            </div>
                         </div>
                         @if($user->sertifikats?->isNotEmpty() ?? false)
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1812,24 +1884,127 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
     // =====================================================================
     // PHOTO PROFILE
     // =====================================================================
-    document.getElementById('photo_profile_input')?.addEventListener('change', function (e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            const preview     = document.getElementById('profile-preview');
+    let cropperInstance = null;
+    let cropperFile = null;
+    let cropperObjectUrl = null;
+
+    function openCropperModal(file) {
+        const modal = document.getElementById('cropper-modal');
+        const image = document.getElementById('cropper-image');
+        const zoomRange = document.getElementById('cropper-zoom-range');
+
+        if (!modal || !image || !zoomRange) return;
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
+        }
+
+        cropperFile = file;
+        if (cropperObjectUrl) {
+            URL.revokeObjectURL(cropperObjectUrl);
+            cropperObjectUrl = null;
+        }
+
+        cropperObjectUrl = URL.createObjectURL(file);
+        zoomRange.value = '1';
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        image.onload = function () {
+            cropperInstance = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                movable: true,
+                zoomable: true,
+                responsive: true,
+                autoCropArea: 1,
+                background: false,
+                preview: '#cropper-preview-container',
+                ready() {
+                    cropperInstance.zoomTo(1);
+                }
+            });
+        };
+        image.src = cropperObjectUrl;
+    }
+
+    function closeCropperModal() {
+        const modal = document.getElementById('cropper-modal');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
+        }
+        if (cropperObjectUrl) {
+            URL.revokeObjectURL(cropperObjectUrl);
+            cropperObjectUrl = null;
+        }
+    }
+
+    function cancelCropper() {
+        const input = document.getElementById('photo_profile_input');
+        if (input) {
+            input.value = '';
+        }
+        closeCropperModal();
+    }
+
+    function cropperZoom(amount) {
+        if (!cropperInstance) return;
+        cropperInstance.zoom(amount);
+        const zoomRange = document.getElementById('cropper-zoom-range');
+        if (zoomRange) {
+            const current = parseFloat(zoomRange.value) + amount;
+            zoomRange.value = Math.min(3, Math.max(0.5, current));
+        }
+    }
+
+    document.getElementById('cropper-zoom-range')?.addEventListener('input', function (e) {
+        if (!cropperInstance) return;
+        cropperInstance.zoomTo(parseFloat(e.target.value));
+    });
+
+    function confirmCrop() {
+        if (!cropperInstance || !cropperFile) return;
+        const outputType = ['image/png', 'image/jpeg'].includes(cropperFile.type) ? cropperFile.type : 'image/jpeg';
+        const outputExt = outputType === 'image/png' ? 'png' : 'jpg';
+
+        cropperInstance.getCroppedCanvas({ width: 512, height: 512, imageSmoothingQuality: 'high' }).toBlob(function (blob) {
+            if (!blob) return;
+            const fileName = cropperFile.name.replace(/\.[^/.]+$/, `.${outputExt}`);
+            const croppedFile = new File([blob], fileName, { type: outputType });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            const input = document.getElementById('photo_profile_input');
+            if (input) {
+                input.files = dataTransfer.files;
+            }
+
+            const preview = document.getElementById('profile-preview');
             const placeholder = document.getElementById('profile-preview-placeholder');
-            if (preview) { preview.src = ev.target.result; }
-            else if (placeholder) {
+            const objectUrl = URL.createObjectURL(blob);
+            if (preview) {
+                preview.src = objectUrl;
+            } else if (placeholder) {
                 const newImg = document.createElement('img');
                 newImg.id = 'profile-preview';
                 newImg.className = 'w-full h-full object-cover';
-                newImg.src = ev.target.result;
+                newImg.src = objectUrl;
                 placeholder.replaceWith(newImg);
             }
-        };
-        reader.readAsDataURL(file);
-        document.getElementById('save-button-container').classList.remove('hidden');
+
+            document.getElementById('save-button-container')?.classList.remove('hidden');
+            closeCropperModal();
+        }, outputType, 0.92);
+    }
+
+    document.getElementById('photo_profile_input')?.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        openCropperModal(file);
     });
 
     // =====================================================================
@@ -2034,6 +2209,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                 const response = await fetch(`/${locale}/sekolah/search?q=${encodeURIComponent(query)}`);
                 const data = await response.json();
                 list.innerHTML = '';
+                
                 if (data.length === 0) {
                     list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">{{ autoTranslate('Tidak ada hasil. Ketik nama secara manual.') }}</div>';
                 } else {
