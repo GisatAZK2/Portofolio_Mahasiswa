@@ -5,7 +5,7 @@
 @section('content')
 
     <main class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
-    <div class="relative max-w-6xl w-200 justify-center">
+    <div class="relative max-w-2xl w-full mx-auto justify-center">
 
         <div class=" mb-8 sm:mb-12">
             <h1
@@ -394,7 +394,7 @@
 
             <div class="mt-10 flex justify-center lg:justify-end">
                 <button type="submit"
-                    class="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg transition-all duration-300 {{ $isBlocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl hover:scale-105 active:scale-95' }}"
+                    class="w-full sm:w-auto px-6 sm:px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-lg transition-all duration-300 {{ $isBlocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl hover:scale-105 active:scale-95' }}"
                     {{ $isBlocked ? 'disabled' : '' }}>
                     Kirim Data →
                 </button>
