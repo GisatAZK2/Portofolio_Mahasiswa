@@ -582,7 +582,7 @@
             </div>
             <div class="flex-1">
                 <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="login">Masuk</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="login_to_account">Login ke akun Anda</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="login_to_account" data-translate-page="profile">Login ke akun Anda</p>
             </div>
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -600,7 +600,7 @@
             </div>
             <div class="flex-1">
                 <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="register">Daftar</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="create_account">Buat akun baru</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="create_account" data-translate-page="profile">Buat akun baru</p>
             </div>
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>

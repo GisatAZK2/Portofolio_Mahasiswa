@@ -349,101 +349,100 @@
                                     </select>
                                 </div>
 
+                              
                                 <!-- Keahlian Tambahan -->
-                                <!-- Keahlian Tambahan -->
-<div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 sm:col-span-2">
-    <div class="flex items-center justify-between mb-4">
-        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-            <span data-translate="khl_add" data-translate-page="profile">{{ autoTranslate('Keahlian Tambahan') }}</span>
-        </p>
-        <span class="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 px-2 py-1 rounded-full">
-            <span x-text="keahlianCount"></span>/3
-        </span>
-    </div>
-    <div x-show="loading" class="flex justify-center py-4">
-        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
-    </div>
-    <template x-if="!loading">
-        <div class="space-y-3 mb-4">
-            <template x-for="(item, index) in keahlianList" :key="item.id">
-                <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border"
-                    :class="{
-                        'border-green-500 dark:border-green-400': item.status_pengajuan === 'Di Terima',
-                        'border-yellow-500 dark:border-yellow-400': item.status_pengajuan === 'Sedang Di Ajukan',
-                        'border-red-500 dark:border-red-400': item.status_pengajuan === 'Di Tolak',
-                        'border-gray-200 dark:border-gray-600': !item.status_pengajuan
-                    }">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1 flex-wrap">
-                            <span class="font-medium text-gray-900 dark:text-white" x-text="item.keahlian?.nama_keahlian || 'Keahlian'"></span>
-                            <span class="text-xs px-2 py-0.5 rounded-full" :class="{
-                                'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': item.status_pengajuan === 'Di Terima',
-                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400': item.status_pengajuan === 'Sedang Di Ajukan',
-                                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': item.status_pengajuan === 'Di Tolak',
-                                'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': !item.status_pengajuan
-                            }" x-text="item.status_pengajuan || 'Unknown'"></span>
-                        </div>
-                        <p x-show="item.keterangan" class="text-xs text-red-600 dark:text-red-400 mt-1" x-text="'{{ autoTranslate('Alasan: ') }}' + item.keterangan"></p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            {{ autoTranslate('Diajukan:') }} <span x-text="new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })"></span>
-                        </p>
-                    </div>
-                    <button type="button" @click="deleteKeahlian(item.id, index)" class="ml-2 p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" :disabled="loading">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                    </button>
-                </div>
-            </template>
-            <div x-show="keahlianList.length === 0" class="text-center py-6 text-gray-500 dark:text-gray-400">
-                <p class="text-base font-medium" data-translate="empty_khl" data-translate-page="profile">{{ autoTranslate('Belum ada keahlian tambahan') }}</p>
-            </div>
-        </div>
-    </template>
-    
-    <!-- Form Tambah Keahlian -->
-    <div x-show="keahlianCount < 3" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <!-- Pilihan dari dropdown -->
-        <div class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {{ autoTranslate('Pilih dari daftar keahlian') }}
-                </label>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <select x-model="selectedKeahlian" id="keahlian-tambahan-select" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white">
-                        <option value="">{{ autoTranslate('-- Pilih Keahlian Tambahan --') }}</option>
-                        <template x-for="keahlian in keahlianOptions" :key="keahlian.id_keahlian">
-                            <option :value="keahlian.id_keahlian" :disabled="isKeahlianDisabled(keahlian)" x-text="keahlian.nama_keahlian + (keahlian.id_keahlian === mainSkillId ? ' (Keahlian Utama)' : isKeahlianExists(keahlian.id_keahlian) ? ' (Sudah Diajukan)' : '')"></option>
-                        </template>
-                    </select>
-                    <button type="button" @click="submitKeahlianFromDropdown()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition" :disabled="!selectedKeahlian || loading">
-                        {{ autoTranslate('Ajukan') }}
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Atau masukkan keahlian baru -->
-            <div>
-                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    {{ autoTranslate('Atau masukkan keahlian tambahan baru') }}
-                </label>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" id="custom-keahlian-input" placeholder="{{ autoTranslate('Keahlian tambahan sendiri') }}" 
-                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    <button type="button" onclick="submitCustomKeahlian()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                        {{ autoTranslate('Ajukan Keahlian Baru') }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div x-show="keahlianCount >= 3" class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-        <p class="text-sm text-yellow-800 dark:text-yellow-200 flex items-center">
-            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            <span data-translate="max_req" data-translate-page="profile">{{ autoTranslate('Anda sudah mencapai maksimal 3 keahlian tambahan.') }}</span>
-        </p>
-    </div>
-</div>
-
+                                <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 sm:col-span-2">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                                            <span data-translate="khl_add" data-translate-page="profile">{{ autoTranslate('Keahlian Tambahan') }}</span>
+                                        </p>
+                                        <span class="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 px-2 py-1 rounded-full">
+                                            <span x-text="keahlianCount"></span>/3
+                                        </span>
+                                    </div>
+                                    <div x-show="loading" class="flex justify-center py-4">
+                                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
+                                    </div>
+                                    <template x-if="!loading">
+                                        <div class="space-y-3 mb-4">
+                                            <template x-for="(item, index) in keahlianList" :key="item.id">
+                                                <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border"
+                                                    :class="{
+                                                        'border-green-500 dark:border-green-400': item.status_pengajuan === 'Di Terima',
+                                                        'border-yellow-500 dark:border-yellow-400': item.status_pengajuan === 'Sedang Di Ajukan',
+                                                        'border-red-500 dark:border-red-400': item.status_pengajuan === 'Di Tolak',
+                                                        'border-gray-200 dark:border-gray-600': !item.status_pengajuan
+                                                    }">
+                                                    <div class="flex-1">
+                                                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                                            <span class="font-medium text-gray-900 dark:text-white" x-text="item.keahlian?.nama_keahlian || 'Keahlian'"></span>
+                                                            <span class="text-xs px-2 py-0.5 rounded-full" :class="{
+                                                                'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': item.status_pengajuan === 'Di Terima',
+                                                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400': item.status_pengajuan === 'Sedang Di Ajukan',
+                                                                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': item.status_pengajuan === 'Di Tolak',
+                                                                'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': !item.status_pengajuan
+                                                            }" x-text="item.status_pengajuan || 'Unknown'"></span>
+                                                        </div>
+                                                        <p x-show="item.keterangan" class="text-xs text-red-600 dark:text-red-400 mt-1" x-text="'{{ autoTranslate('Alasan: ') }}' + item.keterangan"></p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                            {{ autoTranslate('Diajukan:') }} <span x-text="new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })"></span>
+                                                        </p>
+                                                    </div>
+                                                    <button type="button" @click="deleteKeahlian(item.id, index)" class="ml-2 p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" :disabled="loading">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                    </button>
+                                                </div>
+                                            </template>
+                                            <div x-show="keahlianList.length === 0" class="text-center py-6 text-gray-500 dark:text-gray-400">
+                                                <p class="text-base font-medium" data-translate="empty_khl" data-translate-page="profile">{{ autoTranslate('Belum ada keahlian tambahan') }}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    
+                                    <!-- Form Tambah Keahlian -->
+                                    <div x-show="keahlianCount < 3" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                        <!-- Pilihan dari dropdown -->
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                    {{ autoTranslate('Pilih dari daftar keahlian') }}
+                                                </label>
+                                                <div class="flex flex-col sm:flex-row gap-3">
+                                                    <select x-model="selectedKeahlian" id="keahlian-tambahan-select" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white">
+                                                        <option value="">{{ autoTranslate('-- Pilih Keahlian Tambahan --') }}</option>
+                                                        <template x-for="keahlian in keahlianOptions" :key="keahlian.id_keahlian">
+                                                            <option :value="keahlian.id_keahlian" :disabled="isKeahlianDisabled(keahlian)" x-text="keahlian.nama_keahlian + (keahlian.id_keahlian === mainSkillId ? ' (Keahlian Utama)' : isKeahlianExists(keahlian.id_keahlian) ? ' (Sudah Diajukan)' : '')"></option>
+                                                        </template>
+                                                    </select>
+                                                    <button type="button" @click="submitKeahlianFromDropdown()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition" :disabled="!selectedKeahlian || loading">
+                                                        {{ autoTranslate('Ajukan') }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Atau masukkan keahlian baru -->
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                                                    {{ autoTranslate('Atau masukkan keahlian tambahan baru') }}
+                                                </label>
+                                                <div class="flex flex-col sm:flex-row gap-3">
+                                                    <input type="text" id="custom-keahlian-input" placeholder="{{ autoTranslate('Keahlian tambahan sendiri') }}" 
+                                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                                    <button type="button" onclick="submitCustomKeahlian()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                                                        {{ autoTranslate('Ajukan Keahlian Baru') }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div x-show="keahlianCount >= 3" class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                                        <p class="text-sm text-yellow-800 dark:text-yellow-200 flex items-center">
+                                            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                            <span data-translate="max_req" data-translate-page="profile">{{ autoTranslate('Anda sudah mencapai maksimal 3 keahlian tambahan.') }}</span>
+                                        </p>
+                                    </div>
+                                </div>
 
                                 <!-- Video Perkenalan -->
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group sm:col-span-2" onclick="toggleEdit('video')">

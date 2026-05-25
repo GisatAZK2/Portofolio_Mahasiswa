@@ -119,11 +119,11 @@
                     <span class="sm:hidden">Word</span>
                 </button>
 
-                <form id="bulkDeleteForm" action="{{ route('admin.users.bulkDestroy', ['locale' => app()->getLocale()]) }}"
+                    <form id="bulkDeleteForm" action="{{ route('admin.users.bulkDestroy', ['locale' => app()->getLocale()]) }}"
                     method="POST" class="inline md:hidden">
                     @csrf
                     @method('DELETE')
-                    <button type="button" onclick="confirmBulkDelete()"
+                    <button id="mobileBulkDeleteBtn" type="button" onclick="confirmBulkDelete()"
                         class="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -132,22 +132,22 @@
                         </svg>
                         <span class="hidden sm:inline" data-translate="del_user" data-translate-page="admin">Hapus
                             Terpilih</span>
-                        <span class="sm:hidden">Hapus</span>
+                        <span class="sm:hidden" data-translate="del_user" data-translate-page="admin">Hapus</span>
                     </button>
                 </form>
 
                 <form id="bulkApproveForm" action="{{ route('admin.users.bulkApprove', ['locale' => app()->getLocale()]) }}" method="POST" class="inline md:hidden">
                     @csrf
                     @method('PATCH')
-                    <button type="button" onclick="confirmBulkApprove()"
+                    <button id="mobileBulkApproveBtn" type="button" onclick="confirmBulkApprove()"
                         class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M5 13l4 4L19 7" />
                         </svg>
-                        <span class="hidden sm:inline">Setujui Terpilih</span>
-                        <span class="sm:hidden">Setujui</span>
+                        <span class="hidden sm:inline" data-translate="approve_selected" data-translate-page="admin">Setujui Terpilih</span>
+                        <span class="sm:hidden" data-translate="approve_selected" data-translate-page="admin">Setujui</span>
                     </button>
                 </form>
 
@@ -158,8 +158,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span class="hidden sm:inline">Keahlian Tambahan</span>
-                    <span class="sm:hidden">Keahlian</span>
+                    <span class="hidden sm:inline" data-translate="keahlian_tambahan" data-translate-page="admin">Keahlian Tambahan</span>
+                    <span class="sm:hidden" data-translate="keahlian_tambahan" data-translate-page="admin">Keahlian</span>
                     @if ($pendingKeahlianTambahanCount > 0)
                         <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
                             {{ $pendingKeahlianTambahanCount }}
@@ -175,7 +175,7 @@
                     </svg>
                     <span data-translate="add_user" data-translate-page="admin" class="hidden sm:inline">Tambah
                         Pengguna</span>
-                    <span class="sm:hidden">Tambah</span>
+                    <span class="sm:hidden" data-translate="add_user" data-translate-page="admin">Tambah</span>
                 </a>
             </div>
         </div>
@@ -282,18 +282,18 @@
                         
                         <!-- Desktop bulk action buttons placed next to select-all -->
                         <div class="hidden md:flex items-center space-x-2 ml-4">
-                            <button type="button" onclick="confirmBulkApprove()"
+                            <button id="desktopBulkApproveBtn" type="button" onclick="confirmBulkApprove()"
                                 class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                <span>Setujui Terpilih</span>
+                                <span data-translate="approve_selected" data-translate-page="admin">Setujui Terpilih</span>
                             </button>
 
-                            <button type="button" onclick="confirmBulkDelete()"
+                            <button id="desktopBulkDeleteBtn" type="button" onclick="confirmBulkDelete()"
                                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6" /></svg>
-                                <span>Hapus Terpilih</span>
+                                <span data-translate="del_user" data-translate-page="admin">Hapus Terpilih</span>
                             </button>
                         </div>
                     </div>
@@ -1109,6 +1109,47 @@
                     tableSelectAllCheckbox.indeterminate = true;
                 }
             }
+
+            // Toggle bulk action button states (mobile + desktop)
+            const mobileDeleteBtn = document.getElementById('mobileBulkDeleteBtn');
+            const mobileApproveBtn = document.getElementById('mobileBulkApproveBtn');
+            const desktopDeleteBtn = document.getElementById('desktopBulkDeleteBtn');
+            const desktopApproveBtn = document.getElementById('desktopBulkApproveBtn');
+            const enable = selectedIds.length > 0;
+
+            // Determine if any selected item is pending (status_pengajuan == 'Sedang Di Ajukan')
+            const selectedCheckboxes = getAllCheckboxes().filter(cb => selectedIds.includes(cb.value));
+            const hasPending = selectedCheckboxes.some(cb => {
+                const item = cb.closest('tr') || cb.closest('.paginated-item');
+                if (!item) return false;
+                // If per-item approve button exists, it's pending
+                if (item.querySelector('[onclick*="openUpdateModal"]')) return true;
+                // Data-translate marker for pending (desktop)
+                if (item.querySelector('[data-translate="pend"]')) return true;
+                // Fallback: look for visible text 'Menunggu' or 'Sedang Di Ajukan'
+                const text = (item.innerText || '').toLowerCase();
+                if (text.includes('menunggu') || text.includes('sedang di ajukan')) return true;
+                return false;
+            });
+
+            const approveEnable = enable && hasPending;
+
+            // Delete buttons enabled when any selected; approve buttons require at least one pending
+            [mobileDeleteBtn, desktopDeleteBtn].forEach(btn => {
+                if (!btn) return;
+                btn.disabled = !enable;
+                btn.classList.toggle('opacity-50', !enable);
+                btn.classList.toggle('cursor-not-allowed', !enable);
+                if (!enable) btn.setAttribute('aria-disabled', 'true'); else btn.removeAttribute('aria-disabled');
+            });
+
+            [mobileApproveBtn, desktopApproveBtn].forEach(btn => {
+                if (!btn) return;
+                btn.disabled = !approveEnable;
+                btn.classList.toggle('opacity-50', !approveEnable);
+                btn.classList.toggle('cursor-not-allowed', !approveEnable);
+                if (!approveEnable) btn.setAttribute('aria-disabled', 'true'); else btn.removeAttribute('aria-disabled');
+            });
         }
 
         function toggleAll(source, onlyVisible = false) {
