@@ -99,20 +99,108 @@
             </div>
 
             @if(!$isBlocked)
+                <!-- CropperJS assets -->
+                <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css">
+                <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+
+                <!-- Cropper Modal -->
+                <div id="cropper-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+                    <div class="absolute inset-0 bg-black/60" onclick="closeCropperModal()"></div>
+                    <div class="relative flex items-center justify-center min-h-screen p-4">
+                        <div id="cropper-modal-content" class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden transform transition-all scale-95 opacity-0">
+                            <div class="p-4">
+                                <div class="w-full h-80 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                    <img id="cropper-image" src="" alt="Cropper" class="max-h-full max-w-full object-contain">
+                                </div>
+                                <div class="mt-3 flex items-center gap-3">
+                                    <input id="cropper-zoom-range" type="range" min="0" max="3" step="0.01" value="1" class="w-full">
+                                    <button type="button" onclick="cancelCropper()" class="px-4 py-2 bg-gray-100 rounded">Batal</button>
+                                    <button type="button" onclick="confirmCrop()" class="px-4 py-2 bg-emerald-600 text-white rounded">Pilih & Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <script>
+                    let cropperInstance = null;
+                    let cropperObjectUrl = null;
+
+                    function openCropperModal(file) {
+                        const modal = document.getElementById('cropper-modal');
+                        const img = document.getElementById('cropper-image');
+                        if (cropperObjectUrl) URL.revokeObjectURL(cropperObjectUrl);
+                        cropperObjectUrl = URL.createObjectURL(file);
+                        img.src = cropperObjectUrl;
+                        modal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+
+                        // wait image load before creating cropper
+                        img.onload = function () {
+                            if (cropperInstance) cropperInstance.destroy();
+                            cropperInstance = new Cropper(img, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                responsive: true,
+                                background: false,
+                            });
+                            document.getElementById('cropper-modal-content').classList.add('scale-100', 'opacity-100');
+                        };
+
+                        // zoom control
+                        const zoomRange = document.getElementById('cropper-zoom-range');
+                        zoomRange.value = 1;
+                        zoomRange.oninput = function (e) {
+                            if (cropperInstance) {
+                                const val = parseFloat(e.target.value);
+                                cropperInstance.zoomTo(val);
+                            }
+                        };
+                    }
+
+                    function closeCropperModal() {
+                        const modal = document.getElementById('cropper-modal');
+                        modal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                        if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+                        if (cropperObjectUrl) { URL.revokeObjectURL(cropperObjectUrl); cropperObjectUrl = null; }
+                    }
+
+                    function cancelCropper() { closeCropperModal(); }
+
+                    function confirmCrop() {
+                        if (!cropperInstance) return closeCropperModal();
+                        cropperInstance.getCroppedCanvas({ width: 800, height: 800, imageSmoothingQuality: 'high' }).toBlob(function (blob) {
+                            if (!blob) return alert('Gagal memproses gambar');
+
+                            // Update preview
+                            const preview = document.getElementById('profile-preview');
+                            const placeholder = document.getElementById('profile-placeholder');
+                            const url = URL.createObjectURL(blob);
+                            preview.src = url;
+                            preview.classList.remove('hidden');
+                            placeholder.classList.add('hidden');
+
+                            // Replace file input's files with the cropped blob so server receives cropped image
+                            const croppedFile = new File([blob], 'photo_profile.jpg', { type: blob.type });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(croppedFile);
+                            const input = document.getElementById('photo_profile');
+                            input.files = dataTransfer.files;
+
+                            closeCropperModal();
+                        }, 'image/jpeg', 0.9);
+                    }
+
+                    // Bind file input to open cropper
                     document.getElementById('photo_profile').addEventListener('change', function (e) {
                         const file = e.target.files[0];
-                        const preview = document.getElementById('profile-preview');
-                        const placeholder = document.getElementById('profile-placeholder');
                         if (file && file.type.startsWith('image/')) {
-                            const reader = new FileReader();
-                            reader.onload = function (ev) {
-                                preview.src = ev.target.result;
-                                preview.classList.remove('hidden');
-                                placeholder.classList.add('hidden');
-                            };
-                            reader.readAsDataURL(file);
+                            openCropperModal(file);
                         } else {
+                            const preview = document.getElementById('profile-preview');
+                            const placeholder = document.getElementById('profile-placeholder');
                             preview.classList.add('hidden');
                             placeholder.classList.remove('hidden');
                             if (file) alert('Hanya gambar yang diperbolehkan!');
