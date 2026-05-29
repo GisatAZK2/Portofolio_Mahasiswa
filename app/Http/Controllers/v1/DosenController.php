@@ -206,294 +206,294 @@ class DosenController extends Controller
         ));
     }
 
-// ============================================================
-// Method: ViewAddUser (replace yang lama)
-// ============================================================
+    // ============================================================
+    // Method: ViewAddUser (replace yang lama)
+    // ============================================================
 
-public function ViewAddUser()
-{
-    $this->authorizeAccess();
-    $dosen = Auth::user();
+    public function ViewAddUser()
+    {
+        $this->authorizeAccess();
+        $dosen = Auth::user();
 
-    // Data referensi sudah difilter sesuai dosen yang login
-    // (tetap dikirim ke view untuk keperluan tampilan info)
-    $jurusan  = $dosen->id_jurusan  ? Jurusan::where('id_jurusan', $dosen->id_jurusan)->get()   : collect();
-    $keahlian = $dosen->id_keahlian ? Keahlian::where('id_keahlian', $dosen->id_keahlian)->get() : collect();
-    $angkatan = $dosen->id_angkatan ? Angkatan::where('id', $dosen->id_angkatan)->get()           : collect();
+        // Data referensi sudah difilter sesuai dosen yang login
+        // (tetap dikirim ke view untuk keperluan tampilan info)
+        $jurusan  = $dosen->id_jurusan  ? Jurusan::where('id_jurusan', $dosen->id_jurusan)->get()   : collect();
+        $keahlian = $dosen->id_keahlian ? Keahlian::where('id_keahlian', $dosen->id_keahlian)->get() : collect();
+        $angkatan = $dosen->id_angkatan ? Angkatan::where('id', $dosen->id_angkatan)->get()           : collect();
 
-    return view('dosen.user.views_add_user', compact('jurusan', 'keahlian', 'angkatan', 'dosen'));
-}
+        return view('dosen.user.views_add_user', compact('jurusan', 'keahlian', 'angkatan', 'dosen'));
+    }
 
-// ============================================================
-// Method: StoreUser  ← ganti nama sesuai route yg sudah ada
-// (ini menggantikan AddUser lama, sekarang handle simple & full)
-// ============================================================
+    // ============================================================
+    // Method: StoreUser  ← ganti nama sesuai route yg sudah ada
+    // (ini menggantikan AddUser lama, sekarang handle simple & full)
+    // ============================================================
 
-public function AddUser(Request $request)
-{
-    $this->authorizeAccess();
-    $dosen = Auth::user();
+    public function AddUser(Request $request)
+    {
+        $this->authorizeAccess();
+        $dosen = Auth::user();
 
-    $registrationType = $request->input('registration_type', 'full');
+        $registrationType = $request->input('registration_type', 'full');
 
-    // ── Rules dasar ──────────────────────────────────────────
-    $rules = [
-        'nama_mahasiswa' => ['required', 'string', 'max:100'],
-        'photo_profile'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-    ];
-
-    if ($registrationType === 'simple') {
-        // Registrasi Sederhana: hanya NIM + Nama + Tanggal Lahir (opsional)
-        $rules['nim']           = ['required', 'string', 'max:20', 'unique:users,nim'];
-        $rules['tanggal_lahir'] = ['nullable', 'date', 'before_or_equal:today'];
-        $rules['jenis_kelamin'] = ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'];
-
-    } else {
-        // Registrasi Lengkap: semua field wajib
-        $rules['nim']           = ['required', 'string', 'max:20', 'unique:users,nim'];
-        $rules['username']      = [
-            'required', 'string', 'max:100',
-            'unique:users,username',
-            'regex:/^[a-zA-Z0-9_]+$/',
+        // ── Rules dasar ──────────────────────────────────────────
+        $rules = [
+            'nama_mahasiswa' => ['required', 'string', 'max:100'],
+            'photo_profile'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
-        $rules['email']         = ['nullable', 'email', 'max:100', 'unique:users,email'];
-        $rules['password']      = [
-            'required',
-            'confirmed',
-            Password::min(8)->mixedCase(),
-            'regex:/^\S+$/',
-        ];
-        $rules['jenis_kelamin'] = ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'];
-        $rules['tanggal_lahir'] = ['required', 'date', 'before_or_equal:today'];
-    }
 
-    $validated = $request->validate($rules);
+        if ($registrationType === 'simple') {
+            // Registrasi Sederhana: hanya NIM + Nama + Tanggal Lahir (opsional)
+            $rules['nim']           = ['required', 'string', 'max:20', 'unique:users,nim'];
+            $rules['tanggal_lahir'] = ['nullable', 'date', 'before_or_equal:today'];
+            $rules['jenis_kelamin'] = ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'];
 
-    // ── Foto profil ──────────────────────────────────────────
-    $photoPath = null;
-    if ($request->hasFile('photo_profile')) {
-        $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-    }
-
-    // ── Buat user ────────────────────────────────────────────
-    $userData = [
-        'nama_mahasiswa'   => $validated['nama_mahasiswa'],
-        'nim'              => $validated['nim'],
-        'jenis_kelamin'    => $validated['jenis_kelamin'] ?? null,
-        'photo_profile'    => $photoPath,
-        'role'             => 'mahasiswa',
-        // Data akademik otomatis dari dosen yang login
-        'id_jurusan'       => $dosen->id_jurusan,
-        'id_keahlian'      => $dosen->id_keahlian,
-        'id_angkatan'      => $dosen->id_angkatan,
-        'status_pengajuan' => 'Di Terima',
-        'is_active'        => 1,
-    ];
-
-    if ($registrationType === 'simple') {
-        // Password default = NIM
-        $userData['password']      = Hash::make($validated['nim']);
-        $userData['username']      = null;
-        $userData['email']         = null;
-        $userData['tanggal_lahir'] = $validated['tanggal_lahir'] ?? null;
-    } else {
-        $userData['username']      = $validated['username'];
-        $userData['email']         = $validated['email'] ?? null;
-        $userData['password']      = Hash::make($validated['password']);
-        $userData['tanggal_lahir'] = $validated['tanggal_lahir'];
-    }
-
-    User::create($userData);
-
-    return redirect()
-        ->route('dosen.users.index')
-        ->with('success', 'Mahasiswa berhasil ditambahkan.');
-}
-
-// ============================================================
-// Method: ImportExcel  (BARU - tambahkan ke controller)
-// ============================================================
-
-public function ImportExcel(Request $request)
-{
-    $this->authorizeAccess();
-    $dosen = Auth::user();
-
-    $request->validate([
-        'excel_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
-    ]);
-
-    try {
-        $file = $request->file('excel_file');
-        $data = $this->parseExcelFile($file);
-
-        if (empty($data)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File Excel kosong atau format tidak sesuai.',
-            ], 400);
+        } else {
+            // Registrasi Lengkap: semua field wajib
+            $rules['nim']           = ['required', 'string', 'max:20', 'unique:users,nim'];
+            $rules['username']      = [
+                'required', 'string', 'max:100',
+                'unique:users,username',
+                'regex:/^[a-zA-Z0-9_]+$/',
+            ];
+            $rules['email']         = ['nullable', 'email', 'max:100', 'unique:users,email'];
+            $rules['password']      = [
+                'required',
+                'confirmed',
+                Password::min(8)->mixedCase(),
+                'regex:/^\S+$/',
+            ];
+            $rules['jenis_kelamin'] = ['nullable', 'in:Laki-laki,Perempuan,Tidak ingin memberi tahu'];
+            $rules['tanggal_lahir'] = ['required', 'date', 'before_or_equal:today'];
         }
 
-        $successCount = 0;
-        $failedCount  = 0;
-        $failedRows   = [];
+        $validated = $request->validate($rules);
 
-        DB::beginTransaction();
-
-        foreach ($data as $index => $row) {
-            $rowNumber = $index + 2;
-
-            try {
-                $nim  = trim($row['nim']  ?? $row['NIM']  ?? '');
-                $nama = trim($row['nama'] ?? $row['Nama'] ?? $row['Nama Lengkap'] ?? '');
-                $tanggalLahir = $this->parseDate($row['tanggal_lahir'] ?? $row['Tanggal Lahir'] ?? '');
-
-                if (empty($nim) || empty($nama)) {
-                    $failedCount++;
-                    $failedRows[] = ['row' => $rowNumber, 'reason' => 'NIM atau Nama tidak boleh kosong'];
-                    continue;
-                }
-
-                if (User::where('nim', $nim)->exists()) {
-                    $failedCount++;
-                    $failedRows[] = ['row' => $rowNumber, 'reason' => "NIM {$nim} sudah terdaftar"];
-                    continue;
-                }
-
-                User::create([
-                    'nim'              => $nim,
-                    'nama_mahasiswa'   => $nama,
-                    'username'         => null,
-                    'email'            => null,
-                    'password'         => Hash::make($nim), // password default = NIM
-                    'tanggal_lahir'    => $tanggalLahir,
-                    // Akademik otomatis dari dosen yang login
-                    'id_jurusan'       => $dosen->id_jurusan,
-                    'id_keahlian'      => $dosen->id_keahlian,
-                    'id_angkatan'      => $dosen->id_angkatan,
-                    'role'             => 'mahasiswa',
-                    'status_pengajuan' => 'Di Terima',
-                    'is_active'        => 1,
-                    'photo_profile'    => null,
-                ]);
-
-                $successCount++;
-
-            } catch (\Exception $e) {
-                $failedCount++;
-                $failedRows[] = ['row' => $rowNumber, 'reason' => 'Error: ' . $e->getMessage()];
-                \Log::error("Import dosen baris {$rowNumber}: " . $e->getMessage());
-            }
+        // ── Foto profil ──────────────────────────────────────────
+        $photoPath = null;
+        if ($request->hasFile('photo_profile')) {
+            $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
         }
 
-        DB::commit();
+        // ── Buat user ────────────────────────────────────────────
+        $userData = [
+            'nama_mahasiswa'   => $validated['nama_mahasiswa'],
+            'nim'              => $validated['nim'],
+            'jenis_kelamin'    => $validated['jenis_kelamin'] ?? null,
+            'photo_profile'    => $photoPath,
+            'role'             => 'mahasiswa',
+            // Data akademik otomatis dari dosen yang login
+            'id_jurusan'       => $dosen->id_jurusan,
+            'id_keahlian'      => $dosen->id_keahlian,
+            'id_angkatan'      => $dosen->id_angkatan,
+            'status_pengajuan' => 'Di Terima',
+            'is_active'        => 1,
+        ];
 
-        return response()->json([
-            'success'    => true,
-            'message'    => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
-            'failedRows' => $failedRows,
-            'stats'      => [
-                'success' => $successCount,
-                'failed'  => $failedCount,
-                'total'   => count($data),
-            ],
+        if ($registrationType === 'simple') {
+            // Password default = NIM
+            $userData['password']      = Hash::make($validated['nim']);
+            $userData['username']      = null;
+            $userData['email']         = null;
+            $userData['tanggal_lahir'] = $validated['tanggal_lahir'] ?? null;
+        } else {
+            $userData['username']      = $validated['username'];
+            $userData['email']         = $validated['email'] ?? null;
+            $userData['password']      = Hash::make($validated['password']);
+            $userData['tanggal_lahir'] = $validated['tanggal_lahir'];
+        }
+
+        User::create($userData);
+
+        return redirect()
+            ->route('dosen.users.index')
+            ->with('success', 'Mahasiswa berhasil ditambahkan.');
+    }
+
+    // ============================================================
+    // Method: ImportExcel  (BARU - tambahkan ke controller)
+    // ============================================================
+
+    public function ImportExcel(Request $request)
+    {
+        $this->authorizeAccess();
+        $dosen = Auth::user();
+
+        $request->validate([
+            'excel_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
         ]);
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error('Import Excel dosen error: ' . $e->getMessage());
+        try {
+            $file = $request->file('excel_file');
+            $data = $this->parseExcelFile($file);
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-        ], 500);
-    }
-}
+            if (empty($data)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'File Excel kosong atau format tidak sesuai.',
+                ], 400);
+            }
 
-// ============================================================
-// Helper: parseExcelFile  (sama seperti admin, tambahkan jika
-// belum ada di controller ini)
-// ============================================================
+            $successCount = 0;
+            $failedCount  = 0;
+            $failedRows   = [];
 
-private function parseExcelFile($file): array
-{
-    try {
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
-        $rows        = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
+            DB::beginTransaction();
 
-        if (count($rows) < 2) return [];
+            foreach ($data as $index => $row) {
+                $rowNumber = $index + 2;
 
-        $rawHeaders = array_map(fn($h) => strtolower(trim((string) $h)), $rows[0]);
+                try {
+                    $nim  = trim($row['nim']  ?? $row['NIM']  ?? '');
+                    $nama = trim($row['nama'] ?? $row['Nama'] ?? $row['Nama Lengkap'] ?? '');
+                    $tanggalLahir = $this->parseDate($row['tanggal_lahir'] ?? $row['Tanggal Lahir'] ?? '');
 
-        $headerAliases = [
-            'nim'           => ['nim', 'n i m'],
-            'Nama Lengkap'  => ['nama lengkap', 'nama', 'full name'],
-            'Tanggal Lahir' => ['tanggal lahir', 'tgl lahir', 'birth date', 'birthdate'],
-        ];
+                    if (empty($nim) || empty($nama)) {
+                        $failedCount++;
+                        $failedRows[] = ['row' => $rowNumber, 'reason' => 'NIM atau Nama tidak boleh kosong'];
+                        continue;
+                    }
 
-        $colMap = [];
-        foreach ($rawHeaders as $colIndex => $rawHeader) {
-            foreach ($headerAliases as $standardKey => $aliases) {
-                if (in_array($rawHeader, $aliases, true)) {
-                    $colMap[$colIndex] = $standardKey;
-                    break;
+                    if (User::where('nim', $nim)->exists()) {
+                        $failedCount++;
+                        $failedRows[] = ['row' => $rowNumber, 'reason' => "NIM {$nim} sudah terdaftar"];
+                        continue;
+                    }
+
+                    User::create([
+                        'nim'              => $nim,
+                        'nama_mahasiswa'   => $nama,
+                        'username'         => null,
+                        'email'            => null,
+                        'password'         => Hash::make($nim), // password default = NIM
+                        'tanggal_lahir'    => $tanggalLahir,
+                        // Akademik otomatis dari dosen yang login
+                        'id_jurusan'       => $dosen->id_jurusan,
+                        'id_keahlian'      => $dosen->id_keahlian,
+                        'id_angkatan'      => $dosen->id_angkatan,
+                        'role'             => 'mahasiswa',
+                        'status_pengajuan' => 'Di Terima',
+                        'is_active'        => 1,
+                        'photo_profile'    => null,
+                    ]);
+
+                    $successCount++;
+
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    $failedRows[] = ['row' => $rowNumber, 'reason' => 'Error: ' . $e->getMessage()];
+                    \Log::error("Import dosen baris {$rowNumber}: " . $e->getMessage());
                 }
             }
-        }
 
-        $data = [];
-        for ($i = 1; $i < count($rows); $i++) {
-            $row = $rows[$i];
-            $allEmpty = true;
-            foreach ($row as $cell) {
-                if (!empty(trim((string) $cell))) { $allEmpty = false; break; }
-            }
-            if ($allEmpty) continue;
+            DB::commit();
 
-            $mapped = [];
-            foreach ($colMap as $colIndex => $standardKey) {
-                $mapped[$standardKey] = isset($row[$colIndex]) ? trim((string) $row[$colIndex]) : '';
-            }
+            return response()->json([
+                'success'    => true,
+                'message'    => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
+                'failedRows' => $failedRows,
+                'stats'      => [
+                    'success' => $successCount,
+                    'failed'  => $failedCount,
+                    'total'   => count($data),
+                ],
+            ]);
 
-            if (!empty($mapped['nim'] ?? '')) {
-                $data[] = $mapped;
-            }
-        }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Import Excel dosen error: ' . $e->getMessage());
 
-        return $data;
-
-    } catch (\Exception $e) {
-        \Log::error('parseExcelFile dosen error: ' . $e->getMessage());
-        return [];
-    }
-}
-
-// ============================================================
-// Helper: parseDate  (tambahkan jika belum ada)
-// ============================================================
-
-private function parseDate($date): ?string
-{
-    if (empty($date)) return null;
-
-    if (is_numeric($date)) {
-        $unix = ((int) $date - 25569) * 86400;
-        return date('Y-m-d', $unix);
-    }
-
-    $date    = trim((string) $date);
-    $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd/m/y', 'Y/m/d'];
-
-    foreach ($formats as $format) {
-        $parsed = \DateTime::createFromFormat($format, $date);
-        if ($parsed && $parsed->format($format) === $date) {
-            return $parsed->format('Y-m-d');
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
-    $ts = strtotime($date);
-    return $ts !== false ? date('Y-m-d', $ts) : null;
-}
+    // ============================================================
+    // Helper: parseExcelFile  (sama seperti admin, tambahkan jika
+    // belum ada di controller ini)
+    // ============================================================
+
+    private function parseExcelFile($file): array
+    {
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+            $rows        = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
+
+            if (count($rows) < 2) return [];
+
+            $rawHeaders = array_map(fn($h) => strtolower(trim((string) $h)), $rows[0]);
+
+            $headerAliases = [
+                'nim'           => ['nim', 'n i m'],
+                'Nama Lengkap'  => ['nama lengkap', 'nama', 'full name'],
+                'Tanggal Lahir' => ['tanggal lahir', 'tgl lahir', 'birth date', 'birthdate'],
+            ];
+
+            $colMap = [];
+            foreach ($rawHeaders as $colIndex => $rawHeader) {
+                foreach ($headerAliases as $standardKey => $aliases) {
+                    if (in_array($rawHeader, $aliases, true)) {
+                        $colMap[$colIndex] = $standardKey;
+                        break;
+                    }
+                }
+            }
+
+            $data = [];
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                $allEmpty = true;
+                foreach ($row as $cell) {
+                    if (!empty(trim((string) $cell))) { $allEmpty = false; break; }
+                }
+                if ($allEmpty) continue;
+
+                $mapped = [];
+                foreach ($colMap as $colIndex => $standardKey) {
+                    $mapped[$standardKey] = isset($row[$colIndex]) ? trim((string) $row[$colIndex]) : '';
+                }
+
+                if (!empty($mapped['nim'] ?? '')) {
+                    $data[] = $mapped;
+                }
+            }
+
+            return $data;
+
+        } catch (\Exception $e) {
+            \Log::error('parseExcelFile dosen error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    // ============================================================
+    // Helper: parseDate  (tambahkan jika belum ada)
+    // ============================================================
+
+    private function parseDate($date): ?string
+    {
+        if (empty($date)) return null;
+
+        if (is_numeric($date)) {
+            $unix = ((int) $date - 25569) * 86400;
+            return date('Y-m-d', $unix);
+        }
+
+        $date    = trim((string) $date);
+        $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd/m/y', 'Y/m/d'];
+
+        foreach ($formats as $format) {
+            $parsed = \DateTime::createFromFormat($format, $date);
+            if ($parsed && $parsed->format($format) === $date) {
+                return $parsed->format('Y-m-d');
+            }
+        }
+
+        $ts = strtotime($date);
+        return $ts !== false ? date('Y-m-d', $ts) : null;
+    }
     // DetailsUser - ambil id dari query parameter
     public function DetailsUser(Request $request)
     {

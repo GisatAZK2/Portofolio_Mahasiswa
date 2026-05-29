@@ -235,392 +235,392 @@ class AdminController extends Controller
         return view('admin.user.views_add_user', compact('jurusan', 'keahlian', 'angkatan'));
     }
 
-public function AddUser(Request $request)
-{
-    $this->authorizeAccess();
-    
-    // Rules dasar
-    $rules = [
-        'role' => ['required', 'in:mahasiswa,dosen,admin'],
-        'nama_mahasiswa' => ['required', 'string', 'max:100'],
-        'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
-        'username' => [
-            'nullable',
-            'string',
-            'max:100',
-            'unique:users,username',
-            'regex:/^[a-zA-Z0-9_]+$/'
-        ],
-        'password' => [
-            'nullable',
-            'confirmed',
-            Password::min(8)->mixedCase()
-        ],
-        'photo_profile' => [
-            'nullable',
-            'image',
-            'mimes:jpeg,png,jpg,webp',
-            'max:2048'
-        ],
-        'avatar_default' => ['nullable', 'string', 'in:WanitaAVA,LakiAVA'],
-        'tanggal_lahir' => ['nullable', 'date', 'before_or_equal:today'],
-    ];
+    public function AddUser(Request $request)
+    {
+        $this->authorizeAccess();
+        
+        // Rules dasar
+        $rules = [
+            'role' => ['required', 'in:mahasiswa,dosen,admin'],
+            'nama_mahasiswa' => ['required', 'string', 'max:100'],
+            'email' => ['nullable', 'email', 'max:100', 'unique:users,email'],
+            'username' => [
+                'nullable',
+                'string',
+                'max:100',
+                'unique:users,username',
+                'regex:/^[a-zA-Z0-9_]+$/'
+            ],
+            'password' => [
+                'nullable',
+                'confirmed',
+                Password::min(8)->mixedCase()
+            ],
+            'photo_profile' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg,webp',
+                'max:2048'
+            ],
+            'avatar_default' => ['nullable', 'string', 'in:WanitaAVA,LakiAVA'],
+            'tanggal_lahir' => ['nullable', 'date', 'before_or_equal:today'],
+        ];
 
-    // Validasi dinamis berdasarkan role DAN registration_type
-    if ($request->role === 'admin') {
-        // Admin: username dan password WAJIB, tanggal_lahir dan nim TIDAK PERLU
-        $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
-        $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()];
-        // Hapus rules tanggal_lahir dari array (biarkan nullable)
-        unset($rules['tanggal_lahir']);
-        
-    } elseif ($request->role === 'dosen') {
-        // Dosen: username, password, tanggal_lahir WAJIB, nim TIDAK PERLU
-        $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
-        $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()];
-        $rules['tanggal_lahir'] = ['required', 'date', 'before_or_equal:today'];
-        $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
-        $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
-        $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
-        
-    } elseif ($request->role === 'mahasiswa') {
-        $registrationType = $request->registration_type;
-        
-        if ($registrationType === 'simple') {
-            $rules['nim'] = ['required', 'string', 'unique:users,nim', 'max:20'];
-            $rules['tanggal_lahir'] = ['nullable', 'date', 'before_or_equal:today'];
-            $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
-            $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
-            $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
+        // Validasi dinamis berdasarkan role DAN registration_type
+        if ($request->role === 'admin') {
+            // Admin: username dan password WAJIB, tanggal_lahir dan nim TIDAK PERLU
+            $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
+            $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()];
+            // Hapus rules tanggal_lahir dari array (biarkan nullable)
+            unset($rules['tanggal_lahir']);
             
-        } else { // full registration
-            $rules['nim'] = ['required', 'string', 'unique:users,nim', 'max:20'];
+        } elseif ($request->role === 'dosen') {
+            // Dosen: username, password, tanggal_lahir WAJIB, nim TIDAK PERLU
             $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
             $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()];
             $rules['tanggal_lahir'] = ['required', 'date', 'before_or_equal:today'];
             $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
             $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
             $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
-        }
-    }
-
-    $validated = $request->validate($rules);
-
-    // Penanganan foto profil
-    $photoPath = null;
-
-    if ($request->hasFile('photo_profile')) {
-        $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-    } 
-    elseif ($request->filled('avatar_default')) {
-        $avatarName = $request->avatar_default;
-        $sourcePath = public_path("assets/{$avatarName}.png");
-
-        if (file_exists($sourcePath)) {
-            $tempFile = new UploadedFile(
-                $sourcePath,
-                $avatarName . '.png',
-                'image/png',
-                null,
-                true
-            );
-            $photoPath = ImageConversionService::storeWebp($tempFile, 'photos');
-        } else {
-            \Log::warning("Avatar file not found: {$sourcePath}");
-        }
-    }
-
-    // === PERBAIKAN UTAMA: Siapkan data user ===
-    $userData = [
-        'nama_mahasiswa' => $validated['nama_mahasiswa'],
-        'email' => $validated['email'] ?? null,
-        'username' => $validated['username'] ?? null,
-        'password' => isset($validated['password']) ? Hash::make($validated['password']) : null,
-        'photo_profile' => $photoPath,
-        'role' => $validated['role'],
-        'id_jurusan' => $validated['id_jurusan'] ?? null,
-        'id_keahlian' => $validated['id_keahlian'] ?? null,
-        'id_angkatan' => $validated['id_angkatan'] ?? null,
-        'status_pengajuan' => 'Di Terima',
-        'is_active' => 1,
-        'tanggal_lahir' => $validated['tanggal_lahir'] ?? null, // Admin akan NULL, Dosen akan terisi
-    ];
-
-    // Tambahkan NIM hanya jika ada (hanya untuk mahasiswa)
-    if (isset($validated['nim'])) {
-        $userData['nim'] = $validated['nim'];
-    } else {
-        $userData['nim'] = null; // Explicit set null untuk admin dan dosen
-    }
-
-    User::create($userData);
-
-    return redirect()
-        ->route('admin.users.index')
-        ->with('success', 'User berhasil ditambahkan.');
-}
-
-public function importExcel(Request $request)
-{
-    $this->authorizeAccess();
-
-    $request->validate([
-        'excel_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
-    ]);
-
-    try {
-        $file = $request->file('excel_file');
-        $data = $this->parseExcelFile($file);
-
-        if (empty($data)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File Excel kosong atau format tidak sesuai.',
-            ], 400);
-        }
-
-        // Ambil referensi dari DB (key = nama lowercase => id)
-        $jurusanMap  = Jurusan::pluck('id_jurusan', 'nama_jurusan')
-                              ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
-                              ->toArray();
-        $keahlianMap = Keahlian::pluck('id_keahlian', 'nama_keahlian')
-                               ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
-                               ->toArray();
-        $angkatanMap = Angkatan::pluck('id', 'nama_angkatan')
-                               ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
-                               ->toArray();
-
-        $successCount = 0;
-        $failedCount  = 0;
-        $failedRows   = [];
-        $warnings     = [];
-
-        $notFoundJurusan  = [];
-        $notFoundKeahlian = [];
-        $notFoundAngkatan = [];
-
-        DB::beginTransaction();
-
-        foreach ($data as $index => $row) {
-            $rowNumber = $index + 2; // baris 1 = header
-
-            try {
-                // --- Mapping kolom ---
-                $nim  = trim($row['nim']  ?? $row['NIM']  ?? '');
-                $nama = trim($row['nama'] ?? $row['Nama'] ?? $row['Nama Lengkap'] ?? '');
-                $tanggalLahir = $this->parseDate($row['tanggal_lahir'] ?? $row['Tanggal Lahir'] ?? '');
-                $namaJurusan  = strtolower(trim($row['jurusan']  ?? $row['Jurusan']  ?? ''));
-                $namaKeahlian = strtolower(trim($row['keahlian'] ?? $row['Keahlian'] ?? ''));
-                $namaAngkatan = strtolower(trim($row['angkatan'] ?? $row['Angkatan'] ?? ''));
-
-                // --- Validasi wajib ---
-                if (empty($nim) || empty($nama)) {
-                    $failedCount++;
-                    $failedRows[] = ['row' => $rowNumber, 'reason' => 'NIM atau Nama tidak boleh kosong'];
-                    continue;
-                }
-
-                // --- Cek duplikat NIM ---
-                if (User::where('nim', $nim)->exists()) {
-                    $failedCount++;
-                    $failedRows[] = ['row' => $rowNumber, 'reason' => "NIM {$nim} sudah terdaftar"];
-                    continue;
-                }
-
-                // --- Resolve FK (nullable jika tidak ditemukan) ---
-                $idJurusan = null;
-                if (!empty($namaJurusan)) {
-                    if (isset($jurusanMap[$namaJurusan])) {
-                        $idJurusan = $jurusanMap[$namaJurusan];
-                    } else {
-                        $notFoundJurusan[] = $row['jurusan'] ?? $row['Jurusan'] ?? $namaJurusan;
-                    }
-                }
-
-                $idKeahlian = null;
-                if (!empty($namaKeahlian)) {
-                    if (isset($keahlianMap[$namaKeahlian])) {
-                        $idKeahlian = $keahlianMap[$namaKeahlian];
-                    } else {
-                        $notFoundKeahlian[] = $row['keahlian'] ?? $row['Keahlian'] ?? $namaKeahlian;
-                    }
-                }
-
-                $idAngkatan = null;
-                if (!empty($namaAngkatan)) {
-                    if (isset($angkatanMap[$namaAngkatan])) {
-                        $idAngkatan = $angkatanMap[$namaAngkatan];
-                    } else {
-                        $notFoundAngkatan[] = $row['angkatan'] ?? $row['Angkatan'] ?? $namaAngkatan;
-                    }
-                }
-
-                // --- Buat user ---
-                // Password default = NIM (di-hash)
-                // username = null, tidak di-generate
-                User::create([
-                    'nim'              => $nim,
-                    'nama_mahasiswa'   => $nama,
-                    'username'         => null,
-                    'email'            => null,
-                    'password'         => Hash::make($nim),
-                    'tanggal_lahir'    => $tanggalLahir,
-                    'id_jurusan'       => $idJurusan,
-                    'id_keahlian'      => $idKeahlian,
-                    'id_angkatan'      => $idAngkatan,
-                    'role'             => 'mahasiswa',
-                    'status_pengajuan' => 'Di Terima',
-                    'is_active'        => 1,
-                    'photo_profile'    => null,
-                ]);
-
-                $successCount++;
-
-            } catch (\Exception $e) {
-                $failedCount++;
-                $failedRows[] = ['row' => $rowNumber, 'reason' => 'Error: ' . $e->getMessage()];
-                \Log::error("Import baris {$rowNumber}: " . $e->getMessage());
+            
+        } elseif ($request->role === 'mahasiswa') {
+            $registrationType = $request->registration_type;
+            
+            if ($registrationType === 'simple') {
+                $rules['nim'] = ['required', 'string', 'unique:users,nim', 'max:20'];
+                $rules['tanggal_lahir'] = ['nullable', 'date', 'before_or_equal:today'];
+                $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
+                $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
+                $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
+                
+            } else { // full registration
+                $rules['nim'] = ['required', 'string', 'unique:users,nim', 'max:20'];
+                $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
+                $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()];
+                $rules['tanggal_lahir'] = ['required', 'date', 'before_or_equal:today'];
+                $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
+                $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
+                $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
             }
         }
 
-        DB::commit();
+        $validated = $request->validate($rules);
 
-        // --- Kumpulkan warning referensi tidak ditemukan ---
-        if (!empty($notFoundJurusan)) {
-            $warnings[] = 'Jurusan tidak ditemukan: ' . implode(', ', array_unique($notFoundJurusan));
-        }
-        if (!empty($notFoundKeahlian)) {
-            $warnings[] = 'Keahlian tidak ditemukan: ' . implode(', ', array_unique($notFoundKeahlian));
-        }
-        if (!empty($notFoundAngkatan)) {
-            $warnings[] = 'Angkatan tidak ditemukan: ' . implode(', ', array_unique($notFoundAngkatan));
-        }
+        // Penanganan foto profil
+        $photoPath = null;
 
-        return response()->json([
-            'success'    => true,
-            'message'    => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
-            'warnings'   => $warnings,
-            'failedRows' => $failedRows,
-            'stats'      => [
-                'success' => $successCount,
-                'failed'  => $failedCount,
-                'total'   => count($data),
-            ],
-        ]);
+        if ($request->hasFile('photo_profile')) {
+            $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
+        } 
+        elseif ($request->filled('avatar_default')) {
+            $avatarName = $request->avatar_default;
+            $sourcePath = public_path("assets/{$avatarName}.png");
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error('Import Excel error: ' . $e->getMessage());
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-        ], 500);
-    }
-}
-
-// ============================================================
-// Helper: parse file Excel → array of associative arrays
-// ============================================================
-private function parseExcelFile($file): array
-{
-    try {
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
-        $rows        = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
-
-        if (count($rows) < 2) {
-            return [];
+            if (file_exists($sourcePath)) {
+                $tempFile = new UploadedFile(
+                    $sourcePath,
+                    $avatarName . '.png',
+                    'image/png',
+                    null,
+                    true
+                );
+                $photoPath = ImageConversionService::storeWebp($tempFile, 'photos');
+            } else {
+                \Log::warning("Avatar file not found: {$sourcePath}");
+            }
         }
 
-        // Baris pertama = header, normalize ke lowercase
-        $rawHeaders = array_map(fn($h) => strtolower(trim((string) $h)), $rows[0]);
-
-        // Map header ke key standar yang dikenali importExcel()
-        $headerAliases = [
-            'nim'           => ['nim', 'n i m'],
-            'Nama Lengkap'  => ['nama lengkap', 'nama', 'full name'],
-            'Tanggal Lahir' => ['tanggal lahir', 'tgl lahir', 'birth date', 'birthdate'],
-            'Jurusan'       => ['jurusan', 'department', 'prodi'],
-            'Keahlian'      => ['keahlian', 'bidang keahlian', 'skill'],
-            'Angkatan'      => ['angkatan', 'tahun masuk', 'year'],
+        // === PERBAIKAN UTAMA: Siapkan data user ===
+        $userData = [
+            'nama_mahasiswa' => $validated['nama_mahasiswa'],
+            'email' => $validated['email'] ?? null,
+            'username' => $validated['username'] ?? null,
+            'password' => isset($validated['password']) ? Hash::make($validated['password']) : null,
+            'photo_profile' => $photoPath,
+            'role' => $validated['role'],
+            'id_jurusan' => $validated['id_jurusan'] ?? null,
+            'id_keahlian' => $validated['id_keahlian'] ?? null,
+            'id_angkatan' => $validated['id_angkatan'] ?? null,
+            'status_pengajuan' => 'Di Terima',
+            'is_active' => 1,
+            'tanggal_lahir' => $validated['tanggal_lahir'] ?? null, // Admin akan NULL, Dosen akan terisi
         ];
 
-        // Buat peta: index kolom => key standar
-        $colMap = [];
-        foreach ($rawHeaders as $colIndex => $rawHeader) {
-            foreach ($headerAliases as $standardKey => $aliases) {
-                if (in_array($rawHeader, $aliases, true)) {
-                    $colMap[$colIndex] = $standardKey;
-                    break;
+        // Tambahkan NIM hanya jika ada (hanya untuk mahasiswa)
+        if (isset($validated['nim'])) {
+            $userData['nim'] = $validated['nim'];
+        } else {
+            $userData['nim'] = null; // Explicit set null untuk admin dan dosen
+        }
+
+        User::create($userData);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $request->validate([
+            'excel_file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
+        ]);
+
+        try {
+            $file = $request->file('excel_file');
+            $data = $this->parseExcelFile($file);
+
+            if (empty($data)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'File Excel kosong atau format tidak sesuai.',
+                ], 400);
+            }
+
+            // Ambil referensi dari DB (key = nama lowercase => id)
+            $jurusanMap  = Jurusan::pluck('id_jurusan', 'nama_jurusan')
+                                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                                ->toArray();
+            $keahlianMap = Keahlian::pluck('id_keahlian', 'nama_keahlian')
+                                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                                ->toArray();
+            $angkatanMap = Angkatan::pluck('id', 'nama_angkatan')
+                                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                                ->toArray();
+
+            $successCount = 0;
+            $failedCount  = 0;
+            $failedRows   = [];
+            $warnings     = [];
+
+            $notFoundJurusan  = [];
+            $notFoundKeahlian = [];
+            $notFoundAngkatan = [];
+
+            DB::beginTransaction();
+
+            foreach ($data as $index => $row) {
+                $rowNumber = $index + 2; // baris 1 = header
+
+                try {
+                    // --- Mapping kolom ---
+                    $nim  = trim($row['nim']  ?? $row['NIM']  ?? '');
+                    $nama = trim($row['nama'] ?? $row['Nama'] ?? $row['Nama Lengkap'] ?? '');
+                    $tanggalLahir = $this->parseDate($row['tanggal_lahir'] ?? $row['Tanggal Lahir'] ?? '');
+                    $namaJurusan  = strtolower(trim($row['jurusan']  ?? $row['Jurusan']  ?? ''));
+                    $namaKeahlian = strtolower(trim($row['keahlian'] ?? $row['Keahlian'] ?? ''));
+                    $namaAngkatan = strtolower(trim($row['angkatan'] ?? $row['Angkatan'] ?? ''));
+
+                    // --- Validasi wajib ---
+                    if (empty($nim) || empty($nama)) {
+                        $failedCount++;
+                        $failedRows[] = ['row' => $rowNumber, 'reason' => 'NIM atau Nama tidak boleh kosong'];
+                        continue;
+                    }
+
+                    // --- Cek duplikat NIM ---
+                    if (User::where('nim', $nim)->exists()) {
+                        $failedCount++;
+                        $failedRows[] = ['row' => $rowNumber, 'reason' => "NIM {$nim} sudah terdaftar"];
+                        continue;
+                    }
+
+                    // --- Resolve FK (nullable jika tidak ditemukan) ---
+                    $idJurusan = null;
+                    if (!empty($namaJurusan)) {
+                        if (isset($jurusanMap[$namaJurusan])) {
+                            $idJurusan = $jurusanMap[$namaJurusan];
+                        } else {
+                            $notFoundJurusan[] = $row['jurusan'] ?? $row['Jurusan'] ?? $namaJurusan;
+                        }
+                    }
+
+                    $idKeahlian = null;
+                    if (!empty($namaKeahlian)) {
+                        if (isset($keahlianMap[$namaKeahlian])) {
+                            $idKeahlian = $keahlianMap[$namaKeahlian];
+                        } else {
+                            $notFoundKeahlian[] = $row['keahlian'] ?? $row['Keahlian'] ?? $namaKeahlian;
+                        }
+                    }
+
+                    $idAngkatan = null;
+                    if (!empty($namaAngkatan)) {
+                        if (isset($angkatanMap[$namaAngkatan])) {
+                            $idAngkatan = $angkatanMap[$namaAngkatan];
+                        } else {
+                            $notFoundAngkatan[] = $row['angkatan'] ?? $row['Angkatan'] ?? $namaAngkatan;
+                        }
+                    }
+
+                    // --- Buat user ---
+                    // Password default = NIM (di-hash)
+                    // username = null, tidak di-generate
+                    User::create([
+                        'nim'              => $nim,
+                        'nama_mahasiswa'   => $nama,
+                        'username'         => null,
+                        'email'            => null,
+                        'password'         => Hash::make($nim),
+                        'tanggal_lahir'    => $tanggalLahir,
+                        'id_jurusan'       => $idJurusan,
+                        'id_keahlian'      => $idKeahlian,
+                        'id_angkatan'      => $idAngkatan,
+                        'role'             => 'mahasiswa',
+                        'status_pengajuan' => 'Di Terima',
+                        'is_active'        => 1,
+                        'photo_profile'    => null,
+                    ]);
+
+                    $successCount++;
+
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    $failedRows[] = ['row' => $rowNumber, 'reason' => 'Error: ' . $e->getMessage()];
+                    \Log::error("Import baris {$rowNumber}: " . $e->getMessage());
                 }
             }
+
+            DB::commit();
+
+            // --- Kumpulkan warning referensi tidak ditemukan ---
+            if (!empty($notFoundJurusan)) {
+                $warnings[] = 'Jurusan tidak ditemukan: ' . implode(', ', array_unique($notFoundJurusan));
+            }
+            if (!empty($notFoundKeahlian)) {
+                $warnings[] = 'Keahlian tidak ditemukan: ' . implode(', ', array_unique($notFoundKeahlian));
+            }
+            if (!empty($notFoundAngkatan)) {
+                $warnings[] = 'Angkatan tidak ditemukan: ' . implode(', ', array_unique($notFoundAngkatan));
+            }
+
+            return response()->json([
+                'success'    => true,
+                'message'    => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
+                'warnings'   => $warnings,
+                'failedRows' => $failedRows,
+                'stats'      => [
+                    'success' => $successCount,
+                    'failed'  => $failedCount,
+                    'total'   => count($data),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Import Excel error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
         }
+    }
 
-        $data = [];
-        for ($i = 1; $i < count($rows); $i++) {
-            $row = $rows[$i];
+    // ============================================================
+    // Helper: parse file Excel → array of associative arrays
+    // ============================================================
+    private function parseExcelFile($file): array
+    {
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+            $rows        = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
 
-            // Lewati baris kosong
-            $allEmpty = true;
-            foreach ($row as $cell) {
-                if (!empty(trim((string) $cell))) {
-                    $allEmpty = false;
-                    break;
+            if (count($rows) < 2) {
+                return [];
+            }
+
+            // Baris pertama = header, normalize ke lowercase
+            $rawHeaders = array_map(fn($h) => strtolower(trim((string) $h)), $rows[0]);
+
+            // Map header ke key standar yang dikenali importExcel()
+            $headerAliases = [
+                'nim'           => ['nim', 'n i m'],
+                'Nama Lengkap'  => ['nama lengkap', 'nama', 'full name'],
+                'Tanggal Lahir' => ['tanggal lahir', 'tgl lahir', 'birth date', 'birthdate'],
+                'Jurusan'       => ['jurusan', 'department', 'prodi'],
+                'Keahlian'      => ['keahlian', 'bidang keahlian', 'skill'],
+                'Angkatan'      => ['angkatan', 'tahun masuk', 'year'],
+            ];
+
+            // Buat peta: index kolom => key standar
+            $colMap = [];
+            foreach ($rawHeaders as $colIndex => $rawHeader) {
+                foreach ($headerAliases as $standardKey => $aliases) {
+                    if (in_array($rawHeader, $aliases, true)) {
+                        $colMap[$colIndex] = $standardKey;
+                        break;
+                    }
                 }
             }
-            if ($allEmpty) {
-                continue;
+
+            $data = [];
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+
+                // Lewati baris kosong
+                $allEmpty = true;
+                foreach ($row as $cell) {
+                    if (!empty(trim((string) $cell))) {
+                        $allEmpty = false;
+                        break;
+                    }
+                }
+                if ($allEmpty) {
+                    continue;
+                }
+
+                $mapped = [];
+                foreach ($colMap as $colIndex => $standardKey) {
+                    $mapped[$standardKey] = isset($row[$colIndex]) ? trim((string) $row[$colIndex]) : '';
+                }
+
+                // Hanya masukkan baris yang punya NIM
+                if (!empty($mapped['nim'] ?? $mapped['NIM'] ?? '')) {
+                    $data[] = $mapped;
+                }
             }
 
-            $mapped = [];
-            foreach ($colMap as $colIndex => $standardKey) {
-                $mapped[$standardKey] = isset($row[$colIndex]) ? trim((string) $row[$colIndex]) : '';
-            }
+            return $data;
 
-            // Hanya masukkan baris yang punya NIM
-            if (!empty($mapped['nim'] ?? $mapped['NIM'] ?? '')) {
-                $data[] = $mapped;
-            }
-        }
-
-        return $data;
-
-    } catch (\Exception $e) {
-        \Log::error('parseExcelFile error: ' . $e->getMessage());
-        return [];
-    }
-}
-
-// ============================================================
-// Helper: parse tanggal dari berbagai format
-// ============================================================
-private function parseDate($date): ?string
-{
-    if (empty($date)) {
-        return null;
-    }
-
-    // Serial date Excel (angka)
-    if (is_numeric($date)) {
-        $unix = ((int) $date - 25569) * 86400;
-        return date('Y-m-d', $unix);
-    }
-
-    $date = trim((string) $date);
-
-    $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd/m/y', 'Y/m/d'];
-    foreach ($formats as $format) {
-        $parsed = \DateTime::createFromFormat($format, $date);
-        if ($parsed && $parsed->format($format) === $date) {
-            return $parsed->format('Y-m-d');
+        } catch (\Exception $e) {
+            \Log::error('parseExcelFile error: ' . $e->getMessage());
+            return [];
         }
     }
 
-    $ts = strtotime($date);
-    return $ts !== false ? date('Y-m-d', $ts) : null;
-}
+    // ============================================================
+    // Helper: parse tanggal dari berbagai format
+    // ============================================================
+    private function parseDate($date): ?string
+    {
+        if (empty($date)) {
+            return null;
+        }
 
- // DetailsUser - ambil id dari query parameter
+        // Serial date Excel (angka)
+        if (is_numeric($date)) {
+            $unix = ((int) $date - 25569) * 86400;
+            return date('Y-m-d', $unix);
+        }
+
+        $date = trim((string) $date);
+
+        $formats = ['Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd/m/y', 'Y/m/d'];
+        foreach ($formats as $format) {
+            $parsed = \DateTime::createFromFormat($format, $date);
+            if ($parsed && $parsed->format($format) === $date) {
+                return $parsed->format('Y-m-d');
+            }
+        }
+
+        $ts = strtotime($date);
+        return $ts !== false ? date('Y-m-d', $ts) : null;
+    }
+
+    // DetailsUser - ambil id dari query parameter
     public function DetailsUser(Request $request)
     {
         $this->authorizeAccess();
@@ -642,6 +642,7 @@ private function parseDate($date): ?string
             'angkatans'
         ));
     }
+
     // UpdateUser - ambil id dari query parameter
     public function UpdateUser(Request $request)
     {
@@ -946,56 +947,56 @@ private function parseDate($date): ?string
     }
 
     public function approveKeahlianTambahan(Request $request)
-{
-    $this->authorizeAccess();
-    
-    $id = $request->query('user_id');
-    
-    if (!$id) {
-        return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
+    {
+        $this->authorizeAccess();
+        
+        $id = $request->query('user_id');
+        
+        if (!$id) {
+            return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
+        }
+        
+        $application = Keahlian_Tambahan::findOrFail($id);
+        
+        if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
+            return redirect()->back()->with('error', 'Pengajuan tidak valid untuk approval.');
+        }
+        
+        $application->update([
+            'status_pengajuan' => 'Di Terima',
+            'is_active' => true,
+            'keterangan' => null,
+        ]);
+        
+        return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil diterima.');
     }
-    
-    $application = Keahlian_Tambahan::findOrFail($id);
-    
-    if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
-        return redirect()->back()->with('error', 'Pengajuan tidak valid untuk approval.');
-    }
-    
-    $application->update([
-        'status_pengajuan' => 'Di Terima',
-        'is_active' => true,
-        'keterangan' => null,
-    ]);
-    
-    return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil diterima.');
-}
 
-public function rejectKeahlianTambahan(Request $request)
-{
-    $this->authorizeAccess();
-    
-    $request->validate(['keterangan' => 'required|string|max:500']);
-    
-    $id = $request->query('user_id');
-    
-    if (!$id) {
-        return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
+    public function rejectKeahlianTambahan(Request $request)
+    {
+        $this->authorizeAccess();
+        
+        $request->validate(['keterangan' => 'required|string|max:500']);
+        
+        $id = $request->query('user_id');
+        
+        if (!$id) {
+            return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
+        }
+        
+        $application = Keahlian_Tambahan::findOrFail($id);
+        
+        if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
+            return redirect()->back()->with('error', 'Pengajuan tidak valid untuk rejection.');
+        }
+        
+        $application->update([
+            'status_pengajuan' => 'Di Tolak',
+            'is_active' => false,
+            'keterangan' => $request->keterangan,
+        ]);
+        
+        return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil ditolak.');
     }
-    
-    $application = Keahlian_Tambahan::findOrFail($id);
-    
-    if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
-        return redirect()->back()->with('error', 'Pengajuan tidak valid untuk rejection.');
-    }
-    
-    $application->update([
-        'status_pengajuan' => 'Di Tolak',
-        'is_active' => false,
-        'keterangan' => $request->keterangan,
-    ]);
-    
-    return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil ditolak.');
-}
 
     //For Pages Sertifikat
     public function sertifikat(Request $request)
@@ -1354,6 +1355,7 @@ public function rejectKeahlianTambahan(Request $request)
             ], 500);
         }
     }
+
     // For Pages Angkatan
     public function ListAngkatan()
     {
@@ -1764,6 +1766,7 @@ public function rejectKeahlianTambahan(Request $request)
 
         return redirect()->back()->with('success', $count . ' Keahlian berhasil dihapus');
     }
+
     //For Projects Pages
     public function projects()
     {
@@ -1771,7 +1774,6 @@ public function rejectKeahlianTambahan(Request $request)
         $projects = Project::with(['mahasiswa', 'leader'])->latest()->paginate(12);
         return view('admin.project', compact('projects'));
     }
-
 
     public function TambahProjects(Request $request)
     {
@@ -1878,131 +1880,132 @@ public function rejectKeahlianTambahan(Request $request)
         ));
     }
 
-// EditProjects - ambil id dari query parameter
-public function EditProjects(Request $request)
-{
-    $this->authorizeAccess();
-    $id = $request->query('id');
+    // EditProjects - ambil id dari query parameter
+    public function EditProjects(Request $request)
+    {
+        $this->authorizeAccess();
+        $id = $request->query('id');
 
-    if (!$id) {
-        abort(404, 'Project ID is required');
-    }
-
-    // Get search and filter inputs
-    $search = $request->input('search');
-    $angkatan = $request->input('angkatan');
-    $jurusan = $request->input('jurusan');
-    $keahlian = $request->input('keahlian');
-
-    // Query dasar untuk mendapatkan user dengan role mahasiswa beserta relasinya
-    $baseQuery = User::with(['jurusan', 'angkatan', 'keahlian'])
-        ->where('role', 'mahasiswa')
-        ->where('status_pengajuan', 'Di Terima');
-
-    // Filter pencarian berdasarkan nama mahasiswa, username, atau email
-    if ($search) {
-        $baseQuery->where(function ($q) use ($search) {
-            $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
-                ->orWhere('username', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%');
-        });
-    }
-
-    // Filter berdasarkan angkatan
-    if ($angkatan) {
-        $baseQuery->where('id_angkatan', $angkatan);
-    }
-
-    // Filter berdasarkan jurusan
-    if ($jurusan) {
-        $baseQuery->where('id_jurusan', $jurusan);
-    }
-
-    // Filter berdasarkan keahlian
-    if ($keahlian) {
-        $baseQuery->where('id_keahlian', $keahlian);
-    }
-
-    // Ambil semua user untuk JavaScript (untuk mendukung multiple members dari semua halaman)
-    $allUsers = $baseQuery->orderBy('created_at', 'desc')->get();
-
-    // Ambil data untuk dropdown filter
-    $angkatans = Angkatan::all();
-    $jurusans = Jurusan::all();
-    $keahlians = Keahlian::all();
-
-    // Get project data
-    $project = Project::with(['members', 'tasks'])
-        ->where('id', $id)
-        ->firstOrFail();
-
-    if ($request->ajax()) {
-        // Clone query untuk pagination (agar tidak mempengaruhi $allUsers)
-        $paginatedQuery = clone $baseQuery;
-        $users = $paginatedQuery->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-        // Return JSON for AJAX requests
-        $userListHtml = '';
-        if ($users->count() > 0) {
-            foreach ($users as $user) {
-                $userListHtml .= '
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            ' . ($user->photo_profile ?
-                    '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">' :
-                    '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">' . strtoupper(substr($user->nama_mahasiswa, 0, 1)) . '</span>
-                                </div>'
-                ) . '
-                            <div>
-                                <div class="font-medium text-gray-900 dark:text-gray-100">' . $user->nama_mahasiswa . '</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ' . $user->id . ', this.value)">
-                                <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
-                                <option value="owner" data-translate="owner_role" data-translate-page="dosen_add_pjt">Owner</option>
-                                <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
-                                <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
-                            </select>
-                        </div>
-                    </div>
-                ';
-            }
-        } else {
-            $userListHtml = '<div class="text-center py-10 text-gray-500 dark:text-gray-400" data-translate="no_students_found" data-translate-page="dosen_add_pjt">Tidak ada mahasiswa yang sesuai filter.</div>';
+        if (!$id) {
+            abort(404, 'Project ID is required');
         }
 
-        $paginationHtml = $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection'])->toHtml();
+        // Get search and filter inputs
+        $search = $request->input('search');
+        $angkatan = $request->input('angkatan');
+        $jurusan = $request->input('jurusan');
+        $keahlian = $request->input('keahlian');
 
-        return response()->json([
-            'userListHtml' => $userListHtml,
-            'paginationHtml' => $paginationHtml,
-            'currentPage' => $users->currentPage(),
-            'lastPage' => $users->lastPage(),
-        ]);
+        // Query dasar untuk mendapatkan user dengan role mahasiswa beserta relasinya
+        $baseQuery = User::with(['jurusan', 'angkatan', 'keahlian'])
+            ->where('role', 'mahasiswa')
+            ->where('status_pengajuan', 'Di Terima');
+
+        // Filter pencarian berdasarkan nama mahasiswa, username, atau email
+        if ($search) {
+            $baseQuery->where(function ($q) use ($search) {
+                $q->where('nama_mahasiswa', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Filter berdasarkan angkatan
+        if ($angkatan) {
+            $baseQuery->where('id_angkatan', $angkatan);
+        }
+
+        // Filter berdasarkan jurusan
+        if ($jurusan) {
+            $baseQuery->where('id_jurusan', $jurusan);
+        }
+
+        // Filter berdasarkan keahlian
+        if ($keahlian) {
+            $baseQuery->where('id_keahlian', $keahlian);
+        }
+
+        // Ambil semua user untuk JavaScript (untuk mendukung multiple members dari semua halaman)
+        $allUsers = $baseQuery->orderBy('created_at', 'desc')->get();
+
+        // Ambil data untuk dropdown filter
+        $angkatans = Angkatan::all();
+        $jurusans = Jurusan::all();
+        $keahlians = Keahlian::all();
+
+        // Get project data
+        $project = Project::with(['members', 'tasks'])
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if ($request->ajax()) {
+            // Clone query untuk pagination (agar tidak mempengaruhi $allUsers)
+            $paginatedQuery = clone $baseQuery;
+            $users = $paginatedQuery->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+            // Return JSON for AJAX requests
+            $userListHtml = '';
+            if ($users->count() > 0) {
+                foreach ($users as $user) {
+                    $userListHtml .= '
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                ' . ($user->photo_profile ?
+                        '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">' :
+                        '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                        <span class="text-indigo-600 dark:text-indigo-400 font-semibold">' . strtoupper(substr($user->nama_mahasiswa, 0, 1)) . '</span>
+                                    </div>'
+                    ) . '
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-gray-100">' . $user->nama_mahasiswa . '</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none" title="' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8') . '</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm" onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                                    <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
+                                    <option value="owner" data-translate="owner_role" data-translate-page="dosen_add_pjt">Owner</option>
+                                    <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
+                                    <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
+                                </select>
+                            </div>
+                        </div>
+                    ';
+                }
+            } else {
+                $userListHtml = '<div class="text-center py-10 text-gray-500 dark:text-gray-400" data-translate="no_students_found" data-translate-page="dosen_add_pjt">Tidak ada mahasiswa yang sesuai filter.</div>';
+            }
+
+            $paginationHtml = $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection'])->toHtml();
+
+            return response()->json([
+                'userListHtml' => $userListHtml,
+                'paginationHtml' => $paginationHtml,
+                'currentPage' => $users->currentPage(),
+                'lastPage' => $users->lastPage(),
+            ]);
+        }
+
+        // ================= NON AJAX =================
+        // TANPA PAGINATION
+        $users = (clone $baseQuery)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.projects.views_edit_project', compact(
+            'project',
+            'users',
+            'allUsers',
+            'angkatans',
+            'jurusans',
+            'keahlians',
+            'search',
+            'angkatan',
+            'jurusan',
+            'keahlian'
+        ));
     }
 
-    // ================= NON AJAX =================
-    // TANPA PAGINATION
-    $users = (clone $baseQuery)
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    return view('admin.projects.views_edit_project', compact(
-        'project',
-        'users',
-        'allUsers',
-        'angkatans',
-        'jurusans',
-        'keahlians',
-        'search',
-        'angkatan',
-        'jurusan',
-        'keahlian'
-    ));
-}
     public function StoreProject(Request $request)
     {
         $this->authorizeAccess();
@@ -2104,163 +2107,173 @@ public function EditProjects(Request $request)
             ->with('clear_local_storage', true);
     }
 
-// UpdateProject - support URL query parameter ?id=123
-public function UpdateProject(Request $request)
-{
-    $this->authorizeAccess();
+    // UpdateProject - support URL query parameter ?id=123
+    public function UpdateProject(Request $request)
+    {
+        $this->authorizeAccess();
 
-    // Ambil id dari query parameter
-    $id = $request->query('id');
+        // Ambil id dari query parameter
+        $id = $request->query('id');
 
-    if (!$id) {
-        return redirect()->route('admin.projects.index')
-            ->with('error', 'Project ID tidak ditemukan');
-    }
+        if (!$id) {
+            return redirect()->route('admin.projects.index')
+                ->with('error', 'Project ID tidak ditemukan');
+        }
 
-    $project = Project::findOrFail($id);
+        $project = Project::findOrFail($id);
 
-    // Sanitize members input - support string "1,2,3" atau array
-    $membersInput = $request->input('members', '');
+        // Sanitize members input - support string "1,2,3" atau array
+        $membersInput = $request->input('members', '');
 
-    if (is_string($membersInput) && !empty($membersInput)) {
-        $membersArray = explode(',', $membersInput);
+        if (is_string($membersInput) && !empty($membersInput)) {
+            $membersArray = explode(',', $membersInput);
+            $request->merge([
+                'members' => array_filter($membersArray)
+            ]);
+        } elseif (is_array($membersInput)) {
+            $request->merge([
+                'members' => array_filter($membersInput)
+            ]);
+        } else {
+            $request->merge([
+                'members' => []
+            ]);
+        }
+
+        // Filter tasks
         $request->merge([
-            'members' => array_filter($membersArray)
+            'tasks' => collect($request->input('tasks', []))
+                ->filter(fn($task) => is_array($task) && (
+                    !empty($task['user_id']) &&
+                    !empty(trim($task['name_task'] ?? ''))
+                ))
+                ->values()
+                ->all()
         ]);
-    } elseif (is_array($membersInput)) {
-        $request->merge([
-            'members' => array_filter($membersInput)
-        ]);
-    } else {
-        $request->merge([
-            'members' => []
-        ]);
-    }
 
-    // Filter tasks
-    $request->merge([
-        'tasks' => collect($request->input('tasks', []))
-            ->filter(fn($task) => is_array($task) && (
+        $validated = $request->validate([
+            'nama_project' => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'link_project' => 'nullable|url|max:255',
+            'deskripsi' => 'nullable|string|max:2000',
+            'link_github' => 'nullable|url|max:500',
+            'link_video' => 'nullable|url|max:500',
+            'owner' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+            'leader' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+            'members' => 'nullable|array',
+            'members.*' => 'exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+            'tasks' => 'nullable|array',
+            'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
+            'tasks.*.user_id' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
+            'tasks.*.name_task' => 'nullable|string|max:255',
+            'is_collaborative' => 'nullable|boolean'
+        ]);
+
+        // Prepare content
+        $content = [];
+
+        if ($request->filled('nama_project'))
+            $content['nama_project'] = $request->nama_project;
+
+        if ($request->filled('deskripsi'))
+            $content['deskripsi'] = $request->deskripsi;
+
+        if ($request->filled('link_project'))
+            $content['link_project'] = $request->link_project;
+
+        if ($request->filled('link_github'))
+            $content['link_github'] = $request->link_github;
+
+        if ($request->filled('link_video'))
+            $content['link_video'] = $request->link_video;
+
+        if (empty($content)) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)'
+                ]);
+        }
+
+        $ownerId = $request->owner ?: null;
+        $leaderId = $request->leader ?: null;
+        $isCollaborative = $request->boolean('is_collaborative', true);
+
+        // Jika collaborative tapi leader kosong
+        if ($isCollaborative && !$leaderId && $ownerId) {
+            $leaderId = $ownerId;
+        }
+
+        // Jika non collaborative
+        if (!$isCollaborative && $ownerId) {
+            $leaderId = $ownerId;
+        }
+
+        // Update project
+        $project->update([
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'isi_content' => $content,
+            'id_mahasiswa' => $ownerId,
+            'leader_id' => $leaderId,
+        ]);
+
+        // Handle members
+        $members = collect($request->members ?? [])
+            ->filter()
+            ->reject(fn($memberId) =>
+                $memberId == $ownerId ||
+                $memberId == $leaderId
+            )
+            ->map(fn($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        if (!$isCollaborative) {
+            $members = [];
+        }
+
+        $project->members()->sync($members);
+
+        // Handle tasks
+        $submittedTasks = collect($request->input('tasks', []))
+            ->filter(fn($task) =>
                 !empty($task['user_id']) &&
                 !empty(trim($task['name_task'] ?? ''))
-            ))
+            )
             ->values()
-            ->all()
-    ]);
+            ->all();
 
-    $validated = $request->validate([
-        'nama_project' => 'required|string|max:255',
-        'tanggal_mulai' => 'required|date',
-        'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
-        'link_project' => 'nullable|url|max:255',
-        'deskripsi' => 'nullable|string|max:2000',
-        'link_github' => 'nullable|url|max:500',
-        'link_video' => 'nullable|url|max:500',
-        'owner' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-        'leader' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-        'members' => 'nullable|array',
-        'members.*' => 'exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-        'tasks' => 'nullable|array',
-        'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
-        'tasks.*.user_id' => 'nullable|exists:users,id,role,mahasiswa,status_pengajuan,Di Terima',
-        'tasks.*.name_task' => 'nullable|string|max:255',
-        'is_collaborative' => 'nullable|boolean'
-    ]);
+        if (!empty($submittedTasks)) {
 
-    // Prepare content
-    $content = [];
+            $savedTaskIds = [];
 
-    if ($request->filled('nama_project'))
-        $content['nama_project'] = $request->nama_project;
+            foreach ($submittedTasks as $taskData) {
 
-    if ($request->filled('deskripsi'))
-        $content['deskripsi'] = $request->deskripsi;
+                if (!empty($taskData['id'])) {
 
-    if ($request->filled('link_project'))
-        $content['link_project'] = $request->link_project;
+                    $task = ProjectTask::find($taskData['id']);
 
-    if ($request->filled('link_github'))
-        $content['link_github'] = $request->link_github;
+                    if ($task && $task->project_id == $project->id) {
 
-    if ($request->filled('link_video'))
-        $content['link_video'] = $request->link_video;
+                        $task->update([
+                            'user_id' => $taskData['user_id'],
+                            'name_task' => $taskData['name_task'],
+                        ]);
 
-    if (empty($content)) {
-        return back()
-            ->withInput()
-            ->withErrors([
-                'project' => 'Minimal isi salah satu field (nama_project, deskripsi, atau link)'
-            ]);
-    }
+                        $savedTaskIds[] = $task->id;
 
-    $ownerId = $request->owner ?: null;
-    $leaderId = $request->leader ?: null;
-    $isCollaborative = $request->boolean('is_collaborative', true);
+                    } else {
 
-    // Jika collaborative tapi leader kosong
-    if ($isCollaborative && !$leaderId && $ownerId) {
-        $leaderId = $ownerId;
-    }
+                        $newTask = $project->tasks()->create([
+                            'user_id' => $taskData['user_id'],
+                            'name_task' => $taskData['name_task'],
+                        ]);
 
-    // Jika non collaborative
-    if (!$isCollaborative && $ownerId) {
-        $leaderId = $ownerId;
-    }
-
-    // Update project
-    $project->update([
-        'tanggal_mulai' => $request->tanggal_mulai,
-        'tanggal_akhir' => $request->tanggal_akhir,
-        'isi_content' => $content,
-        'id_mahasiswa' => $ownerId,
-        'leader_id' => $leaderId,
-    ]);
-
-    // Handle members
-    $members = collect($request->members ?? [])
-        ->filter()
-        ->reject(fn($memberId) =>
-            $memberId == $ownerId ||
-            $memberId == $leaderId
-        )
-        ->map(fn($id) => (int) $id)
-        ->unique()
-        ->values()
-        ->all();
-
-    if (!$isCollaborative) {
-        $members = [];
-    }
-
-    $project->members()->sync($members);
-
-    // Handle tasks
-    $submittedTasks = collect($request->input('tasks', []))
-        ->filter(fn($task) =>
-            !empty($task['user_id']) &&
-            !empty(trim($task['name_task'] ?? ''))
-        )
-        ->values()
-        ->all();
-
-    if (!empty($submittedTasks)) {
-
-        $savedTaskIds = [];
-
-        foreach ($submittedTasks as $taskData) {
-
-            if (!empty($taskData['id'])) {
-
-                $task = ProjectTask::find($taskData['id']);
-
-                if ($task && $task->project_id == $project->id) {
-
-                    $task->update([
-                        'user_id' => $taskData['user_id'],
-                        'name_task' => $taskData['name_task'],
-                    ]);
-
-                    $savedTaskIds[] = $task->id;
+                        $savedTaskIds[] = $newTask->id;
+                    }
 
                 } else {
 
@@ -2271,53 +2284,43 @@ public function UpdateProject(Request $request)
 
                     $savedTaskIds[] = $newTask->id;
                 }
-
-            } else {
-
-                $newTask = $project->tasks()->create([
-                    'user_id' => $taskData['user_id'],
-                    'name_task' => $taskData['name_task'],
-                ]);
-
-                $savedTaskIds[] = $newTask->id;
             }
+
+            ProjectTask::where('project_id', $project->id)
+                ->whereNotIn('id', $savedTaskIds)
+                ->delete();
+
+        } else {
+
+            ProjectTask::where('project_id', $project->id)->delete();
         }
 
-        ProjectTask::where('project_id', $project->id)
-            ->whereNotIn('id', $savedTaskIds)
-            ->delete();
+        // Validasi task user masih bagian project
+        $allowedUserIds = collect([$ownerId, $leaderId])
+            ->merge($members)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
 
-    } else {
+        if (!empty($allowedUserIds)) {
+            ProjectTask::where('project_id', $project->id)
+                ->whereNotIn('user_id', $allowedUserIds)
+                ->delete();
+        } else {
+            ProjectTask::where('project_id', $project->id)->delete();
+        }
 
-        ProjectTask::where('project_id', $project->id)->delete();
+        // Jika solo project, task hanya owner
+        if (!$isCollaborative && $ownerId) {
+            ProjectTask::where('project_id', $project->id)
+                ->where('user_id', '!=', $ownerId)
+                ->delete();
+        }
+
+        return redirect()->route('admin.projects.index')
+            ->with('success', 'Project berhasil diperbarui!');
     }
-
-    // Validasi task user masih bagian project
-    $allowedUserIds = collect([$ownerId, $leaderId])
-        ->merge($members)
-        ->filter()
-        ->unique()
-        ->values()
-        ->all();
-
-    if (!empty($allowedUserIds)) {
-        ProjectTask::where('project_id', $project->id)
-            ->whereNotIn('user_id', $allowedUserIds)
-            ->delete();
-    } else {
-        ProjectTask::where('project_id', $project->id)->delete();
-    }
-
-    // Jika solo project, task hanya owner
-    if (!$isCollaborative && $ownerId) {
-        ProjectTask::where('project_id', $project->id)
-            ->where('user_id', '!=', $ownerId)
-            ->delete();
-    }
-
-    return redirect()->route('admin.projects.index')
-        ->with('success', 'Project berhasil diperbarui!');
-}
 
     // DestroyProject - ambil id dari query parameter
     public function DestroyProject(Request $request)
@@ -2337,47 +2340,47 @@ public function UpdateProject(Request $request)
             ->with('success', 'Project Mahasiswa berhasil dihapus!');
     }
 
- public function bulkDestroyProject(Request $request)
-{
-    $this->authorizeAccess();
+    public function bulkDestroyProject(Request $request)
+    {
+        $this->authorizeAccess();
 
-    // Ambil dari input
-    $selectedIds = $request->input('selected_ids', []);
-    
-    // Log untuk debugging
-    \Log::info('Bulk Delete - Raw input:', ['selected_ids' => $selectedIds, 'type' => gettype($selectedIds)]);
-    
-    // Jika string, coba decode JSON
-    if (is_string($selectedIds)) {
-        $decoded = json_decode($selectedIds, true);
-        if (is_array($decoded)) {
-            $selectedIds = $decoded;
-        } else {
-            // Jika bukan JSON, coba explode comma
-            $selectedIds = explode(',', $selectedIds);
+        // Ambil dari input
+        $selectedIds = $request->input('selected_ids', []);
+        
+        // Log untuk debugging
+        \Log::info('Bulk Delete - Raw input:', ['selected_ids' => $selectedIds, 'type' => gettype($selectedIds)]);
+        
+        // Jika string, coba decode JSON
+        if (is_string($selectedIds)) {
+            $decoded = json_decode($selectedIds, true);
+            if (is_array($decoded)) {
+                $selectedIds = $decoded;
+            } else {
+                // Jika bukan JSON, coba explode comma
+                $selectedIds = explode(',', $selectedIds);
+            }
         }
-    }
-    
-    // Pastikan $selectedIds adalah array
-    if (!is_array($selectedIds)) {
-        $selectedIds = [];
-    }
-    
-    // Filter dan konversi ke integer (hanya jika array tidak kosong)
-    $ids = [];
-    if (!empty($selectedIds)) {
-        $ids = array_values(array_filter(array_map('intval', $selectedIds)));
-    }
-    
-    // Jika masih kosong
-    if (empty($ids)) {
-        return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
-    }
+        
+        // Pastikan $selectedIds adalah array
+        if (!is_array($selectedIds)) {
+            $selectedIds = [];
+        }
+        
+        // Filter dan konversi ke integer (hanya jika array tidak kosong)
+        $ids = [];
+        if (!empty($selectedIds)) {
+            $ids = array_values(array_filter(array_map('intval', $selectedIds)));
+        }
+        
+        // Jika masih kosong
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
+        }
 
-    Project::whereIn('id', $ids)->delete();
+        Project::whereIn('id', $ids)->delete();
 
-    return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
-}
+        return redirect()->back()->with('success', count($ids) . ' Project berhasil dihapus');
+    }
 
     // Notifikasi Page
     public function notifications(Request $request)
