@@ -1288,7 +1288,7 @@
         };
 
         // ============ CLIENT PAGINATION ============
-        const clientPageSize = 20;
+        const clientPageSize = 10;
         let clientCurrentPage = 1;
 
         function getClientPaginationItems() {
@@ -1343,18 +1343,30 @@
         }
 
         function updateClientPagination() {
-            const items = getClientPaginationItems();
-            const totalCount = items.length;
-            const startIndex = (clientCurrentPage - 1) * clientPageSize;
-            const endIndex = clientCurrentPage * clientPageSize;
-            items.forEach((item, index) => {
-                item.classList.toggle('hidden', index < startIndex || index >= endIndex);
-            });
-            const visibleText = Math.min(endIndex, totalCount);
-            document.getElementById('paginationVisibleCount').textContent = visibleText;
-            document.getElementById('paginationTotalCount').textContent = totalCount;
-            renderPaginationButtons();
-        }
+    const items = getClientPaginationItems();
+
+    // Deduplicate by data-item-index → true user count
+    const uniqueIndices = [...new Set(
+        items.map(item => parseInt(item.dataset.itemIndex, 10))
+    )].sort((a, b) => a - b);
+
+    const totalCount = uniqueIndices.length; // jumlah user sesungguhnya
+    const startIndex = (clientCurrentPage - 1) * clientPageSize;
+    const endIndex = startIndex + clientPageSize;
+
+    // Indices user yang tampil di halaman ini
+    const pageIndices = new Set(uniqueIndices.slice(startIndex, endIndex));
+
+    // Show/hide SEMUA elemen (desktop + mobile) berdasarkan index user
+    items.forEach(item => {
+        const idx = parseInt(item.dataset.itemIndex, 10);
+        item.classList.toggle('hidden', !pageIndices.has(idx));
+    });
+
+    document.getElementById('paginationVisibleCount').textContent = pageIndices.size;
+    document.getElementById('paginationTotalCount').textContent = totalCount;
+    renderPaginationButtons();
+}
 
         // ============ INITIALIZATION ============
         document.addEventListener('DOMContentLoaded', function() {
