@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('project_id')
                   ->constrained('projects')
                   ->cascadeOnDelete();
-            $table->string('name_task');
+            $table->text('name_task');
             
             $table->boolean('is_done')->default(false);
             $table->foreignId('user_id')
