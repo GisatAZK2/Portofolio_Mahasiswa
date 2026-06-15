@@ -205,8 +205,10 @@ class AdminController extends Controller
             $jurusanId = $request->input('jurusan');
             $users = $users->filter(function ($user) use ($jurusanId) {
                 // Some users may store FK as id_jurusan, others via relation
-                if (isset($user->id_jurusan) && $user->id_jurusan == $jurusanId) return true;
-                if ($user->jurusan?->id_jurusan == $jurusanId) return true;
+                if (isset($user->id_jurusan) && $user->id_jurusan == $jurusanId)
+                    return true;
+                if ($user->jurusan?->id_jurusan == $jurusanId)
+                    return true;
                 return false;
             });
         }
@@ -238,7 +240,7 @@ class AdminController extends Controller
     public function AddUser(Request $request)
     {
         $this->authorizeAccess();
-        
+
         // Rules dasar
         $rules = [
             'role' => ['required', 'in:mahasiswa,dosen,admin'],
@@ -273,7 +275,7 @@ class AdminController extends Controller
             $rules['password'] = ['required', 'confirmed', Password::min(8)->mixedCase()];
             // Hapus rules tanggal_lahir dari array (biarkan nullable)
             unset($rules['tanggal_lahir']);
-            
+
         } elseif ($request->role === 'dosen') {
             // Dosen: username, password, tanggal_lahir WAJIB, nim TIDAK PERLU
             $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
@@ -282,17 +284,17 @@ class AdminController extends Controller
             $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
             $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
             $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
-            
+
         } elseif ($request->role === 'mahasiswa') {
             $registrationType = $request->registration_type;
-            
+
             if ($registrationType === 'simple') {
                 $rules['nim'] = ['required', 'string', 'unique:users,nim', 'max:20'];
                 $rules['tanggal_lahir'] = ['nullable', 'date', 'before_or_equal:today'];
                 $rules['id_jurusan'] = ['required', 'exists:jurusan,id_jurusan'];
                 $rules['id_keahlian'] = ['required', 'exists:keahlian,id_keahlian'];
                 $rules['id_angkatan'] = ['required', 'exists:angkatan,id'];
-                
+
             } else { // full registration
                 $rules['nim'] = ['required', 'string', 'unique:users,nim', 'max:20'];
                 $rules['username'] = ['required', 'string', 'max:100', 'unique:users,username', 'regex:/^[a-zA-Z0-9_]+$/'];
@@ -311,8 +313,7 @@ class AdminController extends Controller
 
         if ($request->hasFile('photo_profile')) {
             $photoPath = ImageConversionService::storeWebp($request->file('photo_profile'), 'photos');
-        } 
-        elseif ($request->filled('avatar_default')) {
+        } elseif ($request->filled('avatar_default')) {
             $avatarName = $request->avatar_default;
             $sourcePath = public_path("assets/{$avatarName}.png");
 
@@ -380,22 +381,22 @@ class AdminController extends Controller
             }
 
             // Ambil referensi dari DB (key = nama lowercase => id)
-            $jurusanMap  = Jurusan::pluck('id_jurusan', 'nama_jurusan')
-                                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
-                                ->toArray();
+            $jurusanMap = Jurusan::pluck('id_jurusan', 'nama_jurusan')
+                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                ->toArray();
             $keahlianMap = Keahlian::pluck('id_keahlian', 'nama_keahlian')
-                                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
-                                ->toArray();
+                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                ->toArray();
             $angkatanMap = Angkatan::pluck('id', 'nama_angkatan')
-                                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
-                                ->toArray();
+                ->mapWithKeys(fn($id, $name) => [strtolower(trim($name)) => $id])
+                ->toArray();
 
             $successCount = 0;
-            $failedCount  = 0;
-            $failedRows   = [];
-            $warnings     = [];
+            $failedCount = 0;
+            $failedRows = [];
+            $warnings = [];
 
-            $notFoundJurusan  = [];
+            $notFoundJurusan = [];
             $notFoundKeahlian = [];
             $notFoundAngkatan = [];
 
@@ -406,10 +407,10 @@ class AdminController extends Controller
 
                 try {
                     // --- Mapping kolom ---
-                    $nim  = trim($row['nim']  ?? $row['NIM']  ?? '');
+                    $nim = trim($row['nim'] ?? $row['NIM'] ?? '');
                     $nama = trim($row['nama'] ?? $row['Nama'] ?? $row['Nama Lengkap'] ?? '');
                     $tanggalLahir = $this->parseDate($row['tanggal_lahir'] ?? $row['Tanggal Lahir'] ?? '');
-                    $namaJurusan  = strtolower(trim($row['jurusan']  ?? $row['Jurusan']  ?? ''));
+                    $namaJurusan = strtolower(trim($row['jurusan'] ?? $row['Jurusan'] ?? ''));
                     $namaKeahlian = strtolower(trim($row['keahlian'] ?? $row['Keahlian'] ?? ''));
                     $namaAngkatan = strtolower(trim($row['angkatan'] ?? $row['Angkatan'] ?? ''));
 
@@ -459,19 +460,19 @@ class AdminController extends Controller
                     // Password default = NIM (di-hash)
                     // username = null, tidak di-generate
                     User::create([
-                        'nim'              => $nim,
-                        'nama_mahasiswa'   => $nama,
-                        'username'         => null,
-                        'email'            => null,
-                        'password'         => Hash::make($nim),
-                        'tanggal_lahir'    => $tanggalLahir,
-                        'id_jurusan'       => $idJurusan,
-                        'id_keahlian'      => $idKeahlian,
-                        'id_angkatan'      => $idAngkatan,
-                        'role'             => 'mahasiswa',
+                        'nim' => $nim,
+                        'nama_mahasiswa' => $nama,
+                        'username' => null,
+                        'email' => null,
+                        'password' => Hash::make($nim),
+                        'tanggal_lahir' => $tanggalLahir,
+                        'id_jurusan' => $idJurusan,
+                        'id_keahlian' => $idKeahlian,
+                        'id_angkatan' => $idAngkatan,
+                        'role' => 'mahasiswa',
                         'status_pengajuan' => 'Di Terima',
-                        'is_active'        => 1,
-                        'photo_profile'    => null,
+                        'is_active' => 1,
+                        'photo_profile' => null,
                     ]);
 
                     $successCount++;
@@ -497,14 +498,14 @@ class AdminController extends Controller
             }
 
             return response()->json([
-                'success'    => true,
-                'message'    => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
-                'warnings'   => $warnings,
+                'success' => true,
+                'message' => "Import selesai: {$successCount} berhasil, {$failedCount} gagal.",
+                'warnings' => $warnings,
                 'failedRows' => $failedRows,
-                'stats'      => [
+                'stats' => [
                     'success' => $successCount,
-                    'failed'  => $failedCount,
-                    'total'   => count($data),
+                    'failed' => $failedCount,
+                    'total' => count($data),
                 ],
             ]);
 
@@ -526,7 +527,7 @@ class AdminController extends Controller
     {
         try {
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
-            $rows        = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
+            $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
 
             if (count($rows) < 2) {
                 return [];
@@ -537,12 +538,12 @@ class AdminController extends Controller
 
             // Map header ke key standar yang dikenali importExcel()
             $headerAliases = [
-                'nim'           => ['nim', 'n i m'],
-                'Nama Lengkap'  => ['nama lengkap', 'nama', 'full name'],
+                'nim' => ['nim', 'n i m'],
+                'Nama Lengkap' => ['nama lengkap', 'nama', 'full name'],
                 'Tanggal Lahir' => ['tanggal lahir', 'tgl lahir', 'birth date', 'birthdate'],
-                'Jurusan'       => ['jurusan', 'department', 'prodi'],
-                'Keahlian'      => ['keahlian', 'bidang keahlian', 'skill'],
-                'Angkatan'      => ['angkatan', 'tahun masuk', 'year'],
+                'Jurusan' => ['jurusan', 'department', 'prodi'],
+                'Keahlian' => ['keahlian', 'bidang keahlian', 'skill'],
+                'Angkatan' => ['angkatan', 'tahun masuk', 'year'],
             ];
 
             // Buat peta: index kolom => key standar
@@ -949,52 +950,52 @@ class AdminController extends Controller
     public function approveKeahlianTambahan(Request $request)
     {
         $this->authorizeAccess();
-        
+
         $id = $request->query('user_id');
-        
+
         if (!$id) {
             return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
         }
-        
+
         $application = Keahlian_Tambahan::findOrFail($id);
-        
+
         if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
             return redirect()->back()->with('error', 'Pengajuan tidak valid untuk approval.');
         }
-        
+
         $application->update([
             'status_pengajuan' => 'Di Terima',
             'is_active' => true,
             'keterangan' => null,
         ]);
-        
+
         return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil diterima.');
     }
 
     public function rejectKeahlianTambahan(Request $request)
     {
         $this->authorizeAccess();
-        
+
         $request->validate(['keterangan' => 'required|string|max:500']);
-        
+
         $id = $request->query('user_id');
-        
+
         if (!$id) {
             return redirect()->back()->with('error', 'ID pengajuan tidak ditemukan.');
         }
-        
+
         $application = Keahlian_Tambahan::findOrFail($id);
-        
+
         if ($application->status_pengajuan !== 'Sedang Di Ajukan') {
             return redirect()->back()->with('error', 'Pengajuan tidak valid untuk rejection.');
         }
-        
+
         $application->update([
             'status_pengajuan' => 'Di Tolak',
             'is_active' => false,
             'keterangan' => $request->keterangan,
         ]);
-        
+
         return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil ditolak.');
     }
 
@@ -1355,7 +1356,35 @@ class AdminController extends Controller
             ], 500);
         }
     }
+    public function bulkApproveSertifikat(Request $request)
+    {
+        $this->authorizeAccess();
 
+        $ids = $request->input('selected_ids');
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            // ← return JSON agar kompatibel dengan fetch di JS
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada sertifikat yang dipilih untuk disetujui.'
+            ], 422);
+        }
+
+        $affected = Sertifikat::whereIn('id', $ids)
+            ->where('status_pengajuan', 'Sedang Di Ajukan')
+            ->update([
+                'status_pengajuan' => 'Di Terima',
+                'is_active' => 1,          // ← pastikan aktif juga
+            ]);
+
+        return response()->json([  // ← ganti redirect() dengan JSON
+            'success' => true,
+            'message' => "{$affected} sertifikat berhasil disetujui."
+        ]);
+    }
     // For Pages Angkatan
     public function ListAngkatan()
     {
@@ -2222,7 +2251,8 @@ class AdminController extends Controller
         // Handle members
         $members = collect($request->members ?? [])
             ->filter()
-            ->reject(fn($memberId) =>
+            ->reject(
+                fn($memberId) =>
                 $memberId == $ownerId ||
                 $memberId == $leaderId
             )
@@ -2239,7 +2269,8 @@ class AdminController extends Controller
 
         // Handle tasks
         $submittedTasks = collect($request->input('tasks', []))
-            ->filter(fn($task) =>
+            ->filter(
+                fn($task) =>
                 !empty($task['user_id']) &&
                 !empty(trim($task['name_task'] ?? ''))
             )
@@ -2346,10 +2377,10 @@ class AdminController extends Controller
 
         // Ambil dari input
         $selectedIds = $request->input('selected_ids', []);
-        
+
         // Log untuk debugging
         \Log::info('Bulk Delete - Raw input:', ['selected_ids' => $selectedIds, 'type' => gettype($selectedIds)]);
-        
+
         // Jika string, coba decode JSON
         if (is_string($selectedIds)) {
             $decoded = json_decode($selectedIds, true);
@@ -2360,18 +2391,18 @@ class AdminController extends Controller
                 $selectedIds = explode(',', $selectedIds);
             }
         }
-        
+
         // Pastikan $selectedIds adalah array
         if (!is_array($selectedIds)) {
             $selectedIds = [];
         }
-        
+
         // Filter dan konversi ke integer (hanya jika array tidak kosong)
         $ids = [];
         if (!empty($selectedIds)) {
             $ids = array_values(array_filter(array_map('intval', $selectedIds)));
         }
-        
+
         // Jika masih kosong
         if (empty($ids)) {
             return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');
@@ -2441,8 +2472,8 @@ class AdminController extends Controller
     {
         $this->authorizeAccess();
 
-         if ($request->target_type !== 'specific') {
-        $request->request->remove('selected_users');
+        if ($request->target_type !== 'specific') {
+            $request->request->remove('selected_users');
         }
 
         $validated = $request->validate([

@@ -22,6 +22,16 @@
                     <span data-translate="delete_selected" data-translate-page="project_detail">Hapus Terpilih</span> (<span
                         id="selectedCount">0</span>)
                 </button>
+                <button type="button" id="bulkApproveBtn"
+                    class="inline-flex items-center px-5 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span data-translate="approve_selected" data-translate-page="admin">Setujui Terpilih</span> (<span
+                        id="selectedCountApprove">0</span>)
+                </button>
                 <a href="{{ route('admin.sertifikat.create') }}"
                     class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -495,36 +505,36 @@
                 }
             }
 
-            function updateSelectedCount() {
-                const checked = document.querySelectorAll('.certificate-checkbox:checked');
-                const count = checked.length;
+          const bulkApproveBtn = document.getElementById('bulkApproveBtn');
+const selectedCountApprove = document.getElementById('selectedCountApprove');
 
-                if (selectedCount) selectedCount.textContent = count;
-                if (totalSelected) totalSelected.textContent = count;
+function updateSelectedCount() {
+    const checked = document.querySelectorAll('.certificate-checkbox:checked');
+    const count = checked.length;
 
-                if (bulkDeleteBtn) {
-                    bulkDeleteBtn.disabled = count === 0;
-                }
+    if (selectedCount) selectedCount.textContent = count;
+    if (selectedCountApprove) selectedCountApprove.textContent = count; // ← tambahan
 
-                // Update selected IDs input
-                if (selectedIdsInput) {
-                    const ids = Array.from(checked).map(cb => cb.value);
-                    selectedIdsInput.value = JSON.stringify(ids);
-                }
+    if (bulkDeleteBtn) bulkDeleteBtn.disabled = count === 0;
+    if (bulkApproveBtn) bulkApproveBtn.disabled = count === 0; // ← tambahan
 
-                // Update select all checkbox state
-                if (selectAllCheckbox) {
-                    if (count === certificateCheckboxes.length) {
-                        selectAllCheckbox.checked = true;
-                        selectAllCheckbox.indeterminate = false;
-                    } else if (count === 0) {
-                        selectAllCheckbox.checked = false;
-                        selectAllCheckbox.indeterminate = false;
-                    } else {
-                        selectAllCheckbox.indeterminate = true;
-                    }
-                }
-            }
+    if (selectedIdsInput) {
+        const ids = Array.from(checked).map(cb => cb.value);
+        selectedIdsInput.value = JSON.stringify(ids);
+    }
+
+    if (selectAllCheckbox) {
+        if (count === certificateCheckboxes.length) {
+            selectAllCheckbox.checked = true;
+            selectAllCheckbox.indeterminate = false;
+        } else if (count === 0) {
+            selectAllCheckbox.checked = false;
+            selectAllCheckbox.indeterminate = false;
+        } else {
+            selectAllCheckbox.indeterminate = true;
+        }
+    }
+}
 
             // Select all functionality
             if (selectAllCheckbox) {
@@ -631,6 +641,86 @@
                     }
                 });
             }
+            // ============== BULK APPROVE FUNCTIONALITY ==============
+if (bulkApproveBtn) {
+    bulkApproveBtn.addEventListener('click', async function (e) {
+        e.preventDefault();
+
+        const checkedCount = document.querySelectorAll('.certificate-checkbox:checked').length;
+
+        if (checkedCount === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Ada Data Dipilih',
+                text: 'Silakan pilih sertifikat yang ingin disetujui.',
+                confirmButtonColor: '#3b82f6'
+            });
+            return;
+        }
+
+        const confirmed = await Swal.fire({
+            title: 'Setujui Sertifikat Terpilih?',
+            text: `${checkedCount} sertifikat akan disetujui. Hanya yang berstatus "Sedang Di Ajukan" yang akan diproses.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Setujui Semua',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        });
+
+        if (confirmed.isConfirmed) {
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => { Swal.showLoading(); }
+            });
+
+            try {
+                const ids = Array.from(
+                    document.querySelectorAll('.certificate-checkbox:checked')
+                ).map(cb => cb.value);
+
+                const locale = document.querySelector('html').getAttribute('lang') || 'id';
+
+                const response = await fetch(`/${locale}/admin/manageSertifikat/bulk-approve`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ selected_ids: ids })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: result.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    window.location.reload();
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: error.message || 'Terjadi kesalahan saat menyetujui data.',
+                    confirmButtonColor: '#dc2626'
+                });
+            }
+        }
+    });
+}
             // ============== APPROVE FUNCTIONALITY ==============
             document.querySelectorAll('.approve-btn').forEach(button => {
                 button.addEventListener('click', async function (e) {

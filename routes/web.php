@@ -199,10 +199,12 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::patch('/edit', [AdminController::class, 'UpdateSertifikat'])->name('update');
                 Route::delete('/DeleteSertifikat', [AdminController::class, 'DestroySertifikat'])->name('destroy');
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroy'])->name('bulk-destroy');
+                Route::patch('/bulk-approve', [AdminController::class, 'bulkApproveSertifikat'])->name('bulkApproveSertifikat');
             });
 
             Route::patch('/sertifikat/approve', [AdminController::class, 'approve'])->name('sertifikat.approve');
             Route::patch('/sertifikat/reject', [AdminController::class, 'reject'])->name('sertifikat.reject');
+           
 
             Route::prefix('manageAngkatan')->name('angkatan.')->group(function () {
                 Route::get('/', [AdminController::class, 'ListAngkatan'])->name('index');
