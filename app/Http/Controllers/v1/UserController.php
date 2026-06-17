@@ -1091,8 +1091,8 @@ public function searchSekolah(Request $request)
     }
 
     try {
-
-        $response = Http::withoutVerifying()
+        $sekolahResults = [];
+        $responseSekolah = Http::withoutVerifying()
             ->withHeaders([
                 'User-Agent' => 'Mozilla/5.0',
                 'Accept' => 'application/json',
@@ -1103,22 +1103,50 @@ public function searchSekolah(Request $request)
                 'limit' => 10,
             ]);
 
-        if (!$response->successful()) {
-            return response()->json([]);
+        if ($responseSekolah->successful()) {
+            $jsonSekolah = $responseSekolah->json();
+            $sekolahResults = collect($jsonSekolah['data'] ?? [])
+                ->map(fn ($s) => [
+                    'nama' => $s['nama'] ?? '',
+                    'npsn' => $s['npsn'] ?? '',
+                    'jenjang' => $s['bentukPendidikan'] ?? '',
+                    'kabupaten' => $s['alamat']['nama_kabupaten'] ?? '',
+                    'provinsi' => $s['alamat']['nama_provinsi'] ?? '',
+                ])
+                ->filter(fn ($s) => !empty($s['nama']))
+                ->toArray();
         }
 
-        $json = $response->json();
+        $univResults = [];
+        $apiKey = env('API_CO_ID_KEY');
+        if ($apiKey) {
+            $responseUniv = Http::withoutVerifying()
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0',
+                    'Accept' => 'application/json',
+                    'x-api-co-id' => $apiKey,
+                ])
+                ->timeout(20)
+                ->get('https://use.api.co.id/regional/indonesia/universities', [
+                    'name' => $query,
+                ]);
 
-        $results = collect($json['data'] ?? [])
-            ->map(fn ($s) => [
-                'nama' => $s['nama'] ?? '',
-                'npsn' => $s['npsn'] ?? '',
-                'jenjang' => $s['bentukPendidikan'] ?? '',
-                'kabupaten' => $s['alamat']['nama_kabupaten'] ?? '',
-                'provinsi' => $s['alamat']['nama_provinsi'] ?? '',
-            ])
-            ->filter(fn ($s) => !empty($s['nama']))
-            ->values();
+            if ($responseUniv->successful()) {
+                $jsonUniv = $responseUniv->json();
+                $univResults = collect($jsonUniv['data'] ?? [])
+                    ->map(fn ($u) => [
+                        'nama' => $u['name'] ?? '',
+                        'npsn' => '',
+                        'jenjang' => $u['university_type'] ?? 'Universitas',
+                        'kabupaten' => $u['regency'] ?? '',
+                        'provinsi' => $u['province'] ?? '',
+                    ])
+                    ->filter(fn ($u) => !empty($u['nama']))
+                    ->toArray();
+            }
+        }
+
+        $results = array_merge($sekolahResults, $univResults);
 
         return response()->json($results);
 

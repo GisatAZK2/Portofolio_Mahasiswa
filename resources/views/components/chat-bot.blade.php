@@ -1,15 +1,8 @@
 <button id="chatBotButton"
-    class="fixed bottom-40 sm:bottom-40 right-4 sm:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-3 sm:p-3.5 rounded-2xl shadow-lg transition-all duration-300 z-[100] group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
+    class="fixed bottom-50 sm:bottom-50 right-4 sm:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-1 sm:p-1 rounded-2xl shadow-lg transition-all duration-300 z-[100] group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
     style="cursor: grab; user-select: none;">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 group-[.chat-open]:hidden" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 hidden group-[.chat-open]:block" fill="none"
-        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
+    <img src="{{ asset('assets/Logo.svg') }}" class="w-6 h-6 sm:w-6 sm:h-7 group-[.chat-open]:hidden rounded-3xl">
+    <img src="{{ asset('assets/Logo.svg') }}" class="w-5 h-5 sm:w-5 sm:h-6 hidden group-[.chat-open]:block rounded-3xl">
 </button>
 
 <!-- BUBBLE NOTIFICATION -->
@@ -17,12 +10,13 @@
     class="fixed bottom-55 sm:bottom-55 right-4 sm:right-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 z-[101] flex items-center gap-2 cursor-pointer transition-all duration-300 animate-bounce-subtle"
     style="max-width: 280px; transform-origin: bottom right;">
     <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
-       <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-6 h-6 sm:w-5 sm:h-5 rounded-full">
+        <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-6 h-6 sm:w-5 sm:h-5 rounded-full">
     </div>
     <div class="flex-1">
         <p class="text-sm font-semibold text-gray-800 dark:text-white">Ada yang ingin ditanyakan?</p>
     </div>
-    <button id="closeBubbleBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button id="closeBubbleBtn"
+        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
         <svg class="w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -33,7 +27,8 @@
     class="fixed bottom-40 sm:bottom-40 right-4 sm:right-6 w-[calc(100vw-2rem)] max-w-[360px] sm:max-w-[380px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[99] hidden transition-all duration-200 ease-out"
     style="transform-origin: bottom right; max-height: min(600px, 85vh); display: flex; flex-direction: column;">
 
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between flex-shrink-0">
+    <div
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center space-x-2">
             <div class="bg-white/20 p-1 sm:p-1.5 rounded-full">
                 <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full">
@@ -46,7 +41,8 @@
                 </p>
             </div>
         </div>
-        <button id="closeChatWidget" class="text-white/80 hover:text-white transition p-1 hover:bg-white/10 rounded-full">
+        <button id="closeChatWidget"
+            class="text-white/80 hover:text-white transition p-1 hover:bg-white/10 rounded-full">
             <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -56,32 +52,38 @@
     <div id="chatMessages"
         class="chat-messages flex-1 min-h-0 overflow-y-auto p-2.5 sm:p-3 space-y-2.5 sm:space-y-3 bg-gray-50 dark:bg-gray-800/50">
         <div class="flex items-start space-x-2">
-            <div class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
+            <div
+                class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
             </div>
             <div
                 class="flex-1 bg-white dark:bg-gray-800 rounded-2xl rounded-tl-none px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-sm border border-gray-200 dark:border-gray-700">
-                <p class="text-xs sm:text-sm text-gray-800 dark:text-gray-100">👋 Halo! Saya asisten Help Center POLMIND. Ada yang bisa saya bantu?</p>
-                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">💡 Pilih pertanyaan atau ketik pesan Anda</p>
+                <p class="text-xs sm:text-sm text-gray-800 dark:text-gray-100">👋 Halo! Saya asisten Help Center
+                    POLMIND. Ada yang bisa saya bantu?</p>
+                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">Pilih pertanyaan atau ketik
+                    pesan Anda</p>
             </div>
         </div>
     </div>
 
-    <div id="suggestionsContainer" class="px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hidden flex-shrink-0">
+    <div id="suggestionsContainer"
+        class="px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hidden flex-shrink-0">
         <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1">💭 Mungkin yang Anda maksud:</p>
         <div id="suggestionsList" class="flex flex-wrap gap-1 sm:gap-1.5"></div>
     </div>
 
-    <div id="quickQuestions" class="px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 flex-shrink-0">
-        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2">⚡ Pertanyaan Hari Ini:</p>
+    <div id="quickQuestions"
+        class="px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 flex-shrink-0">
+        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2">Pertanyaan Hari Ini:</p>
         <div class="flex flex-wrap gap-1.5 sm:gap-2" id="quickQuestionsContainer"></div>
     </div>
 
-    <div id="typingIndicator" class="hidden px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div id="typingIndicator"
+        class="hidden px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
         <div class="flex items-center space-x-1.5">
             <div class="flex space-x-1">
                 <span class="typing-dot w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
@@ -135,13 +137,31 @@
         animation: typing-bounce 1.4s infinite ease-in-out;
     }
 
-    .typing-dot:nth-child(1) { animation-delay: 0s; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    .typing-dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
 
     @keyframes typing-bounce {
-        0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-        30% { transform: translateY(-6px); opacity: 1; }
+
+        0%,
+        60%,
+        100% {
+            transform: translateY(0);
+            opacity: 0.5;
+        }
+
+        30% {
+            transform: translateY(-6px);
+            opacity: 1;
+        }
     }
 
     .message-slide-in {
@@ -149,29 +169,44 @@
     }
 
     @keyframes slideIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    .suggestion-item, .quick-question {
+    .suggestion-item,
+    .quick-question {
         transition: all 0.15s ease;
     }
-    
+
     #chatWidget {
         display: flex !important;
         flex-direction: column !important;
     }
-    
+
     #chatWidget.hidden {
         display: none !important;
     }
 
     /* Bubble animation */
     @keyframes bounce-subtle {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-6px); }
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
     }
-    
+
     .animate-bounce-subtle {
         animation: bounce-subtle 1.2s infinite ease-in-out;
     }
@@ -185,7 +220,7 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const chatButton = document.getElementById('chatBotButton');
         const chatWidget = document.getElementById('chatWidget');
         const closeChatBtn = document.getElementById('closeChatWidget');
@@ -196,7 +231,7 @@
         const quickQuestionsContainer = document.getElementById('quickQuestionsContainer');
         const suggestionsContainer = document.getElementById('suggestionsContainer');
         const suggestionsList = document.getElementById('suggestionsList');
-        
+
         // Bubble elements
         const notificationBubble = document.getElementById('notificationBubble');
         const closeBubbleBtn = document.getElementById('closeBubbleBtn');
@@ -210,7 +245,7 @@
         let dragStartX, dragStartY;
         let buttonStartLeft, buttonStartTop;
         let dragDistance = 0;
-        
+
         // Get saved position from localStorage
         function loadButtonPosition() {
             const savedPos = localStorage.getItem('chatButtonPosition');
@@ -221,74 +256,74 @@
                     chatButton.style.top = pos.top;
                     chatButton.style.right = 'auto';
                     chatButton.style.bottom = 'auto';
-                } catch(e) {}
+                } catch (e) { }
             }
         }
-        
+
         function saveButtonPosition(left, top) {
             localStorage.setItem('chatButtonPosition', JSON.stringify({ left, top }));
         }
-        
+
         function onMouseDown(e) {
             if (e.target.closest('svg') && !isChatOpen) {
                 return;
             }
-            
+
             isDragging = false;
             dragDistance = 0;
             dragStartX = e.clientX;
             dragStartY = e.clientY;
-            
+
             const rect = chatButton.getBoundingClientRect();
             buttonStartLeft = rect.left;
             buttonStartTop = rect.top;
-            
+
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
-            
+
             chatButton.style.cursor = 'grabbing';
             e.preventDefault();
         }
-        
+
         function onMouseMove(e) {
             const dx = e.clientX - dragStartX;
             const dy = e.clientY - dragStartY;
             dragDistance = Math.sqrt(dx * dx + dy * dy);
-            
+
             if (dragDistance > 5) {
                 isDragging = true;
                 chatButton.classList.add('dragging');
-                
+
                 let newLeft = buttonStartLeft + dx;
                 let newTop = buttonStartTop + dy;
-                
+
                 const maxX = window.innerWidth - chatButton.offsetWidth - 16;
                 const maxY = window.innerHeight - chatButton.offsetHeight - 16;
                 newLeft = Math.min(Math.max(8, newLeft), maxX);
                 newTop = Math.min(Math.max(8, newTop), maxY);
-                
+
                 chatButton.style.left = newLeft + 'px';
                 chatButton.style.top = newTop + 'px';
                 chatButton.style.right = 'auto';
                 chatButton.style.bottom = 'auto';
             }
         }
-        
+
         function onMouseUp(e) {
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
             chatButton.style.cursor = 'grab';
             chatButton.classList.remove('dragging');
-            
+
             if (isDragging && dragDistance > 5) {
                 saveButtonPosition(chatButton.style.left, chatButton.style.top);
                 e.stopPropagation();
             }
-            
+
             isDragging = false;
             dragDistance = 0;
         }
-        
+
         function initDrag() {
             loadButtonPosition();
             chatButton.style.cursor = 'grab';
@@ -297,90 +332,90 @@
             chatButton.addEventListener('touchmove', onTouchMove, { passive: false });
             chatButton.addEventListener('touchend', onTouchEnd);
         }
-        
+
         function onTouchStart(e) {
             if (e.target.closest('svg') && !isChatOpen) return;
-            
+
             isDragging = false;
             dragDistance = 0;
             const touch = e.touches[0];
             dragStartX = touch.clientX;
             dragStartY = touch.clientY;
-            
+
             const rect = chatButton.getBoundingClientRect();
             buttonStartLeft = rect.left;
             buttonStartTop = rect.top;
-            
+
             e.preventDefault();
         }
-        
+
         function onTouchMove(e) {
             const touch = e.touches[0];
             const dx = touch.clientX - dragStartX;
             const dy = touch.clientY - dragStartY;
             dragDistance = Math.sqrt(dx * dx + dy * dy);
-            
+
             if (dragDistance > 5) {
                 isDragging = true;
                 chatButton.classList.add('dragging');
-                
+
                 let newLeft = buttonStartLeft + dx;
                 let newTop = buttonStartTop + dy;
-                
+
                 const maxX = window.innerWidth - chatButton.offsetWidth - 16;
                 const maxY = window.innerHeight - chatButton.offsetHeight - 16;
                 newLeft = Math.min(Math.max(8, newLeft), maxX);
                 newTop = Math.min(Math.max(8, newTop), maxY);
-                
+
                 chatButton.style.left = newLeft + 'px';
                 chatButton.style.top = newTop + 'px';
                 chatButton.style.right = 'auto';
                 chatButton.style.bottom = 'auto';
-                
+
                 e.preventDefault();
             }
         }
-        
+
         function onTouchEnd(e) {
-    chatButton.classList.remove('dragging');
+            chatButton.classList.remove('dragging');
 
-    if (isDragging && dragDistance > 5) {
-        saveButtonPosition(chatButton.style.left, chatButton.style.top);
-        e.preventDefault();
-    } else {
-        // 👉 TAMBAHAN INI (fix mobile click)
-        if (isChatOpen) {
-            closeChat();
-        } else {
-            if (notificationBubble) {
-                notificationBubble.style.display = 'none';
+            if (isDragging && dragDistance > 5) {
+                saveButtonPosition(chatButton.style.left, chatButton.style.top);
+                e.preventDefault();
+            } else {
+                // 👉 TAMBAHAN INI (fix mobile click)
+                if (isChatOpen) {
+                    closeChat();
+                } else {
+                    if (notificationBubble) {
+                        notificationBubble.style.display = 'none';
+                    }
+                    openChat();
+                }
             }
-            openChat();
-        }
-    }
 
-    isDragging = false;
-    dragDistance = 0;
-}
-        
+            isDragging = false;
+            dragDistance = 0;
+        }
+
         // ============ BUBBLE LOGIC - PERMANENT HIDE ============
         // Cek localStorage untuk status bubble
         let bubblePermanentlyClosed = localStorage.getItem('bubblePermanentlyClosed') === 'true';
-        
+
         function permanentlyCloseBubble() {
             // Set localStorage
             localStorage.setItem('bubblePermanentlyClosed', 'true');
             bubblePermanentlyClosed = true;
-            
+
             // Sembunyikan bubble
             if (notificationBubble) {
                 notificationBubble.style.display = 'none';
                 notificationBubble.style.visibility = 'hidden';
             }
-            
+
             console.log('Bubble permanently closed');
         }
-        
+
         function showBubble() {
             // Cek apakah bubble pernah ditutup permanen
             if (bubblePermanentlyClosed) {
@@ -391,12 +426,12 @@
                 }
                 return;
             }
-            
+
             // Tampilkan bubble jika belum ditutup permanen
             if (notificationBubble) {
                 notificationBubble.style.display = 'flex';
                 notificationBubble.style.visibility = 'visible';
-                
+
                 // Auto hide setelah 8 detik
                 setTimeout(() => {
                     if (notificationBubble && notificationBubble.style.display === 'flex') {
@@ -405,29 +440,29 @@
                 }, 8000);
             }
         }
-        
+
         // Event untuk tombol X pada bubble
         if (closeBubbleBtn) {
-            closeBubbleBtn.addEventListener('click', function(e) {
+            closeBubbleBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
                 permanentlyCloseBubble();
             });
         }
-        
+
         // Event klik pada bubble (selain tombol X) untuk membuka chat
         if (notificationBubble) {
-            notificationBubble.addEventListener('click', function(e) {
+            notificationBubble.addEventListener('click', function (e) {
                 // Jangan buka chat jika yang diklik adalah tombol X
                 if (e.target === closeBubbleBtn || closeBubbleBtn.contains(e.target)) {
                     return;
                 }
-                
+
                 // Sembunyikan bubble
                 if (notificationBubble) {
                     notificationBubble.style.display = 'none';
                 }
-                
+
                 // Buka chat
                 openChat();
             });
@@ -496,6 +531,7 @@
             'terima kasih': 'Sama-sama! Senang bisa membantu Anda 😊 Jika ada pertanyaan lain, jangan ragu untuk bertanya lagi ya!',
             'makasih': 'Sama-sama! Senang bisa membantu 😊',
             'bye': 'Sampai jumpa! 👋 Kembali lagi jika ada pertanyaan lain. Semoga harimu menyenangkan!',
+            'dimana' : 'Polmind Berada Di MM2100, No. S85, Vasanta Innopark'
         };
 
         const quickQuestionsPool = [
@@ -509,25 +545,26 @@
             { question: 'Fasilitas POLMIND?', keywords: ['fasilitas', 'lab', 'kampus'] },
             { question: 'Magang di POLMIND?', keywords: ['magang', 'internship', 'kerja'] },
             { question: 'Kontak admin?', keywords: ['admin', 'kontak', 'hubungi', 'email', 'wa'] },
+            { question: 'Dimana Lokasinya?', keywords: ['lokasi', 'letak', 'dimana'] },
         ];
 
         function getDailyQuestions() {
             const today = new Date();
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
             const shuffled = [...quickQuestionsPool];
-            
+
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = (dayOfYear + i) % shuffled.length;
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            
+
             return shuffled.slice(0, 4);
         }
 
         function renderQuickQuestions() {
             const dailyQuestions = getDailyQuestions();
             quickQuestionsContainer.innerHTML = '';
-            
+
             dailyQuestions.forEach(item => {
                 const btn = document.createElement('button');
                 btn.className = 'quick-question text-[10px] sm:text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-all';
@@ -540,32 +577,32 @@
             const lowerInput = input.toLowerCase().trim();
             let bestMatch = null;
             let bestScore = 0;
-            
+
             for (const [key, answer] of Object.entries(faqDatabase)) {
                 const keywords = key.split(' ');
                 let score = 0;
-                
+
                 for (const word of keywords) {
                     if (lowerInput.includes(word)) score += word.length;
                 }
-                
+
                 if (lowerInput.includes(key)) score += key.length * 2;
-                
+
                 if (score > bestScore) {
                     bestScore = score;
                     bestMatch = answer;
                 }
             }
-            
+
             return bestMatch;
         }
 
         function getSuggestions(input) {
             const lowerInput = input.toLowerCase().trim();
             if (lowerInput.length < 2) return [];
-            
+
             const suggestions = [];
-            
+
             for (const item of quickQuestionsPool) {
                 for (const keyword of item.keywords) {
                     if (lowerInput.includes(keyword) || keyword.includes(lowerInput)) {
@@ -576,13 +613,13 @@
                     }
                 }
             }
-            
+
             for (const key of Object.keys(faqDatabase)) {
                 if (key.includes(lowerInput) && !suggestions.includes(key)) {
                     suggestions.push(key);
                 }
             }
-            
+
             return suggestions.slice(0, 5);
         }
 
@@ -591,10 +628,10 @@
                 suggestionsContainer.classList.add('hidden');
                 return;
             }
-            
+
             suggestionsContainer.classList.remove('hidden');
             suggestionsList.innerHTML = '';
-            
+
             suggestions.forEach(suggestion => {
                 const btn = document.createElement('button');
                 btn.className = 'suggestion-item text-[10px] sm:text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-all';
@@ -611,7 +648,7 @@
 
         function escapeHtml(str) {
             if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
+            return str.replace(/[&<>]/g, function (m) {
                 if (m === '&') return '&amp;';
                 if (m === '<') return '&lt;';
                 if (m === '>') return '&gt;';
@@ -649,35 +686,35 @@
             }
 
             chatMessagesContainer.appendChild(messageDiv);
-            
+
             setTimeout(() => {
                 messageDiv.style.opacity = '1';
             }, 10);
-            
+
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
             return messageDiv;
         }
 
         function findAnswer(question) {
             const lowerQuestion = question.toLowerCase().trim();
-            
+
             for (const [key, answer] of Object.entries(faqDatabase)) {
                 if (lowerQuestion.includes(key) || key.includes(lowerQuestion)) {
                     return answer;
                 }
             }
-            
+
             const bestMatch = findBestMatch(question);
             if (bestMatch) {
                 return bestMatch;
             }
-            
+
             return "Maaf, saya belum mengerti pertanyaan Anda. 😅\n\nCoba tanyakan hal seperti:\n• Apa itu POLMIND?\n• Program studi apa saja?\n• Cara mendaftar?\n• Apa itu TeFa?\n• Beasiswa POLMIND?\n• Lokasi kampus?\n\nAtau pilih pertanyaan di atas! 👆";
         }
 
         function sendBotReply(userText) {
             if (isTyping) return;
-            
+
             isTyping = true;
             typingIndicator.classList.remove('hidden');
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
@@ -695,7 +732,7 @@
             if (!message) return;
 
             addMessage(message, true);
-            
+
             if (!messageText) {
                 chatInput.value = '';
                 suggestionsContainer.classList.add('hidden');
@@ -716,7 +753,7 @@
                     handleSendMessage();
                 }
             });
-            
+
             chatInput.addEventListener('input', (e) => {
                 clearTimeout(suggestionTimeout);
                 suggestionTimeout = setTimeout(() => {
@@ -724,11 +761,11 @@
                     showSuggestions(suggestions);
                 }, 200);
             });
-            
+
             chatInput.addEventListener('blur', () => {
                 setTimeout(() => suggestionsContainer.classList.add('hidden'), 200);
             });
-            
+
             chatInput.addEventListener('focus', () => {
                 const suggestions = getSuggestions(chatInput.value);
                 if (suggestions.length > 0) {
@@ -764,7 +801,7 @@
 
         if (chatButton) {
             chatButton.addEventListener('click', (e) => {
-                if ('ontouchstart' in window) return; 
+                if ('ontouchstart' in window) return;
                 if (isDragging && dragDistance > 5) {
                     e.stopPropagation();
                     return;
@@ -799,7 +836,7 @@
 
         renderQuickQuestions();
         initDrag();
-        
+
         // Tampilkan bubble hanya jika belum pernah ditutup permanen
         // Delay sebentar agar tidak langsung muncul
         setTimeout(() => {
