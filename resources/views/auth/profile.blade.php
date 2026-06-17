@@ -2276,7 +2276,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                         const item = document.createElement('button');
                         item.type = 'button';
                         item.className = 'w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition';
-                        item.innerHTML = `<div class="font-medium text-sm text-gray-900 dark:text-white">${sekolah.nama}</div><div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${sekolah.jenjang ? sekolah.jenjang + ' · ' : ''}${sekolah.kota || ''}${sekolah.provinsi ? ', ' + sekolah.provinsi : ''}</div>`;
+                        item.innerHTML = `<div class="font-medium text-sm text-gray-900 dark:text-white">${sekolah.nama}</div><div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${sekolah.jenjang ? sekolah.jenjang + ' · ' : ''}${sekolah.kabupaten || sekolah.kota || ''}${sekolah.provinsi ? ', ' + sekolah.provinsi : ''}</div>`;
                         item.addEventListener('click', () => {
                             document.getElementById('sekolah-search-input').value = sekolah.nama;
                             dropdown.classList.add('hidden');

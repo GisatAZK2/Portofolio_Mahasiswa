@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -19,7 +20,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -66,47 +68,53 @@
         }
 
         #mobile-search-dropdown {
-    overflow: hidden;
-    }
+            overflow: hidden;
+        }
 
         /* 1. Pastikan parent chain mendukung tinggi penuh */
-.dashboard-container {
-    height: auto;        /* biarkan fleksibel */
-    min-height: 0;       /* penting untuk overflow */
-}
+        .dashboard-container {
+            height: auto;
+            /* biarkan fleksibel */
+            min-height: 0;
+            /* penting untuk overflow */
+        }
 
-/* 2. Untuk layar >= 1024px (desktop) */
-@media (min-width: 1024px) {
-    .dashboard-container {
-        align-items: start;     /* agar sticky bekerja */
-        gap: 1.5rem;
-    }
+        /* 2. Untuk layar >= 1024px (desktop) */
+        @media (min-width: 1024px) {
+            .dashboard-container {
+                align-items: start;
+                /* agar sticky bekerja */
+                gap: 1.5rem;
+            }
 
-    /* Kolom kiri: scroll independen */
-    .feed-column {
-        overflow-y: auto;
-        max-height: calc(100vh - 120px); /* sesuaikan 120px dengan tinggi header + padding */
-        scrollbar-width: thin;
-    }
+            /* Kolom kiri: scroll independen */
+            .feed-column {
+                overflow-y: auto;
+                max-height: calc(100vh - 120px);
+                /* sesuaikan 120px dengan tinggi header + padding */
+                scrollbar-width: thin;
+            }
 
-    /* Kolom kanan: tetap di posisi saat scroll kiri */
-    .sidebar-column {
-        position: sticky;
-        top: 20px;      /* sesuai sticky top-6 di dalamnya */
-        align-self: start;
-    }
-}
+            /* Kolom kanan: tetap di posisi saat scroll kiri */
+            .sidebar-column {
+                position: sticky;
+                top: 20px;
+                /* sesuai sticky top-6 di dalamnya */
+                align-self: start;
+            }
+        }
 
-/* 3. Opsional: untuk mobile, tetap tumpuk (grid 1fr) */
-@media (max-width: 1023px) {
-    .feed-column {
-        overflow-y: visible;
-        max-height: none;
-    }
-    .sidebar-column {
-        position: static;
-    }
-}
+        /* 3. Opsional: untuk mobile, tetap tumpuk (grid 1fr) */
+        @media (max-width: 1023px) {
+            .feed-column {
+                overflow-y: visible;
+                max-height: none;
+            }
+
+            .sidebar-column {
+                position: static;
+            }
+        }
 
         @media (max-width: 1023px) {
             #sidebar {
@@ -129,13 +137,15 @@
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
 </head>
+
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
     @if(!request()->has('skip_splash'))
         @include('components.splash')
     @endif
 
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300"></div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
+    </div>
 
     <div class="app-layout">
         @include('components.sidebar')
@@ -221,25 +231,25 @@
             }
 
             if (toggleSearch && searchDrop) {
-    toggleSearch.addEventListener('click', () => {
-        const isHidden = searchDrop.classList.contains('hidden');
-        if (isHidden) {
-            searchDrop.classList.remove('hidden');
-            searchDrop.style.maxHeight = '0px';
-            searchDrop.style.opacity   = '0';
-            requestAnimationFrame(() => {
-                searchDrop.style.transition = 'max-height 0.3s ease, opacity 0.25s ease';
-                searchDrop.style.maxHeight  = searchDrop.scrollHeight + 'px';
-                searchDrop.style.opacity    = '1';
-            });
-        } else {
-            searchDrop.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
-            searchDrop.style.maxHeight  = '0px';
-            searchDrop.style.opacity    = '0';
-            setTimeout(() => searchDrop.classList.add('hidden'), 250);
-        }
-    });
-}
+                toggleSearch.addEventListener('click', () => {
+                    const isHidden = searchDrop.classList.contains('hidden');
+                    if (isHidden) {
+                        searchDrop.classList.remove('hidden');
+                        searchDrop.style.maxHeight = '0px';
+                        searchDrop.style.opacity = '0';
+                        requestAnimationFrame(() => {
+                            searchDrop.style.transition = 'max-height 0.3s ease, opacity 0.25s ease';
+                            searchDrop.style.maxHeight = searchDrop.scrollHeight + 'px';
+                            searchDrop.style.opacity = '1';
+                        });
+                    } else {
+                        searchDrop.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
+                        searchDrop.style.maxHeight = '0px';
+                        searchDrop.style.opacity = '0';
+                        setTimeout(() => searchDrop.classList.add('hidden'), 250);
+                    }
+                });
+            }
             /*
             function deteksiJaringan() {
                 if (navigator.onLine) {
@@ -247,81 +257,82 @@
                 } else {
                     console.log("Status: Offline");
                     const offlineUrl = "{{ route('offline', app()->getLocale()) }}";
-                    if (window.location.href !== offlineUrl) {
-                        window.location.href = offlineUrl;
-                    }
-                }
+            if (window.location.href !== offlineUrl) {
+                window.location.href = offlineUrl;
+            }
+        }
             }
             deteksiJaringan();
-            window.addEventListener('online', () => console.log("Kembali Online"));
-            window.addEventListener('offline', deteksiJaringan);
+        window.addEventListener('online', () => console.log("Kembali Online"));
+        window.addEventListener('offline', deteksiJaringan);
             */
 
-            document.addEventListener('click', (e) => {
-    if (!searchDrop || !toggleSearch) return;
-    if (!searchDrop.contains(e.target) && !toggleSearch.contains(e.target)) {
-        if (!searchDrop.classList.contains('hidden')) {
-            searchDrop.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
-            searchDrop.style.maxHeight  = '0px';
-            searchDrop.style.opacity    = '0';
-            setTimeout(() => searchDrop.classList.add('hidden'), 250);
+        document.addEventListener('click', (e) => {
+            if (!searchDrop || !toggleSearch) return;
+            if (!searchDrop.contains(e.target) && !toggleSearch.contains(e.target)) {
+                if (!searchDrop.classList.contains('hidden')) {
+                    searchDrop.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
+                    searchDrop.style.maxHeight = '0px';
+                    searchDrop.style.opacity = '0';
+                    setTimeout(() => searchDrop.classList.add('hidden'), 250);
+                }
+            }
+        });
+
+        function openSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.remove('-translate-x-full');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('block');
+            }
+            document.body.style.overflow = 'hidden';
+            if (hamburger) hamburger.classList.add('hidden');
+            if (closeIcon) closeIcon.classList.remove('hidden');
         }
-    }
-});
 
-            function openSidebar() {
-                if (!sidebar) return;
-                sidebar.classList.remove('-translate-x-full');
-                if (overlay) {
-                    overlay.classList.remove('hidden');
-                    overlay.classList.add('block');
-                }
-                document.body.style.overflow = 'hidden';
-                if (hamburger) hamburger.classList.add('hidden');
-                if (closeIcon) closeIcon.classList.remove('hidden');
+        function closeSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.add('-translate-x-full');
+            if (overlay) {
+                overlay.classList.remove('block');
+                overlay.classList.add('hidden');
             }
+            document.body.style.overflow = '';
+            if (hamburger) hamburger.classList.remove('hidden');
+            if (closeIcon) closeIcon.classList.add('hidden');
+        }
 
-            function closeSidebar() {
-                if (!sidebar) return;
-                sidebar.classList.add('-translate-x-full');
-                if (overlay) {
-                    overlay.classList.remove('block');
-                    overlay.classList.add('hidden');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                if (sidebar?.classList.contains('-translate-x-full')) {
+                    openSidebar();
+                } else {
+                    closeSidebar();
                 }
-                document.body.style.overflow = '';
-                if (hamburger) hamburger.classList.remove('hidden');
-                if (closeIcon) closeIcon.classList.add('hidden');
+            });
+        }
+        if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+
+        window.toggleDropdown = function (menuId) {
+            const menu = document.getElementById(menuId + 'Menu');
+            const arrow = document.getElementById(menuId + 'Arrow');
+            if (menu && arrow) {
+                menu.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
             }
+        };
 
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    if (sidebar?.classList.contains('-translate-x-full')) {
-                        openSidebar();
-                    } else {
-                        closeSidebar();
-                    }
-                });
-            }
-            if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
-
-            window.toggleDropdown = function (menuId) {
-                const menu = document.getElementById(menuId + 'Menu');
-                const arrow = document.getElementById(menuId + 'Arrow');
-                if (menu && arrow) {
-                    menu.classList.toggle('hidden');
-                    arrow.classList.toggle('rotate-180');
-                }
-            };
-
-            window.toggleTheme = function () {
-                const html = document.documentElement;
-                html.classList.toggle('dark');
-                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-            };
+        window.toggleTheme = function () {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        };
         });
     </script>
 
     @stack('scripts')
 </body>
+
 </html>
