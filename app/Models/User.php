@@ -13,11 +13,11 @@ use App\Models\Sertifikat;
 use App\Models\Angkatan;
 use App\Models\Project;
 use App\Models\ProjectTask;
-use App\Models\Keahlian_Tambahan;
-
+use App\Traits\HasTranslations;
 
 class User extends Authenticatable
 {
+    use HasFactory, Notifiable, HasTranslations;
     /**
      * Relasi ke passkeys
      */
@@ -34,8 +34,7 @@ class User extends Authenticatable
         return $this->passkeys()->exists();
     }
 
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    protected array $translatableFields = ['deskripsi'];
 
     /**
      * The attributes that are mass assignable.
@@ -64,6 +63,7 @@ class User extends Authenticatable
         'video_url',
         'pengalaman_kerja',  // JSON: [{nama_pt, bagian_kerja, sertifikat_pendukung, tahun_mulai, tahun_akhir}]
         'pendidikan',         // JSON: [{nama_sekolah, jenjang, jurusan, tahun_masuk, tahun_lulus}]
+        'translations',
     ];
 
     protected $casts = [
@@ -73,6 +73,7 @@ class User extends Authenticatable
         'tanggal_lahir'      => 'date',
         'pengalaman_kerja'   => 'array',
         'pendidikan'         => 'array',
+        'translations'       => 'array',
     ];
 
     public function jurusan()

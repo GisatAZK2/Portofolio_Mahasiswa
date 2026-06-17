@@ -8,10 +8,11 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Game;
+use App\Traits\HasTranslations;
 
 class Postingan extends Model
 {
-    use HasFactory,Cachable;
+    use HasFactory, Cachable, HasTranslations;
     protected $table = 'postingan';
     protected $primaryKey = 'id_postingan';
     public $incrementing = true;
@@ -21,12 +22,17 @@ class Postingan extends Model
         'id_user',
         'content',
         'tanggal',
+        'translations',
     ];
 
     protected $casts = [
         'content' => 'array',
         'tanggal' => 'datetime',
+        'translations' => 'array',
     ];
+
+    protected array $translatableFields = ['content'];
+    protected array $translatableItemTypes = ['title', 'description'];
 
     public function user()
     {
