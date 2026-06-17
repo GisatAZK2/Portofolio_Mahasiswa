@@ -1119,6 +1119,31 @@ export const translations = {
       edu_now : 'Sekarang',
       edu_empty : 'Belum ada riwayat pendidikan yang dapat ditampilkan',
 
+      postings: 'Postingannya',               // id: 'Postingannya', en: 'Posts'
+      postings_count: 'postingan',            // id: 'postingan', en: 'posts'
+      post_empty: 'Belum ada postingan yang dibuat.', // id: ... en: 'No posts created yet.'
+      read_more: 'Baca selengkapnya',         // id: ... en: 'Read more'
+      additional_skills_label: 'Tambahan:',  // id: ... en: 'Additional:'
+      empty_skills: 'Belum ada keahlian ditambahkan', // id: ... en: 'No skills added yet'
+      leader_badge: 'Leader',                // id: 'Leader', en: 'Leader'
+      member_badge: 'Member',                // id: 'Member', en: 'Member'
+      no_team: 'Belum ada anggota tim',      // id: ... en: 'No team members yet'
+      others: 'lainnya',                     // id: 'lainnya', en: 'others'
+      empty_now: 'Belum ada proyek yang sedang dikerjakan',  // id: ... en: 'No ongoing projects'
+      empty_upcoming: 'Belum ada proyek yang akan datang',   // id: ... en: 'No upcoming projects'
+      empty_completed: 'Belum ada proyek yang selesai',      // id: ... en: 'No completed projects'
+      empty_projects: 'Belum ada proyek',    // id: ... en: 'No projects'
+      status_valid: 'Status Berlaku',        // id: ... en: 'Validity Status'
+      still_valid: 'Masih Berlaku',          // id: ... en: 'Still Valid'
+      expired: 'Kadarluwasa',                // id: ... en: 'Expired'
+      permanent: 'Permanen',                 // id: ... en: 'Permanent'
+      issued: 'Diterbitkan',                 // id: ... en: 'Issued'
+      expiry_date: 'Tanggal Kadaluarsa',     // id: ... en: 'Expiry Date'
+      view_certificate: 'Lihat Sertifikat',  // id: ... en: 'View Certificate'
+      no_cert_file: 'File sertifikat tidak tersedia', // id: ... en: 'Certificate file not available'
+      share: 'Share',                       // id: 'Share', en: 'Share' (sudah ada? kita tambahkan jika belum)
+      copy_link: 'Copy Link',  
+
     },
     search: {
       search: 'Cari',
@@ -2300,6 +2325,31 @@ curr_photo: 'Current Photo',
       edu_enter : 'Started',
       edu_now : 'Present',
       edu_empty : 'No education history to display',
+
+       postings: 'Posts',               // id: 'Postingannya', en: 'Posts'
+      postings_count: 'Posts',            // id: 'postingan', en: 'posts'
+      post_empty: 'No posts created yet.', // id: ... en: 'No posts created yet.'
+      read_more: 'Read more',         // id: ... en: 'Read more'
+      additional_skills_label: 'Additional:',  // id: ... en: 'Additional:'
+      empty_skills: 'No skills added yet', // id: ... en: 'No skills added yet'
+      leader_badge: 'Leader',                // id: 'Leader', en: 'Leader'
+      member_badge: 'Member',                // id: 'Member', en: 'Member'
+      no_team: 'No team members yet',      // id: ... en: 'No team members yet'
+      others: 'others',                     // id: 'lainnya', en: 'others'
+      empty_now: 'No ongoing projects',  // id: ... en: 'No ongoing projects'
+      empty_upcoming: 'No upcoming projects',   // id: ... en: 'No upcoming projects'
+      empty_completed: 'No completed projects',      // id: ... en: 'No completed projects'
+      empty_projects: 'No projects',    // id: ... en: 'No projects'
+      status_valid: 'Validity Status',        // id: ... en: 'Validity Status'
+      still_valid: 'Still Valid',          // id: ... en: 'Still Valid'
+      expired: 'Expired',                // id: ... en: 'Expired'
+      permanent: 'Permanent',                 // id: ... en: 'Permanent'
+      issued: 'Issued',                 // id: ... en: 'Issued'
+      expiry_date: 'Expiry Date',     // id: ... en: 'Expiry Date'
+      view_certificate: 'View Certificate',  // id: ... en: 'View Certificate'
+      no_cert_file: 'Certificate file not available', // id: ... en: 'Certificate file not available'
+      share: 'Share',                       // id: 'Share', en: 'Share' (sudah ada? kita tambahkan jika belum)
+      copy_link: 'Copy Link',  
     },
     project: {
       project_saya: 'My Projects',

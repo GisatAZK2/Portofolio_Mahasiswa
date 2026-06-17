@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Traits\HasTranslations;
 
 class LearningCorner extends Model
 {
-    use HasFactory,Cachable;
+    use HasFactory,Cachable,HasTranslations;
     protected $table = 'learning_corner';
     protected $primaryKey = 'id_learning_corner';   
     public $incrementing = true;                    
@@ -21,12 +22,17 @@ class LearningCorner extends Model
         'project_id',
         'content',   
         'tanggal',
+        'translations',
     ];
 
     protected $casts = [
         'content' => 'array',   
         'tanggal' => 'date',
+        'translations' => 'array',
     ];
+
+    protected array $translatableFields = ['content'];
+    protected array $translatableItemTypes = ['title', 'paragraph', 'note', 'text'];
 
     public function mahasiswa()
     {

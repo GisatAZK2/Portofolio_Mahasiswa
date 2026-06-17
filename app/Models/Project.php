@@ -6,22 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable; 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\Project_User;
 use App\Models\ProjectTask;
+use App\Traits\HasTranslations;
 
 class Project extends Model
 {
-    use HasFactory,Cachable;
-
+    use HasFactory, Cachable, HasTranslations;
     protected $table = 'projects';
     
-
     protected $fillable = [
         'isi_content',
         'tanggal_mulai',
         'tanggal_akhir',
         'id_mahasiswa',
-        'leader_id'
+        'leader_id',
+        'translations',
     ];
 
     protected $casts = [
@@ -29,7 +28,10 @@ class Project extends Model
         'tanggal_mulai' => 'date',
         'tanggal_akhir' => 'date',
         'viewer_ids' => 'array', 
+        'translations' => 'array',
     ];
+
+    protected array $translatableFields = ['isi_content'];
 
     // Relasi ke User
     public function mahasiswa()
