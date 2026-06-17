@@ -18,82 +18,105 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
-        $totalLearning  = LearningCorner::count();
-        $totalProject   = Project::count();
-        $totalSertifikat = Sertifikat::count();
+   public function index()
+{
+    $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
+    $totalLearning  = LearningCorner::count();
+    $totalProject   = Project::count();
+    $totalSertifikat = Sertifikat::count();
 
-        $jurusanList  = Jurusan::all()  ?? collect();
-        $keahlianList = Keahlian::all() ?? collect();
-        $angkatanList = Angkatan::all() ?? collect();
+    $jurusanList  = Jurusan::all()  ?? collect();
+    $keahlianList = Keahlian::all() ?? collect();
+    $angkatanList = Angkatan::all() ?? collect();
 
-        $learningCorners = LearningCorner::with(['mahasiswa', 'project'])
-            ->latest()
-            ->paginate(6, ['*'], 'learning_page')
-            ->fragment('learning-corner-list');
+    // ✅ LEARNING CORNERS - Load translated content
+    $learningCorners = LearningCorner::with(['mahasiswa', 'project'])
+        ->latest()
+        ->paginate(6, ['*'], 'learning_page')
+        ->fragment('learning-corner-list');
 
-        if ($learningCorners && $learningCorners->isNotEmpty()) {
-            $learningCorners->getCollection()->transform(function ($item) {
-                $item->type = 'learning';
-                return $item;
-            });
-        }
-
-        $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes', 'game'])
-            ->leftJoin(DB::raw('
-                (SELECT * FROM games g1
-                WHERE g1.created_at = (
-                    SELECT MIN(g2.created_at)
-                    FROM games g2
-                    WHERE g2.id_postingan = g1.id_postingan
-                )) as games_oldest
-            '), 'postingan.id_postingan', '=', 'games_oldest.id_postingan')
-            ->select('postingan.*')
-            ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
-            ->orderBy('postingan.created_at', 'desc')
-            ->paginate(10, ['*'], 'postingan_page')
-            ->fragment('postingan-content-wrapper');
-
-        $projects = Project::with('mahasiswa')
-            ->latest()
-            ->paginate(6, ['*'], 'project_page')
-            ->fragment('projects-page');
-
-        if ($projects && $projects->isNotEmpty()) {
-            $projects->getCollection()->transform(function ($item) {
-                $item->type = 'project';
-                return $item;
-            });
-        }
-
-        $dosenList = User::where(function ($q) {
-            $q->where('role', 'dosen')
-              ->orWhere('role', 'Dosen')
-              ->orWhere('role', 'DOSEN');
-        })->where('status_pengajuan', 'Di Terima')->get() ?? collect();
-
-        $projectUsers = Sertifikat::with('mahasiswa')
-            ->where('is_active', true)
-            ->where('status_pengajuan', 'Di Terima')
-            ->latest()
-            ->paginate(6, ['*'], 'sertifikat_page')
-            ->fragment('sertifikats-section');
-
-        if ($projectUsers && $projectUsers->isNotEmpty()) {
-            $projectUsers->getCollection()->transform(function ($item) {
-                $item->type = 'sertifikat';
-                return $item;
-            });
-        }
-
-        return view('views_dashboard', compact(
-            'totalMahasiswa', 'totalLearning', 'totalProject', 'totalSertifikat',
-            'learningCorners', 'projects', 'projectUsers', 'postinganTerbaru',
-            'jurusanList', 'keahlianList', 'angkatanList', 'dosenList',
-        ));
+    if ($learningCorners && $learningCorners->isNotEmpty()) {
+        $learningCorners->getCollection()->transform(function ($item) {
+            $item->type = 'learning';
+            // Load translated content dari learning corner
+            $item->content_translated = $item->translated('content');
+            // Load translated isi_content dari project relasi
+            if ($item->project) {
+                $item->project->isi_content_translated = $item->project->translated('isi_content');
+            }
+            return $item;
+        });
     }
+
+    $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes', 'game'])
+        ->leftJoin(DB::raw('
+            (SELECT * FROM games g1
+            WHERE g1.created_at = (
+                SELECT MIN(g2.created_at)
+                FROM games g2
+                WHERE g2.id_postingan = g1.id_postingan
+            )) as games_oldest
+        '), 'postingan.id_postingan', '=', 'games_oldest.id_postingan')
+        ->select('postingan.*')
+        ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
+        ->orderBy('postingan.created_at', 'desc')
+        ->paginate(10, ['*'], 'postingan_page')
+        ->fragment('postingan-content-wrapper');
+
+        if ($postinganTerbaru && $postinganTerbaru->isNotEmpty()) {
+    $postinganTerbaru->getCollection()->transform(function ($item) {
+        // Load translated content
+        $item->content_translated = $item->translated('content');
+        return $item;
+    });
+}
+
+    // ✅ PROJECTS - Load translated content
+    $projects = Project::with('mahasiswa')
+        ->latest()
+        ->paginate(6, ['*'], 'project_page')
+        ->fragment('projects-page');
+
+    if ($projects && $projects->isNotEmpty()) {
+        $projects->getCollection()->transform(function ($item) {
+            $item->type = 'project';
+            // Load translated isi_content
+            if (!empty($item->isi_content)) {
+                $item->isi_content_translated = $item->translated('isi_content');
+            }
+            return $item;
+        });
+    }
+
+    $dosenList = User::where(function ($q) {
+        $q->where('role', 'dosen')
+          ->orWhere('role', 'Dosen')
+          ->orWhere('role', 'DOSEN');
+    })->where('status_pengajuan', 'Di Terima')->get() ?? collect();
+
+    // ✅ SERTIFIKAT - Jika punya field translatable, load juga
+    $projectUsers = Sertifikat::with('mahasiswa')
+        ->where('is_active', true)
+        ->where('status_pengajuan', 'Di Terima')
+        ->latest()
+        ->paginate(6, ['*'], 'sertifikat_page')
+        ->fragment('sertifikats-section');
+
+    if ($projectUsers && $projectUsers->isNotEmpty()) {
+        $projectUsers->getCollection()->transform(function ($item) {
+            $item->type = 'sertifikat';
+            // Jika Sertifikat punya field translatable, load di sini
+            // $item->field_translatable = $item->translated('field_translatable');
+            return $item;
+        });
+    }
+
+    return view('views_dashboard', compact(
+        'totalMahasiswa', 'totalLearning', 'totalProject', 'totalSertifikat',
+        'learningCorners', 'projects', 'projectUsers', 'postinganTerbaru',
+        'jurusanList', 'keahlianList', 'angkatanList', 'dosenList',
+    ));
+}
 
     public function myDashboard()
     {
@@ -116,16 +139,32 @@ class DashboardController extends Controller
             ->paginate(6, ['*'], 'postingan_page')
             ->fragment('postingan-section');
 
+            if ($postinganTerbaru && $postinganTerbaru->isNotEmpty()) {
+            $postinganTerbaru->getCollection()->transform(function ($item) {
+                // Load translated content
+                $item->content_translated = $item->translated('content');
+                return $item;
+            });
+        }
+
         $learningCorners = LearningCorner::with('mahasiswa', 'project')
             ->where('id_mahasiswa', $user->id)
             ->latest()
             ->paginate(6, ['*'], 'learning_page')
             ->fragment('learning-corner-list');
 
-        $learningCorners->transform(function ($item) {
+        if ($learningCorners && $learningCorners->isNotEmpty()) {
+        $learningCorners->getCollection()->transform(function ($item) {
             $item->type = 'learning';
+            // Load translated content dari learning corner
+            $item->content_translated = $item->translated('content');
+            // Load translated isi_content dari project relasi
+            if ($item->project) {
+                $item->project->isi_content_translated = $item->project->translated('isi_content');
+            }
             return $item;
         });
+    }
 
         $projects = Project::with('mahasiswa')
             ->where(function ($q) use ($user) {
@@ -137,10 +176,17 @@ class DashboardController extends Controller
             ->paginate(6, ['*'], 'project_page')
             ->fragment('projects-section');
 
-        $projects->transform(function ($item) {
+        
+    if ($projects && $projects->isNotEmpty()) {
+        $projects->getCollection()->transform(function ($item) {
             $item->type = 'project';
+            // Load translated isi_content
+            if (!empty($item->isi_content)) {
+                $item->isi_content_translated = $item->translated('isi_content');
+            }
             return $item;
         });
+    }
 
         $projectUsers = Sertifikat::with('mahasiswa')
             ->where('id_mahasiswa', $user->id)

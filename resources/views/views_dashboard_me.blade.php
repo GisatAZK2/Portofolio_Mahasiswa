@@ -766,7 +766,7 @@
                                         <!-- Content -->
                                         <div class="p-4 cursor-pointer" onclick="window.location.href='{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $post->id_postingan]) }}'">
                                             @php
-                                                $content   = $post->content;
+                                                $content   = $post->content_translated ?? [];
                                                 $title     = '';
                                                 $deskripsi = '';
                                                 $imageUrl  = null;
