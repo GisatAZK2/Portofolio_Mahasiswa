@@ -6,6 +6,7 @@ window.autoTranslateSync = function(text) {
 
 export const translations = {
   id: {
+    
     profile: {
       bg_cov: 'Change Cover',
       desc: 'Description',

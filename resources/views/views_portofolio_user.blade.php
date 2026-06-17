@@ -971,11 +971,9 @@
                                             ['jpg', 'jpeg', 'png', 'gif', 'webp']
                                         );
                                         $expiredAt = $sertifikat->expired_date ? \Carbon\Carbon::parse($sertifikat->expired_date) : null;
-                                        $statusBerlaku = $expiredAt
-                                            ? ($expiredAt->isFuture() || $expiredAt->isToday()
-                                                ? __('portofolio_user.still_valid')
-                                                : __('portofolio_user.expired'))
-                                            : __('portofolio_user.permanent');
+                                        $statusBerlakuKey = $expiredAt
+                                            ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'still_valid' : 'expired')
+                                            : 'permanent';
                                         $expiredText = $expiredAt ? $expiredAt->format('d F Y') : null;
                                     @endphp
 
@@ -996,7 +994,9 @@
                                                         </p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-200 mt-1">
                                                             <span class="font-semibold" data-translate="status_valid" data-translate-page="portofolio_user">Status Berlaku</span>:
-                                                            <span class="ml-1 text-sm text-gray-700 dark:text-gray-300">{{ $statusBerlaku }}</span>
+                                                            <span class="ml-1 text-sm text-gray-700 dark:text-gray-300" data-translate="{{ $statusBerlakuKey }}" data-translate-page="portofolio_user">
+                                                                {{ $statusBerlakuKey }}
+                                                            </span>
                                                             @if($expiredText)
                                                                 | <span data-translate="expiry_date" data-translate-page="portofolio_user">Tanggal Kadaluarsa</span> {{ $expiredText }}
                                                             @endif
