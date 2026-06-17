@@ -1981,7 +1981,6 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                 background: false,
                 preview: '#cropper-preview-container',
                 ready() {
-                    cropperInstance.zoomTo(1);
                 }
             });
         };
