@@ -119,14 +119,12 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                                             </svg>
                                             <span class="hidden sm:inline" data-translate="share" data-translate-page="portofolio_user">Share</span>
-                                            <span class="hidden sm:inline" data-translate="share" data-translate-page="portofolio_user">Share</span>
                                         </button>
                                         <div id="shareMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
                                             <button onclick="copyLink('{{ $shareUrl }}')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-lg flex items-center gap-2 transition">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                                 </svg>
-                                                <span data-translate="copy_link" data-translate-page="portofolio_user">Copy Link</span>
                                                 <span data-translate="copy_link" data-translate-page="portofolio_user">Copy Link</span>
                                             </button>
                                         </div>
@@ -161,8 +159,6 @@
                             <p class="mt-4 text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
                                 @php $desc = $user->translated('deskripsi') @endphp
                                 {{ !empty(trim($desc)) ? $desc : 'Tidak ada deskripsi.' }}
-                                @php $desc = $user->translated('deskripsi') @endphp
-                                {{ !empty(trim($desc)) ? $desc : 'Tidak ada deskripsi.' }}
                             </p>
 
                             @if($user->video_url)
@@ -194,10 +190,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
                                 </svg>
                                 <span data-translate="postings" data-translate-page="portofolio_user">Postingannya</span>
-                                <span data-translate="postings" data-translate-page="portofolio_user">Postingannya</span>
                             </h3>
                             <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">
-                                {{ $postingans->total() ?? 0 }} <span data-translate="postings_count" data-translate-page="portofolio_user">postingan</span>
                                 {{ $postingans->total() ?? 0 }} <span data-translate="postings_count" data-translate-page="portofolio_user">postingan</span>
                             </span>
                         </div>
@@ -215,7 +209,6 @@
                             <div class="grid grid-cols-1 gap-6">
                                 @foreach($postingans as $post)
                                     @php
-                                        $content = $post->translated('content') ?? [];
                                         $content = $post->translated('content') ?? [];
                                         $title = '';
                                         $deskripsi = '';
@@ -271,7 +264,6 @@
                                                 <span>{{ $post->created_at?->format('d M Y') }}</span>
                                                 <a href="{{ route('postingan.show', ['id' => $post->id_postingan]) }}"
                                                    class="text-purple-600 hover:text-purple-700 dark:text-purple-400 font-medium flex items-center gap-1">
-                                                    <span data-translate="read_more" data-translate-page="portofolio_user">Baca selengkapnya</span>
                                                     <span data-translate="read_more" data-translate-page="portofolio_user">Baca selengkapnya</span>
                                                     <span class="text-lg leading-none">→</span>
                                                 </a>
@@ -560,7 +552,6 @@
                         @if($acceptedTambahan->isNotEmpty())
                             <div>
                                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="additional_skills_label" data-translate-page="portofolio_user">Tambahan:</p>
-                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="additional_skills_label" data-translate-page="portofolio_user">Tambahan:</p>
                                 <div class="flex flex-wrap gap-2">
                                     @foreach($acceptedTambahan as $kt)
                                         <span class="px-3 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-full border border-blue-100">
@@ -572,7 +563,6 @@
                         @endif
 
                         @if(!$user->keahlian && $acceptedTambahan->isEmpty())
-                            <p class="text-sm text-gray-500 italic text-center py-2" data-translate="empty_skills" data-translate-page="portofolio_user">Belum ada keahlian ditambahkan</p>
                             <p class="text-sm text-gray-500 italic text-center py-2" data-translate="empty_skills" data-translate-page="portofolio_user">Belum ada keahlian ditambahkan</p>
                         @endif
                     </div>
@@ -634,7 +624,6 @@
                                 @foreach($projects as $project)
                                     @php
                                         $content = $project->translated('isi_content') ?? [];
-                                        $content = $project->translated('isi_content') ?? [];
                                         $namaProject = $content['nama_project'] ?? 'Tanpa Nama';
                                         $deskripsi = $content['deskripsi'] ?? '';
                                         $linkProject = $content['link_project'] ?? null;
@@ -649,18 +638,14 @@
                                         $userRoleBadge = '';
 
                                         // Badge owner dihapus sesuai permintaan
-                                        // Badge owner dihapus sesuai permintaan
                                         if ($owner && $owner->id === $user->id) {
                                             $userRole = 'owner';
-                                            // tidak ada badge untuk owner
                                             // tidak ada badge untuk owner
                                         } elseif ($leader && $leader->id === $user->id) {
                                             $userRole = 'leader';
                                             $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800" data-translate="leader_badge" data-translate-page="portofolio_user">Leader</span>';
-                                            $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800" data-translate="leader_badge" data-translate-page="portofolio_user">Leader</span>';
                                         } elseif ($project->members->contains('id', $user->id)) {
                                             $userRole = 'member';
-                                            $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800" data-translate="member_badge" data-translate-page="portofolio_user">Member</span>';
                                             $userRoleBadge = '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800" data-translate="member_badge" data-translate-page="portofolio_user">Member</span>';
                                         }
 
@@ -733,14 +718,12 @@
                                                 @if(!empty($deskripsi))
                                                     <div>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1" data-translate="pjt_desc" data-translate-page="portofolio_user">Deskripsi</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1" data-translate="pjt_desc" data-translate-page="portofolio_user">Deskripsi</p>
                                                         <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{{ $deskripsi }}</p>
                                                     </div>
                                                 @endif
 
                                                 @if(!empty($linkVideo))
                                                     <div class="mt-2">
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2" data-translate="pjt_vidprev" data-translate-page="portofolio_user">Pratinjau Video</p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2" data-translate="pjt_vidprev" data-translate-page="portofolio_user">Pratinjau Video</p>
                                                         <a href="{{ $linkVideo }}" target="_blank" rel="noopener noreferrer" class="block group">
                                                             @php
@@ -777,9 +760,6 @@
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
                                                             <span data-translate="team" data-translate-page="portofolio_user">Anggota Tim</span> ({{ $project->members->count() }})
                                                         </p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                                                            <span data-translate="team" data-translate-page="portofolio_user">Anggota Tim</span> ({{ $project->members->count() }})
-                                                        </p>
                                                         <div class="flex flex-wrap gap-3">
                                                             @foreach($project->members->take(5) as $member)
                                                                 <div class="flex items-center space-x-2 group relative" title="{{ $member->nama_mahasiswa }}">
@@ -802,14 +782,12 @@
                                                             @if($project->members->count() > 5)
                                                                 <div class="flex items-center">
                                                                     <span class="text-xs text-gray-500 dark:text-gray-400">+{{ $project->members->count() - 5 }} <span data-translate="others" data-translate-page="portofolio_user">lainnya</span></span>
-                                                                    <span class="text-xs text-gray-500 dark:text-gray-400">+{{ $project->members->count() - 5 }} <span data-translate="others" data-translate-page="portofolio_user">lainnya</span></span>
                                                                 </div>
                                                             @endif
                                                         </div>
                                                     </div>
                                                 </a>
                                             @else
-                                                <p class="text-xs text-gray-400 dark:text-gray-500 italic mt-2" data-translate="no_team" data-translate-page="portofolio_user">Belum ada anggota tim</p>
                                                 <p class="text-xs text-gray-400 dark:text-gray-500 italic mt-2" data-translate="no_team" data-translate-page="portofolio_user">Belum ada anggota tim</p>
                                             @endif
 
@@ -831,7 +809,6 @@
                                                 @endif
                                             </div>
 
-                                            {{-- Created By --}}
                                             {{-- Created By --}}
                                             @if($owner)
                                                 <div class="flex items-center space-x-3 pt-3 border-t border-gray-100 dark:border-gray-700">
@@ -880,10 +857,6 @@
                                         @case('upcoming') <span data-translate="empty_upcoming" data-translate-page="portofolio_user">Belum ada proyek yang akan datang</span> @break
                                         @case('completed') <span data-translate="empty_completed" data-translate-page="portofolio_user">Belum ada proyek yang selesai</span> @break
                                         @default <span data-translate="empty_projects" data-translate-page="portofolio_user">Belum ada proyek</span>
-                                        @case('now') <span data-translate="empty_now" data-translate-page="portofolio_user">Belum ada proyek yang sedang dikerjakan</span> @break
-                                        @case('upcoming') <span data-translate="empty_upcoming" data-translate-page="portofolio_user">Belum ada proyek yang akan datang</span> @break
-                                        @case('completed') <span data-translate="empty_completed" data-translate-page="portofolio_user">Belum ada proyek yang selesai</span> @break
-                                        @default <span data-translate="empty_projects" data-translate-page="portofolio_user">Belum ada proyek</span>
                                     @endswitch
                                 </p>
                             </div>
@@ -894,7 +867,6 @@
                     <div class="bg-white rounded-2xl border border-gray-200 dark:bg-gray-900 dark:border-gray-900 shadow-sm p-5 lg:p-6">
                         <div class="flex justify-between items-center mb-5">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100" data-translate="lrn" data-translate-page="portofolio_user">Learning Corners</h3>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100" data-translate="lrn" data-translate-page="portofolio_user">Learning Corners</h3>
                             <span class="text-sm text-indigo-600 dark:text-indigo-400">{{ $user->learning_corners->count() }} <span data-translate="note" data-translate-page="portofolio_user">catatan</span></span>
                         </div>
 
@@ -904,7 +876,6 @@
                                     <div class="border border-gray-100 dark:border-gray-700 dark:text-gray-100 rounded-xl p-5 hover:shadow-md transition">
                                         <div class="space-y-4">
                                             @php
-                                                $rawContent = $entry->translated('content') ?? [];
                                                 $rawContent = $entry->translated('content') ?? [];
                                                 if (is_string($rawContent) && !empty($rawContent)) {
                                                     $items = json_decode($rawContent, true) ?? [];
@@ -950,7 +921,6 @@
                                                     <p class="text-xs text-gray-500 dark:text-gray-400">
                                                         <span data-translate="lrn_origin" data-translate-page="portofolio_user">Dari project:</span>
                                                         <a href="{{ route('project.show', ['id' => $entry->project->id]) }}" class="text-indigo-600 hover:underline">
-                                                            {{ $entry->project->translated('isi_content')['nama_project'] ?? 'Project' }}
                                                             {{ $entry->project->translated('isi_content')['nama_project'] ?? 'Project' }}
                                                         </a>
                                                     </p>
@@ -1029,7 +999,6 @@
                                                             </span>
                                                             @if($expiredText)
                                                                 | <span data-translate="expiry_date" data-translate-page="portofolio_user">Tanggal Kadaluarsa</span> {{ $expiredText }}
-                                                                | <span data-translate="expiry_date" data-translate-page="portofolio_user">Tanggal Kadaluarsa</span> {{ $expiredText }}
                                                             @endif
                                                         </p>
                                                     </div>
@@ -1044,11 +1013,9 @@
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                             </svg>
                                                             <span data-translate="view_certificate" data-translate-page="portofolio_user">Lihat Sertifikat</span>
-                                                            <span data-translate="view_certificate" data-translate-page="portofolio_user">Lihat Sertifikat</span>
                                                         </a>
                                                     </div>
                                                 @else
-                                                    <p class="mt-5 text-sm text-gray-500 italic" data-translate="no_cert_file" data-translate-page="portofolio_user">File sertifikat tidak tersedia</p>
                                                     <p class="mt-5 text-sm text-gray-500 italic" data-translate="no_cert_file" data-translate-page="portofolio_user">File sertifikat tidak tersedia</p>
                                                 @endif
                                             </div>
@@ -1079,7 +1046,6 @@
                                         </div>
                                     </div>
                                 @endforeach
-                            </div>
                             </div>
                         @else
                             <p class="text-sm text-gray-500 text-center py-6" data-translate="empty_sertifikat" data-translate-page="portofolio_user">Belum ada sertifikat yang ditambahkan</p>
