@@ -38,11 +38,6 @@ trait HasTranslations
 
     public function queueTranslation(): void
     {
-        if (method_exists($this, 'setAttribute') && $this->isFillable('translation_status')) {
-            $this->translation_status = 'pending';
-            $this->saveQuietly();
-        }
-
         TranslateModelJob::dispatch(static::class, $this->getKey());
     }
 

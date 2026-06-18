@@ -67,18 +67,9 @@ class TranslateModelJob implements ShouldQueue
                 'translated_at' => Carbon::now()->toISOString(),
             ]);
 
-            if ($model->isFillable('translation_status') || in_array('translation_status', $model->getFillable())) {
-                $model->translation_status = 'done';
-            }
-
             $model->saveQuietly();
         } catch (\Throwable $e) {
             Log::error("TranslateModelJob failed for {$this->modelClass}#{$this->modelId}: " . $e->getMessage());
-
-            if (in_array('translation_status', $model->getFillable())) {
-                $model->translation_status = 'failed';
-                $model->saveQuietly();
-            }
 
             throw $e; // biar Laravel retry sesuai $tries/backoff
         }

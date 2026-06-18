@@ -362,10 +362,11 @@ class DashboardController extends Controller
                 });
             }
 
-            $postingan = $q->latest()
-                ->paginate(9)
-                ->withQueryString()
-                ->fragment('postingan-section');
+            $postingan = $q->latest()->paginate(9)->withQueryString()->fragment('postingan-section');
+            $postingan->getCollection()->transform(function ($item) {
+                $item->content_translated = $item->translated('content');
+                return $item;
+            });
         }
 
         // ════════════════════════
@@ -408,7 +409,6 @@ class DashboardController extends Controller
             }
 
             $users = $q->paginate(9)->withQueryString()->fragment('mahasiswa-section');
-
             $users->getCollection()->transform(function ($item) {
                 $item->project_total_count = Project::where(function ($q) use ($item) {
                     $q->where('id_mahasiswa', $item->id)
@@ -416,9 +416,10 @@ class DashboardController extends Controller
                         ->orWhereHas('members', fn($qq) => $qq->where('user_id', $item->id));
                 })->count();
                 $item->type = 'mahasiswa';
+                // Tambahkan deskripsi terjemahan jika ada
+                $item->deskripsi_translated = $item->translated('deskripsi');
                 return $item;
             });
-
             $results = $results->concat($users->getCollection());
         }
 
@@ -452,17 +453,13 @@ class DashboardController extends Controller
             }
 
             $projects = $q->latest()->paginate(9)->withQueryString()->fragment('projects-section');
-
             $projects->getCollection()->transform(function ($project) {
-                // isi_content bisa berupa array (sudah di-cast) atau JSON string
-                $content = is_array($project->isi_content)
-                    ? $project->isi_content
-                    : (json_decode($project->isi_content, true) ?? []);
-
-                $project->nama_project = $content['nama_project'] ?? null;
-                $project->link_project = $content['link_project'] ?? null;
-                $project->link_github = $content['link_github'] ?? null;
-                $project->link_video = $content['link_video'] ?? null;
+                $translatedContent = $project->translated('isi_content');
+                $project->isi_content_translated = $translatedContent;
+                $project->nama_project = $translatedContent['nama_project'] ?? null;
+                $project->link_project = $translatedContent['link_project'] ?? null;
+                $project->link_github = $translatedContent['link_github'] ?? null;
+                $project->link_video = $translatedContent['link_video'] ?? null;
                 $project->type = 'project';
                 return $project;
             });
@@ -560,86 +557,90 @@ class DashboardController extends Controller
     // ══════════════════════════════════════════════════════════════════════════
     //  SEARCH SUGGESTIONS (autocomplete)
     // ══════════════════════════════════════════════════════════════════════════
-    public function searchSuggestions(Request $request)
-    {
-        $keyword = $request->query('q');
-        if (!$keyword || strlen($keyword) < 2) {
-            return response()->json([]);
-        }
-
-        $suggestions = [];
-
-        // Mahasiswa
-        User::where('role', 'mahasiswa')
-            ->where('status_pengajuan', 'Di Terima')
-            ->where('nama_mahasiswa', 'like', "%{$keyword}%")
-            ->limit(5)
-            ->get(['id', 'nama_mahasiswa', 'username'])
-            ->each(function ($user) use (&$suggestions) {
-                $suggestions[] = [
-                    'type' => 'mahasiswa',
-                    'id' => $user->id,
-                    'name' => $user->nama_mahasiswa,
-                    'url' => route('portfolio.show', ['user' => $user->username]),
-                    'label' => 'Mahasiswa',
-                ];
-            });
-
-        // Project
-        Project::with('mahasiswa')
-            ->where('isi_content', 'like', "%{$keyword}%")
-            ->whereHas('mahasiswa', fn($q) => $q->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'))
-            ->limit(5)
-            ->get()
-            ->each(function ($project) use (&$suggestions) {
-                $content = is_array($project->isi_content)
-                    ? $project->isi_content
-                    : (json_decode($project->isi_content, true) ?? []);
-                $suggestions[] = [
-                    'type' => 'project',
-                    'id' => $project->id,
-                    'name' => $content['nama_project'] ?? 'Project tanpa judul',
-                    'url' => route('project.show', ['id' => $project->id]),
-                    'label' => 'Project',
-                ];
-            });
-
-        // Sertifikat
-        Sertifikat::where('is_active', true)
-            ->where('status_pengajuan', 'Di Terima')
-            ->where('nama_sertifikat', 'like', "%{$keyword}%")
-            ->limit(5)
-            ->get()
-            ->each(function ($sertifikat) use (&$suggestions) {
-                $suggestions[] = [
-                    'type' => 'sertifikat',
-                    'id' => $sertifikat->id,
-                    'name' => $sertifikat->nama_sertifikat,
-                    'url' => '#',
-                    'label' => 'Sertifikat',
-                ];
-            });
-
-        // Postingan
-        Postingan::with('user')
-            ->where('content', 'like', "%{$keyword}%")
-            ->limit(10)
-            ->get()
-            ->each(function ($postingan) use (&$suggestions, $keyword) {
-                $content = $postingan->content ?? [];
-                $title = collect($content)->firstWhere('type', 'title')['content'] ?? null;
-
-                if ($title && str_contains(strtolower($title), strtolower($keyword))) {
-                    $suggestions[] = [
-                        'type' => 'postingan',
-                        'id' => $postingan->id_postingan,
-                        'name' => $title,
-                        'url' => route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]),
-                        'label' => 'Postingan',
-                    ];
-                }
-            });
-
-        return response()->json($suggestions);
+   public function searchSuggestions(Request $request)
+{
+    $keyword = $request->query('q');
+    if (!$keyword || strlen($keyword) < 2) {
+        return response()->json([]);
     }
+
+    $suggestions = [];
+
+    // Mahasiswa
+    User::where('role', 'mahasiswa')
+        ->where('status_pengajuan', 'Di Terima')
+        ->where('nama_mahasiswa', 'like', "%{$keyword}%")
+        ->limit(5)
+        ->get(['id', 'nama_mahasiswa', 'username', 'deskripsi'])
+        ->each(function ($user) use (&$suggestions) {
+            $suggestions[] = [
+                'type' => 'mahasiswa',
+                'id' => $user->id,
+                'name' => $user->nama_mahasiswa,
+                'url' => route('portfolio.show', ['user' => $user->username]),
+                'label' => 'Mahasiswa',
+                // jika perlu tampilkan deskripsi terjemahan
+                'deskripsi' => $user->translated('deskripsi'),
+            ];
+        });
+
+    // Project
+    Project::with('mahasiswa')
+        ->where('isi_content', 'like', "%{$keyword}%")
+        ->whereHas('mahasiswa', fn($q) => $q->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'))
+        ->limit(5)
+        ->get()
+        ->each(function ($project) use (&$suggestions) {
+            $translatedContent = $project->translated('isi_content');
+            $nama_project = $translatedContent['nama_project'] ?? 'Project tanpa judul';
+            $suggestions[] = [
+                'type' => 'project',
+                'id' => $project->id,
+                'name' => $nama_project,
+                'url' => route('project.show', ['id' => $project->id]),
+                'label' => 'Project',
+                'deskripsi' => $translatedContent['deskripsi'] ?? '',
+            ];
+        });
+
+    // Sertifikat (tidak support translasi, tetap pakai asli)
+    Sertifikat::where('is_active', true)
+        ->where('status_pengajuan', 'Di Terima')
+        ->where('nama_sertifikat', 'like', "%{$keyword}%")
+        ->limit(5)
+        ->get()
+        ->each(function ($sertifikat) use (&$suggestions) {
+            $suggestions[] = [
+                'type' => 'sertifikat',
+                'id' => $sertifikat->id,
+                'name' => $sertifikat->nama_sertifikat,
+                'url' => '#',
+                'label' => 'Sertifikat',
+            ];
+        });
+
+    // Postingan
+    Postingan::with('user')
+        ->where('content', 'like', "%{$keyword}%")
+        ->limit(10)
+        ->get()
+        ->each(function ($postingan) use (&$suggestions, $keyword) {
+            // Gunakan terjemahan untuk mencari judul
+            $translatedContent = $postingan->translated('content');
+            $title = collect($translatedContent)->firstWhere('type', 'title')['content'] ?? null;
+
+            // Jika judul ditemukan dan cocok dengan keyword, tambahkan
+            if ($title && str_contains(strtolower($title), strtolower($keyword))) {
+                $suggestions[] = [
+                    'type' => 'postingan',
+                    'id' => $postingan->id_postingan,
+                    'name' => $title,
+                    'url' => route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]),
+                    'label' => 'Postingan',
+                ];
+            }
+        });
+
+    return response()->json($suggestions);
+}
 }
