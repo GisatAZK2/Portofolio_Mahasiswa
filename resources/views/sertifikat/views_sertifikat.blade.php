@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Sertifikat Saya')
 @section('content')
-    <div class="p-6 lg:p-8 rounded-2xl">
+    <div class="p-6 lg:p-8 rounded-2xl" id="sertifikat-list-container">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 data-translate="sertifikat_title" data-translate-page="sertifikat"
@@ -259,102 +259,6 @@
         @endif
     </div>
 
-    <!-- Filter Script -->
-    <script>
-        function filterStatus(status) {
-            // Update active button style
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
-                if (btn.dataset.filter === status) {
-                    btn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
-                } else {
-                    // Reset ke warna default berdasarkan status
-                    const filterValue = btn.dataset.filter;
-                    btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
 
-                    // Tambahkan class warna sesuai status
-                    if (filterValue === 'Sedang Di Ajukan') {
-                        btn.classList.add('bg-yellow-100', 'text-yellow-800', 'hover:bg-yellow-200', 'dark:bg-yellow-900/30', 'dark:text-yellow-300');
-                    } else if (filterValue === 'Di Terima') {
-                        btn.classList.add('bg-green-100', 'text-green-800', 'hover:bg-green-200', 'dark:bg-green-900/30', 'dark:text-green-300');
-                    } else if (filterValue === 'Di Tolak') {
-                        btn.classList.add('bg-red-100', 'text-red-800', 'hover:bg-red-200', 'dark:bg-red-900/30', 'dark:text-red-300');
-                    } else {
-                        btn.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-gray-200', 'dark:bg-gray-700', 'dark:text-gray-300');
-                    }
-                }
-            });
-
-            // Filter cards
-            const cards = document.querySelectorAll('.sertifikat-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                const cardStatus = card.dataset.status;
-                if (status === 'all' || cardStatus === status) {
-                    card.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Tampilkan pesan jika tidak ada data
-            const noDataMessage = document.querySelector('.no-data-message');
-            if (visibleCount === 0) {
-                if (!noDataMessage) {
-                    const container = document.querySelector('.grid');
-                    const message = document.createElement('div');
-                    message.className = 'no-data-message col-span-full text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200';
-                    // kita bisa gunakan data-translate untuk pesan ini
-                    message.innerHTML = `
-                            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="no_data_filtered" data-translate-page="sertifikat"></p>
-                        `;
-                    container.parentNode.insertBefore(message, container.nextSibling);
-                }
-            } else {
-                const existingMessage = document.querySelector('.no-data-message');
-                if (existingMessage) {
-                    existingMessage.remove();
-                }
-            }
-
-            // Save filter to localStorage
-            localStorage.setItem('sertifikatFilter', status);
-        }
-
-        // Delete confirmation
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const form = this.closest('form');
-
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Data sertifikat akan dihapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.semua_sertifikat");
-        });
-    </script>
 
 @endsection

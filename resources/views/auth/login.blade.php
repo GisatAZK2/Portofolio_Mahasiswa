@@ -135,115 +135,14 @@
                         </div>
                     </div>
 
-                </div>
-            </form>
+            <!-- Session Alert Data Container -->
+            <div id="session-alert-data" 
+                 class="hidden" 
+                 data-session-success="{{ session('success') }}" 
+                 data-session-error="{{ session('error') }}" 
+                 data-errors-first="{{ $errors->any() ? $errors->first() : '' }}"></div>
         </div>
-    </main>
-
-
-    <script>
-        // Password visibility toggle
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            const eyeShowIcon = document.getElementById('eye-icon-show');
-            const eyeHideIcon = document.getElementById('eye-icon-hide');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeShowIcon.classList.add('hidden');
-                eyeHideIcon.classList.remove('hidden');
-            } else {
-                passwordInput.type = 'password';
-                eyeShowIcon.classList.remove('hidden');
-                eyeHideIcon.classList.add('hidden');
-            }
-        }
-
-        // Show alert function
-        function showAlert(message, type = 'error') {
-            const alertDiv = document.getElementById('alertMessage');
-            if (!alertDiv) return;
-            
-            alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'bg-blue-100', 
-                                      'text-green-800', 'text-red-800', 'text-yellow-800', 'text-blue-800');
-            
-            if (type === 'success') {
-                alertDiv.classList.add('bg-green-100', 'text-green-800');
-            } else if (type === 'warning') {
-                alertDiv.classList.add('bg-yellow-100', 'text-yellow-800');
-            } else if (type === 'info') {
-                alertDiv.classList.add('bg-blue-100', 'text-blue-800');
-            } else {
-                alertDiv.classList.add('bg-red-100', 'text-red-800');
-            }
-            
-            alertDiv.innerHTML = message;
-            alertDiv.classList.remove('hidden');
-            
-            setTimeout(() => {
-                alertDiv.classList.add('hidden');
-            }, 5000);
-        }
-
-        // Handle Enter key on login input
-        const loginInput = document.getElementById('login');
-        if (loginInput) {
-            loginInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('loginForm').submit();
-                }
-            });
-        }
-
-        // Handle Enter key on password input
-        const passwordInput = document.getElementById('password');
-        if (passwordInput) {
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('loginForm').submit();
-                }
-            });
-        }
-
-        // Session success/error handling
-        document.addEventListener('DOMContentLoaded', function() {
-            @if (session('success'))
-                showAlert('{{ session('success') }}', 'success');
-            @endif
-
-            @if (session('error'))
-                showAlert('{{ session('error') }}', 'error');
-            @endif
-
-            @if ($errors->any())
-                @php
-                    $firstError = $errors->first();
-                @endphp
-                @if($firstError === 'PENGAJUAN_DIPROSES')
-                    showAlert('Pengajuan akun Anda sedang diproses. Mohon tunggu konfirmasi dari admin.', 'warning');
-                @elseif($firstError === 'PENGAJUAN_DITOLAK')
-                    showAlert('Pengajuan akun Anda ditolak. Silakan hubungi admin untuk informasi lebih lanjut.', 'error');
-                @elseif($firstError === 'AKUN_DIBLOKIR')
-                    showAlert('Akun Anda diblokir. Silakan hubungi admin untuk informasi lebih lanjut.', 'error');
-                @elseif(!in_array($firstError, ['PENGAJUAN_DIPROSES', 'PENGAJUAN_DITOLAK', 'AKUN_DIBLOKIR']))
-                    showAlert('{{ $firstError }}', 'error');
-                @endif
-            @endif
-        });
-
-        // Prevent double submit
-        const form = document.getElementById('loginForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                const submitButton = this.querySelector('button[type="submit"]');
-                if (submitButton) {
-                    submitButton.disabled = true;
-                    submitButton.innerHTML = 'Memproses...';
-                }
-            });
-        }
-    </script>
-
+    </form>
+</div>
+</main>
 @endsection

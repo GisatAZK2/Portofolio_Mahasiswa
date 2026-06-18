@@ -2,7 +2,7 @@
 @section('title', 'Postingan Saya')
 
 @section('content')
-    <div class="p-6 lg:p-8">
+    <div class="p-6 lg:p-8" data-page-info="popup.semua_postingan">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl" data-translate-page="post">Postingan Saya</h1>
@@ -18,14 +18,6 @@
                 <span data-translate="add" data-translate-page="post">Buat Postingan</span>
             </a>
         </div>
-
-        @if (session('success'))
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    showSuccessAlert(@json(session('success')));
-                });
-            </script>
-        @endif
 
         @if (session('error'))
             <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 rounded-xl">
@@ -140,10 +132,4 @@
 
         @endif
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.semua_postingan");
-        });
-    </script>
 @endsection

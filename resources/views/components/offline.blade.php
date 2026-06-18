@@ -3,7 +3,7 @@
 @section('title', 'Offline - Portofolio Mahasiswa')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+<div id="offline-container" data-home-url="{{ url('/') }}" data-offline-message="{{ autoTranslate('Masih offline, nih. Cek koneksi kamu lagi ya!') }}" class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
     <div class="text-center max-w-md mx-auto">
         <div class="text-8xl mb-6 animate-bounce">
             📡
@@ -16,7 +16,7 @@
         </p>
         
         <div class="space-y-4">
-            <button onclick="location.reload()" 
+            <button id="offline-reload-btn" 
                 class="w-full px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg">
                 {{ autoTranslate('Muat Ulang') }}
             </button>
@@ -24,30 +24,7 @@
         
     </div>
 </div>
-
-
-<script>
-    function checkAndRedirect() {
-        if (navigator.onLine) {
-            const destination = document.referrer && !document.referrer.includes('offline') 
-                                ? document.referrer 
-                                : '{{ url('/') }}';
-            window.location.href = destination;
-        }
-    }
-
-    checkAndRedirect();
-
-    window.addEventListener('online', checkAndRedirect);
-
-    function handleReload() {
-        if (navigator.onLine) {
-            checkAndRedirect();
-        } else {
-            alert('{{ autoTranslate("Masih offline, nih. Cek koneksi kamu lagi ya!") }}');
-        }
-    }
-</script>
 @endsection
+
 
 

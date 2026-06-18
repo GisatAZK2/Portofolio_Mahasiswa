@@ -1,14 +1,14 @@
 @extends('Layout.Layout')
 @section('title', 'Edit Catatan Learning Corner')
 @section('content')
-    <div class="min-h-screen bg-gray-50 py-10 px-4 dark:bg-gray-900 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 py-10 px-4 dark:bg-gray-900 sm:px-6 lg:px-8" data-page-info="popup.user_edit_learning_corner">
         <div
             class="max-w-4xl mx-auto bg-white dark:bg-gray-900 dark:border-gray-900 rounded-2xl shadow-sm border border-gray-200 p-8">
 
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
                 <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Catatan</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">Ubah judul atau tambah/ubah/hapus konten yang sudah ada.
+                <p class="mt-2 text-gray-600 dark:text-gray-400">Ubah judul or tambah/ubah/hapus konten yang sudah ada.
                 </p>
             </div>
 
@@ -55,7 +55,7 @@
                         </button>
                     </div>
 
-                    <div id="items-container" class="space-y-6">
+                    <div id="items-container" class="space-y-6" data-item-count="{{ count($items) }}">
                         @foreach ($items as $idx => $item)
                             <div class="item bg-gray-50 dark:bg-gray-900 border border-gray-200 rounded-xl p-6 relative"
                                 data-index="{{ $idx }}">
@@ -118,96 +118,4 @@
             </form>
         </div>
     </div>
-
-    <script>
-        let itemIndex = {{ count($items) }};
-
-        function addItem() {
-            const container = document.getElementById('items-container');
-            const newItem = document.createElement('div');
-            newItem.className = 'item bg-gray-50 border border-gray-200 rounded-xl p-6 relative';
-            newItem.dataset.index = itemIndex;
-
-            newItem.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <select name="items[${itemIndex}][type]" class="type-select border border-gray-300 rounded px-3 py-2 text-sm focus:border-indigo-500 outline-none w-44">
-                            <option value="text">Teks tambahan</option>
-                            <option value="image">Gambar</option>
-                            <option value="link">Link / Referensi</option>
-                        </select>
-                        <button type="button" class="remove-item text-red-500 hover:text-red-700 text-sm font-medium">
-                            Hapus
-                        </button>
-                    </div>
-                    <div class="content-area mt-3">
-                        <input type="text" name="items[${itemIndex}][content]"
-                               class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                               placeholder="Masukkan teks di sini...">
-                    </div>
-                `;
-
-            container.appendChild(newItem);
-            itemIndex++;
-
-            // Attach listener untuk type select pada item baru
-            attachTypeChangeListener(newItem);
-            newItem.querySelector('input').focus();
-        }
-
-        // Fungsi untuk handle perubahan type (baik existing maupun new item)
-        function attachTypeChangeListener(itemElement) {
-            const select = itemElement.querySelector('.type-select');
-            if (!select) return;
-
-            select.addEventListener('change', function () {
-                const currentType = this.value;
-                const contentArea = itemElement.querySelector('.content-area');
-                const index = itemElement.dataset.index;
-
-                if (currentType === 'image') {
-                    contentArea.innerHTML = `
-                            <label class="block text-sm text-gray-600 mb-1">Upload gambar baru (opsional):</label>
-                            <input type="file" name="items[${index}][image_file]" accept="image/*"
-                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                            <input type="hidden" name="items[${index}][content]" value="">
-                        `;
-                } else {
-                    contentArea.innerHTML = `
-                            <input type="text" name="items[${index}][content]"
-                                   class="text-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 outline-none transition"
-                                   placeholder="${currentType === 'link' ? 'https://...' : 'Masukkan teks di sini...'}">
-                        `;
-                }
-            });
-        }
-
-        document.querySelectorAll('.item').forEach(item => {
-            attachTypeChangeListener(item);
-        });
-
-        document.getElementById('add-item').addEventListener('click', addItem);
-
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-item')) {
-                e.target.closest('.item').remove();
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
-            @endif
-
-            @if ($errors->any())
-                showErrorAlert('{{ $errors->first() }}');
-            @endif
-            });
-    </script>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.user_edit_learning_corner");
-         });
-    </script>
 @endsection

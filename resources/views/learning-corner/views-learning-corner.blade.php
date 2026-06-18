@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Learning Corner Saya')
 @section('content')
-    <div class="p-6 lg:p-8">
+    <div class="p-6 lg:p-8" data-page-info="popup.semua_learning_corner">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Learning Corner Saya</h1>
@@ -104,40 +104,4 @@
             </div>
         @endif
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
-
-                    const confirmed = await showConfirmAlert({
-                        title: 'Hapus Entri Learning Corner?',
-                        text: 'Catatan ini akan dihapus permanen dan tidak bisa dikembalikan.',
-                        icon: 'warning',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal',
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                    });
-
-                    if (confirmed) {
-                        showLoading('Menghapus catatan...');
-                        this.closest('form').submit();
-                    }
-                });
-            });
-
-            @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
-            @endif
-                });
-    </script>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.semua_learning_corner");
-        });
-    </script>
 @endsection

@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Sertifikat Saya')
 @section('content')
-    <div class="p-6 lg:p-8">
+    <div class="p-6 lg:p-8" id="sertifikat-user-container">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white" data-translate="sertifikat_mahasiswa_title"
@@ -160,70 +160,6 @@
         @endif
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Handle delete confirmation
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
 
-                    const confirmed = await Swal.fire({
-                        title: 'Hapus Sertifikat?',
-                        text: 'Sertifikat ini akan dihapus permanen dan tidak bisa dikembalikan.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal',
-                        reverseButtons: true
-                    });
-
-                    if (confirmed.isConfirmed) {
-                        Swal.fire({
-                            title: 'Menghapus...',
-                            text: 'Mohon tunggu sebentar',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        this.closest('form').submit();
-                    }
-                });
-            });
-
-            // Show success message
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            @endif
-
-            // Show error message
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: '{{ session('error') }}',
-                    confirmButtonColor: '#dc2626'
-                });
-            @endif
-        });
-    </script>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.sertifikat_saya");
-        });
-    </script>
 
 @endsection
