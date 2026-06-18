@@ -1,4 +1,3 @@
-{{-- resources/views/Project/project_user.blade.php --}}
 @extends('Layout.Layout')
 @section('title', 'Project milik mahasiswa')
 @section('content')
@@ -218,7 +217,7 @@
 
                             <div class="flex flex-col rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-all duration-300 p-3 sm:p-4 lg:p-5">
 
-                                {{-- [A] User info — h-10 --}}
+                                {{-- [A] User info --}}
                                 <a href="{{ $userId ? route('portfolio.show', ['user' => $userId]) : '#' }}"
                                     class="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity h-10 overflow-hidden shrink-0">
                                     <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm shrink-0 relative">
@@ -245,18 +244,16 @@
                                     </div>
                                 </a>
 
-                                {{-- [B] Badge — h-7 --}}
+                                {{-- [B] Badge --}}
                                 <div class="flex items-center gap-1.5 mb-2 h-7 overflow-hidden shrink-0">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 shrink-0">
-                                        Project
-                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 shrink-0" data-translate="project_label" data-translate-page="project_user">Project</span>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shrink-0"
                                         data-translate="{{ $statusTranslateKey }}" data-translate-page="project_user">
                                         {{ $statusText }}
                                     </span>
                                 </div>
 
-                                {{-- [C] Judul — h-12, line-clamp-2 --}}
+                                {{-- [C] Judul --}}
                                 <div class="h-12 overflow-hidden mb-1 shrink-0">
                                     <a href="{{ route('project.show', ['id' => $project->id]) }}"
                                         class="block hover:text-indigo-700 transition-colors">
@@ -266,31 +263,25 @@
                                     </a>
                                 </div>
 
-                                {{-- [D] Deskripsi — h-10 --}}
+                                {{-- [D] Deskripsi --}}
                                 <div class="h-10 overflow-hidden mb-1 shrink-0">
                                     <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-5">
                                         {{ $deskripsi ? $deskripsi : '' }}
                                     </p>
                                 </div>
 
-                                {{-- [E] Periode — h-8 --}}
+                                {{-- [E] Periode --}}
                                 <div class="h-8 overflow-hidden mb-3 flex items-center shrink-0">
                                     <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 truncate">
-                                        <span class="font-medium">Periode:</span>
+                                        <span class="font-medium" data-translate="periode_label" data-translate-page="project_user">Periode:</span>
                                         {{ $mulaiFormatted }} → {{ $akhirFormatted }}
                                     </p>
                                 </div>
 
-                                {{-- ============================================================
-                                     [F] Preview — h-44, inline playable video
-                                     Klik thumbnail → video langsung play di dalam card.
-                                     YouTube: embed iframe autoplay.
-                                     MP4/direct: native <video> element.
-                                     ============================================================ --}}
+                                {{-- [F] Preview video --}}
                                 <div class="h-44 w-full rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shrink-0 mb-2">
 
                                     @if($isValidVideo && $youtube_id)
-                                        {{-- YouTube: thumbnail HQ + play overlay --}}
                                         <div class="pu-video-wrapper" id="{{ $puVideoId }}"
                                              onclick="puPlayVideo('{{ $puVideoId }}', 'youtube', '{{ $youtube_id }}')">
 
@@ -308,16 +299,13 @@
                                                 </div>
                                             </div>
 
-                                            {{-- iframe diisi JS saat diklik --}}
                                             <div class="pu-embed-container"></div>
                                         </div>
 
                                     @elseif($isValidVideo)
-                                        {{-- Video langsung (MP4/WebM/OGG) --}}
                                         <div class="pu-video-wrapper" id="{{ $puVideoId }}"
                                              onclick="puPlayVideo('{{ $puVideoId }}', 'direct', '{{ $linkVideo }}')">
 
-                                            {{-- Poster placeholder --}}
                                             <div class="pu-thumbnail w-full h-full bg-gray-900 flex items-center justify-center">
                                                 <svg class="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -333,29 +321,26 @@
                                                 </div>
                                             </div>
 
-                                            {{-- video diisi JS saat diklik --}}
                                             <div class="pu-embed-container"></div>
                                         </div>
 
                                     @elseif($thumbnail && Storage::disk('public')->exists($thumbnail))
-                                        {{-- Thumbnail statis (tidak ada video) --}}
                                         <img src="{{ Storage::url($thumbnail) }}" alt="{{ $nama }}"
                                             class="w-full h-full object-cover">
 
                                     @else
-                                        {{-- Tidak ada preview sama sekali --}}
                                         <div class="pu-no-preview">
                                             <svg class="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                     d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
-                                            <p class="text-xs text-gray-400 dark:text-gray-500">Tidak ada preview</p>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500" data-translate="no_preview" data-translate-page="project_user">Tidak ada preview</p>
                                         </div>
                                     @endif
 
                                 </div>
 
-                                {{-- [G] Links — h-8 --}}
+                                {{-- [G] Links --}}
                                 <div class="h-8 flex items-center gap-3 overflow-hidden shrink-0">
                                     @if($linkProject)
                                         <a href="{{ $linkProject }}" target="_blank" rel="noopener noreferrer"
@@ -364,7 +349,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                             </svg>
-                                            Demo
+                                            <span data-translate="demo_link" data-translate-page="project_user">Demo</span>
                                         </a>
                                     @endif
                                     @if($linkGithub)
@@ -373,7 +358,7 @@
                                             <svg class="w-3.5 h-3.5 mr-1 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                                             </svg>
-                                            GitHub
+                                            <span data-translate="github" data-translate-page="project_user">GitHub</span>
                                         </a>
                                     @endif
                                     @if($linkVideo && !$youtube_id)
@@ -385,7 +370,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            Video
+                                            <span data-translate="video" data-translate-page="project_user">Video</span>
                                         </a>
                                     @endif
                                 </div>
@@ -394,7 +379,7 @@
                                 <div class="pt-3 mt-2 border-t border-gray-100 dark:border-gray-800 shrink-0">
                                     <div class="flex justify-between items-center gap-2">
                                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                            Diposting {{ $project->created_at?->translatedFormat('d M Y H:i') ?? '—' }} Oleh {{ $userName }}
+                                            <span data-translate="diposting" data-translate-page="project_user">Diposting</span> {{ $project->created_at?->translatedFormat('d M Y H:i') ?? '—' }} <span data-translate="oleh" data-translate-page="project_user">Oleh</span> {{ $userName }}
                                         </p>
                                         <div class="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500 shrink-0">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -424,15 +409,15 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg">Belum ada proyek yang ditampilkan.</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Silakan tambahkan proyek baru untuk memulai.</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400 text-base sm:text-lg" data-translate="no_projects_displayed" data-translate-page="project_user">Belum ada proyek yang ditampilkan.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2" data-translate="add_project_to_start" data-translate-page="project_user">Silakan tambahkan proyek baru untuk memulai.</p>
                     </div>
                 @endif
             </section>
         </div>
     </div>
 
-    <script>
+ <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof showPageInfo === 'function') {
                 showPageInfo("popup.project_saya");
