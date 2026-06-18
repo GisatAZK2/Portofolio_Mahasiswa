@@ -4609,13 +4609,9 @@ document.addEventListener('DOMContentLoaded', () => {
    ========================================== */
 document.addEventListener('DOMContentLoaded', () => {
     // Page Info initialization
-    const pageInfoEl = document.querySelector('[data-page-info]');
-    if (pageInfoEl) {
-        const popupKey = pageInfoEl.getAttribute('data-page-info');
-        if (popupKey && typeof window.showPageInfo === 'function') {
-            window.showPageInfo(popupKey);
-        }
-    }
+    const isLearningCornerPage = document.querySelector('[data-page-info="popup.user_create_learning_corner"]') ||
+                                 document.querySelector('[data-page-info="popup.user_edit_learning_corner"]');
+    if (!isLearningCornerPage) return;
 
     // Dynamic Items (Create & Edit)
     const itemsContainer = document.getElementById('items-container');
@@ -4995,6 +4991,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         addItemBtn.addEventListener('click', window.addItem);
+
+        // ===== INISIALISASI TAMBAHAN UNTUK EDIT POSTINGAN =====
+// Auto-resize textarea
+const judul = document.getElementById('judul');
+const deskripsi = document.getElementById('deskripsi');
+
+if (judul) {
+    judul.style.height = '';
+    judul.style.height = judul.scrollHeight + 'px';
+    judul.addEventListener('input', function() {
+        this.style.height = '';
+        this.style.height = this.scrollHeight + 'px';
+    });
+}
+
+if (deskripsi) {
+    deskripsi.style.height = '';
+    deskripsi.style.height = deskripsi.scrollHeight + 'px';
+    deskripsi.addEventListener('input', function() {
+        this.style.height = '';
+        this.style.height = this.scrollHeight + 'px';
+    });
+}
+
+// Game toggle
+const gameEnabledEl = document.getElementById('game_enabled');
+if (gameEnabledEl) {
+    const gameNameEl = document.getElementById('game_name');
+    const gameThumbEl = document.getElementById('game_thumbnail');
+    const thumbnailContainer = document.getElementById('thumbnail_container');
+    const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
+    const removeThumbInput = document.getElementById('remove_thumbnail');
+
+    function updateGameState() {
+        const checked = gameEnabledEl.checked;
+        if (gameNameEl) gameNameEl.disabled = !checked;
+        if (gameThumbEl) gameThumbEl.disabled = !checked;
+        if (thumbnailContainer) thumbnailContainer.style.display = checked ? 'block' : 'none';
+        if (!checked && removeThumbInput) removeThumbInput.value = '1';
+    }
+
+    gameEnabledEl.addEventListener('change', updateGameState);
+
+    if (removeThumbBtn) {
+        removeThumbBtn.addEventListener('click', function() {
+            const container = document.getElementById('current_thumbnail_container');
+            if (container) container.remove();
+            if (removeThumbInput) removeThumbInput.value = '1';
+            if (gameThumbEl) gameThumbEl.value = '';
+        });
+    }
+}
     }
 
     // Textarea auto-resize on load

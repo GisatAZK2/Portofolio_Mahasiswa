@@ -53,7 +53,7 @@
                         <div class="mb-5">
                             <textarea name="judul" id="judul" rows="1" 
                                 placeholder="{{ __('Judul postingan...') }}"
-                                class="w-full px-0 py-2 text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-0 resize-none overflow-hidden transition-colors @error('judul') border-red-500 @enderror"
+                                class="create-post-textarea w-full px-0 py-2 text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-0 resize-none overflow-hidden transition-colors @error('judul') border-red-500 @enderror"
                                 oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
                                 data-translate-placeholder="post_title_placeholder"
                                 data-translate-page="add_post">{{ old('judul') }}</textarea>
@@ -66,7 +66,7 @@
                         <div class="mb-2">
                             <textarea name="deskripsi" id="deskripsi" rows="3" 
                                 placeholder="{{ __('Tulis sesuatu yang menarik...') }}"
-                                class="w-full px-0 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 focus:ring-0 resize-none text-base leading-relaxed @error('deskripsi') border-red-500 @enderror"
+                                class="create-post-textarea w-full px-0 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 focus:ring-0 resize-none text-base leading-relaxed @error('deskripsi') border-red-500 @enderror"
                                 oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
                                 data-translate-placeholder="write_something_interesting"
                                 data-translate-page="add_post">{{ old('deskripsi') }}</textarea>
@@ -78,7 +78,7 @@
 
                     <!-- Dynamic Items Section -->
                     <div class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                        <div id="items-container" class="divide-y divide-gray-100 dark:divide-gray-700" data-item-count="0" data-is-create="true">
+                        <div id="items-container" class="divide-y divide-gray-100 dark:divide-gray-700">
                             <!-- Items will be added here -->
                         </div>
                         

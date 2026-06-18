@@ -331,6 +331,9 @@ export const id = {
         remove_thumbnail: 'Hapus thumbnail',
         update_post: 'Update Postingan',
         cancel: 'Batal',
+        post_title_placeholder: 'Judul postingan...',
+        add_media_or_link: 'Tambah Media atau Link',
+        write_something_interesting: 'Tulis sesuatu yang menarik...',
     },
 
     msh_lrn_add: {

@@ -328,6 +328,9 @@ export const en = {
     remove_thumbnail: 'Remove thumbnail',
     update_post: 'Update Post',
     cancel: 'Cancel',
+    post_title_placeholder: 'Post title...',
+    add_media_or_link: 'Add Media or Link',
+    write_something_interesting: 'Write something interesting...',
   },
   msh_project_task: {
     add_task: 'Add Task',

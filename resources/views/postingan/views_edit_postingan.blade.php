@@ -34,7 +34,8 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2" data-translate="input_error_title" data-translate-page="edit_post">
-                                Terdapat kesalahan pada input:</p>
+                                Terdapat kesalahan pada input:
+                            </p>
                             <ul class="text-sm text-red-700 dark:text-red-300 space-y-1 list-disc list-inside">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error  }}</li>
@@ -86,7 +87,10 @@
 
                     <!-- Dynamic Items Section -->
                     <div class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                        <div id="items-container" class="divide-y divide-gray-100 dark:divide-gray-700">
+                        <div id="items-container" 
+                             data-item-count="{{ count($existingItems ?? []) }}"
+                             data-is-create="false" 
+                             class="divide-y divide-gray-100 dark:divide-gray-700">
 
                             @php
                                 $existingItems = [];
@@ -99,9 +103,8 @@
                                 }
                             @endphp
 
-                            <div id="items-container" class="divide-y divide-gray-100 dark:divide-gray-700" data-item-count="{{ count($existingItems) }}">
-                                @foreach ($existingItems as $index => $item)
-                                    <div class="item p-5 bg-white dark:bg-gray-800 relative group" data-index="{{ $index }}">
+                            @foreach ($existingItems as $index => $item)
+                                <div class="item p-5 bg-white dark:bg-gray-800 relative group" data-index="{{ $index }}">
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="flex items-center gap-3">
                                             <div class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center"
