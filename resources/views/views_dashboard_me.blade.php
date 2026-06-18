@@ -600,6 +600,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="hidden" id="total-pjt-wrapper">
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
                             onclick="window.location.href='{{ auth()->check() ? route('project.index') : route('project.project_user') }}';">
@@ -1072,7 +1073,7 @@
                                 @foreach($learningCorners->take(5) as $learning)
                                     <div onclick="window.location.href='{{ route('project.show', ['id' => $learning->project_id]) }}'"
                                          class="cursor-pointer dark:border-gray-700 border hover:bg-gray-50 dark:hover:bg-gray-700 p-3 rounded-lg transition">
-                                        <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ $learning->content[0]['content'] ?? 'Learning Content' }}</h4>
+                                        <h4 class="text-sm dark:text-gray-100 font-medium line-clamp-2">{{ $learning->content_translated[0]['content'] ?? 'Learning Content' }}</h4>
                                         <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">{{ $learning->tanggal->translatedFormat('d M Y') }}</p>
                                     </div>
                                 @endforeach

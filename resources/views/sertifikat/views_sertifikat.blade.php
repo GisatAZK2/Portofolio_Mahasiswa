@@ -83,7 +83,7 @@
                                     };
                                 @endphp
                                 <span class="text-xs font-medium px-2.5 py-1 rounded-full {{ $statusClass }}">
-                                    {{ autoTranslate($entry->status_pengajuan) }}
+                                    {{ $entry->status_pengajuan }}
                                 </span>
                             </div>
 
@@ -114,7 +114,7 @@
 
                             <!-- Nama Sertifikat -->
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-                                {{ autoTranslate($entry->nama_sertifikat) }}
+                                {{ $entry->nama_sertifikat }}
                             </h3>
 
                             <!-- Lembaga Penerbit -->

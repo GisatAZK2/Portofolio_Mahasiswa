@@ -18,38 +18,35 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-   public function index()
-{
-    $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
-    $totalLearning  = LearningCorner::count();
-    $totalProject   = Project::count();
-    $totalSertifikat = Sertifikat::count();
+    public function index()
+    {
+        $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
+        $totalLearning = LearningCorner::count();
+        $totalProject = Project::count();
+        $totalSertifikat = Sertifikat::count();
 
-    $jurusanList  = Jurusan::all()  ?? collect();
-    $keahlianList = Keahlian::all() ?? collect();
-    $angkatanList = Angkatan::all() ?? collect();
+        $jurusanList = Jurusan::all() ?? collect();
+        $keahlianList = Keahlian::all() ?? collect();
+        $angkatanList = Angkatan::all() ?? collect();
 
-    // ✅ LEARNING CORNERS - Load translated content
-    $learningCorners = LearningCorner::with(['mahasiswa', 'project'])
-        ->latest()
-        ->paginate(6, ['*'], 'learning_page')
-        ->fragment('learning-corner-list');
+        $learningCorners = LearningCorner::with(['mahasiswa', 'project'])
+            ->latest()
+            ->paginate(6, ['*'], 'learning_page')
+            ->fragment('learning-corner-list');
 
-    if ($learningCorners && $learningCorners->isNotEmpty()) {
-        $learningCorners->getCollection()->transform(function ($item) {
-            $item->type = 'learning';
-            // Load translated content dari learning corner
-            $item->content_translated = $item->translated('content');
-            // Load translated isi_content dari project relasi
-            if ($item->project) {
-                $item->project->isi_content_translated = $item->project->translated('isi_content');
-            }
-            return $item;
-        });
-    }
+        if ($learningCorners && $learningCorners->isNotEmpty()) {
+            $learningCorners->getCollection()->transform(function ($item) {
+                $item->type = 'learning';
+                $item->content_translated = $item->translated('content');
+                if ($item->project) {
+                    $item->project->isi_content_translated = $item->project->translated('isi_content');
+                }
+                return $item;
+            });
+        }
 
-    $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes', 'game'])
-        ->leftJoin(DB::raw('
+        $postinganTerbaru = Postingan::with(['user', 'komentar', 'likes', 'game'])
+            ->leftJoin(DB::raw('
             (SELECT * FROM games g1
             WHERE g1.created_at = (
                 SELECT MIN(g2.created_at)
@@ -57,76 +54,80 @@ class DashboardController extends Controller
                 WHERE g2.id_postingan = g1.id_postingan
             )) as games_oldest
         '), 'postingan.id_postingan', '=', 'games_oldest.id_postingan')
-        ->select('postingan.*')
-        ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
-        ->orderBy('postingan.created_at', 'desc')
-        ->paginate(10, ['*'], 'postingan_page')
-        ->fragment('postingan-content-wrapper');
+            ->select('postingan.*')
+            ->orderByRaw('CASE WHEN games_oldest.id_games IS NOT NULL THEN 0 ELSE 1 END')
+            ->orderBy('postingan.created_at', 'desc')
+            ->paginate(10, ['*'], 'postingan_page')
+            ->fragment('postingan-content-wrapper');
 
         if ($postinganTerbaru && $postinganTerbaru->isNotEmpty()) {
-    $postinganTerbaru->getCollection()->transform(function ($item) {
-        // Load translated content
-        $item->content_translated = $item->translated('content');
-        return $item;
-    });
-}
+            $postinganTerbaru->getCollection()->transform(function ($item) {
+                $item->content_translated = $item->translated('content');
+                return $item;
+            });
+        }
 
-    // ✅ PROJECTS - Load translated content
-    $projects = Project::with('mahasiswa')
-        ->latest()
-        ->paginate(6, ['*'], 'project_page')
-        ->fragment('projects-page');
+        $projects = Project::with('mahasiswa')
+            ->latest()
+            ->paginate(6, ['*'], 'project_page')
+            ->fragment('projects-page');
 
-    if ($projects && $projects->isNotEmpty()) {
-        $projects->getCollection()->transform(function ($item) {
-            $item->type = 'project';
-            // Load translated isi_content
-            if (!empty($item->isi_content)) {
-                $item->isi_content_translated = $item->translated('isi_content');
-            }
-            return $item;
-        });
+        if ($projects && $projects->isNotEmpty()) {
+            $projects->getCollection()->transform(function ($item) {
+                $item->type = 'project';
+                if (!empty($item->isi_content)) {
+                    $item->isi_content_translated = $item->translated('isi_content');
+                }
+                return $item;
+            });
+        }
+
+        $dosenList = User::where(function ($q) {
+            $q->where('role', 'dosen')
+                ->orWhere('role', 'Dosen')
+                ->orWhere('role', 'DOSEN');
+        })->where('status_pengajuan', 'Di Terima')->get() ?? collect();
+
+        // ✅ SERTIFIKAT - Jika punya field translatable, load juga
+        $projectUsers = Sertifikat::with('mahasiswa')
+            ->where('is_active', true)
+            ->where('status_pengajuan', 'Di Terima')
+            ->latest()
+            ->paginate(6, ['*'], 'sertifikat_page')
+            ->fragment('sertifikats-section');
+
+        if ($projectUsers && $projectUsers->isNotEmpty()) {
+            $projectUsers->getCollection()->transform(function ($item) {
+                $item->type = 'sertifikat';
+                return $item;
+            });
+        }
+
+        return view('views_dashboard', compact(
+            'totalMahasiswa',
+            'totalLearning',
+            'totalProject',
+            'totalSertifikat',
+            'learningCorners',
+            'projects',
+            'projectUsers',
+            'postinganTerbaru',
+            'jurusanList',
+            'keahlianList',
+            'angkatanList',
+            'dosenList',
+        ));
     }
-
-    $dosenList = User::where(function ($q) {
-        $q->where('role', 'dosen')
-          ->orWhere('role', 'Dosen')
-          ->orWhere('role', 'DOSEN');
-    })->where('status_pengajuan', 'Di Terima')->get() ?? collect();
-
-    // ✅ SERTIFIKAT - Jika punya field translatable, load juga
-    $projectUsers = Sertifikat::with('mahasiswa')
-        ->where('is_active', true)
-        ->where('status_pengajuan', 'Di Terima')
-        ->latest()
-        ->paginate(6, ['*'], 'sertifikat_page')
-        ->fragment('sertifikats-section');
-
-    if ($projectUsers && $projectUsers->isNotEmpty()) {
-        $projectUsers->getCollection()->transform(function ($item) {
-            $item->type = 'sertifikat';
-            // Jika Sertifikat punya field translatable, load di sini
-            // $item->field_translatable = $item->translated('field_translatable');
-            return $item;
-        });
-    }
-
-    return view('views_dashboard', compact(
-        'totalMahasiswa', 'totalLearning', 'totalProject', 'totalSertifikat',
-        'learningCorners', 'projects', 'projectUsers', 'postinganTerbaru',
-        'jurusanList', 'keahlianList', 'angkatanList', 'dosenList',
-    ));
-}
 
     public function myDashboard()
     {
         $user = auth()->user();
 
         $totalLearning = LearningCorner::where('id_mahasiswa', $user->id)->count();
-        $totalProject  = Project::where(function ($q) use ($user) {
+        $totalProject = Project::where(function ($q) use ($user) {
             $q->where('id_mahasiswa', $user->id)
-              ->orWhere('leader_id', $user->id)
-              ->orWhereHas('members', fn($qq) => $qq->where('user_id', $user->id));
+                ->orWhere('leader_id', $user->id)
+                ->orWhereHas('members', fn($qq) => $qq->where('user_id', $user->id));
         })->count();
         $totalSertifikat = Sertifikat::where('id_mahasiswa', $user->id)
             ->where('is_active', true)
@@ -139,7 +140,7 @@ class DashboardController extends Controller
             ->paginate(6, ['*'], 'postingan_page')
             ->fragment('postingan-section');
 
-            if ($postinganTerbaru && $postinganTerbaru->isNotEmpty()) {
+        if ($postinganTerbaru && $postinganTerbaru->isNotEmpty()) {
             $postinganTerbaru->getCollection()->transform(function ($item) {
                 // Load translated content
                 $item->content_translated = $item->translated('content');
@@ -154,39 +155,39 @@ class DashboardController extends Controller
             ->fragment('learning-corner-list');
 
         if ($learningCorners && $learningCorners->isNotEmpty()) {
-        $learningCorners->getCollection()->transform(function ($item) {
-            $item->type = 'learning';
-            // Load translated content dari learning corner
-            $item->content_translated = $item->translated('content');
-            // Load translated isi_content dari project relasi
-            if ($item->project) {
-                $item->project->isi_content_translated = $item->project->translated('isi_content');
-            }
-            return $item;
-        });
-    }
+            $learningCorners->getCollection()->transform(function ($item) {
+                $item->type = 'learning';
+                // Load translated content dari learning corner
+                $item->content_translated = $item->translated('content');
+                // Load translated isi_content dari project relasi
+                if ($item->project) {
+                    $item->project->isi_content_translated = $item->project->translated('isi_content');
+                }
+                return $item;
+            });
+        }
 
         $projects = Project::with('mahasiswa')
             ->where(function ($q) use ($user) {
                 $q->where('id_mahasiswa', $user->id)
-                  ->orWhere('leader_id', $user->id)
-                  ->orWhereHas('members', fn($qq) => $qq->where('user_id', $user->id));
+                    ->orWhere('leader_id', $user->id)
+                    ->orWhereHas('members', fn($qq) => $qq->where('user_id', $user->id));
             })
             ->latest()
             ->paginate(6, ['*'], 'project_page')
             ->fragment('projects-section');
 
-        
-    if ($projects && $projects->isNotEmpty()) {
-        $projects->getCollection()->transform(function ($item) {
-            $item->type = 'project';
-            // Load translated isi_content
-            if (!empty($item->isi_content)) {
-                $item->isi_content_translated = $item->translated('isi_content');
-            }
-            return $item;
-        });
-    }
+
+        if ($projects && $projects->isNotEmpty()) {
+            $projects->getCollection()->transform(function ($item) {
+                $item->type = 'project';
+                // Load translated isi_content
+                if (!empty($item->isi_content)) {
+                    $item->isi_content_translated = $item->translated('isi_content');
+                }
+                return $item;
+            });
+        }
 
         $projectUsers = Sertifikat::with('mahasiswa')
             ->where('id_mahasiswa', $user->id)
@@ -202,16 +203,21 @@ class DashboardController extends Controller
         });
 
         return view('views_dashboard_me', compact(
-            'totalLearning', 'totalProject', 'totalSertifikat',
-            'learningCorners', 'projects', 'projectUsers', 'postinganTerbaru'
+            'totalLearning',
+            'totalProject',
+            'totalSertifikat',
+            'learningCorners',
+            'projects',
+            'projectUsers',
+            'postinganTerbaru'
         ));
     }
 
     public function paginationFragment(Request $request)
     {
-        $group        = $request->query('group');
+        $group = $request->query('group');
         $isDashboardMe = $request->query('dashboard') === 'me';
-        $user         = auth()->user();
+        $user = auth()->user();
 
         if ($group === 'learning_corner') {
             $data = $isDashboardMe
@@ -241,7 +247,8 @@ class DashboardController extends Controller
     public function show(Request $request)
     {
         $userParam = $request->query('user');
-        if (!$userParam) abort(404, 'User parameter is required');
+        if (!$userParam)
+            abort(404, 'User parameter is required');
 
         $locale = request()->route('locale');
         if ($locale && in_array($locale, ['id', 'en'])) {
@@ -250,7 +257,8 @@ class DashboardController extends Controller
         }
 
         $user = User::where('id', $userParam)->orWhere('username', $userParam)->first();
-        if (!$user) abort(404);
+        if (!$user)
+            abort(404);
 
         if (is_numeric($userParam)) {
             return redirect($request->url() . '?user=' . $user->username);
@@ -265,31 +273,33 @@ class DashboardController extends Controller
         }
 
         $user->load([
-            'jurusan', 'angkatan', 'keahlian',
+            'jurusan',
+            'angkatan',
+            'keahlian',
             'keahlianTambahan' => fn($q) => $q->wherePivot('status_pengajuan', 'Di Terima'),
-            'postingans'       => fn($q) => $q->latest(),
-            'sertifikats'      => fn($q) => $q->where('is_active', true)->where('status_pengajuan', 'Di Terima'),
+            'postingans' => fn($q) => $q->latest(),
+            'sertifikats' => fn($q) => $q->where('is_active', true)->where('status_pengajuan', 'Di Terima'),
             'learning_corners',
         ]);
 
-        $isOwner    = Auth::check() && Auth::id() === $user->id;
+        $isOwner = Auth::check() && Auth::id() === $user->id;
         $projectTab = $request->get('project_tab', 'completed');
-        $today      = Carbon::today();
+        $today = Carbon::today();
 
         $postingans = $user->postingans()->latest()->paginate(3)->fragment('postingan-section');
 
         $projectsQuery = Project::with(['owner', 'leader', 'members'])
             ->where(function ($q) use ($user) {
                 $q->where('id_mahasiswa', $user->id)
-                  ->orWhere('leader_id', $user->id)
-                  ->orWhereHas('members', fn($qq) => $qq->where('users.id', $user->id));
+                    ->orWhere('leader_id', $user->id)
+                    ->orWhereHas('members', fn($qq) => $qq->where('users.id', $user->id));
             });
 
         match ($projectTab) {
-            'upcoming'  => $projectsQuery->where('tanggal_mulai', '>', $today),
+            'upcoming' => $projectsQuery->where('tanggal_mulai', '>', $today),
             'completed' => $projectsQuery->whereNotNull('tanggal_akhir')->where('tanggal_akhir', '<', $today),
-            default     => $projectsQuery->where('tanggal_mulai', '<=', $today)
-                                         ->where(fn($q) => $q->where('tanggal_akhir', '>=', $today)->orWhereNull('tanggal_akhir')),
+            default => $projectsQuery->where('tanggal_mulai', '<=', $today)
+                ->where(fn($q) => $q->where('tanggal_akhir', '>=', $today)->orWhereNull('tanggal_akhir')),
         };
 
         $projects = $projectsQuery->latest()->paginate(5)->withQueryString()->fragment('project-section');
@@ -302,18 +312,18 @@ class DashboardController extends Controller
     // ══════════════════════════════════════════════════════════════════════════
     public function search(Request $request)
     {
-        $keyword  = trim($request->q ?? '');
-        $jurusan  = $request->jurusan;
+        $keyword = trim($request->q ?? '');
+        $jurusan = $request->jurusan;
         $keahlian = $request->keahlian;
         $angkatan = $request->angkatan;
-        $type     = $request->type;
+        $type = $request->type;
 
         // ── Default semua ke collect() agar tidak undefined ──────────────────
-        $results     = collect();
-        $users       = collect();   // alias → $mahasiswa di view
-        $projects    = collect();
+        $results = collect();
+        $users = collect();   // alias → $mahasiswa di view
+        $projects = collect();
         $sertifikats = collect();
-        $postingan   = collect();
+        $postingan = collect();
 
         // ════════════════════════
         //  POSTINGAN
@@ -344,10 +354,10 @@ class DashboardController extends Controller
                 $q->whereHas('user', function ($query) use ($keahlian) {
                     $query->where(function ($qq) use ($keahlian) {
                         $qq->where('id_keahlian', $keahlian)
-                        ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
-                            $qqq->where('keahlian.id_keahlian', $keahlian)
-                                ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-                        });
+                            ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
+                                $qqq->where('keahlian.id_keahlian', $keahlian)
+                                    ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                            });
                     });
                 });
             }
@@ -363,9 +373,11 @@ class DashboardController extends Controller
         // ════════════════════════
         if (!$type || $type === 'mahasiswa') {
             $q = User::with([
-                    'jurusan', 'keahlian', 'angkatan',
-                    'keahlianTambahan' => fn($qq) => $qq->where('keahlian_tambahan.status_pengajuan', 'Di Terima'),
-                ])
+                'jurusan',
+                'keahlian',
+                'angkatan',
+                'keahlianTambahan' => fn($qq) => $qq->where('keahlian_tambahan.status_pengajuan', 'Di Terima'),
+            ])
                 ->withCount([
                     'projects',
                     'leadingProjects',
@@ -380,16 +392,18 @@ class DashboardController extends Controller
                 $q->where('nama_mahasiswa', 'like', "%{$keyword}%");
             }
 
-            if ($jurusan)  $q->where('id_jurusan', $jurusan);
-            if ($angkatan) $q->where('id_angkatan', $angkatan);
+            if ($jurusan)
+                $q->where('id_jurusan', $jurusan);
+            if ($angkatan)
+                $q->where('id_angkatan', $angkatan);
 
             if ($keahlian) {
                 $q->where(function ($query) use ($keahlian) {
                     $query->where('id_keahlian', $keahlian)
-                          ->orWhereHas('keahlianTambahan', function ($qq) use ($keahlian) {
-                              $qq->where('keahlian.id_keahlian', $keahlian)
-                                 ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-                          });
+                        ->orWhereHas('keahlianTambahan', function ($qq) use ($keahlian) {
+                            $qq->where('keahlian.id_keahlian', $keahlian)
+                                ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                        });
                 });
             }
 
@@ -398,8 +412,8 @@ class DashboardController extends Controller
             $users->getCollection()->transform(function ($item) {
                 $item->project_total_count = Project::where(function ($q) use ($item) {
                     $q->where('id_mahasiswa', $item->id)
-                      ->orWhere('leader_id', $item->id)
-                      ->orWhereHas('members', fn($qq) => $qq->where('user_id', $item->id));
+                        ->orWhere('leader_id', $item->id)
+                        ->orWhereHas('members', fn($qq) => $qq->where('user_id', $item->id));
                 })->count();
                 $item->type = 'mahasiswa';
                 return $item;
@@ -420,17 +434,19 @@ class DashboardController extends Controller
                 $q->where('isi_content', 'like', "%{$keyword}%");
             }
 
-            if ($jurusan)  $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_jurusan', $jurusan));
-            if ($angkatan) $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_angkatan', $angkatan));
+            if ($jurusan)
+                $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_jurusan', $jurusan));
+            if ($angkatan)
+                $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_angkatan', $angkatan));
 
             if ($keahlian) {
                 $q->whereHas('mahasiswa', function ($query) use ($keahlian) {
                     $query->where(function ($qq) use ($keahlian) {
                         $qq->where('id_keahlian', $keahlian)
-                           ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
-                               $qqq->where('keahlian.id_keahlian', $keahlian)
-                                   ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-                           });
+                            ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
+                                $qqq->where('keahlian.id_keahlian', $keahlian)
+                                    ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                            });
                     });
                 });
             }
@@ -445,9 +461,9 @@ class DashboardController extends Controller
 
                 $project->nama_project = $content['nama_project'] ?? null;
                 $project->link_project = $content['link_project'] ?? null;
-                $project->link_github  = $content['link_github']  ?? null;
-                $project->link_video   = $content['link_video']   ?? null;
-                $project->type         = 'project';
+                $project->link_github = $content['link_github'] ?? null;
+                $project->link_video = $content['link_video'] ?? null;
+                $project->type = 'project';
                 return $project;
             });
 
@@ -466,21 +482,23 @@ class DashboardController extends Controller
             if ($keyword !== '') {
                 $q->where(function ($query) use ($keyword) {
                     $query->where('nama_sertifikat', 'like', "%{$keyword}%")
-                          ->orWhere('lembaga_penerbit', 'like', "%{$keyword}%");
+                        ->orWhere('lembaga_penerbit', 'like', "%{$keyword}%");
                 });
             }
 
-            if ($jurusan)  $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_jurusan', $jurusan));
-            if ($angkatan) $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_angkatan', $angkatan));
+            if ($jurusan)
+                $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_jurusan', $jurusan));
+            if ($angkatan)
+                $q->whereHas('mahasiswa', fn($qq) => $qq->where('id_angkatan', $angkatan));
 
             if ($keahlian) {
                 $q->whereHas('mahasiswa', function ($query) use ($keahlian) {
                     $query->where(function ($qq) use ($keahlian) {
                         $qq->where('id_keahlian', $keahlian)
-                           ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
-                               $qqq->where('keahlian.id_keahlian', $keahlian)
-                                   ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
-                           });
+                            ->orWhereHas('keahlianTambahan', function ($qqq) use ($keahlian) {
+                                $qqq->where('keahlian.id_keahlian', $keahlian)
+                                    ->where('keahlian_tambahan.status_pengajuan', 'Di Terima');
+                            });
                     });
                 });
             }
@@ -500,14 +518,15 @@ class DashboardController extends Controller
         // ════════════════════════
         $totalMahasiswa = User::where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')->count();
 
-        $totalLearning = LearningCorner::whereHas('mahasiswa',
+        $totalLearning = LearningCorner::whereHas(
+            'mahasiswa',
             fn($q) => $q->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima')
         )->count();
 
         $totalProject = Project::where(function ($q) {
             $q->whereHas('mahasiswa', fn($qq) => $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'))
-              ->orWhereHas('leader',   fn($qq) => $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'))
-              ->orWhereHas('members',  fn($qq) => $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'));
+                ->orWhereHas('leader', fn($qq) => $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'))
+                ->orWhereHas('members', fn($qq) => $qq->where('role', 'mahasiswa')->where('status_pengajuan', 'Di Terima'));
         })->count();
 
         $totalSertifikat = Sertifikat::where('is_active', true)
@@ -518,10 +537,10 @@ class DashboardController extends Controller
         // $mahasiswa = alias $users agar nama variabel di view tetap $mahasiswa
         $mahasiswa = $users;
 
-        $hasResults = $mahasiswa->count()   > 0
-                   || $projects->count()    > 0
-                   || $sertifikats->count() > 0
-                   || $postingan->count()   > 0;
+        $hasResults = $mahasiswa->count() > 0
+            || $projects->count() > 0
+            || $sertifikats->count() > 0
+            || $postingan->count() > 0;
 
         return view('views_result_search', compact(
             'results',
@@ -558,10 +577,10 @@ class DashboardController extends Controller
             ->get(['id', 'nama_mahasiswa', 'username'])
             ->each(function ($user) use (&$suggestions) {
                 $suggestions[] = [
-                    'type'  => 'mahasiswa',
-                    'id'    => $user->id,
-                    'name'  => $user->nama_mahasiswa,
-                    'url'   => route('portfolio.show', ['user' => $user->username]),
+                    'type' => 'mahasiswa',
+                    'id' => $user->id,
+                    'name' => $user->nama_mahasiswa,
+                    'url' => route('portfolio.show', ['user' => $user->username]),
                     'label' => 'Mahasiswa',
                 ];
             });
@@ -577,10 +596,10 @@ class DashboardController extends Controller
                     ? $project->isi_content
                     : (json_decode($project->isi_content, true) ?? []);
                 $suggestions[] = [
-                    'type'  => 'project',
-                    'id'    => $project->id,
-                    'name'  => $content['nama_project'] ?? 'Project tanpa judul',
-                    'url'   => route('project.show', ['id' => $project->id]),
+                    'type' => 'project',
+                    'id' => $project->id,
+                    'name' => $content['nama_project'] ?? 'Project tanpa judul',
+                    'url' => route('project.show', ['id' => $project->id]),
                     'label' => 'Project',
                 ];
             });
@@ -593,10 +612,10 @@ class DashboardController extends Controller
             ->get()
             ->each(function ($sertifikat) use (&$suggestions) {
                 $suggestions[] = [
-                    'type'  => 'sertifikat',
-                    'id'    => $sertifikat->id,
-                    'name'  => $sertifikat->nama_sertifikat,
-                    'url'   => '#',
+                    'type' => 'sertifikat',
+                    'id' => $sertifikat->id,
+                    'name' => $sertifikat->nama_sertifikat,
+                    'url' => '#',
                     'label' => 'Sertifikat',
                 ];
             });
@@ -608,14 +627,14 @@ class DashboardController extends Controller
             ->get()
             ->each(function ($postingan) use (&$suggestions, $keyword) {
                 $content = $postingan->content ?? [];
-                $title   = collect($content)->firstWhere('type', 'title')['content'] ?? null;
+                $title = collect($content)->firstWhere('type', 'title')['content'] ?? null;
 
                 if ($title && str_contains(strtolower($title), strtolower($keyword))) {
                     $suggestions[] = [
-                        'type'  => 'postingan',
-                        'id'    => $postingan->id_postingan,
-                        'name'  => $title,
-                        'url'   => route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]),
+                        'type' => 'postingan',
+                        'id' => $postingan->id_postingan,
+                        'name' => $title,
+                        'url' => route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]),
                         'label' => 'Postingan',
                     ];
                 }

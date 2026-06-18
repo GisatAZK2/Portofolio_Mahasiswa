@@ -12,9 +12,8 @@ return new class extends Migration
     {
         foreach ($this->tables as $table) {
             Schema::table($table, function (Blueprint $blueprint) use ($table) {
-                if (!Schema::hasColumn($table, 'translation_status')) {
-                    $blueprint->string('translation_status')->default('pending')->after('translations');
-                    // pending | processing | done | failed | skipped
+                if (!Schema::hasColumn($table, 'translations')) {
+                    $blueprint->json('translations')->nullable()->after('id');
                 }
             });
         }
@@ -24,8 +23,8 @@ return new class extends Migration
     {
         foreach ($this->tables as $table) {
             Schema::table($table, function (Blueprint $blueprint) use ($table) {
-                if (Schema::hasColumn($table, 'translation_status')) {
-                    $blueprint->dropColumn('translation_status');
+                if (Schema::hasColumn($table, 'translations')) {
+                    $blueprint->dropColumn('translations');
                 }
             });
         }
