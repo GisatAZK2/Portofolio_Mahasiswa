@@ -41,13 +41,18 @@
 @endsection
 
 @section('content')
+    <style>
+        main.overflow-auto {
+            overflow: visible !important;
+        }
+    </style>
     <div class="min-h-screen bg-gray-100 dark:bg-gray-800 py-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
 
                 {{-- ===== SIDEBAR KIRI ===== --}}
-                <div class="lg:col-span-1 lg:sticky lg:top-8 lg:self-start space-y-6">
+                <div class="lg:col-span-1 space-y-6 mt-0 lg:mt-18 lg:sticky lg:top-48 lg:self-start lg:z-10">
 
                     {{-- Kartu Profil --}}
                     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-900 shadow-sm overflow-hidden">
