@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', autoTranslate('Sertifikat Saya'))
+@section('title', 'Sertifikat Saya')
 @section('content')
     <div class="p-6 lg:p-8 rounded-2xl">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
@@ -26,22 +26,22 @@
             <button type="button" onclick="filterStatus('all')"
                 class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-indigo-600 text-white hover:bg-indigo-700"
                 data-filter="all">
-                {{autoTranslate('Semua')}}
+                Semua
             </button>
             <button type="button" onclick="filterStatus('Sedang Di Ajukan')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300"
                 data-filter="Sedang Di Ajukan">
-                {{autoTranslate('Sedang Diajukan')}}
+                Sedang Diajukan
             </button>
             <button type="button" onclick="filterStatus('Di Terima')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300"
                 data-filter="Di Terima">
-                {{autoTranslate('Diterima')}}
+                Diterima
             </button>
             <button type="button" onclick="filterStatus('Di Tolak')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300"
                 data-filter="Di Tolak">
-                {{autoTranslate('Ditolak')}}
+                Ditolak
             </button>
         </div>
 
@@ -76,9 +76,9 @@
                                 {{-- Status Badge --}}
                                 @php
                                     $statusClass = match ($entry->status_pengajuan) {
-                                        autoTranslate('Sedang Diajukan') => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
-                                        autoTranslate('Diterima') => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-                                        autoTranslate('Ditolak') => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                                        'Sedang Diajukan' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+                                        'Diterima' => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+                                        'Ditolak' => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
                                         default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                                     };
                                 @endphp
@@ -104,9 +104,9 @@
                                 $expiredAt = $entry->expired_date ? \Carbon\Carbon::parse($entry->expired_date) : null;
                                 $validityStatus = $expiredAt
                                     ? ($expiredAt->isFuture() || $expiredAt->isToday()
-                                        ? autoTranslate('Masih Berlaku')
-                                        : autoTranslate('Kadarluwasa'))
-                                    : autoTranslate('Permanen');
+                                        ? 'Masih Berlaku'
+                                        : 'Kadarluwasa')
+                                    : 'Permanen';
                                 $validityStatusClass = $expiredAt
                                     ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'text-green-600' : 'text-red-600')
                                     : 'text-indigo-600';
@@ -137,13 +137,13 @@
                             </div>
 
                             <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
-                                <span class="text-sm font-semibold">{{ autoTranslate('Status Berlaku') }}:</span>
+                                <span class="text-sm font-semibold">{{ 'Status Berlaku' }}:</span>
                                 <span class="ml-2 text-sm font-medium {{ $validityStatusClass }}">{{ $validityStatus }}</span>
                             </div>
 
                             @if($expiredAt)
                                 <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
-                                    <span class="text-sm font-semibold">{{ autoTranslate('Tanggal Kadaluarsa') }}:</span>
+                                    <span class="text-sm font-semibold">{{ 'Tanggal Kadaluarsa' }}:</span>
                                     <span class="ml-2 text-sm">{{ $expiredAt->format('d F Y') }}</span>
                                 </div>
                             @endif

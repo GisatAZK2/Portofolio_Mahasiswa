@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', autoTranslate('Detail Proyek'))
+@section('title', 'Detail Proyek')
 @section('content')
     <!-- CONTENT -->
     <div class="min-h-screen bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
@@ -72,7 +72,7 @@
                         <!-- Project Title -->
                         <h1
                             class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white order-first sm:order-none w-full sm:w-auto">
-                            {{ autoTranslate($project->isi_content['nama_project'] ?? 'Tanpa Judul') }}
+                            {{ $project->translated('isi_content')['nama_project'] ?? 'Tanpa Judul' }}
                         </h1>
 
                         @if ($canEdit)
@@ -129,8 +129,8 @@
                                 <span data-translate="desc_pjt" data-translate-page="pjt_detail">Deskripsi Proyek</span>
                             </h3>
                             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                @if(isset($project->isi_content['deskripsi']) && $project->isi_content['deskripsi'])
-                                    {{ $project->isi_content['deskripsi'] }}
+                                @if(isset($project->isi_content['deskripsi']) && $project->translated('isi_content')['deskripsi'])
+                                    {{ $project->translated('isi_content')['deskripsi'] }}
                                 @else
                                     <span data-translate="empty_desc" data-translate-page="pjt_detail">Tidak ada deskripsi untuk proyek ini.</span>
                                 @endif
@@ -402,7 +402,7 @@
                                             <span data-translate="task_progress" data-translate-page="pjt_detail">Progress Task</span>
                                         </h3>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $taskDoneCount }} {{ autoTranslate('dari') }} {{ $taskTotalCount }} {{ autoTranslate('task selesai') }}
+                                            {{ $taskDoneCount }} dari {{ $taskTotalCount }} task selesai
                                         </p>
                                     </div>
                                     <span class="text-xs font-semibold px-2 py-1 rounded-full
@@ -421,7 +421,7 @@
                                 </div>
 
                                 @if($visibleTasks->isEmpty())
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm">{{autoTranslate('Tidak ada task yang dapat ditampilkan.')}}</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Tidak ada task yang dapat ditampilkan.</p>
                                 @else
                                     <div class="space-y-3">
                                         @foreach($visibleTasks as $task)
@@ -433,7 +433,7 @@
                                                             {{ $task->name_task }}
                                                         </p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                            <span data-translate="task_pic" data-translate-page="pjt_detail">Penanggung Jawab</span>: {{ $task->user?->nama_mahasiswa ?? autoTranslate('Belum ditetapkan') }}
+                                                            <span data-translate="task_pic" data-translate-page="pjt_detail">Penanggung Jawab</span>: {{ $task->user?->nama_mahasiswa ?? 'Belum ditetapkan' }}
                                                         </p>
                                                         @if($isOverdue && !$task->is_done)
                                                             <p class="text-xs text-red-500 dark:text-red-400 font-medium mt-1"
@@ -618,8 +618,8 @@
                                 $images = [];
                                 $links = [];
 
-                                if (!empty($entry->content) && is_array($entry->content)) {
-                                    foreach ($entry->content as $item) {
+                                if (!empty($entry->translated('content')) && is_array($entry->translated('content'))) {
+                                    foreach ($entry->translated('content') as $item) {
                                         switch ($item['type'] ?? '') {
                                             case 'title':
                                                 $titles[] = $item['content'] ?? '';
@@ -674,14 +674,14 @@
                                         <!-- Titles -->
                                         @foreach($titles as $title)
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                {{ autoTranslate($title) }}
+                                                {{ $title }}
                                             </h3>
                                         @endforeach
 
                                         <!-- Texts -->
                                         @foreach($texts as $text)
                                             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                                {{ autoTranslate($text) }}
+                                                {{ $text }}
                                             </p>
                                         @endforeach
 

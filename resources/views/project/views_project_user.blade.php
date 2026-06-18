@@ -1,6 +1,6 @@
 {{-- resources/views/Project/project_user.blade.php --}}
 @extends('Layout.Layout')
-@section('title', autoTranslate(('Project milik mahasiswa')))
+@section('title', 'Project milik mahasiswa')
 @section('content')
 
 <style>
@@ -223,7 +223,7 @@
                                     class="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity h-10 overflow-hidden shrink-0">
                                     <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm shrink-0 relative">
                                         @if($userPhoto && Storage::disk('public')->exists($userPhoto))
-                                            <img src="{{ Storage::url($userPhoto) }}" alt="{{ autoTranslate($userName) }}"
+                                            <img src="{{ Storage::url($userPhoto) }}" alt="{{ $userName }}"
                                                 class="w-full h-full object-cover" loading="lazy"
                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                             <div class="absolute inset-0 hidden bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center text-white font-bold text-sm">
@@ -237,10 +237,10 @@
                                     </div>
                                     <div class="min-w-0 flex-1 overflow-hidden">
                                         <p class="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-300 truncate leading-tight">
-                                            {{ autoTranslate($userName) }}
+                                            {{ $userName }}
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight">
-                                            {{ autoTranslate($project->created_at?->diffForHumans() ?? 'Baru saja') }}
+                                            {{ $project->created_at?->diffForHumans() ?? 'Baru saja' }}
                                         </p>
                                     </div>
                                 </a>
@@ -248,11 +248,11 @@
                                 {{-- [B] Badge — h-7 --}}
                                 <div class="flex items-center gap-1.5 mb-2 h-7 overflow-hidden shrink-0">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 shrink-0">
-                                        {{ autoTranslate('Project') }}
+                                        Project
                                     </span>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusBadgeClass }} shrink-0"
                                         data-translate="{{ $statusTranslateKey }}" data-translate-page="project_user">
-                                        {{ autoTranslate($statusText) }}
+                                        {{ $statusText }}
                                     </span>
                                 </div>
 
@@ -261,7 +261,7 @@
                                     <a href="{{ route('project.show', ['id' => $project->id]) }}"
                                         class="block hover:text-indigo-700 transition-colors">
                                         <h3 class="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 leading-6">
-                                            {{ autoTranslate($nama) }}
+                                            {{ $nama }}
                                         </h3>
                                     </a>
                                 </div>
@@ -269,15 +269,15 @@
                                 {{-- [D] Deskripsi — h-10 --}}
                                 <div class="h-10 overflow-hidden mb-1 shrink-0">
                                     <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-5">
-                                        {{ $deskripsi ? autoTranslate($deskripsi) : '' }}
+                                        {{ $deskripsi ? $deskripsi : '' }}
                                     </p>
                                 </div>
 
                                 {{-- [E] Periode — h-8 --}}
                                 <div class="h-8 overflow-hidden mb-3 flex items-center shrink-0">
                                     <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 truncate">
-                                        <span class="font-medium">{{ autoTranslate('Periode:') }}</span>
-                                        {{ autoTranslate($mulaiFormatted) }} → {{ autoTranslate($akhirFormatted) }}
+                                        <span class="font-medium">Periode:</span>
+                                        {{ $mulaiFormatted }} → {{ $akhirFormatted }}
                                     </p>
                                 </div>
 
@@ -296,7 +296,7 @@
 
                                             <img class="pu-thumbnail"
                                                  src="https://img.youtube.com/vi/{{ $youtube_id }}/hqdefault.jpg"
-                                                 alt="{{ autoTranslate('Video ') . autoTranslate($nama) }}"
+                                                 alt="Video {{ $nama }}"
                                                  loading="lazy"
                                                  onerror="this.src='https://img.youtube.com/vi/{{ $youtube_id }}/0.jpg'">
 
@@ -349,7 +349,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                     d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
-                                            <p class="text-xs text-gray-400 dark:text-gray-500">{{ autoTranslate('Tidak ada preview') }}</p>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500">Tidak ada preview</p>
                                         </div>
                                     @endif
 
@@ -364,7 +364,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                             </svg>
-                                            {{ autoTranslate('Demo') }}
+                                            Demo
                                         </a>
                                     @endif
                                     @if($linkGithub)
@@ -385,7 +385,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            {{ autoTranslate('Video') }}
+                                            Video
                                         </a>
                                     @endif
                                 </div>
@@ -394,10 +394,7 @@
                                 <div class="pt-3 mt-2 border-t border-gray-100 dark:border-gray-800 shrink-0">
                                     <div class="flex justify-between items-center gap-2">
                                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                            {{ autoTranslate('Diposting') }}
-                                            {{ autoTranslate($project->created_at?->translatedFormat('d M Y H:i') ?? '—') }}
-                                            {{ autoTranslate('oleh') }}
-                                            {{ autoTranslate($userName) }}
+                                            Diposting {{ $project->created_at?->translatedFormat('d M Y H:i') ?? '—' }} Oleh {{ $userName }}
                                         </p>
                                         <div class="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500 shrink-0">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

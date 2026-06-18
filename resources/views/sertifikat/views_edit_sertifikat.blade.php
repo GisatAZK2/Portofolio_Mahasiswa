@@ -1,5 +1,6 @@
 @extends('Layout.Layout')
-@section('title', autoTranslate('Edit Sertifikat'))
+@section('title','Edit Sertifikat')
+
 @section('content')
     <div class="min-h-screen">
         <div class=" p-8">
@@ -47,14 +48,14 @@
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
-                        placeholder="{{autoTranslate('Contoh: Sertifikat Kompetensi Programming')}}"
+                        placeholder="Contoh: Sertifikat Kompetensi Programming"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
                                       placeholder-gray-500 dark:placeholder-gray-400
                                       shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('nama_sertifikat') border-red-500 @enderror">
                     @error('nama_sertifikat')
-                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -66,14 +67,14 @@
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
-                        placeholder="{{autoTranslate('Contoh: Dicoding, Coursera, Kampus Merdeka')}}"
+                        placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
                                       placeholder-gray-500 dark:placeholder-gray-400
                                       shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('lembaga_penerbit') border-red-500 @enderror">
                     @error('lembaga_penerbit')
-                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -92,7 +93,7 @@
                                       placeholder-gray-500 dark:placeholder-gray-400
                                       shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
                     @error('tanggal_terbit')
-                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -103,7 +104,7 @@
                             {{ old('permanent', $sertifikat->expired_date ? false : true) ? 'checked' : '' }}
                             class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                         <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">
-                            {{ autoTranslate('Sertifikat berlaku permanen') }}
+                            Sertifikat berlaku permanen
                         </span>
                     </label>
                 </div>
@@ -123,7 +124,7 @@
                                       placeholder-gray-500 dark:placeholder-gray-400
                                       shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('expired_date') border-red-500 @enderror">
                     @error('expired_date')
-                        <p class="mt-1 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-200" data-translate="expired_date_desc"
                         data-translate-page="sertifikat_edit"></p>
@@ -200,7 +201,7 @@
                         </div>
                     </div>
                     @error('link_sertifikat')
-                        <p class="mt-2 text-sm text-red-600">{{ autoTranslate($message) }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                     <p class="mt-2 text-xs text-gray-500 flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
