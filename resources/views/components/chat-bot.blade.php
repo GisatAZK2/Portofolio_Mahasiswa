@@ -1,8 +1,8 @@
 <button id="chatBotButton"
     class="fixed bottom-50 sm:bottom-50 right-4 sm:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-1 sm:p-1 rounded-2xl shadow-lg transition-all duration-300 z-[100] group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
     style="cursor: grab; user-select: none;">
-    <img src="{{ asset('assets/Logo.svg') }}" class="w-6 h-6 sm:w-6 sm:h-7 group-[.chat-open]:hidden rounded-3xl">
-    <img src="{{ asset('assets/Logo.svg') }}" class="w-5 h-5 sm:w-5 sm:h-6 hidden group-[.chat-open]:block rounded-3xl">
+    <img src="{{ asset('assets/Logo.svg') }}" class="w-10 h-10 sm:w-8 sm:h-8 group-[.chat-open]:hidden rounded-3xl">
+    <img src="{{ asset('assets/Logo.svg') }}" class="w-9 h-9 sm:w-7 sm:h-7 hidden group-[.chat-open]:block rounded-3xl">
 </button>
 
 <!-- BUBBLE NOTIFICATION -->

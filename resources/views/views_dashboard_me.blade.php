@@ -691,7 +691,7 @@
                 <div class="mb-6">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100"
                         data-translate="my_content"
-                        data-translate-page="dashboard">Konten Saya</h2>
+                        data-translate-page="dashboard_me">Konten Saya</h2>
                 </div>
 
                 <!-- Postingan Sendiri -->
@@ -699,8 +699,8 @@
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
                         <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300"
-                            data-translate="your_posts"
-                            data-translate-page="dashboard">Postingan Anda</h3>
+                            data-translate="ur_post"
+                            data-translate-page="dashboard_me">Postingan Anda</h3>
                     </div>
 
                     <div id="postingan-skeleton" class="space-y-6">
