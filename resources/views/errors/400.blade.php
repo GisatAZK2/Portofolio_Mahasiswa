@@ -17,7 +17,7 @@
         <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-2">400</h1>
         <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Bad Request</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-6">
-            {{ autoTranslate('Permintaan yang Anda buat tidak valid atau tidak dapat diproses. Periksa kembali URL atau data yang Anda kirimkan.') }}
+            Permintaan yang Anda buat tidak valid atau tidak dapat diproses. Periksa kembali URL atau data yang Anda kirimkan.
         </p>
     </div>
 
@@ -25,20 +25,20 @@
     <div class="space-y-3">
         <a href="{{ url('/') }}"
             class="w-full block px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
-            {{ autoTranslate('Kembali ke Beranda') }}
+            Kembali ke Beranda
         </a>
         <button onclick="window.history.back()"
             class="w-full px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-            {{ autoTranslate('Kembali') }}
+           Kembali
         </button>
     </div>
 
     <!-- Support -->
     <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
         <p class="text-sm text-gray-600 dark:text-gray-400">
-            {{ autoTranslate('Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.') }}
+            Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.
             <a href="{{ route('help', app()->getLocale()) }}" class="text-indigo-600 dark:text-indigo-400 hover:underline">
-                {{ autoTranslate('Hubungi Support') }}
+                Hubungi Support
             </a>
         </p>
     </div>

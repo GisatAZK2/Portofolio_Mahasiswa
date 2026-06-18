@@ -1,6 +1,6 @@
 @extends('Layout.Layout')
 
-@section('title', autoTranslate('Leaderboard'))
+@section('title', 'Leaderboard')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
@@ -9,17 +9,17 @@
         <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
             <div class="md:w-2/3">
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-                    {{ autoTranslate('Leaderboard') }}
+                    Leaderboard
                 </h1>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                    {{ autoTranslate('Papan peringkat pemain berdasarkan total skor tertinggi dari semua permainan.') }}
+                    Papan peringkat pemain berdasarkan total skor tertinggi dari semua permainan.
                 </p>
             </div>
             
             <div class="md:w-1/3">
                 <form method="GET" action="{{ route('game.leaderboard') }}" id="filterForm" class="w-full">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        {{ autoTranslate('Filter berdasarkan game') }}
+                        Filter berdasarkan game
                     </label>
                     <select name="game" onchange="this.form.submit()" 
                             class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition">
@@ -41,7 +41,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
                     <div class="p-6">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-6 text-center">
-                            🏆 {{ autoTranslate('Pemain Teratas') }}
+                            🏆 Pemain Teratas
                         </h2>
                         
                         @php
@@ -210,7 +210,7 @@
                         @else
                             <div class="text-center py-8">
                                 <div class="text-5xl mb-3">🏆</div>
-                                <div class="text-gray-500 dark:text-gray-400">{{ autoTranslate('Belum ada pemain') }}</div>
+                                <div class="text-gray-500 dark:text-gray-400">Belum ada pemain</div>
                             </div>
                         @endif
                     </div>
@@ -224,29 +224,29 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-yellow-500">{{ $games->total() }}</div>
-                                <div class="text-xs text-gray-500">{{ autoTranslate('Total Pemain') }}</div>
+                                <div class="text-xs text-gray-500">Total Pemain</div>
                             </div>
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-blue-500">{{ $games->sum('games_played') }}</div>
-                                <div class="text-xs text-gray-500">{{ autoTranslate('Total Game Dimainkan') }}</div>
+                                <div class="text-xs text-gray-500">Total Game Dimainkan</div>
                             </div>
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-green-500">{{ number_format($games->isNotEmpty() ? $games->first()['total_score'] : 0) }}</div>
-                                <div class="text-xs text-gray-500">{{ autoTranslate('Skor Tertinggi') }}</div>
+                                <div class="text-xs text-gray-500">Skor Tertinggi</div>
                             </div>
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-purple-500">{{ $gameNames->count() }}</div>
-                                <div class="text-xs text-gray-500">{{ autoTranslate('Jenis Game') }}</div>
+                                <div class="text-xs text-gray-500">Jenis Game</div>
                             </div>
                         </div>
                         
                         <div class="hidden md:grid grid-cols-12 gap-3 px-4 py-3 mb-2 bg-gray-50 dark:bg-gray-900/50 rounded-xl text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             <div class="col-span-1 text-center">#</div>
-                            <div class="col-span-4">{{ autoTranslate('Pemain') }}</div>
-                            <div class="col-span-2">{{ autoTranslate('Game Dimainkan') }}</div>
-                            <div class="col-span-2">{{ autoTranslate('Total waktu') }}</div>
-                            <div class="col-span-1 text-center">{{ autoTranslate('Game') }}</div>
-                            <div class="col-span-2 text-right">{{ autoTranslate('Total Skor') }}</div>
+                            <div class="col-span-4">Pemain</div>
+                            <div class="col-span-2">Game Dimainkan</div>
+                            <div class="col-span-2">Total waktu</div>
+                            <div class="col-span-1 text-center">Game</div>
+                            <div class="col-span-2 text-right">Total Skor</div>
                         </div>
                         
                         <div class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -343,7 +343,7 @@
                                                     {{ ucfirst($item['game_name']) }}
                                                 </span>
                                             @else
-                                                <span class="text-xs text-gray-400">{{ autoTranslate('Multiple') }}</span>
+                                                <span class="text-xs text-gray-400">Multiple</span>
                                             @endif
                                         </div>
                                         
@@ -360,8 +360,8 @@
                             @empty
                                 <div class="py-12 text-center">
                                     <div class="text-6xl mb-4">🎮</div>
-                                    <div class="text-gray-500 dark:text-gray-400 text-lg">{{ autoTranslate('Tidak ada hasil ditemukan') }}</div>
-                                    <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">{{ autoTranslate('Belum ada data permainan') }}</p>
+                                    <div class="text-gray-500 dark:text-gray-400 text-lg">Tidak ada hasil ditemukan</div>
+                                    <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Belum ada data permainan</p>
                                 </div>
                             @endforelse
                         </div>

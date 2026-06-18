@@ -8,11 +8,11 @@
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden p-6 md:p-8">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                        {{ autoTranslate('Teka Teki Silang') }}
+                        Teka Teki Silang
                     </h1>
                     <div class="text-sm">
-                        <div id="timer" class="font-medium text-gray-900 dark:text-gray-100">{{ autoTranslate('Waktu tersisa:') }} <span id="timer-seconds">300</span>s</div>
-                        <div id="questions-left" class="text-xs text-gray-600 dark:text-gray-400">{{ autoTranslate('Sisa soal:') }} <span id="remaining-count">5</span></div>
+                        <div id="timer" class="font-medium text-gray-900 dark:text-gray-100">Waktu tersisa: <span id="timer-seconds">300</span>s</div>
+                        <div id="questions-left" class="text-xs text-gray-600 dark:text-gray-400">Sisa soal: <span id="remaining-count">5</span></div>
                     </div>
                 </div>
 
@@ -27,11 +27,11 @@
                     <!-- Questions -->
                     <div>
                         <div class="mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ autoTranslate('Pertanyaan Mendatar') }}</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Pertanyaan Mendatar</h3>
                             <div id="horizontal-questions" class="space-y-2"></div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ autoTranslate('Pertanyaan Menurun') }}</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Pertanyaan Menurun</h3>
                             <div id="vertical-questions" class="space-y-2"></div>
                         </div>
                     </div>
@@ -41,13 +41,13 @@
                     <div id="selected-question" class="text-sm text-gray-700 dark:text-gray-300 mb-2"></div>
                     <input id="answer" type="text" 
                         class="w-full sm:w-96 h-12 text-center text-lg rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
-                        placeholder="{{ autoTranslate('Masukkan jawaban') }}">
+                        placeholder="Masukkan jawaban">
 
                     <button id="checkBtn"
-                        class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full shadow-md">{{ autoTranslate('CEK JAWABAN') }}</button>
+                        class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full shadow-md">CEK JAWABAN</button>
 
                     <div id="result" class="mt-4 text-gray-800 dark:text-gray-200 text-lg"></div>
-                    <div class="mt-2 text-gray-800 dark:text-gray-200">{{ autoTranslate('Skor') }}: <span
+                    <div class="mt-2 text-gray-800 dark:text-gray-200"> Skor : <span
                             id="score">0</span></div>
                     <div class="mt-1 text-xs text-gray-600 dark:text-gray-400" id="bestScoreInfo"></div>
                 </div>
@@ -361,9 +361,9 @@
                         const data = await response.json();
                         highestScore = data.highest_score || 0;
                         if (bestScoreInfoEl && highestScore > 0) {
-                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore}</span>`;
+                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ 'Skor tertinggi Anda:' }} ${highestScore}</span>`;
                         } else if (bestScoreInfoEl) {
-                            bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">{{ autoTranslate('Selesaikan semua teka-teki!') }}</span>`;
+                            bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">{{ 'Selesaikan semua teka-teki!' }}</span>`;
                         }
                     }
                 } catch (err) {
@@ -404,7 +404,7 @@
                     if (score > highestScore) {
                         highestScore = score;
                         if (bestScoreInfoEl) {
-                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore} ✨ {{ autoTranslate('Rekor Baru!') }}</span>`;
+                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ 'Skor tertinggi Anda:' }} ${highestScore} ✨ {{ 'Rekor Baru!' }}</span>`;
                         }
                     }
                     
@@ -463,9 +463,9 @@
                 if (completed) {
                     updateScoreDisplay();
                     await sendScore(true);
-                    resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 {{ autoTranslate('Selamat! Anda menyelesaikan semua teka-teki!') }} 🎉</span>';
+                    resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 {{ 'Selamat! Anda menyelesaikan semua teka-teki!' }} 🎉</span>';
                 } else {
-                    resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ {{ autoTranslate('Waktu habis!') }}</span>';
+                    resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ {{ 'Waktu habis!' }}</span>';
                 }
                 
                 setTimeout(() => {

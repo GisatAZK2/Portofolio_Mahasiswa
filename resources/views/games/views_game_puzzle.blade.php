@@ -8,11 +8,11 @@
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden p-6 md:p-8">
                 <div class="flex items-center justify-between mb-4">
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                        {{ autoTranslate('Game Puzzle') }}
+                        Game Puzzle
                     </h1>
                     <div class="text-sm">
-                        <div id="timer" class="font-medium text-gray-900 dark:text-gray-100">{{ autoTranslate('Waktu tersisa:') }} <span id="timer-seconds">180</span>s</div>
-                        <div id="moves" class="text-xs text-gray-600 dark:text-gray-400">{{ autoTranslate('Langkah:') }} <span id="moves-count">0</span></div>
+                        <div id="timer" class="font-medium text-gray-900 dark:text-gray-100">Waktu tersisa: <span id="timer-seconds">180</span>s</div>
+                        <div id="moves" class="text-xs text-gray-600 dark:text-gray-400">Langkah: <span id="moves-count">0</span></div>
                     </div>
                 </div>
 
@@ -25,11 +25,11 @@
                 <div class="flex flex-col items-center">
                     <div class="flex gap-4 mb-4">
                         <button id="shuffleBtn"
-                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full shadow-md">{{ autoTranslate('ACAK') }}</button>
+                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full shadow-md">ACAK</button>
                     </div>
 
                     <div id="result" class="mt-4 text-gray-800 dark:text-gray-200 text-lg"></div>
-                    <div class="mt-2 text-gray-800 dark:text-gray-200">{{ autoTranslate('Skor') }}: <span
+                    <div class="mt-2 text-gray-800 dark:text-gray-200">Skor: <span
                             id="score">0</span></div>
                     <div class="mt-1 text-xs text-gray-600 dark:text-gray-400" id="bestScoreInfo"></div>
                 </div>
@@ -290,9 +290,9 @@
                         const data = await response.json();
                         highestScore = data.highest_score || 0;
                         if (bestScoreInfoEl && highestScore > 0) {
-                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore}</span>`;
+                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ 'Skor tertinggi Anda:' }} ${highestScore}</span>`;
                         } else if (bestScoreInfoEl) {
-                            bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">{{ autoTranslate('Selesaikan puzzle dengan langkah sedikit!') }}</span>`;
+                            bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">{{ 'Selesaikan puzzle dengan langkah sedikit!' }}</span>`;
                         }
                     }
                 } catch (err) {
@@ -333,7 +333,7 @@
                     if (score > highestScore) {
                         highestScore = score;
                         if (bestScoreInfoEl) {
-                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ autoTranslate('Skor tertinggi Anda:') }} ${highestScore} ✨ {{ autoTranslate('Rekor Baru!') }}</span>`;
+                            bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">{{ 'Skor tertinggi Anda:' }} ${highestScore} ✨ {{ 'Rekor Baru!' }}</span>`;
                         }
                     }
                     
@@ -391,10 +391,10 @@
                 
                 if (completed) {
                     updateScore();
-                    resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 {{ autoTranslate('Selamat! Puzzle terselesaikan!') }} 🎉</span>';
+                    resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 {{ 'Selamat! Puzzle terselesaikan!' }} 🎉</span>';
                     await sendScore(true);
                 } else {
-                    resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ {{ autoTranslate('Waktu habis!') }}</span>';
+                    resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ {{ 'Waktu habis!' }}</span>';
                 }
                 
                 // Show result and redirect

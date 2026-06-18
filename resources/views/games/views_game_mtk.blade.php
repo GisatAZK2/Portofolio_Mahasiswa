@@ -1,6 +1,6 @@
 @extends('Layout.Layout')
 
-@section('title', autoTranslate('Game Matematika'))
+@section('title', Game Matematika')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-400 to-teal-600 dark:from-gray-900 dark:to-gray-800 py-8">
@@ -10,25 +10,30 @@
             <!-- Header Game -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
-                    {{ autoTranslate('Game Matematika') }}
+                    Game Matematika
                 </h1>
                 <div class="flex gap-3">
                     <!-- Pilih Operasi -->
                     <select id="operatorSelect" class="px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium">
-                        <option value="+">➕ {{ autoTranslate('Tambah') }}</option>
-                        < value="-">➖ {{ autoTranslate('Kurang') }}</option>
-                        <option value="*">✖️ {{ autoTranslate('Kali') }}</option>
-                        <option value="/">➗ {{ autoTranslate('Bagi') }}</option>
+                        <option value="+">➕ Game Matematika
+                </h1>
+                <div class="flex gap-3">
+                    <!-- Pilih Operasi -->
+                    <select id="operatorSelect" class="px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium"></select>
+                        <option value="+">➕ Tambah</option>
+                        <option value="-">➖ Kurang</option>
+                        <option value="*">✖️ Kali</option>
+                        <option value="/">➗ Bagi</option>
                     </select>
                     <!-- Pilih Level -->
                     <select id="levelSelect" class="px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium">
-                        <option value="easy">🌱 {{ autoTranslate('Mudah') }}</option>
-                        <option value="medium" selected>⚡ {{ autoTranslate('Sedang') }}</option>
-                        <option value="hard">🔥 {{ autoTranslate('Sulit') }}</option>
+                        <option value="easy">🌱 Mudah</option>
+                        <option value="medium" selected>⚡ Sedang</option>
+                        <option value="hard">🔥 Sulit</option>
                     </select>
                     <!-- Tombol Reset Game -->
                     <button id="resetGameBtn" class="px-3 py-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white text-sm shadow-md transition">
-                        ↻ {{ autoTranslate('Ulang') }}
+                        ↻ Ulang
                     </button>
                 </div>
             </div>
@@ -36,7 +41,7 @@
             <!-- Timer & Progress -->
             <div class="mb-6">
                 <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    <span>{{ autoTranslate('Waktu tersisa') }}</span>
+                    <span>Waktu tersisa</span>
                     <span id="timerDisplay">02:00</span>
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -58,24 +63,24 @@
             <!-- Tombol Submit & Statistik -->
             <div class="flex flex-col items-center gap-4">
                 <button id="submitBtn" class="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg transform transition hover:scale-105">
-                    {{ autoTranslate('CEK JAWABAN') }}
+                    CEK JAWABAN
                 </button>
                 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center w-full max-w-md mt-2">
                     <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-2">
-                        <div class="text-xs text-gray-500">{{ autoTranslate('Skor') }}</div>
+                        <div class="text-xs text-gray-500">Skor</div>
                         <div id="scoreValue" class="text-2xl font-bold text-teal-600">0</div>
                     </div>
                     <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-2">
-                        <div class="text-xs text-gray-500">{{ autoTranslate('Benar') }}</div>
+                        <div class="text-xs text-gray-500">Benar</div>
                         <div id="correctCount" class="text-2xl font-bold text-green-600">0</div>
                     </div>
                     <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-2">
-                        <div class="text-xs text-gray-500">{{ autoTranslate('Salah') }}</div>
+                        <div class="text-xs text-gray-500">Salah</div>
                         <div id="wrongCount" class="text-2xl font-bold text-red-600">0</div>
                     </div>
                     <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-2">
-                        <div class="text-xs text-gray-500">{{ autoTranslate('Akurasi') }}</div>
+                        <div class="text-xs text-gray-500">Akurasi</div>
                         <div id="accuracy" class="text-2xl font-bold text-indigo-600">0%</div>
                     </div>
                 </div>
@@ -279,7 +284,7 @@ class MathGame {
         
         const userAnswer = parseInt(this.answerInput.value.trim(), 10);
         if (isNaN(userAnswer)) {
-            this.resultMessage.innerText = '⚠️ ' + autoTranslate('Masukkan angka!');
+            this.resultMessage.innerText = '⚠️ ' + 'Masukkan angka!';
             return;
         }
         
@@ -289,11 +294,11 @@ class MathGame {
         if (isCorrect) {
             this.score += points;
             this.correct++;
-            this.resultMessage.innerHTML = `✅ ${autoTranslate('Benar!')} +${points} ${autoTranslate('poin')}`;
+            this.resultMessage.innerHTML = `✅ ${'Benar!'} +${points} ${'poin'}`;
             this.resultMessage.className = 'text-lg font-medium text-green-600';
         } else {
             this.wrong++;
-            this.resultMessage.innerHTML = `❌ ${autoTranslate('Salah! Jawaban:')} ${this.correctAnswer}`;
+            this.resultMessage.innerHTML = `❌ ${'Salah! Jawaban:'} ${this.correctAnswer}`;
             this.resultMessage.className = 'text-lg font-medium text-red-600';
         }
         
@@ -371,15 +376,15 @@ class MathGame {
         
         // Tampilkan pesan akhir
         const message = isNewRecord 
-            ? `🎉 ${autoTranslate('Selesai! Skor akhir:')} ${this.score} 🎉\n🏆 ${autoTranslate('Rekor Baru!')} 🏆`
-            : `${autoTranslate('Selesai! Skor akhir:')} ${this.score}\n📊 ${autoTranslate('Skor tertinggi Anda:')} ${this.highestScore}`;
+            ? `🎉 ${'Selesai! Skor akhir:'} ${this.score} 🎉\n🏆 ${'Rekor Baru!'} 🏆`
+            : `${'Selesai! Skor akhir:'} ${this.score}\n📊 ${'Skor tertinggi Anda:'} ${this.highestScore}`;
         
         if (typeof Swal !== 'undefined') {
             await Swal.fire({
-                title: autoTranslate('Permainan Selesai'),
+                title: 'Permainan Selesai',
                 html: message.replace(/\n/g, '<br>'),
                 icon: isNewRecord ? 'success' : 'info',
-                confirmButtonText: autoTranslate('Lihat Peringkat')
+                confirmButtonText: 'Lihat Peringkat'
             });
         } else {
             alert(message);
@@ -392,7 +397,7 @@ class MathGame {
     
     async resetGame(confirmReset = true) {
         if (confirmReset) {
-            const ok = confirm(autoTranslate('Mulai permainan baru? Skor saat ini akan hilang.'));
+            const ok = confirm('Mulai permainan baru? Skor saat ini akan hilang.');
             if (!ok) return;
         }
         // Hentikan timer lama
@@ -508,9 +513,9 @@ class MathGame {
                 this.highestScore = data.highest_score || 0;
                 if (this.bestScoreInfo) {
                     if (this.highestScore > 0) {
-                        this.bestScoreInfo.innerHTML = `🏆 ${autoTranslate('Skor tertinggi Anda:')} ${this.highestScore}`;
+                        this.bestScoreInfo.innerHTML = `🏆 ${'Skor tertinggi Anda:'} ${this.highestScore}`;
                     } else {
-                        this.bestScoreInfo.innerHTML = `🎯 ${autoTranslate('Mainkan dan raih skor tertinggi!')}`;
+                        this.bestScoreInfo.innerHTML = `🎯 ${'Mainkan dan raih skor tertinggi!'}`;
                     }
                 }
             }
@@ -542,7 +547,7 @@ class MathGame {
             if (this.score > this.highestScore) {
                 this.highestScore = this.score;
                 if (this.bestScoreInfo) {
-                    this.bestScoreInfo.innerHTML = `🏆 ${autoTranslate('Skor tertinggi Anda:')} ${this.highestScore} ✨ ${autoTranslate('Rekor Baru!')}`;
+                    this.bestScoreInfo.innerHTML = `🏆 ${'Skor tertinggi Anda:'} ${this.highestScore} ✨ ${'Rekor Baru!'}`;
                 }
             }
         } catch(e) { console.error(e); }
