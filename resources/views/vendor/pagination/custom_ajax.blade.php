@@ -76,25 +76,3 @@
         <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $paginator->lastPage() }}</span>
     </div>
 @endif
-
-<script>
-    document.querySelectorAll('.pagination-link').forEach(link => {
-        link.addEventListener('click', function (e) {
-            const groupName = this.getAttribute('data-group');
-            sessionStorage.setItem('scrollToGroup', groupName);
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const groupName = sessionStorage.getItem('scrollToGroup');
-        if (groupName) {
-            const element = document.querySelector(`[data-pagination-group="${groupName}"]`);
-            if (element) {
-                setTimeout(function () {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-            }
-            sessionStorage.removeItem('scrollToGroup');
-        }
-    });
-</script>

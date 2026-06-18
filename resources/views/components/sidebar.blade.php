@@ -1,3 +1,50 @@
+@php
+$sidebarMenus = [
+    ['key' => 'dashboard_nonuser', 'url' => route('dashboard', ['locale' => app()->getLocale()])]
+];
+if (Auth::check()) {
+    $user = Auth::user();
+    if ($user->role !== 'admin' && $user->role !== 'dosen') {
+        $sidebarMenus[] = ['key' => 'my_dashboard', 'url' => route('dashboard.me', ['locale' => app()->getLocale()])];
+        $sidebarMenus[] = ['key' => 'project_mahasiswa_saya', 'url' => route('project.index', ['locale' => app()->getLocale()])];
+        $sidebarMenus[] = ['key' => 'project_mahasiswa_saya_tambah', 'url' => route('project.create', ['locale' => app()->getLocale()])];
+        $sidebarMenus[] = ['key' => 'sertifikat_mahasiswa_saya', 'url' => route('sertifikat.index', ['locale' => app()->getLocale()])];
+        $sidebarMenus[] = ['key' => 'sertifikat_mahasiswa_saya_tambah', 'url' => route('sertifikat.create', ['locale' => app()->getLocale()])];
+    }
+    if ($user->role === 'admin') {
+        $sidebarMenus[] = ['key' => 'admin_dashboard', 'url' => route('admin.index')];
+        $sidebarMenus[] = ['key' => 'semua_user', 'url' => route('admin.users.index')];
+        $sidebarMenus[] = ['key' => 'tambah_user', 'url' => route('admin.users.ViewCreate')];
+        $sidebarMenus[] = ['key' => 'lihat_angkatan', 'url' => route('admin.angkatan.index')];
+        $sidebarMenus[] = ['key' => 'tambah_angkatan', 'url' => route('admin.angkatan.create')];
+        $sidebarMenus[] = ['key' => 'lihat_prodi', 'url' => route('admin.prodi.index')];
+        $sidebarMenus[] = ['key' => 'tambah_prodi', 'url' => route('admin.prodi.create')];
+        $sidebarMenus[] = ['key' => 'lihat_keahlian', 'url' => route('admin.keahlian.index')];
+        $sidebarMenus[] = ['key' => 'tambah_keahlian', 'url' => route('admin.keahlian.create')];
+        $sidebarMenus[] = ['key' => 'lihat_proyek', 'url' => route('admin.projects.index')];
+        $sidebarMenus[] = ['key' => 'tambah_proyek', 'url' => route('admin.projects.create')];
+        $sidebarMenus[] = ['key' => 'lihat_sertifikat', 'url' => route('admin.sertifikat.index')];
+        $sidebarMenus[] = ['key' => 'tambah_sertifikat', 'url' => route('admin.sertifikat.create')];
+        $sidebarMenus[] = ['key' => 'lihat_notifikasi', 'url' => route('admin.notifications.index')];
+        $sidebarMenus[] = ['key' => 'tambah_notifikasi', 'url' => route('admin.notifications.create')];
+    }
+    if ($user->role === 'dosen') {
+        $sidebarMenus[] = ['key' => 'dashboard_dosen', 'url' => route('dosen.dashboard')];
+        $sidebarMenus[] = ['key' => 'see_mhs', 'url' => route('dosen.users.index')];
+        $sidebarMenus[] = ['key' => 'add_mhs', 'url' => route('dosen.users.ViewCreate')];
+        $sidebarMenus[] = ['key' => 'see_pjt', 'url' => route('dosen.projects.index')];
+        $sidebarMenus[] = ['key' => 'add_pjt', 'url' => route('dosen.projects.create')];
+        $sidebarMenus[] = ['key' => 'see_stk', 'url' => route('dosen.sertifikat.index')];
+        $sidebarMenus[] = ['key' => 'add_stk', 'url' => route('dosen.sertifikat.create')];
+    }
+    $sidebarMenus[] = ['key' => 'postingan', 'url' => route('postingan.index')];
+    $sidebarMenus[] = ['key' => 'postingan_tambah', 'url' => route('postingan.create')];
+} else {
+    $sidebarMenus[] = ['key' => 'project_mahasiswa', 'url' => route('project.project_user')];
+}
+@endphp
+<div id="sidebar-config" class="hidden" data-menus="{{ json_encode($sidebarMenus) }}"></div>
+
 <aside id="sidebar"
     class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg
            transform -translate-x-full lg:translate-x-0 transition-all duration-300 ease-in-out
@@ -583,7 +630,7 @@
 
     {{-- ======================== SETTING DROPDOWN ======================== --}}
     <div class="relative mt-auto shrink-0 border-t border-gray-200 dark:border-gray-700">
-        <button onclick="toggleDropdown('setting')"
+        <button onclick="toggleSidebarSettingDropdown()"
             class="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
             <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -597,7 +644,7 @@
             class="hidden absolute bottom-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-t-xl shadow-2xl p-4 z-50">
             <div class="flex items-center justify-between mb-3">
                 <span class="text-gray-700 dark:text-gray-300 text-sm" data-translate="mode">Mode Tampilan</span>
-                <button id="darkModeBtn" onclick="toggleDarkMode()"
+                <button id="darkModeBtn" onclick="toggleSidebarDarkMode()"
                     class="px-3 py-1 rounded-lg text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                     Dark Mode
                 </button>
@@ -747,338 +794,5 @@
     </div>
     @endauth
 
+
 </aside>
-
-{{-- ======================== SIDEBAR UTILITY STYLES ======================== --}}
-<style>
-[x-cloak] { display: none !important; }
-
-/* Section Labels */
-.sb-section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: #6b7280;
-    padding: 8px 12px 4px;
-}
-.dark .sb-section-label {
-    color: #4b5563;
-}
-
-/* Nav Items */
-.sb-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    margin: 1px 4px;
-    border-radius: 8px;
-    color: #4b5563;
-    font-size: 13.5px;
-    text-decoration: none;
-    transition: background .15s, color .15s;
-    cursor: pointer;
-    background: none;
-    border: none;
-    text-align: left;
-}
-.dark .sb-item {
-    color: #9ca3af;
-}
-.sb-item:hover {
-    background: #f3f4f6;
-    color: #111827;
-}
-.dark .sb-item:hover {
-    background: #1f2937;
-    color: #f3f4f6;
-}
-.sb-item:hover .sb-icon {
-    stroke: #3b82f6;
-}
-.dark .sb-item:hover .sb-icon {
-    stroke: #60a5fa;
-}
-.sb-active {
-    background: #eff6ff !important;
-    color: #1d4ed8 !important;
-}
-.dark .sb-active {
-    background: #1e3a5f !important;
-    color: #60a5fa !important;
-}
-.sb-active .sb-icon {
-    stroke: #1d4ed8 !important;
-}
-.dark .sb-active .sb-icon {
-    stroke: #60a5fa !important;
-}
-
-/* Icons */
-.sb-icon {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-    stroke: #9ca3af;
-    transition: stroke .15s;
-}
-.dark .sb-icon {
-    stroke: #6b7280;
-}
-.sb-chevron {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    stroke: #9ca3af;
-    transition: transform .2s;
-}
-.dark .sb-chevron {
-    stroke: #6b7280;
-}
-
-/* Sub Menu */
-.sb-sub-group {
-    padding: 2px 4px 4px;
-}
-.sb-sub {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px 6px 34px;
-    margin: 1px 0;
-    border-radius: 7px;
-    color: #6b7280;
-    font-size: 12.5px;
-    text-decoration: none;
-    transition: background .15s, color .15s;
-}
-.dark .sb-sub {
-    color: #9ca3af;
-}
-.sb-sub:hover {
-    background: #f3f4f6;
-    color: #111827;
-}
-.dark .sb-sub:hover {
-    background: #1f2937;
-    color: #e5e7eb;
-}
-.sb-sub-active {
-    color: #1d4ed8 !important;
-    background: #eff6ff;
-}
-.dark .sb-sub-active {
-    color: #60a5fa !important;
-    background: #1e3a5f;
-}
-
-/* Badges */
-.sb-badge-role {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 20px;
-    flex-shrink: 0;
-}
-.sb-badge-role.admin {
-    background: #dbeafe;
-    color: #1e40af;
-}
-.dark .sb-badge-role.admin {
-    background: #1e3a5f;
-    color: #93c5fd;
-}
-.sb-badge-role.dosen {
-    background: #d1fae5;
-    color: #065f46;
-}
-.dark .sb-badge-role.dosen {
-    background: #064e3b;
-    color: #6ee7b7;
-}
-.sb-badge-role.mhs {
-    background: #f3e8ff;
-    color: #6b21a5;
-}
-.dark .sb-badge-role.mhs {
-    background: #3b0764;
-    color: #d8b4fe;
-}
-
-/* Profile Items */
-.sb-profile-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 14px;
-    color: #4b5563;
-    font-size: 13px;
-    text-decoration: none;
-    transition: background .15s, color .15s;
-    cursor: pointer;
-    background: none;
-    border: none;
-    width: 100%;
-}
-.dark .sb-profile-item {
-    color: #9ca3af;
-}
-.sb-profile-item:hover {
-    background: #f9fafb;
-    color: #111827;
-}
-.dark .sb-profile-item:hover {
-    background: #1f2937;
-    color: #f9fafb;
-}
-
-/* Scrollbar */
-.scrollbar-thin::-webkit-scrollbar {
-    width: 3px;
-}
-.scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 4px;
-}
-.dark .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #374151;
-}
-</style>
-
-{{-- ======================== SCRIPTS ======================== --}}
-<script>
-function previewPhoto(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => document.getElementById('preview-photo').src = e.target.result;
-    reader.readAsDataURL(file);
-}
-
-function toggleDropdown(menu) {
-    const el = document.getElementById('settingMenu');
-    const arrow = document.getElementById('settingArrow');
-    el.classList.toggle('hidden');
-    arrow.classList.toggle('rotate-180');
-}
-
-function toggleDarkMode() {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('darkMode', isDark);
-    const btn = document.getElementById('darkModeBtn');
-    if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-}
-
-// Inisialisasi dark mode dari localStorage
-if (localStorage.getItem('darkMode') === 'true') {
-    document.documentElement.classList.add('dark');
-    const btn = document.getElementById('darkModeBtn');
-    if (btn) btn.textContent = 'Light Mode';
-}
-
-// Tutup setting dropdown saat klik di luar
-document.addEventListener('click', function(e) {
-    const settingMenu = document.getElementById('settingMenu');
-    if (!settingMenu) return;
-    const isToggleBtn = e.target.closest('button[onclick*="toggleDropdown"]');
-    if (!isToggleBtn && !settingMenu.contains(e.target)) {
-        settingMenu.classList.add('hidden');
-        document.getElementById('settingArrow')?.classList.remove('rotate-180');
-    }
-});
-
-
-// Search functionality
-const searchInput = document.getElementById('sidebarSearch');
-const searchResults = document.getElementById('searchResults');
-
-const allMenus = [
-    { key: "dashboard_nonuser", url: "{{ route('dashboard', ['locale' => app()->getLocale()]) }}", role: "all" },
-    @auth
-    @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
-    { key: "my_dashboard", url: "{{ route('dashboard.me', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { key: "project_mahasiswa_saya", url: "{{ route('project.index', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { key: "project_mahasiswa_saya_tambah", url: "{{ route('project.create', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { key: "sertifikat_mahasiswa_saya", url: "{{ route('sertifikat.index', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { key: "sertifikat_mahasiswa_saya_tambah", url: "{{ route('sertifikat.create', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    @endif
-    @if(Auth::user()->role === 'admin')
-    { key: "admin_dashboard", url: "{{ route('admin.index') }}", role: "admin" },
-    { key: "semua_user", url: "{{ route('admin.users.index') }}", role: "admin" },
-    { key: "tambah_user", url: "{{ route('admin.users.ViewCreate') }}", role: "admin" },
-    { key: "lihat_angkatan", url: "{{ route('admin.angkatan.index') }}", role: "admin" },
-    { key: "tambah_angkatan", url: "{{ route('admin.angkatan.create') }}", role: "admin" },
-    { key: "lihat_prodi", url: "{{ route('admin.prodi.index') }}", role: "admin" },
-    { key: "tambah_prodi", url: "{{ route('admin.prodi.create') }}", role: "admin" },
-    { key: "lihat_keahlian", url: "{{ route('admin.keahlian.index') }}", role: "admin" },
-    { key: "tambah_keahlian", url: "{{ route('admin.keahlian.create') }}", role: "admin" },
-    { key: "lihat_proyek", url: "{{ route('admin.projects.index') }}", role: "admin" },
-    { key: "tambah_proyek", url: "{{ route('admin.projects.create') }}", role: "admin" },
-    { key: "lihat_sertifikat", url: "{{ route('admin.sertifikat.index') }}", role: "admin" },
-    { key: "tambah_sertifikat", url: "{{ route('admin.sertifikat.create') }}", role: "admin" },
-    { key: "lihat_notifikasi", url: "{{ route('admin.notifications.index') }}", role: "admin" },
-    { key: "tambah_notifikasi", url: "{{ route('admin.notifications.create') }}", role: "admin" },
-    @endif
-    @if(Auth::user()->role === 'dosen')
-    { key: "dashboard_dosen", url: "{{ route('dosen.dashboard') }}", role: "dosen" },
-    { key: "see_mhs", url: "{{ route('dosen.users.index') }}", role: "dosen" },
-    { key: "add_mhs", url: "{{ route('dosen.users.ViewCreate') }}", role: "dosen" },
-    { key: "see_pjt", url: "{{ route('dosen.projects.index') }}", role: "dosen" },
-    { key: "add_pjt", url: "{{ route('dosen.projects.create') }}", role: "dosen" },
-    { key: "see_stk", url: "{{ route('dosen.sertifikat.index') }}", role: "dosen" },
-    { key: "add_stk", url: "{{ route('dosen.sertifikat.create') }}", role: "dosen" },
-    @endif
-    { key: "postingan", url: "{{ route('postingan.index') }}", role: "all_auth" },
-    { key: "postingan_tambah", url: "{{ route('postingan.create') }}", role: "all_auth" },
-    @endauth
-    @guest
-    { key: "project_mahasiswa", url: "{{ route('project.project_user') }}", role: "guest" },
-    @endguest
-];
-
-// Ambil label menu sesuai bahasa aktif (window.currentLang / window.translations dari translate.js).
-// Fallback ke key itu sendiri kalau translate.js belum sempat load.
-function resolveMenuLabel(key) {
-    const lang = window.currentLang || 'id';
-    const dict = window.translations || {};
-    return dict?.[lang]?.sidebar?.[key]
-        || dict?.id?.sidebar?.[key]
-        || key;
-}
-
-if (searchInput) {
-    searchInput.addEventListener('input', function() {
-        const q = this.value.toLowerCase().trim();
-        if (!q) { searchResults.classList.add('hidden'); return; }
-        const filtered = allMenus
-            .map(m => ({ ...m, name: resolveMenuLabel(m.key) }))
-            .filter(m => m.name.toLowerCase().includes(q));
-        if (!filtered.length) {
-            searchResults.innerHTML = `<div class="px-4 py-3 text-gray-500 text-sm text-center">${resolveMenuLabel('menu_tidak_ditemukan')}</div>`;
-        } else {
-            searchResults.innerHTML = filtered.map(m =>
-                `<a href="${m.url}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-700 text-black dark:text-white text-sm transition-colors">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                    ${m.name}
-                </a>`
-            ).join('');
-        }
-        searchResults.classList.remove('hidden');
-    });
-
-    document.addEventListener('click', e => {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target))
-            searchResults.classList.add('hidden');
-    });
-
-    searchInput.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { searchResults.classList.add('hidden'); searchInput.blur(); }
-    });
-}
-</script>

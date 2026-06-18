@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 
 @section('content')
-    <div class="p-6 lg:p-8 max-w-7xl mx-auto">
+    <div class="p-6 lg:p-8 max-w-7xl mx-auto" data-page-info="popup.learning_corner_saya">
 
         @if(session('success'))
             <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-center gap-3">
@@ -84,11 +84,4 @@
         </section>
 
     </div>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.learning_corner_saya");
-        });
-    </script>
 @endsection

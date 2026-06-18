@@ -127,27 +127,6 @@
                         <p class="mt-2 text-xs text-gray-500 text-center">JPG/PNG • Maks. 2MB</p>
                     </div>
 
-                    <script>
-                        document.getElementById('photo_profile').addEventListener('change', function (e) {
-                            const file = e.target.files[0];
-                            const preview = document.getElementById('profile-preview');
-                            const placeholder = document.getElementById('profile-placeholder');
-                            if (file && file.type.startsWith('image/')) {
-                                const reader = new FileReader();
-                                reader.onload = function (ev) {
-                                    preview.src = ev.target.result;
-                                    preview.classList.remove('hidden');
-                                    placeholder.classList.add('hidden');
-                                };
-                                reader.readAsDataURL(file);
-                            } else {
-                                preview.classList.add('hidden');
-                                placeholder.classList.remove('hidden');
-                                if (file) alert('Hanya gambar yang diperbolehkan!');
-                            }
-                        });
-                    </script>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                         <input type="email" name="email" value="{{ old('email') }}"
@@ -269,67 +248,11 @@
                     </button>
                 </div>
             </form>
+            <!-- Session Alert Data Container -->
+            <div id="session-alert-data" 
+                 class="hidden" 
+                 data-session-warning="{{ session('warning') }}" 
+                 data-errors-all="{{ implode('<br>', $errors->all()) }}"></div>
         </div>
     </main>
-
-    <script>
-        function togglePasswordVisibility(inputId) {
-            const input = document.getElementById(inputId);
-            const button = input.parentElement.querySelector('.toggle-password-btn');
-            const eyeShowIcon = button.querySelector('.eye-icon-show');
-            const eyeHideIcon = button.querySelector('.eye-icon-hide');
-
-            if (input.type === 'password') {
-                input.type = 'text';
-                eyeShowIcon.classList.add('hidden');
-                eyeHideIcon.classList.remove('hidden');
-            } else {
-                input.type = 'password';
-                eyeShowIcon.classList.remove('hidden');
-                eyeHideIcon.classList.add('hidden');
-            }
-        }
-
-        // Preview Background Image
-        const backgroundInput = document.getElementById('background_image');
-        if (backgroundInput) {
-            backgroundInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                const previewContainer = document.getElementById('backgroundPreviewContainer');
-                const previewImage = document.getElementById('backgroundPreview');
-                
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        previewImage.src = ev.target.result;
-                        previewContainer.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    previewContainer.classList.add('hidden');
-                    previewImage.src = '#';
-                    if (file) alert('Hanya gambar yang diperbolehkan!');
-                }
-            });
-        }
-
-        // Sweet Alert for messages
-        @if (session('warning'))
-            Swal.fire({
-                icon: 'warning',
-                title: 'Perhatian!',
-                text: '{{ session('warning') }}',
-                confirmButtonColor: '#2563eb'
-            });
-        @endif
-
-        @if ($errors->any())
-            Swal.fire({
-                icon: 'error',
-                title: 'Validasi Gagal',
-                html: '{!! implode("<br>", $errors->all()) !!}',
-                confirmButtonColor: '#2563eb'
-            });
-        @endif
-    </script>
 @endsection

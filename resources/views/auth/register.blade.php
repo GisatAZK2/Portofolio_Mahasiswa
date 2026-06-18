@@ -408,71 +408,14 @@
                 </a>
             </p>
 
+            <!-- Session Alert Data Container -->
+            <div id="session-alert-data" 
+                 class="hidden" 
+                 data-session-success="{{ session('success') }}" 
+                 data-session-error="{{ session('error') }}" 
+                 data-errors-all="{{ implode('<br>', $errors->all()) }}"
+                 data-is-blocked="{{ $isBlocked ? 'true' : 'false' }}"></div>
         </form>
     </div>
     </main>
-
-    @if(!$isBlocked)
-        <script>
-            function togglePasswordVisibility(inputId) {
-                const input = document.getElementById(inputId);
-                const button = input.parentElement.querySelector('.toggle-password-btn');
-                const eyeShowIcon = button.querySelector('.eye-icon-show');
-                const eyeHideIcon = button.querySelector('.eye-icon-hide');
-
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    eyeShowIcon.classList.add('hidden');
-                    eyeHideIcon.classList.remove('hidden');
-                } else {
-                    input.type = 'password';
-                    eyeShowIcon.classList.remove('hidden');
-                    eyeHideIcon.classList.add('hidden');
-                }
-            }
-        </script>
-    @endif
-
-    <script>
-        // Sweet Alert for success/error messages
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#2563eb',
-                confirmButtonText: 'OK'
-            });
-        @endif
-
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#2563eb',
-                confirmButtonText: 'OK'
-            });
-        @endif
-
-        @if ($errors->any())
-            Swal.fire({
-                icon: 'error',
-                title: 'Validasi Gagal',
-                html: '{!! implode("<br>", $errors->all()) !!}',
-                confirmButtonColor: '#2563eb',
-                confirmButtonText: 'OK'
-            });
-        @endif
-
-        @if($isBlocked)
-            Swal.fire({
-                icon: 'warning',
-                title: 'Pendaftaran Dibatasi',
-                text: 'Anda telah melebihi batas percobaan pendaftaran. Silakan coba lagi besok.',
-                confirmButtonColor: '#2563eb',
-                confirmButtonText: 'Mengerti'
-            });
-        @endif
-    </script>
 @endsection
