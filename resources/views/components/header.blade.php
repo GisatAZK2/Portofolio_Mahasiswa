@@ -107,7 +107,7 @@
                             type="text"
                             name="q"
                             value="{{ request('q') }}"
-                            placeholder="{{ autoTranslate('Cari postingan, mahasiswa, project...') }}"
+                            placeholder="Cari postingan, mahasiswa, project..."
                             class="w-full pl-10 pr-8 py-2.5 border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 text-sm transition shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
                             autocomplete="off"
                             data-suggestions-url="{{ route('search.suggestions') }}"
@@ -131,7 +131,7 @@
                 <div class="flex items-center gap-2 flex-shrink-0">
                     <select id="filter-jurusan" name="jurusan"
                         class="border border-gray-300/80 dark:border-gray-600/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 shadow-sm transition hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 backdrop-blur-sm cursor-pointer">
-                        <option value="">{{ autoTranslate('Semua Prodi') }}</option>
+                        <option value="">Semua Prodi</option>
                         @foreach($jurusanList ?? [] as $jurusan)
                             <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>{{ Str::limit($jurusan->nama_jurusan, 18) }}</option>
                         @endforeach
@@ -139,7 +139,7 @@
 
                     <select id="filter-keahlian" name="keahlian"
                         class="border border-gray-300/80 dark:border-gray-600/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 shadow-sm transition hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 backdrop-blur-sm cursor-pointer">
-                        <option value="">{{ autoTranslate('Semua Keahlian') }}</option>
+                        <option value="">Semua Keahlian</option>
                         @foreach($keahlianList ?? [] as $keahlian)
                             <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>{{ Str::limit($keahlian->nama_keahlian, 18) }}</option>
                         @endforeach
@@ -147,7 +147,7 @@
 
                     <select id="filter-angkatan" name="angkatan"
                         class="border border-gray-300/80 dark:border-gray-600/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 shadow-sm transition hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 backdrop-blur-sm cursor-pointer">
-                        <option value="">{{ autoTranslate('Semua Angkatan') }}</option>
+                        <option value="">Semua Angkatan</option>
                         @foreach($angkatanList ?? [] as $angkatan)
                             <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>{{ $angkatan->nama_angkatan }}</option>
                         @endforeach
@@ -156,17 +156,17 @@
                     <!-- ── Filter/Search Button (triggers global search) ── -->
                     <button id="filter-search-btn"
                         class="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition shadow-sm flex-shrink-0"
-                        title="{{ autoTranslate('Cari & Filter') }}">
+                        title="Cari & Filter">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
                         </svg>
-                        <span>{{ autoTranslate('Filter') }}</span>
+                        <span>Filter</span>
                     </button>
 
                     <!-- ── Reset link ── -->
                     <a href="{{ route('search') }}" id="filter-reset-btn"
                         class="flex items-center px-3 py-2.5 border border-gray-300/80 dark:border-gray-600/80 rounded-lg bg-white/80 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm flex-shrink-0"
-                        title="{{ autoTranslate('Reset filter') }}"
+                        title="Reset filter"
                         style="display: none;">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -187,10 +187,10 @@
                         <div x-show="isOpen" @click.away="isOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">{{ autoTranslate('Notifikasi') }}</h3>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white">Notifikasi</h3>
                                     <div class="flex gap-2">
-                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">{{ autoTranslate('Tandai dibaca') }}</button>
-                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">{{ autoTranslate('Hapus semua') }}</button>
+                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Tandai dibaca</button>
+                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">Hapus semua'</button>
                                     </div>
                                 </div>
                             </div>
@@ -214,7 +214,7 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center">
                                                     <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.data.title"></p>
-                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">{{ autoTranslate('PENTING') }}</span>
+                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">PENTING</span>
                                                 </div>
                                                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="item.data.message"></p>
                                                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="formatTime(item.created_at)"></p>
@@ -250,7 +250,7 @@
                     type="text"
                     name="q"
                     value="{{ request('q') }}"
-                    placeholder="{{ autoTranslate('Cari postingan, mahasiswa, project...') }}"
+                    placeholder="Cari postingan, mahasiswa, project..."
                     class="w-full pl-11 pr-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm bg-white/80 dark:bg-gray-800/80"
                     autocomplete="off"
                     data-suggestions-url="{{ route('search.suggestions') }}"
@@ -258,7 +258,7 @@
                 >
                 <!-- Mobile search badge -->
                 <p id="header-post-search-badge-mobile" class="mt-1.5 text-xs text-indigo-600 dark:text-indigo-400 hidden">
-                    <span id="header-post-search-count-mobile">0</span> {{ autoTranslate('postingan ditemukan') }}
+                    <span id="header-post-search-count-mobile">0</span> postingan ditemukan
                 </p>
                 <div id="search-suggestions-mobile" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl overflow-hidden max-h-72 overflow-y-auto"></div>
             </div>
@@ -267,21 +267,21 @@
             <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <select id="filter-jurusan-mobile" name="jurusan"
                     class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300">
-                    <option value="">{{ autoTranslate('Semua Prodi') }}</option>
+                    <option value="">Semua Prodi</option>
                     @foreach($jurusanList ?? [] as $jurusan)
                         <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>{{ $jurusan->nama_jurusan }}</option>
                     @endforeach
                 </select>
                 <select id="filter-keahlian-mobile" name="keahlian"
                     class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300">
-                    <option value="">{{ autoTranslate('Semua Keahlian') }}</option>
+                    <option value="">Semua Keahlian</option>
                     @foreach($keahlianList ?? [] as $keahlian)
                         <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>{{ $keahlian->nama_keahlian }}</option>
                     @endforeach
                 </select>
                 <select id="filter-angkatan-mobile" name="angkatan"
                     class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 sm:col-span-2">
-                    <option value="">{{ autoTranslate('Semua Angkatan') }}</option>
+                    <option value="">Semua Angkatan</option>
                     @foreach($angkatanList ?? [] as $angkatan)
                         <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>{{ $angkatan->nama_angkatan }}</option>
                     @endforeach
@@ -295,11 +295,11 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
                     </svg>
-                    {{ autoTranslate('Filter & Cari') }}
+                    Filter & Cari
                 </button>
                 <a href="{{ route('search') }}"
                     class="flex-1 bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 py-3 rounded-lg text-sm font-medium hover:bg-gray-100/80 dark:hover:bg-gray-600 transition flex items-center justify-center border border-gray-300/50 dark:border-gray-600/50">
-                    {{ autoTranslate('Reset') }}
+                    Reset
                 </a>
             </div>
         </div>

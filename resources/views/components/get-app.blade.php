@@ -1,6 +1,6 @@
 @extends('Layout.Layout')
 
-@section('title', autoTranslate('Get the App'))
+@section('title', 'Get the App')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 md:py-12">
@@ -8,10 +8,10 @@
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-2">
-                {{ autoTranslate('Get the App') }}
+                Get the App
             </h1>
             <p class="text-gray-600 dark:text-gray-400 text-sm">
-                {{ autoTranslate('Install aplikasi Mahasiswa di perangkat Anda') }}
+                Install aplikasi Mahasiswa di perangkat Anda
             </p>
         </div>
 
@@ -32,7 +32,7 @@
                                 </g>
                             </svg>
                         </div>
-                        <h2 class="font-semibold text-gray-800 dark:text-white">{{ autoTranslate('Android') }}</h2>
+                        <h2 class="font-semibold text-gray-800 dark:text-white">Android</h2>
                     </div>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
                         <li class="flex gap-2">1. Buka dengan Chrome</li>
@@ -47,7 +47,7 @@
                         <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17.36 3 12.75 5.47 9.46c1.23-1.54 3.15-2.5 5-2.55 1.53-.05 2.98.86 3.92.86.93 0 2.67-1.06 4.5-.9.76.03 2.91.31 4.29 2.33-.11.07-2.56 1.5-2.53 4.48.03 2.58 2.26 3.44 2.28 3.45-.02.05-.36 1.22-1.18 2.42zM15.36 4.2c.78-.94 1.3-2.24 1.16-3.54-1.12.05-2.48.75-3.29 1.69-.72.84-1.35 2.18-1.18 3.47 1.25.1 2.52-.66 3.31-1.62z"/>
                         </svg>
-                        <h2 class="font-semibold text-gray-800 dark:text-white">{{ autoTranslate('iOS') }}</h2>
+                        <h2 class="font-semibold text-gray-800 dark:text-white">iOS</h2>
                     </div>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
                         <li class="flex gap-2">1. Buka dengan Safari</li>
@@ -65,7 +65,7 @@
                                 <path class="cls-1" d="M90.11,21.7h28.81a4,4,0,0,1,4,4V86.93a4,4,0,0,1-4,4H90.11a4,4,0,0,1-4-4V25.65a4,4,0,0,1,4-3.95ZM3,0H106.55a3.05,3.05,0,0,1,3,3v7.85h-4V7a2.69,2.69,0,0,0-2.69-2.69H6.67A2.69,2.69,0,0,0,4,7V61.87a2.7,2.7,0,0,0,2.68,2.69H76.1v11.6H3a3,3,0,0,1-3-3V3A3.05,3.05,0,0,1,3,0ZM41,80.36H68.59c.07,4.77,2,9,7.36,12.41H33.64C37.93,89.66,41,85.91,41,80.36Zm73.23-42.28h2.87v1.64h-2.87V38.08Zm-9.72,36.43a4.31,4.31,0,1,1-4.31,4.3,4.31,4.31,0,0,1,4.31-4.3Zm-13-40.18h26a.82.82,0,0,1,.82.82v4.47a.83.83,0,0,1-.82.83h-26a.82.82,0,0,1-.82-.82V35.15a.82.82,0,0,1,.82-.82Z"/>
                             </svg>
                         </div>
-                        <h2 class="font-semibold text-gray-800 dark:text-white">{{ autoTranslate('Desktop') }}</h2>
+                        <h2 class="font-semibold text-gray-800 dark:text-white">Desktop</h2>
                     </div>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
                         <li class="flex gap-2">1. Klik icon install di address bar</li>
@@ -78,9 +78,9 @@
             <div class="space-y-4">
                 <!-- QR Code -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 text-center">
-                    <h2 class="font-semibold text-gray-800 dark:text-white mb-3">{{ autoTranslate('Scan QR Code') }}</h2>
+                    <h2 class="font-semibold text-gray-800 dark:text-white mb-3">Scan QR Code</h2>
                     <div id="qrcode" class="flex justify-center"></div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">{{ autoTranslate('Scan dengan HP untuk install') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Scan dengan HP untuk install</p>
                 </div>
 
                 <!-- Install Button dengan Efek Hover -->
@@ -90,14 +90,14 @@
                         <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18v-5m0 0V8m0 5h5m-5 0H7m6 4v.01M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
                         </svg>
-                        <span>{{ autoTranslate('INSTALL') }}</span>
+                        <span>INSTALL</span>
                     </button>
-                    <p class="text-xs text-blue-100 mt-3">{{ autoTranslate('Klik untuk install langsung di perangkat Anda') }}</p>
+                    <p class="text-xs text-blue-100 mt-3">Klik untuk install langsung di perangkat Anda</p>
                 </div>
 
                 <!-- Features -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
-                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">{{ autoTranslate('Keunggulan') }}</h3>
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Keunggulan</h3>
                     <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <div class="flex items-center gap-2">✓ Akses Cepat</div>
                         <div class="flex items-center gap-2">✓ Tampilan native</div>

@@ -20,29 +20,3 @@ if (!function_exists('lroute')) {
         return route($name, $parameters, $absolute);
     }
 }
-
-function autoTranslate($text)
-{
-    if (!$text || trim($text) === '') {
-        return $text;
-    }
-
-    $locale = app()->getLocale();
-
-    if (in_array($locale, ['id', 'id_ID'])) {
-        return $text;
-    }
-
-    $cacheKey = 'translate_' . md5($text . '_' . $locale);
-
-    return Cache::remember($cacheKey, now()->addHours(12), function () use ($text, $locale) {
-        try {
-            $tr = new GoogleTranslate($locale);
-            $result = $tr->translate($text);
-
-            return $result;
-        } catch (\Exception $e) {
-            return $text;
-        }
-    });
-}

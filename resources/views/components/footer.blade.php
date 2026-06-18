@@ -8,15 +8,15 @@
             <div class="flex gap-4 text-xs">
                 <a href="https://www.polmind.ac.id/beranda" target="_blank"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
-                    {{ autoTranslate('About') }}
+                    About
                 </a>
                 <a href="{{ route('help', ['locale' => app()->getLocale()]) }}"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
-                    {{ autoTranslate('Help') }}
+                    Help
                 </a>
                 <a href="{{ route('get-app', ['locale' => app()->getLocale()]) }}"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
-                    {{ autoTranslate('Get App') }}
+                    Get App
                 </a>
             </div>
         </div>
@@ -77,7 +77,7 @@
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
-                {{ autoTranslate('All rights reserved.') }}
+                All rights reserved.
             </p>
         </div>
     </div>
@@ -91,11 +91,11 @@
                 </div>
                 <div class="flex gap-4 text-sm">
                     <a href="https://www.polmind.ac.id/beranda" target="_blank"
-                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">{{ autoTranslate('About') }}</a>
+                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">About</a>
                     <a href="{{ route('help', ['locale' => app()->getLocale()]) }}"
-                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">{{ autoTranslate('Help') }}</a>
+                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">Help</a>
                     <a href="{{ route('get-app', ['locale' => app()->getLocale()]) }}"
-                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">{{ autoTranslate('Get App') }}</a>
+                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">Get App</a>
                 </div>
             </div>
 
@@ -156,7 +156,7 @@
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
-                {{ autoTranslate('All rights reserved.') }}
+                All rights reserved.
             </p>
         </div>
     </div>
