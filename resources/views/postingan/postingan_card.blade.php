@@ -39,7 +39,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada postingan.</p>
+                <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="empty_my_posts" data-translate-page="post">Belum ada postingan.</p>
             </div>
         @else
             @php

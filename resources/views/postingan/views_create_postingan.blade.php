@@ -29,7 +29,7 @@
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Terdapat kesalahan pada input:</p>
+                            <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2" data-translate="input_error_title" data-translate-page="add_post">Terdapat kesalahan pada input:</p>
                             <ul class="text-sm text-red-700 dark:text-red-300 space-y-1 list-disc list-inside">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -51,9 +51,12 @@
                     <div class="p-5 sm:p-6">
                         <!-- Judul Input -->
                         <div class="mb-5">
-                            <textarea name="judul" id="judul" rows="1" placeholder="Judul postingan..."
+                            <textarea name="judul" id="judul" rows="1" 
+                                placeholder="{{ __('Judul postingan...') }}"
                                 class="w-full px-0 py-2 text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-0 resize-none overflow-hidden transition-colors @error('judul') border-red-500 @enderror"
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('judul') }}</textarea>
+                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                                data-translate-placeholder="post_title_placeholder"
+                                data-translate-page="add_post">{{ old('judul') }}</textarea>
                             @error('judul')
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
@@ -61,9 +64,12 @@
 
                         <!-- Deskripsi Input -->
                         <div class="mb-2">
-                            <textarea name="deskripsi" id="deskripsi" rows="3" placeholder="Tulis sesuatu yang menarik..."
+                            <textarea name="deskripsi" id="deskripsi" rows="3" 
+                                placeholder="{{ __('Tulis sesuatu yang menarik...') }}"
                                 class="w-full px-0 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 focus:ring-0 resize-none text-base leading-relaxed @error('deskripsi') border-red-500 @enderror"
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('deskripsi') }}</textarea>
+                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                                data-translate-placeholder="write_something_interesting"
+                                data-translate-page="add_post">{{ old('deskripsi') }}</textarea>
                             @error('deskripsi')
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
@@ -83,7 +89,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                 </svg>
-                                <span data-translate="add" data-translate-page="add_post">Tambah Media atau Link</span>
+                                <span data-translate="add_media_or_link" data-translate-page="add_post">Tambah Media atau Link</span>
                             </button>
                         </div>
                     </div>
@@ -100,8 +106,8 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Tambahkan Game Interaktif</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Buat postingan lebih menarik dengan game</p>
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white" data-translate="game_title" data-translate-page="add_post">Tambahkan Game Interaktif</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="game_desc" data-translate-page="add_post">Buat postingan lebih menarik dengan game</p>
                                     </div>
                                 </div>
                                 
@@ -109,7 +115,7 @@
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" name="game_enabled" id="game_enabled" value="on" class="sr-only peer">
                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                                        <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">Aktifkan Game</span>
+                                        <span class="ml-3 text-sm text-gray-700 dark:text-gray-300" data-translate="enable_game" data-translate-page="add_post">Aktifkan Game</span>
                                     </label>
                                     
                                     <select name="game_name" id="game_name" disabled
@@ -122,12 +128,12 @@
                             </div>
                             
                             <div class="mt-4" id="thumbnail_container" style="display: none;">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Thumbnail Game</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="game_thumbnail" data-translate-page="add_post">Thumbnail Game</label>
                                 <div class="relative">
                                     <input type="file" name="game_thumbnail" id="game_thumbnail" accept="image/*" disabled
                                         class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 dark:file:bg-purple-900/30 file:text-purple-700 dark:file:text-purple-300 hover:file:bg-purple-100 dark:hover:file:bg-purple-800/50 file:transition file:cursor-pointer">
                                 </div>
-                                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Maks 5MB • jpg, jpeg, png, gif, webp</p>
+                                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400" data-translate="max_5mb_jpg_png_gif_webp" data-translate-page="add_post">Maks 5MB • jpg, jpeg, png, gif, webp</p>
                             </div>
                         </div>
                     @endif
@@ -135,7 +141,8 @@
                     <!-- Action Buttons -->
                     <div class="border-t border-gray-100 dark:border-gray-700 p-4 sm:p-5 flex items-center justify-end gap-3 bg-gray-50/30 dark:bg-gray-800/30">
                         <a href="{{ url()->previous() }}" 
-                           class="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                           class="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                           data-translate="cancel" data-translate-page="add_post">
                             Batal
                         </a>
                         <button type="submit"
@@ -209,8 +216,8 @@
                             </svg>
                         </div>
                         <select name="items[${itemIndex}][type]" class="type-select px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="image">Gambar</option>
-                            <option value="link">Link</option>
+                            <option value="image" data-translate="image" data-translate-page="add_post">Gambar</option>
+                            <option value="link" data-translate="link" data-translate-page="add_post">Link</option>
                         </select>
                     </div>
                     <button type="button" class="remove-item w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100">
@@ -233,8 +240,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Klik atau drag & drop gambar</p>
-                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Maks 5MB • jpg, png, gif, webp</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="click_or_drag_drop_image" data-translate-page="add_post">Klik atau drag & drop gambar</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" data-translate="max_5mb_jpg_png_gif_webp" data-translate-page="add_post">Maks 5MB • jpg, png, gif, webp</p>
                             </div>
                             <!-- Preview container -->
                             <div id="image-preview-${itemIndex}" class="hidden mt-2 flex justify-center"></div>

@@ -33,7 +33,7 @@
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2">
+                            <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2" data-translate="input_error_title" data-translate-page="edit_post">
                                 Terdapat kesalahan pada input:</p>
                             <ul class="text-sm text-red-700 dark:text-red-300 space-y-1 list-disc list-inside">
                                 @foreach ($errors->all() as $error)
@@ -59,10 +59,12 @@
                     <div class="p-5 sm:p-6">
                         <!-- Judul Input -->
                         <div class="mb-5">
-                            <textarea name="judul" id="judul" rows="1"
-                                placeholder="Judul postingan...}"
+                            <textarea name="judul" id="judul" rows="1" 
+                                placeholder="{{ __('Judul postingan...') }}"
                                 class="w-full px-0 py-2 text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-0 resize-none overflow-hidden transition-colors @error('judul') border-red-500 @enderror"
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('judul', $postingan->content[0]['content'] ?? '') }}</textarea>
+                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                                data-translate-placeholder="post_title_placeholder"
+                                data-translate-page="edit_post">{{ old('judul', $postingan->content[0]['content'] ?? '') }}</textarea>
                             @error('judul')
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
@@ -70,10 +72,12 @@
 
                         <!-- Deskripsi Input -->
                         <div class="mb-2">
-                            <textarea name="deskripsi" id="deskripsi" rows="3"
-                                placeholder="Tulis sesuatu yang menarik..."
+                            <textarea name="deskripsi" id="deskripsi" rows="3" 
+                                placeholder="{{ __('Tulis sesuatu yang menarik...') }}"
                                 class="w-full px-0 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 focus:ring-0 resize-none text-base leading-relaxed @error('deskripsi') border-red-500 @enderror"
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('deskripsi', $postingan->content[1]['content'] ?? '') }}</textarea>
+                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                                data-translate-placeholder="write_something_interesting"
+                                data-translate-page="edit_post">{{ old('deskripsi', $postingan->content[1]['content'] ?? '') }}</textarea>
                             @error('deskripsi')
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
@@ -130,11 +134,13 @@
                                             <select name="items[{{ $index }}][type]"
                                                 class="type-select px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                                                 <option value="image"
-                                                    {{ isset($item['type']) && $item['type'] === 'image' ? 'selected' : '' }}>
+                                                    {{ isset($item['type']) && $item['type'] === 'image' ? 'selected' : '' }}
+                                                    data-translate="image" data-translate-page="edit_post">
                                                     Gambar
                                                 </option>
                                                 <option value="link"
-                                                    {{ isset($item['type']) && $item['type'] === 'link' ? 'selected' : '' }}>
+                                                    {{ isset($item['type']) && $item['type'] === 'link' ? 'selected' : '' }}
+                                                    data-translate="link" data-translate-page="edit_post">
                                                     Link
                                                 </option>
                                             </select>
@@ -178,9 +184,9 @@
                                                             d="M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                                         </path>
                                                     </svg>
-                                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                       Klik atau drag & drop gambar </p>
-                                                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="click_or_drag_drop_image" data-translate-page="edit_post">
+                                                       Klik atau drag & drop gambar</p>
+                                                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" data-translate="max_5mb_jpg_png_gif_webp" data-translate-page="edit_post">
                                                         Maks 5MB • jpg, png, gif, webp</p>
                                                 </div>
 
@@ -239,7 +245,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4" />
                                 </svg>
-                                <span data-translate="add" data-translate-page="add_post">Tambah Media atau Link</span>
+                                <span data-translate="add_media_or_link" data-translate-page="edit_post">Tambah Media atau Link</span>
                             </button>
                         </div>
                     </div>
@@ -267,8 +273,7 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white"
-                                            data-translate="game_title" data-translate-page="edit_post">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white" data-translate="game_title" data-translate-page="edit_post">
                                            Tambahkan Game Interaktif</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="game_desc"
                                             data-translate-page="edit_post">
@@ -284,9 +289,7 @@
                                         <div
                                             class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600">
                                         </div>
-                                        <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"
-                                            data-translate="game_enable_label"
-                                            data-translate-page="edit_post">Aktifkan Game</span>
+                                        <span class="ml-3 text-sm text-gray-700 dark:text-gray-300" data-translate="enable_game" data-translate-page="edit_post">Aktifkan Game</span>
                                     </label>
 
                                     <select name="game_name" id="game_name"
@@ -310,9 +313,7 @@
 
                             <div class="mt-4" id="thumbnail_container"
                                 style="display: {{ old('game_enabled', $hasGame) ? 'block' : 'none' }};">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                                    data-translate="game_thumbnail_label"
-                                    data-translate-page="edit_post">Thumbnail Game</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="game_thumbnail" data-translate-page="edit_post">Thumbnail Game</label>
 
                                 @php
                                     $gameThumbnail = null;
@@ -332,13 +333,9 @@
                                             class="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                                             alt="Current thumbnail">
                                         <div>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400"
-                                                data-translate="current_thumbnail"
-                                                data-translate-page="edit_post">Thumbnail saat ini</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="current_thumbnail" data-translate-page="edit_post">Thumbnail saat ini</p>
                                             <button type="button" id="remove_thumbnail_btn"
-                                                class="text-xs text-red-500 hover:text-red-700 mt-1"
-                                                data-translate="remove_thumbnail"
-                                                data-translate-page="edit_post">Hapus thumbnail</button>
+                                                class="text-xs text-red-500 hover:text-red-700 mt-1" data-translate="remove_thumbnail" data-translate-page="edit_post">Hapus thumbnail</button>
                                         </div>
                                     </div>
                                     <input type="hidden" name="remove_thumbnail" id="remove_thumbnail" value="0">
@@ -349,7 +346,7 @@
                                         {{ old('game_enabled', $hasGame) ? '' : 'disabled' }}
                                         class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 dark:file:bg-purple-900/30 file:text-purple-700 dark:file:text-purple-300 hover:file:bg-purple-100 dark:hover:file:bg-purple-800/50 file:transition file:cursor-pointer">
                                 </div>
-                                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400" data-translate="max_5mb_jpg_png_gif_webp" data-translate-page="edit_post">
                                     Maks 5MB • jpg, jpeg, png, gif, webp</p>
                             </div>
                         </div>
@@ -369,7 +366,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span data-translate="update" data-translate-page="edit_post">Update Postingan</span>
+                            <span data-translate="update_post" data-translate-page="edit_post">Update Postingan</span>
                         </button>
                     </div>
                 </div>

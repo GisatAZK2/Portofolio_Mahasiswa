@@ -155,7 +155,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                <span class="text-sm font-medium">Kembali ke Beranda</span>
+                <span class="text-sm font-medium" data-translate="back_to_home" data-translate-page="post">Kembali ke Beranda</span>
             </button>
         </div>
 
@@ -185,8 +185,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                         </div>
                         <div>
                             <div class="flex flex-wrap gap-2 mt-1">
-				<a href="{{ route('portfolio.show', ['user' => $postingan->user->username]) }}"
-                                                    class="font-bold text-gray-900 dark:text-gray-100 text-lg hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $postingan->user->nama_mahasiswa }}</a>
+                                <a href="{{ route('portfolio.show', ['user' => $postingan->user->username]) }}"
+                                    class="font-bold text-gray-900 dark:text-gray-100 text-lg hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $postingan->user->nama_mahasiswa }}</a>
                                 @if(!empty($postingan->user->jurusan))
                                     <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">{{ $postingan->user->jurusan['nama_jurusan'] ?? '-' }}</span>
                                 @endif
@@ -208,7 +208,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                         <!-- Tombol Share -->
                         <button onclick="toggleShare(this)" 
                             class="p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all duration-200"
-                            title="Bagikan">
+                            title="{{ __('Bagikan') }}" data-translate="share" data-translate-page="post">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                             </svg>
@@ -225,7 +225,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                                 <div id="postMenuDropdown" 
                                     class="hidden absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-20 overflow-hidden">
                                     <a href="{{ route('postingan.edit', ['id' => $postingan->id_postingan]) }}"
-                                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                        data-translate="edit_btn" data-translate-page="post">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
@@ -234,7 +235,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                                     <form action="{{ route('postingan.destroy', ['id' => $postingan->id_postingan]) }}" method="POST">
                                         @csrf @method('DELETE')
                                         <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menghapus postingan ini?')) this.form.submit();"
-                                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                            data-translate="del" data-translate-page="post">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
@@ -369,19 +371,20 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                             </div>
                             <div class="flex-1 text-center sm:text-left">
                                 <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ $gameDisplayName }}</h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1"> Mainkan game ini dan asah kemampuanmu!</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1" data-translate="play_this_game" data-translate-page="post">Mainkan game ini dan asah kemampuanmu!</p>
                                 @if($game->score > 0)
                                     <div class="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 rounded-full text-xs font-semibold">
                                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                                         </svg>
-                                        <span>Skor terbaik: {{ $game->score }}</span>
+                                        <span data-translate="best_score" data-translate-page="post">Skor terbaik:</span> {{ $game->score }}
                                     </div>
                                 @endif
                             </div>
                             @auth
                             <a href="{{ $gameRoute }}?postingan={{ $postingan->id_postingan }}&game={{ $game->id_games }}" 
-                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105"
+                                data-translate="play_now" data-translate-page="post">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/>
                                 </svg>
@@ -402,7 +405,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
                         <span class="like-count-text font-medium">{{ $postingan->likes->count() }}</span>
-                        <span class="hidden sm:inline">Suka</span>
+                        <span class="hidden sm:inline" data-translate="like" data-translate-page="post">Suka</span>
                     </button>
                     
                     <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
@@ -410,18 +413,18 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
                         <span class="comment-total-count font-medium">{{ $commentCount }}</span>
-                        <span class="hidden sm:inline">Komentar</span>
+                        <span class="hidden sm:inline" data-translate="comments" data-translate-page="post">Komentar</span>
                     </div>
                 </div>
             </div>
 
-            <!-- ===================== BAGIAN KOMENTAR (AJAX - sama dengan file ke-1) ===================== -->
+            <!-- ===================== BAGIAN KOMENTAR (AJAX) ===================== -->
             <div id="comments" class="px-6 py-6 space-y-6">
                 <h3 class="font-bold text-xl text-gray-900 dark:text-white flex items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                     </svg>
-                    Komentar
+                    <span data-translate="comments" data-translate-page="post">Komentar</span>
                     (<span class="comment-total-count-heading">{{ $commentCount }}</span>)
                 </h3>
 
@@ -433,11 +436,14 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                                 <textarea id="comment-input-{{ $postingan->id_postingan }}" 
                                     rows="2" 
                                     class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition text-gray-900 dark:text-white placeholder-gray-500" 
-                                    placeholder="Tulis komentar..."></textarea>
+                                    placeholder="{{ __('Tulis komentar...') }}"
+                                    data-translate-placeholder="write_a_comment"
+                                    data-translate-page="post"></textarea>
                                 <div class="flex justify-end mt-2">
                                     <button onclick="window.submitComment({{ $postingan->id_postingan }})" 
                                         id="submit-comment-btn-{{ $postingan->id_postingan }}"
-                                        class="submit-comment-btn px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow">
+                                        class="submit-comment-btn px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow"
+                                        data-translate="send" data-translate-page="post">
                                         Kirim
                                     </button>
                                 </div>
@@ -446,7 +452,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                     </div>
                 @else
                     <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 text-center">
-                        <p class="text-sm text-blue-800 dark:text-blue-300">
+                        <p class="text-sm text-blue-800 dark:text-blue-300" data-translate="login_to_comment" data-translate-page="post">
                             Silakan
                             <a href="{{ route('login') }}" class="font-semibold underline hover:no-underline">masuk</a>
                             untuk berkomentar.
@@ -458,7 +464,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 <div id="comments-container-{{ $postingan->id_postingan }}" class="comments-container space-y-4 pr-2">
                     <div class="text-center py-6 text-gray-400 text-sm">
                         <div class="comment-loading inline-block mr-2"></div>
-                        <span>Memuat komentar...</span>
+                        <span data-translate="loading_comments" data-translate-page="post">Memuat komentar...</span>
                     </div>
                 </div>
             </div>
@@ -479,6 +485,29 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
     window.commentLastUpdated = {};
 
     const POSTINGAN_ID = {{ $postingan->id_postingan }};
+
+    // ===================== TRANSLATIONS FOR JS =====================
+    const t = {
+        loading_comments: '{{ __("loading_comments") }}' || 'Memuat komentar...',
+        no_comments_yet: '{{ __("no_comments_yet") }}' || 'Belum ada komentar. Jadilah yang pertama!',
+        reply: '{{ __("reply") }}' || 'Balas',
+        edit: '{{ __("edit_btn") }}' || 'Edit',
+        delete: '{{ __("del") }}' || 'Hapus',
+        save: '{{ __("save") }}' || 'Simpan',
+        cancel: '{{ __("cancel") }}' || 'Batal',
+        write_a_comment: '{{ __("write_a_comment") }}' || 'Tulis komentar...',
+        login_to_comment: '{{ __("login_to_comment") }}' || 'Silakan masuk untuk berkomentar.',
+        comment_added_success: '{{ __("comment_added_success") }}' || 'Komentar berhasil ditambahkan',
+        comment_updated_success: '{{ __("comment_updated_success") }}' || 'Komentar berhasil diperbarui',
+        comment_deleted_success: '{{ __("comment_deleted_success") }}' || 'Komentar berhasil dihapus',
+        comment_add_failed: '{{ __("comment_add_failed") }}' || 'Gagal menambahkan komentar',
+        comment_update_failed: '{{ __("comment_update_failed") }}' || 'Gagal mengupdate komentar',
+        comment_delete_failed: '{{ __("comment_delete_failed") }}' || 'Gagal menghapus komentar',
+        link_copied_success: '{{ __("link_copied_success") }}' || 'Link berhasil disalin!',
+        write_a_reply: '{{ __("write_a_reply") }}' || 'Tulis balasan...',
+        confirm_delete_comment_single: '{{ __("confirm_delete_comment_single") }}' || 'Apakah Anda yakin ingin menghapus balasan ini saja?',
+        confirm_delete_comment_full: '{{ __("confirm_delete_comment_full") }}' || 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?',
+    };
 
     // ===================== HELPERS =====================
     function escapeHtml(text) {
@@ -520,7 +549,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         const container = document.getElementById(`comments-container-${postinganId}`);
         if (!container) return;
 
-        container.innerHTML = '<div class="text-center py-6 text-gray-400 text-sm"><div class="comment-loading inline-block mr-2"></div> Memuat komentar...</div>';
+        container.innerHTML = `<div class="text-center py-6 text-gray-400 text-sm"><div class="comment-loading inline-block mr-2"></div> ${t.loading_comments}</div>`;
 
         try {
             const response = await fetch(`/${window.locale}/komentar?id_postingan=${postinganId}`);
@@ -537,10 +566,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 }
 
                 if (commentsArray.length === 0) {
-                    const noCommentsText = (window.locale === 'id')
-                        ? 'Belum ada komentar. Jadilah yang pertama!'
-                        : 'No comments yet. Be the first!';
-                    container.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">${noCommentsText}</p>`;
+                    container.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-5">${t.no_comments_yet}</p>`;
                     return;
                 }
 
@@ -571,10 +597,6 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         const commentId = String(comment.id_komentar);
         postinganId = String(postinganId);
 
-        const replyText  = (window.locale === 'id') ? 'Balas'  : 'Reply';
-        const editText   = (window.locale === 'id') ? 'Edit'   : 'Edit';
-        const deleteText = (window.locale === 'id') ? 'Hapus'  : 'Delete';
-
         let html = `
             <div class="comment-item transition-all duration-200 py-2" data-comment-id="${commentId}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
                 <div class="flex gap-3">
@@ -593,7 +615,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                             <button class="reply-btn text-xs text-indigo-500 hover:text-indigo-700 font-medium transition-colors inline-flex items-center gap-1"
                                 data-action="reply" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-                                ${replyText}
+                                ${t.reply}
                             </button>
             `;
         }
@@ -603,12 +625,12 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                             <button class="edit-comment-btn text-xs text-blue-500 hover:text-blue-700 transition-colors inline-flex items-center gap-1"
                                 data-action="edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                ${editText}
+                                ${t.edit}
                             </button>
                             <button class="delete-comment-btn text-xs text-red-500 hover:text-red-700 transition-colors inline-flex items-center gap-1"
                                 data-action="delete" data-comment-id="${commentId}" data-postingan-id="${postinganId}" data-type="full">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                ${deleteText}
+                                ${t.delete}
                             </button>
             `;
         }
@@ -659,8 +681,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         const commentText = textarea.value.trim();
 
         if (!commentText) {
-            if (window.showPageInfo) window.showPageInfo('Komentar tidak boleh kosong', 'warning', 2000);
-            else alert('Komentar tidak boleh kosong');
+            if (window.showPageInfo) window.showPageInfo(t.write_a_comment, 'warning', 2000);
+            else alert(t.write_a_comment);
             return;
         }
 
@@ -668,7 +690,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         const originalText = submitBtn ? submitBtn.innerHTML : '';
         if (submitBtn) {
             submitBtn.classList.add('btn-loading');
-            submitBtn.innerHTML = 'Mengirim...';
+            submitBtn.innerHTML = t.save;
             submitBtn.disabled = true;
         }
 
@@ -685,15 +707,15 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 textarea.value = '';
                 await window.loadComments(postinganId);
                 updateTotalCommentCount(1);
-                if (window.showPageInfo) window.showPageInfo('Komentar berhasil ditambahkan', 'success', 2000);
+                if (window.showPageInfo) window.showPageInfo(t.comment_added_success, 'success', 2000);
             } else {
-                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal menambahkan komentar');
-                else alert(data.message || 'Gagal menambahkan komentar');
+                if (window.showErrorAlert) window.showErrorAlert(data.message || t.comment_add_failed);
+                else alert(data.message || t.comment_add_failed);
             }
         } catch (error) {
             console.error('Error:', error);
-            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
-            else alert('Terjadi kesalahan: ' + error.message);
+            if (window.showErrorAlert) window.showErrorAlert(t.comment_add_failed + ': ' + error.message);
+            else alert(t.comment_add_failed + ': ' + error.message);
         } finally {
             if (submitBtn) {
                 submitBtn.classList.remove('btn-loading');
@@ -713,8 +735,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         const parentId   = form.querySelector('input[name="parent_id"]').value;
 
         if (!commentText) {
-            if (window.showPageInfo) window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
-            else alert('Balasan tidak boleh kosong');
+            if (window.showPageInfo) window.showPageInfo(t.write_a_reply, 'warning', 2000);
+            else alert(t.write_a_reply);
             form.removeAttribute('data-submitting');
             return;
         }
@@ -746,15 +768,15 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                     replyContainer.classList.add('hidden');
                     replyContainer.innerHTML = '';
                 }
-                if (window.showPageInfo) window.showPageInfo('Balasan berhasil ditambahkan', 'success', 2000);
+                if (window.showPageInfo) window.showPageInfo(t.comment_added_success, 'success', 2000);
             } else {
-                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal menambahkan balasan');
-                else alert(data.message || 'Gagal menambahkan balasan');
+                if (window.showErrorAlert) window.showErrorAlert(data.message || t.comment_add_failed);
+                else alert(data.message || t.comment_add_failed);
             }
         } catch (error) {
             console.error('Error:', error);
-            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
-            else alert('Terjadi kesalahan: ' + error.message);
+            if (window.showErrorAlert) window.showErrorAlert(t.comment_add_failed + ': ' + error.message);
+            else alert(t.comment_add_failed + ': ' + error.message);
         } finally {
             submitBtn.disabled = false;
             if (cancelBtn) cancelBtn.disabled = false;
@@ -768,10 +790,6 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
         if (!replyFormContainer) return;
 
-        const sendText        = (window.locale === 'id') ? 'Kirim'  : 'Send';
-        const cancelText      = (window.locale === 'id') ? 'Batal'  : 'Cancel';
-        const placeholderText = (window.locale === 'id') ? 'Tulis balasan...' : 'Write a reply...';
-
         if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
             replyFormContainer.classList.add('hidden');
             replyFormContainer.innerHTML = '';
@@ -783,10 +801,10 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
                 <input type="hidden" name="parent_id" value="${parentCommentId}">
                 <div class="flex flex-col gap-2">
-                    <textarea name="komentar" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none text-gray-900 dark:text-white" placeholder="${placeholderText}"></textarea>
+                    <textarea name="komentar" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm outline-none resize-none text-gray-900 dark:text-white" placeholder="${t.write_a_reply}"></textarea>
                     <div class="flex gap-2 justify-end">
-                        <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">${sendText}</button>
-                        <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden'); this.closest('.reply-form-container').innerHTML = '';" class="px-4 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">${cancelText}</button>
+                        <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">${t.save}</button>
+                        <button type="button" onclick="this.closest('.reply-form-container').classList.add('hidden'); this.closest('.reply-form-container').innerHTML = '';" class="px-4 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors">${t.cancel}</button>
                     </div>
                 </div>
             </form>
@@ -820,9 +838,6 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
             return;
         }
 
-        const saveText   = (window.locale === 'id') ? 'Simpan' : 'Save';
-        const cancelText = (window.locale === 'id') ? 'Batal'  : 'Cancel';
-
         const editForm = document.createElement('div');
         editForm.className = 'edit-form mt-2';
         editForm.id = `edit-form-${commentId}`;
@@ -830,9 +845,9 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
             <textarea class="edit-textarea w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none text-gray-900 dark:text-white" rows="2">${escapeHtml(originalText)}</textarea>
             <div class="flex gap-2 mt-2">
                 <button class="save-edit-btn px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
-                    data-action="save-edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">${saveText}</button>
+                    data-action="save-edit" data-comment-id="${commentId}" data-postingan-id="${postinganId}">${t.save}</button>
                 <button class="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-400 transition-colors"
-                    data-action="cancel-edit" data-comment-id="${commentId}">${cancelText}</button>
+                    data-action="cancel-edit" data-comment-id="${commentId}">${t.cancel}</button>
             </div>
         `;
 
@@ -854,8 +869,8 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
 
         const newText = editTextarea.value.trim();
         if (!newText) {
-            if (window.showPageInfo) window.showPageInfo('Komentar tidak boleh kosong', 'warning', 2000);
-            else alert('Komentar tidak boleh kosong');
+            if (window.showPageInfo) window.showPageInfo(t.write_a_comment, 'warning', 2000);
+            else alert(t.write_a_comment);
             return;
         }
 
@@ -881,20 +896,20 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
 
             if (data.success) {
                 await window.loadComments(postinganId);
-                if (window.showPageInfo) window.showPageInfo('Komentar berhasil diperbarui', 'success', 2000);
+                if (window.showPageInfo) window.showPageInfo(t.comment_updated_success, 'success', 2000);
             } else if (data.code === 'STALE_DATA') {
                 await window.loadComments(postinganId);
                 if (window.showPageInfo) window.showPageInfo('Komentar diperbarui pengguna lain. Edit ulang jika perlu.', 'warning', 3000);
             } else {
-                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal mengupdate komentar');
-                else alert(data.message || 'Gagal mengupdate komentar');
+                if (window.showErrorAlert) window.showErrorAlert(data.message || t.comment_update_failed);
+                else alert(data.message || t.comment_update_failed);
                 saveBtn.innerHTML = originalBtnHtml;
                 saveBtn.disabled = false;
             }
         } catch (error) {
             console.error('Error:', error);
-            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
-            else alert('Terjadi kesalahan: ' + error.message);
+            if (window.showErrorAlert) window.showErrorAlert(t.comment_update_failed + ': ' + error.message);
+            else alert(t.comment_update_failed + ': ' + error.message);
             saveBtn.innerHTML = originalBtnHtml;
             saveBtn.disabled = false;
         }
@@ -920,13 +935,9 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
         commentId   = String(commentId);
         postinganId = String(postinganId);
 
-        const confirmMessageSingle = (window.locale === 'id')
-            ? 'Apakah Anda yakin ingin menghapus balasan ini saja?'
-            : 'Are you sure you want to delete this reply only?';
-        const confirmMessageFull = (window.locale === 'id')
-            ? 'Apakah Anda yakin ingin menghapus komentar ini beserta semua balasannya?'
-            : 'Are you sure you want to delete this comment and all its replies?';
-        const confirmMessage = type === 'single' ? confirmMessageSingle : confirmMessageFull;
+        const confirmMessage = type === 'single' 
+            ? t.confirm_delete_comment_single 
+            : t.confirm_delete_comment_full;
 
         if (window.showConfirm) {
             const confirmed = await window.showConfirm(confirmMessage);
@@ -935,7 +946,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
             if (!confirm(confirmMessage)) return;
         }
 
-        if (window.showLoading) window.showLoading('Menghapus...');
+        if (window.showLoading) window.showLoading(t.delete);
 
         try {
             const response = await fetch(
@@ -948,21 +959,21 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
             if (data.success) {
                 await window.loadComments(postinganId);
                 updateTotalCommentCount(-1);
-                if (window.showPageInfo) window.showPageInfo('Komentar berhasil dihapus', 'success', 2000);
+                if (window.showPageInfo) window.showPageInfo(t.comment_deleted_success, 'success', 2000);
             } else {
-                if (window.showErrorAlert) window.showErrorAlert(data.message || 'Gagal menghapus komentar');
-                else alert(data.message || 'Gagal menghapus komentar');
+                if (window.showErrorAlert) window.showErrorAlert(data.message || t.comment_delete_failed);
+                else alert(data.message || t.comment_delete_failed);
             }
         } catch (error) {
             console.error('Error:', error);
-            if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
-            else alert('Terjadi kesalahan: ' + error.message);
+            if (window.showErrorAlert) window.showErrorAlert(t.comment_delete_failed + ': ' + error.message);
+            else alert(t.comment_delete_failed + ': ' + error.message);
         } finally {
             if (window.closeLoading) window.closeLoading();
         }
     };
 
-    // ===================== UPDATE TOTAL COUNT (heading + engagement bar) =====================
+    // ===================== UPDATE TOTAL COUNT =====================
     function updateTotalCommentCount(delta) {
         document.querySelectorAll('.comment-total-count, .comment-total-count-heading').forEach(el => {
             const current = parseInt(el.textContent) || 0;
@@ -981,7 +992,7 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
             const original = btn.innerHTML;
             btn.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
             setTimeout(() => { btn.innerHTML = original; }, 2000);
-            if (window.showPageInfo) window.showPageInfo('Link berhasil disalin!', 'success', 1500);
+            if (window.showPageInfo) window.showPageInfo(t.link_copied_success, 'success', 1500);
         }).catch(() => alert('Gagal menyalin link'));
     }
 
@@ -1046,27 +1057,6 @@ $commentCount = \App\Models\Komentar::getCommentCount($postingan->id_postingan);
                 const commentsSection = document.getElementById('comments');
                 if (commentsSection) {
                     commentsSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
-
-        // Share button
-        const shareBtn = document.querySelector('.share-btn');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const url = `{{ route('postingan.show', ['locale' => app()->getLocale(), 'id' => $postingan->id_postingan]) }}`;
-                if (navigator.share) {
-                    navigator.share({
-                        title: '{{ $postingan->user->nama_mahasiswa }}',
-                        text: 'Cek postingan ini!',
-                        url: url
-                    }).catch(err => console.log('Share cancelled:', err));
-                } else {
-                    // Fallback: copy to clipboard
-                    navigator.clipboard.writeText(url).then(() => {
-                        alert('Link disalin ke clipboard!');
-                    }).catch(err => console.error('Copy failed:', err));
                 }
             });
         }

@@ -238,12 +238,6 @@
                     </button>
                 </form>
             </div>
-        @else
-            {{--
-                Untuk postingan mahasiswa yang tidak bisa diedit oleh role ini
-                (jika ada kasus role mahasiswa melihat post orang lain — tidak mungkin
-                tapi aman untuk ditambahkan sebagai fallback kosong)
-            --}}
         @endif
     </div>
 </div>
