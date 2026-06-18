@@ -486,6 +486,7 @@ class UserController extends Controller
             'background_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4096'],
             'id_keahlian_tambahan' => ['nullable', 'exists:keahlian,id_keahlian'],
             'video_url' => ['nullable', 'url'],
+            'nim' => ['nullable', 'string', 'max:20', 'unique:users,nim,' . $user->id],
             'tanggal_lahir' => ['nullable', 'date', 'before_or_equal:today', 'after:1900-01-01'],
         ];
 

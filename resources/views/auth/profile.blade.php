@@ -1,6 +1,6 @@
 @extends('Layout.Layout')
 
-@section('title', autoTranslate('Profil Saya'))
+@section('title', 'Profil Saya')
 
 @section('content')
     <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css">
@@ -139,7 +139,7 @@
                                 <div class="relative -mt-16 group">
                                     <div class="relative w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white dark:bg-gray-700 shadow-xl overflow-hidden">
                                         @if (Auth::user()->photo_profile)
-                                            <img id="profile-preview" src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="{{ autoTranslate('Foto Profil') }}" class="w-full h-full object-cover">
+                                            <img id="profile-preview" src="{{ asset('storage/' . Auth::user()->photo_profile) }}" alt="Foto Profil" class="w-full h-full object-cover">
                                         @else
                                             <div id="profile-preview-placeholder" class="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-5xl font-semibold">
                                                 {{ strtoupper(substr(Auth::user()->nama_mahasiswa ?? 'U', 0, 1)) }}
@@ -162,8 +162,8 @@
                                 <div class="w-full max-w-[42rem] rounded-3xl bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
                                     <div class="flex items-start justify-between gap-3 px-4 py-4 border-b border-gray-200 dark:border-gray-700">
                                         <div>
-                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ autoTranslate('Sesuaikan Foto Profil') }}</h3>
-                                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.') }}</p>
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-translate="cropper_title" data-translate-page="profile">Sesuaikan Foto Profil</h3>
+                                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" data-translate="cropper_desc" data-translate-page="profile">Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.</p>
                                         </div>
                                         <button type="button" onclick="closeCropperModal()" class="rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300 transition">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,14 +177,14 @@
                                         </div>
                                         <div class="space-y-4">
                                             <div class="rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
-                                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{{ autoTranslate('Pratinjau') }}</p>
+                                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3" data-translate="preview_label" data-translate-page="profile">Pratinjau</p>
                                                 <div id="cropper-preview-container" class="cropper-preview-box overflow-hidden rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-900/5"></div>
                                             </div>
                                             <div class="rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 space-y-3">
                                                 <div class="flex items-center justify-between gap-3">
                                                     <div>
-                                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ autoTranslate('Zoom') }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ autoTranslate('Perbesar atau perkecil gambar.') }}</p>
+                                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200" data-translate="cropper_zoom" data-translate-page="profile">Zoom</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="cropper_zoom_desc" data-translate-page="profile">Perbesar atau perkecil gambar.</p>
                                                     </div>
                                                     <div class="flex items-center gap-2">
                                                         <button type="button" onclick="cropperZoom(-0.1)" class="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">-</button>
@@ -196,8 +196,8 @@
                                         </div>
                                     </div>
                                     <div class="cropper-footer flex flex-col gap-3 sm:flex-row items-stretch justify-end border-t border-gray-200 dark:border-gray-700 px-5 py-4 bg-gray-50 dark:bg-gray-950/90">
-                                        <button type="button" onclick="cancelCropper()" class="w-full sm:w-auto rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">{{ autoTranslate('Batal') }}</button>
-                                        <button type="button" onclick="confirmCrop()" class="w-full sm:w-auto rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition">{{ autoTranslate('Gunakan Foto') }}</button>
+                                        <button type="button" onclick="cancelCropper()" class="w-full sm:w-auto rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
+                                        <button type="button" onclick="confirmCrop()" class="w-full sm:w-auto rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition" data-translate="btn_use_photo" data-translate-page="profile">Gunakan Foto</button>
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                                     </svg>
-                                    <span>{{ autoTranslate('Bagikan Portfolio') }}</span>
+                                    <span data-translate="btn_share_portfolio" data-translate-page="profile">Bagikan Portfolio</span>
                                 </button>
                             </div>
 
@@ -233,9 +233,9 @@
                                 <div class="text-gray-500 dark:text-gray-400 text-sm mb-8 relative group">
                                     <div id="username-container">
                                         <span id="username-display" class="cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400" onclick="toggleEdit('username')">
-                                            {{ Auth::user()->username ? '@' . Auth::user()->username : autoTranslate('(belum ada username)') }}
+                                            {{ Auth::user()->username ? '@' . Auth::user()->username : '(belum ada username)' }}
                                         </span>
-                                        <button type="button" onclick="toggleEdit('username')" class="ml-2 opacity-0 group-hover:opacity-100 transition text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400">{{ autoTranslate('edit') }}</button>
+                                        <button type="button" onclick="toggleEdit('username')" class="ml-2 opacity-0 group-hover:opacity-100 transition text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400" data-translate="btn_edit" data-translate-page="profile">Edit</button>
                                     </div>
                                     <input type="text" id="username-input" name="username" class="hidden dark:bg-gray-800 dark:text-white text-center border-b border-indigo-500 focus:outline-none w-64 mx-auto bg-transparent" value="{{ old('username', Auth::user()->username) }}">
                                 </div>
@@ -248,24 +248,24 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group sm:col-span-2" onclick="toggleEdit('deskripsi')">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
-                                        <span data-translate="desc" data-translate-page="profile">{{ autoTranslate('Deskripsi') }}</span>
+                                        <span data-translate="label_description" data-translate-page="profile">Deskripsi</span>
                                     </p>
                                     <div class="flex items-center justify-between">
-                                        <p id="deskripsi-display" class="text-base dark:text-gray-200 text-gray-800 break-words flex-1">{{ autoTranslate($user->deskripsi ?? 'Klik untuk menambahkan deskripsi...') }}</p>
+                                        <p id="deskripsi-display" class="text-base dark:text-gray-200 text-gray-800 break-words flex-1">{{ Auth::user()->translated('deskripsi') ?? '(belum ada deskripsi)' }}</p>
                                         <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </div>
-                                    <textarea id="deskripsi-input" name="deskripsi" class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent rounded p-2" rows="3">{{ old('deskripsi', $user->deskripsi) }}</textarea>
+                                    <textarea id="deskripsi-input" name="deskripsi" class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent rounded p-2" rows="3">Deskripsi</textarea>
                                 </div>
 
-                                <!-- NIM (tidak bisa edit) -->
+                                <!-- NIM -->
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0h4" />
                                         </svg>
-                                        <span data-translate="nim" data-translate-page="profile">{{ autoTranslate('NIM') }}</span>
+                                        <span data-translate="label_nim" data-translate-page="profile">NIM</span>
                                     </p>
-                                    <p class="text-base font-medium text-gray-800 dark:text-gray-200">{{ autoTranslate(Auth::user()->nim ?? '-') }}</p>
+                                    <p class="text-base font-medium text-gray-800 dark:text-gray-200">{{ Auth::user()->nim ?? '-' }}</p>
                                 </div>
 
                                 <!-- Tanggal Lahir -->
@@ -275,11 +275,11 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v4m0 0v4m0-4h4m-4 0H8" />
                                         </svg>
-                                        <span data-translate="tgl_lahir" data-translate-page="profile">{{ autoTranslate('Tanggal Lahir') }}</span>
+                                        <span data-translate="label_tanggal_lahir" data-translate-page="profile">Tanggal Lahir</span>
                                     </p>
                                     <div class="flex items-center justify-between">
                                         <p id="tanggal_lahir-display" class="text-base font-medium dark:text-gray-200 text-gray-800">
-                                            {{ Auth::user()->tanggal_lahir ? \Carbon\Carbon::parse(Auth::user()->tanggal_lahir)->translatedFormat('d F Y') : autoTranslate('Klik untuk menambahkan tanggal lahir...') }}
+                                            {{ Auth::user()->tanggal_lahir ? \Carbon\Carbon::parse(Auth::user()->tanggal_lahir)->translatedFormat('d F Y') : 'Klik untuk menambahkan tanggal lahir...' }}
                                         </p>
                                         <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -295,10 +295,10 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group" onclick="toggleEdit('email')">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                        {{ autoTranslate('Email') }}
+                                        <span data-translate="label_email" data-translate-page="profile">Email</span>
                                     </p>
                                     <div class="flex items-center justify-between">
-                                        <p id="email-display" class="text-base font-medium dark:text-gray-200 text-gray-800 break-all">{{ autoTranslate(Auth::user()->email ?? '-') }}</p>
+                                        <p id="email-display" class="text-base font-medium dark:text-gray-200 text-gray-800 break-all">{{ Auth::user()->email ?? '-' }}</p>
                                         <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </div>
                                     <input type="email" id="email-input" name="email" class="hidden w-full text-base font-medium text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent" value="{{ old('email', Auth::user()->email) }}">
@@ -307,17 +307,17 @@
                                 <!-- Jurusan -->
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group" onclick="toggleEdit('jurusan')">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
-                                        <span data-translate="jrs" data-translate-page="profile">{{ autoTranslate('Jurusan') }}</span>
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
+                                        <span data-translate="label_major" data-translate-page="profile">Jurusan</span>
                                     </p>
                                     <div class="flex items-center justify-between">
-                                        <p id="jurusan-display" class="text-base font-medium dark:text-gray-200 text-gray-800">{{ autoTranslate(Auth::user()->jurusan->nama_jurusan ?? '-') }}</p>
+                                        <p id="jurusan-display" class="text-base font-medium dark:text-gray-200 text-gray-800">{{ Auth::user()->jurusan->nama_jurusan ?? '-' }}</p>
                                         <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </div>
                                     <select id="jurusan-input" name="id_jurusan" class="hidden w-full text-base font-medium dark:bg-gray-700 dark:text-white border-b border-indigo-500 focus:outline-none bg-white">
-                                        <option value="">{{ autoTranslate('-- Pilih Jurusan --') }}</option>
+                                        <option value="" data-translate="placeholder_choose_major" data-translate-page="profile">-- Pilih Jurusan --</option>
                                         @foreach($jurusans ?? [] as $jurusan)
-                                            <option value="{{ $jurusan->id_jurusan }}" {{ (Auth::user()->id_jurusan == $jurusan->id_jurusan) ? 'selected' : '' }}>{{ autoTranslate($jurusan->nama_jurusan) }}</option>
+                                            <option value="{{ $jurusan->id_jurusan }}" {{ (Auth::user()->id_jurusan == $jurusan->id_jurusan) ? 'selected' : '' }}>{{ $jurusan->nama_jurusan }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -326,36 +326,35 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
-                                        <span data-translate="agkt" data-translate-page="profile">{{ autoTranslate('Angkatan') }}</span>
+                                        <span data-translate="label_cohort" data-translate-page="profile">Angkatan</span>
                                     </p>
-                                    <p class="text-base font-medium text-gray-800 dark:text-gray-200">{{ autoTranslate(Auth::user()->angkatan->nama_angkatan ?? 'Angkatan 2026') }}</p>
+                                    <p class="text-base font-medium text-gray-800 dark:text-gray-200">{{ Auth::user()->angkatan->nama_angkatan ?? 'Angkatan 2026' }}</p>
                                 </div>
 
                                 <!-- Keahlian Utama -->
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group" onclick="toggleEdit('keahlian')">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                                        <span data-translate="khl_main" data-translate-page="profile">{{ autoTranslate('Keahlian Utama') }}</span>
+                                        <span data-translate="label_main_skill" data-translate-page="profile">Keahlian Utama</span>
                                     </p>
                                     <div class="flex items-center justify-between">
-                                        <p id="keahlian-display" class="text-base font-medium dark:text-gray-200 text-gray-800">{{ autoTranslate(Auth::user()->keahlian->nama_keahlian ?? '-') }}</p>
+                                        <p id="keahlian-display" class="text-base font-medium dark:text-gray-200 text-gray-800">{{ Auth::user()->keahlian->nama_keahlian ?? '-' }}</p>
                                         <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </div>
                                     <select id="keahlian-input" name="id_keahlian" class="hidden w-full text-base font-medium dark:bg-gray-700 dark:text-white border-b border-indigo-500 focus:outline-none bg-white">
-                                        <option value="">{{ autoTranslate('-- Pilih Keahlian --') }}</option>
+                                        <option value="" data-translate="placeholder_choose_skill" data-translate-page="profile">-- Pilih Keahlian --</option>
                                         @foreach($keahlians ?? [] as $keahlian)
-                                            <option value="{{ $keahlian->id_keahlian }}" {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}>{{ autoTranslate($keahlian->nama_keahlian) }}</option>
+                                            <option value="{{ $keahlian->id_keahlian }}" {{ (Auth::user()->id_keahlian == $keahlian->id_keahlian) ? 'selected' : '' }}>{{ $keahlian->nama_keahlian }}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
-                              
                                 <!-- Keahlian Tambahan -->
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 sm:col-span-2">
                                     <div class="flex items-center justify-between mb-4">
                                         <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                                            <span data-translate="khl_add" data-translate-page="profile">{{ autoTranslate('Keahlian Tambahan') }}</span>
+                                            <span data-translate="label_additional_skill" data-translate-page="profile">Keahlian Tambahan</span>
                                         </p>
                                         <span class="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 px-2 py-1 rounded-full">
                                             <span x-text="keahlianCount"></span>/3
@@ -384,9 +383,9 @@
                                                                 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': !item.status_pengajuan
                                                             }" x-text="item.status_pengajuan || 'Unknown'"></span>
                                                         </div>
-                                                        <p x-show="item.keterangan" class="text-xs text-red-600 dark:text-red-400 mt-1" x-text="'{{ autoTranslate('Alasan: ') }}' + item.keterangan"></p>
+                                                        <p x-show="item.keterangan" class="text-xs text-red-600 dark:text-red-400 mt-1" x-text="'{{ 'Alasan: ' }}' + item.keterangan"></p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                            {{ autoTranslate('Diajukan:') }} <span x-text="new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })"></span>
+                                                            {{ 'Diajukan:' }} <span x-text="new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })"></span>
                                                         </p>
                                                     </div>
                                                     <button type="button" @click="deleteKeahlian(item.id, index)" class="ml-2 p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition" :disabled="loading">
@@ -395,7 +394,7 @@
                                                 </div>
                                             </template>
                                             <div x-show="keahlianList.length === 0" class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                                <p class="text-base font-medium" data-translate="empty_khl" data-translate-page="profile">{{ autoTranslate('Belum ada keahlian tambahan') }}</p>
+                                                <p class="text-base font-medium" data-translate="empty_additional_skill" data-translate-page="profile">Belum ada keahlian tambahan</p>
                                             </div>
                                         </div>
                                     </template>
@@ -405,33 +404,29 @@
                                         <!-- Pilihan dari dropdown -->
                                         <div class="space-y-4">
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                    {{ autoTranslate('Pilih dari daftar keahlian') }}
+                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="label_select_from_list" data-translate-page="profile">
+                                                    Pilih dari daftar keahlian
                                                 </label>
                                                 <div class="flex flex-col sm:flex-row gap-3">
                                                     <select x-model="selectedKeahlian" id="keahlian-tambahan-select" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white">
-                                                        <option value="">{{ autoTranslate('-- Pilih Keahlian Tambahan --') }}</option>
+                                                        <option value="" data-translate="placeholder_choose_additional_skill" data-translate-page="profile">-- Pilih Keahlian Tambahan --</option>
                                                         <template x-for="keahlian in keahlianOptions" :key="keahlian.id_keahlian">
                                                             <option :value="keahlian.id_keahlian" :disabled="isKeahlianDisabled(keahlian)" x-text="keahlian.nama_keahlian + (keahlian.id_keahlian === mainSkillId ? ' (Keahlian Utama)' : isKeahlianExists(keahlian.id_keahlian) ? ' (Sudah Diajukan)' : '')"></option>
                                                         </template>
                                                     </select>
-                                                    <button type="button" @click="submitKeahlianFromDropdown()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition" :disabled="!selectedKeahlian || loading">
-                                                        {{ autoTranslate('Ajukan') }}
-                                                    </button>
+                                                    <button type="button" @click="submitKeahlianFromDropdown()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition" :disabled="!selectedKeahlian || loading" data-translate="btn_request" data-translate-page="profile">Ajukan</button>
                                                 </div>
                                             </div>
                                             
                                             <!-- Atau masukkan keahlian baru -->
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                                                    {{ autoTranslate('Atau masukkan keahlian tambahan baru') }}
+                                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2" data-translate="label_or_custom_skill" data-translate-page="profile">
+                                                    Atau masukkan keahlian tambahan baru
                                                 </label>
                                                 <div class="flex flex-col sm:flex-row gap-3">
-                                                    <input type="text" id="custom-keahlian-input" placeholder="{{ autoTranslate('Keahlian tambahan sendiri') }}" 
+                                                    <input type="text" id="custom-keahlian-input" placeholder="{{ 'Keahlian tambahan sendiri' }}" 
                                                         class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                                                    <button type="button" onclick="submitCustomKeahlian()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                                                        {{ autoTranslate('Ajukan Keahlian Baru') }}
-                                                    </button>
+                                                    <button type="button" onclick="submitCustomKeahlian()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition" data-translate="btn_custom_skill" data-translate-page="profile">Ajukan Keahlian Baru</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -439,7 +434,7 @@
                                     <div x-show="keahlianCount >= 3" class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
                                         <p class="text-sm text-yellow-800 dark:text-yellow-200 flex items-center">
                                             <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                                            <span data-translate="max_req" data-translate-page="profile">{{ autoTranslate('Anda sudah mencapai maksimal 3 keahlian tambahan.') }}</span>
+                                            <span data-translate="max_additional_skill" data-translate-page="profile">Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah keahlian baru.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -448,13 +443,13 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group sm:col-span-2" onclick="toggleEdit('video')">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="4" stroke-width="2"/><polygon points="10,9 10,15 15,12" stroke-width="2"/></svg>
-                                        <span data-translate="vid_intro" data-translate-page="profile">{{ autoTranslate('Video Perkenalan') }}</span>
+                                        <span data-translate="label_video_intro" data-translate-page="profile">Video Perkenalan</span>
                                     </p>
                                     <div class="flex items-center justify-between">
-                                        <p id="video-display" class="text-base text-gray-800 dark:text-gray-200 break-all flex-1">{{ autoTranslate($user->video_url ?? 'Klik untuk menambahkan video...') }}</p>
+                                        <p id="video-display" class="text-base text-gray-800 dark:text-gray-200 break-all flex-1">{{ $user->video_url ?? 'Klik untuk menambahkan video...' }}</p>
                                         <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                     </div>
-                                    <input type="text" id="video-input" name="video_url" value="{{ old('video_url', $user->video_url) }}" placeholder="{{ autoTranslate('https://www.youtube.com/watch?v=xxxx') }}" class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent mt-2" oninput="updatePreview()">
+                                    <input type="text" id="video-input" name="video_url" value="{{ old('video_url', $user->video_url) }} "placeholder="https://www.youtube.com/watch?v=xxxx" class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent mt-2" oninput="updatePreview()">
                                     <div id="videoPreview" class="hidden mt-4">
                                         <iframe id="previewFrame" class="w-full h-64 rounded-xl" src="" frameborder="0" allowfullscreen></iframe>
                                     </div>
@@ -464,11 +459,13 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" /></svg>
-                                        <span data-translate="stat_acc" data-translate-page="profile">{{ autoTranslate('Status Akun') }}</span>
+                                        <span data-translate="label_account_status" data-translate-page="profile">Status Akun</span>
                                     </p>
                                     <div class="flex items-center gap-2">
-                                        <span class="inline-block w-3 h-3 rounded-full {{ Auth::user()->is_active ? 'bg-green-500' : 'bg-red-500' }}"></span>
-                                        <p class="text-base font-medium {{ Auth::user()->is_active ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">{{ autoTranslate(Auth::user()->is_active ? 'Aktif' : 'Nonaktif') }}</p>
+                                        <span class="inline-block w-3 h-3 rounded-full {{ Auth::user()->is_active ?  'bg-green-500' : 'bg-red-500' }}"></span>
+                                        <p class="text-base font-medium {{ Auth::user()->is_active ?  'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">
+                                            <span data-translate="{{ Auth::user()->is_active ? 'status_active'  : 'status_inactive' }}" data-translate-page="profile">{{ Auth::user()->is_active ? 'Aktif' : 'Nonaktif' }}</span>
+                                        </p>
                                     </div>
                                 </div>
 
@@ -476,8 +473,8 @@
 
                             <!-- Save Button -->
                             <div id="save-button-container" class="mt-8 text-center hidden">
-                                <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition shadow-md">{{ autoTranslate('Simpan Perubahan') }}</button>
-                                <button type="button" onclick="window.location.reload()" class="ml-4 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition">{{ autoTranslate('Batal') }}</button>
+                                <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition shadow-md" data-translate="btn_save_changes" data-translate-page="profile">Simpan Perubahan</button>
+                                <button type="button" onclick="window.location.reload()" class="ml-4 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
                             </div>
                         </div>
                     </form>
@@ -489,11 +486,11 @@
                                 <svg class="w-8 h-8 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                                 </svg>
-                                {{ autoTranslate('Pendidikan') }}
+                                <span data-translate="section_education" data-translate-page="profile">Pendidikan</span>
                             </h2>
                             <button type="button" onclick="openPendidikanModal()" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                {{ autoTranslate('Tambah Pendidikan') }}
+                                <span data-translate="btn_add_education" data-translate-page="profile">Tambah Pendidikan</span>
                             </button>
                         </div>
 
@@ -527,9 +524,9 @@
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                                         {{ $pend['tahun_masuk'] ?? '-' }} —
                                                         @if(!empty($pend['masih_kuliah']) && $pend['masih_kuliah'])
-                                                            <span class="text-green-600 dark:text-green-400 font-medium">{{ autoTranslate('Sekarang') }}</span>
+                                                            <span class="text-green-600 dark:text-green-400 font-medium" data-translate="status_now" data-translate-page="profile">Sekarang</span>
                                                         @else
-                                                            {{ $pend['tahun_lulus'] ?? autoTranslate('Belum selesai') }}
+                                                            {{ $pend['tahun_lulus'] ?? 'Belum selesai' }}
                                                         @endif
                                                     </p>
                                                 </div>
@@ -541,7 +538,7 @@
                         @else
                             <div class="text-center py-12 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border-2 border-dashed border-blue-200 dark:border-blue-800/30">
                                 <svg class="w-14 h-14 mx-auto text-blue-300 dark:text-blue-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm">{{ autoTranslate('Belum ada data pendidikan. Klik "Tambah Pendidikan" untuk menambahkan.') }}</p>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_education" data-translate-page="profile">Belum ada data pendidikan. Klik "Tambah Pendidikan" untuk menambahkan.</p>
                             </div>
                         @endif
                     </section>
@@ -553,11 +550,11 @@
                                 <svg class="w-8 h-8 mr-2 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
-                                {{ autoTranslate('Pengalaman Kerja') }}
+                                <span data-translate="section_experience" data-translate-page="profile">Pengalaman Kerja</span>
                             </h2>
                             <button type="button" onclick="openPengalamanModal()" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                {{ autoTranslate('Tambah Pengalaman') }}
+                                <span data-translate="btn_add_experience" data-translate-page="profile">Tambah Pengalaman</span>
                             </button>
                         </div>
 
@@ -584,15 +581,15 @@
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                                         {{ $pkj['tahun_mulai'] ?? '-' }} —
                                                         @if(!empty($pkj['masih_bekerja']) && $pkj['masih_bekerja'])
-                                                            <span class="text-green-600 dark:text-green-400 font-medium">{{ autoTranslate('Sekarang') }}</span>
+                                                            <span class="text-green-600 dark:text-green-400 font-medium" data-translate="status_now" data-translate-page="profile">Sekarang</span>
                                                         @else
-                                                            {{ $pkj['tahun_akhir'] ?? autoTranslate('Selesai') }}
+                                                            {{ $pkj['tahun_akhir'] ?? 'Selesai' }}
                                                         @endif
                                                     </p>
                                                     @if(!empty($pkj['sertifikat_pendukung']))
                                                         <a href="{{ asset('storage/' . $pkj['sertifikat_pendukung']) }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 hover:underline mt-2">
                                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
-                                                            {{ autoTranslate('Lihat Sertifikat Pendukung') }}
+                                                            <span data-translate="btn_view_certificate" data-translate-page="profile">Lihat Sertifikat Pendukung</span>
                                                         </a>
                                                     @endif
                                                 </div>
@@ -604,7 +601,7 @@
                         @else
                             <div class="text-center py-12 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border-2 border-dashed border-emerald-200 dark:border-emerald-800/30">
                                 <svg class="w-14 h-14 mx-auto text-emerald-300 dark:text-emerald-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm">{{ autoTranslate('Belum ada pengalaman kerja. Klik "Tambah Pengalaman" untuk menambahkan.') }}</p>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm" data-translate="empty_experience" data-translate-page="profile">Belum ada pengalaman kerja. Klik "Tambah Pengalaman" untuk menambahkan.</p>
                             </div>
                         @endif
                     </section>
@@ -616,18 +613,17 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
-                                <span data-translate="pjt" data-translate-page="profile">{{ autoTranslate('Projects') }}</span>
+                                <span data-translate="section_projects" data-translate-page="profile">Projects</span>
                             </h2>
                             <div class="flex items-center gap-3">
-                                {{-- Button tambah projek --}}
                                 <a href="{{ route('project.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
                                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                    {{ autoTranslate('Tambah Projek') }}
+                                    <span data-translate="btn_add_project" data-translate-page="profile">Tambah Projek</span>
                                 </a>
-                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->projects->count() }} {{ autoTranslate('proyek') }}</span>
+                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->projects->count() }} <span data-translate="project_count" data-translate-page="profile">proyek</span></span>
                                 @if($user->projects->count() > 3)
                                     <button @click="showAllProjects = !showAllProjects" class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium flex items-center gap-1">
-                                        <span x-text="showAllProjects ? '{{ autoTranslate('Tampilkan lebih sedikit') }}' : '{{ autoTranslate('Lihat semua') }} ({{ $user->projects->count() }})'"></span>
+                                        <span x-text="showAllProjects ? 'Tampilkan lebih sedikit' : 'Lihat semua' ({{ $user->projects->count() }})'"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllProjects }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                                     </button>
                                 @endif
@@ -637,7 +633,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 @foreach($user->projects as $index => $project)
                                     @php
-                                        $content = $project->isi_content ?? [];
+                                        $content = $project->translated('isi_content') ?? [];
                                         $nama = $content['nama_project'] ?? 'Tanpa Nama Project';
                                         $deskripsi = $content['deskripsi'] ?? null;
                                         $linkProject = $content['link_project'] ?? null;
@@ -648,14 +644,32 @@
                                         $today = \Carbon\Carbon::today();
                                         $mulaiFormatted = $mulai ? $mulai->translatedFormat('M Y') : '—';
                                         $akhirFormatted = $akhir ? $akhir->translatedFormat('M Y') : 'Sekarang';
-                                        if ($mulai && $akhir) {
-                                            if ($akhir < $today) { $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'; $statusText = autoTranslate('Selesai'); }
-                                            elseif ($mulai <= $today && $today <= $akhir) { $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'; $statusText = autoTranslate('Sedang Berjalan'); }
-                                            else { $statusClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'; $statusText = autoTranslate('Akan Datang'); }
+                                       if ($mulai && $akhir) {
+                                            if ($akhir < $today) { 
+                                                $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'; 
+                                                $statusText = 'Selesai'; 
+                                            }
+                                            elseif ($mulai <= $today && $today <= $akhir) { 
+                                                $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'; 
+                                                $statusText = 'Sedang Berjalan'; 
+                                            }
+                                            else { 
+                                                $statusClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'; 
+                                                $statusText = 'Akan Datang'; 
+                                            }
                                         } elseif ($mulai && !$akhir) {
-                                            if ($mulai <= $today) { $statusClass = 'bg-green-100 text-green-800'; $statusText = autoTranslate('Sedang Berjalan'); }
-                                            else { $statusClass = 'bg-blue-100 text-blue-800'; $statusText = autoTranslate('Akan Datang'); }
-                                        } else { $statusClass = 'bg-gray-100 text-gray-800'; $statusText = autoTranslate('Tidak diketahui'); }
+                                            if ($mulai <= $today) { 
+                                                $statusClass = 'bg-green-100 text-green-800'; 
+                                                $statusText = 'Sedang Berjalan'; 
+                                            }
+                                            else { 
+                                                $statusClass = 'bg-blue-100 text-blue-800'; 
+                                                $statusText = 'Akan Datang'; 
+                                            }
+                                        } else { 
+                                            $statusClass = 'bg-gray-100 text-gray-800'; 
+                                            $statusText = 'Tidak diketahui'; 
+                                        }
                                         $youtubeEmbedUrl = null; $youtubeThumbnail = null;
                                         if ($linkVideo) {
                                             preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $linkVideo, $matches);
@@ -692,13 +706,13 @@
                                         </div>
                                         <div class="p-5 flex flex-col flex-1">
                                             <div class="flex items-start justify-between mb-2 gap-2">
-                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1">{{ autoTranslate($nama) }}</h3>
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1">{{ $nama }}</h3>
                                                 <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }} whitespace-nowrap">{{ $statusText }}</span>
                                             </div>
-                                            <div class="text-sm text-gray-600 dark:text-gray-300 mb-3">{{ autoTranslate('Mulai:') }} {{ autoTranslate($mulaiFormatted) }} → {{ autoTranslate('Selesai:') }} {{ autoTranslate($akhirFormatted) }}</div>
-                                            @if($deskripsi)<p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3 flex-1">{{ autoTranslate($deskripsi) }}</p>@endif
+                                            <div class="text-sm text-gray-600 dark:text-gray-300 mb-3">Mulai:  {{ $mulaiFormatted }} → Selesai: {{ $akhirFormatted }}</div>
+                                            @if($deskripsi)<p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3 flex-1">{{ $deskripsi }}</p>@endif
                                             <div class="flex flex-wrap gap-3 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                                                @if($linkProject)<a href="{{ $linkProject }}" target="_blank" class="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>{{ autoTranslate('Website') }}</a>@endif
+                                                @if($linkProject)<a href="{{ $linkProject }}" target="_blank" class="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>Website</a>@endif
                                                 @if($linkGithub)<a href="{{ $linkGithub }}" target="_blank" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 dark:text-gray-300"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>GitHub</a>@endif
                                             </div>
                                         </div>
@@ -708,7 +722,7 @@
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400">{{ autoTranslate('Belum ada proyek yang ditambahkan.') }}</p>
+                                <p class="mt-4 text-gray-600 dark:text-gray-400" data-translate="empty_projects" data-translate-page="profile">Belum ada proyek yang ditambahkan.</p>
                             </div>
                         @endif
                     </section>
@@ -718,15 +732,14 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
-                                <span data-translate="stk" data-translate-page="profile">{{ autoTranslate('Sertifikat') }}</span>
+                                <span data-translate="section_certificates" data-translate-page="profile">Sertifikat</span>
                             </h2>
-                            {{-- tombol tambah sertifikat dan jumlah serti di samping --}}
                             <div class="flex items-center gap-3">
                                 <a href="{{ route('sertifikat.create') }}" class="bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
                                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                    {{ autoTranslate('Tambah Sertifikat') }}
+                                    <span data-translate="btn_add_certificate" data-translate-page="profile">Tambah Sertifikat</span>
                                 </a>
-                            <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->sertifikats?->count() ?? 0 }} {{ autoTranslate('sertifikat') }}</span>
+                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->sertifikats?->count() ?? 0 }} <span data-translate="certificate_count" data-translate-page="profile">sertifikat</span></span>
                             </div>
                         </div>
                         @if($user->sertifikats?->isNotEmpty() ?? false)
@@ -747,14 +760,14 @@
                                         x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
                                         <div class="p-6 flex flex-col flex-1">
                                             <div class="flex items-center gap-2 mb-3 flex-wrap">
-                                                <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $isInactive ? 'bg-gray-300 text-gray-700' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' }}">{{ autoTranslate('Sertifikat') }}</span>
-                                                @if($sertifikat->status_pengajuan)<span class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">{{ autoTranslate($sertifikat->status_pengajuan) }}</span>@endif
+                                                <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $isInactive ? 'bg-gray-300 text-gray-700' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' }}" data-translate="certificate_badge" data-translate-page="profile">Sertifikat</span>
+                                                @if($sertifikat->status_pengajuan)<span class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">{{ $sertifikat->status_pengajuan }}</span>@endif
                                             </div>
-                                            <h3 class="text-lg font-semibold {{ $isInactive ? 'text-gray-500' : 'text-gray-900 dark:text-white' }} mb-3 line-clamp-2">{{ autoTranslate($sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul') }}</h3>
-                                            @if($sertifikat->lembaga_penerbit)<p class="text-sm text-gray-600 dark:text-gray-300 mb-2 flex items-center gap-1"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>{{ autoTranslate($sertifikat->lembaga_penerbit) }}</p>@endif
-                                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->translatedFormat('d M Y') : autoTranslate('Tanggal tidak tersedia') }}</p>
+                                            <h3 class="text-lg font-semibold {{ $isInactive ? 'text-gray-500' : 'text-gray-900 dark:text-white' }} mb-3 line-clamp-2">{{ $sertifikat->nama_sertifikat ?? 'Sertifikat Tanpa Judul' }}</h3>
+                                            @if($sertifikat->lembaga_penerbit)<p class="text-sm text-gray-600 dark:text-gray-300 mb-2 flex items-center gap-1"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>{{ $sertifikat->lembaga_penerbit }}</p>@endif
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ $sertifikat->tanggal_terbit ? \Carbon\Carbon::parse($sertifikat->tanggal_terbit)->translatedFormat('d M Y') : 'Tanggal tidak tersedia' }}</p>
                                             @if($sertifikat->link_sertifikat)
-                                                <a href="{{ asset('storage/' . $sertifikat->link_sertifikat) }}" target="_blank" class="mt-auto inline-flex items-center text-amber-600 dark:text-amber-400 hover:text-amber-800 font-medium text-sm gap-1">{{ autoTranslate('Lihat Sertifikat') }}<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></a>
+                                                <a href="{{ asset('storage/' . $sertifikat->link_sertifikat) }}" target="_blank" class="mt-auto inline-flex items-center text-amber-600 dark:text-amber-400 hover:text-amber-800 font-medium text-sm gap-1"> Lihat Sertifikat <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></a>
                                             @endif
                                         </div>
                                     </div>
@@ -762,7 +775,7 @@
                             </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <p class="text-gray-600 dark:text-gray-400">{{ autoTranslate('Belum ada sertifikat yang ditambahkan.') }}</p>
+                                <p class="text-gray-600 dark:text-gray-400" data-translate="empty_certificates" data-translate-page="profile">Belum ada sertifikat yang ditambahkan.</p>
                             </div>
                         @endif
                     </section>
@@ -772,9 +785,9 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                                {{ autoTranslate('Learning Corners') }}
+                                <span data-translate="section_learning_corners" data-translate-page="profile">Learning Corners</span>
                             </h2>
-                            <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->learning_corners->count() }} {{ autoTranslate('catatan') }}</span>
+                            <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->learning_corners->count() }} <span data-translate="learning_corner_count" data-translate-page="profile">catatan</span></span>
                         </div>
                         @if($user->learning_corners->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -785,20 +798,20 @@
                                         x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
                                         <div class="p-6 flex-1 flex flex-col">
                                             @if (!empty($entry->content) && is_array($entry->content))
-                                                @foreach ($entry->content as $item)
-                                                    @if ($item['type'] === 'title')<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2">{{ autoTranslate($item['content'] ?? '') }}</h3>
-                                                    @elseif ($item['type'] === 'text')<p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">{{ autoTranslate($item['content']) }}</p>
+                                                @foreach ($entry->translated('content') as $item)
+                                                    @if ($item['type'] === 'title')<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2">{{ $item['content'] ?? '' }}</h3>
+                                                    @elseif ($item['type'] === 'text')<p class="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">{{$item['content'] }}</p>
                                                     @endif
                                                 @endforeach
                                             @endif
-                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">{{ autoTranslate('Diposting pada:') }} {{ $entry->created_at?->translatedFormat('d M Y H:i') ?? '' }}</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">Diposting pada:  {{ $entry->created_at?->translatedFormat('d M Y H:i') ?? '' }}</p>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <p class="text-gray-600 dark:text-gray-400">{{ autoTranslate('Belum ada catatan learning corner.') }}</p>
+                                <p class="text-gray-600 dark:text-gray-400" data-translate="empty_learning_corners" data-translate-page="profile">Belum ada catatan learning corner.</p>
                             </div>
                         @endif
                     </section>
@@ -806,7 +819,7 @@
 
                     <!-- Footer -->
                     <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-                        {{ autoTranslate('Terakhir diperbarui:') }} {{ now()->translatedFormat('d F Y H:i') }} WIB
+                        <span data-translate="last_updated" data-translate-page="profile">Terakhir diperbarui:</span> {{ now()->translatedFormat('d F Y H:i') }} WIB
                     </div>
 
                 </div>
@@ -825,7 +838,7 @@
                             <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
                                 <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ autoTranslate('Tambah Pendidikan') }}</h3>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white" data-translate="modal_education_title" data-translate-page="profile">Tambah Pendidikan</h3>
                         </div>
                         <button onclick="closePendidikanModal()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -837,9 +850,11 @@
                     @csrf
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Nama Institusi / Sekolah') }} <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_institution" data-translate-page="profile">Nama Institusi / Sekolah</span> <span class="text-red-500">*</span>
+                        </label>
                         <div class="relative">
-                            <input type="text" id="sekolah-search-input" name="nama_sekolah" placeholder="{{ autoTranslate('Cari nama sekolah/universitas...') }}" required autocomplete="off"
+                            <input type="text" id="sekolah-search-input" name="nama_sekolah" placeholder="Cari nama sekolah/universitas..." required autocomplete="off"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"
                                 oninput="searchSekolah(this.value)">
                             <div class="absolute right-3 top-3">
@@ -853,9 +868,11 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Jenjang Pendidikan') }} <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_education_level" data-translate-page="profile">Jenjang Pendidikan</span> <span class="text-red-500">*</span>
+                        </label>
                         <select name="jenjang" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
-                            <option value="">{{ autoTranslate('-- Pilih Jenjang --') }}</option>
+                            <option value="" data-translate="placeholder_choose_education_level" data-translate-page="profile">-- Pilih Jenjang --</option>
                             @foreach(['SD','SMP','SMA/SMK','D1','D2','D3','D4','S1','S2','S3','Kursus/Pelatihan'] as $jenjang)
                                 <option value="{{ $jenjang }}">{{ $jenjang }}</option>
                             @endforeach
@@ -863,37 +880,44 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Jurusan / Program Studi') }} <span class="text-xs font-normal text-gray-400">({{ autoTranslate('opsional') }})</span></label>
-                        <input type="text" name="jurusan_sek" placeholder="{{ autoTranslate('Contoh: Teknik Informatika') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_major_study" data-translate-page="profile">Jurusan / Program Studi</span>
+                            <span class="text-xs font-normal text-gray-400">(<span data-translate="label_optional" data-translate-page="profile">opsional</span>)</span>
+                        </label>
+                        <input type="text" name="jurusan_sek" placeholder="Contoh: Teknik Informatika" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                     </div>
 
                     {{-- Tambah modal pendidikan - tahun masuk & lulus dengan validasi JS --}}
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Masuk') }} <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="label_start_year" data-translate-page="profile">Tahun Masuk</span> <span class="text-red-500">*</span>
+                            </label>
                             <input type="date" id="add-pend-tahun_masuk" name="tahun_masuk" required
                                 max="{{ date('Y-m-d') }}"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"
                                 onchange="onAddPendTahunMasukChange(this.value)">
                         </div>
                         <div id="add-pend-tahun-lulus-field">
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Lulus') }}</label>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="label_graduation_year" data-translate-page="profile">Tahun Lulus</span>
+                            </label>
                             <input type="date" id="add-pend-tahun_lulus" name="tahun_lulus"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"
                                 min=""
                                 onchange="validateAddPendTahunLulus(this)">
-                            <p id="add-pend-lulus-error" class="hidden text-xs text-red-500 mt-1">{{ autoTranslate('Tahun lulus tidak boleh sebelum tahun masuk.') }}</p>
+                            <p id="add-pend-lulus-error" class="hidden text-xs text-red-500 mt-1" data-translate="error_end_before_start" data-translate-page="profile">Tahun lulus tidak boleh sebelum tahun masuk.</p>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
                         <input type="checkbox" name="masih_kuliah" id="add-masih_kuliah" value="1" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" onchange="toggleAddPendTahunLulus(this)">
-                        <label for="add-masih_kuliah" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">{{ autoTranslate('Masih bersekolah / kuliah di sini') }}</label>
+                        <label for="add-masih_kuliah" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="label_still_studying" data-translate-page="profile">Masih bersekolah / kuliah di sini</label>
                     </div>
 
                     <div class="flex gap-3 pt-2">
-                        <button type="button" onclick="closePendidikanModal()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition">{{ autoTranslate('Batal') }}</button>
-                        <button type="submit" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm">{{ autoTranslate('Simpan Pendidikan') }}</button>
+                        <button type="button" onclick="closePendidikanModal()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
+                        <button type="submit" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm" data-translate="btn_save_education" data-translate-page="profile">Simpan Pendidikan</button>
                     </div>
                 </form>
             </div>
@@ -915,7 +939,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 id="modal-pend-title" class="text-lg font-bold text-gray-900 dark:text-white" data-translate="detail_pend_title" data-translate-page="profile">Detail Pendidikan</h3>
+                                <h3 id="modal-pend-title" class="text-lg font-bold text-gray-900 dark:text-white" data-translate="detail_education_title" data-translate-page="profile">Detail Pendidikan</h3>
                                 <p id="modal-pend-mode-label" class="text-xs text-blue-600 dark:text-blue-400" data-translate="mode_view" data-translate-page="profile">Mode Lihat</p>
                             </div>
                         </div>
@@ -953,11 +977,11 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="jurusan" data-translate-page="profile">Jurusan</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="label_major_study" data-translate-page="profile">Jurusan</p>
                                 <p id="pend-view-jurusan" class="text-sm font-medium text-gray-800 dark:text-gray-200">-</p>
                             </div>
                             <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="periode" data-translate-page="profile">Periode</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="label_period" data-translate-page="profile">Periode</p>
                                 <p id="pend-view-periode" class="text-sm font-medium text-gray-800 dark:text-gray-200"></p>
                             </div>
                         </div>
@@ -967,17 +991,17 @@
                     <div id="pend-edit-mode" class="hidden space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                <span data-translate="nama_institusi" data-translate-page="profile">Nama Institusi / Sekolah</span> <span class="text-red-500">*</span>
+                                <span data-translate="label_institution" data-translate-page="profile">Nama Institusi / Sekolah</span> <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="pend-edit-nama_sekolah" placeholder="{{ autoTranslate('Nama sekolah/universitas...') }}" required
+                            <input type="text" id="pend-edit-nama_sekolah" placeholder="Nama sekolah/universitas..." required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                <span data-translate="jenjang_pendidikan" data-translate-page="profile">Jenjang Pendidikan</span> <span class="text-red-500">*</span>
+                                <span data-translate="label_education_level" data-translate-page="profile">Jenjang Pendidikan</span> <span class="text-red-500">*</span>
                             </label>
                             <select id="pend-edit-jenjang" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
-                                <option value="" data-translate="pilih_jenjang" data-translate-page="profile">-- Pilih Jenjang --</option>
+                                <option value="" data-translate="placeholder_choose_education_level" data-translate-page="profile">-- Pilih Jenjang --</option>
                                 <option>SD</option><option>SMP</option><option>SMA/SMK</option>
                                 <option>D1</option><option>D2</option><option>D3</option><option>D4</option>
                                 <option>S1</option><option>S2</option><option>S3</option><option>Kursus/Pelatihan</option>
@@ -985,16 +1009,16 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                <span data-translate="jurusan_prodi" data-translate-page="profile">Jurusan / Program Studi</span>
-                                <span class="text-xs font-normal text-gray-400">(<span data-translate="opsional" data-translate-page="profile">opsional</span>)</span>
+                                <span data-translate="label_major_study" data-translate-page="profile">Jurusan / Program Studi</span>
+                                <span class="text-xs font-normal text-gray-400">(<span data-translate="label_optional" data-translate-page="profile">opsional</span>)</span>
                             </label>
-                            <input type="text" id="pend-edit-jurusan_sek" placeholder="{{ autoTranslate('Contoh: Teknik Informatika') }}"
+                            <input type="text" id="pend-edit-jurusan_sek" placeholder="Contoh: Teknik Informatika"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                    <span data-translate="tahun_masuk" data-translate-page="profile">Tahun Masuk</span> <span class="text-red-500">*</span>
+                                    <span data-translate="label_start_year" data-translate-page="profile">Tahun Masuk</span> <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" id="pend-edit-tahun_masuk" required
                                     max="{{ date('Y-m-d') }}"
@@ -1003,19 +1027,19 @@
                             </div>
                             <div id="pend-edit-tahun-lulus-field">
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                    <span data-translate="tahun_lulus" data-translate-page="profile">Tahun Lulus</span>
+                                    <span data-translate="label_graduation_year" data-translate-page="profile">Tahun Lulus</span>
                                 </label>
                                 <input type="date" id="pend-edit-tahun_lulus"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"
                                     min=""
                                     onchange="validateEditPendTahunLulus(this)">
-                                <p id="edit-pend-lulus-error" class="hidden text-xs text-red-500 mt-1">{{ autoTranslate('Tahun lulus tidak boleh sebelum tahun masuk.') }}</p>
+                                <p id="edit-pend-lulus-error" class="hidden text-xs text-red-500 mt-1" data-translate="error_end_before_start" data-translate-page="profile">Tahun lulus tidak boleh sebelum tahun masuk.</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
                             <input type="checkbox" id="pend-edit-masih_kuliah" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                 onchange="toggleEditTahunLulus(this)">
-                            <label for="pend-edit-masih_kuliah" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="masih_kuliah" data-translate-page="profile">Masih bersekolah / kuliah di sini</label>
+                            <label for="pend-edit-masih_kuliah" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="label_still_studying" data-translate-page="profile">Masih bersekolah / kuliah di sini</label>
                         </div>
                     </div>
 
@@ -1023,16 +1047,16 @@
                     <div id="pend-view-actions" class="flex gap-3 pt-2">
                         <button type="button" onclick="switchToPendidikanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            <span data-translate="edit" data-translate-page="profile">Edit</span>
+                            <span data-translate="btn_edit" data-translate-page="profile">Edit</span>
                         </button>
                         <button type="button" id="btn-delete-pend" onclick="confirmDeletePendidikan()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            <span data-translate="hapus" data-translate-page="profile">Hapus</span>
+                            <span data-translate="btn_delete" data-translate-page="profile">Hapus</span>
                         </button>
                     </div>
                     <div id="pend-edit-actions" class="hidden flex gap-3 pt-2">
-                        <button type="button" onclick="switchToPendidikanView()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="batal" data-translate-page="profile">Batal</button>
-                        <button type="button" id="btn-save-pend-edit" onclick="savePendidikanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2" data-translate="simpan_perubahan" data-translate-page="profile">Simpan Perubahan</button>
+                        <button type="button" onclick="switchToPendidikanView()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
+                        <button type="button" id="btn-save-pend-edit" onclick="savePendidikanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2" data-translate="btn_save_changes_edit" data-translate-page="profile">Simpan Perubahan</button>
                     </div>
                 </div>
             </div>
@@ -1051,7 +1075,7 @@
                             <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
                                 <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ autoTranslate('Tambah Pengalaman Kerja') }}</h3>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white" data-translate="modal_experience_title" data-translate-page="profile">Tambah Pengalaman Kerja</h3>
                         </div>
                         <button onclick="closePengalamanModal()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -1063,35 +1087,45 @@
                     @csrf
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Nama Perusahaan / Instansi') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="nama_pt" id="form-nama_pt" placeholder="{{ autoTranslate('Contoh: PT. Telkom Indonesia') }}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_company" data-translate-page="profile">Nama Perusahaan / Instansi</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="nama_pt" id="form-nama_pt" placeholder="Contoh: PT. Telkom Indonesia" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Posisi / Bagian Kerja') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="bagian_kerja" id="form-bagian_kerja" placeholder="{{ autoTranslate('Contoh: Software Engineer') }}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_position" data-translate-page="profile">Posisi / Bagian Kerja</span> <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="bagian_kerja" id="form-bagian_kerja" placeholder="Contoh: Software Engineer" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                     </div>
 
                     <div>
-    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Jenis Pekerjaan') }} <span class="text-red-500">*</span></label>
-    <select name="jenis_pekerjaan" id="form-jenis_pekerjaan" required
-    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
-    <option value="" data-translate="-- Pilih Jenis Pekerjaan --" data-translate-page="profile">-- Pilih Jenis Pekerjaan --</option>
-    @foreach(['Penuh waktu','Paruh waktu','Pekerja mandiri','Pekerja lepas','Kontrak','Magang jangka pendek','Magang','Musiman'] as $jenis)
-        <option value="{{ $jenis }}" data-translate="{{ $jenis }}" data-translate-page="profile">{{ $jenis }}</option>
-    @endforeach
-</select>
-</div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_job_type" data-translate-page="profile">Jenis Pekerjaan</span> <span class="text-red-500">*</span>
+                        </label>
+                        <select name="jenis_pekerjaan" id="form-jenis_pekerjaan" required
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
+                            <option value="" data-translate="placeholder_choose_job_type" data-translate-page="profile">-- Pilih Jenis Pekerjaan --</option>
+                            @foreach(['Penuh waktu','Paruh waktu','Pekerja mandiri','Pekerja lepas','Kontrak','Magang jangka pendek','Magang','Musiman'] as $jenis)
+                                <option value="{{ $jenis }}" data-translate="{{ $jenis }}" data-translate-page="profile">{{ $jenis }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Deskripsi Pekerjaan') }}</label>
-                        <textarea name="deskripsi" id="form-deskripsi" placeholder="{{ autoTranslate('Tuliskan deskripsi pekerjaan Anda') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"></textarea>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            <span data-translate="label_job_description" data-translate-page="profile">Deskripsi Pekerjaan</span>
+                        </label>
+                        <textarea name="deskripsi" id="form-deskripsi" placeholder="Tuliskan deskripsi pekerjaan Anda" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"></textarea>
                     </div>
 
                     {{-- FIX: Modal tambah pengalaman - tahun mulai & akhir dengan validasi JS --}}
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Mulai') }} <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="label_start_year_work" data-translate-page="profile">Tahun Mulai</span> <span class="text-red-500">*</span>
+                            </label>
                             <input type="date" name="tahun_mulai" id="form-tahun_mulai"
                                 max="{{ date('Y-m-d') }}"
                                 required
@@ -1099,30 +1133,32 @@
                                 onchange="onAddPkjTahunMulaiChange(this.value)">
                         </div>
                         <div id="add-pkj-tahun-akhir-field">
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Selesai') }}</label>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                <span data-translate="label_end_year_work" data-translate-page="profile">Tahun Selesai</span>
+                            </label>
                             <input type="date" name="tahun_akhir" id="form-tahun_akhir"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"
                                 min=""
                                 onchange="validateAddPkjTahunAkhir(this)">
-                            <p id="add-pkj-akhir-error" class="hidden text-xs text-red-500 mt-1">{{ autoTranslate('Tahun selesai tidak boleh sebelum tahun mulai.') }}</p>
+                            <p id="add-pkj-akhir-error" class="hidden text-xs text-red-500 mt-1" data-translate="error_end_before_start" data-translate-page="profile">Tahun selesai tidak boleh sebelum tahun mulai.</p>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
                         <input type="checkbox" name="masih_bekerja" id="form-masih_bekerja" value="1" class="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" onchange="toggleAddPkjTahunAkhir(this)">
-                        <label for="form-masih_bekerja" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">{{ autoTranslate('Masih bekerja di sini') }}</label>
+                        <label for="form-masih_bekerja" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="label_still_working" data-translate-page="profile">Masih bekerja di sini</label>
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                            {{ autoTranslate('Sertifikat Pendukung') }}
-                            <span class="text-xs font-normal text-gray-400 ml-1">({{ autoTranslate('JPG, PNG, PDF maks. 5MB') }})</span>
+                            <span data-translate="label_supporting_certificate" data-translate-page="profile">Sertifikat Pendukung</span>
+                            <span class="text-xs font-normal text-gray-400 ml-1">(<span data-translate="label_file_hint" data-translate-page="profile">JPG, PNG, PDF maks. 5MB</span>)</span>
                         </label>
                         <div class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-5 hover:border-emerald-400 dark:hover:border-emerald-500 transition cursor-pointer" onclick="document.getElementById('sertifikat-file-input').click()">
                             <div class="text-center" id="sertifikat-upload-placeholder">
                                 <svg class="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ autoTranslate('Klik untuk upload file') }}</p>
-                                <p class="text-xs text-gray-400 mt-1">{{ autoTranslate('atau drag & drop di sini') }}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="click_to_upload" data-translate-page="profile">Klik untuk upload file</p>
+                                <p class="text-xs text-gray-400 mt-1" data-translate="drag_drop_hint" data-translate-page="profile">atau drag & drop di sini</p>
                             </div>
                             <div id="sertifikat-file-preview" class="hidden">
                                 <div class="flex items-center gap-3">
@@ -1143,8 +1179,8 @@
                     </div>
 
                     <div class="flex gap-3 pt-2">
-                        <button type="button" onclick="closePengalamanModal()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition">{{ autoTranslate('Batal') }}</button>
-                        <button type="submit" id="btn-submit-pengalaman" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm">{{ autoTranslate('Simpan Pengalaman') }}</button>
+                        <button type="button" onclick="closePengalamanModal()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
+                        <button type="submit" id="btn-submit-pengalaman" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm" data-translate="btn_save_experience" data-translate-page="profile">Simpan Pengalaman</button>
                     </div>
                 </form>
             </div>
@@ -1166,7 +1202,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 id="modal-pkj-title" class="text-lg font-bold text-gray-900 dark:text-white" data-translate="detail_pkj_title" data-translate-page="profile">Detail Pengalaman Kerja</h3>
+                                <h3 id="modal-pkj-title" class="text-lg font-bold text-gray-900 dark:text-white" data-translate="detail_experience_title" data-translate-page="profile">Detail Pengalaman Kerja</h3>
                                 <p id="modal-pkj-mode-label" class="text-xs text-emerald-600 dark:text-emerald-400" data-translate="mode_view" data-translate-page="profile">Mode Lihat</p>
                             </div>
                         </div>
@@ -1188,30 +1224,30 @@
                     <!-- VIEW MODE -->
                     <div id="pkj-view-mode" class="space-y-4">
                         <div class="p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
-    <div class="flex items-start justify-between gap-2 flex-wrap">
-        <h4 id="pkj-view-nama" class="text-xl font-bold text-gray-900 dark:text-white"></h4>
-        <span id="pkj-view-jenis" class="text-xs px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium whitespace-nowrap"></span>
-    </div>
-    <p id="pkj-view-bagian" class="text-emerald-700 dark:text-emerald-400 font-medium mt-1"></p>
-</div>
+                            <div class="flex items-start justify-between gap-2 flex-wrap">
+                                <h4 id="pkj-view-nama" class="text-xl font-bold text-gray-900 dark:text-white"></h4>
+                                <span id="pkj-view-jenis" class="text-xs px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium whitespace-nowrap"></span>
+                            </div>
+                            <p id="pkj-view-bagian" class="text-emerald-700 dark:text-emerald-400 font-medium mt-1"></p>
+                        </div>
                         <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1" data-translate="deskripsi" data-translate-page="profile">Deskripsi Pekerjaan</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1" data-translate="label_job_description" data-translate-page="profile">Deskripsi Pekerjaan</p>
                             <p id="pkj-view-deskripsi" class="text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-pre-wrap"></p>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ autoTranslate('Periode') }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="label_period" data-translate-page="profile">Periode</p>
                                 <p id="pkj-view-periode" class="text-sm font-medium text-gray-800 dark:text-gray-200"></p>
                             </div>
                             <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ autoTranslate('Status') }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="label_status" data-translate-page="profile">Status</p>
                                 <p id="pkj-view-status" class="text-sm font-medium text-gray-800 dark:text-gray-200"></p>
                             </div>
                         </div>
                         <div id="pkj-view-sertifikat-wrap" class="hidden">
                             <a id="pkj-view-sertifikat-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                                <span data-translate="lihat_sertifikat_pendukung" data-translate-page="profile">Lihat Sertifikat Pendukung</span>
+                                <span data-translate="btn_view_certificate" data-translate-page="profile">Lihat Sertifikat Pendukung</span>
                             </a>
                         </div>
                     </div>
@@ -1220,25 +1256,25 @@
                     <div id="pkj-edit-mode" class="hidden space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                <span data-translate="nama_pt" data-translate-page="profile">Nama Perusahaan / Instansi</span> <span class="text-red-500">*</span>
+                                <span data-translate="label_company" data-translate-page="profile">Nama Perusahaan / Instansi</span> <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="pkj-edit-nama_pt" placeholder="{{ autoTranslate('Contoh: PT. Telkom Indonesia') }}" required
+                            <input type="text" id="pkj-edit-nama_pt" placeholder="Contoh: PT. Telkom Indonesia" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                <span data-translate="bagian_kerja" data-translate-page="profile">Posisi / Bagian Kerja</span> <span class="text-red-500">*</span>
+                                <span data-translate="label_position" data-translate-page="profile">Posisi / Bagian Kerja</span> <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="pkj-edit-bagian_kerja" placeholder="{{ autoTranslate('Contoh: Software Engineer') }}" required
+                            <input type="text" id="pkj-edit-bagian_kerja" placeholder="Contoh: Software Engineer" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                {{ autoTranslate('Jenis Pekerjaan') }} <span class="text-red-500">*</span>
+                                <span data-translate="label_job_type" data-translate-page="profile">Jenis Pekerjaan</span> <span class="text-red-500">*</span>
                             </label>
                             <select id="pkj-edit-jenis_pekerjaan" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
-                                <option value="" data-translate="-- Pilih Jenis Pekerjaan --" data-translate-page="profile">-- Pilih Jenis Pekerjaan --</option>
+                                <option value="" data-translate="placeholder_choose_job_type" data-translate-page="profile">-- Pilih Jenis Pekerjaan --</option>
                                 @foreach(['Penuh waktu','Paruh waktu','Pekerja mandiri','Pekerja lepas','Kontrak','Magang jangka pendek','Magang','Musiman'] as $jenis)
                                     <option value="{{ $jenis }}" data-translate="{{ $jenis }}" data-translate-page="profile">{{ $jenis }}</option>
                                 @endforeach
@@ -1246,14 +1282,14 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                <span data-translate="deskripsi" data-translate-page="profile">Deskripsi Pekerjaan</span>
+                                <span data-translate="label_job_description" data-translate-page="profile">Deskripsi Pekerjaan</span>
                             </label>
-                            <textarea id="pkj-edit-deskripsi" placeholder="{{ autoTranslate('Tuliskan deskripsi pekerjaan Anda') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"></textarea>
+                            <textarea id="pkj-edit-deskripsi" placeholder="Tuliskan deskripsi pekerjaan Anda" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"></textarea>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                    <span data-translate="tahun_mulai" data-translate-page="profile">Tahun Mulai</span> <span class="text-red-500">*</span>
+                                    <span data-translate="label_start_year_work" data-translate-page="profile">Tahun Mulai</span> <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" id="pkj-edit-tahun_mulai" required
                                     max="{{ date('Y-m-d') }}"
@@ -1262,19 +1298,19 @@
                             </div>
                             <div id="pkj-edit-tahun-akhir-field">
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                                    <span data-translate="tahun_selesai" data-translate-page="profile">Tahun Selesai</span>
+                                    <span data-translate="label_end_year_work" data-translate-page="profile">Tahun Selesai</span>
                                 </label>
                                 <input type="date" id="pkj-edit-tahun_akhir"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition"
                                     min=""
                                     onchange="validateEditPkjTahunAkhir(this)">
-                                <p id="edit-pkj-akhir-error" class="hidden text-xs text-red-500 mt-1">{{ autoTranslate('Tahun selesai tidak boleh sebelum tahun mulai.') }}</p>
+                                <p id="edit-pkj-akhir-error" class="hidden text-xs text-red-500 mt-1" data-translate="error_end_before_start" data-translate-page="profile">Tahun selesai tidak boleh sebelum tahun mulai.</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
                             <input type="checkbox" id="pkj-edit-masih_bekerja" class="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
                                 onchange="toggleEditTahunAkhir(this)">
-                            <label for="pkj-edit-masih_bekerja" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="masih_bekerja" data-translate-page="profile">Masih bekerja di sini</label>
+                            <label for="pkj-edit-masih_bekerja" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer" data-translate="label_still_working" data-translate-page="profile">Masih bekerja di sini</label>
                         </div>
                     </div>
 
@@ -1282,16 +1318,16 @@
                     <div id="pkj-view-actions" class="flex gap-3 pt-2">
                         <button type="button" onclick="switchToPengalamanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            <span data-translate="edit" data-translate-page="profile">Edit</span>
+                            <span data-translate="btn_edit" data-translate-page="profile">Edit</span>
                         </button>
                         <button type="button" id="btn-delete-pkj" onclick="confirmDeletePengalaman()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            <span data-translate="hapus" data-translate-page="profile">Hapus</span>
+                            <span data-translate="btn_delete" data-translate-page="profile">Hapus</span>
                         </button>
                     </div>
                     <div id="pkj-edit-actions" class="hidden flex gap-3 pt-2">
-                        <button type="button" onclick="switchToPengalamanView()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="batal" data-translate-page="profile">Batal</button>
-                        <button type="button" id="btn-save-pkj-edit" onclick="savePengalamanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2" data-translate="simpan_perubahan" data-translate-page="profile">Simpan Perubahan</button>
+                        <button type="button" onclick="switchToPengalamanView()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
+                        <button type="button" id="btn-save-pkj-edit" onclick="savePengalamanEdit()" class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm flex items-center justify-center gap-2" data-translate="btn_save_changes_edit_experience" data-translate-page="profile">Simpan Perubahan</button>
                     </div>
                 </div>
             </div>
@@ -1304,10 +1340,10 @@
     const TODAY = new Date().toISOString().split('T')[0]; // format Y-m-d
 
     const successMessages = {
-        pendidikan_updated: '{{ autoTranslate('Pendidikan Berhasil diperbarui!') }}',
-        pengalaman_updated: '{{ autoTranslate('Pengalaman Berhasil diperbarui!') }}',
-        pendidikan_deleted: '{{ autoTranslate('Pendidikan Berhasil dihapus!') }}',
-        pengalaman_deleted: '{{ autoTranslate('Pengalaman Berhasil dihapus!') }}'
+        pendidikan_updated: 'Pendidikan Berhasil diperbarui!',
+        pengalaman_updated: 'Pengalaman Berhasil diperbarui!',
+        pendidikan_deleted: 'Pendidikan Berhasil dihapus!',
+        pengalaman_deleted: 'Pengalaman Berhasil dihapus!'
     };
 
     // =====================================================================
@@ -1681,7 +1717,7 @@
         // FIX: Validasi tahun_lulus >= tahun_masuk sebelum submit
         if (masih_kuliah === '0' && tahun_lulus && tahun_lulus < tahun_masuk) {
             showDateError('edit-pend-lulus-error');
-            if (window.showErrorAlert) window.showErrorAlert('{{ autoTranslate('Tahun lulus tidak boleh sebelum tahun masuk.') }}');
+            if (window.showErrorAlert) window.showErrorAlert('Tahun lulus tidak boleh sebelum tahun masuk.');
             return;
         }
 
@@ -1763,29 +1799,29 @@
             document.getElementById('pkj-edit-id').value = d.id;
 
             document.getElementById('pkj-view-nama').textContent      = d.nama_pt || '-';
-document.getElementById('pkj-view-bagian').textContent    = d.bagian_kerja || '-';
-document.getElementById('pkj-view-jenis').textContent     = d.jenis_pekerjaan || '';
-document.getElementById('pkj-view-deskripsi').textContent = d.deskripsi || '-';
-const akhirText = d.masih_bekerja ? 'Sekarang' : (d.tahun_akhir || 'Selesai');
-document.getElementById('pkj-view-periode').textContent = `${d.tahun_mulai || '-'} — ${akhirText}`;
+            document.getElementById('pkj-view-bagian').textContent    = d.bagian_kerja || '-';
+            document.getElementById('pkj-view-jenis').textContent     = d.jenis_pekerjaan || '';
+            document.getElementById('pkj-view-deskripsi').textContent = d.deskripsi || '-';
+            const akhirText = d.masih_bekerja ? 'Sekarang' : (d.tahun_akhir || 'Selesai');
+            document.getElementById('pkj-view-periode').textContent = `${d.tahun_mulai || '-'} — ${akhirText}`;
 
-// Status: jika masih_bekerja → aktif, jika sudah selesai tapi tahun_akhir belum lewat hari ini → pakai jenis_pekerjaan
-let statusText = '';
-if (d.masih_bekerja) {
-    statusText = '🟢 Aktif bekerja';
-} else if (d.tahun_akhir) {
-    // Parse tahun_akhir dari format d-m-Y atau Y-m-d
-    const akhirYMD = toYMD(d.tahun_akhir);
-    if (akhirYMD >= TODAY) {
-        // Belum selesai, gunakan jenis_pekerjaan sebagai status
-        statusText = d.jenis_pekerjaan ? `🟡 ${d.jenis_pekerjaan}` : '🟡 Sedang berjalan';
-    } else {
-        statusText = '✅ Selesai';
-    }
-} else {
-    statusText = '✅ Selesai';
-}
-document.getElementById('pkj-view-status').textContent = statusText;
+            // Status: jika masih_bekerja → aktif, jika sudah selesai tapi tahun_akhir belum lewat hari ini → pakai jenis_pekerjaan
+            let statusText = '';
+            if (d.masih_bekerja) {
+                statusText = '🟢 Aktif bekerja';
+            } else if (d.tahun_akhir) {
+                // Parse tahun_akhir dari format d-m-Y atau Y-m-d
+                const akhirYMD = toYMD(d.tahun_akhir);
+                if (akhirYMD >= TODAY) {
+                    // Belum selesai, gunakan jenis_pekerjaan sebagai status
+                    statusText = d.jenis_pekerjaan ? `🟡 ${d.jenis_pekerjaan}` : '🟡 Sedang berjalan';
+                } else {
+                    statusText = '✅ Selesai';
+                }
+            } else {
+                statusText = '✅ Selesai';
+            }
+            document.getElementById('pkj-view-status').textContent = statusText;
 
             const sertWrap = document.getElementById('pkj-view-sertifikat-wrap');
             if (d.sertifikat_pendukung) {
@@ -1800,9 +1836,9 @@ document.getElementById('pkj-view-status').textContent = statusText;
             const akhirVal = toYMD(d.tahun_akhir);
 
             document.getElementById('pkj-edit-nama_pt').value           = d.nama_pt || '';
-document.getElementById('pkj-edit-bagian_kerja').value      = d.bagian_kerja || '';
-document.getElementById('pkj-edit-jenis_pekerjaan').value   = d.jenis_pekerjaan || '';
-document.getElementById('pkj-edit-deskripsi').value         = d.deskripsi || '';
+            document.getElementById('pkj-edit-bagian_kerja').value      = d.bagian_kerja || '';
+            document.getElementById('pkj-edit-jenis_pekerjaan').value   = d.jenis_pekerjaan || '';
+            document.getElementById('pkj-edit-deskripsi').value         = d.deskripsi || '';
             document.getElementById('pkj-edit-tahun_mulai').value  = mulaiVal;
             document.getElementById('pkj-edit-tahun_mulai').max    = TODAY;
 
@@ -1854,10 +1890,10 @@ document.getElementById('pkj-edit-deskripsi').value         = d.deskripsi || '';
 
     async function savePengalamanEdit() {
         const id             = document.getElementById('pkj-edit-id').value;
-const nama_pt        = document.getElementById('pkj-edit-nama_pt').value.trim();
-const bagian_kerja   = document.getElementById('pkj-edit-bagian_kerja').value.trim();
-const jenis_pekerjaan = document.getElementById('pkj-edit-jenis_pekerjaan').value;
-const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim();
+        const nama_pt        = document.getElementById('pkj-edit-nama_pt').value.trim();
+        const bagian_kerja   = document.getElementById('pkj-edit-bagian_kerja').value.trim();
+        const jenis_pekerjaan = document.getElementById('pkj-edit-jenis_pekerjaan').value;
+        const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim();
         const tahun_mulai  = document.getElementById('pkj-edit-tahun_mulai').value;
         const tahun_akhir  = document.getElementById('pkj-edit-tahun_akhir').value;
         const masih_bekerja = document.getElementById('pkj-edit-masih_bekerja').checked ? '1' : '0';
@@ -1870,7 +1906,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
         // FIX: Validasi tahun_akhir >= tahun_mulai sebelum submit
         if (masih_bekerja === '0' && tahun_akhir && tahun_akhir < tahun_mulai) {
             showDateError('edit-pkj-akhir-error');
-            if (window.showErrorAlert) window.showErrorAlert('{{ autoTranslate('Tahun selesai tidak boleh sebelum tahun mulai.') }}');
+            if (window.showErrorAlert) window.showErrorAlert('Tahun selesai tidak boleh sebelum tahun mulai.');
             return;
         }
 
@@ -2091,10 +2127,10 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         if (selectedDate > today) {
-            alert('{{ autoTranslate('Tanggal lahir tidak boleh lebih dari hari ini!') }}');
+            alert('Tanggal lahir tidak boleh lebih dari hari ini!');
             input.value = '';
         } else if (selectedDate.getFullYear() < 1900) {
-            alert('{{ autoTranslate('Tahun lahir minimal 1900!') }}');
+            alert('Tahun lahir minimal 1900!');
             input.value = '';
         } else {
             const displayEl = document.getElementById('tanggal_lahir-display');
@@ -2141,7 +2177,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
         navigator.clipboard.writeText(url).then(() => {
             const n = document.createElement('div');
             n.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-            n.innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>{{ autoTranslate('Link berhasil disalin!') }}</span></div>';
+            n.innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>Link berhasil disalin!</span></div>';
             document.body.appendChild(n);
             setTimeout(() => n.remove(), 3000);
         });
@@ -2205,7 +2241,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
 
         if (!masihChecked && mulaiVal && akhirVal && akhirVal < mulaiVal) {
             showDateError('add-pkj-akhir-error');
-            if (window.showErrorAlert) window.showErrorAlert('{{ autoTranslate('Tahun selesai tidak boleh sebelum tahun mulai.') }}');
+            if (window.showErrorAlert) window.showErrorAlert('Tahun selesai tidak boleh sebelum tahun mulai.');
             return;
         }
 
@@ -2236,13 +2272,13 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                 if (window.showErrorAlert) window.showErrorAlert(errMsg);
                 else alert('Error: ' + errMsg);
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '{{ autoTranslate('Simpan Pengalaman') }}';
+                submitBtn.innerHTML = 'Simpan Pengalaman';
             }
         } catch (error) {
             console.error('Error:', error);
             if (window.showErrorAlert) window.showErrorAlert('Terjadi kesalahan: ' + error.message);
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '{{ autoTranslate('Simpan Pengalaman') }}';
+            submitBtn.innerHTML = 'Simpan Pengalaman';
         }
     }
 
@@ -2269,7 +2305,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                 list.innerHTML = '';
                 
                 if (data.length === 0) {
-                    list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">{{ autoTranslate('Tidak ada hasil. Ketik nama secara manual.') }}</div>';
+                    list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center" data-translate="empty_search_result" data-translate-page="profile">Tidak ada hasil. Ketik nama secara manual.</div>';
                 } else {
                     data.forEach(sekolah => {
                         const item = document.createElement('button');
@@ -2324,13 +2360,13 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
     // =====================================================================
     @if (session('success'))
         document.addEventListener('DOMContentLoaded', function () {
-            if (typeof showSuccessAlert === 'function') showSuccessAlert('{{ autoTranslate(session('success')) }}');
+            if (typeof showSuccessAlert === 'function') showSuccessAlert('{{ session('success') }}');
         });
     @endif
 
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof showPageInfo === 'function') {
-            showPageInfo("{{ autoTranslate('Kelola profile diri anda.') }}");
+            showPageInfo("Kelola profile diri anda.");
         }
     });
 </script>
@@ -2372,13 +2408,13 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                         if (data.success) {
                             await this.refreshKeahlianList();
                             this.selectedKeahlian = '';
-                            this.showNotification(data.message || '{{ autoTranslate('Pengajuan keahlian berhasil dikirim') }}', 'success');
+                            this.showNotification(data.message || 'Pengajuan keahlian berhasil dikirim', 'success');
                         } else {
-                            this.showNotification(data.message || '{{ autoTranslate('Gagal mengirim keahlian') }}', 'error');
+                            this.showNotification(data.message || 'Gagal mengirim keahlian', 'error');
                         }
                     } catch (error) {
                         console.error('Error submitting keahlian:', error);
-                        this.showNotification('{{ autoTranslate('Terjadi kesalahan jaringan') }}', 'error');
+                        this.showNotification('Terjadi kesalahan jaringan', 'error');
                     } finally {
                         this.loading = false;
                     }
@@ -2388,7 +2424,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
                     setTimeout(() => { this.showAlert = false; }, 5000);
                 },
                 async deleteKeahlian(id, index) {
-                    if (!confirm('{{ autoTranslate('Hapus keahlian tambahan ini?') }}')) return;
+                    if (!confirm('Hapus keahlian tambahan ini?')) return;
                     this.loading = true;
                     try {
                         const locale = document.querySelector('html').getAttribute('lang') || 'id';
@@ -2412,93 +2448,93 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
             }
         }
         // Function untuk submit custom keahlian
-async function submitCustomKeahlian() {
-    const input = document.getElementById('custom-keahlian-input');
-    const customKeahlian = input.value.trim();
-    
-    if (!customKeahlian) {
-        if (window.showErrorAlert) {
-            window.showErrorAlert('{{ autoTranslate('Masukkan nama keahlian terlebih dahulu') }}');
-        } else {
-            alert('{{ autoTranslate('Masukkan nama keahlian terlebih dahulu') }}');
-        }
-        return;
-    }
-    
-    // Cek panjang karakter
-    if (customKeahlian.length > 100) {
-        if (window.showErrorAlert) {
-            window.showErrorAlert('{{ autoTranslate('Nama keahlian maksimal 100 karakter') }}');
-        } else {
-            alert('{{ autoTranslate('Nama keahlian maksimal 100 karakter') }}');
-        }
-        return;
-    }
-    
-    const submitBtn = document.querySelector('#custom-keahlian-input + button');
-    const originalText = submitBtn.innerHTML;
-    
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span>{{ autoTranslate('Mengirim...') }}';
-    
-    const locale = document.querySelector('html').getAttribute('lang') || 'id';
-    const formData = new FormData();
-    formData.append('custom_keahlian_tambahan', customKeahlian);
-    
-    try {
-        const response = await fetch(`/${locale}/keahlian-tambahan/custom`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: formData
-        });
-        
-        const data = await response.json();
-        
+        async function submitCustomKeahlian() {
+            const input = document.getElementById('custom-keahlian-input');
+            const customKeahlian = input.value.trim();
+            
+            if (!customKeahlian) {
+                if (window.showErrorAlert) {
+                    window.showErrorAlert('Masukkan nama keahlian terlebih dahulu');
+                } else {
+                    alert('Masukkan nama keahlian terlebih dahulu');
+                }
+                return;
+            }
+            
+            // Cek panjang karakter
+            if (customKeahlian.length > 100) {
+                if (window.showErrorAlert) {
+                    window.showErrorAlert('Nama keahlian maksimal 100 karakter');
+                } else {
+                    alert('Nama keahlian maksimal 100 karakter');
+                }
+                return;
+            }
+            
+            const submitBtn = document.querySelector('#custom-keahlian-input + button');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Mengirim...';
+            
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+            const formData = new FormData();
+            formData.append('custom_keahlian_tambahan', customKeahlian);
+            
+            try {
+                const response = await fetch(`/${locale}/keahlian-tambahan/custom`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
                 if (data.success) {
-            input.value = '';
-            
-            if (window.showSuccessAlert) {
-                window.showSuccessAlert(data.message);
-            } else {
-                alert(data.message);
-            }
-            
-            // Reload halaman setelah sebentar, seperti fungsi lainnya
-            setTimeout(() => window.location.reload(), 1500);
-        }else {
-            if (window.showErrorAlert) {
-                window.showErrorAlert(data.message);
-            } else {
-                alert(data.message);
+                    input.value = '';
+                    
+                    if (window.showSuccessAlert) {
+                        window.showSuccessAlert(data.message);
+                    } else {
+                        alert(data.message);
+                    }
+                    
+                    // Reload halaman setelah sebentar, seperti fungsi lainnya
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    if (window.showErrorAlert) {
+                        window.showErrorAlert(data.message);
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                if (window.showErrorAlert) {
+                    window.showErrorAlert('{{ 'Terjadi kesalahan jaringan' }}');
+                } else {
+                    alert('{{ 'Terjadi kesalahan jaringan' }}');
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
         }
-    } catch (error) {
-        console.error('Error:', error);
-        if (window.showErrorAlert) {
-            window.showErrorAlert('{{ autoTranslate('Terjadi kesalahan jaringan') }}');
-        } else {
-            alert('{{ autoTranslate('Terjadi kesalahan jaringan') }}');
-        }
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-    }
-}
 
-// Event listener untuk tombol Enter pada input custom keahlian
-document.addEventListener('DOMContentLoaded', function() {
-    const customInput = document.getElementById('custom-keahlian-input');
-    if (customInput) {
-        customInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                submitCustomKeahlian();
+        // Event listener untuk tombol Enter pada input custom keahlian
+        document.addEventListener('DOMContentLoaded', function() {
+            const customInput = document.getElementById('custom-keahlian-input');
+            if (customInput) {
+                customInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        submitCustomKeahlian();
+                    }
+                });
             }
         });
-    }
-});
     </script>
 @endsection

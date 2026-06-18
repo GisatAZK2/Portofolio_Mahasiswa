@@ -31,6 +31,36 @@ trait HasTranslations
             $changed = array_intersect($fields, array_keys($model->getChanges()));
 
             if (!empty($changed)) {
+                // Hapus terjemahan lama untuk field yang baru berubah
+                // supaya tidak menampilkan hasil terjemahan yang sudah stale
+                $currentTranslations = $model->getAttribute('translations') ?? [];
+                if (is_string($currentTranslations)) {
+                    $currentTranslations = json_decode($currentTranslations, true) ?? [];
+                }
+
+                $dirty = false;
+                foreach ($currentTranslations as $locale => &$localeData) {
+                    if (in_array($locale, ['source_lang', 'translated_at'], true)) {
+                        continue;
+                    }
+                    if (is_array($localeData)) {
+                        foreach ($changed as $field) {
+                            if (array_key_exists($field, $localeData)) {
+                                unset($localeData[$field]);
+                                $dirty = true;
+                            }
+                        }
+                    }
+                }
+                unset($localeData);
+
+                if ($dirty) {
+                    // Hapus juga timestamp agar frontend tahu terjemahan sedang pending
+                    unset($currentTranslations['translated_at']);
+                    $model->setAttribute('translations', $currentTranslations);
+                    $model->saveQuietly();
+                }
+
                 $model->queueTranslation();
             }
         });

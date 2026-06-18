@@ -75,6 +75,129 @@ export const translations = {
       'Magang jangka pendek': 'Magang jangka pendek',
       'Magang': 'Magang',
       'Musiman': 'Musiman',
+      // ===== KEY BARU UNTUK HALAMAN PROFILE =====
+// (masukkan ke dalam translations.id.profile dan translations.en.profile)
+
+// cropper modal
+cropper_title: 'Sesuaikan Foto Profil',
+cropper_desc: 'Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.',
+cropper_zoom: 'Zoom',
+cropper_zoom_desc: 'Perbesar atau perkecil gambar.',
+btn_use_photo: 'Gunakan Foto',
+btn_share_portfolio: 'Bagikan Portfolio',
+
+// label & placeholder
+label_description: 'Deskripsi',
+label_nim: 'NIM',
+label_tanggal_lahir: 'Tanggal Lahir',
+label_email: 'Email',
+label_major: 'Jurusan',
+label_cohort: 'Angkatan',
+label_main_skill: 'Keahlian Utama',
+label_additional_skill: 'Keahlian Tambahan',
+placeholder_choose_major: '-- Pilih Jurusan --',
+placeholder_choose_skill: '-- Pilih Keahlian --',
+placeholder_choose_cohort: '-- Pilih Angkatan --',
+empty_additional_skill: 'Belum ada keahlian tambahan',
+max_additional_skill: 'Anda sudah mencapai maksimal 3 keahlian tambahan. Hapus salah satu untuk menambah keahlian baru.',
+label_video_intro: 'Video Perkenalan',
+placeholder_video: 'https://www.youtube.com/watch?v=xxxx',
+label_account_status: 'Status Akun',
+status_active: 'Aktif',
+status_inactive: 'Nonaktif',
+
+// tombol
+btn_save_changes: 'Simpan Perubahan',
+btn_cancel: 'Batal',
+
+// section pendidikan
+section_education: 'Pendidikan',
+btn_add_education: 'Tambah Pendidikan',
+empty_education: 'Belum ada data pendidikan. Klik "Tambah Pendidikan" untuk menambahkan.',
+
+// section pengalaman
+section_experience: 'Pengalaman Kerja',
+btn_add_experience: 'Tambah Pengalaman',
+empty_experience: 'Belum ada pengalaman kerja. Klik "Tambah Pengalaman" untuk menambahkan.',
+
+// section project
+section_projects: 'Projects',
+btn_add_project: 'Tambah Projek',
+project_count: 'proyek',
+show_less: 'Tampilkan lebih sedikit',
+show_all: 'Lihat semua',
+empty_projects: 'Belum ada proyek yang ditambahkan.',
+
+// section sertifikat
+section_certificates: 'Sertifikat',
+btn_add_certificate: 'Tambah Sertifikat',
+certificate_count: 'sertifikat',
+empty_certificates: 'Belum ada sertifikat yang ditambahkan.',
+
+// section learning corner
+section_learning_corners: 'Learning Corners',
+learning_corner_count: 'catatan',
+empty_learning_corners: 'Belum ada catatan learning corner.',
+
+// footer
+last_updated: 'Terakhir diperbarui:',
+
+// modal pendidikan
+modal_education_title: 'Tambah Pendidikan',
+label_institution: 'Nama Institusi / Sekolah',
+placeholder_search_school: 'Cari nama sekolah/universitas...',
+label_education_level: 'Jenjang Pendidikan',
+placeholder_choose_education_level: '-- Pilih Jenjang --',
+label_major_study: 'Jurusan / Program Studi',
+label_optional: 'opsional',
+label_start_year: 'Tahun Masuk',
+label_graduation_year: 'Tahun Lulus',
+label_still_studying: 'Masih bersekolah / kuliah di sini',
+btn_save_education: 'Simpan Pendidikan',
+
+// modal detail pendidikan
+detail_education_title: 'Detail Pendidikan',
+mode_view: 'Mode Lihat',
+mode_edit: 'Mode Edit',
+btn_edit: 'Edit',
+btn_delete: 'Hapus',
+btn_save_changes_edit: 'Simpan Perubahan',
+
+// modal pengalaman
+modal_experience_title: 'Tambah Pengalaman Kerja',
+label_company: 'Nama Perusahaan / Instansi',
+placeholder_company: 'Contoh: PT. Telkom Indonesia',
+label_position: 'Posisi / Bagian Kerja',
+placeholder_position: 'Contoh: Software Engineer',
+label_job_type: 'Jenis Pekerjaan',
+placeholder_choose_job_type: '-- Pilih Jenis Pekerjaan --',
+label_job_description: 'Deskripsi Pekerjaan',
+placeholder_job_description: 'Tuliskan deskripsi pekerjaan Anda',
+label_start_year_work: 'Tahun Mulai',
+label_end_year_work: 'Tahun Selesai',
+label_still_working: 'Masih bekerja di sini',
+label_supporting_certificate: 'Sertifikat Pendukung',
+label_file_hint: 'JPG, PNG, PDF maks. 5MB',
+click_to_upload: 'Klik untuk upload file',
+drag_drop_hint: 'atau drag & drop di sini',
+btn_save_experience: 'Simpan Pengalaman',
+
+// modal detail pengalaman
+detail_experience_title: 'Detail Pengalaman Kerja',
+label_period: 'Periode',
+label_status: 'Status',
+btn_view_certificate: 'Lihat Sertifikat Pendukung',
+btn_save_changes_edit_experience: 'Simpan Perubahan',
+
+// validasi / pesan
+error_required: 'Harap isi field yang wajib diisi.',
+error_end_before_start: 'Tahun selesai tidak boleh sebelum tahun mulai.',
+error_date_birth_future: 'Tanggal lahir tidak boleh lebih dari hari ini!',
+error_date_birth_year: 'Tahun lahir minimal 1900!',
+success_link_copied: 'Link berhasil disalin!',
+error_network: 'Terjadi kesalahan jaringan.',
+confirm_delete: 'Hapus keahlian tambahan ini?',
+empty_search_result: 'Tidak ada hasil. Ketik nama secara manual.',
     },
 
     keahlian_tambahan: {
@@ -1536,6 +1659,129 @@ export const translations = {
       'Magang jangka pendek': 'Short-term Internship',
       'Magang': 'Internship',
       'Musiman': 'Seasonal',
+      // ===== NEW KEYS FOR PROFILE PAGE =====
+
+// cropper modal
+cropper_title: 'Adjust Profile Photo',
+cropper_desc: 'Position and zoom the image, then select Use Photo to see the preview.',
+cropper_zoom: 'Zoom',
+cropper_zoom_desc: 'Zoom in or out of the image.',
+btn_use_photo: 'Use Photo',
+btn_share_portfolio: 'Share Portfolio',
+
+// label & placeholder
+label_description: 'Description',
+label_nim: 'NIM',
+label_tanggal_lahir: 'Date of Birth',
+label_email: 'Email',
+label_major: 'Major',
+label_cohort: 'Cohort',
+label_main_skill: 'Main Skill',
+label_additional_skill: 'Additional Skills',
+placeholder_choose_major: '-- Choose Major --',
+placeholder_choose_skill: '-- Choose Skill --',
+placeholder_choose_cohort: '-- Choose Cohort --',
+empty_additional_skill: 'No additional skills yet',
+max_additional_skill: 'You have reached the maximum of 3 additional skills. Remove one to add a new skill.',
+label_video_intro: 'Introduction Video',
+placeholder_video: 'https://www.youtube.com/watch?v=xxxx',
+label_account_status: 'Account Status',
+status_active: 'Active',
+status_inactive: 'Inactive',
+
+// tombol
+btn_save_changes: 'Save Changes',
+btn_cancel: 'Cancel',
+
+// section pendidikan
+section_education: 'Education',
+btn_add_education: 'Add Education',
+empty_education: 'No education data yet. Click "Add Education" to add.',
+
+// section pengalaman
+section_experience: 'Work Experience',
+btn_add_experience: 'Add Experience',
+empty_experience: 'No work experience yet. Click "Add Experience" to add.',
+
+// section project
+section_projects: 'Projects',
+btn_add_project: 'Add Project',
+project_count: 'projects',
+show_less: 'Show less',
+show_all: 'View all',
+empty_projects: 'No projects added yet.',
+
+// section sertifikat
+section_certificates: 'Certificates',
+btn_add_certificate: 'Add Certificate',
+certificate_count: 'certificates',
+empty_certificates: 'No certificates added yet.',
+
+// section learning corner
+section_learning_corners: 'Learning Corners',
+learning_corner_count: 'notes',
+empty_learning_corners: 'No learning corner notes yet.',
+
+// footer
+last_updated: 'Last updated:',
+
+// modal pendidikan
+modal_education_title: 'Add Education',
+label_institution: 'Institution / School Name',
+placeholder_search_school: 'Search school/university name...',
+label_education_level: 'Education Level',
+placeholder_choose_education_level: '-- Choose Level --',
+label_major_study: 'Major / Study Program',
+label_optional: 'optional',
+label_start_year: 'Start Year',
+label_graduation_year: 'Graduation Year',
+label_still_studying: 'Currently studying here',
+btn_save_education: 'Save Education',
+
+// modal detail pendidikan
+detail_education_title: 'Education Detail',
+mode_view: 'View Mode',
+mode_edit: 'Edit Mode',
+btn_edit: 'Edit',
+btn_delete: 'Delete',
+btn_save_changes_edit: 'Save Changes',
+
+// modal pengalaman
+modal_experience_title: 'Add Work Experience',
+label_company: 'Company / Institution Name',
+placeholder_company: 'Example: PT. Telkom Indonesia',
+label_position: 'Position / Job Role',
+placeholder_position: 'Example: Software Engineer',
+label_job_type: 'Employment Type',
+placeholder_choose_job_type: '-- Choose Employment Type --',
+label_job_description: 'Job Description',
+placeholder_job_description: 'Write your job description',
+label_start_year_work: 'Start Year',
+label_end_year_work: 'End Year',
+label_still_working: 'Currently working here',
+label_supporting_certificate: 'Supporting Certificate',
+label_file_hint: 'JPG, PNG, PDF max. 5MB',
+click_to_upload: 'Click to upload file',
+drag_drop_hint: 'or drag & drop here',
+btn_save_experience: 'Save Experience',
+
+// modal detail pengalaman
+detail_experience_title: 'Work Experience Detail',
+label_period: 'Period',
+label_status: 'Status',
+btn_view_certificate: 'View Supporting Certificate',
+btn_save_changes_edit_experience: 'Save Changes',
+
+// validasi / pesan
+error_required: 'Please fill in the required fields.',
+error_end_before_start: 'End year cannot be before start year.',
+error_date_birth_future: 'Date of birth cannot be later than today!',
+error_date_birth_year: 'Birth year must be at least 1900!',
+success_link_copied: 'Link successfully copied!',
+error_network: 'Network error occurred.',
+confirm_delete: 'Delete this additional skill?',
+empty_search_result: 'No results found. Type the name manually.'
+
     },
 
     keahlian_tambahan: {
