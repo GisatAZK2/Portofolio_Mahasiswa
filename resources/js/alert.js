@@ -9,14 +9,7 @@ function getTranslation(lang, key) {
     return key.split('.').reduce((obj, i) => obj?.[i], translations[lang]);
 }
 
-function getCurrentLang() {
-    return localStorage.getItem('lang') || 'id';
-}
-
-function translate(key) {
-    const lang = getCurrentLang();
-    return getTranslation(lang, key) || key;
-}
+                     
 
 const t = translate;
 
@@ -107,8 +100,6 @@ export async function showConfirm() {
 }
 
 window.showConfirm = showConfirm;
-
-// expose success/error alerts globally for inline scripts
 window.showSuccessAlert = showSuccessAlert;
 window.showErrorAlert = showErrorAlert;
 
