@@ -1305,7 +1305,14 @@ export const translations = {
       lihat_notifikasi: 'Lihat Notifikasi',
       tambah_notifikasi: 'Tambah Notifikasi',
       manajemen_notifikasi: 'Management Notifikasi',
-      lihat_profil: 'Lihat Profil'
+      lihat_profil: 'Lihat Profil',
+      verifikasi_2_langkah: 'Verifikasi 2 Langkah',
+      foto_profil: 'Foto Profil',
+      ubah_foto_profil: 'Ubah Foto Profil',
+      pilih_gambar: 'Pilih Gambar',
+      batal: 'Batal',
+      simpan: 'Simpan',
+      menu_tidak_ditemukan: 'Menu tidak ditemukan'
     },
     footer: {
       footer_rights: '© Portofolio Mahasiswa 2026. Semua hak dilindungi undang-undang.',
@@ -2743,7 +2750,14 @@ export const translations = {
       lihat_notifikasi: 'See Notifications',
       tambah_notifikasi: 'Add Notification',
       manajemen_notifikasi: 'Notification Management',
-      lihat_profil: 'See Profile'
+      lihat_profil: 'See Profile',
+      verifikasi_2_langkah: '2-Step Verification',
+      foto_profil: 'Profile Photo',
+      ubah_foto_profil: 'Change Profile Photo',
+      pilih_gambar: 'Choose Image',
+      batal: 'Cancel',
+      simpan: 'Save',
+      menu_tidak_ditemukan: 'Menu not found'
     },
     footer: {
       footer_rights: '© 2026 Portofolio Mahasiswa. All rights reserved.',
@@ -2873,7 +2887,7 @@ export const translations = {
 };
 
 const DEFAULT_LANG = 'id';
-let currentLang = localStorage.getItem('lang') || DEFAULT_LANG;
+const SUPPORTED_LANGS = ['id', 'en'];
 
 let translateElements = [];
 
@@ -2884,11 +2898,27 @@ function cacheTranslateElements() {
   );
 }
 
-// Ambil locale dari URL
+// Ambil locale dari URL (kalau ada prefix /id/ atau /en/)
 function getLocaleFromUrl() {
   const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  return ['id', 'en'].includes(pathSegments[0]) ? pathSegments[0] : DEFAULT_LANG;
+  return SUPPORTED_LANGS.includes(pathSegments[0]) ? pathSegments[0] : null;
 }
+
+// Simpan locale ke localStorage + cookie 'lang' (dibaca middleware SetLocale di server)
+function persistLocale(locale) {
+  localStorage.setItem('lang', locale);
+  const days = 365;
+  const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+  document.cookie = `lang=${locale}; expires=${expires}; path=/; SameSite=Lax`;
+}
+
+// Tentukan locale aktif:
+// 1. localStorage (pilihan eksplisit user) — paling otoritatif di sisi client,
+//    supaya pindah ke halaman tanpa prefix locale (mis. /admin/users) tidak
+//    "lupa" bahasa yang sudah dipilih.
+// 2. Prefix URL (/id/... atau /en/...) — dipakai kalau belum ada preferensi tersimpan.
+// 3. Fallback DEFAULT_LANG.
+let currentLang = localStorage.getItem('lang') || getLocaleFromUrl() || DEFAULT_LANG;
 
 // Apply translation ke semua element
 function applyTranslations() {
@@ -2931,14 +2961,12 @@ function applyTranslations() {
 
 // Init saat page load
 document.addEventListener('DOMContentLoaded', () => {
-  const urlLocale = getLocaleFromUrl();
-
-  currentLang = urlLocale;
-  localStorage.setItem('lang', urlLocale);
+  // Pastikan localStorage & cookie konsisten dengan currentLang yang sudah ditentukan di atas.
+  persistLocale(currentLang);
 
   const select = document.getElementById('languageSelect');
   if (select) {
-    select.value = urlLocale;
+    select.value = currentLang;
     select.addEventListener('change', changeLanguage);
   }
 
@@ -2946,25 +2974,19 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
 });
 
-// Ganti bahasa
+// Ganti bahasa: simpan preferensi lalu reload di halaman yang sama
+// (tidak perlu pindah ke URL berprefix locale; server membaca cookie 'lang').
 window.changeLanguage = function () {
   const select = document.getElementById('languageSelect');
   if (!select) return;
 
   const newLocale = select.value;
+  if (!SUPPORTED_LANGS.includes(newLocale)) return;
 
   currentLang = newLocale;
-  localStorage.setItem('lang', newLocale);
+  persistLocale(newLocale);
 
-  const currentUrl = new URL(window.location.href);
-  const pathSegments = currentUrl.pathname.split('/').filter(Boolean);
-
-  if (['id', 'en'].includes(pathSegments[0])) {
-    pathSegments.shift();
-  }
-
-  const newPath = '/' + [newLocale, ...pathSegments].filter(Boolean).join('/');
-  window.location.href = `${window.location.origin}${newPath}${currentUrl.search}${currentUrl.hash}`;
+  window.location.reload();
 };
 
 // 🔥 Penting: untuk dynamic content (Livewire, AJAX, dll)

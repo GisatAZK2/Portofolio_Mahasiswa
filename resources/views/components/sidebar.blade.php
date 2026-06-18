@@ -668,7 +668,7 @@
                     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                     </svg>
-                    <span>{{ autoTranslate('Verifikasi 2 Langkah') }}</span>
+                    <span data-translate="verifikasi_2_langkah">Verifikasi 2 Langkah</span>
                 </a>
 
                 @if(Auth::user()->role === 'admin' || Auth::user()->role === 'dosen')
@@ -677,13 +677,13 @@
                             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            <span>{{ autoTranslate('Foto Profil') }}</span>
+                            <span data-translate="foto_profil">Foto Profil</span>
                         </button>
                         <div x-cloak x-show="showPhotoModal" x-transition.opacity
                             class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 px-4">
                             <div @click.stop class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
                                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ autoTranslate('Ubah Foto Profil') }}</h2>
+                                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white" data-translate="ubah_foto_profil">Ubah Foto Profil</h2>
                                     <button @click="showPhotoModal = false" class="text-gray-400 hover:text-red-500 text-xl">✕</button>
                                 </div>
                                 <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
@@ -698,7 +698,7 @@
                                         </div>
                                         <label class="block cursor-pointer">
                                             <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center hover:border-blue-500 transition">
-                                                <p class="text-sm text-gray-700 dark:text-gray-200">{{ autoTranslate('Pilih Gambar') }}</p>
+                                                <p class="text-sm text-gray-700 dark:text-gray-200" data-translate="pilih_gambar">Pilih Gambar</p>
                                                 <p class="text-xs text-gray-400 mt-1">JPG, PNG, JPEG</p>
                                             </div>
                                             <input type="file" name="photo_profile" accept="image/*" class="hidden" onchange="previewPhoto(event)">
@@ -707,10 +707,10 @@
                                     <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex justify-end gap-2">
                                         <button type="button" @click="showPhotoModal = false"
                                             class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white text-sm">
-                                            {{ autoTranslate('Batal') }}
+                                            <span data-translate="batal">Batal</span>
                                         </button>
                                         <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm">
-                                            {{ autoTranslate('Simpan') }}
+                                            <span data-translate="simpan">Simpan</span>
                                         </button>
                                     </div>
                                 </form>
@@ -973,11 +973,9 @@ function toggleDarkMode() {
     if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 }
 
-function changeLanguage() {
-    const lang = document.getElementById('languageSelect').value;
-    localStorage.setItem('lang', lang);
-    window.location.href = `${window.location.origin}/${lang}`;
-}
+// changeLanguage() sudah didefinisikan secara global di translate.js (window.changeLanguage).
+// Fungsi itu menyimpan pilihan bahasa ke localStorage + cookie 'lang', lalu reload halaman
+// yang sama (tidak perlu pindah ke URL berprefix locale).
 
 // Inisialisasi dark mode dari localStorage
 if (localStorage.getItem('darkMode') === 'true') {
@@ -1003,56 +1001,68 @@ const searchInput = document.getElementById('sidebarSearch');
 const searchResults = document.getElementById('searchResults');
 
 const allMenus = [
-    { name: "{{ autoTranslate('Dashboard') }}", url: "{{ route('dashboard', ['locale' => app()->getLocale()]) }}", role: "all" },
+    { key: "dashboard_nonuser", url: "{{ route('dashboard', ['locale' => app()->getLocale()]) }}", role: "all" },
     @auth
     @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'dosen')
-    { name: "{{ autoTranslate('My Dashboard') }}", url: "{{ route('dashboard.me', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { name: "{{ autoTranslate('Project Saya') }}", url: "{{ route('project.index', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { name: "{{ autoTranslate('Tambah Project') }}", url: "{{ route('project.create', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { name: "{{ autoTranslate('Sertifikat Saya') }}", url: "{{ route('sertifikat.index', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
-    { name: "{{ autoTranslate('Tambah Sertifikat') }}", url: "{{ route('sertifikat.create', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
+    { key: "my_dashboard", url: "{{ route('dashboard.me', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
+    { key: "project_mahasiswa_saya", url: "{{ route('project.index', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
+    { key: "project_mahasiswa_saya_tambah", url: "{{ route('project.create', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
+    { key: "sertifikat_mahasiswa_saya", url: "{{ route('sertifikat.index', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
+    { key: "sertifikat_mahasiswa_saya_tambah", url: "{{ route('sertifikat.create', ['locale' => app()->getLocale()]) }}", role: "mahasiswa" },
     @endif
     @if(Auth::user()->role === 'admin')
-    { name: "{{ autoTranslate('Admin Dashboard') }}", url: "{{ route('admin.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat User') }}", url: "{{ route('admin.users.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah User') }}", url: "{{ route('admin.users.ViewCreate') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat Angkatan') }}", url: "{{ route('admin.angkatan.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah Angkatan') }}", url: "{{ route('admin.angkatan.create') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat Prodi') }}", url: "{{ route('admin.prodi.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah Prodi') }}", url: "{{ route('admin.prodi.create') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat Keahlian') }}", url: "{{ route('admin.keahlian.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah Keahlian') }}", url: "{{ route('admin.keahlian.create') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat Project') }}", url: "{{ route('admin.projects.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah Project') }}", url: "{{ route('admin.projects.create') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat Sertifikat') }}", url: "{{ route('admin.sertifikat.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah Sertifikat') }}", url: "{{ route('admin.sertifikat.create') }}", role: "admin" },
-    { name: "{{ autoTranslate('Lihat Notifikasi') }}", url: "{{ route('admin.notifications.index') }}", role: "admin" },
-    { name: "{{ autoTranslate('Tambah Notifikasi') }}", url: "{{ route('admin.notifications.create') }}", role: "admin" },
+    { key: "admin_dashboard", url: "{{ route('admin.index') }}", role: "admin" },
+    { key: "semua_user", url: "{{ route('admin.users.index') }}", role: "admin" },
+    { key: "tambah_user", url: "{{ route('admin.users.ViewCreate') }}", role: "admin" },
+    { key: "lihat_angkatan", url: "{{ route('admin.angkatan.index') }}", role: "admin" },
+    { key: "tambah_angkatan", url: "{{ route('admin.angkatan.create') }}", role: "admin" },
+    { key: "lihat_prodi", url: "{{ route('admin.prodi.index') }}", role: "admin" },
+    { key: "tambah_prodi", url: "{{ route('admin.prodi.create') }}", role: "admin" },
+    { key: "lihat_keahlian", url: "{{ route('admin.keahlian.index') }}", role: "admin" },
+    { key: "tambah_keahlian", url: "{{ route('admin.keahlian.create') }}", role: "admin" },
+    { key: "lihat_proyek", url: "{{ route('admin.projects.index') }}", role: "admin" },
+    { key: "tambah_proyek", url: "{{ route('admin.projects.create') }}", role: "admin" },
+    { key: "lihat_sertifikat", url: "{{ route('admin.sertifikat.index') }}", role: "admin" },
+    { key: "tambah_sertifikat", url: "{{ route('admin.sertifikat.create') }}", role: "admin" },
+    { key: "lihat_notifikasi", url: "{{ route('admin.notifications.index') }}", role: "admin" },
+    { key: "tambah_notifikasi", url: "{{ route('admin.notifications.create') }}", role: "admin" },
     @endif
     @if(Auth::user()->role === 'dosen')
-    { name: "{{ autoTranslate('Dashboard Dosen') }}", url: "{{ route('dosen.dashboard') }}", role: "dosen" },
-    { name: "{{ autoTranslate('Lihat Mahasiswa') }}", url: "{{ route('dosen.users.index') }}", role: "dosen" },
-    { name: "{{ autoTranslate('Tambah Mahasiswa') }}", url: "{{ route('dosen.users.ViewCreate') }}", role: "dosen" },
-    { name: "{{ autoTranslate('Lihat Project') }}", url: "{{ route('dosen.projects.index') }}", role: "dosen" },
-    { name: "{{ autoTranslate('Tambah Project') }}", url: "{{ route('dosen.projects.create') }}", role: "dosen" },
-    { name: "{{ autoTranslate('Lihat Sertifikat') }}", url: "{{ route('dosen.sertifikat.index') }}", role: "dosen" },
-    { name: "{{ autoTranslate('Tambah Sertifikat') }}", url: "{{ route('dosen.sertifikat.create') }}", role: "dosen" },
+    { key: "dashboard_dosen", url: "{{ route('dosen.dashboard') }}", role: "dosen" },
+    { key: "see_mhs", url: "{{ route('dosen.users.index') }}", role: "dosen" },
+    { key: "add_mhs", url: "{{ route('dosen.users.ViewCreate') }}", role: "dosen" },
+    { key: "see_pjt", url: "{{ route('dosen.projects.index') }}", role: "dosen" },
+    { key: "add_pjt", url: "{{ route('dosen.projects.create') }}", role: "dosen" },
+    { key: "see_stk", url: "{{ route('dosen.sertifikat.index') }}", role: "dosen" },
+    { key: "add_stk", url: "{{ route('dosen.sertifikat.create') }}", role: "dosen" },
     @endif
-    { name: "{{ autoTranslate('Postingan') }}", url: "{{ route('postingan.index') }}", role: "all_auth" },
-    { name: "{{ autoTranslate('Tambah Postingan') }}", url: "{{ route('postingan.create') }}", role: "all_auth" },
+    { key: "postingan", url: "{{ route('postingan.index') }}", role: "all_auth" },
+    { key: "postingan_tambah", url: "{{ route('postingan.create') }}", role: "all_auth" },
     @endauth
     @guest
-    { name: "{{ autoTranslate('Project Mahasiswa') }}", url: "{{ route('project.project_user') }}", role: "guest" },
+    { key: "project_mahasiswa", url: "{{ route('project.project_user') }}", role: "guest" },
     @endguest
 ];
+
+// Ambil label menu sesuai bahasa aktif (window.currentLang / window.translations dari translate.js).
+// Fallback ke key itu sendiri kalau translate.js belum sempat load.
+function resolveMenuLabel(key) {
+    const lang = window.currentLang || 'id';
+    const dict = window.translations || {};
+    return dict?.[lang]?.sidebar?.[key]
+        || dict?.id?.sidebar?.[key]
+        || key;
+}
 
 if (searchInput) {
     searchInput.addEventListener('input', function() {
         const q = this.value.toLowerCase().trim();
         if (!q) { searchResults.classList.add('hidden'); return; }
-        const filtered = allMenus.filter(m => m.name.toLowerCase().includes(q));
+        const filtered = allMenus
+            .map(m => ({ ...m, name: resolveMenuLabel(m.key) }))
+            .filter(m => m.name.toLowerCase().includes(q));
         if (!filtered.length) {
-            searchResults.innerHTML = `<div class="px-4 py-3 text-gray-500 text-sm text-center">{{ autoTranslate('Menu tidak ditemukan') }}</div>`;
+            searchResults.innerHTML = `<div class="px-4 py-3 text-gray-500 text-sm text-center">${resolveMenuLabel('menu_tidak_ditemukan')}</div>`;
         } else {
             searchResults.innerHTML = filtered.map(m =>
                 `<a href="${m.url}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-700 text-black dark:text-white text-sm transition-colors">
