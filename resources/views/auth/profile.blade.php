@@ -254,7 +254,7 @@
                                         <p id="deskripsi-display" class="text-base dark:text-gray-200 text-gray-800 break-words flex-1">{{ Auth::user()->translated('deskripsi') ?? '(belum ada deskripsi)' }}</p>
                                         <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     </div>
-                                    <textarea id="deskripsi-input" name="deskripsi" class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent rounded p-2" rows="3">Deskripsi</textarea>
+                                    <textarea id="deskripsi-input" name="deskripsi" class="hidden w-full text-base text-gray-800 dark:text-gray-200 dark:bg-gray-700 border-b border-indigo-500 focus:outline-none bg-transparent rounded p-2" rows="3">{{ old('deskripsi', Auth::user()->deskripsi) }}</textarea>
                                 </div>
 
                                 <!-- NIM -->

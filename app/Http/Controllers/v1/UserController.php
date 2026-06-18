@@ -546,6 +546,15 @@ class UserController extends Controller
         unset($validated['nim']);
         unset($validated['id_keahlian_tambahan']);
 
+        $newDeskripsi = $request->input('deskripsi');
+
+        if ($newDeskripsi !== null && trim($newDeskripsi) !== '') {
+            $user->deskripsi = $newDeskripsi;
+        }
+
+        // Hapus dari $validated supaya update() di bawah tidak menimpa balik
+        unset($validated['deskripsi']);
+
         $user->update($validated);
 
         return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');

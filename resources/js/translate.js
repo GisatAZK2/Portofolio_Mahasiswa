@@ -90,16 +90,13 @@ window.changeLanguage = function () {
   const url = new URL(window.location.href);
   const pathSegments = url.pathname.split('/').filter(seg => seg !== '');
 
-  // Hapus segmen bahasa jika ada di awal
   if (pathSegments.length > 0 && SUPPORTED_LANGS.includes(pathSegments[0])) {
     pathSegments.shift();
   }
 
-  // Susun ulang path dengan bahasa baru di depan
   const newPathname = '/' + [locale, ...pathSegments].join('/');
   url.pathname = newPathname;
 
-  // Hapus query param locale jika ada (agar URL bersih)
   url.searchParams.delete('locale');
 
   window.location.href = url.toString();
