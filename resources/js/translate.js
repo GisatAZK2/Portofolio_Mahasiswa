@@ -2971,6 +2971,7 @@ function applyTranslations() {
     // Text
     if (page && key) {
       const text = translateKey(page, key);
+      // Hanya update jika berbeda
       if (text !== el.textContent) {
         el.textContent = text;
       }
@@ -2980,15 +2981,15 @@ function applyTranslations() {
     const placeholderKey = el.dataset.translatePlaceholder;
     if (placeholderKey) {
       const placeholderText = translateKey(page, placeholderKey);
-      if (placeholderText) {
+      if (placeholderText && placeholderText !== el.getAttribute('placeholder')) {
         el.setAttribute('placeholder', placeholderText);
       }
     }
   });
 
-  // Sync dropdown language
+  // Set dropdown language
   const select = document.getElementById('languageSelect');
-  if (select) {
+  if (select && select.value !== currentLang) {
     select.value = currentLang;
   }
 }
@@ -3011,16 +3012,23 @@ document.addEventListener('DOMContentLoaded', () => {
 // Ganti bahasa: simpan preferensi lalu reload di halaman yang sama
 // (tidak perlu pindah ke URL berprefix locale; server membaca cookie 'lang').
 window.changeLanguage = function () {
-  const select = document.getElementById('languageSelect');
-  if (!select) return;
+    const select = document.getElementById('languageSelect');
+    const locale = select.value;
 
-  const newLocale = select.value;
-  if (!SUPPORTED_LANGS.includes(newLocale)) return;
+    persistLocale(locale); // tetap simpan cookie & localStorage
 
-  currentLang = newLocale;
-  persistLocale(newLocale);
+    const url = new URL(window.location.href);
+    // Hapus prefix locale dari path (jika ada)
+    let pathname = url.pathname;
+    pathname = pathname.replace(/^\/(id|en)(\/|$)/, '/$2'); // simpan slash setelahnya
+    // Jika pathname kosong (root), biarkan '/'
+    if (pathname === '') pathname = '/';
+    url.pathname = pathname;
 
-  window.location.reload();
+    // Set query parameter locale
+    url.searchParams.set('locale', locale);
+
+    window.location.href = url.toString();
 };
 
 // 🔥 Penting: untuk dynamic content (Livewire, AJAX, dll)

@@ -973,10 +973,6 @@ function toggleDarkMode() {
     if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 }
 
-// changeLanguage() sudah didefinisikan secara global di translate.js (window.changeLanguage).
-// Fungsi itu menyimpan pilihan bahasa ke localStorage + cookie 'lang', lalu reload halaman
-// yang sama (tidak perlu pindah ke URL berprefix locale).
-
 // Inisialisasi dark mode dari localStorage
 if (localStorage.getItem('darkMode') === 'true') {
     document.documentElement.classList.add('dark');

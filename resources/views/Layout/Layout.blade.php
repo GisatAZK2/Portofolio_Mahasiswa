@@ -2,6 +2,20 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    <script>
+        // Jalankan sesegera mungkin sebelum konten dirender
+        (function() {
+            const storedLang = localStorage.getItem('lang');
+            if (storedLang && ['id','en'].includes(storedLang)) {
+                document.documentElement.lang = storedLang;
+                // Jika cookie belum sesuai, set cookie agar server juga pakai bahasa ini
+                if (!document.cookie.split('; ').some(row => row.startsWith('lang=' + storedLang))) {
+                    const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+                    document.cookie = 'lang=' + storedLang + '; expires=' + expires + '; path=/; SameSite=Lax';
+                }
+            }
+        })();
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ffffff">

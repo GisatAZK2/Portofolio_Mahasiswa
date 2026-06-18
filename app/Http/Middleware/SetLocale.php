@@ -31,7 +31,8 @@ class SetLocale
     {
         $supported = $this->supportedLocales();
 
-        $locale = $this->resolveFromUrlSegment($request, $supported)
+        $locale = $this->resolveFromQuery($request, $supported)
+            ?? $this->resolveFromUrlSegment($request, $supported)
             ?? $this->resolveFromCookie($request, $supported)
             ?? $this->resolveFromSession($request, $supported)
             ?? config('app.locale');
@@ -82,5 +83,11 @@ class SetLocale
     protected function supportedLocales(): array
     {
         return config('app.supported_locales', explode(',', env('SUPPORTED_LOCALES', 'id,en')));
+    }
+
+    protected function resolveFromQuery(Request $request, array $supported): ?string
+    {
+        $queryLocale = $request->query('locale');
+        return ($queryLocale && in_array($queryLocale, $supported, true)) ? $queryLocale : null;
     }
 }
