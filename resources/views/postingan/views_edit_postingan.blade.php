@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', autoTranslate('Edit Postingan'))
+@section('title', 'Edit Postingan')
 
 @section('content')
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -34,10 +34,10 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-sm font-medium text-red-800 dark:text-red-300 mb-2">
-                                {{ autoTranslate('Terdapat kesalahan pada input:') }}</p>
+                                Terdapat kesalahan pada input:</p>
                             <ul class="text-sm text-red-700 dark:text-red-300 space-y-1 list-disc list-inside">
                                 @foreach ($errors->all() as $error)
-                                    <li>{{ autoTranslate($error) }}</li>
+                                    <li>{{ $error  }}</li>
                                 @endforeach
                             </ul>
                         </div>
@@ -60,22 +60,22 @@
                         <!-- Judul Input -->
                         <div class="mb-5">
                             <textarea name="judul" id="judul" rows="1"
-                                placeholder="{{ autoTranslate('Judul postingan...') }}"
+                                placeholder="Judul postingan...}"
                                 class="w-full px-0 py-2 text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 focus:ring-0 resize-none overflow-hidden transition-colors @error('judul') border-red-500 @enderror"
                                 oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('judul', $postingan->content[0]['content'] ?? '') }}</textarea>
                             @error('judul')
-                                <p class="mt-1 text-xs text-red-500">{{ autoTranslate($message) }}</p>
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Deskripsi Input -->
                         <div class="mb-2">
                             <textarea name="deskripsi" id="deskripsi" rows="3"
-                                placeholder="{{ autoTranslate('Tulis sesuatu yang menarik...') }}"
+                                placeholder="Tulis sesuatu yang menarik..."
                                 class="w-full px-0 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-0 focus:ring-0 resize-none text-base leading-relaxed @error('deskripsi') border-red-500 @enderror"
                                 oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">{{ old('deskripsi', $postingan->content[1]['content'] ?? '') }}</textarea>
                             @error('deskripsi')
-                                <p class="mt-1 text-xs text-red-500">{{ autoTranslate($message) }}</p>
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -131,11 +131,11 @@
                                                 class="type-select px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                                                 <option value="image"
                                                     {{ isset($item['type']) && $item['type'] === 'image' ? 'selected' : '' }}>
-                                                    {{ autoTranslate('Gambar') }}
+                                                    Gambar
                                                 </option>
                                                 <option value="link"
                                                     {{ isset($item['type']) && $item['type'] === 'link' ? 'selected' : '' }}>
-                                                    {{ autoTranslate('Link') }}
+                                                    Link
                                                 </option>
                                             </select>
                                         </div>
@@ -179,9 +179,9 @@
                                                         </path>
                                                     </svg>
                                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                        {{ autoTranslate('Klik atau drag & drop gambar') }}</p>
+                                                       Klik atau drag & drop gambar </p>
                                                     <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                                        {{ autoTranslate('Maks 5MB • jpg, png, gif, webp') }}</p>
+                                                        Maks 5MB • jpg, png, gif, webp</p>
                                                 </div>
 
                                                 <!-- Preview container (existing image or new upload) -->
@@ -194,7 +194,7 @@
                                                                 class="max-h-48 rounded-lg shadow-md">
                                                             <span class="remove-preview"
                                                                 onclick="removePreview(this, {{ $index }})"
-                                                                title="{{ autoTranslate('Hapus gambar') }}">×</span>
+                                                                title="Hapus gambar">×</span>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -269,10 +269,10 @@
                                     <div>
                                         <p class="text-sm font-medium text-gray-900 dark:text-white"
                                             data-translate="game_title" data-translate-page="edit_post">
-                                            {{ autoTranslate('Tambahkan Game Interaktif') }}</p>
+                                           Tambahkan Game Interaktif</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="game_desc"
                                             data-translate-page="edit_post">
-                                            {{ autoTranslate('Buat postingan lebih menarik dengan game') }}</p>
+                                            Buat postingan lebih menarik dengan game</p>
                                     </div>
                                 </div>
 
@@ -286,7 +286,7 @@
                                         </div>
                                         <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"
                                             data-translate="game_enable_label"
-                                            data-translate-page="edit_post">{{ autoTranslate('Aktifkan Game') }}</span>
+                                            data-translate-page="edit_post">Aktifkan Game</span>
                                     </label>
 
                                     <select name="game_name" id="game_name"
@@ -294,15 +294,15 @@
                                         {{ old('game_enabled', $hasGame) ? '' : 'disabled' }}>
                                         <option value="Matematika"
                                             {{ old('game_name', $existingGame->game_name ?? '') === 'Matematika' ? 'selected' : '' }}>
-                                            {{ autoTranslate('Matematika') }}
+                                            Matematika
                                         </option>
                                         <option value="TTS"
                                             {{ old('game_name', $existingGame->game_name ?? '') === 'TTS' ? 'selected' : '' }}>
-                                            {{ autoTranslate('Teka-Teki Silang') }}
+                                            Teka-Teki Silang
                                         </option>
                                         <option value="Puzzle"
                                             {{ old('game_name', $existingGame->game_name ?? '') === 'Puzzle' ? 'selected' : '' }}>
-                                            {{ autoTranslate('Puzzle') }}
+                                            Puzzle
                                         </option>
                                     </select>
                                 </div>
@@ -312,7 +312,7 @@
                                 style="display: {{ old('game_enabled', $hasGame) ? 'block' : 'none' }};">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                                     data-translate="game_thumbnail_label"
-                                    data-translate-page="edit_post">{{ autoTranslate('Thumbnail Game') }}</label>
+                                    data-translate-page="edit_post">Thumbnail Game</label>
 
                                 @php
                                     $gameThumbnail = null;
@@ -334,11 +334,11 @@
                                         <div>
                                             <p class="text-xs text-gray-500 dark:text-gray-400"
                                                 data-translate="current_thumbnail"
-                                                data-translate-page="edit_post">{{ autoTranslate('Thumbnail saat ini') }}</p>
+                                                data-translate-page="edit_post">Thumbnail saat ini</p>
                                             <button type="button" id="remove_thumbnail_btn"
                                                 class="text-xs text-red-500 hover:text-red-700 mt-1"
                                                 data-translate="remove_thumbnail"
-                                                data-translate-page="edit_post">{{ autoTranslate('Hapus thumbnail') }}</button>
+                                                data-translate-page="edit_post">Hapus thumbnail</button>
                                         </div>
                                     </div>
                                     <input type="hidden" name="remove_thumbnail" id="remove_thumbnail" value="0">
@@ -350,7 +350,7 @@
                                         class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 dark:file:bg-purple-900/30 file:text-purple-700 dark:file:text-purple-300 hover:file:bg-purple-100 dark:hover:file:bg-purple-800/50 file:transition file:cursor-pointer">
                                 </div>
                                 <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-                                    {{ autoTranslate('Maks 5MB • jpg, jpeg, png, gif, webp') }}</p>
+                                    Maks 5MB • jpg, jpeg, png, gif, webp</p>
                             </div>
                         </div>
                     @endif
@@ -361,7 +361,7 @@
                         <a href="{{ route('postingan.index') }}"
                             class="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
                             data-translate="cancel" data-translate-page="edit_post">
-                            {{ autoTranslate('Batal') }}
+                            Batal
                         </a>
                         <button type="submit"
                             class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2">
@@ -440,8 +440,8 @@
                             </svg>
                         </div>
                         <select name="items[${itemIndex}][type]" class="type-select px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="image">{{ autoTranslate('Gambar') }}</option>
-                            <option value="link">{{ autoTranslate('Link') }}</option>
+                            <option value="image">Gambar</option>
+                            <option value="link">Link</option>
                         </select>
                     </div>
                     <button type="button" class="remove-item w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100">
@@ -463,8 +463,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ autoTranslate('Klik atau drag & drop gambar') }}</p>
-                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ autoTranslate('Maks 5MB • jpg, png, gif, webp') }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Klik atau drag & drop gambar</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Maks 5MB • jpg, png, gif, webp</p>
                             </div>
                             <div id="image-preview-${itemIndex}" class="hidden mt-2 flex justify-center"></div>
                         </div>
@@ -502,14 +502,14 @@
 
             if (file) {
                 if (file.size > 5 * 1024 * 1024) {
-                    alert('{{ autoTranslate('Ukuran file maksimal 5MB') }}');
+                    alert('Ukuran file maksimal 5MB');
                     input.value = '';
                     return;
                 }
 
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
                 if (!allowedTypes.includes(file.type)) {
-                    alert('{{ autoTranslate('Format file tidak didukung. Gunakan jpg, jpeg, png, gif, atau webp') }}');
+                    alert('Format file tidak didukung. Gunakan jpg, jpeg, png, gif, atau webp');
                     input.value = '';
                     return;
                 }
@@ -519,7 +519,7 @@
                     previewContainer.innerHTML = `
                         <div class="image-preview-container">
                             <img src="${e.target.result}" alt="Preview" class="max-h-48 rounded-lg shadow-md">
-                            <span class="remove-preview" onclick="removePreview(this, ${index})" title="{{ autoTranslate('Hapus gambar') }}">×</span>
+                            <span class="remove-preview" onclick="removePreview(this, ${index})" title="Hapus gambar">×</span>
                         </div>
                     `;
                     previewContainer.classList.remove('hidden');

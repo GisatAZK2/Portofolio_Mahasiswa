@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', autoTranslate('Postingan Saya'))
+@section('title', 'Postingan Saya')
 
 @section('content')
     <div class="p-6 lg:p-8">
@@ -7,7 +7,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl" data-translate-page="post">Postingan Saya</h1>
                 <p data-translate="desc" data-translate-page="post" class="text-gray-600 dark:text-gray-200 mt-1">
-                    {{ autoTranslate('Kelola semua postingan yang telah Anda buat.') }}
+                    Kelola semua postingan yang telah Anda buat.
                 </p>
             </div>
             <a href="{{ route('postingan.create') }}"
@@ -15,7 +15,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                <span data-translate="add" data-translate-page="post">{{ autoTranslate('Buat Postingan') }}</span>
+                <span data-translate="add" data-translate-page="post">Buat Postingan</span>
             </a>
         </div>
 
@@ -39,7 +39,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="mt-4 text-gray-600 dark:text-gray-200">{{ autoTranslate('Belum ada postingan.') }}</p>
+                <p class="mt-4 text-gray-600 dark:text-gray-200">Belum ada postingan.</p>
             </div>
         @else
             @php
@@ -65,7 +65,7 @@
                                 </svg>
                                 <span class="font-semibold text-blue-700 dark:text-blue-300 text-sm"
                                     data-translate="section_my_posts" data-translate-page="post">
-                                    {{ autoTranslate('Postingan Saya') }}
+                                    Postingan Saya
                                 </span>
                                 <span class="text-xs text-blue-500 dark:text-blue-400 bg-blue-100 dark:bg-blue-800 px-2 py-0.5 rounded-full font-medium">
                                     {{ $myPosts->count() }}
@@ -82,7 +82,7 @@
                             </svg>
                             <p class="text-sm text-gray-400 dark:text-gray-500"
                                 data-translate="empty_my_posts" data-translate-page="post">
-                                {{ autoTranslate('Anda belum membuat postingan.') }}
+                                Anda belum membuat postingan.
                             </p>
                         </div>
                     @else
@@ -108,7 +108,7 @@
                             </svg>
                             <span class="font-semibold text-emerald-700 dark:text-emerald-300 text-sm"
                                 data-translate="section_student_posts" data-translate-page="post">
-                                {{ autoTranslate('Postingan Mahasiswa') }}
+                                Postingan Mahasiswa
                             </span>
                             <span class="text-xs text-emerald-500 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-800 px-2 py-0.5 rounded-full font-medium">
                                 {{ $studentPosts->count() }}
@@ -125,7 +125,7 @@
                             </svg>
                             <p class="text-gray-400 dark:text-gray-500 text-sm"
                                 data-translate="empty_student_posts" data-translate-page="post">
-                                {{ autoTranslate('Belum ada postingan dari mahasiswa.') }}
+                                Belum ada postingan dari mahasiswa.
                             </p>
                         </div>
                     @else

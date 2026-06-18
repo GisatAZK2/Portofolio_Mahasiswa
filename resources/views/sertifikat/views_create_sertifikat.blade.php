@@ -45,7 +45,9 @@
                             class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat" value="{{ old('nama_sertifikat') }}"
-                        required placeholder="Contoh: Sertifikat Kompetensi Programming"
+                        required
+                        data-translate-placeholder="nama_sertifikat_placeholder"
+                        data-translate-page="sertifikat_create"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
@@ -63,7 +65,9 @@
                             class="text-red-500">*</span>
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit" value="{{ old('lembaga_penerbit') }}"
-                        required placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
+                        required
+                        data-translate-placeholder="lembaga_penerbit_placeholder"
+                        data-translate-page="sertifikat_create"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg                   focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
                                       placeholder-gray-500 dark:placeholder-gray-400
@@ -74,62 +78,62 @@
                 </div>
 
                 <!-- Tanggal Terbit -->
-<div>
-    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_create"></span> <span
-            class="text-red-500">*</span>
-    </label>
-    <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
-        required
-        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                      text-gray-700 dark:text-gray-300
-                      placeholder-gray-500 dark:placeholder-gray-400
-                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
-    @error('tanggal_terbit')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-    @enderror
-</div>
+                <div>
+                    <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="tanggal_terbit" data-translate-page="sertifikat_create"></span> <span
+                            class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" value="{{ old('tanggal_terbit') }}"
+                        required
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                      text-gray-700 dark:text-gray-300
+                                      placeholder-gray-500 dark:placeholder-gray-400
+                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('tanggal_terbit') border-red-500 @enderror">
+                    @error('tanggal_terbit')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
-<!-- Sertifikat Berlaku Permanen -->
-<div class="flex items-center gap-3 mb-4">
-    <label class="inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="permanent" name="permanent" value="1"
-            @checked(old('permanent'))
-            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-        <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">
-            Sertifikat berlaku permanen
-        </span>
-    </label>
-</div>
+                <!-- Sertifikat Berlaku Permanen -->
+                <div class="flex items-center gap-3 mb-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="permanent" name="permanent" value="1"
+                            @checked(old('permanent'))
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-200" data-translate="permanent_cert_label"
+                            data-translate-page="sertifikat_create">
+                        </span>
+                    </label>
+                </div>
 
-<!-- Expired Date -->
-<div id="expired_date_block">
-    <label for="expired_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-        <span data-translate="expired_date" data-translate-page="sertifikat_create"></span> <span
-            class="text-red-500">*</span>
-    </label>
-    <input type="date" name="expired_date" id="expired_date" value="{{ old('expired_date') }}"
-        required
-        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
-                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-                      text-gray-700 dark:text-gray-300
-                      placeholder-gray-500 dark:placeholder-gray-400
-                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('expired_date') border-red-500 @enderror">
-    @error('expired_date')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-    @enderror
-    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50" data-translate="expired_date_desc"
-        data-translate-page="sertifikat_create"></p>
-</div>
+                <!-- Expired Date -->
+                <div id="expired_date_block">
+                    <label for="expired_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        <span data-translate="expired_date" data-translate-page="sertifikat_create"></span> <span
+                            class="text-red-500">*</span>
+                    </label>
+                    <input type="date" name="expired_date" id="expired_date" value="{{ old('expired_date') }}"
+                        required
+                        class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
+                                      focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+                                      text-gray-700 dark:text-gray-300
+                                      placeholder-gray-500 dark:placeholder-gray-400
+                                      shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm transition @error('expired_date') border-red-500 @enderror">
+                    @error('expired_date')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-50" data-translate="expired_date_desc"
+                        data-translate-page="sertifikat_create"></p>
+                </div>
 
                 <!-- Upload File Sertifikat -->
                 <div>
-                    <label for="link_sertifikat" class="block text-sm  font-medium text-gray-700 dark:text-gray-200 mb-2">
+                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         <span data-translate="upload_file_sertifikat" data-translate-page="sertifikat_create"></span> <span
                             class="text-red-500">*</span>
                     </label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2   border-dashed rounded-lg hover:border-indigo-400  transition cursor-pointer"
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg hover:border-indigo-400 transition cursor-pointer"
                         onclick="document.getElementById('link_sertifikat').click()">
                         <div class="space-y-2 text-center">
                             <svg class="mx-auto h-12 w-12 text-gray-400 dark:hover:text-black" stroke="currentColor"
@@ -148,7 +152,8 @@
                                 </label>
                                 <p class="pl-1" data-translate="or_drag_drop" data-translate-page="sertifikat_create"></p>
                             </div>
-                            <p class="text-xs text-gray-500" id="file-name">PNG, JPG, GIF up to 5MB</p>
+                            <p class="text-xs text-gray-500" id="file-name" data-translate="file_format_hint"
+                                data-translate-page="sertifikat_create">PNG, JPG, GIF up to 5MB</p>
                         </div>
                     </div>
                     @error('link_sertifikat')
@@ -165,8 +170,10 @@
 
                 <!-- Preview Gambar -->
                 <div id="image-preview-container" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
-                    <img id="image-preview" src="#" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
+                    <p class="text-sm font-medium text-gray-700 mb-2" data-translate="preview_label"
+                        data-translate-page="sertifikat_create">Preview:</p>
+                    <img id="image-preview" src="#" data-translate-alt="preview_alt"
+                        data-translate-page="sertifikat_create" alt="Preview Sertifikat" class="max-h-48 rounded-lg shadow-sm">
                 </div>
 
                 <!-- Informasi Tambahan (optional) -->
@@ -232,7 +239,9 @@
                     reader.readAsDataURL(input.files[0]);
                 }
             } else {
-                fileNameElement.textContent = 'PNG, JPG, GIF up to 5MB';
+                // fallback: tampilkan teks dari data-translate (akan diisi oleh JS terjemahan)
+                const defaultText = fileNameElement.getAttribute('data-translate') || 'PNG, JPG, GIF up to 5MB';
+                fileNameElement.textContent = defaultText;
                 previewContainer.classList.add('hidden');
                 previewImage.src = '#';
             }
@@ -370,7 +379,6 @@
             }
         });
     </script>
-
 
     <!-- Page Info -->
     <script>

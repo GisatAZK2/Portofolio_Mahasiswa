@@ -44,6 +44,18 @@
                         </div>
 
                         <div class="p-6 flex-1 flex flex-col">
+                            @php
+                                $expiredAt = $entry->expired_date ? \Carbon\Carbon::parse($entry->expired_date) : null;
+                                $validityStatus = $expiredAt
+                                    ? ($expiredAt->isFuture() || $expiredAt->isToday()
+                                        ? 'Masih Berlaku'
+                                        : 'Kadarluwasa')
+                                    : 'Permanen';
+                                $validityStatusClass = $expiredAt
+                                    ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'text-green-600' : 'text-red-600')
+                                    : 'text-indigo-600';
+                            @endphp
+
                             <!-- Nama Sertifikat -->
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
                                 {{ $entry->nama_sertifikat }}
@@ -68,6 +80,28 @@
                                 <span class="text-sm">{{ \Carbon\Carbon::parse($entry->tanggal_terbit)->format('d F Y') }}</span>
                             </div>
 
+                            <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
+                                <span class="text-sm font-semibold" data-translate="validity_status_label"
+                                    data-translate-page="sertifikat_user">Status Berlaku:</span>
+                                <span class="ml-2 text-sm font-medium {{ $validityStatusClass }}">
+                                    @if($validityStatus === 'Masih Berlaku')
+                                        <span data-translate="validity_valid" data-translate-page="sertifikat_user">Masih Berlaku</span>
+                                    @elseif($validityStatus === 'Kadarluwasa')
+                                        <span data-translate="validity_expired" data-translate-page="sertifikat_user">Kadarluwasa</span>
+                                    @else
+                                        <span data-translate="validity_permanent" data-translate-page="sertifikat_user">Permanen</span>
+                                    @endif
+                                </span>
+                            </div>
+
+                            @if($expiredAt)
+                                <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
+                                    <span class="text-sm font-semibold" data-translate="expired_date_label"
+                                        data-translate-page="sertifikat_user">Tanggal Kadaluarsa:</span>
+                                    <span class="ml-2 text-sm">{{ $expiredAt->format('d F Y') }}</span>
+                                </div>
+                            @endif
+
                             <!-- Link Sertifikat  -->
                             @if($entry->link_sertifikat)
                                 <div class="mb-4">
@@ -81,6 +115,7 @@
                                     </a>
                                 </div>
                             @endif
+
                             <!-- Isi Content (dari JSON) -->
                             @if(!empty($entry->isi_content))
                                 @php
@@ -89,8 +124,9 @@
 
                                 @if(is_array($content) && count($content) > 0)
                                     <div class="mb-4 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold" data-translate="sertifikat_deskripsi_tambahan"
-                                            data-translate-page="sertifikat_user"></p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold"
+                                            data-translate="additional_description_label"
+                                            data-translate-page="sertifikat_user">Deskripsi Tambahan</p>
                                         @foreach($content as $item)
                                             @if(is_array($item))
                                                 @if(isset($item['type']) && $item['type'] === 'text' && isset($item['content']))
@@ -108,7 +144,7 @@
 
                             <!-- Tanggal dibuat/diupdate -->
                             <p class="text-xs text-gray-400 dark:text-gray-500 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                                <span data-translate="sertifikat_dibuat" data-translate-page="sertifikat"></span>:
+                                <span data-translate="sertifikat_dibuat" data-translate-page="sertifikat_user"></span>:
                                 {{ $entry->created_at ? $entry->created_at->format('d M Y') : '-' }}
                                 @if($entry->created_at != $entry->updated_at)
                                     <br> <span data-translate="sertifikat_diupdate" data-translate-page="sertifikat_user"></span>:

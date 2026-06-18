@@ -5,7 +5,7 @@
         $isOwn  — bool, true = milik auth user sendiri
 --}}
 @php
-    $content = $post->content;
+    $content = $post->translated('content');
     $title = '';
     $deskripsi = '';
     $items = [];
@@ -60,7 +60,7 @@
                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                     </svg>
                     <span data-translate="badge_my_post" data-translate-page="post">
-                        {{ autoTranslate('Postingan Saya') }}
+                        Postingan Saya
                     </span>
                 </span>
             @else
@@ -70,7 +70,7 @@
                         <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-1a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v1h-3zM4.75 12.094A5.973 5.973 0 004 15v1H1v-1a3 3 0 013.75-2.906z"/>
                     </svg>
                     <span data-translate="badge_student_post" data-translate-page="post">
-                        {{ autoTranslate('Postingan Mahasiswa') }}
+                        Postingan Mahasiswa
                     </span>
                 </span>
             @endif
@@ -105,14 +105,14 @@
         @if ($title)
             <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2
                        group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                {{ autoTranslate($title) }}
+                {{ $title }}
             </h2>
         @endif
 
         {{-- Deskripsi --}}
         @if ($deskripsi)
             <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
-                {{ autoTranslate(Str::limit($deskripsi, 100)) }}
+                {{ Str::limit($deskripsi, 100) }}
             </p>
         @endif
 
@@ -156,18 +156,18 @@
                         <img src="{{ asset($gameThumbnail) }}" class="w-24 h-14 object-cover rounded" alt="Game Thumbnail">
                     @else
                         <div class="w-24 h-14 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-gray-500 text-xs">
-                            <span data-translate="game_label" data-translate-page="post">{{ autoTranslate('Game') }}</span>
+                            <span data-translate="game_label" data-translate-page="post">Game</span>
                         </div>
                     @endif
                     <div>
                         <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">{{ $gameDisplayName }}</div>
                         <div class="text-xs text-gray-500" data-translate="play_game" data-translate-page="post">
-                            {{ autoTranslate('Mainkan game') }}
+                            Mainkan game
                         </div>
                         @if ($game->score > 0)
                             <div class="text-xs text-green-600 dark:text-green-400 mt-1">
                                 🏆
-                                <span data-translate="best_score" data-translate-page="post">{{ autoTranslate('Skor terbaik') }}</span>:
+                                <span data-translate="best_score" data-translate-page="post">Skor terbaik</span>:
                                 {{ $game->score }}
                             </div>
                         @endif
@@ -179,7 +179,7 @@
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 4v2h2V7H8zm6 0v2h2V7h-2zm-6 6v2h2v-2H8zm6 0v2h2v-2h-2z"/>
                     </svg>
-                    <span data-translate="play_btn" data-translate-page="post">{{ autoTranslate('Play') }}</span>
+                    <span data-translate="play_btn" data-translate-page="post">Play</span>
                 </a>
             </div>
         @endif

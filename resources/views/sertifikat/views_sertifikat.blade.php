@@ -26,22 +26,22 @@
             <button type="button" onclick="filterStatus('all')"
                 class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-indigo-600 text-white hover:bg-indigo-700"
                 data-filter="all">
-                Semua
+                <span data-translate="filter_all" data-translate-page="sertifikat">Semua</span>
             </button>
             <button type="button" onclick="filterStatus('Sedang Di Ajukan')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300"
                 data-filter="Sedang Di Ajukan">
-                Sedang Diajukan
+                <span data-translate="filter_pending" data-translate-page="sertifikat">Sedang Diajukan</span>
             </button>
             <button type="button" onclick="filterStatus('Di Terima')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300"
                 data-filter="Di Terima">
-                Diterima
+                <span data-translate="filter_accepted" data-translate-page="sertifikat">Diterima</span>
             </button>
             <button type="button" onclick="filterStatus('Di Tolak')"
                 class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300"
                 data-filter="Di Tolak">
-                Ditolak
+                <span data-translate="filter_rejected" data-translate-page="sertifikat">Ditolak</span>
             </button>
         </div>
 
@@ -137,13 +137,23 @@
                             </div>
 
                             <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
-                                <span class="text-sm font-semibold">{{ 'Status Berlaku' }}:</span>
-                                <span class="ml-2 text-sm font-medium {{ $validityStatusClass }}">{{ $validityStatus }}</span>
+                                <span class="text-sm font-semibold" data-translate="validity_status_label"
+                                    data-translate-page="sertifikat">Status Berlaku:</span>
+                                <span class="ml-2 text-sm font-medium {{ $validityStatusClass }}">
+                                    @if($validityStatus === 'Masih Berlaku')
+                                        <span data-translate="validity_valid" data-translate-page="sertifikat">Masih Berlaku</span>
+                                    @elseif($validityStatus === 'Kadarluwasa')
+                                        <span data-translate="validity_expired" data-translate-page="sertifikat">Kadarluwasa</span>
+                                    @else
+                                        <span data-translate="validity_permanent" data-translate-page="sertifikat">Permanen</span>
+                                    @endif
+                                </span>
                             </div>
 
                             @if($expiredAt)
                                 <div class="flex items-center text-gray-600 dark:text-gray-300 mb-4">
-                                    <span class="text-sm font-semibold">{{ 'Tanggal Kadaluarsa' }}:</span>
+                                    <span class="text-sm font-semibold" data-translate="expired_date_label"
+                                        data-translate-page="sertifikat">Tanggal Kadaluarsa:</span>
                                     <span class="ml-2 text-sm">{{ $expiredAt->format('d F Y') }}</span>
                                 </div>
                             @endif
@@ -170,8 +180,9 @@
 
                                 @if(is_array($content) && count($content) > 0)
                                     <div class="mb-4 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold">
-                                            <span data-translate="sertifikat_deskripsi_tambahan" data-translate-page="sertifikat"></span>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-semibold"
+                                            data-translate="additional_description_label" data-translate-page="sertifikat">
+                                            Deskripsi Tambahan
                                         </p>
                                         @foreach($content as $item)
                                             @if(is_array($item))
@@ -191,9 +202,9 @@
                             {{-- Keterangan (untuk status Ditolak) --}}
                             @if($entry->status_pengajuan === 'Ditolak' && $entry->keterangan)
                                 <div class="mb-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded">
-                                    <p class="text-xs text-red-800 dark:text-red-300 font-semibold mb-1">
-                                        <span data-translate="sertifikat_alasan_penolakan" data-translate-page="sertifikat">Alasan
-                                            Penolakan:</span>
+                                    <p class="text-xs text-red-800 dark:text-red-300 font-semibold mb-1"
+                                        data-translate="rejection_reason_label" data-translate-page="sertifikat">
+                                        Alasan Penolakan:
                                     </p>
                                     <p class="text-sm text-red-700 dark:text-red-200">{{ $entry->keterangan }}</p>
                                 </div>
@@ -250,7 +261,6 @@
 
     <!-- Filter Script -->
     <script>
-
         function filterStatus(status) {
             // Update active button style
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -296,11 +306,12 @@
                     const container = document.querySelector('.grid');
                     const message = document.createElement('div');
                     message.className = 'no-data-message col-span-full text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200';
+                    // kita bisa gunakan data-translate untuk pesan ini
                     message.innerHTML = `
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <p class="mt-4 text-gray-600 dark:text-gray-200">Tidak ada sertifikat dengan status ${status}</p>
+                            <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="no_data_filtered" data-translate-page="sertifikat"></p>
                         `;
                     container.parentNode.insertBefore(message, container.nextSibling);
                 }

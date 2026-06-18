@@ -48,7 +48,8 @@
                     </label>
                     <input type="text" name="nama_sertifikat" id="nama_sertifikat"
                         value="{{ old('nama_sertifikat', $sertifikat->nama_sertifikat) }}" required
-                        placeholder="Contoh: Sertifikat Kompetensi Programming"
+                        data-translate-placeholder="nama_sertifikat_placeholder"
+                        data-translate-page="sertifikat_edit"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
@@ -67,7 +68,8 @@
                     </label>
                     <input type="text" name="lembaga_penerbit" id="lembaga_penerbit"
                         value="{{ old('lembaga_penerbit', $sertifikat->lembaga_penerbit) }}" required
-                        placeholder="Contoh: Dicoding, Coursera, Kampus Merdeka"
+                        data-translate-placeholder="lembaga_penerbit_placeholder"
+                        data-translate-page="sertifikat_edit"
                         class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg
                                       focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                                       text-gray-700 dark:text-gray-300
@@ -103,8 +105,8 @@
                         <input type="checkbox" id="permanent" name="permanent" value="1"
                             {{ old('permanent', $sertifikat->expired_date ? false : true) ? 'checked' : '' }}
                             class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">
-                            Sertifikat berlaku permanen
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-200" data-translate="permanent_cert_label"
+                            data-translate-page="sertifikat_edit">
                         </span>
                     </label>
                 </div>
@@ -168,7 +170,9 @@
 
                 <!-- Upload File Sertifikat (hidden by default if file exists) -->
                 <div id="file-upload-section" class="{{ $sertifikat->link_sertifikat ? 'hidden' : '' }}">
-                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 mb-2"
+                        data-translate="upload_file_optional_label"
+                        data-translate-page="sertifikat_edit">
                         {{ $sertifikat->link_sertifikat ? 'Upload File Baru (opsional)' : 'Upload File Sertifikat' }}
                         @if(!$sertifikat->link_sertifikat)<span class="text-red-500">*</span>@endif
                     </label>
@@ -191,7 +195,8 @@
                                 </label>
                                 <p class="pl-1" data-translate="or_drag_drop" data-translate-page="sertifikat_edit"></p>
                             </div>
-                            <p class="text-xs text-gray-500" id="file-name">
+                            <p class="text-xs text-gray-500" id="file-name" data-translate="file_format_hint"
+                                data-translate-page="sertifikat_edit">
                                 @if($sertifikat->link_sertifikat)
                                     {{ basename(Storage::url($sertifikat->link_sertifikat)) }}
                                 @else
@@ -303,7 +308,9 @@
                 @if($sertifikat->link_sertifikat)
                     fileNameElement.textContent = "{{ basename(Storage::url($sertifikat->link_sertifikat)) }}";
                 @else
-                    fileNameElement.textContent = 'PNG, JPG, GIF up to 5MB';
+                    // fallback ke teks terjemahan
+                    const defaultText = fileNameElement.getAttribute('data-translate') || 'PNG, JPG, GIF up to 5MB';
+                    fileNameElement.textContent = defaultText;
                 @endif
 
                 previewContainer.classList.add('hidden');
