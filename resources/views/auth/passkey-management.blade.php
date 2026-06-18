@@ -1,6 +1,6 @@
 @extends('Layout.Layout')
 
-@section('title', autoTranslate('Kelola Passkey'))
+@section('title', 'Kelola Passkey')
 
 @section('content')
 <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6">
@@ -13,11 +13,11 @@
                 </svg>
             </div>
             <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                {{ autoTranslate('Kelola Passkey') }}
+                Kelola Passkey
             </h1>
         </div>
         <p class="text-gray-600 dark:text-gray-400 text-sm mt-1 max-w-2xl">
-            {{ autoTranslate('Tambahkan atau hapus passkey untuk verifikasi keamanan dua faktor') }}
+            Tambahkan atau hapus passkey untuk verifikasi keamanan dua faktor
         </p>
     </div>
 
@@ -31,10 +31,10 @@
             </div>
             <div>
                 <p class="font-semibold text-gray-800 dark:text-gray-200 text-sm">
-                    {{ autoTranslate('Apa itu Passkey?') }}
+                    Apa itu Passkey?
                 </p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {{ autoTranslate('Passkey adalah metode autentikasi modern yang menggantikan password dengan biometrik (Face ID, Touch ID) atau kunci keamanan fisik. Lebih aman dan mudah digunakan.') }}
+                    Passkey adalah metode autentikasi modern yang menggantikan password dengan biometrik (Face ID, Touch ID) atau kunci keamanan fisik. Lebih aman dan mudah digunakan.
                 </p>
             </div>
         </div>
@@ -52,11 +52,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     <h2 class="font-semibold text-gray-800 dark:text-gray-200">
-                        {{ autoTranslate('Passkey Terdaftar') }}
+                        Passkey Terdaftar
                     </h2>
                 </div>
                 <span class="text-xs px-2 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                    {{ autoTranslate('Milik Anda') }}
+                    Milik Anda
                 </span>
             </div>
         </div>
@@ -69,7 +69,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <p>{{ autoTranslate('Memuat data...') }}</p>
+                    <p>Memuat data...</p>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 <h2 class="font-semibold text-gray-800 dark:text-gray-200">
-                    {{ autoTranslate('Tambah Passkey Baru') }}
+                    Tambah Passkey Baru
                 </h2>
             </div>
         </div>
@@ -91,14 +91,14 @@
         <div class="p-6">
             <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {{ autoTranslate('Nama Perangkat') }}
+                    Nama Perangkat
                 </label>
                 <input type="text" 
                        id="passkeyName" 
-                       placeholder="{{ autoTranslate('Contoh: iPhone 15, MacBook Pro, Kunci Keamanan') }}"
+                       placeholder="Contoh: iPhone 15, MacBook Pro, Kunci Keamanan"
                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-all duration-200">
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    {{ autoTranslate('Nama yang mudah diingat untuk mengenali perangkat ini') }}
+                    Nama yang mudah diingat untuk mengenali perangkat ini
                 </p>
             </div>
 
@@ -108,7 +108,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     <span class="text-xs text-gray-600 dark:text-gray-400">
-                        {{ autoTranslate('Passkey akan menggunakan autentikasi bawaan perangkat Anda (Face ID, Touch ID, Windows Hello) atau kunci keamanan eksternal jika tersedia.') }}
+                        Passkey akan menggunakan autentikasi bawaan perangkat Anda (Face ID, Touch ID, Windows Hello) atau kunci keamanan eksternal jika tersedia.
                     </span>
                 </div>
             </div>
@@ -116,7 +116,7 @@
             <button type="button" 
                     id="addPasskeyBtn"
                     class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-2.5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md text-sm">
-                {{ autoTranslate('Tambah Passkey') }}
+                Tambah Passkey
             </button>
         </div>
     </div>
@@ -170,7 +170,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <p>{{ autoTranslate('Memuat data...') }}</p>
+                    <p>Memuat data...</p>
                 </div>
             </div>
         `;
@@ -272,7 +272,7 @@
                         <div>
                             <p class="font-medium text-gray-900 dark:text-white text-sm">${escapeHtml(passkey.name)}</p>
                             <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                {{ autoTranslate('Ditambahkan') }} ${passkey.created_at_humans}
+                                Ditambahkan ${passkey.created_at_humans}
                             </p>
                         </div>
                     </div>
@@ -298,7 +298,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
                     </svg>
                     <p class="text-sm">${message}</p>
-                    <p class="text-xs">{{ autoTranslate('Tambahkan passkey baru menggunakan formulir di bawah') }}</p>
+                    <p class="text-xs">Tambahkan passkey baru menggunakan formulir di bawah</p>
                 </div>
             </div>
         `;
@@ -329,7 +329,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            {{ autoTranslate('Memproses...') }}
+            Memproses...
         `;
         
         try {

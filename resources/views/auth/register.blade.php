@@ -1,6 +1,6 @@
 @extends('auth.layout')
 
-@section('title', autoTranslate('Register'))
+@section('title', 'Register')
 
 @section('content')
 

@@ -1,6 +1,6 @@
 @extends('auth.layout')
 
-@section('title', autoTranslate('Login'))
+@section('title', 'Login')
 
 @section('content')
     <main class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">

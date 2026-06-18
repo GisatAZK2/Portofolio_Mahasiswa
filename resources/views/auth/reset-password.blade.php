@@ -1,6 +1,6 @@
 @extends('auth.layout')
 
-@section('title', autoTranslate('Reset Password'))
+@section('title', 'Reset Password')
 
 @section('content')
 <div class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
