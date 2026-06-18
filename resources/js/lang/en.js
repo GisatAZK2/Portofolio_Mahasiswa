@@ -383,7 +383,15 @@ export const en = {
     del_sel: 'Delete Selected',
     sel_del: 'Pick some to delete',
     del: 'Delete',
-    add_lrn: 'Add Note'
+    add_lrn: 'Add Note',
+    status_incoming: 'Upcoming',
+    status_present: 'Ongoing',
+    status_past: 'Finished',
+    progress_done: 'Done',
+    task_inprogress: 'In Progress',
+    video_preview: 'Video Preview',
+    edit: 'Edit',
+    hapus: 'Delete',
   },
 
   popup: {
@@ -1318,6 +1326,11 @@ export const en = {
     add_project_to_start: 'Please add a new project to get started.',
     posted_by: 'Posted by',
     video_preview: 'Video Preview',
+    nama_project_placeholder: 'Enter project name',
+    deskripsi_placeholder : 'Enter project description',
+    link_project_placeholder: 'Enter project link (Optional)',
+    link_github_placeholder: 'Enter GitHub link (Optional)',
+    link_video_placeholder: 'Enter video link (Optional)',
   },
   project_edit: {
     title: 'Edit Project',
@@ -1371,6 +1384,13 @@ export const en = {
     user_list_title: 'User List',
     add_task: 'Add Task',
     update_project: 'Update Project',
+    toggle_on: 'Active',
+    toggle_off: 'Inactive',
+    nama_project_placeholder: 'Enter project name',
+    deskripsi_placeholder : 'Enter project description',
+    link_project_placeholder: 'Enter project link (Optional)',
+    link_github_placeholder: 'Enter GitHub link (Optional)',
+    link_video_placeholder: 'Enter video link (Optional)',
   },
   project_detail: {
     detail_project: 'Project Detail',
@@ -1536,6 +1556,7 @@ export const en = {
     no_projects_displayed: 'No projects to display.',
     add_project_to_start: 'Please add a new project to get started.',
     posted_by: 'Posted by',
+    oleh: 'by',
   },
   sertifikat: {
     sertifikat_title: 'My Certificates',

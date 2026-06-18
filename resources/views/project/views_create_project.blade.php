@@ -1,12 +1,14 @@
 @extends('Layout.Layout')
 @section('title', 'Tambah Project Baru')
 @section('content')
-    @php
+
+@php
         $currentUserData = Auth::check()
             ? Auth::user()->only(['id', 'nama_mahasiswa', 'photo_profile', 'email'])
             : null;
     @endphp
-    <div class="p-6 lg:p-8" id="project-create-container" data-current-user="{{ json_encode($currentUserData) }}" data-old-tasks="{{ json_encode(old('tasks', [])) }}" data-fetch-url="{{ route('project.create') }}">
+
+    <div class="p-6 lg:p-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" data-translate="tambah_project" data-translate-page="project_create"></h1>
         <p class="text-gray-600 dark:text-gray-200" data-translate="desc_create" data-translate-page="project_create"></p>
 
@@ -111,13 +113,8 @@
 
             <!-- User selection modal -->
             <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-
-                <!-- Overlay: klik overlay TIDAK close modal, supaya user bisa pilih role dulu -->
                 <div class="fixed inset-0 bg-black/40"></div>
-
-                <!-- Modal Box -->
                 <div class="relative w-full max-w-xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-                    <!-- Header -->
                     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100" data-translate="add_user" data-translate-page="dosen_add_pjt"></h2>
                         <button type="button" onclick="closeUserModal()"
@@ -128,18 +125,14 @@
                         </button>
                     </div>
 
-                    <!-- Main Content -->
                     <div class="flex-1 overflow-y-auto">
                         <div class="p-5 space-y-5">
-
-                            <!-- Filter -->
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <input id="modal-search" type="text"
                                     placeholder="Cari nama atau email..."
                                     data-translate-placeholder="search_name_placeholder"
                                     data-translate-page="dosen_add_pjt"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
-
                                 <select id="modal-angkatan"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                                     <option value="" data-translate="all_angkatan" data-translate-page="dosen_add_pjt"></option>
@@ -147,7 +140,6 @@
                                         <option value="{{ $angkatanItem->id }}">{{ $angkatanItem->nama_angkatan }}</option>
                                     @endforeach
                                 </select>
-
                                 <select id="modal-jurusan"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                                     <option value="" data-translate="all_jurusan" data-translate-page="dosen_add_pjt"></option>
@@ -155,7 +147,6 @@
                                         <option value="{{ $jurusanItem->id_jurusan }}">{{ $jurusanItem->nama_jurusan }}</option>
                                     @endforeach
                                 </select>
-
                                 <select id="modal-keahlian"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-white">
                                     <option value="" data-translate="all_keahlian" data-translate-page="dosen_add_pjt"></option>
@@ -165,7 +156,6 @@
                                 </select>
                             </div>
 
-                            <!-- User List Area -->
                             <div class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
                                 <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                                     <h3 data-translate="user_list_title" data-translate-page="project_create" class="font-medium text-gray-700 dark:text-white"></h3>
@@ -173,12 +163,10 @@
                                 <div id="modal-user-list" class="max-h-[320px] overflow-y-auto p-4 space-y-3 bg-white dark:bg-gray-900"></div>
                             </div>
 
-                            <!-- Pagination -->
                             <div id="modal-pagination" class="pt-2"></div>
                         </div>
                     </div>
 
-                    <!-- Footer -->
                     <div class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
                         <button type="button" onclick="cancelUserModal()"
                             data-translate="cancel" data-translate-page="dosen_add_pjt"
@@ -223,7 +211,6 @@
                 @enderror
             </div>
 
-            <!-- Link GitHub -->
             <div>
                 <label for="link_github" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="link_github_opsional" data-translate-page="project_create"></span>
@@ -236,7 +223,6 @@
                 @enderror
             </div>
 
-            <!-- Link Video -->
             <div>
                 <label for="link_video" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="link_video_opsional" data-translate-page="project_create"></span>
@@ -249,7 +235,6 @@
                 @enderror
             </div>
 
-            <!-- Tambah Tugas -->
             <div id="task-section">
                 <label data-translate="add_task_opt" data-translate-page="dosen_add_pjt"
                     class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
@@ -270,4 +255,23 @@
             </div>
         </form>
     </div>
+
+    {{-- Data container for JavaScript --}}
+    <div id="project-create-data"
+         data-current-user='@json($currentUserData)'
+         data-old-tasks='@json(old('tasks', []))'
+         data-route-create="{{ route('project.create') }}"
+         data-translate-page="project_create"
+         style="display:none;">
+    </div>
+
+    <!-- Page Info (akan dijalankan oleh app.js) -->
+    <script>
+        // Hanya untuk memicu showPageInfo, karena fungsi sudah di app.js
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof window.showPageInfo === 'function') {
+                window.showPageInfo("popup.user_create_project");
+            }
+        });
+    </script>
 @endsection

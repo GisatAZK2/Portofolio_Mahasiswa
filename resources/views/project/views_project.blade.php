@@ -35,9 +35,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($projects as $project)
                     @php
-                        $content = is_string($project->isi_content)
-                            ? json_decode($project->isi_content, true)
-                            : (array) $project->isi_content;
+                        $content = is_string($project->translated('isi_content'))
+                            ? json_decode($project->translated('isi_content'), true)
+                            : (array) $project->translated('isi_content');
 
                         $nama_project = $content['nama_project'] ?? 'Tanpa Judul';
                         $deskripsi = $content['deskripsi'] ?? null;

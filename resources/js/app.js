@@ -85,7 +85,6 @@ window.addEventListener('appinstalled', () => {
 
 
 window.Alpine = Alpine;
-Alpine.start();
 
 
 // Zoom logo image on click
@@ -2920,14 +2919,26 @@ document.addEventListener('DOMContentLoaded', function() {
    COMPONENT: SPLASH SCREEN
    ========================================== */
 (function() {
-    const SPLASH_KEY = 'splashShown';
-    const SPLASH_VERSION = '1.0.0';
-    const STORAGE_KEY = SPLASH_KEY + '_v' + SPLASH_VERSION;
-    const EXPIRE_KEY = SPLASH_KEY + '_expire';
-    
+    // Source-of-truth ada di SERVER (cookie 'splash_shown'), dicek di Layout.blade.php
+    // sebelum @include('components.splash'). Kalau cookie itu sudah ada, server tidak
+    // akan mengirim markup splash sama sekali -- jadi tidak ada flash di halaman berikutnya.
+    // JS di sini hanya menjalankan animasi untuk kunjungan pertama, lalu menulis cookie
+    // tersebut begitu splash selesai/dilewati, supaya request berikutnya tidak menampilkannya lagi.
+    const SPLASH_COOKIE = 'splash_shown';
+    const SPLASH_TTL_DAYS = 1;
+
+    function setSplashShownCookie() {
+        const expires = new Date(Date.now() + SPLASH_TTL_DAYS * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = `${SPLASH_COOKIE}=true; expires=${expires}; path=/; SameSite=Lax`;
+    }
+
+    function clearSplashShownCookie() {
+        document.cookie = `${SPLASH_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const splashRoot = document.getElementById('splash-screen-root');
-        if (!splashRoot) return;
+        if (!splashRoot) return; // Server sudah menentukan splash tidak perlu ditampilkan
 
         const doorLeft = document.getElementById('doorLeft');
         const doorRight = document.getElementById('doorRight');
@@ -2936,38 +2947,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const gradientOverlay = document.getElementById('gradientOverlay');
         const welcomeText = document.getElementById('welcomeText');
         const skipButton = document.getElementById('skipButton');
-        
+
         let isHiding = false;
         let hideTimer = null;
         let animationTimer = null;
-        
-        function setSplashExpire() {
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-            localStorage.setItem(EXPIRE_KEY, tomorrow.getTime().toString());
-            localStorage.setItem(STORAGE_KEY, 'true');
-        }
-        
-        function isSplashExpired() {
-            const expireTime = localStorage.getItem(EXPIRE_KEY);
-            if (!expireTime) return true;
-            
-            const now = new Date().getTime();
-            return now > parseInt(expireTime);
-        }
-        
+
         function hideSplash() {
             if (isHiding || !splashRoot) return;
             isHiding = true;
-            
+
             if (hideTimer) clearTimeout(hideTimer);
             if (animationTimer) clearTimeout(animationTimer);
-            
+
+            setSplashShownCookie();
+
             splashRoot.style.transition = 'opacity 0.5s ease-out';
             splashRoot.style.opacity = '0';
-            
+
             setTimeout(() => {
                 if (splashRoot && splashRoot.parentNode) {
                     splashRoot.remove();
@@ -2978,66 +2974,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.style.top = '';
             }, 500);
         }
-        
+
         function startAnimation() {
             if (doorLeft) doorLeft.classList.add('animate');
             if (doorRight) doorRight.classList.add('animate');
-            
+
             if (spinnerWrapper) spinnerWrapper.classList.add('hidden');
-            
+
             setTimeout(() => {
                 if (logoWrapper) logoWrapper.classList.add('visible');
             }, 500);
-            
+
             if (gradientOverlay) gradientOverlay.classList.add('animate');
-            
+
             setTimeout(() => {
                 if (welcomeText) welcomeText.classList.add('visible');
                 if (skipButton) skipButton.classList.add('visible');
             }, 700);
-            
+
             hideTimer = setTimeout(() => {
                 hideSplash();
             }, 4000);
         }
-        
+
         function initSplash() {
-            const hasShown = localStorage.getItem(STORAGE_KEY) === 'true';
-            const isExpired = isSplashExpired();
-            const urlParams = new URLSearchParams(window.location.search);
-            const skipSplash = urlParams.has('skip_splash');
-            
-            if ((hasShown && !isExpired) || skipSplash) {
-                if (splashRoot) {
-                    splashRoot.remove();
-                }
-                document.body.style.overflow = '';
-                document.body.style.position = '';
-                document.body.style.width = '';
-                document.body.style.top = '';
-                return;
-            }
-            
-            if (isExpired) {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(EXPIRE_KEY);
-            }
-            
             const scrollY = window.scrollY;
             document.body.style.overflow = 'hidden';
             document.body.style.position = 'fixed';
             document.body.style.width = '100%';
             document.body.style.top = `-${scrollY}px`;
-            
-            setSplashExpire();
-            
+
             if (typeof window.translations !== 'undefined' && typeof window.currentLang !== 'undefined') {
                 const splashPage = window.translations[window.currentLang]?.splash || {};
-                
+
                 const welcomeTitle = document.querySelector('.welcome-title');
                 const welcomeSubtitle = document.querySelector('.welcome-subtitle');
                 const skipBtn = document.querySelector('.skip-button');
-                
+
                 if (welcomeTitle && splashPage.splash_welcome) {
                     welcomeTitle.textContent = splashPage.splash_welcome;
                 }
@@ -3048,16 +3021,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     skipBtn.innerHTML = splashPage.splash_skip + ' →';
                 }
             }
-            
+
             animationTimer = setTimeout(() => {
                 startAnimation();
             }, 300);
-            
+
             if (skipButton) {
                 skipButton.addEventListener('click', (e) => {
                     e.preventDefault();
                     hideSplash();
-                    
+
                     const scrollY = document.body.style.top;
                     document.body.style.position = '';
                     document.body.style.top = '';
@@ -3066,11 +3039,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.scrollTo(0, parseInt(scrollY || '0') * -1);
                 });
             }
-            
+
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !isHiding) {
                     hideSplash();
-                    
+
                     const scrollY = document.body.style.top;
                     document.body.style.position = '';
                     document.body.style.top = '';
@@ -3080,12 +3053,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-        
+
         initSplash();
-        
+
         window.resetSplash = function() {
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.removeItem(EXPIRE_KEY);
+            clearSplashShownCookie();
             window.location.reload();
         };
     });
@@ -7701,3 +7673,1375 @@ function handlePaginationScroll() {
 }
 document.addEventListener('DOMContentLoaded', handlePaginationScroll);
 document.addEventListener('turbo:load', handlePaginationScroll);
+
+// ==========================================
+//   PROJECT EDIT PAGE
+// ==========================================
+(function() {
+    // ----- state -----
+    let allUsersMap = new Map();
+    let allUsersArray = [];
+    let pendingUsers = { owner: null, leader: null, members: [] };
+    let selectedUsers = { owner: null, leader: null, members: [] };
+    let taskIndex = 0;
+    let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+    let tempSelectedRoles = {};
+    let isCollaborativeMode = false;
+    let projectData = null;
+
+    // ----- helpers -----
+    function addUsersToMap(users) {
+        if (!Array.isArray(users)) return;
+        users.forEach(user => {
+            if (user && user.id && !allUsersMap.has(String(user.id))) {
+                allUsersMap.set(String(user.id), user);
+                allUsersArray.push(user);
+            }
+        });
+    }
+
+    function getUserById(id) {
+        const userId = String(id);
+        if (allUsersMap.has(userId)) {
+            return allUsersMap.get(userId);
+        }
+        return null;
+    }
+
+    // ----- pending / selected sync -----
+    function syncPendingFromSelected() {
+        pendingUsers = {
+            owner: selectedUsers.owner ? { ...selectedUsers.owner } : null,
+            leader: selectedUsers.leader ? { ...selectedUsers.leader } : null,
+            members: selectedUsers.members.map(m => ({ ...m }))
+        };
+    }
+
+    function applyPendingToSelected() {
+        selectedUsers.owner = pendingUsers.owner ? { ...pendingUsers.owner } : null;
+        selectedUsers.leader = pendingUsers.leader ? { ...pendingUsers.leader } : null;
+        selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
+    }
+
+    function saveCurrentModalRoles() {
+        tempSelectedRoles = {};
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId = select.dataset.userId;
+            if (userId && select.value) {
+                tempSelectedRoles[userId] = select.value;
+            }
+        });
+    }
+
+    function restoreModalRoles() {
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId = select.dataset.userId;
+            if (userId && tempSelectedRoles[userId]) {
+                select.value = tempSelectedRoles[userId];
+            }
+        });
+        refreshLeaderOptions();
+    }
+
+    // ----- task functions -----
+    function getAllowedTaskUsers(additionalUsers = []) {
+        const users = [];
+        const added = new Set();
+        const add = user => {
+            if (!user || added.has(String(user.id))) return;
+            added.add(String(user.id));
+            users.push({ id: user.id, name: user.nama_mahasiswa });
+        };
+
+        add(selectedUsers.owner);
+        add(selectedUsers.leader);
+        selectedUsers.members.forEach(add);
+        additionalUsers.forEach(add);
+        return users;
+    }
+
+    function renderTaskUserOptions(selectedId = '') {
+        const additionalUsers = [];
+        let fallbackName = null;
+
+        if (selectedId) {
+            const selectedTaskUser = getUserById(selectedId);
+            if (selectedTaskUser) {
+                additionalUsers.push(selectedTaskUser);
+            } else {
+                const taskData = (projectData?.existingTasks || []).find(t => String(t.user_id) === String(selectedId));
+                if (taskData && taskData.user_name) {
+                    fallbackName = taskData.user_name;
+                }
+            }
+        }
+
+        const users = getAllowedTaskUsers(additionalUsers);
+        let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
+        users.forEach(user => {
+            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+        });
+
+        if (selectedId && fallbackName && !users.some(u => String(u.id) === String(selectedId))) {
+            html += `<option value="${selectedId}" selected>${fallbackName}</option>`;
+        }
+
+        return html;
+    }
+
+    function addTaskRow(taskData = null) {
+        const container = document.getElementById('tasks-container');
+        if (!container) return;
+
+        const index = taskIndex++;
+        const userId = taskData?.user_id ?? '';
+        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+        const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+
+        if (!isCollaborativeMode) {
+            const currentUser = projectData?.currentUser || { id: '', nama_mahasiswa: 'Unknown' };
+            taskItem.innerHTML = `
+                ${hiddenId}
+                <input type="hidden" name="tasks[${index}][user_id]" value="${currentUser.id}">
+                <div class="grid gap-4 md:grid-cols-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <input type="text" value="${currentUser.nama_mahasiswa} (Owner)"
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                               readonly disabled>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                               placeholder="Deskripsikan tugas...">
+                    </div>
+                    <button type="button" onclick="window.removeTaskRow(this)"
+                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                </div>
+            `;
+        } else {
+            taskItem.innerHTML = `
+                ${hiddenId}
+                <div class="grid gap-4 md:grid-cols-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                            ${renderTaskUserOptions(userId)}
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                               placeholder="Deskripsikan tugas...">
+                    </div>
+                    <button type="button" onclick="window.removeTaskRow(this)"
+                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                </div>
+            `;
+        }
+
+        container.appendChild(taskItem);
+
+        if (isCollaborativeMode) {
+            const select = taskItem.querySelector('.task-user-select');
+            if (select) select.addEventListener('change', () => updateTaskUserOptions());
+        }
+    }
+
+    function removeTaskRow(button) {
+        const taskItem = button.closest('.task-item');
+        if (taskItem) taskItem.remove();
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function updateTaskUserOptions() {
+        if (!isCollaborativeMode) return;
+        setTimeout(() => {
+            document.querySelectorAll('.task-user-select').forEach(select => {
+                const currentValue = select.value;
+                const newOptions = renderTaskUserOptions(currentValue);
+                select.innerHTML = newOptions;
+                if (currentValue) select.value = currentValue;
+            });
+        }, 50);
+    }
+
+    function saveCurrentTasks() {
+        const tasks = [];
+        document.querySelectorAll('.task-item').forEach(taskItem => {
+            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+            const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
+            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+            let userId = null;
+            if (userIdInput) userId = userIdInput.value;
+            const taskName = taskNameInput ? taskNameInput.value : '';
+            const taskId = taskIdInput ? taskIdInput.value : null;
+            if (taskName) {
+                tasks.push({
+                    id: taskId,
+                    user_id: userId || (projectData?.currentUser?.id || ''),
+                    name_task: taskName
+                });
+            }
+        });
+        return tasks;
+    }
+
+    function restoreTasks(tasks) {
+        const container = document.getElementById('tasks-container');
+        if (!container) return;
+        container.innerHTML = '';
+        taskIndex = 0;
+        if (tasks && tasks.length > 0) {
+            tasks.forEach(task => {
+                if (task.name_task) addTaskRow(task);
+            });
+        }
+        if (container.children.length === 0) addTaskRow();
+        if (isCollaborativeMode) setTimeout(() => updateTaskUserOptions(), 100);
+    }
+
+    // ----- modal / ajax -----
+    function fetchUsers(page = 1) {
+        if (!projectData) return;
+        const params = new URLSearchParams({
+            id: projectData.projectId,
+            page: page,
+            search: currentModalFilters.search,
+            angkatan: currentModalFilters.angkatan,
+            jurusan: currentModalFilters.jurusan,
+            keahlian: currentModalFilters.keahlian
+        });
+
+        const url = `/project/edit/${projectData.projectId}?${params}`;
+        fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.userListHtml;
+
+            const userElements = tempDiv.querySelectorAll('[data-user-id]');
+            const usersInPage = [];
+            userElements.forEach(el => {
+                const userId = el.getAttribute('data-user-id');
+                const nameEl = el.querySelector('.font-medium');
+                const emailEl = el.querySelector('.text-sm.text-gray-500');
+                const imgEl = el.querySelector('img');
+                if (userId && nameEl) {
+                    const user = {
+                        id: parseInt(userId),
+                        nama_mahasiswa: nameEl.textContent.trim(),
+                        email: emailEl ? emailEl.textContent.trim() : '',
+                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                    };
+                    usersInPage.push(user);
+                }
+            });
+
+            addUsersToMap(usersInPage);
+
+            document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+
+            attachRoleSelectEvents();
+            restoreModalRoles();
+
+            document.querySelectorAll('.user-role-select').forEach(select => {
+                const userId = select.dataset.userId;
+                if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+                    select.value = 'leader';
+                } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
+                    select.value = 'member';
+                }
+            });
+
+            refreshLeaderOptions();
+            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+        })
+        .catch(error => console.error('Error fetching users:', error));
+    }
+
+    function attachRoleSelectEvents() {
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId = select.getAttribute('data-user-id');
+            if (userId) {
+                select.removeEventListener('change', select._handler);
+                const handler = function() {
+                    updateUserRole(this, userId, this.value);
+                    saveCurrentModalRoles();
+                };
+                select.addEventListener('change', handler);
+                select._handler = handler;
+            }
+        });
+    }
+
+    function updateUserRole(selectElement, userId, role) {
+        const user = getUserById(userId);
+        if (!user) {
+            console.error('User not found:', userId);
+            return;
+        }
+
+        const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
+        const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
+
+        if (isOwner && role === 'member') {
+            alert('Owner tidak bisa menjadi member.');
+            selectElement.value = isCurrentLeader ? 'leader' : '';
+            refreshLeaderOptions();
+            return;
+        }
+
+        if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
+            const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
+            if (!confirmChange) {
+                selectElement.value = isCurrentLeader ? 'leader' : '';
+                refreshLeaderOptions();
+                return;
+            }
+            pendingUsers.leader = null;
+        }
+
+        if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+            pendingUsers.leader = null;
+        }
+        pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
+
+        if (role === 'leader') {
+            pendingUsers.leader = user;
+        } else if (role === 'member') {
+            if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
+                pendingUsers.members.push(user);
+            }
+        }
+
+        refreshLeaderOptions();
+    }
+
+    function refreshLeaderOptions() {
+        const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
+        document.querySelectorAll('.user-role-select').forEach(select => {
+            const userId = select.dataset.userId;
+            const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
+            const leaderOption = select.querySelector('option[value="leader"]');
+            if (!leaderOption) return;
+            if (isOwner) {
+                select.disabled = true;
+                select.value = 'leader';
+                return;
+            }
+            select.disabled = false;
+            if (leaderId && String(userId) !== String(leaderId)) {
+                leaderOption.disabled = true;
+                leaderOption.textContent = 'Leader (Sudah Dipilih)';
+                if (select.value === 'leader') {
+                    select.value = '';
+                }
+            } else {
+                leaderOption.disabled = false;
+                leaderOption.textContent = 'Leader';
+            }
+        });
+    }
+
+    // ----- modal open/close -----
+    function openUserModal() {
+        const toggle = document.getElementById('project-collaborative-toggle');
+        if (!toggle || !toggle.checked) {
+            alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
+            return;
+        }
+        syncPendingFromSelected();
+        document.getElementById('userModal').classList.remove('hidden');
+        fetchUsers(1);
+    }
+
+    function closeUserModal() {
+        document.getElementById('userModal').classList.add('hidden');
+    }
+
+    function confirmUserSelection() {
+        applyPendingToSelected();
+        updateFormInputs();
+        renderSelectedUsers();
+        // Update tasks without losing data
+        const currentTasks = saveCurrentTasks();
+        isCollaborativeMode = true;
+        restoreTasks(currentTasks);
+        closeUserModal();
+    }
+
+    // ----- form / ui -----
+    function updateFormInputs() {
+        const ownerId = selectedUsers.owner?.id || (projectData?.currentUser?.id || '');
+        document.getElementById('selected-owner-id').value = ownerId;
+        document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+
+        const container = document.getElementById('members-hidden-container');
+        if (!container) return;
+        container.innerHTML = '';
+        selectedUsers.members.forEach(member => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'members[]';
+            input.value = member.id;
+            container.appendChild(input);
+        });
+    }
+
+    function renderSelectedUsers() {
+        const container = document.getElementById('selected-users-container');
+        const noMsg = document.getElementById('no-users-message');
+        if (!container || !noMsg) return;
+
+        const selected = [];
+        if (selectedUsers.owner) {
+            const isOwnerAsLeader = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id;
+            const role = isOwnerAsLeader ? 'Owner & Leader' : 'Owner';
+            selected.push({ ...selectedUsers.owner, role, isOwner: true });
+        } else if (projectData?.currentUser) {
+            selected.push({ ...projectData.currentUser, role: 'Owner', isOwner: true });
+        }
+
+        if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+            selected.push({ ...selectedUsers.leader, role: 'Leader', isOwner: false });
+        }
+
+        selectedUsers.members.forEach(member => {
+            selected.push({ ...member, role: 'Member', isOwner: false });
+        });
+
+        if (selected.length === 0) {
+            container.innerHTML = '';
+            noMsg.classList.remove('hidden');
+            return;
+        }
+
+        noMsg.classList.add('hidden');
+        container.innerHTML = selected.map(user => {
+            const styles = {
+                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
+
+            const showRemoveButton = user.role !== 'Owner' && user.role !== 'Owner & Leader';
+            const photo = user.photo_profile ? `/storage/${user.photo_profile}` : null;
+            const initial = (user.nama_mahasiswa || '?').charAt(0).toUpperCase();
+
+            return `
+                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                    <div class="flex items-center gap-3">
+                        ${photo ?
+                            `<img src="${photo}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
+                            `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                <span class="font-semibold text-current">${initial}</span>
+                            </div>`
+                        }
+                        <div>
+                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa || 'Unknown'}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
+                        </div>
+                    </div>
+                    ${showRemoveButton ? `
+                    <button type="button" onclick="window.removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function removeUser(userId) {
+        if (selectedUsers.owner && String(selectedUsers.owner.id) === String(userId)) {
+            alert('Owner tidak dapat dihapus dari project.');
+            return;
+        }
+        if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
+            selectedUsers.leader = null;
+        }
+        selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
+        updateFormInputs();
+        renderSelectedUsers();
+        updateTaskUserOptions();
+    }
+
+    function loadSelectedUsersFromForm() {
+        if (!projectData) return;
+        selectedUsers.owner = projectData.currentUser || null;
+
+        const leaderId = projectData.leaderId;
+        if (leaderId && String(leaderId) !== String(projectData.currentUser?.id)) {
+            let leader = getUserById(leaderId);
+            if (!leader && projectData.existingTasks) {
+                const taskUser = projectData.existingTasks.find(t => String(t.user_id) === String(leaderId));
+                if (taskUser && taskUser.user_name) {
+                    leader = { id: leaderId, nama_mahasiswa: taskUser.user_name };
+                }
+            }
+            selectedUsers.leader = leader || null;
+        } else {
+            selectedUsers.leader = null;
+        }
+
+        selectedUsers.members = [];
+        const memberIds = projectData.memberIds || [];
+        memberIds.forEach(memberId => {
+            if (String(memberId) === String(projectData.currentUser?.id)) return;
+            if (selectedUsers.leader && String(memberId) === String(selectedUsers.leader.id)) return;
+            let member = getUserById(memberId);
+            if (!member && projectData.existingTasks) {
+                const taskUser = projectData.existingTasks.find(t => String(t.user_id) === String(memberId));
+                if (taskUser && taskUser.user_name) {
+                    member = { id: memberId, nama_mahasiswa: taskUser.user_name };
+                }
+            }
+            if (member) selectedUsers.members.push(member);
+        });
+
+        syncPendingFromSelected();
+    }
+
+    // ----- toggle collaborative mode -----
+    function toggleUserSelectionSection() {
+        const toggle = document.getElementById('project-collaborative-toggle');
+        const userSelectionSection = document.getElementById('user-selection-section');
+        const taskSection = document.getElementById('task-section');
+
+        if (toggle && userSelectionSection) {
+            if (toggle.checked) {
+                if (!isCollaborativeMode) {
+                    const currentTasks = saveCurrentTasks();
+                    isCollaborativeMode = true;
+                    userSelectionSection.style.display = 'block';
+                    if (taskSection) taskSection.classList.remove('hidden');
+                    restoreTasks(currentTasks);
+                } else {
+                    userSelectionSection.style.display = 'block';
+                    if (taskSection) taskSection.classList.remove('hidden');
+                }
+            } else {
+                if (isCollaborativeMode) {
+                    const currentTasks = saveCurrentTasks();
+                    isCollaborativeMode = false;
+                    userSelectionSection.style.display = 'none';
+                    if (taskSection) taskSection.classList.remove('hidden');
+
+                    selectedUsers.owner = projectData?.currentUser || null;
+                    selectedUsers.leader = null;
+                    selectedUsers.members = [];
+                    updateFormInputs();
+                    renderSelectedUsers();
+                    restoreTasks(currentTasks);
+                } else {
+                    userSelectionSection.style.display = 'none';
+                    if (taskSection) taskSection.classList.remove('hidden');
+                }
+            }
+        }
+    }
+
+    // ----- date validation -----
+    function setupDateValidation() {
+        const tanggalMulaiInput = document.getElementById('tanggal_mulai');
+        const tanggalAkhirInput = document.getElementById('tanggal_akhir');
+        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
+
+        if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
+
+        tanggalMulaiInput.addEventListener('change', function() {
+            if (this.value) {
+                tanggalAkhirInput.min = this.value;
+                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
+                    tanggalAkhirInput.value = '';
+                }
+            } else {
+                tanggalAkhirInput.min = '';
+            }
+        });
+
+        tanggalAkhirInput.addEventListener('change', function() {
+            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
+                this.value = '';
+                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
+            }
+        });
+    }
+
+    // ----- modal filters -----
+    function setupModalFilters() {
+        const searchInput = document.getElementById('modal-search');
+        const angkatanSelect = document.getElementById('modal-angkatan');
+        const jurusanSelect = document.getElementById('modal-jurusan');
+        const keahlianSelect = document.getElementById('modal-keahlian');
+
+        const fetchWithSave = (page) => {
+            saveCurrentModalRoles();
+            fetchUsers(page);
+        };
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                currentModalFilters.search = this.value;
+                fetchWithSave(1);
+            });
+        }
+        if (angkatanSelect) {
+            angkatanSelect.addEventListener('change', function() {
+                currentModalFilters.angkatan = this.value;
+                fetchWithSave(1);
+            });
+        }
+        if (jurusanSelect) {
+            jurusanSelect.addEventListener('change', function() {
+                currentModalFilters.jurusan = this.value;
+                fetchWithSave(1);
+            });
+        }
+        if (keahlianSelect) {
+            keahlianSelect.addEventListener('change', function() {
+                currentModalFilters.keahlian = this.value;
+                fetchWithSave(1);
+            });
+        }
+    }
+
+    // ----- pagination (delegated) -----
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('#modal-pagination a');
+        if (link) {
+            e.preventDefault();
+            const url = new URL(link.href);
+            const page = url.searchParams.get('page') || 1;
+            saveCurrentModalRoles();
+            fetchUsers(page);
+        }
+    });
+
+    // ----- initialize tasks -----
+    function initializeTaskRows() {
+        const container = document.getElementById('tasks-container');
+        if (!container) return;
+        container.innerHTML = '';
+        taskIndex = 0;
+
+        const tasks = projectData?.existingTasks || [];
+        if (tasks.length) {
+            tasks.forEach(task => addTaskRow(task));
+        }
+        if (container.children.length === 0) addTaskRow();
+
+        if (isCollaborativeMode) setTimeout(() => updateTaskUserOptions(), 100);
+    }
+
+    // ----- expose to window (for onclick) -----
+    window.openUserModal = openUserModal;
+    window.closeUserModal = closeUserModal;
+    window.confirmUserSelection = confirmUserSelection;
+    window.addTaskRow = addTaskRow;
+    window.removeTaskRow = removeTaskRow;
+    window.updateUserRole = updateUserRole;
+    window.fetchUsers = fetchUsers;
+    window.refreshLeaderOptions = refreshLeaderOptions;
+    window.applyPendingToSelected = applyPendingToSelected;
+    window.syncPendingFromSelected = syncPendingFromSelected;
+    window.saveCurrentModalRoles = saveCurrentModalRoles;
+    window.restoreModalRoles = restoreModalRoles;
+    window.getUserById = getUserById;
+    window.addUsersToMap = addUsersToMap;
+    window.renderSelectedUsers = renderSelectedUsers;
+    window.updateFormInputs = updateFormInputs;
+    window.removeUser = removeUser;
+    window.loadSelectedUsersFromForm = loadSelectedUsersFromForm;
+    window.toggleUserSelectionSection = toggleUserSelectionSection;
+    window.setupDateValidation = setupDateValidation;
+    window.setupModalFilters = setupModalFilters;
+    window.initializeTaskRows = initializeTaskRows;
+    window.saveCurrentTasks = saveCurrentTasks;
+    window.restoreTasks = restoreTasks;
+    window.updateTaskUserOptions = updateTaskUserOptions;
+    window.renderTaskUserOptions = renderTaskUserOptions;
+    window.getAllowedTaskUsers = getAllowedTaskUsers;
+    window.attachRoleSelectEvents = attachRoleSelectEvents;
+
+    // ----- auto-init when DOM ready -----
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('project-edit-data');
+        if (!container) return;
+
+        projectData = {
+            users: JSON.parse(container.dataset.users || '[]'),
+            currentUser: JSON.parse(container.dataset.currentUser || 'null'),
+            existingTasks: JSON.parse(container.dataset.existingTasks || '[]'),
+            projectId: container.dataset.projectId,
+            leaderId: container.dataset.leaderId || null,
+            memberIds: JSON.parse(container.dataset.memberIds || '[]')
+        };
+
+        addUsersToMap(projectData.users);
+        if (projectData.currentUser) addUsersToMap([projectData.currentUser]);
+
+        loadSelectedUsersFromForm();
+        renderSelectedUsers();
+
+        const toggle = document.getElementById('project-collaborative-toggle');
+        const label = document.getElementById('toggle-label');
+        if (toggle && label) {
+            const hasMembers = selectedUsers.members.length > 0 || selectedUsers.leader;
+            toggle.checked = hasMembers;
+            label.textContent = hasMembers ? 'Aktif' : 'Nonaktif';
+            isCollaborativeMode = hasMembers;
+            toggleUserSelectionSection();
+            initializeTaskRows();
+            toggle.addEventListener('change', function() {
+                label.textContent = this.checked ? 'Aktif' : 'Nonaktif';
+                toggleUserSelectionSection();
+            });
+        } else {
+            initializeTaskRows();
+        }
+
+        setupDateValidation();
+        setupModalFilters();
+    });
+})();
+
+// ==========================================
+//   PROJECT CREATE PAGE (Direct)
+//   Dijalankan jika elemen #project-create-data ada
+// ==========================================
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const dataEl = document.getElementById('project-create-data');
+        if (!dataEl) return;
+
+        // Ambil data dari dataset
+        const currentUser = JSON.parse(dataEl.dataset.currentUser || 'null');
+        const oldTasks = JSON.parse(dataEl.dataset.oldTasks || '[]');
+        const routeCreate = dataEl.dataset.routeCreate || '';
+
+        // ------------------------------------------------------------------
+        // Semua fungsi dan state di-bungkus dalam scope agar tidak global
+        // ------------------------------------------------------------------
+        let allUsers = [];
+        let allUsersMap = new Map();
+        let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
+        let currentPage = 1;
+        let selectedUsers = { owner: null, leader: null, members: [] };
+        let pendingUsers = { owner: null, leader: null, members: [] };
+        let taskIndex = 0;
+        const userSelectionStorageKey = 'project_selected_users';
+
+        // ----- Storage helpers -----
+        function saveSelectedUsersToStorage() {
+            localStorage.setItem(userSelectionStorageKey, JSON.stringify({
+                owner: selectedUsers.owner,
+                leader: selectedUsers.leader,
+                members: selectedUsers.members
+            }));
+        }
+
+        function restoreSelectedUsersFromStorage() {
+            const stored = localStorage.getItem(userSelectionStorageKey);
+            if (!stored) return false;
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.owner) selectedUsers.owner = parsed.owner;
+                if (parsed.leader) selectedUsers.leader = parsed.leader;
+                if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
+                return true;
+            } catch (e) {
+                console.warn('Unable to restore selected users:', e);
+                return false;
+            }
+        }
+
+        // ----- allUsers helpers -----
+        function addUsersToAllUsers(usersArray) {
+            if (!Array.isArray(usersArray)) return;
+            usersArray.forEach(user => {
+                if (!allUsersMap.has(String(user.id))) {
+                    allUsersMap.set(String(user.id), user);
+                    allUsers.push(user);
+                }
+            });
+        }
+
+        function getUserById(id) {
+            const userId = String(id);
+            return allUsersMap.has(userId) ? allUsersMap.get(userId) : null;
+        }
+
+        // ----- pendingUsers helpers -----
+        function syncPendingFromSelected() {
+            pendingUsers = {
+                owner: selectedUsers.owner ? { ...selectedUsers.owner } : null,
+                leader: selectedUsers.leader ? { ...selectedUsers.leader } : null,
+                members: selectedUsers.members.map(m => ({ ...m }))
+            };
+        }
+
+        function applyPendingToSelected() {
+            selectedUsers.owner = pendingUsers.owner ? { ...pendingUsers.owner } : null;
+            selectedUsers.leader = pendingUsers.leader ? { ...pendingUsers.leader } : null;
+            selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
+        }
+
+        function discardPending() {
+            pendingUsers = { owner: null, leader: null, members: [] };
+        }
+
+        // ----- Modal open/close -----
+        window.openUserModal = function() {
+            const toggle = document.getElementById('project-collaborative-toggle');
+            if (!toggle || !toggle.checked) {
+                alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
+                return;
+            }
+            syncPendingFromSelected();
+            document.getElementById('userModal').classList.remove('hidden');
+            fetchUsers(1);
+        };
+
+        window.closeUserModal = function() {
+            document.getElementById('userModal').classList.add('hidden');
+            discardPending();
+        };
+
+        window.cancelUserModal = function() {
+            discardPending();
+            document.getElementById('userModal').classList.add('hidden');
+        };
+
+        window.confirmUserSelection = function() {
+            applyPendingToSelected();
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskSectionVisibility();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
+            document.getElementById('userModal').classList.add('hidden');
+            discardPending();
+        };
+
+        // ----- Fetch users (AJAX) -----
+        function fetchUsers(page = 1) {
+            currentPage = page;
+            const params = new URLSearchParams({
+                page: page,
+                search: currentModalFilters.search,
+                angkatan: currentModalFilters.angkatan,
+                jurusan: currentModalFilters.jurusan,
+                keahlian: currentModalFilters.keahlian
+            });
+
+            fetch(`${routeCreate}?${params}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data.userListHtml;
+                const userElements = tempDiv.querySelectorAll('[data-user-id]');
+                const usersInPage = [];
+                userElements.forEach(el => {
+                    const userId = el.getAttribute('data-user-id');
+                    const nameEl = el.querySelector('.font-medium');
+                    const emailEl = el.querySelector('.text-sm.text-gray-500');
+                    const imgEl = el.querySelector('img');
+                    if (userId && nameEl) {
+                        usersInPage.push({
+                            id: parseInt(userId),
+                            nama_mahasiswa: nameEl.textContent.trim(),
+                            email: emailEl ? emailEl.textContent.trim() : '',
+                            photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                        });
+                    }
+                });
+                addUsersToAllUsers(usersInPage);
+                renderUserListWithRoles(data.userListHtml);
+                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+                refreshRoleSelections();
+                if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+            });
+        }
+
+        function renderUserListWithRoles(html) {
+            const container = document.getElementById('modal-user-list');
+            container.innerHTML = html;
+            document.querySelectorAll('.user-role-select').forEach(select => {
+                const userId = String(select.dataset.userId);
+                const user = getUserById(userId);
+                if (user) {
+                    const userDiv = select.closest('[data-user-id]');
+                    if (userDiv) {
+                        const nameDiv = userDiv.querySelector('.font-medium');
+                        if (nameDiv && nameDiv.textContent !== user.nama_mahasiswa) {
+                            nameDiv.textContent = user.nama_mahasiswa;
+                        }
+                    }
+                }
+            });
+        }
+
+        // ----- Role assignment -----
+        window.updateUserRole = function(selectElement, userId, role) {
+            const user = getUserById(userId);
+            if (!user) {
+                console.error('User not found:', userId);
+                return;
+            }
+            const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
+            const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
+
+            if (isOwner && role === 'member') {
+                alert('Owner tidak bisa menjadi member.');
+                selectElement.value = isCurrentLeader ? 'leader' : '';
+                refreshRoleSelections();
+                return;
+            }
+
+            if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
+                if (!confirm(`Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`)) {
+                    selectElement.value = isCurrentLeader ? 'leader' : '';
+                    refreshRoleSelections();
+                    return;
+                }
+                pendingUsers.leader = null;
+            }
+
+            if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+                pendingUsers.leader = null;
+            }
+            pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
+
+            if (role === 'leader') {
+                pendingUsers.leader = user;
+            } else if (role === 'member') {
+                if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
+                    pendingUsers.members.push(user);
+                }
+            }
+            refreshRoleSelections();
+        };
+
+        function refreshRoleSelections() {
+            const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
+            const ownerId = pendingUsers.owner ? String(pendingUsers.owner.id) : null;
+
+            document.querySelectorAll('.user-role-select').forEach(select => {
+                const userId = String(select.dataset.userId);
+                const isOwner = ownerId === userId;
+                const isLeader = leaderId === userId;
+                const isMember = pendingUsers.members.some(m => String(m.id) === userId);
+
+                if (isLeader) {
+                    select.value = 'leader';
+                } else if (isMember) {
+                    select.value = 'member';
+                } else {
+                    select.value = '';
+                }
+
+                const leaderOption = select.querySelector('option[value="leader"]');
+                const memberOption = select.querySelector('option[value="member"]');
+
+                if (leaderOption) {
+                    leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
+                    leaderOption.title = leaderOption.disabled ? 'Leader sudah dipilih' : '';
+                }
+                if (memberOption) {
+                    memberOption.disabled = false;
+                }
+                select.disabled = false;
+            });
+        }
+
+        // ----- Form inputs & rendering -----
+        function updateSelectedUsersBadge() {
+            const badge = document.getElementById('selected-users-badge');
+            if (!badge) return;
+            let count = 0;
+            if (selectedUsers.owner) count++;
+            if (selectedUsers.leader) count++;
+            count += selectedUsers.members.length;
+            badge.innerHTML = count === 0
+                ? ''
+                : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
+        }
+
+        function updateTaskSectionVisibility() {
+            const taskSection = document.getElementById('task-section');
+            if (!taskSection) return;
+            const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
+            if (hasUsers) {
+                taskSection.classList.remove('hidden');
+            } else {
+                taskSection.classList.add('hidden');
+                const container = document.getElementById('tasks-container');
+                if (container) { container.innerHTML = ''; taskIndex = 0; }
+            }
+        }
+
+        function updateFormInputs() {
+            document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
+            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
+            document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
+
+            const memberInputs = document.getElementById('selected-members-inputs');
+            if (memberInputs) {
+                memberInputs.innerHTML = selectedUsers.members
+                    .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
+                    .join('');
+            }
+        }
+
+        function renderSelectedUsers() {
+            const container = document.getElementById('selected-users-container');
+            const noUsersMsg = document.getElementById('no-users-message');
+            if (!container || !noUsersMsg) return;
+
+            const selected = [];
+            if (selectedUsers.owner) {
+                const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id ? 'Owner & Leader' : 'Owner';
+                selected.push({ ...selectedUsers.owner, role });
+            }
+            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
+                selected.push({ ...selectedUsers.leader, role: 'Leader' });
+            }
+            selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
+
+            if (!selected.length) {
+                container.innerHTML = '';
+                noUsersMsg.classList.remove('hidden');
+                return;
+            }
+
+            noUsersMsg.classList.add('hidden');
+            container.innerHTML = selected.map(user => {
+                const styles = {
+                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
+
+                return `
+                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                        <div class="flex items-center gap-3">
+                            ${user.photo_profile
+                                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                                </div>`
+                            }
+                            <div>
+                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            ${user.role !== 'Owner' ? `
+                            <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteTasksForUser(userId) {
+            const userIdStr = String(userId);
+            document.querySelectorAll('.task-item').forEach(taskItem => {
+                const select = taskItem.querySelector('.task-user-select');
+                if (select && String(select.value) === userIdStr) taskItem.remove();
+            });
+            if (!document.querySelectorAll('.task-item').length) addTaskRow();
+        }
+
+        window.removeUser = function(userId) {
+            deleteTasksForUser(userId);
+            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
+            selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
+            updateFormInputs();
+            renderSelectedUsers();
+            updateTaskUserOptions();
+            updateSelectedUsersBadge();
+            saveSelectedUsersToStorage();
+        };
+
+        window.editUser = function(userId) {
+            window.openUserModal();
+            setTimeout(() => {
+                const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
+                if (userElement) {
+                    userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    userElement.style.backgroundColor = '#fef3c7';
+                    setTimeout(() => userElement.style.backgroundColor = '', 2000);
+                }
+            }, 500);
+        };
+
+        // ----- Task helpers -----
+        function getAllowedTaskUsers() {
+            const users = [];
+            const added = new Set();
+            const add = user => {
+                if (!user || added.has(user.id)) return;
+                added.add(user.id);
+                users.push({ id: user.id, name: user.nama_mahasiswa });
+            };
+            add(selectedUsers.owner);
+            add(selectedUsers.leader);
+            selectedUsers.members.forEach(add);
+            return users;
+        }
+
+        function renderTaskUserOptions(selectedId = '') {
+            const users = getAllowedTaskUsers();
+            let html = '<option value=""> Pilih Penanggung Jawab </option>';
+            users.forEach(user => {
+                html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+            });
+            return html;
+        }
+
+        window.addTaskRow = function(taskData = null) {
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+            const index = taskIndex++;
+            const userId = taskData?.user_id ?? '';
+            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+            taskItem.innerHTML = `
+                ${hiddenId}
+                <div class="grid gap-4 md:grid-cols-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                            ${renderTaskUserOptions(userId)}
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                            class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                            placeholder="Deskripsikan tugas...">
+                    </div>
+                    <button type="button" onclick="removeTaskRow(this)"
+                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+                </div>
+            `;
+            container.appendChild(taskItem);
+            taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
+        };
+
+        window.removeTaskRow = function(button) {
+            button.closest('.task-item')?.remove();
+            if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
+        };
+
+        function cleanupInvalidTaskRows() {
+            const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
+            document.querySelectorAll('.task-item').forEach(taskItem => {
+                const select = taskItem.querySelector('.task-user-select');
+                if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
+            });
+            if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
+        }
+
+        function updateTaskUserOptions() {
+            document.querySelectorAll('.task-user-select').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = renderTaskUserOptions(currentValue);
+                if (currentValue) select.value = currentValue;
+            });
+            cleanupInvalidTaskRows();
+        }
+
+        function initializeTaskRows(existingTasks = []) {
+            const container = document.getElementById('tasks-container');
+            if (!container) return;
+            container.innerHTML = '';
+            taskIndex = 0;
+            if (Array.isArray(existingTasks) && existingTasks.length) {
+                existingTasks.forEach(task => { if (task.user_id || task.name_task) window.addTaskRow(task); });
+            } else {
+                window.addTaskRow();
+            }
+            updateTaskUserOptions();
+        }
+
+        // ----- Modal filters -----
+        function setupModalFilters() {
+            document.getElementById('modal-search')?.addEventListener('input', function() {
+                currentModalFilters.search = this.value;
+                fetchUsers(1);
+            });
+            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
+                currentModalFilters.angkatan = this.value;
+                fetchUsers(1);
+            });
+            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
+                currentModalFilters.jurusan = this.value;
+                fetchUsers(1);
+            });
+            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
+                currentModalFilters.keahlian = this.value;
+                fetchUsers(1);
+            });
+        }
+
+        // ----- Pagination click (delegated) -----
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('#modal-pagination a');
+            if (link) {
+                e.preventDefault();
+                const url = link.getAttribute('href');
+                if (!url) return;
+                const page = new URL(url).searchParams.get('page') || 1;
+                fetchUsers(page);
+            }
+        });
+
+        // ----- Collaborative toggle -----
+        function toggleUserSelectionSection() {
+            const toggle = document.getElementById('project-collaborative-toggle');
+            const userSelectionSection = document.getElementById('user-selection-section');
+
+            if (!toggle || !userSelectionSection) return;
+
+            if (toggle.checked) {
+                userSelectionSection.style.display = 'block';
+                if (
+                    selectedUsers.leader &&
+                    selectedUsers.owner &&
+                    String(selectedUsers.leader.id) === String(selectedUsers.owner.id) &&
+                    selectedUsers.members.length === 0
+                ) {
+                    selectedUsers.leader = null;
+                    updateFormInputs();
+                    renderSelectedUsers();
+                    updateSelectedUsersBadge();
+                    saveSelectedUsersToStorage();
+                }
+            } else {
+                userSelectionSection.style.display = 'none';
+                selectedUsers.owner = currentUser;
+                selectedUsers.leader = currentUser;
+                selectedUsers.members = [];
+                updateFormInputs();
+                renderSelectedUsers();
+                updateTaskUserOptions();
+                updateSelectedUsersBadge();
+                saveSelectedUsersToStorage();
+            }
+        }
+
+        // ----- Date validation -----
+        function setupDateValidation() {
+            const tanggalMulaiInput = document.getElementById('tanggal_mulai');
+            const tanggalAkhirInput = document.getElementById('tanggal_akhir');
+            if (!tanggalMulaiInput || !tanggalAkhirInput) return;
+
+            if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
+
+            tanggalMulaiInput.addEventListener('change', function() {
+                if (this.value) {
+                    tanggalAkhirInput.min = this.value;
+                    if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
+                        tanggalAkhirInput.value = '';
+                    }
+                } else {
+                    tanggalAkhirInput.min = '';
+                }
+            });
+
+            tanggalAkhirInput.addEventListener('change', function() {
+                if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
+                    this.value = '';
+                    alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
+                }
+            });
+        }
+
+        // ----- Form submit -----
+        function onSubmitProjectForm() {
+            if (currentUser) selectedUsers.owner = currentUser;
+            if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
+                selectedUsers.leader = selectedUsers.owner;
+            }
+            updateFormInputs();
+            cleanupInvalidTaskRows();
+            updateTaskUserOptions();
+        }
+
+        // ----- Load from storage / form -----
+        function loadSelectedUsersFromForm() {
+            if (restoreSelectedUsersFromStorage()) {
+                updateFormInputs();
+                return;
+            }
+            const leaderId = document.getElementById('selected-leader-id')?.value;
+            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
+            if (leaderId) selectedUsers.leader = getUserById(leaderId);
+            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+        }
+
+        // ----- Initialization -----
+        if (currentUser) {
+            addUsersToAllUsers([currentUser]);
+        }
+
+        loadSelectedUsersFromForm();
+        renderSelectedUsers();
+        setupModalFilters();
+        setupDateValidation();
+        updateTaskSectionVisibility();
+        updateSelectedUsersBadge();
+        initializeTaskRows(oldTasks);
+
+        document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+
+        const collaborativeToggle = document.getElementById('project-collaborative-toggle');
+        const toggleLabel = document.getElementById('toggle-label');
+        if (collaborativeToggle && toggleLabel) {
+            toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
+            toggleUserSelectionSection();
+            collaborativeToggle.addEventListener('change', function() {
+                toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
+                toggleUserSelectionSection();
+            });
+        }
+
+
+    });
+})();
+
+// Start Alpine AFTER all window.* components (e.g. notificationBell) are registered above.
+// This must stay at the very bottom of the file.
+Alpine.start();

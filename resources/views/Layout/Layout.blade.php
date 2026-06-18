@@ -50,7 +50,7 @@
              data-error="{{ session('error') }}"></div>
     @endif
 
-    @if(!request()->has('skip_splash'))
+    @if(!request()->has('skip_splash') && empty($_COOKIE['splash_shown']))
         @include('components.splash')
     @endif
 

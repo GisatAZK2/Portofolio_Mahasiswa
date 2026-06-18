@@ -60,18 +60,18 @@
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-3">
                             <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColor }}"
-                                data-translate="status_{{ $status }}" data-translate-page="project_detail">
+                                data-translate="status_{{ $status }}" data-translate-page="pjt_detail">
                                 {{ $statusText }}
                             </span>
                             <span class="text-sm text-gray-600 dark:text-gray-400">
-                                {{ $displayProgress }}% <span data-translate="progress_done" data-translate-page="project_detail">Selesai</span>
+                                {{ $displayProgress }}% <span data-translate="progress_done" data-translate-page="pjt_detail">Selesai</span>
                             </span>
                         </div>
 
                         <!-- Project Title -->
                         <h1
                             class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white order-first sm:order-none w-full sm:w-auto">
-                            {{ $project->translated('isi_content')['nama_project'] ?? 'Tanpa Judul' }}
+                            {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
                         </h1>
 
                         @if ($canEdit)
@@ -80,7 +80,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>
                                 </svg>
-                                <span data-translate="edit_project" data-translate-page="project_detail">Edit</span>
+                                <span data-translate="edit_project" data-translate-page="pjt_detail">Edit</span>
                             </a>
                         @endif
                     </div>
@@ -101,12 +101,12 @@
                             <div>
                                 <p class="text-sm font-semibold text-red-700 dark:text-red-400"
                                     data-translate="overdue_warning_title"
-                                    data-translate-page="project_detail">
+                                    data-translate-page="pjt_detail">
                                     Proyek Melewati Batas Waktu!
                                 </p>
                                 <p class="text-xs text-red-600 dark:text-red-300 mt-0.5"
                                     data-translate="overdue_warning_desc"
-                                    data-translate-page="project_detail">
+                                    data-translate-page="pjt_detail">
                                     Harap selesaikan semua tugas yang masih dalam proses secepatnya.
                                 </p>
                             </div>
@@ -125,13 +125,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 6h16M4 12h16M4 18h7" />
                                 </svg>
-                                <span data-translate="desc_pjt" data-translate-page="project_detail">Deskripsi Proyek</span>
+                                <span data-translate="desc_pjt" data-translate-page="pjt_detail">Deskripsi Proyek</span>
                             </h3>
                             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                @if(isset($project->isi_content['deskripsi']) && $project->translated('isi_content')['deskripsi'])
-                                    {{ $project->translated('isi_content')['deskripsi'] }}
+                                @if(isset($project->isi_content['deskripsi']) && $project->isi_content['deskripsi'])
+                                    {{ $project->isi_content['deskripsi'] }}
                                 @else
-                                    <span data-translate="empty_desc" data-translate-page="project_detail">Tidak ada deskripsi untuk proyek ini.</span>
+                                    <span data-translate="empty_desc" data-translate-page="pjt_detail">Tidak ada deskripsi untuk proyek ini.</span>
                                 @endif
                             </p>
                         </div>
@@ -192,7 +192,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                         </svg>
-                                        <span data-translate="lead_pjt" data-translate-page="project_detail">Project Leader</span>
+                                        <span data-translate="lead_pjt" data-translate-page="pjt_detail">Project Leader</span>
                                     </h3>
 
                                     <div
@@ -229,7 +229,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
-                                    <span data-translate="tim_pjt" data-translate-page="project_detail">Anggota Tim</span> ({{ $project->members->where('id', '!=', $project->leader_id)->count() }})
+                                    <span data-translate="tim_pjt" data-translate-page="pjt_detail">Anggota Tim</span> ({{ $project->members->where('id', '!=', $project->leader_id)->count() }})
                                 </h3>
 
                                 <div class="space-y-2">
@@ -256,7 +256,7 @@
                                         @endif
                                     </a>
                                     @empty
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic" data-translate="empty_tim" data-translate-page="project_detail">Belum ada anggota tim</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic" data-translate="empty_tim" data-translate-page="pjt_detail">Belum ada anggota tim</p>
                                     @endforelse
                                 </div>
                             </div>
@@ -269,7 +269,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                     </svg>
-                                    <span data-translate="link_pjt" data-translate-page="project_detail">Link Terkait</span>
+                                    <span data-translate="link_pjt" data-translate-page="pjt_detail">Link Terkait</span>
                                 </h3>
 
                                 <div class="space-y-3">
@@ -338,7 +338,7 @@
                                     @endif
 
                                     @if(empty($project->isi_content['link_project']) && empty($project->isi_content['link_github']) && empty($project->isi_content['link_video']))
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4" data-translate="empty_link" data-translate-page="project_detail">Belum ada link
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4" data-translate="empty_link" data-translate-page="pjt_detail">Belum ada link
                                             terkait</p>
                                     @endif
                                 </div>
@@ -356,7 +356,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span data-translate="timeline_pjt" data-translate-page="project_detail">Timeline Proyek</span>
+                                <span data-translate="timeline_pjt" data-translate-page="pjt_detail">Timeline Proyek</span>
                             </h3>
 
                             <div class="flex items-center gap-4 text-sm">
@@ -375,9 +375,9 @@
                                 <div
                                 class="flex-1 p-3 bg-white dark:bg-gray-800 rounded-lg border {{ ($isOverdue && $isProjectMemberForBar) ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/10' : 'border-gray-200 dark:border-gray-600' }}">
                                     <p class="text-xs {{ ($isOverdue && $isProjectMemberForBar) ? 'text-red-500 dark:text-red-400' : 'text-gray-500 dark:text-gray-400' }} mb-1">
-                                        <span data-translate="tgl_selesai" data-translate-page="project_detail">Selesai</span>
+                                        <span data-translate="tgl_selesai" data-translate-page="pjt_detail">Selesai</span>
                                         @if($isOverdue && $isProjectMemberForBar)
-                                            &mdash; <span class="font-semibold" data-translate="overdue_label" data-translate-page="project_detail">Terlambat</span>
+                                            &mdash; <span class="font-semibold" data-translate="overdue_label" data-translate-page="pjt_detail">Terlambat</span>
                                         @endif
                                     </p>
                                     <p class="font-medium {{ ($isOverdue && $isProjectMemberForBar) ? 'text-red-700 dark:text-red-300' : 'text-gray-900 dark:text-white' }}">
@@ -398,7 +398,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 12l2 2 4-4m2 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <span data-translate="task_progress" data-translate-page="project_detail">Progress Task</span>
+                                            <span data-translate="task_progress" data-translate-page="pjt_detail">Progress Task</span>
                                         </h3>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">
                                             {{ $taskDoneCount }} dari {{ $taskTotalCount }} task selesai
@@ -432,12 +432,12 @@
                                                             {{ $task->name_task }}
                                                         </p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                            <span data-translate="task_pic" data-translate-page="project_detail">Penanggung Jawab</span>: {{ $task->user?->nama_mahasiswa ?? 'Belum ditetapkan' }}
+                                                            <span data-translate="task_pic" data-translate-page="pjt_detail">Penanggung Jawab</span>: {{ $task->user?->nama_mahasiswa ?? 'Belum ditetapkan' }}
                                                         </p>
                                                         @if($isOverdue && !$task->is_done)
                                                             <p class="text-xs text-red-500 dark:text-red-400 font-medium mt-1"
                                                                 data-translate="task_overdue_note"
-                                                                data-translate-page="project_detail">
+                                                                data-translate-page="pjt_detail">
                                                                 ⚠ Harap selesaikan tugas ini
                                                             </p>
                                                         @endif
@@ -451,11 +451,11 @@
                                                                     : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400')
                                                             }}">
                                                             @if($task->is_done)
-                                                                <span data-translate="task_done" data-translate-page="project_detail">Selesai</span>
+                                                                <span data-translate="task_done" data-translate-page="pjt_detail">Selesai</span>
                                                             @elseif($isOverdue)
-                                                                <span data-translate="task_overdue" data-translate-page="project_detail">Terlambat</span>
+                                                                <span data-translate="task_overdue" data-translate-page="pjt_detail">Terlambat</span>
                                                             @else
-                                                                <span data-translate="task_inprogress" data-translate-page="project_detail">Dalam Proses</span>
+                                                                <span data-translate="task_inprogress" data-translate-page="pjt_detail">Dalam Proses</span>
                                                             @endif
                                                         </span>
                                                         @auth
@@ -466,7 +466,7 @@
                                                                     <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-white
                                                                         {{ $isOverdue ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700' }}
                                                                         rounded-lg transition">
-                                                                        <span data-translate="task_complete_btn" data-translate-page="project_detail">Selesaikan</span>
+                                                                        <span data-translate="task_complete_btn" data-translate-page="pjt_detail">Selesaikan</span>
                                                                     </button>
                                                                 </form>
                                                             @endif
@@ -487,7 +487,7 @@
                                         </svg>
                                         <p class="text-xs text-red-700 dark:text-red-300 font-medium"
                                             data-translate="overdue_warning_desc"
-                                            data-translate-page="project_detail">
+                                            data-translate-page="pjt_detail">
                                             Harap selesaikan semua tugas yang masih dalam proses secepatnya.
                                         </p>
                                     </div>
@@ -510,7 +510,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                     </svg>
-                                    <span data-translate="video_preview" data-translate-page="project_detail">Preview Video</span>
+                                    <span data-translate="video_preview" data-translate-page="pjt_detail">Preview Video</span>
                                 </h3>
                                 <div class="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-600">
                                     @include('components.video_preview', [
@@ -540,8 +540,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" data-translate="lrn_pjt" data-translate-page="project_detail">Learning Corner</h2>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" data-translate="desc_lrn_pjt" data-translate-page="project_detail">Catatan dan dokumentasi proyek</p>
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" data-translate="lrn_pjt" data-translate-page="pjt_detail">Learning Corner</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" data-translate="desc_lrn_pjt" data-translate-page="pjt_detail">Catatan dan dokumentasi proyek</p>
                         </div>
                     </div>
 
@@ -570,7 +570,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                            <span><span data-translate="del_sel" data-translate-page="project_detail">Hapus Terpilih</span> (<span id="selectedCount">0</span>)</span>
+                                            <span><span data-translate="del_sel" data-translate-page="pjt_detail">Hapus Terpilih</span> (<span id="selectedCount">0</span>)</span>
                                         </button>
                                     </form>
                                 @endif
@@ -580,7 +580,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                     </svg>
-                                    <span data-translate="add_lrn" data-translate-page="project_detail">Tambah Catatan</span>
+                                    <span data-translate="add_lrn" data-translate-page="pjt_detail">Tambah Catatan</span>
                                 </a>
                             @endif
                         @endauth
@@ -595,8 +595,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
-                        <p class="text-gray-600 dark:text-gray-400 text-lg font-medium" data-translate="empty_lrn" data-translate-page="project_detail">Belum ada catatan learning corner</p>
-                        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2" data-translate="desc_empty_lrn" data-translate-page="project_detail">Mulai tambahkan catatan pertama untuk proyek
+                        <p class="text-gray-600 dark:text-gray-400 text-lg font-medium" data-translate="empty_lrn" data-translate-page="pjt_detail">Belum ada catatan learning corner</p>
+                        <p class="text-gray-500 dark:text-gray-500 text-sm mt-2" data-translate="desc_empty_lrn" data-translate-page="pjt_detail">Mulai tambahkan catatan pertama untuk proyek
                             ini</p>
                     </div>
                 @else
@@ -645,7 +645,7 @@
                                         <input type="checkbox"
                                             class="entry-checkbox w-4 h-4 text-indigo-600 bg-white border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                             data-id="{{ $entry->id_learning_corner }}">
-                                        <label data-translate="sel_del" data-translate-page="project_detail" class="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
+                                        <label data-translate="sel_del" data-translate-page="pjt_detail" class="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
                                             Pilih untuk dihapus
                                         </label>
                                     </div>
@@ -736,7 +736,7 @@
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>
                                                             </svg>
-                                                            <span data-translate="edit" data-translate-page="project_detail">Edit</span>
+                                                            <span data-translate="edit" data-translate-page="pjt_detail">Edit</span>
                                                         </a>
                                                     @endunless
 
@@ -744,12 +744,12 @@
                                                         method="POST" class="flex-1 delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" data-translate="del" data-translate-page="project_detail"
+                                                        <button type="button" data-translate="del" data-translate-page="pjt_detail"
                                                             class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 active:bg-red-800 transition text-sm font-medium delete-btn shadow-sm hover:shadow-md">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                             </svg>
-                                                            <span data-translate="hapus" data-translate-page="project_detail">Hapus</span>
+                                                            <span data-translate="hapus" data-translate-page="pjt_detail">Hapus</span>
                                                         </button>
                                                     </form>
                                                 </div>

@@ -34,7 +34,7 @@
                         data-pagination-group="project_user">
                         @foreach($projects as $project)
                             @php
-                                $content = $project->isi_content ?? [];
+                                $content = $project->translated('isi_content') ?? [];
                                 $nama = $content['nama_project'] ?? 'Tanpa Nama Project';
                                 $deskripsi = $content['deskripsi'] ?? null;
                                 $linkProject = $content['link_project'] ?? null;
@@ -292,7 +292,7 @@
 
                     <!-- Pagination -->
                     @if(method_exists($projects, 'links'))
-                        <div class="mt-8 flex justify-center">
+                        <div class="mt-8 justify-center">
                             {{ $projects->render('vendor.pagination.custom_ajax', ['groupName' => 'project_user']) }}
                         </div>
                     @endif

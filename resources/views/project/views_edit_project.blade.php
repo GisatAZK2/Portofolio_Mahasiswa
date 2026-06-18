@@ -1,19 +1,21 @@
 @extends('Layout.Layout')
 @section('title', 'Edit Project Mahasiswa')
 @section('content')
+
 @php
     $existingTasks = $project->tasks->map(function ($task) {
         return [
-            'id' => $task->id,
-            'user_id' => $task->user_id,
+            'id'        => $task->id,
+            'user_id'   => $task->user_id,
             'user_name' => $task->user?->nama_mahasiswa,
             'name_task' => $task->name_task,
         ];
     })->toArray();
 @endphp
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950" id="project-edit-container" data-project-id="{{ $project->id }}" data-users="{{ json_encode($users) }}" data-current-user="{{ json_encode(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa]) }}" data-existing-tasks="{{ json_encode($existingTasks) }}" data-leader-id="{{ optional($project->leader)->id }}" data-member-ids="{{ json_encode($project->members->pluck('id')->toArray()) }}" data-fetch-url="{{ route('project.edit', ['id' => $project->id]) }}">
+
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div class="p-4 md:p-8 max-w-7xl mx-auto">
-            
+
             <!-- Header -->
             <div class="mb-6 md:mb-8 text-center md:text-left">
                 <div class="flex items-center gap-3 mb-2 justify-center md:justify-start">
@@ -49,6 +51,16 @@
                 </div>
             @endif
 
+            <!-- Data container for JavaScript -->
+            <div id="project-edit-data"
+                 data-users='@json($users)'
+                 data-current-user='@json(['id' => Auth::id(), 'nama_mahasiswa' => Auth::user()->nama_mahasiswa])'
+                 data-existing-tasks='@json($existingTasks)'
+                 data-project-id="{{ $project->id }}"
+                 data-leader-id="{{ optional($project->leader)->id ?? '' }}"
+                 data-member-ids='@json($project->members->pluck('id')->toArray())'>
+            </div>
+
             <!-- Form -->
             <form method="POST" action="{{ route('project.update', ['id' => $project->id]) }}" class="space-y-6 md:space-y-7" id="projectForm">
                 @csrf
@@ -73,7 +85,7 @@
                     <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200" data-translate="user_selection_title" data-translate-page="project_edit"></h3>
-                            <button type="button" onclick="openUserModal()" 
+                            <button type="button" onclick="window.openUserModal()"
                                 class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +136,7 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="deskripsi_opsional" data-translate-page="project_edit"></span></label>
                     <textarea name="deskripsi" rows="4"
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('deskripsi') border-red-500 @enderror"
-                        placeholder="'Deskripsikan project Anda..." data-translate-placeholder="deskripsi_placeholder" data-translate-page="project_edit">{{ old('deskripsi', $project->isi_content['deskripsi'] ?? '') }}</textarea>
+                        placeholder="Deskripsikan project Anda..." data-translate-placeholder="deskripsi_placeholder" data-translate-page="project_edit">{{ old('deskripsi', $project->isi_content['deskripsi'] ?? '') }}</textarea>
                     @error('deskripsi')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -136,7 +148,7 @@
                         Tambah Tugas (opsional)
                     </label>
                     <div id="tasks-container" class="space-y-4"></div>
-                    <button type="button" onclick="addTaskRow()"
+                    <button type="button" onclick="window.addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
                         <span class="text-xl">+</span> <span data-translate="add_task" data-translate-page="project_edit">Tambah Tugas</span>
                     </button>
@@ -197,11 +209,9 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 pt-8 border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex-1"></div> 
-                    
+                    <div class="flex-1"></div>
                     <a href="{{ route('project.index') }}"
                        class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto" data-translate="cancel" data-translate-page="project_edit"></a>
-                    
                     <button type="submit"
                         class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto" data-translate="update_project" data-translate-page="project_edit"></button>
                 </div>
@@ -209,14 +219,12 @@
         </div>
     </div>
 
-
-
     <!-- User selection modal -->
     <div id="userModal"
         class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
 
         <!-- Overlay -->
-        <div class="fixed inset-0 bg-black/40" onclick="closeUserModal()"></div>
+        <div class="fixed inset-0 bg-black/40" onclick="window.closeUserModal()"></div>
 
         <!-- Modal Box -->
         <div
@@ -230,7 +238,7 @@
                     data-translate-page="dosen_add_pjt"></h2>
 
                 <button type="button"
-                    onclick="closeUserModal()"
+                    onclick="window.closeUserModal()"
                     class="text-gray-500 hover:text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
 
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -320,7 +328,7 @@
                 class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
 
                 <button type="button"
-                    onclick="closeUserModal()"
+                    onclick="window.closeUserModal()"
                     data-translate="cancel"
                     data-translate-page="dosen_add_pjt"
                     class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-200">
@@ -328,7 +336,7 @@
                 </button>
 
                 <button type="button"
-                    onclick="confirmUserSelection()"
+                    onclick="window.confirmUserSelection()"
                     data-translate="confirm"
                     data-translate-page="dosen_add_pjt"
                     class="px-4 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">
@@ -339,6 +347,5 @@
 
         </div>
     </div>
-
-
+    
 @endsection
