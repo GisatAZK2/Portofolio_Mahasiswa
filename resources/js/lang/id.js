@@ -250,15 +250,15 @@ export const id = {
         add: 'Buat Postingan',
         del: 'Hapus',
         success: 'Postingan berhasil dibuat',
-        section_my_posts: 'Postingan Saya',       // en: 'My Posts'
-        section_student_posts: 'Postingan Mahasiswa', // en: 'Student Posts'
-        badge_my_post: 'Postingan Saya',          // en: 'My Post'
-        badge_student_post: 'Postingan Mahasiswa',// en: 'Student Post'
-        empty_my_posts: 'Anda belum membuat postingan.', // en: 'You have not created any posts yet.'
-        empty_student_posts: 'Belum ada postingan dari mahasiswa.', // en: 'No student posts yet.'
+        section_my_posts: 'Postingan Saya',     
+        section_student_posts: 'Postingan Mahasiswa', 
+        badge_my_post: 'Postingan Saya',          
+        badge_student_post: 'Postingan Mahasiswa',
+        empty_my_posts: 'Anda belum membuat postingan.',
+        empty_student_posts: 'Belum ada postingan dari mahasiswa.',
         game_label: 'Game',
-        play_game: 'Mainkan game',               // en: 'Play game'
-        best_score: 'Skor terbaik',              // en: 'Best score'
+        play_game: 'Mainkan game',
+        best_score: 'Skor terbaik',
         play_btn: 'Mainkan',
         edit_btn: 'Edit',
         comment: 'Komentar',
