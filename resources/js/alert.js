@@ -9,7 +9,14 @@ function getTranslation(lang, key) {
     return key.split('.').reduce((obj, i) => obj?.[i], translations[lang]);
 }
 
-                     
+function getCurrentLang() {
+    return localStorage.getItem('lang') || 'id';
+}
+
+function translate(key) {
+    const lang = getCurrentLang();
+    return getTranslation(lang, key) || key;
+}                    
 
 const t = translate;
 
