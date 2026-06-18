@@ -82,20 +82,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.changeLanguage = function () {
-    const select = document.getElementById('languageSelect');
-    const locale = select.value;
+  const select = document.getElementById('languageSelect');
+  const locale = select.value;
 
-    persistLocale(locale); 
+  persistLocale(locale);
 
-    const url = new URL(window.location.href);
-    let pathname = url.pathname;
-    pathname = pathname.replace(/^\/(id|en)(\/|$)/, '/$2'); 
-    if (pathname === '') pathname = '/';
-    url.pathname = pathname;
+  const url = new URL(window.location.href);
+  const pathSegments = url.pathname.split('/').filter(seg => seg !== '');
 
-    url.searchParams.set('locale', locale);
+  // Hapus segmen bahasa jika ada di awal
+  if (pathSegments.length > 0 && SUPPORTED_LANGS.includes(pathSegments[0])) {
+    pathSegments.shift();
+  }
 
-    window.location.href = url.toString();
+  // Susun ulang path dengan bahasa baru di depan
+  const newPathname = '/' + [locale, ...pathSegments].join('/');
+  url.pathname = newPathname;
+
+  // Hapus query param locale jika ada (agar URL bersih)
+  url.searchParams.delete('locale');
+
+  window.location.href = url.toString();
 };
 
 window.refreshTranslations = function () {
