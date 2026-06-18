@@ -123,10 +123,6 @@
                 left: 0;
                 height: 100vh;
             }
-
-            main {
-                z-index: 1;
-            }
         }
     </style>
 

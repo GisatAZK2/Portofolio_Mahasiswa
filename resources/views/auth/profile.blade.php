@@ -809,13 +809,13 @@
                         {{ autoTranslate('Terakhir diperbarui:') }} {{ now()->translatedFormat('d F Y H:i') }} WIB
                     </div>
 
-                </div>{{-- end x-data keahlianTambahan --}}
-            </div>{{-- end actual-content --}}
+                </div>
+            </div>
         </div>
     </div>
 
     {{-- MODAL TAMBAH PENDIDIKAN --}}
-    <div id="modal-pendidikan" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div id="modal-pendidikan" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePendidikanModal()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-pendidikan-content">
@@ -867,7 +867,7 @@
                         <input type="text" name="jurusan_sek" placeholder="{{ autoTranslate('Contoh: Teknik Informatika') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white text-sm transition">
                     </div>
 
-                    {{-- FIX: Tambah modal pendidikan - tahun masuk & lulus dengan validasi JS --}}
+                    {{-- Tambah modal pendidikan - tahun masuk & lulus dengan validasi JS --}}
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ autoTranslate('Tahun Masuk') }} <span class="text-red-500">*</span></label>
@@ -901,7 +901,7 @@
     </div>
 
     <!-- MODAL DETAIL / EDIT PENDIDIKAN -->
-    <div id="modal-detail-pendidikan" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div id="modal-detail-pendidikan" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPendidikan()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pendidikan-content">
@@ -1040,7 +1040,7 @@
     </div>
 
     {{-- MODAL TAMBAH PENGALAMAN KERJA --}}
-    <div id="modal-pengalaman" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div id="modal-pengalaman" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePengalamanModal()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-pengalaman-content">
@@ -1152,7 +1152,7 @@
     </div>
 
     <!-- MODAL DETAIL / EDIT PENGALAMAN KERJA -->
-    <div id="modal-detail-pengalaman" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <div id="modal-detail-pengalaman" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPengalaman()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pengalaman-content">
@@ -1969,7 +1969,7 @@ const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim(
 
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-
+        
         image.onload = function () {
             cropperInstance = new Cropper(image, {
                 aspectRatio: 1,
