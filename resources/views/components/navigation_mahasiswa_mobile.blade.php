@@ -16,7 +16,7 @@
         elseif (request()->routeIs('profile')) $activeTab = 'profile';
     @endphp
 
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed z-50">
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed z-10600">
         <div class="bnav-bar">
             {{-- Home --}}
             <a href="{{ route('dashboard', ['locale' => app()->getLocale()]) }}"
@@ -27,7 +27,7 @@
                               d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" />
                     </svg>
                 </div>
-                <span data-translate="dashboard_nonuser" data-translate-page="mobile_nav">Home</span>
+                <span data-translate="dashboard_nonuser">Home</span>
             </a>
 
             {{-- My Dashboard --}}
@@ -86,11 +86,11 @@
 
     {{-- ===================== FAB BOTTOM SHEET ===================== --}}
     <div id="mobile-fab-overlay" onclick="closeMobileFab()"
-         class="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden transition-all duration-300 opacity-0">
+         class="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-10700 hidden transition-all duration-300 opacity-0">
     </div>
 
     <div id="mobile-fab-sheet"
-         class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
+         class="lg:hidden fixed bottom-0 left-0 right-0 z-10800 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
 
         <div class="flex justify-center pt-3 pb-1">
             <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
@@ -159,7 +159,7 @@
     </div>
 
     <div id="mobile-profile-sheet"
-         class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out">
+         class="lg:hidden fixed bottom-0 left-0 right-0 z-10900 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out">
 
         <div class="flex justify-center pt-3 pb-1">
             <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
@@ -280,7 +280,7 @@
 </div>
 
 <div id="guest-sheet"
-     class="lg:hidden bg-white dark:bg-gray-900 fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
+     class="lg:hidden bg-white dark:bg-gray-900 fixed bottom-0 left-0 right-0 z-10500 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
 
     <div class="flex justify-center pt-3 pb-1">
         <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>

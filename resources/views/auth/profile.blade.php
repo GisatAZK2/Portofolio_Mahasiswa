@@ -833,7 +833,7 @@
     </div>
 
     {{-- MODAL TAMBAH PENDIDIKAN --}}
-    <div id="modal-pendidikan" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-pendidikan" class="fixed inset-0 hidden" style="z-index: 1100000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePendidikanModal()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-pendidikan-content">
@@ -930,7 +930,7 @@
     </div>
 
     <!-- MODAL DETAIL / EDIT PENDIDIKAN -->
-    <div id="modal-detail-pendidikan" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-detail-pendidikan" class="fixed inset-0 hidden" style="z-index: 100000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPendidikan()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pendidikan-content">
@@ -1069,7 +1069,7 @@
     </div>
 
     {{-- MODAL TAMBAH PENGALAMAN KERJA --}}
-    <div id="modal-pengalaman" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-pengalaman" class="fixed inset-0 hidden" style="z-index: 1000000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePengalamanModal()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-pengalaman-content">
@@ -1193,7 +1193,7 @@
     </div>
 
     <!-- MODAL DETAIL / EDIT PENGALAMAN KERJA -->
-    <div id="modal-detail-pengalaman" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-detail-pengalaman" class="fixed inset-0 hidden" style="z-index: 100000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPengalaman()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pengalaman-content">
