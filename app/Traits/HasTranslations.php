@@ -28,47 +28,26 @@ trait HasTranslations
 
         static::updated(function ($model) {
             $fields = $model->getTranslatableFields();
+
+            // Hanya dispatch job jika ada field translatable yang berubah.
+            // Tidak ada DB write di sini — cleanup translations lama
+            // dilakukan di dalam TranslateModelJob supaya tidak nge-lag.
             $changed = array_intersect($fields, array_keys($model->getChanges()));
 
             if (!empty($changed)) {
-                // Hapus terjemahan lama untuk field yang baru berubah
-                // supaya tidak menampilkan hasil terjemahan yang sudah stale
-                $currentTranslations = $model->getAttribute('translations') ?? [];
-                if (is_string($currentTranslations)) {
-                    $currentTranslations = json_decode($currentTranslations, true) ?? [];
-                }
-
-                $dirty = false;
-                foreach ($currentTranslations as $locale => &$localeData) {
-                    if (in_array($locale, ['source_lang', 'translated_at'], true)) {
-                        continue;
-                    }
-                    if (is_array($localeData)) {
-                        foreach ($changed as $field) {
-                            if (array_key_exists($field, $localeData)) {
-                                unset($localeData[$field]);
-                                $dirty = true;
-                            }
-                        }
-                    }
-                }
-                unset($localeData);
-
-                if ($dirty) {
-                    // Hapus juga timestamp agar frontend tahu terjemahan sedang pending
-                    unset($currentTranslations['translated_at']);
-                    $model->setAttribute('translations', $currentTranslations);
-                    $model->saveQuietly();
-                }
-
-                $model->queueTranslation();
+                $model->queueTranslation($changed);
             }
         });
     }
 
-    public function queueTranslation(): void
+    /**
+     * Dispatch TranslateModelJob ke queue.
+     *
+     * @param  array  $changedFields  Field yang berubah (kosong = semua field, misal saat create)
+     */
+    public function queueTranslation(array $changedFields = []): void
     {
-        TranslateModelJob::dispatch(static::class, $this->getKey());
+        TranslateModelJob::dispatch(static::class, $this->getKey(), $changedFields);
     }
 
     /**
@@ -91,14 +70,12 @@ trait HasTranslations
         }
 
         // Ambil terjemahan dari kolom translations
-        // Pastikan translations sudah di-cast ke array di model
         $translations = $this->getAttribute('translations');
-        
-        // Debug: pastikan translations adalah array
+
         if (is_string($translations)) {
             $translations = json_decode($translations, true);
         }
-        
+
         if (!is_array($translations)) {
             return $original;
         }
@@ -138,12 +115,12 @@ trait HasTranslations
     public function hasTranslation(string $field, ?string $locale = null): bool
     {
         $locale = $locale ?? app()->getLocale();
-        
+
         $translations = $this->getAttribute('translations');
         if (is_string($translations)) {
             $translations = json_decode($translations, true);
         }
-        
+
         if (!is_array($translations)) {
             return false;
         }
