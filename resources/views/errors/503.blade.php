@@ -16,33 +16,28 @@
 
             <!-- Error Code -->
             <div>
-                <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-2">503</h1>
-                <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4">Service Unavailable</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">
-                    Layanan kami sedang tidak tersedia untuk sementara waktu. Silakan coba lagi nanti atau hubungi support jika Anda membutuhkan bantuan.
-                </p>
+                <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-2" data-translate="error_503_code" data-translate-page="error_page">503</h1>
+                <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4" data-translate="error_503_title" data-translate-page="error_page">Service Unavailable</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6" data-translate="error_503_message" data-translate-page="error_page">Layanan kami sedang tidak tersedia untuk sementara waktu. Silakan coba lagi nanti atau hubungi support jika Anda membutuhkan bantuan.</p>
             </div>
 
             <!-- Action Buttons -->
             <div class="space-y-3">
                 <button onclick="window.location.reload()"
-                    class="w-full px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
-                    Muat Ulang
-                </button>
+                    class="w-full px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition"
+                    data-translate="error_503_reload" data-translate-page="error_page">Muat Ulang</button>
                 <a href="{{ url('/') }}"
-                    class="w-full block px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                    Kembali ke Beranda
-                </a>
+                    class="w-full block px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                    data-translate="error_503_home" data-translate-page="error_page">Kembali ke Beranda</a>
             </div>
 
             <!-- Support -->
             <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
-                    Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.
+                    <span data-translate="error_503_support_text" data-translate-page="error_page">Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.</span>
                     <a href="{{ route('help', app()->getLocale()) }}"
-                        class="text-indigo-600 dark:text-indigo-400 hover:underline">
-                        Hubungi Support
-                    </a>
+                        class="text-indigo-600 dark:text-indigo-400 hover:underline"
+                        data-translate="error_503_support_link" data-translate-page="error_page">Hubungi Support</a>
                 </p>
             </div>
         </div>

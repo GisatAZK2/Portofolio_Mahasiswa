@@ -1754,4 +1754,64 @@ export const id = {
     foto_profil: 'Foto Profil',
     game: 'Game',
   },
+
+  error_page: {
+
+    // === ERROR PAGES ===
+  error_400_code: "400",
+  error_400_title: "Bad Request",
+  error_400_message: "Permintaan yang Anda buat tidak valid atau tidak dapat diproses. Periksa kembali URL atau data yang Anda kirimkan.",
+  error_400_home: "Kembali ke Beranda",
+  error_400_back: "Kembali",
+  error_400_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_400_support_link: "Hubungi Support",
+
+  error_401_code: "401",
+  error_401_title: "Unauthorized",
+  error_401_message: "Anda harus login untuk mengakses halaman ini. Silakan login atau hubungi support jika Anda membutuhkan bantuan.",
+  error_401_login: "Masuk",
+  error_401_home: "Kembali ke Beranda",
+  error_401_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_401_support_link: "Hubungi Support",
+
+  error_403_code: "403",
+  error_403_title: "Forbidden",
+  error_403_message: "Anda tidak memiliki izin untuk mengakses halaman ini. Hubungi administrator jika Anda merasa ini adalah kesalahan.",
+  error_403_home: "Kembali ke Beranda",
+  error_403_back: "Kembali",
+  error_403_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_403_support_link: "Hubungi Support",
+
+  error_404_code: "404",
+  error_404_title: "Page Not Found",
+  error_404_message: "Maaf, halaman yang Anda cari tidak ditemukan. Halaman mungkin telah dihapus atau URL yang Anda masukkan tidak benar.",
+  error_404_home: "Kembali ke Beranda",
+  error_404_back: "Kembali",
+  error_404_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_404_support_link: "Hubungi Support",
+
+  error_405_code: "405",
+  error_405_title: "Method Not Allowed",
+  error_405_message: "Metode HTTP yang Anda gunakan tidak diizinkan untuk URL ini. Periksa kembali metode yang Anda gunakan atau hubungi support jika Anda membutuhkan bantuan.",
+  error_405_home: "Kembali ke Beranda",
+  error_405_back: "Kembali",
+  error_405_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_405_support_link: "Hubungi Support",
+
+  error_500_code: "500",
+  error_500_title: "Server Error",
+  error_500_message: "Terjadi kesalahan pada server kami. Silakan coba lagi nanti atau hubungi support jika Anda membutuhkan bantuan.",
+  error_500_home: "Kembali ke Beranda",
+  error_500_reload: "Muat Ulang",
+  error_500_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_500_support_link: "Hubungi Support",
+
+  error_503_code: "503",
+  error_503_title: "Service Unavailable",
+  error_503_message: "Layanan kami sedang tidak tersedia untuk sementara waktu. Silakan coba lagi nanti atau hubungi support jika Anda membutuhkan bantuan.",
+  error_503_reload: "Muat Ulang",
+  error_503_home: "Kembali ke Beranda",
+  error_503_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
+  error_503_support_link: "Hubungi Support",
+  }
 };
