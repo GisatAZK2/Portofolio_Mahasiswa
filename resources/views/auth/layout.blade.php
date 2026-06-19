@@ -51,12 +51,11 @@
             </main>
 
 
-            <!-- Footer -->
-            @include('components.chat-bot')
-            @include('components.up-page')
-
         </div>
     </div>
+
+    @include('components.chat-bot')
+    @include('components.up-page')
 </body>
 
 </html>

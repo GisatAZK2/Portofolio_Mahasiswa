@@ -3,10 +3,9 @@
 
 <head>
     <script>
-        // Jalankan sesegera mungkin sebelum konten dirender
-        (function() {
+        (function () {
             const storedLang = localStorage.getItem('lang');
-            if (storedLang && ['id','en'].includes(storedLang)) {
+            if (storedLang && ['id', 'en'].includes(storedLang)) {
                 document.documentElement.lang = storedLang;
                 // Jika cookie belum sesuai, set cookie agar server juga pakai bahasa ini
                 if (!document.cookie.split('; ').some(row => row.startsWith('lang=' + storedLang))) {
@@ -27,6 +26,154 @@
     @else
         <title>{{ config('app.name', 'Laravel') }}</title>
     @endif
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .app-layout {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        header {
+            flex-shrink: 0;
+            z-index: 30;
+            position: sticky;
+            top: 0;
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1rem;
+        }
+
+        main::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        main::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        main::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        .dark main::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-container {
+                display: grid;
+                grid-template-columns: 1fr 380px;
+                gap: 1.5rem;
+                align-items: start;
+            }
+
+            .sidebar-column {
+                position: sticky;
+                top: 20px;
+                align-self: start;
+                max-height: calc(100vh - 120px);
+                overflow-y: auto;
+            }
+
+            .sidebar-column::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .sidebar-column::-webkit-scrollbar-thumb {
+                background: #d1d5db;
+                border-radius: 4px;
+            }
+
+            .dark .sidebar-column::-webkit-scrollbar-thumb {
+                background: #4b5563;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 280px;
+                z-index: 50;
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+            }
+
+            #sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 45;
+                background: rgba(0, 0, 0, 0.5);
+                display: none;
+            }
+
+            #sidebar-overlay.show {
+                display: block;
+            }
+
+            main {
+                padding-bottom: 5.5rem !important;
+            }
+        }
+
+        #mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 30;
+            height: 70px;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            pointer-events: none;
+        }
+
+        .bnav-bar {
+            pointer-events: auto;
+            margin: 0 16px;
+            border-radius: 32px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .dark .bnav-bar {
+            background: #1e293b;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+
     @yield('meta')
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -45,9 +192,8 @@
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
 
     @if (session('success') || session('error'))
-        <div id="flash-message" class="hidden" 
-             data-success="{{ session('success') }}" 
-             data-error="{{ session('error') }}"></div>
+        <div id="flash-message" class="hidden" data-success="{{ session('success') }}" data-error="{{ session('error') }}">
+        </div>
     @endif
 
     @if(!request()->has('skip_splash') && empty($_COOKIE['splash_shown']))
@@ -72,29 +218,25 @@
             <!-- SESUDAH -->
             @auth
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
-                    {{-- Admin & Dosen: tampil di semua ukuran layar --}}
                     @include('components.footer')
                 @else
-                    {{-- Mahasiswa: hanya tampil di desktop --}}
                     <div class="hidden md:block">
                         @include('components.footer')
                     </div>
                 @endif
             @else
-                {{-- Guest/tidak login: hanya tampil di desktop --}}
                 <div class="hidden md:block">
                     @include('components.footer')
                 </div>
             @endauth
 
             @include('components.navigation_mahasiswa_mobile')
-            @include('components.up-page')
-            @include('components.chat-bot')
         </div>
     </div>
 
+    @include('components.up-page')
+    @include('components.chat-bot')
 
-    @stack('scripts')
 </body>
 
 </html>

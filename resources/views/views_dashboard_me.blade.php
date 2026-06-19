@@ -1,5 +1,5 @@
 @extends('Layout.Layout')
-@section('title', 'Dashboard')  {{-- title diterjemahkan via layout --}}
+@section('title', 'Dashboard')  
 
 @section('content')
 <style>
