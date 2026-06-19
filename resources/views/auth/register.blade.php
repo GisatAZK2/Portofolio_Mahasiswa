@@ -91,7 +91,7 @@
                     <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css">
                     <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
                     <!-- Cropper Modal -->
-                    <div id="cropper-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+                    <div id="cropper-modal" class="fixed inset-0 z-[100000] hidden" aria-modal="true" role="dialog">
                         <div class="absolute inset-0 bg-black/60" onclick="closeCropperModal()"></div>
                         <div class="relative flex items-center justify-center min-h-screen p-4">
                             <div id="cropper-modal-content" class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden transform transition-all scale-95 opacity-0">

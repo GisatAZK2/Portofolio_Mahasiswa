@@ -341,7 +341,7 @@ main {
     padding-bottom: 1rem;
 }
 
-#cropper-modal>div {
+#cropper-modal-content {
     width: min(95vw, 42rem);
     max-height: calc(90vh - 2rem);
     display: flex;
