@@ -13,7 +13,7 @@
         <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-6 h-6 sm:w-5 sm:h-5 rounded-full">
     </div>
     <div class="flex-1">
-        <p class="text-sm font-semibold text-gray-800 dark:text-white">Ada yang ingin ditanyakan?</p>
+        <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="ada_yang_ingin_ditanyakan" data-translate-page="chat">Ada yang ingin ditanyakan?</p>
     </div>
     <button id="closeBubbleBtn"
         class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -37,7 +37,7 @@
                 <h3 class="text-white font-semibold text-xs sm:text-sm">POLMIND</h3>
                 <p class="text-white/70 text-[10px] sm:text-xs flex items-center gap-1">
                     <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                    Online
+                    <span data-translate="online" data-translate-page="chat">Online</span>
                 </p>
             </div>
         </div>
@@ -62,23 +62,21 @@
             </div>
             <div
                 class="flex-1 bg-white dark:bg-gray-800 rounded-2xl rounded-tl-none px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-sm border border-gray-200 dark:border-gray-700">
-                <p class="text-xs sm:text-sm text-gray-800 dark:text-gray-100">👋 Halo! Saya asisten Help Center
-                    POLMIND. Ada yang bisa saya bantu?</p>
-                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">Pilih pertanyaan atau ketik
-                    pesan Anda</p>
+                <p class="text-xs sm:text-sm text-gray-800 dark:text-gray-100" data-translate="sapaan_bot" data-translate-page="chat">👋 Halo! Saya asisten Help Center POLMIND. Ada yang bisa saya bantu?</p>
+                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1" data-translate="pilih_pertanyaan" data-translate-page="chat">Pilih pertanyaan atau ketik pesan Anda</p>
             </div>
         </div>
     </div>
 
     <div id="suggestionsContainer"
         class="px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 hidden flex-shrink-0">
-        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1">💭 Mungkin yang Anda maksud:</p>
+        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1" data-translate="mungkin_yang_dimaksud" data-translate-page="chat">💭 Mungkin yang Anda maksud:</p>
         <div id="suggestionsList" class="flex flex-wrap gap-1 sm:gap-1.5"></div>
     </div>
 
     <div id="quickQuestions"
         class="px-2.5 sm:px-3 py-1.5 sm:py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 flex-shrink-0">
-        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2">Pertanyaan Hari Ini:</p>
+        <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2" data-translate="pertanyaan_hari_ini" data-translate-page="chat">Pertanyaan Hari Ini:</p>
         <div class="flex flex-wrap gap-1.5 sm:gap-2" id="quickQuestionsContainer"></div>
     </div>
 
@@ -90,7 +88,7 @@
                 <span class="typing-dot w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
                 <span class="typing-dot w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
             </div>
-            <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Bot sedang mengetik...</span>
+            <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400" data-translate="bot_mengetik" data-translate-page="chat">Bot sedang mengetik...</span>
         </div>
     </div>
 
@@ -98,6 +96,8 @@
         <div class="flex items-center space-x-2">
             <input type="text" id="chatInput" placeholder="Ketik pesan Anda..."
                 class="flex-1 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm bg-gray-100 dark:bg-gray-800 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 dark:text-white placeholder:text-gray-400"
+                data-translate-placeholder="ketik_pesan_anda"
+                data-translate-page="chat"
                 autocomplete="off">
             <button id="sendMessageBtn"
                 class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white p-1.5 sm:p-2 rounded-full transition-colors flex-shrink-0">

@@ -2,7 +2,7 @@
     <div class="px-4 py-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-3">
 
-            <!-- ── Mobile left: Hamburger + search icon ── -->
+            <!-- Mobile left -->
             <div class="flex items-center gap-3 lg:hidden">
                 @auth
                     @if(Auth::user()->role !== 'mahasiswa')
@@ -17,7 +17,6 @@
                     @endif
                 @endauth
 
-                <!-- Mobile search toggle -->
                 <button id="toggle-search-mobile" class="text-gray-700 dark:text-gray-300 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -25,14 +24,14 @@
                 </button>
             </div>
 
-            <!-- ── Mobile title ── -->
+            <!-- Mobile title -->
             <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
                 <a href="{{ route('dashboard') }}">
-                    <h1 class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 tracking-wide">PORTOFOLIO MAHASISWA</h1>
+                    <h1 class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 tracking-wide" data-translate="portofolio_mahasiswa" data-translate-page="header">PORTOFOLIO MAHASISWA</h1>
                 </a>
             </div>
 
-            <!-- ── Mobile right: notification bell ── -->
+            <!-- Mobile right -->
             <div class="flex items-center gap-2 lg:hidden">
                 @auth
                     @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
@@ -46,10 +45,10 @@
                         <div x-show="isOpen" @click.away="isOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">Notifikasi</h3>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white" data-translate="notifikasi" data-translate-page="header">Notifikasi</h3>
                                     <div class="flex gap-2">
-                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Tandai</button>
-                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">Hapus</button>
+                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline" data-translate="tandai" data-translate-page="header">Tandai</button>
+                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline" data-translate="hapus" data-translate-page="header">Hapus</button>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +58,7 @@
                                         <svg class="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                         </svg>
-                                        <p class="text-sm">Belum ada notifikasi</p>
+                                        <p class="text-sm" data-translate="belum_ada_notifikasi" data-translate-page="header">Belum ada notifikasi</p>
                                     </div>
                                 </template>
                                 <template x-for="item in notifications" :key="item.id">
@@ -73,7 +72,7 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center">
                                                     <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.data.title"></p>
-                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">PENTING</span>
+                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded" data-translate="penting" data-translate-page="header">PENTING</span>
                                                 </div>
                                                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="item.data.message"></p>
                                                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="formatTime(item.created_at)"></p>
@@ -89,12 +88,9 @@
                 @endauth
             </div>
 
-            <!-- ══════════════════════════════════════════════════════════
-                 DESKTOP HEADER BAR
-            ══════════════════════════════════════════════════════════ -->
+            <!-- Desktop -->
             <div id="search-container" class="hidden lg:flex lg:items-center lg:gap-2 w-full max-w-6xl mx-auto">
 
-                <!-- ── UNIFIED Search Input (post search + global search in one) ── -->
                 <div class="post-search-wrapper flex items-center gap-2 flex-1 min-w-0" id="post-search-area">
                     <div class="relative flex-1">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
@@ -112,26 +108,24 @@
                             autocomplete="off"
                             data-suggestions-url="{{ route('search.suggestions') }}"
                             data-search-url="{{ route('search') }}"
+                            data-translate-placeholder="cari_postingan_mahasiswa_project"
+                            data-translate-page="header"
                         >
-                        <!-- clear button -->
                         <button id="header-post-search-clear" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
-                        <!-- Global search suggestions dropdown -->
                         <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl overflow-hidden max-h-72 overflow-y-auto"></div>
                     </div>
                 </div>
 
-                <!-- ── Divider ── -->
                 <div class="h-6 w-px bg-gray-300 dark:bg-gray-600 flex-shrink-0 mx-1"></div>
 
-                <!-- ── Filter Dropdowns (Program Studi, Keahlian, Angkatan) ── -->
                 <div class="flex items-center gap-2 flex-shrink-0">
                     <select id="filter-jurusan" name="jurusan"
                         class="border border-gray-300/80 dark:border-gray-600/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 shadow-sm transition hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 backdrop-blur-sm cursor-pointer">
-                        <option value="">Semua Prodi</option>
+                        <option value="" data-translate="semua_prodi" data-translate-page="header">Semua Prodi</option>
                         @foreach($jurusanList ?? [] as $jurusan)
                             <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>{{ Str::limit($jurusan->nama_jurusan, 18) }}</option>
                         @endforeach
@@ -139,7 +133,7 @@
 
                     <select id="filter-keahlian" name="keahlian"
                         class="border border-gray-300/80 dark:border-gray-600/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 shadow-sm transition hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 backdrop-blur-sm cursor-pointer">
-                        <option value="">Semua Keahlian</option>
+                        <option value="" data-translate="semua_keahlian" data-translate-page="header">Semua Keahlian</option>
                         @foreach($keahlianList ?? [] as $keahlian)
                             <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>{{ Str::limit($keahlian->nama_keahlian, 18) }}</option>
                         @endforeach
@@ -147,23 +141,21 @@
 
                     <select id="filter-angkatan" name="angkatan"
                         class="border border-gray-300/80 dark:border-gray-600/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 shadow-sm transition hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 backdrop-blur-sm cursor-pointer">
-                        <option value="">Semua Angkatan</option>
+                        <option value="" data-translate="semua_angkatan" data-translate-page="header">Semua Angkatan</option>
                         @foreach($angkatanList ?? [] as $angkatan)
                             <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>{{ $angkatan->nama_angkatan }}</option>
                         @endforeach
                     </select>
 
-                    <!-- ── Filter/Search Button (triggers global search) ── -->
                     <button id="filter-search-btn"
                         class="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition shadow-sm flex-shrink-0"
                         title="Cari & Filter">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
                         </svg>
-                        <span>Filter</span>
+                        <span data-translate="filter" data-translate-page="header">Filter</span>
                     </button>
 
-                    <!-- ── Reset link ── -->
                     <a href="{{ route('search') }}" id="filter-reset-btn"
                         class="flex items-center px-3 py-2.5 border border-gray-300/80 dark:border-gray-600/80 rounded-lg bg-white/80 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm flex-shrink-0"
                         title="Reset filter"
@@ -171,10 +163,10 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
+                        <span data-translate="reset" data-translate-page="header">Reset</span>
                     </a>
                 </div>
 
-                <!-- ── Desktop Notification Bell ── -->
                 @auth
                     @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
                     <div class="ml-1 relative flex-shrink-0" x-data="notificationBell({ userId: {{ Auth::id() }}, userRole: '{{ Auth::user()->role }}' })" x-init="init()">
@@ -187,10 +179,10 @@
                         <div x-show="isOpen" @click.away="isOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">Notifikasi</h3>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white" data-translate="notifikasi" data-translate-page="header">Notifikasi</h3>
                                     <div class="flex gap-2">
-                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Tandai dibaca</button>
-                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline">Hapus semua'</button>
+                                        <button @click="markAllAsRead" class="text-xs text-blue-600 dark:text-blue-400 hover:underline" data-translate="tandai" data-translate-page="header">Tandai</button>
+                                        <button @click="clearAll" class="text-xs text-red-600 dark:text-red-400 hover:underline" data-translate="hapus" data-translate-page="header">Hapus</button>
                                     </div>
                                 </div>
                             </div>
@@ -200,7 +192,7 @@
                                         <svg class="w-12 h-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                         </svg>
-                                        <p class="text-sm">Belum ada notifikasi</p>
+                                        <p class="text-sm" data-translate="belum_ada_notifikasi" data-translate-page="header">Belum ada notifikasi</p>
                                     </div>
                                 </template>
                                 <template x-for="item in notifications" :key="item.id">
@@ -214,7 +206,7 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center">
                                                     <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.data.title"></p>
-                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded">PENTING</span>
+                                                    <span x-show="item.priority === 'high'" class="ml-2 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded" data-translate="penting" data-translate-page="header">PENTING</span>
                                                 </div>
                                                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="item.data.message"></p>
                                                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="formatTime(item.created_at)"></p>
@@ -232,13 +224,9 @@
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════
-         MOBILE Search Dropdown
-    ══════════════════════════════════════════════════════════ -->
+    <!-- Mobile Search Dropdown -->
     <div id="mobile-search-dropdown" class="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 hidden">
         <div class="px-4 py-5 space-y-4 sm:px-6">
-
-            <!-- Mobile unified search -->
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,51 +243,50 @@
                     autocomplete="off"
                     data-suggestions-url="{{ route('search.suggestions') }}"
                     data-search-url="{{ route('search') }}"
+                    data-translate-placeholder="cari_postingan_mahasiswa_project"
+                    data-translate-page="header"
                 >
-                <!-- Mobile search badge -->
                 <p id="header-post-search-badge-mobile" class="mt-1.5 text-xs text-indigo-600 dark:text-indigo-400 hidden">
-                    <span id="header-post-search-count-mobile">0</span> postingan ditemukan
+                    <span id="header-post-search-count-mobile">0</span> <span data-translate="postingan_ditemukan" data-translate-page="header">postingan ditemukan</span>
                 </p>
                 <div id="search-suggestions-mobile" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl overflow-hidden max-h-72 overflow-y-auto"></div>
             </div>
 
-            <!-- Mobile filter dropdowns -->
             <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <select id="filter-jurusan-mobile" name="jurusan"
                     class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300">
-                    <option value="">Semua Prodi</option>
+                    <option value="" data-translate="semua_prodi" data-translate-page="header">Semua Prodi</option>
                     @foreach($jurusanList ?? [] as $jurusan)
                         <option value="{{ $jurusan->id_jurusan }}" {{ request('jurusan') == $jurusan->id_jurusan ? 'selected' : '' }}>{{ $jurusan->nama_jurusan }}</option>
                     @endforeach
                 </select>
                 <select id="filter-keahlian-mobile" name="keahlian"
                     class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300">
-                    <option value="">Semua Keahlian</option>
+                    <option value="" data-translate="semua_keahlian" data-translate-page="header">Semua Keahlian</option>
                     @foreach($keahlianList ?? [] as $keahlian)
                         <option value="{{ $keahlian->id_keahlian }}" {{ request('keahlian') == $keahlian->id_keahlian ? 'selected' : '' }}>{{ $keahlian->nama_keahlian }}</option>
                     @endforeach
                 </select>
                 <select id="filter-angkatan-mobile" name="angkatan"
                     class="block w-full border border-gray-300/80 dark:border-gray-700/80 rounded-lg py-2.5 px-3 text-sm bg-white/80 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 sm:col-span-2">
-                    <option value="">Semua Angkatan</option>
+                    <option value="" data-translate="semua_angkatan" data-translate-page="header">Semua Angkatan</option>
                     @foreach($angkatanList ?? [] as $angkatan)
                         <option value="{{ $angkatan->id }}" {{ request('angkatan') == $angkatan->id ? 'selected' : '' }}>{{ $angkatan->nama_angkatan }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- Mobile action buttons -->
             <div class="flex gap-3">
                 <button id="filter-search-btn-mobile" type="button"
                     class="flex-1 bg-indigo-600 text-white py-3 rounded-lg text-sm font-medium hover:bg-indigo-700 transition flex items-center justify-center gap-2 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
                     </svg>
-                    Filter & Cari
+                    <span data-translate="filter_cari" data-translate-page="header">Filter & Cari</span>
                 </button>
                 <a href="{{ route('search') }}"
                     class="flex-1 bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 py-3 rounded-lg text-sm font-medium hover:bg-gray-100/80 dark:hover:bg-gray-600 transition flex items-center justify-center border border-gray-300/50 dark:border-gray-600/50">
-                    Reset
+                    <span data-translate="reset" data-translate-page="header">Reset</span>
                 </a>
             </div>
         </div>

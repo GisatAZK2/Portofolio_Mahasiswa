@@ -1813,5 +1813,132 @@ export const id = {
   error_503_home: "Kembali ke Beranda",
   error_503_support_text: "Jika Anda yakin ini adalah kesalahan, silakan hubungi support kami.",
   error_503_support_link: "Hubungi Support",
+  },
+   header: {
+    portofolio_mahasiswa: 'PORTOFOLIO MAHASISWA',
+    notifikasi: 'Notifikasi',
+    tandai: 'Tandai',
+    hapus: 'Hapus',
+    belum_ada_notifikasi: 'Belum ada notifikasi',
+    penting: 'PENTING',
+    cari_postingan_mahasiswa_project: 'Cari postingan, mahasiswa, project...',
+    semua_prodi: 'Semua Prodi',
+    semua_keahlian: 'Semua Keahlian',
+    semua_angkatan: 'Semua Angkatan',
+    filter: 'Filter',
+    filter_cari: 'Filter & Cari',
+    reset: 'Reset',
+    postingan_ditemukan: 'postingan ditemukan'
+  },
+
+  footer: {
+    about: 'Tentang',
+    help: 'Bantuan',
+    get_app: 'Dapatkan Aplikasi',
+    wa: 'WA',
+    email: 'Email',
+    maps: 'Maps',
+    all_rights: 'Hak cipta dilindungi.'
+  },
+
+  chat: {
+    ada_yang_ingin_ditanyakan: 'Ada yang ingin ditanyakan?',
+    online: 'Online',
+    sapaan_bot: '👋 Halo! Saya asisten Help Center POLMIND. Ada yang bisa saya bantu?',
+    pilih_pertanyaan: 'Pilih pertanyaan atau ketik pesan Anda',
+    mungkin_yang_dimaksud: '💭 Mungkin yang Anda maksud:',
+    pertanyaan_hari_ini: 'Pertanyaan Hari Ini:',
+    bot_mengetik: 'Bot sedang mengetik...',
+    ketik_pesan_anda: 'Ketik pesan Anda...'
+  },
+
+  get_app: {
+    get_app_title: 'Dapatkan Aplikasi',
+    get_app_desc: 'Install aplikasi Mahasiswa di perangkat Anda',
+    android: 'Android',
+    android_step_1: '1. Buka dengan Chrome',
+    android_step_2: '2. Tap menu ⋮ → "Install App"',
+    android_step_3: '3. Tap "Install"',
+    ios: 'iOS',
+    ios_step_1: '1. Buka dengan Safari',
+    ios_step_2: '2. Tap icon Share',
+    ios_step_3: '3. Scroll → "Add to Home Screen"',
+    ios_step_4: '4. Tap "Add"',
+    desktop: 'Desktop',
+    desktop_step_1: '1. Klik icon install di address bar',
+    desktop_step_2: '2. Klik "Install"',
+    scan_qr: 'Scan QR Code',
+    scan_qr_desc: 'Scan dengan HP untuk install',
+    install_button: 'INSTALL',
+    install_button_desc: 'Klik untuk install langsung di perangkat Anda',
+    keunggulan: 'Keunggulan',
+    akses_cepat: '✓ Akses Cepat',
+    tampilan_native: '✓ Tampilan native'
+  },
+
+  help: {
+    help_center: 'Pusat Bantuan',
+    help_center_desc: 'Pusat bantuan dan informasi',
+    faq_title: 'Pertanyaan yang Sering Diajukan',
+    faq_apa_website: 'Apa website ini?',
+    faq_apa_website_answer: 'Website ini digunakan untuk para mahasiswa untuk menampilkan portofolio mereka.',
+    faq_cara_daftar: 'Cara mendaftar?',
+    faq_cara_daftar_answer: 'Klik tombol Daftar, isi formulir dengan data yang benar, lalu verifikasi email.',
+    faq_lupa_password: 'Lupa password?',
+    faq_lupa_password_answer: 'Klik "Lupa Password" pada halaman login, ikuti instruksi reset password.',
+    faq_cara_ubah_profil: 'Cara mengubah profil?',
+    faq_cara_ubah_profil_answer: 'Masuk ke akun, buka halaman Profil, klik Edit Profil.',
+    faq_aplikasi_tidak_install: 'Aplikasi tidak bisa diinstall?',
+    faq_aplikasi_tidak_install_answer: 'Pastikan menggunakan Chrome/Safari terbaru, dan koneksi internet stabil.',
+    faq_hubungi_admin: 'Bagaimana cara menghubungi admin?',
+    faq_hubungi_admin_answer: 'Anda dapat menghubungi kami melalui email info@polmind.ac.id atau WhatsApp +62 821-1329-6897.',
+    faq_hubungi_mahasiswa: 'Apakah bisa menghubungi para mahasiswa?',
+    faq_hubungi_mahasiswa_answer: 'Anda dapat menghubungi mahasiswa melalui email mereka atau dengan menghubungi admin untuk informasi mereka.',
+    faq_portofolio: 'Apa itu portofolio dan kenapa penting di website ini?',
+    faq_portofolio_answer: 'Portofolio adalah kumpulan hasil karya atau proyek yang pernah Anda kerjakan. Portofolio membantu pihak luar melihat kemampuan dan keterampilan Anda.',
+    faq_tambah_portofolio: 'Bagaimana cara menambahkan portofolio?',
+    faq_tambah_portofolio_answer: 'Masuk ke dashboard, pilih menu portofolio, lalu klik tombol tambah proyek atau tambah sertifikat dan isi informasi yang diperlukan.',
+    faq_tefa: 'Apa itu sistem TeFa?',
+    faq_tefa_answer: 'Teaching Factory (TeFa) adalah sistem pembelajaran berbasis proyek nyata, di mana mahasiswa mengerjakan proyek dari dunia industri sebagai bagian dari proses akademik.',
+    hubungi_kami: 'Hubungi Kami',
+    butuh_bantuan: 'Butuh Bantuan?',
+    tim_support: 'Tim support siap membantu Anda',
+    whatsapp: 'WhatsApp',
+    email_support: 'Email Support',
+    informasi_lain: 'Informasi Lain',
+    tentang_kami: 'Tentang Kami'
+  },
+
+  mobile_nav: {
+    home: 'Beranda',
+    my_dashboard: 'Halaman Saya',
+    postingan: 'Postingan',
+    profil: 'Profil',
+    tambah_baru: 'Tambah Baru',
+    tambah_project_baru: 'Tambah Project Baru',
+    upload_project_kamu: 'Upload project kamu',
+    tambah_sertifikat_mobile: 'Tambah Sertifikat',
+    upload_sertifikatmu: 'Upload sertifikatmu',
+    tambah_postingan_mobile: 'Tambah Postingan',
+    bagikan_sesuatu: 'Bagikan sesuatu',
+    akun: 'Akun',
+    menu_tamu: 'Menu Tamu'
+  },
+
+  offline: {
+    offline_title: 'Anda Offline',
+    offline_message: 'Sepertinya Anda tidak terhubung ke internet. Silakan periksa koneksi Anda dan coba lagi.',
+    muat_ulang: 'Muat Ulang'
+  },
+
+  splash: {
+    splash_welcome: 'SELAMAT DATANG',
+    splash_portofolio: 'DI POLMIND PORTOFOLIO',
+    splash_skip: 'Lewati →'
+  },
+
+  sidebar: {
+    portofolioku: 'PortofolioKu',
+    politeknik_mitra_industri: 'Politeknik Mitra Industri'
   }
 };

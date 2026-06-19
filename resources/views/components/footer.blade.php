@@ -8,15 +8,15 @@
             <div class="flex gap-4 text-xs">
                 <a href="https://www.polmind.ac.id/beranda" target="_blank"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
-                    About
+                    <span data-translate="about" data-translate-page="footer">About</span>
                 </a>
                 <a href="{{ route('help', ['locale' => app()->getLocale()]) }}"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
-                    Help
+                    <span data-translate="help" data-translate-page="footer">Help</span>
                 </a>
                 <a href="{{ route('get-app', ['locale' => app()->getLocale()]) }}"
                    class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
-                    Get App
+                    <span data-translate="get_app" data-translate-page="footer">Get App</span>
                 </a>
             </div>
         </div>
@@ -28,14 +28,14 @@
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                     </svg>
-                    <span>WA</span>
+                    <span data-translate="wa" data-translate-page="footer">WA</span>
                 </a>
                 <a href="mailto:{{ env('CONTACT_EMAIL', 'info@polmind.ac.id') }}?subject=Informasi%20POLMIND"
                    target="_blank" class="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-blue-600">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
-                    <span>Email</span>
+                    <span data-translate="email" data-translate-page="footer">Email</span>
                 </a>
                 <a href="{{ env('CONTACT_MAPS', 'https://maps.app.goo.gl/UgUBmN7joH9fA2Jw5') }}"
                    target="_blank" class="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-red-600">
@@ -43,7 +43,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    <span>Maps</span>
+                    <span data-translate="maps" data-translate-page="footer">Maps</span>
                 </a>
             </div>
             <div class="flex gap-2">
@@ -68,7 +68,7 @@
                 <a href="{{ env('SOCIAL_TIKTOK', 'https://tiktok.com') }}" target="_blank"
                    class="w-6 h-6 bg-black rounded-full flex items-center justify-center transition-transform hover:scale-105">
                     <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
                     </svg>
                 </a>
             </div>
@@ -77,7 +77,7 @@
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
-                All rights reserved.
+                <span data-translate="all_rights" data-translate-page="footer">All rights reserved.</span>
             </p>
         </div>
     </div>
@@ -91,11 +91,17 @@
                 </div>
                 <div class="flex gap-4 text-sm">
                     <a href="https://www.polmind.ac.id/beranda" target="_blank"
-                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">About</a>
+                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">
+                        <span data-translate="about" data-translate-page="footer">About</span>
+                    </a>
                     <a href="{{ route('help', ['locale' => app()->getLocale()]) }}"
-                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">Help</a>
+                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">
+                        <span data-translate="help" data-translate-page="footer">Help</span>
+                    </a>
                     <a href="{{ route('get-app', ['locale' => app()->getLocale()]) }}"
-                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">Get App</a>
+                       class="text-gray-600 dark:text-gray-300 hover:text-blue-600">
+                        <span data-translate="get_app" data-translate-page="footer">Get App</span>
+                    </a>
                 </div>
             </div>
 
@@ -106,14 +112,14 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                         </svg>
-                        <span>WA</span>
+                        <span data-translate="wa" data-translate-page="footer">WA</span>
                     </a>
                     <a href="mailto:{{ env('CONTACT_EMAIL', 'info@polmind.ac.id') }}" target="_blank"
                        class="text-gray-600 dark:text-gray-300 hover:text-blue-600 flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
-                        <span>Email</span>
+                        <span data-translate="email" data-translate-page="footer">Email</span>
                     </a>
                     <a href="{{ env('CONTACT_MAPS', 'https://maps.app.goo.gl/UgUBmN7joH9fA2Jw5') }}" target="_blank"
                        class="text-gray-600 dark:text-gray-300 hover:text-red-600 flex items-center gap-1">
@@ -121,7 +127,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
-                        <span>Maps</span>
+                        <span data-translate="maps" data-translate-page="footer">Maps</span>
                     </a>
                 </div>
                 <div class="flex gap-2">
@@ -146,7 +152,7 @@
                     <a href="{{ env('SOCIAL_TIKTOK', 'https://tiktok.com') }}" target="_blank"
                        class="w-7 h-7 bg-black rounded-full flex items-center justify-center transition-transform hover:scale-105">
                         <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
                         </svg>
                     </a>
                 </div>
@@ -156,7 +162,7 @@
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
-                All rights reserved.
+                <span data-translate="all_rights" data-translate-page="footer">All rights reserved.</span>
             </p>
         </div>
     </div>

@@ -7,12 +7,8 @@
     <div class="container mx-auto px-4 max-w-5xl">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-2">
-                Get the App
-            </h1>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">
-                Install aplikasi Mahasiswa di perangkat Anda
-            </p>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-2" data-translate="get_app_title" data-translate-page="get_app">Get the App</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-sm" data-translate="get_app_desc" data-translate-page="get_app">Install aplikasi Mahasiswa di perangkat Anda</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -32,12 +28,12 @@
                                 </g>
                             </svg>
                         </div>
-                        <h2 class="font-semibold text-gray-800 dark:text-white">Android</h2>
+                        <h2 class="font-semibold text-gray-800 dark:text-white" data-translate="android" data-translate-page="get_app">Android</h2>
                     </div>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
-                        <li class="flex gap-2">1. Buka dengan Chrome</li>
-                        <li class="flex gap-2">2. Tap menu <span class="text-gray-800 dark:text-gray-200">⋮</span> → "Install App"</li>
-                        <li class="flex gap-2">3. Tap "Install"</li>
+                        <li class="flex gap-2" data-translate="android_step_1" data-translate-page="get_app">1. Buka dengan Chrome</li>
+                        <li class="flex gap-2" data-translate="android_step_2" data-translate-page="get_app">2. Tap menu ⋮ → "Install App"</li>
+                        <li class="flex gap-2" data-translate="android_step_3" data-translate-page="get_app">3. Tap "Install"</li>
                     </ul>
                 </div>
 
@@ -47,13 +43,13 @@
                         <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17.36 3 12.75 5.47 9.46c1.23-1.54 3.15-2.5 5-2.55 1.53-.05 2.98.86 3.92.86.93 0 2.67-1.06 4.5-.9.76.03 2.91.31 4.29 2.33-.11.07-2.56 1.5-2.53 4.48.03 2.58 2.26 3.44 2.28 3.45-.02.05-.36 1.22-1.18 2.42zM15.36 4.2c.78-.94 1.3-2.24 1.16-3.54-1.12.05-2.48.75-3.29 1.69-.72.84-1.35 2.18-1.18 3.47 1.25.1 2.52-.66 3.31-1.62z"/>
                         </svg>
-                        <h2 class="font-semibold text-gray-800 dark:text-white">iOS</h2>
+                        <h2 class="font-semibold text-gray-800 dark:text-white" data-translate="ios" data-translate-page="get_app">iOS</h2>
                     </div>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
-                        <li class="flex gap-2">1. Buka dengan Safari</li>
-                        <li class="flex gap-2">2. Tap icon <svg class="w-4 h-4 inline text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12v2h9v-2H3zm0-4h9V6H3v2zm18 6v-2h-9v2h9zm0-8h-9v2h9V6zM3 18h9v-2H3v2zm18 0v-2h-9v2h9z"/></svg> "Share"</li>
-                        <li class="flex gap-2">3. Scroll → "Add to Home Screen"</li>
-                        <li class="flex gap-2">4. Tap "Add"</li>
+                        <li class="flex gap-2" data-translate="ios_step_1" data-translate-page="get_app">1. Buka dengan Safari</li>
+                        <li class="flex gap-2" data-translate="ios_step_2" data-translate-page="get_app">2. Tap icon Share</li>
+                        <li class="flex gap-2" data-translate="ios_step_3" data-translate-page="get_app">3. Scroll → "Add to Home Screen"</li>
+                        <li class="flex gap-2" data-translate="ios_step_4" data-translate-page="get_app">4. Tap "Add"</li>
                     </ul>
                 </div>
 
@@ -65,11 +61,11 @@
                                 <path class="cls-1" d="M90.11,21.7h28.81a4,4,0,0,1,4,4V86.93a4,4,0,0,1-4,4H90.11a4,4,0,0,1-4-4V25.65a4,4,0,0,1,4-3.95ZM3,0H106.55a3.05,3.05,0,0,1,3,3v7.85h-4V7a2.69,2.69,0,0,0-2.69-2.69H6.67A2.69,2.69,0,0,0,4,7V61.87a2.7,2.7,0,0,0,2.68,2.69H76.1v11.6H3a3,3,0,0,1-3-3V3A3.05,3.05,0,0,1,3,0ZM41,80.36H68.59c.07,4.77,2,9,7.36,12.41H33.64C37.93,89.66,41,85.91,41,80.36Zm73.23-42.28h2.87v1.64h-2.87V38.08Zm-9.72,36.43a4.31,4.31,0,1,1-4.31,4.3,4.31,4.31,0,0,1,4.31-4.3Zm-13-40.18h26a.82.82,0,0,1,.82.82v4.47a.83.83,0,0,1-.82.83h-26a.82.82,0,0,1-.82-.82V35.15a.82.82,0,0,1,.82-.82Z"/>
                             </svg>
                         </div>
-                        <h2 class="font-semibold text-gray-800 dark:text-white">Desktop</h2>
+                        <h2 class="font-semibold text-gray-800 dark:text-white" data-translate="desktop" data-translate-page="get_app">Desktop</h2>
                     </div>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 ml-2">
-                        <li class="flex gap-2">1. Klik icon install di address bar</li>
-                        <li class="flex gap-2">2. Klik "Install"</li>
+                        <li class="flex gap-2" data-translate="desktop_step_1" data-translate-page="get_app">1. Klik icon install di address bar</li>
+                        <li class="flex gap-2" data-translate="desktop_step_2" data-translate-page="get_app">2. Klik "Install"</li>
                     </ul>
                 </div>
             </div>
@@ -78,29 +74,29 @@
             <div class="space-y-4">
                 <!-- QR Code -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 text-center">
-                    <h2 class="font-semibold text-gray-800 dark:text-white mb-3">Scan QR Code</h2>
+                    <h2 class="font-semibold text-gray-800 dark:text-white mb-3" data-translate="scan_qr" data-translate-page="get_app">Scan QR Code</h2>
                     <div id="qrcode" class="flex justify-center"></div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Scan dengan HP untuk install</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3" data-translate="scan_qr_desc" data-translate-page="get_app">Scan dengan HP untuk install</p>
                 </div>
 
-                <!-- Install Button dengan Efek Hover -->
+                <!-- Install Button -->
                 <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-md p-5 text-center text-white">
                     <button id="direct-install-btn" 
                         class="install-button w-full py-3 bg-white text-blue-600 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2">
                         <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18v-5m0 0V8m0 5h5m-5 0H7m6 4v.01M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
                         </svg>
-                        <span>INSTALL</span>
+                        <span data-translate="install_button" data-translate-page="get_app">INSTALL</span>
                     </button>
-                    <p class="text-xs text-blue-100 mt-3">Klik untuk install langsung di perangkat Anda</p>
+                    <p class="text-xs text-blue-100 mt-3" data-translate="install_button_desc" data-translate-page="get_app">Klik untuk install langsung di perangkat Anda</p>
                 </div>
 
                 <!-- Features -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
-                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Keunggulan</h3>
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2" data-translate="keunggulan" data-translate-page="get_app">Keunggulan</h3>
                     <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                        <div class="flex items-center gap-2">✓ Akses Cepat</div>
-                        <div class="flex items-center gap-2">✓ Tampilan native</div>
+                        <div class="flex items-center gap-2" data-translate="akses_cepat" data-translate-page="get_app">✓ Akses Cepat</div>
+                        <div class="flex items-center gap-2" data-translate="tampilan_native" data-translate-page="get_app">✓ Tampilan native</div>
                     </div>
                 </div>
             </div>

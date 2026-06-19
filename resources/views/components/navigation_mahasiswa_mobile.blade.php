@@ -27,7 +27,7 @@
                               d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" />
                     </svg>
                 </div>
-                <span data-translate="dashboard_nonuser">Home</span>
+                <span data-translate="dashboard_nonuser" data-translate-page="mobile_nav">Home</span>
             </a>
 
             {{-- My Dashboard --}}
@@ -39,7 +39,7 @@
                               d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 0l7-4m-7 4L9 5m3 0l7 4" />
                     </svg>
                 </div>
-                <span data-translate="my_dashboard">My Page</span>
+                <span data-translate="my_dashboard" data-translate-page="mobile_nav">My Page</span>
             </a>
 
             {{-- FAB + --}}
@@ -63,7 +63,7 @@
                         <circle cx="12" cy="14" r="2"></circle>
                     </svg>
                 </div>
-                <span data-translate="postingan">Post</span>
+                <span data-translate="postingan" data-translate-page="mobile_nav">Post</span>
             </a>
 
             {{-- Profile --}}
@@ -79,7 +79,7 @@
                         </div>
                     @endif
                 </div>
-                <span>Profil</span>
+                <span data-translate="profil" data-translate-page="mobile_nav">Profil</span>
             </button>
         </div>
     </nav>
@@ -97,7 +97,7 @@
         </div>
 
         <div class="px-6 pb-2 pt-1">
-            <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tambah Baru</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider" data-translate="tambah_baru" data-translate-page="mobile_nav">Tambah Baru</p>
         </div>
 
         <div class="px-4 pb-4 space-y-2">
@@ -109,8 +109,8 @@
                     </svg>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-800 dark:text-white">Tambah Project Baru</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Upload project kamu</p>
+                    <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="tambah_project_baru" data-translate-page="mobile_nav">Tambah Project Baru</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="upload_project_kamu" data-translate-page="mobile_nav">Upload project kamu</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -126,8 +126,8 @@
                     </svg>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-800 dark:text-white">Tambah Sertifikat</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Upload sertifikatmu</p>
+                    <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="tambah_sertifikat_mobile" data-translate-page="mobile_nav">Tambah Sertifikat</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="upload_sertifikatmu" data-translate-page="mobile_nav">Upload sertifikatmu</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -142,8 +142,8 @@
                     </svg>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-800 dark:text-white">Tambah Postingan</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Bagikan sesuatu</p>
+                    <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="tambah_postingan_mobile" data-translate-page="mobile_nav">Tambah Postingan</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="bagikan_sesuatu" data-translate-page="mobile_nav">Bagikan sesuatu</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -187,7 +187,7 @@
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
-                <span class="text-sm text-gray-700 dark:text-gray-200" data-translate="lihat_profil">Lihat Profil</span>
+                <span class="text-sm text-gray-700 dark:text-gray-200" data-translate="lihat_profil" data-translate-page="sidebar">Lihat Profil</span>
             </a>
 
             <a href="{{ route('passkeys.index') }}" onclick="closeMobileProfile()"
@@ -195,7 +195,7 @@
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                 </svg>
-                <span class="text-sm text-gray-700 dark:text-gray-200" data-translate="verifikasi_2_langkah">Verifikasi 2 Langkah</span>
+                <span class="text-sm text-gray-700 dark:text-gray-200" data-translate="verifikasi_2_langkah" data-translate-page="sidebar">Verifikasi 2 Langkah</span>
             </a>
 
             <div class="border-t border-gray-100 dark:border-gray-800 my-2"></div>
@@ -206,7 +206,7 @@
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                 </svg>
-                <span class="text-sm text-gray-700 dark:text-gray-200 flex-1 text-left" data-translate="mode">Dark Mode</span>
+                <span class="text-sm text-gray-700 dark:text-gray-200 flex-1 text-left" data-translate="mode" data-translate-page="sidebar">Dark Mode</span>
                 <div id="mobile-dark-toggle" class="relative inline-block w-10 h-5 rounded-full bg-gray-200 dark:bg-blue-600 transition-colors duration-300">
                     <span class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 dark:translate-x-5"></span>
                 </div>
@@ -217,7 +217,7 @@
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
                 </svg>
-                <span class="text-sm text-gray-700 dark:text-gray-200 flex-1" data-translate="bahasa">Bahasa</span>
+                <span class="text-sm text-gray-700 dark:text-gray-200 flex-1" data-translate="bahasa" data-translate-page="sidebar">Bahasa</span>
                 <select onchange="changeLanguageMobile(this.value)"
                         class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-1 rounded-lg border-0 focus:outline-none focus:ring-1 focus:ring-blue-500">
                     <option value="id" {{ app()->getLocale() === 'id' ? 'selected' : '' }}>🇮🇩 Indonesia</option>
@@ -233,15 +233,12 @@
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
-                    <span class="text-sm text-red-600 dark:text-red-400 font-medium" data-translate="logout">Logout</span>
+                    <span class="text-sm text-red-600 dark:text-red-400 font-medium" data-translate="logout" data-translate-page="sidebar">Logout</span>
                 </button>
             </form>
         </div>
         <div class="h-16"></div>
     </div>
-
-
-
 
     @endif
 @endauth
@@ -255,7 +252,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/>
             </svg>
-            <span class="text-[10px] font-medium">Home</span>
+            <span class="text-[10px] font-medium" data-translate="dashboard_nonuser" data-translate-page="mobile_nav">Home</span>
         </a>
 
         <a href="{{ route('project.project_user', ['locale' => app()->getLocale()]) }}"
@@ -263,7 +260,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <span class="text-[10px] font-medium" data-translate="project_mahasiswa">Project</span>
+            <span class="text-[10px] font-medium" data-translate="project_mahasiswa" data-translate-page="sidebar">Project</span>
         </a>
 
         {{-- Tombol menu untuk guest (Login, Register, Dark Mode, Bahasa) --}}
@@ -272,7 +269,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
-            <span class="text-[10px] font-medium" data-translate="account">Akun</span>
+            <span class="text-[10px] font-medium" data-translate="akun" data-translate-page="mobile_nav">Akun</span>
         </button>
     </div>
 </nav>
@@ -290,7 +287,7 @@
     </div>
 
     <div class="px-6 pb-2 pt-1">
-        <p class="text-xs font-semibold text-black dark:text-white uppercase tracking-wider">Menu Tamu</p>
+        <p class="text-xs font-semibold text-black dark:text-white uppercase tracking-wider" data-translate="menu_tamu" data-translate-page="mobile_nav">Menu Tamu</p>
     </div>
 
     <div class="px-4 pb-4 space-y-2">
@@ -303,7 +300,7 @@
                 </svg>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="login">Masuk</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="login" data-translate-page="sidebar">Masuk</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="login_to_account" data-translate-page="profile">Login ke akun Anda</p>
             </div>
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,7 +318,7 @@
                 </svg>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="register">Daftar</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="register" data-translate-page="sidebar">Daftar</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="create_account" data-translate-page="profile">Buat akun baru</p>
             </div>
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,7 +335,7 @@
             <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
             </svg>
-            <span class="text-sm text-gray-700 dark:text-gray-200 flex-1 text-left" data-translate="mode">Dark Mode</span>
+            <span class="text-sm text-gray-700 dark:text-gray-200 flex-1 text-left" data-translate="mode" data-translate-page="sidebar">Dark Mode</span>
             <div id="guest-dark-toggle" class="relative inline-block w-10 h-5 rounded-full bg-gray-200 dark:bg-blue-600 transition-colors duration-300">
                 <span class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 dark:translate-x-5"></span>
             </div>
@@ -349,7 +346,7 @@
             <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
             </svg>
-            <span class="text-sm text-gray-700 dark:text-gray-200 flex-1" data-translate="bahasa">Bahasa</span>
+            <span class="text-sm text-gray-700 dark:text-gray-200 flex-1" data-translate="bahasa" data-translate-page="sidebar">Bahasa</span>
             <select onchange="changeGuestLanguage(this.value)"
                     class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-1 rounded-lg border-0 focus:outline-none focus:ring-1 focus:ring-blue-500">
                 <option value="id" {{ app()->getLocale() === 'id' ? 'selected' : '' }}>🇮🇩 Indonesia</option>
