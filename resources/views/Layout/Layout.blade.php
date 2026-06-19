@@ -213,22 +213,21 @@
                 <div class="">
                     @yield('content')
                 </div>
-            </main>
-
-            <!-- SESUDAH -->
-            @auth
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
-                    @include('components.footer')
+                <!-- SESUDAH -->
+                @auth
+                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
+                        @include('components.footer')
+                    @else
+                        <div class="hidden md:block">
+                            @include('components.footer')
+                        </div>
+                    @endif
                 @else
                     <div class="hidden md:block">
                         @include('components.footer')
                     </div>
-                @endif
-            @else
-                <div class="hidden md:block">
-                    @include('components.footer')
-                </div>
-            @endauth
+                @endauth
+            </main>
 
             @include('components.navigation_mahasiswa_mobile')
         </div>
