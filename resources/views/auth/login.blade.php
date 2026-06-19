@@ -104,12 +104,15 @@
                         </div>
                     </div>
 
-                    <p class="text-center mt-6 text-gray-600 text-sm sm:text-base"
-                       data-translate="register_prompt" data-translate-page="login">
-                        Belum punya akun?
+                    <p class="text-center mt-6 text-gray-600 text-sm sm:text-base">
+                        <span data-translate="register_prompt" data-translate-page="login">
+                            Belum punya akun?
+                        </span>
                         <a href="{{ route('pengajuan-akun') }}"
-                            class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
-                            {{ __('register_link') }}
+                            class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                            data-translate="register_link"
+                            data-translate-page="login">
+                            Daftar sekarang
                         </a>
                     </p>
 
