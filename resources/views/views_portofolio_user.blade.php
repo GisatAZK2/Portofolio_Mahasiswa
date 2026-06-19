@@ -1,5 +1,6 @@
 {{-- ini Portofolio Page --}}
 @extends('Layout.Layout')
+@section('show_footer', true)
 
 @section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
 

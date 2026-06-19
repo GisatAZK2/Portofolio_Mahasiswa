@@ -1,4 +1,5 @@
 @extends('Layout.Layout')
+@section('show_footer', true)
 @section('title', 'Hasil Pencarian')
 
 @section('content')
