@@ -1,26 +1,28 @@
 @extends('auth.layout')
 
-@section('title', 'Reset Password')
+@section('title', __('Reset Password'))
 
 @section('content')
 <div class="flex-grow flex items-start justify-center pt-12 pb-12 px-5 sm:px-8">
     <div class="relative w-full max-w-lg">
-        <!-- Header dengan efek miring -->
+        <!-- Header -->
         <div class="relative mb-8 sm:mb-12">
-            <a href="{{ route('login') }}" class="inline-flex items-center text-gray-500 hover:text-gray-700 mb-4 group transition-all duration-300">
+            <a href="{{ route('login') }}" class="inline-flex items-center text-gray-500 hover:text-gray-700 mb-4 group transition-all duration-300"
+               data-translate="back_to_login" data-translate-page="reset_password">
                 <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 Kembali ke Login
             </a>
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none rotate-[-1.8deg] inline-block"
+                data-translate="title" data-translate-page="reset_password">
                 Reset Password
             </h1>
-            <p class="mt-3 text-base sm:text-lg text-gray-600 max-w-md rotate-[-0.8deg]">
+            <p class="mt-3 text-base sm:text-lg text-gray-600 max-w-md rotate-[-0.8deg]"
+               data-translate="subtitle" data-translate-page="reset_password">
                 Buat password baru untuk akunmu.
             </p>
-            <div class="absolute -top-4 -left-8 w-24 sm:w-32 h-1 bg-green-400 rotate-[-42deg] rounded-full opacity-80">
-            </div>
+            <div class="absolute -top-4 -left-8 w-24 sm:w-32 h-1 bg-green-400 rotate-[-42deg] rounded-full opacity-80"></div>
         </div>
 
         <!-- Informasi Email -->
@@ -32,27 +34,28 @@
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-blue-700">
+                    <p class="text-sm text-blue-700"
+                       data-translate="email_info" data-translate-page="reset_password">
                         Mereset password untuk email: <strong>{{ $email ?? old('email') }}</strong>
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- Form Reset Password -->
+        <!-- Form -->
         <form method="POST" action="{{ route('password.reset') }}" class="space-y-7 sm:space-y-8">
             @csrf
             <input type="hidden" name="email" value="{{ $email ?? old('email') }}">
 
-            <!-- Password Baru -->
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5"
+                       data-translate="label_password" data-translate-page="reset_password">
                     Password Baru
                 </label>
                 <div class="relative">
                     <input type="password" name="password" id="password" required
                         class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-green-500 focus:ring-0 focus:outline-none transition @error('password') border-red-400 @enderror"
-                        placeholder="Minimal 8 karakter">
+                        placeholder="{{ __('password_placeholder') }}" data-translate-placeholder="password_placeholder" data-translate-page="reset_password">
                     <button type="button"
                         class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition"
                         onclick="togglePasswordVisibility('password')">
@@ -65,7 +68,8 @@
                         </svg>
                     </button>
                 </div>
-                <p class="mt-2 text-xs text-gray-500">
+                <p class="mt-2 text-xs text-gray-500"
+                   data-translate="password_hint" data-translate-page="reset_password">
                     * Password minimal 8 karakter, mengandung huruf dan angka
                 </p>
                 @error('password')
@@ -73,15 +77,15 @@
                 @enderror
             </div>
 
-            <!-- Konfirmasi Password -->
             <div>
-                <label for="password-confirm" class="block text-sm font-medium text-gray-700 mb-1.5">
+                <label for="password-confirm" class="block text-sm font-medium text-gray-700 mb-1.5"
+                       data-translate="label_password_confirmation" data-translate-page="reset_password">
                     Konfirmasi Password Baru
                 </label>
                 <div class="relative">
                     <input type="password" name="password_confirmation" id="password-confirm" required
                         class="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.04)] focus:border-green-500 focus:ring-0 focus:outline-none transition"
-                        placeholder="Ulangi password baru">
+                        placeholder="{{ __('password_confirmation_placeholder') }}" data-translate-placeholder="password_confirmation_placeholder" data-translate-page="reset_password">
                     <button type="button"
                         class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition"
                         onclick="togglePasswordVisibility('password-confirm')">
@@ -96,10 +100,11 @@
                 </div>
             </div>
 
-            <!-- Password Strength Indicator -->
+            <!-- Password Strength -->
             <div class="space-y-2">
                 <div class="flex items-center gap-2 text-xs">
-                    <span class="text-gray-600">Kekuatan Password:</span>
+                    <span class="text-gray-600"
+                          data-translate="password_strength_label" data-translate-page="reset_password">Kekuatan Password:</span>
                     <span id="password-strength-text" class="font-medium">-</span>
                 </div>
                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
@@ -107,18 +112,20 @@
                 </div>
                 <div class="flex gap-2 text-xs text-gray-500">
                     <span class="flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Lemah
+                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> 
+                        <span data-translate="weak" data-translate-page="reset_password">Lemah</span>
                     </span>
                     <span class="flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> Sedang
+                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> 
+                        <span data-translate="medium" data-translate-page="reset_password">Sedang</span>
                     </span>
                     <span class="flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Kuat
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> 
+                        <span data-translate="strong" data-translate-page="reset_password">Kuat</span>
                     </span>
                 </div>
             </div>
 
-            <!-- Session Alert Data Container -->
             <div id="session-alert-data" 
                  class="hidden" 
                  data-session-success="{{ session('success') }}" 
