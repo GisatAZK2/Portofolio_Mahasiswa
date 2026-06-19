@@ -40,7 +40,7 @@
                         @endif
                         <div>
                             <p class="font-semibold text-gray-800 dark:text-white text-sm">{{ $user->nama_mahasiswa }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">@{{ $user->username }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $user->username }}</p>
                         </div>
                         <span class="ml-auto px-2.5 py-1 rounded-full text-xs font-medium
                             {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' :
