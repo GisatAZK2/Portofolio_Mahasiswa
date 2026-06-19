@@ -151,7 +151,7 @@
         @if($post->type === 'learning')
             <span
                 class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 w-fit">
-                <span data-translate="post_card.learning_corner">Learning Corner</span>
+                <span data-translate="learning_corner" data-translate-page="post_card">Learning Corner</span>
                 @if($relatedProject)
                     <span
                         class="ml-1 text-purple-600">({{ Str::limit($relatedProjectData['nama_project'] ?? 'Project', 20) }})</span>
@@ -160,12 +160,12 @@
         @elseif($post->type === 'project' || $post->type === 'project_user')
             <span
                 class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 w-fit">
-                <span data-translate="post_card.project">Project</span>
+                <span data-translate="project" data-translate-page="post_card">Project</span>
             </span>
         @elseif($post->type === 'postingan')
             <span
                 class="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 w-fit">
-                <span data-translate="post_card.postingan">Postingan</span>
+                <span data-translate="postingan" data-translate-page="post_card">Postingan</span>
             </span>
         @endif
     </div>
@@ -221,7 +221,7 @@
             @if($relatedProject)
                 <div class="mt-2 sm:mt-3 pt-1.5 sm:pt-2 border-t border-gray-100 dark:border-gray-800">
                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1">
-                        <span data-translate="post_card.terkait">Terkait:</span>
+                        <span data-translate="terkait" data-translate-page="post_card">Terkait:</span>
                     </p>
                     <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
                         class="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 hover:text-indigo-600 transition-colors line-clamp-1">
@@ -248,20 +248,20 @@
 
             @if(!empty($projectData['tanggal_mulai']) || $post->tanggal_mulai)
                 <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-200 mt-1 sm:mt-2">
-                    <p><span class="font-medium"><span data-translate="post_card.periode">Periode:</span></span>
+                    <p><span class="font-medium"><span data-translate="periode" data-translate-page="post_card">Periode:</span></span>
                         @if(!empty($projectData['tanggal_mulai']))
                             {{ \Carbon\Carbon::parse($projectData['tanggal_mulai'])->translatedFormat('M Y') }}
                             @if(!empty($projectData['tanggal_akhir']))
                                 → {{ \Carbon\Carbon::parse($projectData['tanggal_akhir'])->translatedFormat('M Y') }}
                             @else
-                                → <span data-translate="post_card.sekarang">Sekarang</span>
+                                → <span data-translate="sekarang" data-translate-page="post_card">Sekarang</span>
                             @endif
                         @elseif($post->tanggal_mulai)
                             {{ \Carbon\Carbon::parse($post->tanggal_mulai)->translatedFormat('M Y') }}
                             @if($post->tanggal_akhir)
                                 → {{ \Carbon\Carbon::parse($post->tanggal_akhir)->translatedFormat('M Y') }}
                             @else
-                                → <span data-translate="post_card.sekarang">Sekarang</span>
+                                → <span data-translate="sekarang" data-translate-page="post_card">Sekarang</span>
                             @endif
                         @endif
                     </p>
@@ -341,12 +341,12 @@
                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                            <span data-translate="post_card.tidak_ada_video_preview">Tidak ada video preview</span>
+                            <span data-translate="tidak_ada_video_preview" data-translate-page="post_card">Tidak ada video preview</span>
                         </p>
                         @if($link_video && !empty(trim($link_video)))
                             <a href="{{ $link_video }}" target="_blank"
                                 class="mt-2 text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
-                                <span data-translate="post_card.lihat_video">Lihat Video</span> →
+                                <span data-translate="lihat_video" data-translate-page="post_card">Lihat Video</span> →
                             </a>
                         @endif
                     </div>
@@ -363,7 +363,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                             </svg>
-                            <span data-translate="post_card.demo">Demo</span>
+                            <span data-translate="demo" data-translate-page="post_card">Demo</span>
                         </a>
                     @endif
 
@@ -374,7 +374,7 @@
                                 <path
                                     d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                             </svg>
-                            <span data-translate="post_card.github">GitHub</span>
+                            <span data-translate="github" data-translate-page="post_card">GitHub</span>
                         </a>
                     @endif
 
@@ -387,7 +387,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span data-translate="post_card.buka_video">Buka Video</span>
+                            <span data-translate="buka_video" data-translate-page="post_card">Buka Video</span>
                         </a>
                     @endif
                 </div>
@@ -443,20 +443,20 @@
                         <img src="{{ asset('storage/' . ltrim($thumbItem, '/')) }}" alt="{{ __('post_card.thumbnail_game') }}" class="w-full h-36 object-cover">
                     @else
                         <div class="w-full h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
-                            <span data-translate="post_card.preview_game">Preview Game</span>
+                            <span data-translate="preview_game" data-translate-page="post_card">Preview Game</span>
                         </div>
                     @endif
                     <div class="p-3 flex items-center justify-between">
                         <div>
                             <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $game->game_name ?? __('post_card.game') }}</div>
                             <div class="text-xs text-gray-500">
-                                <span data-translate="post_card.mainkan_game">Mainkan game langsung dari postingan</span>
+                                <span data-translate="mainkan_game" data-translate-page="post_card">Mainkan game langsung dari postingan</span>
                             </div>
                         </div>
                         <div>
                             @php $playUrl = route('game.matematika', ['locale' => app()->getLocale()]) . '?postingan=' . ($post->id_postingan ?? $post->id) . ($game ? '&game=' . $game->id_games : ''); @endphp
                             <a href="{{ $playUrl }}" class="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full hover:bg-teal-700">
-                                <span data-translate="post_card.play">Play</span>
+                                <span data-translate="play" data-translate-page="post_card">Play</span>
                             </a>
                         </div>
                     </div>
@@ -495,7 +495,7 @@
                 </div>
                 <span onclick="window.location.href='{{ route('postingan.index', $post->id_postingan ?? $post->id) }}'"
                       class="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:text-indigo-600">
-                    <span data-translate="post_card.lihat_detail">Lihat detail</span>
+                    <span data-translate="lihat_detail" data-translate-page="post_card">Lihat detail</span>
                 </span>
             </div>
 
@@ -522,7 +522,7 @@
                                     <button type="submit"
                                         class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition submit-btn"
                                         data-current-user-id="{{ auth()->id() }}">
-                                        <span data-translate="post_card.kirim">Kirim</span>
+                                        <span data-translate="kirim" data-translate-page="post_card">Kirim</span>
                                     </button>
                                 </div>
                             </div>
@@ -531,9 +531,9 @@
                 @else
                     <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-3">
                         <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">
-                            <span data-translate="post_card.login">Masuk</span>
+                            <span data-translate="login" data-translate-page="post_card">Masuk</span>
                         </a>
-                        <span data-translate="post_card.untuk_berkomentar">untuk berkomentar</span>
+                        <span data-translate="untuk_berkomentar" data-translate-page="post_card">untuk berkomentar</span>
                     </p>
                 @endauth
 
@@ -556,7 +556,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="font-medium text-sm">{{ $komentar->user->nama_mahasiswa ?? $komentar->user->name }}</span>
                                         @if(auth()->check() && auth()->id() === $komentar->id_user)
-                                            <span class="user-comment-badge"><span data-translate="post_card.anda">Anda</span></span>
+                                            <span class="user-comment-badge"><span data-translate="anda" data-translate-page="post_card">Anda</span></span>
                                         @endif
                                         <span class="text-xs text-gray-500">{{ $komentar->tanggal ? $komentar->tanggal->translatedFormat('d M Y') : 'Baru' }}</span>
                                     </div>
@@ -566,7 +566,7 @@
                         @endforeach
                     @else
                         <p class="text-xs text-gray-500 dark:text-gray-400 text-center py-4">
-                            <span data-translate="post_card.belum_ada_komentar">Belum ada komentar</span>
+                            <span data-translate="belum_ada_komentar" data-translate-page="post_card">Belum ada komentar</span>
                         </p>
                     @endif
                 </div>
@@ -580,13 +580,13 @@
 
             @if($post->lembaga_penerbit)
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2">
-                    <span class="font-medium"><span data-translate="post_card.lembaga">Lembaga:</span></span> {{ $post->lembaga_penerbit }}
+                    <span class="font-medium"><span data-translate="lembaga" data-translate-page="post_card">Lembaga:</span></span> {{ $post->lembaga_penerbit }}
                 </p>
             @endif
 
             @if($post->tanggal_terbit)
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2 sm:mb-3">
-                    <span class="font-medium"><span data-translate="post_card.terbit">Terbit:</span></span> {{ \Carbon\Carbon::parse($post->tanggal_terbit)->translatedFormat('d M Y') }}
+                    <span class="font-medium"><span data-translate="terbit" data-translate-page="post_card">Terbit:</span></span> {{ \Carbon\Carbon::parse($post->tanggal_terbit)->translatedFormat('d M Y') }}
                 </p>
             @endif
 
@@ -620,10 +620,10 @@
             </div>
 
             <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3">
-                <span class="font-medium"><span data-translate="post_card.status_berlaku">Status Berlaku:</span></span>
+                <span class="font-medium"><span data-translate="status_berlaku" data-translate-page="post_card">Status Berlaku:</span></span>
                 <span class="ml-1 font-medium {{ $validityClass }}">{{ $validityStatus }}</span>
                 @if($expiredText)
-                    | <span class="font-medium"><span data-translate="post_card.kadaluarsa">Kadaluarsa:</span></span> {{ $expiredText }}
+                    | <span class="font-medium"><span data-translate="kadaluarsa" data-translate-page="post_card">Kadaluarsa:</span></span> {{ $expiredText }}
                 @endif
             </div>
 
@@ -635,7 +635,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
-                        <span data-translate="post_card.lihat_sertifikat">Lihat Sertifikat</span>
+                        <span data-translate="lihat_sertifikat" data-translate-page="post_card">Lihat Sertifikat</span>
                     </a>
                 </div>
             @endif
@@ -647,9 +647,9 @@
         @if($post->type === 'project' || $post->type === 'project_user')
             <div class="flex justify-between items-center">
                 <p class="text-xs text-gray-500 dark:text-gray-50">
-                    <span data-translate="post_card.diposting">Diposting</span>
+                    <span data-translate="diposting" data-translate-page="post_card">Diposting</span>
                     {{ $post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—' }}
-                    <span data-translate="post_card.oleh">oleh</span>
+                    <span data-translate="oleh" data-translate-page="post_card">oleh</span>
                     {{ $userName }}
                 </p>
                 <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
@@ -657,17 +657,17 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    <span>{{ $post->unique_views_count ?? 0 }} <span data-translate="post_card.dilihat">dilihat</span></span>
+                    <span>{{ $post->unique_views_count ?? 0 }} <span data-translate="dilihat" data-translate-page="post_card">dilihat</span></span>
                 </div>
             </div>
         @else
             <p class="text-xs text-gray-500 dark:text-gray-50 line-clamp-2">
-                <span data-translate="post_card.diposting">Diposting</span>
+                <span data-translate="diposting" data-translate-page="post_card">Diposting</span>
                 {{ $post->created_at?->translatedFormat('d M Y H:i') ?? $post->tanggal?->translatedFormat('d M Y') ?? '—' }}
-                <span data-translate="post_card.oleh">oleh</span>
+                <span data-translate="oleh" data-translate-page="post_card">oleh</span>
                 {{ $userName }}
                 @if($relatedProject)
-                    <span data-translate="post_card.untuk_project">untuk project</span>
+                    <span data-translate="untuk_project" data-translate-page="post_card">untuk project</span>
                     <a href="{{ route('project.show', ['id' => $relatedProject->id]) }}"
                         class="text-indigo-600 hover:text-indigo-800 transition-colors font-medium">
                         {{ Str::limit($relatedProjectData['nama_project'] ?? 'Project', 30) }}
