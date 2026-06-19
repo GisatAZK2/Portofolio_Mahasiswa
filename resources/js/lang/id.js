@@ -190,6 +190,11 @@ export const id = {
         error_network: 'Terjadi kesalahan jaringan.',
         confirm_delete: 'Hapus keahlian tambahan ini?',
         empty_search_result: 'Tidak ada hasil. Ketik nama secara manual.',
+        label_select_from_list : 'Pilih dari daftar',
+        placeholder_choose_additional_skill : '-- Pilih Keahlian Tambahan --',
+        btn_request : 'Request',
+        label_or_custom_skill : 'Atau masukkan keahlian khusus',
+        btn_custom_skill : 'Tambah Keahlian Khusus',
     },
 
     keahlian_tambahan: {

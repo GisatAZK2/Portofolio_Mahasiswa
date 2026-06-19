@@ -73,15 +73,19 @@
                 </div>
             </div>
 
-            <!-- Actual Content -->
-            <div id="actual-content" class="contents" style="display: none;">
-
-                <div x-data="keahlianTambahan({
-                    options: @json($keahlians),
-                    mainSkillId: @json(Auth::user()->id_keahlian),
-                    list: @json($user->keahlianTambahan ?? []),
-                    selected: @json(old('id_keahlian_tambahan', ''))
-                })" x-init="init()" class="contents">
+             <!-- Actual Content -->
+<div id="actual-content" class="contents" style="display: none;">
+    <script>
+        window.__keahlianTambahanConfig = {
+            options: @json($keahlians),
+            mainSkillId: @json(Auth::user()->id_keahlian),
+            list: @json($user->keahlianTambahan ?? []),
+            selected: @json(old('id_keahlian_tambahan', '')),
+            indexUrl: @json(route('keahlian-tambahan.index')),
+            csrfToken: @json(csrf_token())
+        };
+    </script>
+    <div x-data="keahlianTambahan(window.__keahlianTambahanConfig)" x-init="init()" class="contents">
 
                     <!-- Alert Notification -->
                     <template x-if="showAlert">

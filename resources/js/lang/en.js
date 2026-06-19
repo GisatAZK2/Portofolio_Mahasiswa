@@ -186,7 +186,13 @@ export const en = {
     success_link_copied: 'Link successfully copied!',
     error_network: 'Network error occurred.',
     confirm_delete: 'Delete this additional skill?',
-    empty_search_result: 'No results found. Type the name manually.'
+    empty_search_result: 'No results found. Type the name manually.',
+
+    label_select_from_list : 'Select from the list',
+    placeholder_choose_additional_skill : '-- Choose Additional Skill --',
+    btn_request : 'Request',
+    label_or_custom_skill : 'Or enter a custom skill',
+    btn_custom_skill : 'Add Custom Skill',
 
   },
 
