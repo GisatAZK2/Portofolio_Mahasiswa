@@ -1,7 +1,7 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 import { showSuccessAlert, showErrorAlert, showLoading, closeLoading, showConfirm, showInfoAlert } from './alert.js';
-import './alert.js'
+import './alert.js';
 import './translate';
 
 window.showSuccessAlert = showSuccessAlert;
@@ -83,11 +83,11 @@ window.addEventListener('appinstalled', () => {
     showSuccessAlert('App installed successfully!');
 });
 
-
 window.Alpine = Alpine;
 
-
-// Zoom logo image on click
+// ==========================================
+// ZOOM LOGO IMAGE
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const zoomImages = document.querySelectorAll('#logo-zoom');
 
@@ -133,10 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
-// Show/hide Toggle Password
+// ==========================================
+// TOGGLE PASSWORD
+// ==========================================
 document.addEventListener('click', function (e) {
-
     const toggleBtn = e.target.closest('[data-toggle-password]');
     if (!toggleBtn) return;
 
@@ -152,7 +152,9 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// Show Dropdown Menu on click
+// ==========================================
+// DROPDOWN MENU
+// ==========================================
 function toggleDropdown(section) {
     const menuId = section + 'Menu';
     const arrowId = section + 'Arrow';
@@ -171,7 +173,9 @@ function toggleDropdown(section) {
 
 window.toggleDropdown = toggleDropdown;
 
-// Register Service Worker
+// ==========================================
+// SERVICE WORKER
+// ==========================================
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
         .then(registration => {
@@ -182,6 +186,9 @@ if ('serviceWorker' in navigator) {
         });
 }
 
+// ==========================================
+// LANGUAGE SELECT
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const langSelect = document.getElementById('languageSelect');
     if (langSelect) {
@@ -195,6 +202,9 @@ document.addEventListener('turbo:load', () => {
     }
 });
 
+// ==========================================
+// DARK MODE
+// ==========================================
 window.toggleDarkMode = function () {
     const html = document.documentElement;
     const btn = document.getElementById('darkModeBtn');
@@ -228,7 +238,7 @@ function initDarkMode() {
     }
 }
 
-window.checkSessionAlerts = function() {
+window.checkSessionAlerts = function () {
     const flashEl = document.getElementById('flash-message');
     if (flashEl) {
         const success = flashEl.getAttribute('data-success');
@@ -247,7 +257,6 @@ window.checkSessionAlerts = function() {
     }
 };
 
-// Jalankan inisialisasi saat DOM siap dan setelah Turbo load
 document.addEventListener('DOMContentLoaded', () => {
     initDarkMode();
     if (typeof window.checkSessionAlerts === 'function') window.checkSessionAlerts();
@@ -259,6 +268,9 @@ document.addEventListener('turbo:load', () => {
     if (typeof window.runPageInitializers === 'function') window.runPageInitializers();
 });
 
+// ==========================================
+// BUTTON PROCESSING HELPERS
+// ==========================================
 function setActionButtonProcessing(button) {
     if (!button || button.dataset.awaiting === 'true') return;
     button.dataset.awaiting = 'true';
@@ -332,41 +344,36 @@ document.addEventListener('submit', function (event) {
     disableFormSubmitButtons(form);
 });
 
+// ==========================================
+// SIDEBAR MOBILE CLOSE
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
 
     document.querySelectorAll('#sidebar a').forEach(link => {
         link.addEventListener('click', () => {
-            if (window.innerWidth < 1024) { // lg breakpoint
+            if (window.innerWidth < 1024) {
                 sidebar.classList.add('-translate-x-full');
             }
         });
     });
 
-    // Close button mobile
     document.getElementById('close-sidebar')?.addEventListener('click', () => {
         sidebar.classList.add('-translate-x-full');
     });
 });
 
-/* ==========================================
-   AUTHENTICATION & PROFILE JS HELPERS
-   ========================================== */
-
-/**
- * Toggle visibility of password fields.
- * Supports both static IDs and dynamic element context.
- * @param {string|HTMLElement} target
- */
-window.togglePasswordVisibility = function(target) {
-    const input = typeof target === 'string' 
-        ? document.getElementById(target) 
+// ==========================================
+// AUTHENTICATION & PROFILE HELPERS
+// ==========================================
+window.togglePasswordVisibility = function (target) {
+    const input = typeof target === 'string'
+        ? document.getElementById(target)
         : (target || document.getElementById('password'));
-        
+
     if (!input) return;
-    
-    // Find associated icons/buttons
+
     const parent = input.parentElement;
     const eyeShowIcon = document.getElementById('eye-icon-show') || parent.querySelector('.eye-icon-show') || parent.querySelector('.eye-icon');
     const eyeHideIcon = document.getElementById('eye-icon-hide') || parent.querySelector('.eye-icon-hide') || parent.querySelector('.toggle-password-btn svg:last-child');
@@ -382,14 +389,13 @@ window.togglePasswordVisibility = function(target) {
     }
 };
 
-// Show Alert Banner in Login Form
-window.showAlert = function(message, type = 'error') {
+window.showAlert = function (message, type = 'error') {
     const alertDiv = document.getElementById('alertMessage');
     if (!alertDiv) return;
-    
-    alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'bg-blue-100', 
-                              'text-green-800', 'text-red-800', 'text-yellow-800', 'text-blue-800');
-    
+
+    alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'bg-blue-100',
+        'text-green-800', 'text-red-800', 'text-yellow-800', 'text-blue-800');
+
     if (type === 'success') {
         alertDiv.classList.add('bg-green-100', 'text-green-800');
     } else if (type === 'warning') {
@@ -399,24 +405,26 @@ window.showAlert = function(message, type = 'error') {
     } else {
         alertDiv.classList.add('bg-red-100', 'text-red-800');
     }
-    
+
     alertDiv.innerHTML = message;
     alertDiv.classList.remove('hidden');
-    
+
     setTimeout(() => {
         alertDiv.classList.add('hidden');
     }, 5000);
 };
 
-// Generic Profile Photo Preview
-document.addEventListener('change', function(e) {
+// ==========================================
+// PHOTO PREVIEW
+// ==========================================
+document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'photo_profile') {
         const file = e.target.files[0];
         const preview = document.getElementById('profile-preview');
         const placeholder = document.getElementById('profile-placeholder') || document.getElementById('profile-preview-placeholder');
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 if (preview) {
                     preview.src = ev.target.result;
                     preview.classList.remove('hidden');
@@ -432,15 +440,14 @@ document.addEventListener('change', function(e) {
     }
 });
 
-// Generic Background Image Preview
-document.addEventListener('change', function(e) {
+document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'background_image') {
         const file = e.target.files[0];
         const previewContainer = document.getElementById('backgroundPreviewContainer');
         const previewImage = document.getElementById('backgroundPreview');
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 if (previewImage) previewImage.src = ev.target.result;
                 if (previewContainer) previewContainer.classList.remove('hidden');
             };
@@ -453,20 +460,22 @@ document.addEventListener('change', function(e) {
     }
 });
 
-// OTP Timer Implementation
+// ==========================================
+// OTP TIMER
+// ==========================================
 let otpTimerInterval;
 let otpTimeLeft = 300;
 let otpCanResend = false;
 let otpIsTimerRunning = true;
 
-window.initOtpTimer = function(initialSeconds = 300, resendUrl) {
+window.initOtpTimer = function (initialSeconds = 300, resendUrl) {
     otpTimeLeft = initialSeconds;
     otpIsTimerRunning = true;
     otpCanResend = false;
-    
+
     clearInterval(otpTimerInterval);
     updateOtpTimerDisplay();
-    
+
     otpTimerInterval = setInterval(() => {
         if (otpTimeLeft > 0 && otpIsTimerRunning) {
             otpTimeLeft--;
@@ -475,13 +484,13 @@ window.initOtpTimer = function(initialSeconds = 300, resendUrl) {
             clearInterval(otpTimerInterval);
             otpIsTimerRunning = false;
             otpCanResend = true;
-            
+
             const resendBtn = document.getElementById('resend-otp-btn');
             if (resendBtn) {
                 resendBtn.disabled = false;
                 resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
-            
+
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
                     icon: 'warning',
@@ -508,11 +517,11 @@ function formatOtpTime(seconds) {
 function updateOtpTimerDisplay() {
     const timerElement = document.getElementById('timer');
     const timerBar = document.getElementById('timer-bar');
-    
+
     if (timerElement) {
         timerElement.textContent = formatOtpTime(otpTimeLeft);
     }
-    
+
     if (timerBar) {
         const percentage = (Math.max(0, otpTimeLeft) / 300) * 100;
         timerBar.style.width = `${percentage}%`;
@@ -529,7 +538,7 @@ function updateOtpTimerDisplay() {
     }
 }
 
-window.resendOtp = function(resendUrl) {
+window.resendOtp = function (resendUrl) {
     if (!otpCanResend && otpTimeLeft > 0) {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -542,10 +551,10 @@ window.resendOtp = function(resendUrl) {
         }
         return;
     }
-    
+
     const emailInput = document.getElementById('email-input');
     const email = emailInput ? emailInput.value : '';
-    
+
     if (!email) {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -557,7 +566,7 @@ window.resendOtp = function(resendUrl) {
         }
         return;
     }
-    
+
     if (typeof Swal !== 'undefined') {
         Swal.fire({
             title: 'Mengirim Kode OTP...',
@@ -565,7 +574,7 @@ window.resendOtp = function(resendUrl) {
             didOpen: () => Swal.showLoading()
         });
     }
-    
+
     fetch(resendUrl, {
         method: 'POST',
         headers: {
@@ -574,47 +583,47 @@ window.resendOtp = function(resendUrl) {
         },
         body: JSON.stringify({ email: email })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (typeof Swal !== 'undefined') Swal.close();
-        if (data.success) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Kode OTP baru telah dikirim ke email Anda.',
-                    confirmButtonColor: '#3b82f6',
-                    timer: 2000
-                });
+        .then(response => response.json())
+        .then(data => {
+            if (typeof Swal !== 'undefined') Swal.close();
+            if (data.success) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Kode OTP baru telah dikirim ke email Anda.',
+                        confirmButtonColor: '#3b82f6',
+                        timer: 2000
+                    });
+                }
+                window.initOtpTimer(300, resendUrl);
+                const otpInput = document.getElementById('otp');
+                if (otpInput) otpInput.value = '';
+            } else {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message || 'Gagal mengirim kode OTP. Silakan coba lagi.',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                }
             }
-            window.initOtpTimer(300, resendUrl);
-            const otpInput = document.getElementById('otp');
-            if (otpInput) otpInput.value = '';
-        } else {
+        })
+        .catch(error => {
             if (typeof Swal !== 'undefined') {
+                Swal.close();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Gagal',
-                    text: data.message || 'Gagal mengirim kode OTP. Silakan coba lagi.',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan. Silakan coba lagi.',
                     confirmButtonColor: '#3b82f6'
                 });
             }
-        }
-    })
-    .catch(error => {
-        if (typeof Swal !== 'undefined') {
-            Swal.close();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Terjadi kesalahan. Silakan coba lagi.',
-                confirmButtonColor: '#3b82f6'
-            });
-        }
-    });
+        });
 };
 
-window.clearOtp = function() {
+window.clearOtp = function () {
     const otpInput = document.getElementById('otp');
     if (otpInput) {
         otpInput.value = '';
@@ -622,8 +631,10 @@ window.clearOtp = function() {
     }
 };
 
-// WebAuthn 2FA Login Verification
-window.verifyWithPasskey = async function() {
+// ==========================================
+// WEBAUTHN 2FA LOGIN
+// ==========================================
+window.verifyWithPasskey = async function () {
     const btn = document.getElementById('verifyPasskeyBtn');
     if (!btn) return;
     const originalHtml = btn.innerHTML;
@@ -690,7 +701,7 @@ window.verifyWithPasskey = async function() {
         } else if (error.message) {
             errorMessage = error.message;
         }
-        
+
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 icon: 'error',
@@ -705,7 +716,9 @@ window.verifyWithPasskey = async function() {
     }
 };
 
-// WebAuthn Passkeys Management Functions
+// ==========================================
+// WEBAUTHN PASSKEYS MANAGEMENT
+// ==========================================
 function getPasskeyLocale() {
     const path = window.location.pathname;
     const match = path.match(/^\/(id|en)/);
@@ -717,7 +730,7 @@ function buildPasskeyUrl(path) {
     return locale ? `/${locale}${path}` : path;
 }
 
-window.loadPasskeys = async function() {
+window.loadPasskeys = async function () {
     const container = document.getElementById('passkeysList');
     if (!container) return;
     container.innerHTML = `
@@ -731,7 +744,7 @@ window.loadPasskeys = async function() {
             </div>
         </div>
     `;
-    
+
     try {
         const url = buildPasskeyUrl('/webauthn/passkeys');
         const response = await fetch(url, {
@@ -741,12 +754,12 @@ window.loadPasskeys = async function() {
             },
             credentials: 'same-origin'
         });
-        
+
         if (response.status === 401) {
             window.location.href = buildPasskeyUrl('/login');
             return;
         }
-        
+
         const result = await response.json();
         if (result.success && result.data && result.data.length > 0) {
             renderPasskeysList(result.data);
@@ -759,7 +772,7 @@ window.loadPasskeys = async function() {
     }
 };
 
-window.deletePasskey = async function(id, name) {
+window.deletePasskey = async function (id, name) {
     if (typeof Swal === 'undefined') return;
     const result = await Swal.fire({
         title: 'Hapus Passkey?',
@@ -771,7 +784,7 @@ window.deletePasskey = async function(id, name) {
         confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal'
     });
-    
+
     if (result.isConfirmed) {
         Swal.fire({
             title: 'Memproses...',
@@ -779,7 +792,7 @@ window.deletePasskey = async function(id, name) {
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         });
-        
+
         try {
             const locale = getPasskeyLocale();
             const url = `/${locale}/webauthn/passkeys?id=${id}`;
@@ -792,7 +805,7 @@ window.deletePasskey = async function(id, name) {
                 },
                 credentials: 'same-origin'
             });
-            
+
             const data = await response.json();
             if (data.success) {
                 Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Passkey berhasil dihapus', timer: 2000, showConfirmButton: false });
@@ -807,22 +820,22 @@ window.deletePasskey = async function(id, name) {
     }
 };
 
-window.registerPasskey = async function() {
+window.registerPasskey = async function () {
     const nameInput = document.getElementById('passkeyName');
     if (!nameInput) return;
     const name = nameInput.value.trim();
-    
+
     if (!name) {
         if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Peringatan', text: 'Masukkan nama perangkat terlebih dahulu', confirmButtonColor: '#3085d6' });
         nameInput.focus();
         return;
     }
-    
+
     if (!window.PublicKeyCredential) {
         if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Tidak Didukung', text: 'Browser Anda tidak mendukung WebAuthn.', confirmButtonColor: '#3085d6' });
         return;
     }
-    
+
     const btn = document.getElementById('addPasskeyBtn');
     if (!btn) return;
     const originalHtml = btn.innerHTML;
@@ -834,7 +847,7 @@ window.registerPasskey = async function() {
         </svg>
         <span>Memproses...</span>
     `;
-    
+
     try {
         const optionsUrl = buildPasskeyUrl('/webauthn/register/options');
         const optionsResponse = await fetch(optionsUrl, {
@@ -846,10 +859,10 @@ window.registerPasskey = async function() {
             },
             credentials: 'same-origin'
         });
-        
+
         if (!optionsResponse.ok) throw new Error('Gagal mendapatkan konfigurasi autentikasi');
         const options = await optionsResponse.json();
-        
+
         let credential;
         try {
             credential = await SimpleWebAuthnBrowser.startRegistration(options);
@@ -858,7 +871,7 @@ window.registerPasskey = async function() {
             else if (err.name === 'NotSupportedError') throw new Error('Perangkat Anda tidak mendukung metode autentikasi yang diminta');
             else throw new Error('Gagal melakukan autentikasi: ' + (err.message || err));
         }
-        
+
         const verifyUrl = buildPasskeyUrl('/webauthn/register/verify');
         const verifyResponse = await fetch(verifyUrl, {
             method: 'POST',
@@ -870,7 +883,7 @@ window.registerPasskey = async function() {
             body: JSON.stringify({ credential, name }),
             credentials: 'same-origin'
         });
-        
+
         const result = await verifyResponse.json();
         if (result.success) {
             if (typeof Swal !== 'undefined') Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Passkey berhasil ditambahkan!', timer: 2000, showConfirmButton: false });
@@ -893,7 +906,7 @@ function renderPasskeysList(passkeys) {
     const container = document.getElementById('passkeysList');
     if (!container) return;
     container.innerHTML = '';
-    
+
     passkeys.forEach(passkey => {
         const div = document.createElement('div');
         div.className = 'group flex justify-between items-center p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-150';
@@ -946,22 +959,21 @@ function escapePasskeyHtml(text) {
     return div.innerHTML;
 }
 
-/* ==========================================
-   PAGE-SPECIFIC INITIALIZERS
-   ========================================== */
-
-window.checkSessionAlerts = function() {
+// ==========================================
+// PAGE-SPECIFIC INITIALIZERS
+// ==========================================
+window.checkSessionAlerts = function () {
     const body = document.body;
     const sessionData = document.getElementById('session-alert-data');
     if (!body && !sessionData) return;
-    
+
     const success = sessionData ? (sessionData.dataset.sessionSuccess || sessionData.getAttribute('data-session-success')) : (body ? (body.dataset.sessionSuccess || body.getAttribute('data-session-success')) : null);
     const error = sessionData ? (sessionData.dataset.sessionError || sessionData.getAttribute('data-session-error')) : (body ? (body.dataset.sessionError || body.getAttribute('data-session-error')) : null);
     const warning = sessionData ? (sessionData.dataset.sessionWarning || sessionData.getAttribute('data-session-warning')) : (body ? (body.dataset.sessionWarning || body.getAttribute('data-session-warning')) : null);
     const errorsFirst = sessionData ? (sessionData.dataset.errorsFirst || sessionData.getAttribute('data-errors-first')) : (body ? (body.dataset.errorsFirst || body.getAttribute('data-errors-first')) : null);
     const errorsAll = sessionData ? (sessionData.dataset.errorsAll || sessionData.getAttribute('data-errors-all')) : null;
     const isBlocked = sessionData ? (sessionData.dataset.isBlocked || sessionData.getAttribute('data-is-blocked')) : null;
-    
+
     if (success) {
         if (typeof Swal !== 'undefined' && window.showSuccessAlert) {
             window.showSuccessAlert(success);
@@ -1028,7 +1040,7 @@ window.checkSessionAlerts = function() {
     }
 };
 
-window.runPageInitializers = function() {
+window.runPageInitializers = function () {
     // Passkey Management Page
     if (document.getElementById('passkeyName') && document.getElementById('addPasskeyBtn')) {
         initPasskeyManagement();
@@ -1117,16 +1129,16 @@ function initPasskeyManagement() {
     const nameInput = document.getElementById('passkeyName');
     const addBtn = document.getElementById('addPasskeyBtn');
     if (!nameInput || !addBtn) return;
-    
+
     const validate = () => {
         addBtn.disabled = nameInput.value.trim() === '';
     };
-    
+
     nameInput.addEventListener('input', validate);
-    validate(); // initial state
-    
+    validate();
+
     addBtn.addEventListener('click', window.registerPasskey);
-    
+
     nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !addBtn.disabled) {
             e.preventDefault();
@@ -1139,9 +1151,9 @@ function initVerifyPasskey() {
     const verifyBtn = document.getElementById('verifyPasskeyBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     if (!verifyBtn || !cancelBtn) return;
-    
+
     verifyBtn.addEventListener('click', window.verifyWithPasskey);
-    
+
     cancelBtn.addEventListener('click', async () => {
         if (typeof Swal === 'undefined') return;
         const result = await Swal.fire({
@@ -1156,8 +1168,7 @@ function initVerifyPasskey() {
             window.location.href = '/login';
         }
     });
-    
-    // Auto trigger verification when page loads
+
     setTimeout(() => {
         window.verifyWithPasskey();
     }, 500);
@@ -1169,23 +1180,23 @@ function initVerifyOtp() {
     const clearBtn = document.getElementById('clear-otp-btn');
     const resendBtn = document.getElementById('resend-otp-btn');
     const cancelButton = document.querySelector('.cancel-btn');
-    
+
     if (!form || !otpInput) return;
-    
+
     const resendUrl = resendBtn ? resendBtn.getAttribute('data-resend-url') : '';
     window.initOtpTimer(300, resendUrl);
-    
+
     if (clearBtn) {
         clearBtn.addEventListener('click', window.clearOtp);
     }
-    
+
     if (resendBtn) {
         resendBtn.addEventListener('click', () => {
             window.resendOtp(resendUrl);
         });
     }
-    
-    otpInput.addEventListener('input', function(e) {
+
+    otpInput.addEventListener('input', function (e) {
         this.value = this.value.replace(/[^0-9]/g, '');
         if (this.value.length > 6) {
             this.value = this.value.slice(0, 6);
@@ -1200,8 +1211,8 @@ function initVerifyOtp() {
             }
         }
     });
-    
-    otpInput.addEventListener('paste', function(e) {
+
+    otpInput.addEventListener('paste', function (e) {
         e.preventDefault();
         const pastedText = (e.clipboardData || window.clipboardData).getData('text');
         const numbers = pastedText.replace(/[^0-9]/g, '').slice(0, 6);
@@ -1209,8 +1220,8 @@ function initVerifyOtp() {
         const event = new Event('input', { bubbles: true });
         this.dispatchEvent(event);
     });
-    
-    form.addEventListener('submit', function(e) {
+
+    form.addEventListener('submit', function (e) {
         const submitButton = this.querySelector('button[type="submit"]');
         const otp = otpInput.value;
         if (!otp) {
@@ -1234,9 +1245,9 @@ function initVerifyOtp() {
             window.showLoading('Memverifikasi kode OTP...');
         }
     });
-    
+
     if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
+        cancelButton.addEventListener('click', function (e) {
             if (otpInput.value.trim() !== '') {
                 e.preventDefault();
                 Swal.fire({
@@ -1256,8 +1267,8 @@ function initVerifyOtp() {
             }
         });
     }
-    
-    otpInput.addEventListener('keypress', function(e) {
+
+    otpInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && this.value.length === 6) {
             e.preventDefault();
             form.dispatchEvent(new Event('submit'));
@@ -1268,7 +1279,7 @@ function initVerifyOtp() {
 function initForgotPassword() {
     const cancelButton = document.querySelector('a[href*="login"]');
     if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
+        cancelButton.addEventListener('click', function (e) {
             const emailInput = document.getElementById('email');
             if (emailInput && emailInput.value.trim() !== '') {
                 e.preventDefault();
@@ -1295,24 +1306,23 @@ function initResetPassword() {
     const passwordInput = document.getElementById('password');
     const strengthBar = document.getElementById('password-strength-bar');
     const strengthText = document.getElementById('password-strength-text');
-    
+
     if (passwordInput && strengthBar && strengthText) {
-        passwordInput.addEventListener('input', function() {
+        passwordInput.addEventListener('input', function () {
             const result = checkPasswordStrength(this.value);
             strengthBar.className = `h-full transition-all duration-300 rounded-full ${result.color}`;
             strengthBar.style.width = `${result.width}%`;
             strengthText.textContent = result.text;
-            strengthText.className = `font-medium ${
-                result.level === 'weak' ? 'text-red-600' : 
-                result.level === 'medium' ? 'text-orange-600' : 
-                result.level === 'strong' ? 'text-green-600' : ''
-            }`;
+            strengthText.className = `font-medium ${result.level === 'weak' ? 'text-red-600' :
+                    result.level === 'medium' ? 'text-orange-600' :
+                        result.level === 'strong' ? 'text-green-600' : ''
+                }`;
         });
     }
-    
+
     const passwordField = document.getElementById('password');
     const confirmField = document.getElementById('password-confirm');
-    
+
     if (passwordField && confirmField) {
         const createMatchIndicator = () => {
             let indicator = document.getElementById('password-match-indicator');
@@ -1324,7 +1334,7 @@ function initResetPassword() {
             }
             return indicator;
         };
-        
+
         const checkMatch = () => {
             const indicator = createMatchIndicator();
             if (confirmField.value === '') {
@@ -1338,14 +1348,14 @@ function initResetPassword() {
                 indicator.className = 'mt-2 text-xs';
             }
         };
-        
+
         passwordField.addEventListener('input', checkMatch);
         confirmField.addEventListener('input', checkMatch);
     }
-    
+
     const cancelButton = document.querySelector('a[href*="login"]');
     if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
+        cancelButton.addEventListener('click', function (e) {
             const passwordInput = document.getElementById('password');
             if (passwordInput && passwordInput.value.trim() !== '') {
                 e.preventDefault();
@@ -1366,14 +1376,14 @@ function initResetPassword() {
             }
         });
     }
-    
+
     const form = document.querySelector('form');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             const submitButton = this.querySelector('button[type="submit"]');
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('password-confirm').value;
-            
+
             if (!password) {
                 e.preventDefault();
                 window.showErrorAlert('Silakan masukkan password baru Anda.');
@@ -1389,7 +1399,7 @@ function initResetPassword() {
                 window.showErrorAlert('Konfirmasi password tidak cocok. Silakan periksa kembali.');
                 return false;
             }
-            
+
             if (submitButton) {
                 submitButton.disabled = true;
                 submitButton.innerHTML = 'Memproses...';
@@ -1406,11 +1416,11 @@ function checkPasswordStrength(password) {
     if (password.match(/[A-Z]+/)) strength++;
     if (password.match(/[0-9]+/)) strength++;
     if (password.match(/[$@#&!]+/)) strength++;
-    
+
     let strengthLevel = '';
     let strengthColor = '';
     let strengthText = '';
-    
+
     if (password.length === 0) {
         strengthText = '-';
     } else if (strength <= 2) {
@@ -1426,13 +1436,13 @@ function checkPasswordStrength(password) {
         strengthColor = 'bg-green-500';
         strengthText = 'Kuat';
     }
-    
+
     return { level: strengthLevel, color: strengthColor, text: strengthText, width: (strength / 5) * 100 };
 }
 
-/* =====================================================================
-   REGISTER PAGE FUNCTIONS
-   ===================================================================== */
+// ==========================================
+// REGISTER PAGE (Photo Cropper)
+// ==========================================
 let registerCropperInstance = null;
 let registerCropperObjectUrl = null;
 
@@ -1454,7 +1464,7 @@ function initRegisterPage() {
     });
 }
 
-window.openRegisterCropperModal = function(file) {
+window.openRegisterCropperModal = function (file) {
     const modal = document.getElementById('cropper-modal');
     const img = document.getElementById('cropper-image');
     if (registerCropperObjectUrl) URL.revokeObjectURL(registerCropperObjectUrl);
@@ -1486,7 +1496,7 @@ window.openRegisterCropperModal = function(file) {
     }
 };
 
-window.closeRegisterCropperModal = function() {
+window.closeRegisterCropperModal = function () {
     const modal = document.getElementById('cropper-modal');
     if (modal) modal.classList.add('hidden');
     document.body.style.overflow = '';
@@ -1500,11 +1510,11 @@ window.closeRegisterCropperModal = function() {
     }
 };
 
-window.cancelCropper = function() {
+window.cancelCropper = function () {
     window.closeRegisterCropperModal();
 };
 
-window.confirmCrop = function() {
+window.confirmCrop = function () {
     if (!registerCropperInstance) return window.closeRegisterCropperModal();
     registerCropperInstance.getCroppedCanvas({ width: 800, height: 800, imageSmoothingQuality: 'high' }).toBlob(function (blob) {
         if (!blob) return alert('Gagal memproses gambar');
@@ -1528,16 +1538,14 @@ window.confirmCrop = function() {
     }, 'image/jpeg', 0.9);
 };
 
-
-/* =====================================================================
-   PROFILE PAGE FUNCTIONS
-   ===================================================================== */
+// ==========================================
+// PROFILE PAGE
+// ==========================================
 let profileCropperInstance = null;
 let profileCropperFile = null;
 let profileCropperObjectUrl = null;
 
 function initProfilePage() {
-    // Save button trigger on file inputs
     const photoProfileInput = document.getElementById('photo_profile_input');
     if (photoProfileInput) {
         photoProfileInput.addEventListener('change', function (e) {
@@ -1565,10 +1573,8 @@ function initProfilePage() {
         });
     }
 
-    // Video preview setup
     window.updatePreview();
 
-    // Show actual content and hide skeleton
     const skeleton = document.getElementById('skeleton-loading');
     const actualContent = document.getElementById('actual-content');
     if (skeleton && actualContent) {
@@ -1577,11 +1583,11 @@ function initProfilePage() {
     }
 }
 
-window.toggleEdit = function(field) {
+window.toggleEdit = function (field) {
     const displayEl = document.getElementById(field + '-display');
-    const inputEl   = document.getElementById(field + '-input');
-    const customEl  = document.getElementById(field + '-custom-input');
-    const saveBtn   = document.getElementById('save-button-container');
+    const inputEl = document.getElementById(field + '-input');
+    const customEl = document.getElementById(field + '-custom-input');
+    const saveBtn = document.getElementById('save-button-container');
     if (!displayEl || !inputEl) return;
     displayEl.classList.add('hidden');
     inputEl.classList.remove('hidden');
@@ -1594,7 +1600,7 @@ window.toggleEdit = function(field) {
     if (saveBtn) saveBtn.classList.remove('hidden');
 };
 
-window.openProfileCropperModal = function(file) {
+window.openProfileCropperModal = function (file) {
     const modal = document.getElementById('cropper-modal');
     const image = document.getElementById('cropper-image');
     const zoomRange = document.getElementById('cropper-zoom-range');
@@ -1616,7 +1622,7 @@ window.openProfileCropperModal = function(file) {
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    
+
     image.onload = function () {
         profileCropperInstance = new Cropper(image, {
             aspectRatio: 1,
@@ -1632,7 +1638,7 @@ window.openProfileCropperModal = function(file) {
     image.src = profileCropperObjectUrl;
 };
 
-window.closeCropperModal = function() {
+window.closeCropperModal = function () {
     const modal = document.getElementById('cropper-modal');
     if (!modal) return;
     modal.classList.add('hidden');
@@ -1647,7 +1653,7 @@ window.closeCropperModal = function() {
     }
 };
 
-window.cancelProfileCropper = function() {
+window.cancelProfileCropper = function () {
     const input = document.getElementById('photo_profile_input');
     if (input) {
         input.value = '';
@@ -1655,7 +1661,7 @@ window.cancelProfileCropper = function() {
     window.closeCropperModal();
 };
 
-window.cropperZoom = function(amount) {
+window.cropperZoom = function (amount) {
     if (!profileCropperInstance) return;
     profileCropperInstance.zoom(amount);
     const zoomRange = document.getElementById('cropper-zoom-range');
@@ -1665,14 +1671,13 @@ window.cropperZoom = function(amount) {
     }
 };
 
-// Listen to range zoom changes
 document.getElementById('cropper-zoom-range')?.addEventListener('input', function (e) {
     if (profileCropperInstance) {
         profileCropperInstance.zoomTo(parseFloat(e.target.value));
     }
 });
 
-window.confirmProfileCrop = function() {
+window.confirmProfileCrop = function () {
     if (!profileCropperInstance || !profileCropperFile) return;
     const outputType = ['image/png', 'image/jpeg'].includes(profileCropperFile.type) ? profileCropperFile.type : 'image/jpeg';
     const outputExt = outputType === 'image/png' ? 'png' : 'jpg';
@@ -1706,7 +1711,7 @@ window.confirmProfileCrop = function() {
     }, outputType, 0.92);
 };
 
-window.validateTanggalLahir = function(input) {
+window.validateTanggalLahir = function (input) {
     const selectedDate = new Date(input.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -1725,14 +1730,14 @@ window.validateTanggalLahir = function(input) {
     }
 };
 
-window.updatePreview = function() {
+window.updatePreview = function () {
     const inputEl = document.getElementById('video-input');
     if (!inputEl) return;
-    const input   = inputEl.value;
+    const input = inputEl.value;
     const preview = document.getElementById('videoPreview');
-    const iframe  = document.getElementById('previewFrame');
+    const iframe = document.getElementById('previewFrame');
     if (!preview || !iframe) return;
-    
+
     const embedUrl = convertToEmbed(input);
     if (embedUrl) { iframe.src = embedUrl; preview.classList.remove('hidden'); }
     else { preview.classList.add('hidden'); iframe.src = ''; }
@@ -1745,7 +1750,7 @@ function convertToEmbed(url) {
     return url;
 }
 
-window.playVideo = function(element, embedUrl) {
+window.playVideo = function (element, embedUrl) {
     const iframe = document.createElement('iframe');
     iframe.className = 'absolute inset-0 w-full h-full';
     iframe.src = embedUrl + '?autoplay=1&rel=0';
@@ -1755,7 +1760,7 @@ window.playVideo = function(element, embedUrl) {
     element.appendChild(iframe);
 };
 
-window.copyLink = function(url) {
+window.copyLink = function (url) {
     navigator.clipboard.writeText(url).then(() => {
         const n = document.createElement('div');
         n.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
@@ -1765,9 +1770,11 @@ window.copyLink = function(url) {
     });
 };
 
-// Modal Toggles (Education)
-window.openPendidikanModal = function() {
-    const modal   = document.getElementById('modal-pendidikan');
+// ==========================================
+// PROFILE MODALS (Education & Experience)
+// ==========================================
+window.openPendidikanModal = function () {
+    const modal = document.getElementById('modal-pendidikan');
     const content = document.getElementById('modal-pendidikan-content');
     if (!modal || !content) return;
     modal.classList.remove('hidden');
@@ -1778,8 +1785,8 @@ window.openPendidikanModal = function() {
     });
 };
 
-window.closePendidikanModal = function() {
-    const modal   = document.getElementById('modal-pendidikan');
+window.closePendidikanModal = function () {
+    const modal = document.getElementById('modal-pendidikan');
     const content = document.getElementById('modal-pendidikan-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -1788,9 +1795,8 @@ window.closePendidikanModal = function() {
     document.getElementById('sekolah-dropdown')?.classList.add('hidden');
 };
 
-// Modal Toggles (Experience)
-window.openPengalamanModal = function() {
-    const modal   = document.getElementById('modal-pengalaman');
+window.openPengalamanModal = function () {
+    const modal = document.getElementById('modal-pengalaman');
     const content = document.getElementById('modal-pengalaman-content');
     if (!modal || !content) return;
     modal.classList.remove('hidden');
@@ -1801,8 +1807,8 @@ window.openPengalamanModal = function() {
     });
 };
 
-window.closePengalamanModal = function() {
-    const modal   = document.getElementById('modal-pengalaman');
+window.closePengalamanModal = function () {
+    const modal = document.getElementById('modal-pengalaman');
     const content = document.getElementById('modal-pengalaman-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -1810,13 +1816,12 @@ window.closePengalamanModal = function() {
     setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
 };
 
-// Handle AJAX Pengalaman Submit
-window.handlePengalamanSubmit = async function(event) {
+window.handlePengalamanSubmit = async function (event) {
     event.preventDefault();
-    const form      = event.target;
+    const form = event.target;
     const submitBtn = document.getElementById('btn-submit-pengalaman');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     const mulaiVal = document.getElementById('form-tahun_mulai')?.value;
     const akhirVal = document.getElementById('form-tahun_akhir')?.value;
@@ -1867,15 +1872,17 @@ window.handlePengalamanSubmit = async function(event) {
     }
 };
 
-// Search Sekolah Logic
+// ==========================================
+// SEARCH SEKOLAH
+// ==========================================
 let searchSekolahTimer = null;
-window.searchSekolah = function(query) {
+window.searchSekolah = function (query) {
     clearTimeout(searchSekolahTimer);
-    const dropdown   = document.getElementById('sekolah-dropdown');
-    const list       = document.getElementById('sekolah-dropdown-list');
+    const dropdown = document.getElementById('sekolah-dropdown');
+    const list = document.getElementById('sekolah-dropdown-list');
     const loadingIcon = document.getElementById('sekolah-loading-icon');
-    const searchIcon  = document.getElementById('sekolah-search-icon');
-    const locale      = document.querySelector('html').getAttribute('lang') || 'id';
+    const searchIcon = document.getElementById('sekolah-search-icon');
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     if (query.length < 2) { if (dropdown) dropdown.classList.add('hidden'); return; }
 
@@ -1887,7 +1894,7 @@ window.searchSekolah = function(query) {
             const response = await fetch(`/${locale}/sekolah/search?q=${encodeURIComponent(query)}`);
             const data = await response.json();
             if (list) list.innerHTML = '';
-            
+
             if (data.length === 0) {
                 if (list) list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">Tidak ada hasil. Ketik nama secara manual.</div>';
             } else {
@@ -1913,8 +1920,10 @@ window.searchSekolah = function(query) {
     }, 400);
 };
 
-// Sertifikat Upload Helpers
-window.handleSertifikatFile = function(input) {
+// ==========================================
+// SERTIFIKAT UPLOAD HELPERS
+// ==========================================
+window.handleSertifikatFile = function (input) {
     const file = input.files[0];
     if (!file) return;
     document.getElementById('sertifikat-upload-placeholder')?.classList.add('hidden');
@@ -1926,7 +1935,7 @@ window.handleSertifikatFile = function(input) {
     if (sizeEl) sizeEl.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
 };
 
-window.clearSertifikatFile = function(event) {
+window.clearSertifikatFile = function (event) {
     if (event) event.stopPropagation();
     const input = document.getElementById('sertifikat-file-input');
     if (input) input.value = '';
@@ -1934,13 +1943,15 @@ window.clearSertifikatFile = function(event) {
     document.getElementById('sertifikat-file-preview')?.classList.add('hidden');
 };
 
-// Modal Detail/Edit Pendidikan
-window.openDetailPendidikan = async function(id) {
+// ==========================================
+// MODAL DETAIL/EDIT PENDIDIKAN
+// ==========================================
+window.openDetailPendidikan = async function (id) {
     window.updateUrlParam('pend', id);
-    const modal   = document.getElementById('modal-detail-pendidikan');
+    const modal = document.getElementById('modal-detail-pendidikan');
     const content = document.getElementById('modal-detail-pendidikan-content');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const TODAY = new Date().toISOString().split('T')[0];
 
     if (!modal || !content) return;
@@ -1958,7 +1969,7 @@ window.openDetailPendidikan = async function(id) {
     document.getElementById('pend-skeleton')?.classList.remove('hidden');
 
     try {
-        const res  = await fetch(`/${locale}/pendidikan/detail?id=${id}`, {
+        const res = await fetch(`/${locale}/pendidikan/detail?id=${id}`, {
             headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
         });
         const json = await res.json();
@@ -1970,15 +1981,15 @@ window.openDetailPendidikan = async function(id) {
         if (idInput) idInput.value = d.id;
 
         const jenjangIcons = {
-            'S1':'🎓','S2':'🎓','S3':'🎓',
-            'D1':'📚','D2':'📚','D3':'📚','D4':'📚',
-            'SMA/SMK':'🏫','SMP':'🏫','SD':'🏫',
-            'Kursus/Pelatihan':'📖'
+            'S1': '🎓', 'S2': '🎓', 'S3': '🎓',
+            'D1': '📚', 'D2': '📚', 'D3': '📚', 'D4': '📚',
+            'SMA/SMK': '🏫', 'SMP': '🏫', 'SD': '🏫',
+            'Kursus/Pelatihan': '📖'
         };
         const iconEl = document.getElementById('pend-view-icon');
-        if (iconEl) iconEl.textContent   = jenjangIcons[d.jenjang] || '🏛️';
+        if (iconEl) iconEl.textContent = jenjangIcons[d.jenjang] || '🏛️';
         const namaEl = document.getElementById('pend-view-nama');
-        if (namaEl) namaEl.textContent    = d.nama_sekolah || '-';
+        if (namaEl) namaEl.textContent = d.nama_sekolah || '-';
         const jenjangEl = document.getElementById('pend-view-jenjang');
         if (jenjangEl) jenjangEl.textContent = d.jenjang || '';
         const jurusanEl = document.getElementById('pend-view-jurusan');
@@ -2016,7 +2027,7 @@ window.openDetailPendidikan = async function(id) {
             lulusField.style.opacity = masihKuliah ? '0.4' : '1';
         }
         if (lulusInput) lulusInput.disabled = masihKuliah;
-        
+
         const errEl = document.getElementById('edit-pend-lulus-error');
         if (errEl) errEl.classList.add('hidden');
 
@@ -2027,9 +2038,9 @@ window.openDetailPendidikan = async function(id) {
     }
 };
 
-window.closeDetailPendidikan = function() {
+window.closeDetailPendidikan = function () {
     window.updateUrlParam('pend', null);
-    const modal   = document.getElementById('modal-detail-pendidikan');
+    const modal = document.getElementById('modal-detail-pendidikan');
     const content = document.getElementById('modal-detail-pendidikan-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -2037,7 +2048,7 @@ window.closeDetailPendidikan = function() {
     setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
 };
 
-window.switchToPendidikanEdit = function() {
+window.switchToPendidikanEdit = function () {
     document.getElementById('pend-view-mode')?.classList.add('hidden');
     document.getElementById('pend-edit-mode')?.classList.remove('hidden');
     document.getElementById('pend-view-actions')?.classList.add('hidden');
@@ -2049,7 +2060,7 @@ window.switchToPendidikanEdit = function() {
     }
 };
 
-window.switchToPendidikanView = function() {
+window.switchToPendidikanView = function () {
     document.getElementById('pend-view-mode')?.classList.remove('hidden');
     document.getElementById('pend-edit-mode')?.classList.add('hidden');
     document.getElementById('pend-view-actions')?.classList.remove('hidden');
@@ -2061,16 +2072,16 @@ window.switchToPendidikanView = function() {
     }
 };
 
-window.savePendidikanEdit = async function() {
-    const id           = document.getElementById('pend-edit-id').value;
+window.savePendidikanEdit = async function () {
+    const id = document.getElementById('pend-edit-id').value;
     const nama_sekolah = document.getElementById('pend-edit-nama_sekolah').value.trim();
-    const jenjang      = document.getElementById('pend-edit-jenjang').value;
-    const jurusan_sek  = document.getElementById('pend-edit-jurusan_sek').value.trim();
-    const tahun_masuk  = document.getElementById('pend-edit-tahun_masuk').value;
-    const tahun_lulus  = document.getElementById('pend-edit-tahun_lulus').value;
+    const jenjang = document.getElementById('pend-edit-jenjang').value;
+    const jurusan_sek = document.getElementById('pend-edit-jurusan_sek').value.trim();
+    const tahun_masuk = document.getElementById('pend-edit-tahun_masuk').value;
+    const tahun_lulus = document.getElementById('pend-edit-tahun_lulus').value;
     const masih_kuliah = document.getElementById('pend-edit-masih_kuliah').checked ? '1' : '0';
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     if (!nama_sekolah || !jenjang || !tahun_masuk) {
         if (window.showErrorAlert) window.showErrorAlert('Harap isi field yang wajib diisi.');
@@ -2108,14 +2119,14 @@ window.savePendidikanEdit = async function() {
     }
 };
 
-window.confirmDeletePendidikan = async function() {
+window.confirmDeletePendidikan = async function () {
     const id = document.getElementById('pend-edit-id').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const confirmed = await window.showConfirmAlert();
     if (!confirmed) return;
     try {
-        const res  = await fetch(`/${locale}/pendidikan/destroy?id=${id}`, {
+        const res = await fetch(`/${locale}/pendidikan/destroy?id=${id}`, {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
         });
@@ -2132,13 +2143,15 @@ window.confirmDeletePendidikan = async function() {
     }
 };
 
-// Modal Detail/Edit Pengalaman Kerja
-window.openDetailPengalaman = async function(id) {
+// ==========================================
+// MODAL DETAIL/EDIT PENGALAMAN KERJA
+// ==========================================
+window.openDetailPengalaman = async function (id) {
     window.updateUrlParam('pkj', id);
-    const modal   = document.getElementById('modal-detail-pengalaman');
+    const modal = document.getElementById('modal-detail-pengalaman');
     const content = document.getElementById('modal-detail-pengalaman-content');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const TODAY = new Date().toISOString().split('T')[0];
 
     if (!modal || !content) return;
@@ -2156,14 +2169,14 @@ window.openDetailPengalaman = async function(id) {
     document.getElementById('pkj-skeleton')?.classList.remove('hidden');
 
     try {
-        const res  = await fetch(`/${locale}/pengalaman-kerja/detail?id=${id}`, {
+        const res = await fetch(`/${locale}/pengalaman-kerja/detail?id=${id}`, {
             headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
         });
         const json = await res.json();
         if (!json.success) return;
         const d = json.data;
         document.getElementById('pkj-skeleton')?.classList.add('hidden');
-        
+
         const idInput = document.getElementById('pkj-edit-id');
         if (idInput) idInput.value = d.id;
 
@@ -2235,7 +2248,7 @@ window.openDetailPengalaman = async function(id) {
             akhirField.style.opacity = masihBekerja ? '0.4' : '1';
         }
         if (akhirInput) akhirInput.disabled = masihBekerja;
-        
+
         const errEl = document.getElementById('edit-pkj-akhir-error');
         if (errEl) errEl.classList.add('hidden');
 
@@ -2246,9 +2259,9 @@ window.openDetailPengalaman = async function(id) {
     }
 };
 
-window.closeDetailPengalaman = function() {
+window.closeDetailPengalaman = function () {
     window.updateUrlParam('pkj', null);
-    const modal   = document.getElementById('modal-detail-pengalaman');
+    const modal = document.getElementById('modal-detail-pengalaman');
     const content = document.getElementById('modal-detail-pengalaman-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -2256,7 +2269,7 @@ window.closeDetailPengalaman = function() {
     setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
 };
 
-window.switchToPengalamanEdit = function() {
+window.switchToPengalamanEdit = function () {
     document.getElementById('pkj-view-mode')?.classList.add('hidden');
     document.getElementById('pkj-edit-mode')?.classList.remove('hidden');
     document.getElementById('pkj-view-actions')?.classList.add('hidden');
@@ -2268,7 +2281,7 @@ window.switchToPengalamanEdit = function() {
     }
 };
 
-window.switchToPengalamanView = function() {
+window.switchToPengalamanView = function () {
     document.getElementById('pkj-view-mode')?.classList.remove('hidden');
     document.getElementById('pkj-edit-mode')?.classList.add('hidden');
     document.getElementById('pkj-view-actions')?.classList.remove('hidden');
@@ -2280,17 +2293,17 @@ window.switchToPengalamanView = function() {
     }
 };
 
-window.savePengalamanEdit = async function() {
-    const id             = document.getElementById('pkj-edit-id').value;
-    const nama_pt        = document.getElementById('pkj-edit-nama_pt').value.trim();
-    const bagian_kerja   = document.getElementById('pkj-edit-bagian_kerja').value.trim();
+window.savePengalamanEdit = async function () {
+    const id = document.getElementById('pkj-edit-id').value;
+    const nama_pt = document.getElementById('pkj-edit-nama_pt').value.trim();
+    const bagian_kerja = document.getElementById('pkj-edit-bagian_kerja').value.trim();
     const jenis_pekerjaan = document.getElementById('pkj-edit-jenis_pekerjaan').value;
-    const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim();
-    const tahun_mulai  = document.getElementById('pkj-edit-tahun_mulai').value;
-    const tahun_akhir  = document.getElementById('pkj-edit-tahun_akhir').value;
+    const deskripsi = document.getElementById('pkj-edit-deskripsi').value.trim();
+    const tahun_mulai = document.getElementById('pkj-edit-tahun_mulai').value;
+    const tahun_akhir = document.getElementById('pkj-edit-tahun_akhir').value;
     const masih_bekerja = document.getElementById('pkj-edit-masih_bekerja').checked ? '1' : '0';
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     if (!nama_pt || !bagian_kerja || !jenis_pekerjaan || !tahun_mulai) {
         if (window.showErrorAlert) window.showErrorAlert('Harap isi field yang wajib diisi.');
@@ -2308,7 +2321,7 @@ window.savePengalamanEdit = async function() {
     if (masih_bekerja === '0' && tahun_akhir) body.append('tahun_akhir', tahun_akhir);
 
     try {
-        const res  = await fetch(`/${locale}/pengalaman-kerja/update?id=${id}`, {
+        const res = await fetch(`/${locale}/pengalaman-kerja/update?id=${id}`, {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body.toString()
@@ -2327,14 +2340,14 @@ window.savePengalamanEdit = async function() {
     }
 };
 
-window.confirmDeletePengalaman = async function() {
+window.confirmDeletePengalaman = async function () {
     const id = document.getElementById('pkj-edit-id').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const confirmed = await window.showConfirmAlert();
     if (!confirmed) return;
     try {
-        const res  = await fetch(`/${locale}/pengalaman-kerja/destroy?id=${id}`, {
+        const res = await fetch(`/${locale}/pengalaman-kerja/destroy?id=${id}`, {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
         });
@@ -2351,16 +2364,20 @@ window.confirmDeletePengalaman = async function() {
     }
 };
 
-// Helper: update URL parameter
-window.updateUrlParam = function(key, value) {
+// ==========================================
+// HELPER: UPDATE URL PARAM
+// ==========================================
+window.updateUrlParam = function (key, value) {
     const url = new URL(window.location.href);
     if (value) url.searchParams.set(key, value);
     else url.searchParams.delete(key);
     window.history.replaceState({}, '', url.toString());
 };
 
-// Date helper logic for modals
-window.onAddPendTahunMasukChange = function(masukVal) {
+// ==========================================
+// DATE HELPER FOR MODALS
+// ==========================================
+window.onAddPendTahunMasukChange = function (masukVal) {
     const lulusInput = document.getElementById('add-pend-tahun_lulus');
     if (!lulusInput) return;
     lulusInput.min = masukVal;
@@ -2374,7 +2391,7 @@ window.onAddPendTahunMasukChange = function(masukVal) {
     }
 };
 
-window.validateAddPendTahunLulus = function(input) {
+window.validateAddPendTahunLulus = function (input) {
     const masukVal = document.getElementById('add-pend-tahun_masuk')?.value;
     if (masukVal && input.value && input.value < masukVal) {
         const errEl = document.getElementById('add-pend-lulus-error');
@@ -2386,7 +2403,7 @@ window.validateAddPendTahunLulus = function(input) {
     }
 };
 
-window.toggleAddPendTahunLulus = function(checkbox) {
+window.toggleAddPendTahunLulus = function (checkbox) {
     const field = document.getElementById('add-pend-tahun-lulus-field');
     const input = document.getElementById('add-pend-tahun_lulus');
     if (!field || !input) return;
@@ -2399,7 +2416,7 @@ window.toggleAddPendTahunLulus = function(checkbox) {
     }
 };
 
-window.onEditPendTahunMasukChange = function(masukVal) {
+window.onEditPendTahunMasukChange = function (masukVal) {
     const lulusInput = document.getElementById('pend-edit-tahun_lulus');
     if (!lulusInput) return;
     lulusInput.min = masukVal;
@@ -2413,7 +2430,7 @@ window.onEditPendTahunMasukChange = function(masukVal) {
     }
 };
 
-window.validateEditPendTahunLulus = function(input) {
+window.validateEditPendTahunLulus = function (input) {
     const masukVal = document.getElementById('pend-edit-tahun_masuk')?.value;
     if (masukVal && input.value && input.value < masukVal) {
         const errEl = document.getElementById('edit-pend-lulus-error');
@@ -2425,7 +2442,7 @@ window.validateEditPendTahunLulus = function(input) {
     }
 };
 
-window.toggleEditTahunLulus = function(checkbox) {
+window.toggleEditTahunLulus = function (checkbox) {
     const field = document.getElementById('pend-edit-tahun-lulus-field');
     const input = document.getElementById('pend-edit-tahun_lulus');
     if (!field || !input) return;
@@ -2438,7 +2455,7 @@ window.toggleEditTahunLulus = function(checkbox) {
     }
 };
 
-window.onAddPkjTahunMulaiChange = function(mulaiVal) {
+window.onAddPkjTahunMulaiChange = function (mulaiVal) {
     const akhirInput = document.getElementById('form-tahun_akhir');
     if (!akhirInput) return;
     akhirInput.min = mulaiVal;
@@ -2452,7 +2469,7 @@ window.onAddPkjTahunMulaiChange = function(mulaiVal) {
     }
 };
 
-window.validateAddPkjTahunAkhir = function(input) {
+window.validateAddPkjTahunAkhir = function (input) {
     const mulaiVal = document.getElementById('form-tahun_mulai')?.value;
     if (mulaiVal && input.value && input.value < mulaiVal) {
         const errEl = document.getElementById('add-pkj-akhir-error');
@@ -2464,7 +2481,7 @@ window.validateAddPkjTahunAkhir = function(input) {
     }
 };
 
-window.toggleAddPkjTahunAkhir = function(checkbox) {
+window.toggleAddPkjTahunAkhir = function (checkbox) {
     const field = document.getElementById('add-pkj-tahun-akhir-field');
     const input = document.getElementById('form-tahun_akhir');
     if (!field || !input) return;
@@ -2477,7 +2494,7 @@ window.toggleAddPkjTahunAkhir = function(checkbox) {
     }
 };
 
-window.onEditPkjTahunMulaiChange = function(mulaiVal) {
+window.onEditPkjTahunMulaiChange = function (mulaiVal) {
     const akhirInput = document.getElementById('pkj-edit-tahun_akhir');
     if (!akhirInput) return;
     akhirInput.min = mulaiVal;
@@ -2491,7 +2508,7 @@ window.onEditPkjTahunMulaiChange = function(mulaiVal) {
     }
 };
 
-window.validateEditPkjTahunAkhir = function(input) {
+window.validateEditPkjTahunAkhir = function (input) {
     const mulaiVal = document.getElementById('pkj-edit-tahun_mulai')?.value;
     if (mulaiVal && input.value && input.value < mulaiVal) {
         const errEl = document.getElementById('edit-pkj-akhir-error');
@@ -2503,7 +2520,7 @@ window.validateEditPkjTahunAkhir = function(input) {
     }
 };
 
-window.toggleEditTahunAkhir = function(checkbox) {
+window.toggleEditTahunAkhir = function (checkbox) {
     const field = document.getElementById('pkj-edit-tahun-akhir-field');
     const input = document.getElementById('pkj-edit-tahun_akhir');
     if (!field || !input) return;
@@ -2516,7 +2533,7 @@ window.toggleEditTahunAkhir = function(checkbox) {
     }
 };
 
-window.toYMD = function(dateStr) {
+window.toYMD = function (dateStr) {
     if (!dateStr) return '';
     const s = String(dateStr).trim();
     if (/^\d{2}-\d{2}-\d{4}$/.test(s)) {
@@ -2526,10 +2543,10 @@ window.toYMD = function(dateStr) {
     return s.substring(0, 10);
 };
 
-/* =====================================================================
-   ALPINE.JS KEAHLIAN TAMBAHAN GLOBAL COMPONENT
-   ===================================================================== */
-window.keahlianTambahan = function(config) {
+// ==========================================
+// ALPINE.JS KEAHLIAN TAMBAHAN
+// ==========================================
+window.keahlianTambahan = function (config) {
     return {
         keahlianOptions: config.options || [],
         mainSkillId: config.mainSkillId || null,
@@ -2586,9 +2603,9 @@ window.keahlianTambahan = function(config) {
                 const locale = document.querySelector('html').getAttribute('lang') || 'id';
                 const response = await fetch(`/${locale}/keahlian-tambahan/destroy?id=${id}`, {
                     method: 'DELETE',
-                    headers: { 
-                        'X-CSRF-TOKEN': config.csrfToken || document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 
-                        'Accept': 'application/json' 
+                    headers: {
+                        'X-CSRF-TOKEN': config.csrfToken || document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
                     }
                 });
                 const data = await response.json();
@@ -2608,11 +2625,11 @@ window.keahlianTambahan = function(config) {
     };
 };
 
-window.submitCustomKeahlian = async function() {
+window.submitCustomKeahlian = async function () {
     const input = document.getElementById('custom-keahlian-input');
     if (!input) return;
     const customKeahlian = input.value.trim();
-    
+
     if (!customKeahlian) {
         if (window.showErrorAlert) {
             window.showErrorAlert('Masukkan nama keahlian terlebih dahulu');
@@ -2621,7 +2638,7 @@ window.submitCustomKeahlian = async function() {
         }
         return;
     }
-    
+
     if (customKeahlian.length > 100) {
         if (window.showErrorAlert) {
             window.showErrorAlert('Nama keahlian maksimal 100 karakter');
@@ -2630,20 +2647,20 @@ window.submitCustomKeahlian = async function() {
         }
         return;
     }
-    
+
     const submitBtn = document.querySelector('#custom-keahlian-input + button');
     const originalText = submitBtn ? submitBtn.innerHTML : '';
-    
+
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Mengirim...';
     }
-    
+
     const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const formData = new FormData();
     formData.append('custom_keahlian_tambahan', customKeahlian);
-    
+
     try {
         const response = await fetch(`/${locale}/keahlian-tambahan/custom`, {
             method: 'POST',
@@ -2653,9 +2670,9 @@ window.submitCustomKeahlian = async function() {
             },
             body: formData
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             input.value = '';
             if (window.showSuccessAlert) {
@@ -2686,11 +2703,10 @@ window.submitCustomKeahlian = async function() {
     }
 };
 
-// Event listener for Enter on custom skill input
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const customInput = document.getElementById('custom-keahlian-input');
     if (customInput) {
-        customInput.addEventListener('keypress', function(e) {
+        customInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 window.submitCustomKeahlian();
@@ -2699,18 +2715,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-/* ==========================================
-   COMPONENT: CARD POSTINGAN
-   ========================================== */
+// ==========================================
+// COMPONENT: CARD POSTINGAN - PLAY VIDEO
+// ==========================================
 if (typeof window.playVideoInCard === 'undefined') {
-    /**
-     * Mainkan video langsung di dalam card tanpa navigasi.
-     *
-     * @param {string} wrapperId  - ID dari elemen .video-preview-wrapper
-     * @param {string} type       - 'youtube' | 'direct'
-     * @param {string} src        - YouTube video ID atau URL video langsung
-     */
-    window.playVideoInCard = function(wrapperId, type, src) {
+    window.playVideoInCard = function (wrapperId, type, src) {
         const wrapper = document.getElementById(wrapperId);
         if (!wrapper) return;
 
@@ -2718,7 +2727,6 @@ if (typeof window.playVideoInCard === 'undefined') {
         if (!embedContainer) return;
 
         if (type === 'youtube') {
-            // Buat iframe YouTube dengan autoplay
             const iframe = document.createElement('iframe');
             iframe.src = 'https://www.youtube.com/embed/' + src + '?autoplay=1&rel=0&modestbranding=1';
             iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
@@ -2729,7 +2737,6 @@ if (typeof window.playVideoInCard === 'undefined') {
             embedContainer.innerHTML = '';
             embedContainer.appendChild(iframe);
         } else if (type === 'direct') {
-            // Buat native video element
             const video = document.createElement('video');
             video.src = src;
             video.controls = true;
@@ -2742,29 +2749,40 @@ if (typeof window.playVideoInCard === 'undefined') {
             embedContainer.appendChild(video);
         }
 
-        // Tandai wrapper sebagai playing → sembunyikan thumbnail & overlay
         wrapper.classList.add('playing');
-        // Hapus onclick agar tidak re-trigger
         wrapper.onclick = null;
     };
 }
 
-/* ==========================================
-   COMPONENT: UP PAGE (BACK TO TOP)
-   ========================================== */
+// ==========================================
+// COMPONENT: BACK TO TOP
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById("backToTop");
     if (!btn) return;
 
-    window.addEventListener("scroll", function () {
-        if (window.scrollY > 200) {
-            btn.classList.remove("hidden");
-        } else {
-            btn.classList.add("hidden");
+    window.addEventListener("scroll", handleScroll, true);
+
+    function handleScroll(e) {
+        const target = e.target;
+        if (target === document || (target.tagName && target.tagName.toLowerCase() === 'main')) {
+            const scrollTop = target === document ? (window.scrollY || document.documentElement.scrollTop) : target.scrollTop;
+            if (scrollTop > 200) {
+                btn.classList.remove("hidden");
+            } else {
+                btn.classList.add("hidden");
+            }
         }
-    });
+    }
 
     btn.addEventListener("click", function () {
+        const main = document.querySelector('main');
+        if (main && main.scrollTop > 0) {
+            main.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
         window.scrollTo({
             top: 0,
             behavior: "smooth"
@@ -2772,9 +2790,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ==========================================
-   COMPONENT: OFFLINE
-   ========================================== */
+// ==========================================
+// COMPONENT: OFFLINE
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('offline-container');
     if (!container) return;
@@ -2784,9 +2802,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAndRedirect() {
         if (navigator.onLine) {
-            const destination = document.referrer && !document.referrer.includes('offline') 
-                                ? document.referrer 
-                                : homeUrl;
+            const destination = document.referrer && !document.referrer.includes('offline')
+                ? document.referrer
+                : homeUrl;
             window.location.href = destination;
         }
     }
@@ -2806,9 +2824,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ==========================================
-   COMPONENT: GET APP
-   ========================================== */
+// ==========================================
+// COMPONENT: GET APP - QR CODE
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const qrContainer = document.getElementById("qrcode");
     if (!qrContainer) return;
@@ -2825,26 +2843,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ==========================================
-   COMPONENT: HELP
-   ========================================== */
-document.addEventListener('DOMContentLoaded', function() {
-    // Get all FAQ items
+// ==========================================
+// COMPONENT: HELP - FAQ AUTO SLIDE
+// ==========================================
+document.addEventListener('DOMContentLoaded', function () {
     const faqItems = document.querySelectorAll('.faq-item');
     if (faqItems.length === 0) return;
-    
-    // Auto-slide effect: open one by one with delay
+
     let currentIndex = 0;
-    
+
     function openNextFAQ() {
         if (currentIndex < faqItems.length) {
             const item = faqItems[currentIndex];
             const answer = item.querySelector('.faq-answer');
             const icon = item.querySelector('.faq-icon');
-            
+
             if (!answer || !icon) return;
 
-            // Close all other FAQs
             faqItems.forEach((otherItem, idx) => {
                 if (idx !== currentIndex) {
                     const otherAnswer = otherItem.querySelector('.faq-answer');
@@ -2856,42 +2871,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
-            // Open current FAQ with animation
+
             answer.style.maxHeight = answer.scrollHeight + 'px';
             answer.style.opacity = '1';
             icon.style.transform = 'rotate(180deg)';
-            
-            // Move to next after delay
+
             currentIndex++;
             setTimeout(openNextFAQ, 3000);
         } else {
-            // Reset to first after all opened
             setTimeout(() => {
                 currentIndex = 0;
                 openNextFAQ();
             }, 2000);
         }
     }
-    
-    // Start auto-slide
+
     setTimeout(openNextFAQ, 500);
-    
-    // Add click functionality for manual toggle
+
     faqItems.forEach((item, index) => {
         const question = item.querySelector('h3');
         const answer = item.querySelector('.faq-answer');
         const icon = item.querySelector('.faq-icon');
-        
+
         if (!question || !answer || !icon) return;
 
-        question.addEventListener('click', function(e) {
+        question.addEventListener('click', function (e) {
             e.stopPropagation();
-            
-            // Toggle current FAQ
+
             const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
-            
-            // Close all FAQs
+
             faqItems.forEach((otherItem) => {
                 const otherAnswer = otherItem.querySelector('.faq-answer');
                 const otherIcon = otherItem.querySelector('.faq-icon');
@@ -2901,29 +2909,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     otherIcon.style.transform = 'rotate(0deg)';
                 }
             });
-            
-            // Open clicked FAQ if it was closed
+
             if (!isOpen) {
                 answer.style.maxHeight = answer.scrollHeight + 'px';
                 answer.style.opacity = '1';
                 icon.style.transform = 'rotate(180deg)';
-                
-                // Update current index for auto-slide
                 currentIndex = index + 1;
             }
         });
     });
 });
 
-/* ==========================================
-   COMPONENT: SPLASH SCREEN
-   ========================================== */
-(function() {
-    // Source-of-truth ada di SERVER (cookie 'splash_shown'), dicek di Layout.blade.php
-    // sebelum @include('components.splash'). Kalau cookie itu sudah ada, server tidak
-    // akan mengirim markup splash sama sekali -- jadi tidak ada flash di halaman berikutnya.
-    // JS di sini hanya menjalankan animasi untuk kunjungan pertama, lalu menulis cookie
-    // tersebut begitu splash selesai/dilewati, supaya request berikutnya tidak menampilkannya lagi.
+// ==========================================
+// COMPONENT: SPLASH SCREEN
+// ==========================================
+(function () {
     const SPLASH_COOKIE = 'splash_shown';
     const SPLASH_TTL_DAYS = 1;
 
@@ -2938,7 +2938,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('DOMContentLoaded', () => {
         const splashRoot = document.getElementById('splash-screen-root');
-        if (!splashRoot) return; // Server sudah menentukan splash tidak perlu ditampilkan
+        if (!splashRoot) return;
 
         const doorLeft = document.getElementById('doorLeft');
         const doorRight = document.getElementById('doorRight');
@@ -3056,17 +3056,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         initSplash();
 
-        window.resetSplash = function() {
+        window.resetSplash = function () {
             clearSplashShownCookie();
             window.location.reload();
         };
     });
 })();
 
-/* ==========================================
-   COMPONENT: MOBILE NAVIGATION
-   ========================================== */
-window.toggleMobileFab = function() {
+// ==========================================
+// COMPONENT: MOBILE NAVIGATION
+// ==========================================
+window.toggleMobileFab = function () {
     const sheet = document.getElementById('mobile-fab-sheet');
     const overlay = document.getElementById('mobile-fab-overlay');
     const icon = document.getElementById('mobile-fab-icon');
@@ -3077,16 +3077,16 @@ window.toggleMobileFab = function() {
     if (isOpen) {
         window.closeMobileFab();
     } else {
-        window.closeMobileProfile(); // tutup sheet lain
+        window.closeMobileProfile();
         overlay.classList.remove('hidden');
-        overlay.offsetHeight; // force reflow
+        overlay.offsetHeight;
         overlay.classList.remove('opacity-0');
         sheet.classList.remove('translate-y-full');
         if (icon) icon.style.transform = 'rotate(45deg)';
     }
 };
 
-window.closeMobileFab = function() {
+window.closeMobileFab = function () {
     const sheet = document.getElementById('mobile-fab-sheet');
     const overlay = document.getElementById('mobile-fab-overlay');
     const icon = document.getElementById('mobile-fab-icon');
@@ -3098,7 +3098,7 @@ window.closeMobileFab = function() {
     setTimeout(() => overlay.classList.add('hidden'), 300);
 };
 
-window.toggleMobileProfile = function() {
+window.toggleMobileProfile = function () {
     const sheet = document.getElementById('mobile-profile-sheet');
     const overlay = document.getElementById('mobile-profile-overlay');
     if (!sheet || !overlay) return;
@@ -3116,7 +3116,7 @@ window.toggleMobileProfile = function() {
     }
 };
 
-window.closeMobileProfile = function() {
+window.closeMobileProfile = function () {
     const sheet = document.getElementById('mobile-profile-sheet');
     const overlay = document.getElementById('mobile-profile-overlay');
     if (!sheet || !overlay) return;
@@ -3126,7 +3126,7 @@ window.closeMobileProfile = function() {
     setTimeout(() => overlay.classList.add('hidden'), 300);
 };
 
-window.syncDarkModeToggle = function() {
+window.syncDarkModeToggle = function () {
     const isDark = document.documentElement.classList.contains('dark');
     const toggleSpan = document.querySelector('#mobile-dark-toggle span');
     const toggleDiv = document.getElementById('mobile-dark-toggle');
@@ -3146,26 +3146,26 @@ window.syncDarkModeToggle = function() {
     }
 };
 
-window.toggleMobileDarkMode = function() {
+window.toggleMobileDarkMode = function () {
     const html = document.documentElement;
     html.classList.toggle('dark');
     localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
     window.syncDarkModeToggle();
 };
 
-window.changeLanguageMobile = function(lang) {
+window.changeLanguageMobile = function (lang) {
     window.persistLocaleChoice(lang);
     window.location.reload();
 };
 
-window.persistLocaleChoice = function(lang) {
+window.persistLocaleChoice = function (lang) {
     localStorage.setItem('lang', lang);
     const days = 365;
     const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
     document.cookie = `lang=${lang}; expires=${expires}; path=/; SameSite=Lax`;
 };
 
-window.toggleGuestSheet = function() {
+window.toggleGuestSheet = function () {
     const sheet = document.getElementById('guest-sheet');
     const overlay = document.getElementById('guest-sheet-overlay');
     if (!sheet || !overlay) return;
@@ -3177,12 +3177,12 @@ window.toggleGuestSheet = function() {
     } else {
         sheet.classList.remove('translate-y-full');
         overlay.classList.remove('hidden');
-        overlay.offsetHeight; // force reflow
+        overlay.offsetHeight;
         overlay.classList.remove('opacity-0');
     }
 };
 
-window.closeGuestSheet = function() {
+window.closeGuestSheet = function () {
     const sheet = document.getElementById('guest-sheet');
     const overlay = document.getElementById('guest-sheet-overlay');
     if (!sheet || !overlay) return;
@@ -3192,14 +3192,14 @@ window.closeGuestSheet = function() {
     setTimeout(() => overlay.classList.add('hidden'), 300);
 };
 
-window.toggleGuestDarkMode = function() {
+window.toggleGuestDarkMode = function () {
     const html = document.documentElement;
     html.classList.toggle('dark');
     localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
     window.syncGuestDarkToggle();
 };
 
-window.syncGuestDarkToggle = function() {
+window.syncGuestDarkToggle = function () {
     const isDark = document.documentElement.classList.contains('dark');
     const toggleSpan = document.querySelector('#guest-dark-toggle span');
     if (toggleSpan) {
@@ -3211,16 +3211,15 @@ window.syncGuestDarkToggle = function() {
     }
 };
 
-window.changeGuestLanguage = function(lang) {
+window.changeGuestLanguage = function (lang) {
     window.persistLocaleChoice(lang);
     window.location.reload();
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     window.syncDarkModeToggle();
     window.syncGuestDarkToggle();
 
-    // Swipe to close sheet (Auth & Guest)
     ['mobile-fab-sheet', 'mobile-profile-sheet', 'guest-sheet'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -3246,10 +3245,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-/* ==========================================
-   COMPONENT: SIDEBAR
-   ========================================== */
-window.previewPhoto = function(event) {
+// ==========================================
+// COMPONENT: SIDEBAR
+// ==========================================
+window.previewPhoto = function (event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -3260,7 +3259,7 @@ window.previewPhoto = function(event) {
     reader.readAsDataURL(file);
 };
 
-window.toggleSidebarSettingDropdown = function() {
+window.toggleSidebarSettingDropdown = function () {
     const el = document.getElementById('settingMenu');
     const arrow = document.getElementById('settingArrow');
     if (el && arrow) {
@@ -3269,7 +3268,7 @@ window.toggleSidebarSettingDropdown = function() {
     }
 };
 
-window.toggleSidebarDarkMode = function() {
+window.toggleSidebarDarkMode = function () {
     const html = document.documentElement;
     const isDark = html.classList.toggle('dark');
     localStorage.setItem('darkMode', isDark);
@@ -3278,7 +3277,6 @@ window.toggleSidebarDarkMode = function() {
     if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 };
 
-// Inisialisasi dark mode dari localStorage saat halaman siap
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('darkMode') === 'true' || localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
@@ -3287,8 +3285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Tutup setting dropdown saat klik di luar
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const settingMenu = document.getElementById('settingMenu');
     if (!settingMenu) return;
     const isToggleBtn = e.target.closest('button[onclick*="toggleSidebarSettingDropdown"]');
@@ -3298,7 +3295,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Search functionality
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('sidebarSearch');
     const searchResults = document.getElementById('searchResults');
@@ -3320,7 +3316,7 @@ document.addEventListener('DOMContentLoaded', () => {
             || key;
     }
 
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         const q = this.value.toLowerCase().trim();
         if (!q) { searchResults.classList.add('hidden'); return; }
         const filtered = allMenus
@@ -3351,9 +3347,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ==========================================
-   COMPONENT: HEADER
-   ========================================== */
+// ==========================================
+// COMPONENT: HEADER - UNIFIED SEARCH
+// ==========================================
 (function () {
     const currentLocale = document.documentElement.lang || 'id';
 
@@ -3361,24 +3357,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return !!document.getElementById('postingan-container');
     }
 
-    // Live post filter logic (only runs on dashboard)
     function performPostSearch(term) {
         if (!isDashboard()) return;
 
-        const allPosts   = document.querySelectorAll('#postingan-container .post-card');
+        const allPosts = document.querySelectorAll('#postingan-container .post-card');
         const pagination = document.getElementById('postingan-pagination');
         const noResultEl = document.getElementById('postingan-no-results');
 
-        const badge      = document.getElementById('header-post-search-badge');
-        const countEl    = document.getElementById('header-post-search-count');
-        const badgeMob   = document.getElementById('header-post-search-badge-mobile');
+        const badge = document.getElementById('header-post-search-badge');
+        const countEl = document.getElementById('header-post-search-count');
+        const badgeMob = document.getElementById('header-post-search-badge-mobile');
         const countMobEl = document.getElementById('header-post-search-count-mobile');
-        const clearBtn   = document.getElementById('header-post-search-clear');
+        const clearBtn = document.getElementById('header-post-search-clear');
 
         if (term.length < 2) {
             allPosts.forEach(p => { p.style.display = ''; restoreTitle(p); });
             if (pagination) pagination.style.display = '';
-            if (badge)    badge.style.display    = 'none';
+            if (badge) badge.style.display = 'none';
             if (badgeMob) badgeMob.classList.add('hidden');
             if (clearBtn) clearBtn.style.display = 'none';
             if (noResultEl) noResultEl.remove();
@@ -3392,11 +3387,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let visible = 0;
         allPosts.forEach(post => {
             const dataTitle = post.getAttribute('data-post-title') || '';
-            const dataDesc  = post.getAttribute('data-post-description') || '';
-            const dataAuth  = post.getAttribute('data-post-author') || '';
+            const dataDesc = post.getAttribute('data-post-description') || '';
+            const dataAuth = post.getAttribute('data-post-author') || '';
             const uiTitleEl = post.querySelector('h3');
-            const uiTitle   = uiTitleEl ? uiTitleEl.innerText.toLowerCase() : '';
-            const lc  = term.toLowerCase();
+            const uiTitle = uiTitleEl ? uiTitleEl.innerText.toLowerCase() : '';
+            const lc = term.toLowerCase();
             const hit = dataTitle.includes(lc) || dataDesc.includes(lc) || dataAuth.includes(lc) || uiTitle.includes(lc);
 
             if (hit) {
@@ -3448,7 +3443,6 @@ document.addEventListener('DOMContentLoaded', () => {
         h3.innerHTML = h3.dataset.originalText;
     }
 
-    // Global search suggestions
     function fetchSuggestions(query, containerEl, suggestionsUrl, searchUrl) {
         if (!containerEl) return;
         if (query.length < 2) { containerEl.classList.add('hidden'); return; }
@@ -3459,7 +3453,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     containerEl.innerHTML = `<div class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">Tidak ada hasil</div>`;
                 } else {
                     const grouped = data.reduce((acc, item) => { acc[item.type] = acc[item.type] || []; acc[item.type].push(item); return acc; }, {});
-                    const titles  = { mahasiswa: 'Mahasiswa', project: 'Project', sertifikat: 'Sertifikat', postingan: 'Postingan' };
+                    const titles = { mahasiswa: 'Mahasiswa', project: 'Project', sertifikat: 'Sertifikat', postingan: 'Postingan' };
                     let html = '';
                     Object.keys(titles).forEach(type => {
                         const items = grouped[type] || [];
@@ -3487,17 +3481,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initUnifiedSearch() {
         const desktopInput = document.getElementById('unified-search-input');
-        const mobileInput  = document.getElementById('unified-search-input-mobile');
-        const clearBtn     = document.getElementById('header-post-search-clear');
-        const suggDesktop  = document.getElementById('search-suggestions');
-        const suggMobile   = document.getElementById('search-suggestions-mobile');
+        const mobileInput = document.getElementById('unified-search-input-mobile');
+        const clearBtn = document.getElementById('header-post-search-clear');
+        const suggDesktop = document.getElementById('search-suggestions');
+        const suggMobile = document.getElementById('search-suggestions-mobile');
 
         if (!desktopInput && !mobileInput) return;
 
         const suggestionsUrl = desktopInput?.dataset.suggestionsUrl || mobileInput?.dataset.suggestionsUrl || '/search/suggestions';
         const searchUrl = desktopInput?.dataset.searchUrl || mobileInput?.dataset.searchUrl || '/search';
 
-        // Check if any filter is active — show reset button if so
         const resetBtn = document.getElementById('filter-reset-btn');
         function checkFiltersActive() {
             if (!resetBtn) return;
@@ -3512,15 +3505,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function onInput(e) {
             const term = e.target.value.trim();
-            // Sync both inputs
             if (e.target === desktopInput && mobileInput) mobileInput.value = e.target.value;
-            if (e.target === mobileInput && desktopInput)  desktopInput.value = e.target.value;
+            if (e.target === mobileInput && desktopInput) desktopInput.value = e.target.value;
 
-            // Live post filter (dashboard only)
             clearTimeout(postTimer);
             postTimer = setTimeout(() => performPostSearch(term), 280);
 
-            // Suggestions (global search)
             clearTimeout(suggTimer);
             const targetSugg = e.target === desktopInput ? suggDesktop : suggMobile;
             suggTimer = setTimeout(() => fetchSuggestions(term, targetSugg, suggestionsUrl, searchUrl), 250);
@@ -3529,33 +3519,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (desktopInput) desktopInput.addEventListener('input', onInput);
-        if (mobileInput)  mobileInput.addEventListener('input', onInput);
+        if (mobileInput) mobileInput.addEventListener('input', onInput);
 
         if (clearBtn) {
             clearBtn.addEventListener('click', function () {
                 if (desktopInput) desktopInput.value = '';
-                if (mobileInput)  mobileInput.value  = '';
+                if (mobileInput) mobileInput.value = '';
                 performPostSearch('');
                 if (suggDesktop) suggDesktop.classList.add('hidden');
-                if (suggMobile)  suggMobile.classList.add('hidden');
+                if (suggMobile) suggMobile.classList.add('hidden');
                 checkFiltersActive();
             });
         }
 
-        // Filter dropdowns — also trigger post search sync
-        ['filter-jurusan','filter-keahlian','filter-angkatan'].forEach(id => {
+        ['filter-jurusan', 'filter-keahlian', 'filter-angkatan'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', checkFiltersActive);
         });
 
         checkFiltersActive();
 
-        // Close suggestions on outside click
         document.addEventListener('click', function (e) {
             if (!e.target.closest('#unified-search-input') && !e.target.closest('#search-suggestions') &&
                 !e.target.closest('#unified-search-input-mobile') && !e.target.closest('#search-suggestions-mobile')) {
                 if (suggDesktop) suggDesktop.classList.add('hidden');
-                if (suggMobile)  suggMobile.classList.add('hidden');
+                if (suggMobile) suggMobile.classList.add('hidden');
             }
         });
     }
@@ -3563,7 +3551,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('DOMContentLoaded', initUnifiedSearch);
 })();
 
-// Navigate to search route helper
 document.addEventListener('DOMContentLoaded', function () {
     const desktopInput = document.getElementById('unified-search-input');
     const mobileInput = document.getElementById('unified-search-input-mobile');
@@ -3572,19 +3559,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchUrl = desktopInput?.dataset.searchUrl || mobileInput?.dataset.searchUrl || '/search';
 
     function buildSearchUrl(inputId, jurusanId, keahlianId, angkatanId) {
-        const q        = document.getElementById(inputId)?.value?.trim() || '';
-        const jurusan  = document.getElementById(jurusanId)?.value  || '';
+        const q = document.getElementById(inputId)?.value?.trim() || '';
+        const jurusan = document.getElementById(jurusanId)?.value || '';
         const keahlian = document.getElementById(keahlianId)?.value || '';
         const angkatan = document.getElementById(angkatanId)?.value || '';
-        const params   = new URLSearchParams();
-        if (q)        params.set('q', q);
-        if (jurusan)  params.set('jurusan', jurusan);
+        const params = new URLSearchParams();
+        if (q) params.set('q', q);
+        if (jurusan) params.set('jurusan', jurusan);
         if (keahlian) params.set('keahlian', keahlian);
         if (angkatan) params.set('angkatan', angkatan);
         return `${searchUrl}${params.toString() ? '?' + params.toString() : ''}`;
     }
 
-    // Desktop filter button
     const filterBtn = document.getElementById('filter-search-btn');
     if (filterBtn) {
         filterBtn.addEventListener('click', function () {
@@ -3597,7 +3583,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Also allow pressing Enter on the unified search input
     const unifiedInput = document.getElementById('unified-search-input');
     if (unifiedInput) {
         unifiedInput.addEventListener('keydown', function (e) {
@@ -3612,7 +3597,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Mobile filter button
     const filterBtnMobile = document.getElementById('filter-search-btn-mobile');
     if (filterBtnMobile) {
         filterBtnMobile.addEventListener('click', function () {
@@ -3625,7 +3609,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Mobile Enter key
     const mobInput = document.getElementById('unified-search-input-mobile');
     if (mobInput) {
         mobInput.addEventListener('keydown', function (e) {
@@ -3641,8 +3624,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Notification Bell Alpine Component
-window.notificationBell = function(data) {
+// ==========================================
+// COMPONENT: NOTIFICATION BELL
+// ==========================================
+window.notificationBell = function (data) {
     const currentLocale = document.documentElement.lang || 'id';
 
     return {
@@ -3660,12 +3645,12 @@ window.notificationBell = function(data) {
             return notifications.filter(item => {
                 if (item.read === 1 || item.read === true) return false;
                 const notifData = item.data || {};
-                const selected  = notifData.selected_users;
+                const selected = notifData.selected_users;
                 if (notifData.target_type === 'specific') {
                     if (!selected) return false;
                     if (Array.isArray(selected)) return selected.map(Number).includes(Number(this.userId));
                     if (typeof selected === 'string' && selected.startsWith('[')) {
-                        try { const p = JSON.parse(selected); return Array.isArray(p) ? p.map(Number).includes(Number(this.userId)) : false; } catch(e) {}
+                        try { const p = JSON.parse(selected); return Array.isArray(p) ? p.map(Number).includes(Number(this.userId)) : false; } catch (e) { }
                     }
                     return Number(selected) === Number(this.userId);
                 }
@@ -3683,12 +3668,12 @@ window.notificationBell = function(data) {
         },
 
         getCurrentNotificationIds() { return this.notifications.map(n => n.id); },
-        getUnreadNotificationIds()  { return this.notifications.filter(n => !n.read).map(n => n.id); },
+        getUnreadNotificationIds() { return this.notifications.filter(n => !n.read).map(n => n.id); },
 
         getIconBg(type) {
             const colors = {
-                'user-registered':      'bg-gradient-to-br from-blue-500 to-indigo-600',
-                'project-created':      'bg-gradient-to-br from-green-500 to-emerald-600',
+                'user-registered': 'bg-gradient-to-br from-blue-500 to-indigo-600',
+                'project-created': 'bg-gradient-to-br from-green-500 to-emerald-600',
                 'certificate-uploaded': 'bg-gradient-to-br from-purple-500 to-pink-600',
             };
             return colors[type] || 'bg-gradient-to-br from-gray-500 to-gray-600';
@@ -3697,10 +3682,10 @@ window.notificationBell = function(data) {
         formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
-            const now  = new Date();
+            const now = new Date();
             const diff = Math.floor((now - date) / 1000);
-            if (diff < 60)    return 'Baru saja';
-            if (diff < 3600)  return Math.floor(diff / 60) + ' menit lalu';
+            if (diff < 60) return 'Baru saja';
+            if (diff < 3600) return Math.floor(diff / 60) + ' menit lalu';
             if (diff < 86400) return Math.floor(diff / 3600) + ' jam lalu';
             return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
         },
@@ -3714,7 +3699,7 @@ window.notificationBell = function(data) {
             if (this.pollingInterval) clearInterval(this.pollingInterval);
             this.pollingInterval = setInterval(async () => {
                 try {
-                    const res  = await fetch(`/${currentLocale}/api/notifications/unread-count`);
+                    const res = await fetch(`/${currentLocale}/api/notifications/unread-count`);
                     const data = await res.json();
                     if (data.count !== this.unreadCount) await this.loadNotifications();
                 } catch (e) { console.error('Polling error:', e); }
@@ -3725,7 +3710,7 @@ window.notificationBell = function(data) {
             if (this.isLoading) return;
             this.isLoading = true;
             try {
-                const res  = await fetch(`/${currentLocale}/api/notifications?page=${this.page}`);
+                const res = await fetch(`/${currentLocale}/api/notifications?page=${this.page}`);
                 const data = await res.json();
                 this.notifications = this.filterNotifications(data.data || []);
                 this.updateUnreadCount();
@@ -3740,8 +3725,8 @@ window.notificationBell = function(data) {
                 window.location.href = item.data.link;
             } else {
                 const routes = {
-                    'user-registered':      `/${locale}/admin/manageUser`,
-                    'project-created':      `/${locale}/admin/manageProject`,
+                    'user-registered': `/${locale}/admin/manageUser`,
+                    'project-created': `/${locale}/admin/manageProject`,
                     'certificate-uploaded': `/${locale}/admin/manageSertifikat`,
                 };
                 window.location.href = routes[item.type] || `/${locale}/dashboard`;
@@ -3751,14 +3736,14 @@ window.notificationBell = function(data) {
         async markAsRead(id) {
             try {
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const res  = await fetch(`/${currentLocale}/api/notifications/mark-read?id=${id}`, {
+                const res = await fetch(`/${currentLocale}/api/notifications/mark-read?id=${id}`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'same-origin'
                 });
                 const result = await res.json();
                 if (result.success) await this.loadNotifications();
-            } catch(e) { console.error('Mark as read error:', e); }
+            } catch (e) { console.error('Mark as read error:', e); }
         },
 
         async markAllAsRead() {
@@ -3766,7 +3751,7 @@ window.notificationBell = function(data) {
             if (!ids.length) { this.showToast('Tidak ada notifikasi yang belum dibaca', 'info'); return; }
             try {
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const res  = await fetch(`/${currentLocale}/api/notifications/mark-all-read`, {
+                const res = await fetch(`/${currentLocale}/api/notifications/mark-all-read`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'same-origin',
@@ -3775,7 +3760,7 @@ window.notificationBell = function(data) {
                 const result = await res.json();
                 if (result.success) { await this.loadNotifications(); this.showToast(result.message || 'Semua notifikasi telah ditandai dibaca', 'success'); }
                 else this.showToast('Gagal menandai notifikasi', 'error');
-            } catch(e) { this.showToast('Gagal menandai notifikasi. Silakan coba lagi.', 'error'); }
+            } catch (e) { this.showToast('Gagal menandai notifikasi. Silakan coba lagi.', 'error'); }
         },
 
         async clearAll() {
@@ -3784,7 +3769,7 @@ window.notificationBell = function(data) {
             if (!confirm(`Apakah Anda yakin ingin menghapus ${ids.length} notifikasi?`)) return;
             try {
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const res  = await fetch(`/${currentLocale}/api/notifications/clear-all`, {
+                const res = await fetch(`/${currentLocale}/api/notifications/clear-all`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'same-origin',
@@ -3793,16 +3778,15 @@ window.notificationBell = function(data) {
                 const result = await res.json();
                 if (result.success) { await this.loadNotifications(); this.showToast(result.message || 'Notifikasi telah dihapus', 'success'); }
                 else this.showToast('Gagal menghapus notifikasi', 'error');
-            } catch(e) { this.showToast('Gagal menghapus notifikasi. Silakan coba lagi.', 'error'); }
+            } catch (e) { this.showToast('Gagal menghapus notifikasi. Silakan coba lagi.', 'error'); }
         },
 
         updateUnreadCount() { this.unreadCount = this.notifications.filter(n => !n.read).length; },
 
         showToast(message, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = `fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm ${
-                type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-gray-800')
-            } text-white`;
+            toast.className = `fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm ${type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-gray-800')
+                } text-white`;
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
@@ -3810,10 +3794,12 @@ window.notificationBell = function(data) {
     };
 };
 
-// Placeholder typing effect
+// ==========================================
+// PLACEHOLDER TYPING EFFECT
+// ==========================================
 (function () {
     function getPlaceholderTexts() {
-        const lang  = localStorage.getItem('lang') || 'id';
+        const lang = localStorage.getItem('lang') || 'id';
         const texts = {
             id: ['Cari Mahasiswa...', 'Cari Portofolio...', 'Cari Sertifikat...', 'Cari Postingan...'],
             en: ['Search Students...', 'Search Portfolio...', 'Search Certificate...', 'Search Posts...']
@@ -3851,17 +3837,16 @@ window.notificationBell = function(data) {
     document.addEventListener('DOMContentLoaded', typeEffect);
 })();
 
-// Outside click triggers suggestions box hide
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('#search-input') && !e.target.closest('#search-suggestions') && 
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('#search-input') && !e.target.closest('#search-suggestions') &&
         !e.target.closest('#search-input-mobile') && !e.target.closest('#search-suggestions-mobile')) {
         document.querySelectorAll('#search-suggestions, #search-suggestions-mobile').forEach(box => box.classList.add('hidden'));
     }
 });
 
-/* ==========================================
-   COMPONENT: CHAT BOT
-   ========================================== */
+// ==========================================
+// COMPONENT: CHAT BOT
+// ==========================================
 document.addEventListener('DOMContentLoaded', function () {
     const chatButton = document.getElementById('chatBotButton');
     const chatWidget = document.getElementById('chatWidget');
@@ -3874,23 +3859,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const suggestionsContainer = document.getElementById('suggestionsContainer');
     const suggestionsList = document.getElementById('suggestionsList');
 
-    // Bubble elements
     const notificationBubble = document.getElementById('notificationBubble');
     const closeBubbleBtn = document.getElementById('closeBubbleBtn');
 
-    if (!chatButton) return; // Only run if chatbot elements exist on current page
+    if (!chatButton) return;
 
     let isChatOpen = false;
     let isTyping = false;
     let suggestionTimeout = null;
 
-    // ============ DRAG TO MOVE CHAT BUTTON ============
+    // Drag to move
     let isDragging = false;
     let dragStartX, dragStartY;
     let buttonStartLeft, buttonStartTop;
     let dragDistance = 0;
 
-    // Get saved position from localStorage
     function loadButtonPosition() {
         const savedPos = localStorage.getItem('chatButtonPosition');
         if (savedPos) {
@@ -3909,9 +3892,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function onMouseDown(e) {
-        if (e.target.closest('svg') && !isChatOpen) {
-            return;
-        }
+        if (e.target.closest('svg') && !isChatOpen) return;
 
         isDragging = false;
         dragDistance = 0;
@@ -4041,7 +4022,7 @@ document.addEventListener('DOMContentLoaded', function () {
         dragDistance = 0;
     }
 
-    // ============ BUBBLE LOGIC - PERMANENT HIDE ============
+    // Bubble logic
     let bubblePermanentlyClosed = localStorage.getItem('bubblePermanentlyClosed') === 'true';
 
     function permanentlyCloseBubble() {
@@ -4097,7 +4078,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ============ FAQ DATABASE ============
+    // FAQ Database
     const faqDatabase = {
         'apa website ini': 'Website ini adalah platform portofolio digital untuk mahasiswa POLMIND (Politeknik Mitra Indonesia). Mahasiswa dapat menampilkan proyek, sertifikat, dan keterampilan mereka kepada publik dan calon employer.',
         'apa itu website ini': 'Website ini adalah platform portofolio mahasiswa POLMIND. Di sini mahasiswa bisa memamerkan karya, proyek, dan sertifikat mereka.',
@@ -4160,7 +4141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'terima kasih': 'Sama-sama! Senang bisa membantu Anda 😊 Jika ada pertanyaan lain, jangan ragu untuk bertanya lagi ya!',
         'makasih': 'Sama-sama! Senang bisa membantu 😊',
         'bye': 'Sampai jumpa! 👋 Kembali lagi jika ada pertanyaan lain. Semoga harimu menyenangkan!',
-        'dimana' : 'Polmind Berada Di MM2100, No. S85, Vasanta Innopark'
+        'dimana': 'Polmind Berada Di MM2100, No. S85, Vasanta Innopark'
     };
 
     const quickQuestionsPool = [
@@ -4470,9 +4451,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 1000);
 });
 
-/* ==========================================
-   COMPONENT: LAYOUT
-   ========================================== */
+// ==========================================
+// COMPONENT: LAYOUT - SIDEBAR TOGGLE
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggle-sidebar');
     const hamburger = document.getElementById('sidebar-hamburger');
@@ -4604,16 +4585,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-/* ==========================================
-   COMPONENT: LEARNING CORNER
-   ========================================== */
+// ==========================================
+// COMPONENT: LEARNING CORNER
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Page Info initialization
     const isLearningCornerPage = document.querySelector('[data-page-info="popup.user_create_learning_corner"]') ||
-                                 document.querySelector('[data-page-info="popup.user_edit_learning_corner"]');
+        document.querySelector('[data-page-info="popup.user_edit_learning_corner"]');
     if (!isLearningCornerPage) return;
 
-    // Dynamic Items (Create & Edit)
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item');
 
@@ -4739,23 +4718,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Initialize existing items for Edit page
         if (!isCreatePage) {
             document.querySelectorAll('.item').forEach(item => {
                 attachTypeChangeListenerEdit(item);
             });
         }
 
-        // Add first item on Create page if empty
         if (isCreatePage && itemIndex === 0) {
             addItem();
         }
 
-        // Add Item event listener
         addItemBtn.addEventListener('click', addItem);
     }
 
-    // Global listener for remove items
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-item')) {
             const item = e.target.closest('.item');
@@ -4763,7 +4738,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Delete confirmation (Index Page)
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {
             e.preventDefault();
@@ -4794,22 +4768,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ==========================================
-   COMPONENT: POSTINGAN
-   ========================================== */
+// ==========================================
+// COMPONENT: POSTINGAN
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item');
 
     const isPostinganPage = document.querySelector('[data-page-info="popup.semua_postingan"]') ||
-                            document.querySelector('[data-page-info="popup.create_postingan"]') ||
-                            document.querySelector('[data-page-info="popup.edit_postingan"]');
+        document.querySelector('[data-page-info="popup.create_postingan"]') ||
+        document.querySelector('[data-page-info="popup.edit_postingan"]');
 
     if (isPostinganPage && itemsContainer && addItemBtn) {
         let itemIndex = parseInt(itemsContainer.getAttribute('data-item-count') || '0', 10);
         const isCreatePage = itemsContainer.getAttribute('data-is-create') === 'true';
 
-        window.addItem = function() {
+        window.addItem = function () {
             const container = document.getElementById('items-container');
             const newItem = document.createElement('div');
             newItem.className = 'item p-5 bg-white dark:bg-gray-800 relative group';
@@ -4876,7 +4850,7 @@ document.addEventListener('DOMContentLoaded', () => {
             itemIndex++;
         };
 
-        window.previewImage = function(input) {
+        window.previewImage = function (input) {
             const index = input.dataset.index;
             const previewContainer = document.getElementById(`image-preview-${index}`);
             const uploadPlaceholder = document.getElementById(`upload-placeholder-${index}`);
@@ -4900,7 +4874,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     previewContainer.innerHTML = `
                         <div class="image-preview-container">
                             <img src="${e.target.result}" alt="Preview" class="max-h-48 rounded-lg shadow-md">
@@ -4918,7 +4892,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        window.removePreview = function(btn, index) {
+        window.removePreview = function (btn, index) {
             const previewContainer = document.getElementById(`image-preview-${index}`);
             const uploadPlaceholder = document.getElementById(`upload-placeholder-${index}`);
             const fileInput = document.querySelector(`input[data-index="${index}"]`);
@@ -4933,7 +4907,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
         };
 
-        window.attachTypeListener = function(itemElement) {
+        window.attachTypeListener = function (itemElement) {
             const select = itemElement.querySelector('.type-select');
             const fileDiv = itemElement.querySelector('.file-input');
             const linkInput = itemElement.querySelector('.link-input');
@@ -4980,79 +4954,73 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleFields();
         };
 
-        // Attach to existing server-rendered items
         document.querySelectorAll('.item').forEach(item => {
             attachTypeListener(item);
         });
 
-        // Add first item on Create page
         if (isCreatePage && itemIndex === 0) {
             window.addItem();
         }
 
         addItemBtn.addEventListener('click', window.addItem);
 
-        // ===== INISIALISASI TAMBAHAN UNTUK EDIT POSTINGAN =====
-// Auto-resize textarea
-const judul = document.getElementById('judul');
-const deskripsi = document.getElementById('deskripsi');
+        const judul = document.getElementById('judul');
+        const deskripsi = document.getElementById('deskripsi');
 
-if (judul) {
-    judul.style.height = '';
-    judul.style.height = judul.scrollHeight + 'px';
-    judul.addEventListener('input', function() {
-        this.style.height = '';
-        this.style.height = this.scrollHeight + 'px';
-    });
-}
+        if (judul) {
+            judul.style.height = '';
+            judul.style.height = judul.scrollHeight + 'px';
+            judul.addEventListener('input', function () {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        }
 
-if (deskripsi) {
-    deskripsi.style.height = '';
-    deskripsi.style.height = deskripsi.scrollHeight + 'px';
-    deskripsi.addEventListener('input', function() {
-        this.style.height = '';
-        this.style.height = this.scrollHeight + 'px';
-    });
-}
+        if (deskripsi) {
+            deskripsi.style.height = '';
+            deskripsi.style.height = deskripsi.scrollHeight + 'px';
+            deskripsi.addEventListener('input', function () {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        }
 
-// Game toggle
-const gameEnabledEl = document.getElementById('game_enabled');
-if (gameEnabledEl) {
-    const gameNameEl = document.getElementById('game_name');
-    const gameThumbEl = document.getElementById('game_thumbnail');
-    const thumbnailContainer = document.getElementById('thumbnail_container');
-    const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
-    const removeThumbInput = document.getElementById('remove_thumbnail');
+        const gameEnabledEl = document.getElementById('game_enabled');
+        if (gameEnabledEl) {
+            const gameNameEl = document.getElementById('game_name');
+            const gameThumbEl = document.getElementById('game_thumbnail');
+            const thumbnailContainer = document.getElementById('thumbnail_container');
+            const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
+            const removeThumbInput = document.getElementById('remove_thumbnail');
 
-    function updateGameState() {
-        const checked = gameEnabledEl.checked;
-        if (gameNameEl) gameNameEl.disabled = !checked;
-        if (gameThumbEl) gameThumbEl.disabled = !checked;
-        if (thumbnailContainer) thumbnailContainer.style.display = checked ? 'block' : 'none';
-        if (!checked && removeThumbInput) removeThumbInput.value = '1';
+            function updateGameState() {
+                const checked = gameEnabledEl.checked;
+                if (gameNameEl) gameNameEl.disabled = !checked;
+                if (gameThumbEl) gameThumbEl.disabled = !checked;
+                if (thumbnailContainer) thumbnailContainer.style.display = checked ? 'block' : 'none';
+                if (!checked && removeThumbInput) removeThumbInput.value = '1';
+            }
+
+            gameEnabledEl.addEventListener('change', updateGameState);
+
+            if (removeThumbBtn) {
+                removeThumbBtn.addEventListener('click', function () {
+                    const container = document.getElementById('current_thumbnail_container');
+                    if (container) container.remove();
+                    if (removeThumbInput) removeThumbInput.value = '1';
+                    if (gameThumbEl) gameThumbEl.value = '';
+                });
+            }
+        }
     }
 
-    gameEnabledEl.addEventListener('change', updateGameState);
-
-    if (removeThumbBtn) {
-        removeThumbBtn.addEventListener('click', function() {
-            const container = document.getElementById('current_thumbnail_container');
-            if (container) container.remove();
-            if (removeThumbInput) removeThumbInput.value = '1';
-            if (gameThumbEl) gameThumbEl.value = '';
-        });
-    }
-}
-    }
-
-    // Textarea auto-resize on load
     const judul = document.getElementById('judul');
     const deskripsi = document.getElementById('deskripsi');
 
     if (judul) {
         judul.style.height = '';
         judul.style.height = judul.scrollHeight + 'px';
-        judul.addEventListener('input', function() {
+        judul.addEventListener('input', function () {
             this.style.height = '';
             this.style.height = this.scrollHeight + 'px';
         });
@@ -5061,13 +5029,12 @@ if (gameEnabledEl) {
     if (deskripsi) {
         deskripsi.style.height = '';
         deskripsi.style.height = deskripsi.scrollHeight + 'px';
-        deskripsi.addEventListener('input', function() {
+        deskripsi.addEventListener('input', function () {
             this.style.height = '';
             this.style.height = this.scrollHeight + 'px';
         });
     }
 
-    // Game toggle
     const gameEnabledEl = document.getElementById('game_enabled');
     if (gameEnabledEl) {
         const gameNameEl = document.getElementById('game_name');
@@ -5076,7 +5043,7 @@ if (gameEnabledEl) {
         const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
         const removeThumbInput = document.getElementById('remove_thumbnail');
 
-        gameEnabledEl.addEventListener('change', function() {
+        gameEnabledEl.addEventListener('change', function () {
             const checked = this.checked;
             if (gameNameEl) gameNameEl.disabled = !checked;
             if (gameThumbEl) gameThumbEl.disabled = !checked;
@@ -5085,7 +5052,7 @@ if (gameEnabledEl) {
         });
 
         if (removeThumbBtn) {
-            removeThumbBtn.addEventListener('click', function() {
+            removeThumbBtn.addEventListener('click', function () {
                 const container = document.getElementById('current_thumbnail_container');
                 if (container) container.remove();
                 if (removeThumbInput) removeThumbInput.value = '1';
@@ -5094,7 +5061,6 @@ if (gameEnabledEl) {
         }
     }
 
-    // Remove postingan items globally
     document.addEventListener('click', (e) => {
         if (e.target.closest('.remove-item')) {
             const item = e.target.closest('.item');
@@ -5107,18 +5073,15 @@ if (gameEnabledEl) {
     });
 });
 
-/* ==========================================
-   VIEWS_DETAIL_POSTINGAN.BLADE.PHP SCRIPTS
-   ========================================== */
-
-// ===================== GLOBAL CONFIG =====================
-window.currentUserId   = null;
+// ==========================================
+// VIEWS_DETAIL_POSTINGAN
+// ==========================================
+window.currentUserId = null;
 window.currentUserName = "";
 window.currentUserPhoto = "";
 window.locale = document.querySelector('html')?.getAttribute('lang') || 'id';
 window.commentLastUpdated = {};
 
-// ===================== HELPERS =====================
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -5154,8 +5117,7 @@ function getHeaders() {
     };
 }
 
-// ===================== LOAD COMMENTS =====================
-window.loadComments = async function(postinganId) {
+window.loadComments = async function (postinganId) {
     const container = document.getElementById(`comments-container-${postinganId}`);
     if (!container) return;
 
@@ -5200,7 +5162,6 @@ window.loadComments = async function(postinganId) {
     }
 };
 
-// ===================== RENDER COMMENT =====================
 function renderCommentWithReplies(comment, level, postinganId) {
     const marginLeft = Math.min(level * 28, 56);
     const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
@@ -5210,9 +5171,9 @@ function renderCommentWithReplies(comment, level, postinganId) {
     const commentId = String(comment.id_komentar);
     postinganId = String(postinganId);
 
-    const replyText  = (window.locale === 'id') ? 'Balas'  : 'Reply';
-    const editText   = (window.locale === 'id') ? 'Edit'   : 'Edit';
-    const deleteText = (window.locale === 'id') ? 'Hapus'  : 'Delete';
+    const replyText = (window.locale === 'id') ? 'Balas' : 'Reply';
+    const editText = (window.locale === 'id') ? 'Edit' : 'Edit';
+    const deleteText = (window.locale === 'id') ? 'Hapus' : 'Delete';
 
     let html = `
         <div class="comment-item transition-all duration-200 py-2" data-comment-id="${commentId}" data-postingan-id="${postinganId}" style="margin-left: ${marginLeft}px;">
@@ -5271,30 +5232,28 @@ function renderCommentWithReplies(comment, level, postinganId) {
     return html;
 }
 
-// ===================== EVENT DELEGATION =====================
 function attachCommentEventListeners(container, postinganId) {
     if (!container.hasAttribute('data-delegated')) {
         container.setAttribute('data-delegated', 'true');
-        container.addEventListener('click', function(e) {
+        container.addEventListener('click', function (e) {
             const btn = e.target.closest('[data-action]');
             if (!btn) return;
 
-            const commentId  = btn.getAttribute('data-comment-id');
-            const pid        = btn.getAttribute('data-postingan-id');
-            const action     = btn.getAttribute('data-action');
+            const commentId = btn.getAttribute('data-comment-id');
+            const pid = btn.getAttribute('data-postingan-id');
+            const action = btn.getAttribute('data-action');
 
-            if (action === 'reply')       window.showReplyForm(commentId, pid);
-            else if (action === 'edit')   window.showEditForm(commentId, pid);
+            if (action === 'reply') window.showReplyForm(commentId, pid);
+            else if (action === 'edit') window.showEditForm(commentId, pid);
             else if (action === 'delete') window.deleteComment(commentId, pid, btn.getAttribute('data-type') || 'full');
-            else if (action === 'save-edit')   window.saveEdit(commentId, pid);
+            else if (action === 'save-edit') window.saveEdit(commentId, pid);
             else if (action === 'cancel-edit') window.cancelEdit(commentId);
         });
     }
 }
 
-// ===================== SUBMIT COMMENT =====================
-window.submitComment = async function(postinganId) {
-    const textarea  = document.getElementById(`comment-input-${postinganId}`);
+window.submitComment = async function (postinganId) {
+    const textarea = document.getElementById(`comment-input-${postinganId}`);
     const commentText = textarea.value.trim();
 
     if (!commentText) {
@@ -5342,14 +5301,13 @@ window.submitComment = async function(postinganId) {
     }
 };
 
-// ===================== SUBMIT REPLY =====================
 async function submitReply(form, postinganId) {
     if (form.hasAttribute('data-submitting')) return;
     form.setAttribute('data-submitting', 'true');
 
-    const textarea   = form.querySelector('textarea[name="komentar"]');
+    const textarea = form.querySelector('textarea[name="komentar"]');
     const commentText = textarea.value.trim();
-    const parentId   = form.querySelector('input[name="parent_id"]').value;
+    const parentId = form.querySelector('input[name="parent_id"]').value;
 
     if (!commentText) {
         if (window.showPageInfo) window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
@@ -5401,14 +5359,13 @@ async function submitReply(form, postinganId) {
     }
 }
 
-// ===================== SHOW REPLY FORM =====================
-window.showReplyForm = function(parentCommentId, postinganId) {
+window.showReplyForm = function (parentCommentId, postinganId) {
     parentCommentId = String(parentCommentId);
     const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
     if (!replyFormContainer) return;
 
-    const sendText        = (window.locale === 'id') ? 'Kirim'  : 'Send';
-    const cancelText      = (window.locale === 'id') ? 'Batal'  : 'Cancel';
+    const sendText = (window.locale === 'id') ? 'Kirim' : 'Send';
+    const cancelText = (window.locale === 'id') ? 'Batal' : 'Cancel';
     const placeholderText = (window.locale === 'id') ? 'Tulis balasan...' : 'Write a reply...';
 
     if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
@@ -5438,16 +5395,15 @@ window.showReplyForm = function(parentCommentId, postinganId) {
     };
 };
 
-// ===================== SHOW EDIT FORM =====================
-window.showEditForm = function(commentId, postinganId) {
-    commentId   = String(commentId);
+window.showEditForm = function (commentId, postinganId) {
+    commentId = String(commentId);
     postinganId = String(postinganId);
 
     const commentTextEl = document.getElementById(`comment-text-${commentId}`);
     if (!commentTextEl) return;
 
     const originalText = commentTextEl.innerText;
-    const commentItem  = commentTextEl.closest('.comment-item');
+    const commentItem = commentTextEl.closest('.comment-item');
 
     const existingEditForm = document.getElementById(`edit-form-${commentId}`);
     if (existingEditForm) {
@@ -5458,8 +5414,8 @@ window.showEditForm = function(commentId, postinganId) {
         return;
     }
 
-    const saveText   = (window.locale === 'id') ? 'Simpan' : 'Save';
-    const cancelText = (window.locale === 'id') ? 'Batal'  : 'Cancel';
+    const saveText = (window.locale === 'id') ? 'Simpan' : 'Save';
+    const cancelText = (window.locale === 'id') ? 'Batal' : 'Cancel';
 
     const editForm = document.createElement('div');
     editForm.className = 'edit-form mt-2';
@@ -5481,8 +5437,7 @@ window.showEditForm = function(commentId, postinganId) {
     if (editBtn) editBtn.style.display = 'none';
 };
 
-// ===================== SAVE EDIT =====================
-window.saveEdit = async function(commentId, postinganId) {
+window.saveEdit = async function (commentId, postinganId) {
     commentId = String(commentId);
     const editForm = document.getElementById(`edit-form-${commentId}`);
     if (!editForm) return;
@@ -5538,11 +5493,10 @@ window.saveEdit = async function(commentId, postinganId) {
     }
 };
 
-// ===================== CANCEL EDIT =====================
-window.cancelEdit = function(commentId) {
+window.cancelEdit = function (commentId) {
     commentId = String(commentId);
     const commentTextEl = document.getElementById(`comment-text-${commentId}`);
-    const editForm      = document.getElementById(`edit-form-${commentId}`);
+    const editForm = document.getElementById(`edit-form-${commentId}`);
     if (!commentTextEl) return;
 
     const commentItem = commentTextEl.closest('.comment-item');
@@ -5553,9 +5507,8 @@ window.cancelEdit = function(commentId) {
     if (editBtn) editBtn.style.display = 'inline-flex';
 };
 
-// ===================== DELETE COMMENT =====================
-window.deleteComment = async function(commentId, postinganId, type = 'full') {
-    commentId   = String(commentId);
+window.deleteComment = async function (commentId, postinganId, type = 'full') {
+    commentId = String(commentId);
     postinganId = String(postinganId);
 
     const confirmMessageSingle = (window.locale === 'id')
@@ -5603,7 +5556,6 @@ window.deleteComment = async function(commentId, postinganId, type = 'full') {
     }
 };
 
-// ===================== UPDATE TOTAL COUNT =====================
 function updateTotalCommentCount(delta) {
     document.querySelectorAll('.comment-total-count, .comment-total-count-heading').forEach(el => {
         const current = parseInt(el.textContent) || 0;
@@ -5611,11 +5563,10 @@ function updateTotalCommentCount(delta) {
     });
 }
 
-// ===================== SHARE =====================
-window.toggleShare = function(btn) {
+window.toggleShare = function (btn) {
     const url = window.location.href;
     if (navigator.share) {
-        navigator.share({ url }).catch(() => {});
+        navigator.share({ url }).catch(() => { });
         return;
     }
     navigator.clipboard.writeText(url).then(() => {
@@ -5626,22 +5577,19 @@ window.toggleShare = function(btn) {
     }).catch(() => alert('Gagal menyalin link'));
 };
 
-// ===================== PAGE INITIALIZER FOR DETAIL POSTINGAN =====================
-window.initPostinganDetailPage = function(container) {
-    window.currentUserId   = container.dataset.userId === 'null' ? null : parseInt(container.dataset.userId);
+window.initPostinganDetailPage = function (container) {
+    window.currentUserId = container.dataset.userId === 'null' ? null : parseInt(container.dataset.userId);
     window.currentUserName = container.dataset.userName || '';
     window.currentUserPhoto = container.dataset.userPhoto || '';
     window.locale = container.dataset.locale || document.querySelector('html').getAttribute('lang') || 'id';
     window.commentLastUpdated = {};
     const postinganId = parseInt(container.dataset.postinganId);
 
-    // Auto-load comments on page load
     window.loadComments(postinganId);
 
-    // Like button
     const likeBtn = container.querySelector('.like-btn');
     if (likeBtn) {
-        likeBtn.addEventListener('click', function(e) {
+        likeBtn.addEventListener('click', function (e) {
             e.preventDefault();
             const pid = this.dataset.postinganId;
             fetch(`/${window.locale}/postingan/toggle-like?id=${pid}`, {
@@ -5651,29 +5599,28 @@ window.initPostinganDetailPage = function(container) {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const icon      = likeBtn.querySelector('svg');
-                    const countSpan = likeBtn.querySelector('.like-count');
-                    if (data.liked) {
-                        likeBtn.classList.add('text-red-500', 'dark:text-red-400');
-                        icon.classList.add('fill-current', 'text-red-500');
-                    } else {
-                        likeBtn.classList.remove('text-red-500', 'dark:text-red-400');
-                        icon.classList.remove('fill-current', 'text-red-500');
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const icon = likeBtn.querySelector('svg');
+                        const countSpan = likeBtn.querySelector('.like-count');
+                        if (data.liked) {
+                            likeBtn.classList.add('text-red-500', 'dark:text-red-400');
+                            icon.classList.add('fill-current', 'text-red-500');
+                        } else {
+                            likeBtn.classList.remove('text-red-500', 'dark:text-red-400');
+                            icon.classList.remove('fill-current', 'text-red-500');
+                        }
+                        if (countSpan) countSpan.textContent = data.like_count;
                     }
-                    if (countSpan) countSpan.textContent = data.like_count;
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                })
+                .catch(error => console.error('Error:', error));
         });
     }
 
-    // Comment toggle button
     const commentToggle = container.querySelector('.comment-toggle');
     if (commentToggle) {
-        commentToggle.addEventListener('click', function(e) {
+        commentToggle.addEventListener('click', function (e) {
             e.preventDefault();
             const commentsSection = document.getElementById('comments');
             if (commentsSection) {
@@ -5682,10 +5629,9 @@ window.initPostinganDetailPage = function(container) {
         });
     }
 
-    // Share button
     const shareBtn = container.querySelector('.share-btn');
     if (shareBtn) {
-        shareBtn.addEventListener('click', function(e) {
+        shareBtn.addEventListener('click', function (e) {
             e.preventDefault();
             const url = container.dataset.postUrl;
             const title = container.dataset.postUserName;
@@ -5696,7 +5642,6 @@ window.initPostinganDetailPage = function(container) {
                     url: url
                 }).catch(err => console.log('Share cancelled:', err));
             } else {
-                // Fallback: copy to clipboard
                 navigator.clipboard.writeText(url).then(() => {
                     alert('Link disalin ke clipboard!');
                 }).catch(err => console.error('Copy failed:', err));
@@ -5704,31 +5649,30 @@ window.initPostinganDetailPage = function(container) {
         });
     }
 
-    // Post Menu Dropdown
-    const postMenuBtn       = document.getElementById('postMenuButton');
-    const postMenuDropdown  = document.getElementById('postMenuDropdown');
+    const postMenuBtn = document.getElementById('postMenuButton');
+    const postMenuDropdown = document.getElementById('postMenuDropdown');
     const postMenuContainer = document.getElementById('postMenuContainer');
 
     if (postMenuBtn && postMenuDropdown) {
-        postMenuBtn.addEventListener('click', function(e) {
+        postMenuBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             postMenuDropdown.classList.toggle('hidden');
         });
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (postMenuContainer && !postMenuContainer.contains(e.target)) {
                 postMenuDropdown.classList.add('hidden');
             }
         });
-        postMenuDropdown.addEventListener('click', function(e) {
+        postMenuDropdown.addEventListener('click', function (e) {
             e.stopPropagation();
         });
     }
 };
 
-/* ==========================================
-   VIEWS_PROJECT_USER.BLADE.PHP SCRIPTS
-   ========================================== */
-window.puPlayVideo = function(wrapperId, type, src) {
+// ==========================================
+// VIEWS_PROJECT_USER
+// ==========================================
+window.puPlayVideo = function (wrapperId, type, src) {
     const wrapper = document.getElementById(wrapperId);
     if (!wrapper) return;
 
@@ -5762,10 +5706,10 @@ window.puPlayVideo = function(wrapperId, type, src) {
     wrapper.onclick = null;
 };
 
-/* ==========================================
-   VIEWS_DETAIL_PROJECT.BLADE.PHP SCRIPTS
-   ========================================== */
-window.openImageModal = function(imageSrc) {
+// ==========================================
+// VIEWS_DETAIL_PROJECT
+// ==========================================
+window.openImageModal = function (imageSrc) {
     const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     if (modal && modalImage) {
@@ -5776,7 +5720,7 @@ window.openImageModal = function(imageSrc) {
     }
 };
 
-window.closeImageModal = function() {
+window.closeImageModal = function () {
     const modal = document.getElementById('imageModal');
     if (modal) {
         modal.classList.add('hidden');
@@ -5785,15 +5729,13 @@ window.closeImageModal = function() {
     }
 };
 
-// Close modal with ESC key
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         window.closeImageModal();
     }
 });
 
-window.initProjectDetailPage = function(container) {
-    // Individual delete buttons
+window.initProjectDetailPage = function (container) {
     container.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {
             e.preventDefault();
@@ -5818,7 +5760,6 @@ window.initProjectDetailPage = function(container) {
         });
     });
 
-    // Mass delete functionality
     const checkboxes = container.querySelectorAll('.entry-checkbox');
     const massDeleteBtn = document.getElementById('massDeleteBtn');
     const massDeleteIds = document.getElementById('massDeleteIds');
@@ -5832,7 +5773,6 @@ window.initProjectDetailPage = function(container) {
 
             selectedCount.textContent = checkedCount;
 
-            // Update hidden input with selected IDs
             const selectedIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
             massDeleteIds.value = JSON.stringify(selectedIds);
 
@@ -5867,10 +5807,8 @@ window.initProjectDetailPage = function(container) {
             if (confirmed) {
                 if (window.showLoading) window.showLoading('Menghapus catatan terpilih...');
 
-                // Parse IDs from hidden input
                 const ids = JSON.parse(massDeleteIds.value);
 
-                // Create a new form with the IDs as array
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = massDeleteForm.action;
@@ -5900,1337 +5838,20 @@ window.initProjectDetailPage = function(container) {
     }
 };
 
-/* ==========================================
-   VIEWS_CREATE_PROJECT.BLADE.PHP SCRIPTS
-   ========================================== */
-window.initProjectCreatePage = function(container) {
-    let allUsers = []; 
-    let allUsersMap = new Map(); 
-    const currentUser = JSON.parse(container.dataset.currentUser || 'null');
-    const userSelectionStorageKey = 'project_selected_users';
-
-    let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
-    let currentPage = 1;
-
-    // State permanen (sudah di-confirm)
-    let selectedUsers = { owner: null, leader: null, members: [] };
-
-    // State sementara di dalam modal (sebelum confirm)
-    let pendingUsers = { owner: null, leader: null, members: [] };
-
-    let taskIndex = 0;
-
-    function saveSelectedUsersToStorage() {
-        localStorage.setItem(userSelectionStorageKey, JSON.stringify({
-            owner: selectedUsers.owner,
-            leader: selectedUsers.leader,
-            members: selectedUsers.members
-        }));
-    }
-
-    function restoreSelectedUsersFromStorage() {
-        const stored = localStorage.getItem(userSelectionStorageKey);
-        if (!stored) return false;
-        try {
-            const parsed = JSON.parse(stored);
-            if (parsed.owner)  selectedUsers.owner   = parsed.owner;
-            if (parsed.leader) selectedUsers.leader  = parsed.leader;
-            if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
-            return true;
-        } catch (e) {
-            console.warn('Unable to restore selected users:', e);
-            return false;
-        }
-    }
-
-    function addUsersToAllUsers(usersArray) {
-        if (!Array.isArray(usersArray)) return;
-        usersArray.forEach(user => {
-            if (!allUsersMap.has(String(user.id))) {
-                allUsersMap.set(String(user.id), user);
-                allUsers.push(user);
-            }
-        });
-    }
-
-    function getUserById(id) {
-        const userId = String(id);
-        if (allUsersMap.has(userId)) {
-            return allUsersMap.get(userId);
-        }
-        return null;
-    }
-
-    function syncPendingFromSelected() {
-        pendingUsers = {
-            owner:   selectedUsers.owner   ? { ...selectedUsers.owner }   : null,
-            leader:  selectedUsers.leader  ? { ...selectedUsers.leader }  : null,
-            members: selectedUsers.members.map(m => ({ ...m }))
-        };
-    }
-
-    function applyPendingToSelected() {
-        selectedUsers.owner   = pendingUsers.owner   ? { ...pendingUsers.owner }   : null;
-        selectedUsers.leader  = pendingUsers.leader  ? { ...pendingUsers.leader }  : null;
-        selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
-    }
-
-    function discardPending() {
-        pendingUsers = { owner: null, leader: null, members: [] };
-    }
-
-    window.openUserModal = function() {
-        const toggle = document.getElementById('project-collaborative-toggle');
-        if (!toggle || !toggle.checked) {
-            alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
-            return;
-        }
-        syncPendingFromSelected();
-        document.getElementById('userModal').classList.remove('hidden');
-        fetchUsers(1);
-    }
-
-    window.closeUserModal = function() {
-        document.getElementById('userModal').classList.add('hidden');
-        discardPending();
-    }
-
-    window.cancelUserModal = function() {
-        discardPending();
-        document.getElementById('userModal').classList.add('hidden');
-    }
-
-    window.confirmUserSelection = function() {
-        applyPendingToSelected();
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskSectionVisibility();
-        updateTaskUserOptions();
-        updateSelectedUsersBadge();
-        saveSelectedUsersToStorage();
-        document.getElementById('userModal').classList.add('hidden');
-        discardPending();
-    }
-
-    function fetchUsers(page = 1) {
-        currentPage = page;
-        const params = new URLSearchParams({
-            page: page,
-            search:   currentModalFilters.search,
-            angkatan: currentModalFilters.angkatan,
-            jurusan:  currentModalFilters.jurusan,
-            keahlian: currentModalFilters.keahlian
-        });
-
-        const fetchUrl = container.dataset.fetchUrl;
-
-        fetch(`${fetchUrl}?${params}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.json())
-        .then(data => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.userListHtml;
-            
-            const userElements = tempDiv.querySelectorAll('[data-user-id]');
-            const usersInPage = [];
-            
-            userElements.forEach(el => {
-                const userId = el.getAttribute('data-user-id');
-                const nameEl = el.querySelector('.font-medium');
-                const emailEl = el.querySelector('.text-sm.text-gray-500');
-                const imgEl = el.querySelector('img');
-                
-                if (userId && nameEl) {
-                    const user = {
-                        id: parseInt(userId),
-                        nama_mahasiswa: nameEl.textContent.trim(),
-                        email: emailEl ? emailEl.textContent.trim() : '',
-                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                    };
-                    usersInPage.push(user);
-                }
-            });
-            
-            addUsersToAllUsers(usersInPage);
-            renderUserListWithRoles(data.userListHtml);
-            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-            refreshRoleSelections();
-            
-            if (typeof window.refreshTranslations === 'function') {
-                window.refreshTranslations();
-            }
-        });
-    }
-    
-    function renderUserListWithRoles(html) {
-        const uListContainer = document.getElementById('modal-user-list');
-        uListContainer.innerHTML = html;
-        
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = String(select.dataset.userId);
-            const user = getUserById(userId);
-            
-            if (user) {
-                const userDiv = select.closest('[data-user-id]');
-                if (userDiv) {
-                    const nameDiv = userDiv.querySelector('.font-medium');
-                    if (nameDiv && nameDiv.textContent !== user.nama_mahasiswa) {
-                        nameDiv.textContent = user.nama_mahasiswa;
-                    }
-                }
-            }
-        });
-    }
-
-    window.updateUserRole = function(selectElement, userId, role) {
-        const user = getUserById(userId);
-        if (!user) {
-            console.error('User not found:', userId);
-            return;
-        }
-
-        const isOwner         = pendingUsers.owner  && String(pendingUsers.owner.id)  === String(userId);
-        const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
-
-        if (isOwner && role === 'member') {
-            alert('Owner tidak bisa menjadi member.');
-            selectElement.value = isCurrentLeader ? 'leader' : '';
-            refreshRoleSelections();
-            return;
-        }
-
-        if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
-            const confirmChange = confirm(
-                `Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`
-            );
-            if (!confirmChange) {
-                selectElement.value = isCurrentLeader ? 'leader' : '';
-                refreshRoleSelections();
-                return;
-            }
-            pendingUsers.leader = null;
-        }
-
-        if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-            pendingUsers.leader = null;
-        }
-        pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
-
-        if (role === 'leader') {
-            pendingUsers.leader = user;
-        } else if (role === 'member') {
-            if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                pendingUsers.members.push(user);
-            }
-        }
-
-        refreshRoleSelections();
-    }
-
-    function refreshRoleSelections() {
-        const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
-        const ownerId  = pendingUsers.owner  ? String(pendingUsers.owner.id)  : null;
-
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId   = String(select.dataset.userId);
-            const isOwner  = ownerId  === userId;
-            const isLeader = leaderId === userId;
-            const isMember = pendingUsers.members.some(m => String(m.id) === userId);
-
-            if (isLeader) {
-                select.value = 'leader';
-            } else if (isMember) {
-                select.value = 'member';
-            } else {
-                select.value = '';
-            }
-
-            const leaderOption = select.querySelector('option[value="leader"]');
-            const memberOption = select.querySelector('option[value="member"]');
-
-            if (leaderOption) {
-                leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
-                leaderOption.title    = leaderOption.disabled ? 'Leader sudah dipilih' : '';
-            }
-
-            if (memberOption) {
-                memberOption.disabled = false;
-            }
-
-            select.disabled = false;
-        });
-    }
-
-    function updateSelectedUsersBadge() {
-        const badge = document.getElementById('selected-users-badge');
-        if (!badge) return;
-        let count = 0;
-        if (selectedUsers.owner)  count++;
-        if (selectedUsers.leader) count++;
-        count += selectedUsers.members.length;
-        badge.innerHTML = count === 0
-            ? ''
-            : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
-    }
-
-    function updateTaskSectionVisibility() {
-        const taskSection = document.getElementById('task-section');
-        if (!taskSection) return;
-        const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
-        if (hasUsers) {
-            taskSection.classList.remove('hidden');
-        } else {
-            taskSection.classList.add('hidden');
-            const tContainer = document.getElementById('tasks-container');
-            if (tContainer) { tContainer.innerHTML = ''; taskIndex = 0; }
-        }
-    }
-
-    function updateFormInputs() {
-        const ownerEl = document.getElementById('selected-owner-id');
-        const leaderEl = document.getElementById('selected-leader-id');
-        const membersEl = document.getElementById('selected-members-ids');
-        if (ownerEl) ownerEl.value = selectedUsers.owner?.id  || '';
-        if (leaderEl) leaderEl.value  = selectedUsers.leader?.id || '';
-        if (membersEl) membersEl.value = selectedUsers.members.map(m => m.id).join(',');
-
-        const memberInputs = document.getElementById('selected-members-inputs');
-        if (memberInputs) {
-            memberInputs.innerHTML = selectedUsers.members
-                .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
-                .join('');
-        }
-    }
-
-    function renderSelectedUsers() {
-        const containerSelected = document.getElementById('selected-users-container');
-        const noUsersMsg   = document.getElementById('no-users-message');
-        if (!containerSelected || !noUsersMsg) return;
-
-        const selected = [];
-        if (selectedUsers.owner) {
-            const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id
-                ? 'Owner & Leader' : 'Owner';
-            selected.push({ ...selectedUsers.owner, role });
-        }
-        if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
-            selected.push({ ...selectedUsers.leader, role: 'Leader' });
-        }
-        selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
-
-        if (!selected.length) {
-            containerSelected.innerHTML = '';
-            noUsersMsg.classList.remove('hidden');
-            return;
-        }
-
-        noUsersMsg.classList.add('hidden');
-        containerSelected.innerHTML = selected.map(user => {
-            const styles = {
-                'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
-
-            return `
-                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                     <div class="flex items-center gap-3">
-                         ${user.photo_profile
-                             ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                             : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                </div>`
-                         }
-                         <div>
-                             <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
-                             <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
-                         </div>
-                     </div>
-                     <div class="flex items-center gap-2">
-                         <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
-                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                             </svg>
-                         </button>
-                         ${user.role !== 'Owner' ? `
-                         <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
-                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                             </svg>
-                         </button>` : ''}
-                     </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function deleteTasksForUser(userId) {
-        const userIdStr = String(userId);
-        document.querySelectorAll('.task-item').forEach(taskItem => {
-            const select = taskItem.querySelector('.task-user-select');
-            if (select && String(select.value) === userIdStr) taskItem.remove();
-        });
-        if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
-    }
-
-    window.removeUser = function(userId) {
-        deleteTasksForUser(userId);
-        if (selectedUsers.leader?.id == userId)  selectedUsers.leader  = null;
-        selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskUserOptions();
-        updateSelectedUsersBadge();
-        saveSelectedUsersToStorage();
-    }
-
-    window.editUser = function(userId) {
-        window.openUserModal();
-        setTimeout(() => {
-            const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
-            if (userElement) {
-                userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                userElement.style.backgroundColor = '#fef3c7';
-                setTimeout(() => userElement.style.backgroundColor = '', 2000);
-            }
-        }, 500);
-    }
-
-    function getAllowedTaskUsers() {
-        const users = [];
-        const added = new Set();
-        const add = user => {
-            if (!user || added.has(user.id)) return;
-            added.add(user.id);
-            users.push({ id: user.id, name: user.nama_mahasiswa });
-        };
-        add(selectedUsers.owner);
-        add(selectedUsers.leader);
-        selectedUsers.members.forEach(add);
-        return users;
-    }
-
-    function renderTaskUserOptions(selectedId = '') {
-        const users = getAllowedTaskUsers();
-        let html = '<option value=""> Pilih Penanggung Jawab </option>';
-        users.forEach(user => {
-            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-        });
-        return html;
-    }
-
-    window.addTaskRow = function(taskData = null) {
-        const tContainer = document.getElementById('tasks-container');
-        if (!tContainer) return;
-        const index    = taskIndex++;
-        const userId   = taskData?.user_id ?? '';
-        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
-        const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
-
-        const taskItem = document.createElement('div');
-        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-        taskItem.innerHTML = `
-            ${hiddenId}
-            <div class="grid gap-4 md:grid-cols-3 items-end">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                    <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                        ${renderTaskUserOptions(userId)}
-                    </select>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                    <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                        class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                        placeholder="Deskripsikan tugas...">
-                </div>
-                <button type="button" onclick="removeTaskRow(this)"
-                    class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-            </div>
-        `;
-        tContainer.appendChild(taskItem);
-        taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
-    }
-
-    window.removeTaskRow = function(button) {
-        button.closest('.task-item')?.remove();
-        if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
-    }
-
-    function cleanupInvalidTaskRows() {
-        const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
-        document.querySelectorAll('.task-item').forEach(taskItem => {
-            const select = taskItem.querySelector('.task-user-select');
-            if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
-        });
-        if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
-    }
-
-    function updateTaskUserOptions() {
-        document.querySelectorAll('.task-user-select').forEach(select => {
-            const currentValue = select.value;
-            select.innerHTML   = renderTaskUserOptions(currentValue);
-            if (currentValue) select.value = currentValue;
-        });
-        cleanupInvalidTaskRows();
-    }
-
-    function initializeTaskRows(existingTasks = []) {
-        const tContainer = document.getElementById('tasks-container');
-        if (!tContainer) return;
-        tContainer.innerHTML = '';
-        taskIndex = 0;
-        if (Array.isArray(existingTasks) && existingTasks.length) {
-            existingTasks.forEach(task => { if (task.user_id || task.name_task) window.addTaskRow(task); });
-        } else {
-            window.addTaskRow();
-        }
-        updateTaskUserOptions();
-    }
-
-    function setupModalFilters() {
-        document.getElementById('modal-search')?.addEventListener('input', function () {
-            currentModalFilters.search = this.value;
-            fetchUsers(1);
-        });
-        document.getElementById('modal-angkatan')?.addEventListener('change', function () {
-            currentModalFilters.angkatan = this.value;
-            fetchUsers(1);
-        });
-        document.getElementById('modal-jurusan')?.addEventListener('change', function () {
-            currentModalFilters.jurusan = this.value;
-            fetchUsers(1);
-        });
-        document.getElementById('modal-keahlian')?.addEventListener('change', function () {
-            currentModalFilters.keahlian = this.value;
-            fetchUsers(1);
-        });
-    }
-
-    // Modal pagination click
-    const pagListener = function (e) {
-        const link = e.target.closest('#modal-pagination a');
-        if (link) {
-            e.preventDefault();
-            const url  = link.getAttribute('href');
-            if (!url) return;
-            const page = new URL(url).searchParams.get('page') || 1;
-            fetchUsers(page);
-        }
-    };
-    document.addEventListener('click', pagListener);
-
-    function toggleUserSelectionSection() {
-        const toggle             = document.getElementById('project-collaborative-toggle');
-        const userSelectionSection = document.getElementById('user-selection-section');
-
-        if (!toggle || !userSelectionSection) return;
-
-        if (toggle.checked) {
-            userSelectionSection.style.display = 'block';
-
-            if (
-                selectedUsers.leader &&
-                selectedUsers.owner &&
-                String(selectedUsers.leader.id) === String(selectedUsers.owner.id) &&
-                selectedUsers.members.length === 0
-            ) {
-                selectedUsers.leader = null;
-                updateFormInputs();
-                renderSelectedUsers();
-                updateSelectedUsersBadge();
-                saveSelectedUsersToStorage();
-            }
-        } else {
-            userSelectionSection.style.display = 'none';
-            selectedUsers.owner   = currentUser;
-            selectedUsers.leader  = currentUser;
-            selectedUsers.members = [];
-            updateFormInputs();
-            renderSelectedUsers();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-        }
-    }
-
-    function setupDateValidation() {
-        const tanggalMulaiInput  = document.getElementById('tanggal_mulai');
-        const tanggalAkhirInput  = document.getElementById('tanggal_akhir');
-        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
-
-        if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
-
-        tanggalMulaiInput.addEventListener('change', function () {
-            if (this.value) {
-                tanggalAkhirInput.min = this.value;
-                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
-                    tanggalAkhirInput.value = '';
-                }
-            } else {
-                tanggalAkhirInput.min = '';
-            }
-        });
-
-        tanggalAkhirInput.addEventListener('change', function () {
-            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
-                this.value = '';
-                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
-            }
-        });
-    }
-
-    function onSubmitProjectForm() {
-        if (currentUser) selectedUsers.owner = currentUser;
-        if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
-            selectedUsers.leader = selectedUsers.owner;
-        }
-        updateFormInputs();
-        cleanupInvalidTaskRows();
-        updateTaskUserOptions();
-    }
-
-    function loadSelectedUsersFromForm() {
-        if (restoreSelectedUsersFromStorage()) {
-            updateFormInputs();
-            return;
-        }
-        const leaderId  = document.getElementById('selected-leader-id')?.value;
-        const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
-        if (leaderId) selectedUsers.leader = getUserById(leaderId);
-        selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
-    }
-
-    if (currentUser) {
-        addUsersToAllUsers([currentUser]);
-    }
-
-    loadSelectedUsersFromForm();
-    renderSelectedUsers();
-    setupModalFilters();
-    setupDateValidation();
-    updateTaskSectionVisibility();
-    updateSelectedUsersBadge();
-
-    const oldTasks = JSON.parse(container.dataset.oldTasks || '[]');
-    initializeTaskRows(oldTasks);
-
-    const pForm = document.getElementById('projectForm');
-    if (pForm) pForm.addEventListener('submit', onSubmitProjectForm);
-
-    const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-    const toggleLabel         = document.getElementById('toggle-label');
-    if (collaborativeToggle && toggleLabel) {
-        toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
-        toggleUserSelectionSection();
-        collaborativeToggle.addEventListener('change', function () {
-            toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
-            toggleUserSelectionSection();
-        });
-    }
-
-    if (window.showPageInfo) {
-        window.showPageInfo("popup.user_create_project");
-    }
-};
-
-/* ==========================================
-   VIEWS_EDIT_PROJECT.BLADE.PHP SCRIPTS
-   ========================================== */
-window.initProjectEditPage = function(container) {
-    let allUsersMap = new Map();
-    let allUsersArray = [];
-    let pendingUsers = { owner: null, leader: null, members: [] };
-    let selectedUsers = { owner: null, leader: null, members: [] };
-    let taskIndex = 0;
-    let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
-    let tempSelectedRoles = {};
-    let isCollaborativeMode = false;
-
-    const initialUsers = JSON.parse(container.dataset.users || '[]');
-    const currentUser = JSON.parse(container.dataset.currentUser || 'null');
-    const existingTasksData = JSON.parse(container.dataset.existingTasks || '[]');
-    const projectLeaderId = container.dataset.leaderId ? parseInt(container.dataset.leaderId) : null;
-    const projectMemberIds = JSON.parse(container.dataset.memberIds || '[]');
-
-    function addUsersToMap(users) {
-        if (!Array.isArray(users)) return;
-        users.forEach(user => {
-            if (user && user.id && !allUsersMap.has(String(user.id))) {
-                allUsersMap.set(String(user.id), user);
-                allUsersArray.push(user);
-            }
-        });
-    }
-
-    function getUserById(id) {
-        const userId = String(id);
-        if (allUsersMap.has(userId)) {
-            return allUsersMap.get(userId);
-        }
-        return null;
-    }
-
-    addUsersToMap(initialUsers);
-    if (currentUser) addUsersToMap([currentUser]);
-
-    function syncPendingFromSelected() {
-        pendingUsers = {
-            owner: selectedUsers.owner ? { ...selectedUsers.owner } : null,
-            leader: selectedUsers.leader ? { ...selectedUsers.leader } : null,
-            members: selectedUsers.members.map(m => ({ ...m }))
-        };
-    }
-
-    function applyPendingToSelected() {
-        selectedUsers.owner = pendingUsers.owner ? { ...pendingUsers.owner } : null;
-        selectedUsers.leader = pendingUsers.leader ? { ...pendingUsers.leader } : null;
-        selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
-    }
-
-    function saveCurrentModalRoles() {
-        tempSelectedRoles = {};
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.dataset.userId;
-            if (userId && select.value) {
-                tempSelectedRoles[userId] = select.value;
-            }
-        });
-    }
-
-    function restoreModalRoles() {
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.dataset.userId;
-            if (userId && tempSelectedRoles[userId]) {
-                select.value = tempSelectedRoles[userId];
-            }
-        });
-        refreshLeaderOptions();
-    }
-
-    function getAllowedTaskUsers(additionalUsers = []) {
-        const users = [];
-        const added = new Set();
-        const add = user => {
-            if (!user || added.has(String(user.id))) return;
-            added.add(String(user.id));
-            users.push({ id: user.id, name: user.nama_mahasiswa });
-        };
-
-        add(selectedUsers.owner);
-        add(selectedUsers.leader);
-        selectedUsers.members.forEach(add);
-        additionalUsers.forEach(add);
-        return users;
-    }
-
-    function renderTaskUserOptions(selectedId = '') {
-        const additionalUsers = [];
-        let fallbackName = null;
-
-        if (selectedId) {
-            const selectedTaskUser = getUserById(selectedId);
-            if (selectedTaskUser) {
-                additionalUsers.push(selectedTaskUser);
-            } else {
-                const taskData = existingTasksData.find(t => String(t.user_id) === String(selectedId));
-                if (taskData && taskData.user_name) {
-                    fallbackName = taskData.user_name;
-                }
-            }
-        }
-
-        const users = getAllowedTaskUsers(additionalUsers);
-        let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
-        users.forEach(user => {
-            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-        });
-
-        if (selectedId && fallbackName && !users.some(u => String(u.id) === String(selectedId))) {
-            html += `<option value="${selectedId}" selected>${fallbackName}</option>`;
-        }
-
-        return html;
-    }
-
-    window.addTaskRow = function(taskData = null) {
-        const tContainer = document.getElementById('tasks-container');
-        if (!tContainer) return;
-
-        const index = taskIndex++;
-        const userId = taskData?.user_id ?? '';
-        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
-        const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
-
-        const taskItem = document.createElement('div');
-        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-        
-        if (!isCollaborativeMode) {
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <input type="hidden" name="tasks[${index}][user_id]" value="${currentUser.id}">
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <input type="text" value="${currentUser.nama_mahasiswa} (Owner)" 
-                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400" 
-                               readonly disabled>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
-                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                               placeholder="Deskripsikan tugas...">
-                    </div>
-                    <button type="button" onclick="removeTaskRow(this)" 
-                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-                </div>
-            `;
-        } else {
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
-                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                               placeholder="Deskripsikan tugas...">
-                    </div>
-                    <button type="button" onclick="removeTaskRow(this)" 
-                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-                </div>
-            `;
-        }
-
-        tContainer.appendChild(taskItem);
-        
-        if (isCollaborativeMode) {
-            const select = taskItem.querySelector('.task-user-select');
-            if (select) select.addEventListener('change', () => updateTaskUserOptions());
-        }
-    }
-
-    window.removeTaskRow = function(button) {
-        const taskItem = button.closest('.task-item');
-        if (taskItem) taskItem.remove();
-        if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
-    }
-
-    function updateTaskUserOptions() {
-        if (!isCollaborativeMode) return;
-        
-        setTimeout(() => {
-            document.querySelectorAll('.task-user-select').forEach(select => {
-                const currentValue = select.value;
-                const newOptions = renderTaskUserOptions(currentValue);
-                select.innerHTML = newOptions;
-                if (currentValue) select.value = currentValue;
-            });
-        }, 50);
-    }
-
-    function saveCurrentTasks() {
-        const tasks = [];
-        document.querySelectorAll('.task-item').forEach(taskItem => {
-            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
-            const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
-            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
-            
-            let userId = null;
-            if (userIdInput) {
-                userId = userIdInput.value;
-            }
-            
-            const taskName = taskNameInput ? taskNameInput.value : '';
-            const taskId = taskIdInput ? taskIdInput.value : null;
-            
-            if (taskName) {
-                tasks.push({
-                    id: taskId,
-                    user_id: userId || currentUser.id,
-                    name_task: taskName
-                });
-            }
-        });
-        
-        return tasks;
-    }
-
-    function restoreTasks(tasks) {
-        const tContainer = document.getElementById('tasks-container');
-        if (!tContainer) return;
-        
-        tContainer.innerHTML = '';
-        taskIndex = 0;
-        
-        if (tasks && tasks.length > 0) {
-            tasks.forEach(task => {
-                if (task.name_task) {
-                    window.addTaskRow(task);
-                }
-            });
-        }
-        
-        if (tContainer.children.length === 0) {
-            window.addTaskRow();
-        }
-        
-        if (isCollaborativeMode) {
-            setTimeout(() => updateTaskUserOptions(), 100);
-        }
-    }
-
-    function initializeTaskRows() {
-        const tContainer = document.getElementById('tasks-container');
-        if (!tContainer) return;
-        tContainer.innerHTML = '';
-        taskIndex = 0;
-
-        if (Array.isArray(existingTasksData) && existingTasksData.length) {
-            existingTasksData.forEach(task => window.addTaskRow(task));
-        }
-        
-        if (tContainer.children.length === 0) window.addTaskRow();
-        
-        if (isCollaborativeMode) {
-            setTimeout(() => updateTaskUserOptions(), 100);
-        }
-    }
-
-    function fetchUsers(page = 1) {
-        const fetchUrl = container.dataset.fetchUrl;
-        const params = new URLSearchParams({
-            id: container.dataset.projectId,
-            page: page,
-            search: currentModalFilters.search,
-            angkatan: currentModalFilters.angkatan,
-            jurusan: currentModalFilters.jurusan,
-            keahlian: currentModalFilters.keahlian
-        });
-
-        fetch(`${fetchUrl}?${params}`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.userListHtml;
-            
-            const userElements = tempDiv.querySelectorAll('[data-user-id]');
-            const usersInPage = [];
-            
-            userElements.forEach(el => {
-                const userId = el.getAttribute('data-user-id');
-                const nameEl = el.querySelector('.font-medium');
-                const emailEl = el.querySelector('.text-sm.text-gray-500');
-                const imgEl = el.querySelector('img');
-                
-                if (userId && nameEl) {
-                    const user = {
-                        id: parseInt(userId),
-                        nama_mahasiswa: nameEl.textContent.trim(),
-                        email: emailEl ? emailEl.textContent.trim() : '',
-                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                    };
-                    usersInPage.push(user);
-                }
-            });
-            
-            addUsersToMap(usersInPage);
-            
-            document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-            
-            attachRoleSelectEvents();
-            restoreModalRoles();
-            
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = select.dataset.userId;
-                if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                    select.value = 'leader';
-                } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                    select.value = 'member';
-                }
-            });
-            
-            refreshLeaderOptions();
-            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-        })
-        .catch(error => console.error('Error fetching users:', error));
-    }
-
-    function attachRoleSelectEvents() {
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            select.addEventListener('change', function() {
-                const userId = this.dataset.userId;
-                const role = this.value;
-                const user = getUserById(userId);
-                
-                if (!user) return;
-                
-                if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
-                    const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
-                    if (!confirmChange) {
-                        this.value = '';
-                        return;
-                    }
-                    
-                    const oldLeaderSelect = document.querySelector(`.user-role-select[data-user-id="${pendingUsers.leader.id}"]`);
-                    if (oldLeaderSelect) oldLeaderSelect.value = '';
-                }
-                
-                if (role === 'leader') {
-                    pendingUsers.leader = user;
-                    pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
-                } else if (role === 'member') {
-                    if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                        pendingUsers.leader = null;
-                    }
-                    if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                        pendingUsers.members.push(user);
-                    }
-                } else {
-                    if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                        pendingUsers.leader = null;
-                    }
-                    pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
-                }
-                
-                refreshLeaderOptions();
-            });
-        });
-    }
-
-    function refreshLeaderOptions() {
-        const hasLeader = !!pendingUsers.leader;
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.dataset.userId;
-            const optionLeader = select.querySelector('option[value="leader"]');
-            
-            if (optionLeader) {
-                if (hasLeader && (!pendingUsers.leader || String(pendingUsers.leader.id) !== String(userId))) {
-                    optionLeader.disabled = true;
-                } else {
-                    optionLeader.disabled = false;
-                }
-            }
-        });
-    }
-
-    window.openUserModal = function() {
-        if (!isCollaborativeMode) {
-            alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
-            return;
-        }
-        syncPendingFromSelected();
-        document.getElementById('userModal').classList.remove('hidden');
-        fetchUsers(1);
-    }
-
-    window.closeUserModal = function() {
-        document.getElementById('userModal').classList.add('hidden');
-    }
-
-    window.cancelUserModal = function() {
-        document.getElementById('userModal').classList.add('hidden');
-    }
-
-    window.confirmUserSelection = function() {
-        applyPendingToSelected();
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskUserOptions();
-        updateSelectedUsersBadge();
-        document.getElementById('userModal').classList.add('hidden');
-    }
-
-    function updateSelectedUsersBadge() {
-        const badge = document.getElementById('selected-users-badge');
-        if (!badge) return;
-        let count = 0;
-        if (selectedUsers.owner) count++;
-        if (selectedUsers.leader) count++;
-        count += selectedUsers.members.length;
-        badge.innerHTML = count === 0
-            ? ''
-            : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
-    }
-
-    function updateFormInputs() {
-        const ownerEl = document.getElementById('selected-owner-id');
-        const leaderEl = document.getElementById('selected-leader-id');
-        const membersEl = document.getElementById('selected-members-ids');
-        if (ownerEl) ownerEl.value = selectedUsers.owner?.id || '';
-        if (leaderEl) leaderEl.value = selectedUsers.leader?.id || '';
-        if (membersEl) membersEl.value = selectedUsers.members.map(m => m.id).join(',');
-
-        const memberInputs = document.getElementById('selected-members-inputs');
-        if (memberInputs) {
-            memberInputs.innerHTML = selectedUsers.members
-                .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
-                .join('');
-        }
-    }
-
-    function renderSelectedUsers() {
-        const containerSelected = document.getElementById('selected-users-container');
-        const noUsersMsg = document.getElementById('no-users-message');
-        if (!containerSelected || !noUsersMsg) return;
-
-        const selected = [];
-        if (selectedUsers.owner) {
-            const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id
-                ? 'Owner & Leader' : 'Owner';
-            selected.push({ ...selectedUsers.owner, role });
-        }
-        if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
-            selected.push({ ...selectedUsers.leader, role: 'Leader' });
-        }
-        selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
-
-        if (!selected.length) {
-            containerSelected.innerHTML = '';
-            noUsersMsg.classList.remove('hidden');
-            return;
-        }
-
-        noUsersMsg.classList.add('hidden');
-        containerSelected.innerHTML = selected.map(user => {
-            const styles = {
-                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
-
-            return `
-                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                    <div class="flex items-center gap-3">
-                        ${user.photo_profile
-                            ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                            : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                   <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                               </div>`
-                        }
-                        <div>
-                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                        </button>
-                        ${user.role !== 'Owner' ? `
-                        <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>` : ''}
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    window.removeUser = function(userId) {
-        if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-        selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskUserOptions();
-        updateSelectedUsersBadge();
-    }
-
-    window.editUser = function(userId) {
-        window.openUserModal();
-        setTimeout(() => {
-            const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
-            if (userElement) {
-                userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                userElement.style.backgroundColor = '#fef3c7';
-                setTimeout(() => userElement.style.backgroundColor = '', 2000);
-            }
-        }, 500);
-    }
-
-    function toggleUserSelectionSection() {
-        const toggle = document.getElementById('project-collaborative-toggle');
-        const userSelectionSection = document.getElementById('user-selection-section');
-
-        if (!toggle || !userSelectionSection) return;
-
-        if (toggle.checked) {
-            userSelectionSection.style.display = 'block';
-            isCollaborativeMode = true;
-            
-            if (selectedUsers.leader && selectedUsers.owner && String(selectedUsers.leader.id) === String(selectedUsers.owner.id) && selectedUsers.members.length === 0) {
-                selectedUsers.leader = null;
-                updateFormInputs();
-                renderSelectedUsers();
-                updateSelectedUsersBadge();
-            }
-            
-            const currentTasks = saveCurrentTasks();
-            restoreTasks(currentTasks);
-        } else {
-            userSelectionSection.style.display = 'none';
-            isCollaborativeMode = false;
-            
-            selectedUsers.leader = null;
-            selectedUsers.members = [];
-            
-            updateFormInputs();
-            renderSelectedUsers();
-            updateSelectedUsersBadge();
-            
-            const currentTasks = saveCurrentTasks();
-            restoreTasks(currentTasks);
-        }
-    }
-
-    function setupDateValidation() {
-        const tanggalMulaiInput = document.getElementById('tanggal_mulai');
-        const tanggalAkhirInput = document.getElementById('tanggal_akhir');
-        
-        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
-
-        if (tanggalMulaiInput.value) {
-            tanggalAkhirInput.min = tanggalMulaiInput.value;
-        }
-
-        tanggalMulaiInput.addEventListener('change', function() {
-            if (this.value) {
-                tanggalAkhirInput.min = this.value;
-                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
-                    tanggalAkhirInput.value = '';
-                }
-            } else {
-                tanggalAkhirInput.min = '';
-            }
-        });
-
-        tanggalAkhirInput.addEventListener('change', function() {
-            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
-                this.value = '';
-                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
-            }
-        });
-    }
-
-    function loadSelectedUsersFromForm() {
-        selectedUsers.owner = currentUser;
-        
-        if (projectLeaderId) {
-            const lead = getUserById(projectLeaderId);
-            if (lead) selectedUsers.leader = lead;
-        }
-        
-        if (projectMemberIds && projectMemberIds.length > 0) {
-            selectedUsers.members = projectMemberIds.map(id => getUserById(id)).filter(Boolean);
-        }
-        
-        updateFormInputs();
-    }
-
-    function setupModalFilters() {
-        const searchInput = document.getElementById('modal-search');
-        const angkatanSelect = document.getElementById('modal-angkatan');
-        const jurusanSelect = document.getElementById('modal-jurusan');
-        const keahlianSelect = document.getElementById('modal-keahlian');
-        
-        const fetchWithSave = (page) => {
-            saveCurrentModalRoles();
-            fetchUsers(page);
-        };
-        
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                currentModalFilters.search = this.value;
-                fetchWithSave(1);
-            });
-        }
-        
-        if (angkatanSelect) {
-            angkatanSelect.addEventListener('change', function() {
-                currentModalFilters.angkatan = this.value;
-                fetchWithSave(1);
-            });
-        }
-        
-        if (jurusanSelect) {
-            jurusanSelect.addEventListener('change', function() {
-                currentModalFilters.jurusan = this.value;
-                fetchWithSave(1);
-            });
-        }
-        
-        if (keahlianSelect) {
-            keahlianSelect.addEventListener('change', function() {
-                currentModalFilters.keahlian = this.value;
-                fetchWithSave(1);
-            });
-        }
-    }
-
-    const pagListener = function(e) {
-        const link = e.target.closest('#modal-pagination a');
-        if (link) {
-            e.preventDefault();
-            const url = new URL(link.href);
-            const page = url.searchParams.get('page') || 1;
-            saveCurrentModalRoles();
-            fetchUsers(page);
-        }
-    };
-    document.addEventListener('click', pagListener);
-
-    loadSelectedUsersFromForm();
-    renderSelectedUsers();
-    
-    const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-    const toggleLabel = document.getElementById('toggle-label');
-    
-    if (collaborativeToggle && toggleLabel) {
-        const hasMembers = selectedUsers.members.length > 0 || selectedUsers.leader;
-        collaborativeToggle.checked = hasMembers;
-        toggleLabel.textContent = hasMembers ? 'Aktif' : 'Nonaktif';
-        isCollaborativeMode = hasMembers;
-        
-        toggleUserSelectionSection();
-        initializeTaskRows();
-        
-        collaborativeToggle.addEventListener('change', function() {
-            toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
-            toggleUserSelectionSection();
-        });
-    } else {
-        initializeTaskRows();
-    }
-    
-    setupDateValidation();
-    setupModalFilters();
-
-    if (window.showPageInfo) {
-        window.showPageInfo("popup.user_edit_project");
-    }
-};
-
-/* ==========================================
-   VIEWS_SERTIFIKAT.BLADE.PHP SCRIPTS
-   ========================================== */
-window.initSertifikatListPage = function(container) {
-    window.filterStatus = function(status) {
+// ==========================================
+// PROJECT CREATE & EDIT PAGES
+// ==========================================
+// (Functions for project create/edit are declared inline in the blade files
+// but we need to make sure they're available globally)
+
+// These functions are already defined in the blade files via inline scripts.
+// We just need to make sure the window object has them available.
+
+// ==========================================
+// SERTIFIKAT PAGES
+// ==========================================
+window.initSertifikatListPage = function (container) {
+    window.filterStatus = function (status) {
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
             if (btn.dataset.filter === status) {
@@ -7323,10 +5944,7 @@ window.initSertifikatListPage = function(container) {
     }
 };
 
-/* ==========================================
-   VIEWS_SERTIFIKAT_USER.BLADE.PHP SCRIPTS
-   ========================================== */
-window.initSertifikatUserPage = function(container) {
+window.initSertifikatUserPage = function (container) {
     container.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {
             e.preventDefault();
@@ -7370,16 +5988,13 @@ window.initSertifikatUserPage = function(container) {
     }
 };
 
-/* ==========================================
-   VIEWS_CREATE_SERTIFIKAT.BLADE.PHP SCRIPTS
-   ========================================== */
-window.initSertifikatCreatePage = function(container) {
+window.initSertifikatCreatePage = function (container) {
     const fileInput = document.getElementById('link_sertifikat');
     const fileNameElement = document.getElementById('file-name');
     const previewContainer = document.getElementById('image-preview-container');
     const previewImage = document.getElementById('image-preview');
 
-    window.updateFileLabel = function(input) {
+    window.updateFileLabel = function (input) {
         const fileName = input.files[0]?.name;
 
         if (fileName) {
@@ -7437,7 +6052,7 @@ window.initSertifikatCreatePage = function(container) {
     const expiredDateInput = document.getElementById('expired_date');
     const permanentCheckbox = document.getElementById('permanent');
     const expiredDateBlock = document.getElementById('expired_date_block');
-    
+
     function updateExpiredDateState() {
         if (!expiredDateInput) return;
         const isPermanent = permanentCheckbox?.checked;
@@ -7465,7 +6080,7 @@ window.initSertifikatCreatePage = function(container) {
         if (tanggalTerbitInput && expiredDateInput && tanggalTerbitInput.value && expiredDateInput.value) {
             const tanggalTerbit = new Date(tanggalTerbitInput.value);
             const expiredDate = new Date(expiredDateInput.value);
-            
+
             if (expiredDate <= tanggalTerbit) {
                 expiredDateInput.setCustomValidity('Tanggal expired harus setelah tanggal terbit');
                 expiredDateInput.reportValidity();
@@ -7477,9 +6092,9 @@ window.initSertifikatCreatePage = function(container) {
         }
         return true;
     }
-    
+
     if (tanggalTerbitInput && expiredDateInput) {
-        tanggalTerbitInput.addEventListener('change', function() {
+        tanggalTerbitInput.addEventListener('change', function () {
             if (this.value) {
                 const nextDay = new Date(this.value);
                 nextDay.setDate(nextDay.getDate() + 1);
@@ -7495,10 +6110,10 @@ window.initSertifikatCreatePage = function(container) {
     }
 
     updateExpiredDateState();
-    
+
     const form = container.querySelector('form');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             updateExpiredDateState();
             if (!validateExpiredDate()) {
                 e.preventDefault();
@@ -7511,10 +6126,7 @@ window.initSertifikatCreatePage = function(container) {
     }
 };
 
-/* ==========================================
-   VIEWS_EDIT_SERTIFIKAT.BLADE.PHP SCRIPTS
-   ========================================== */
-window.initSertifikatEditPage = function(container) {
+window.initSertifikatEditPage = function (container) {
     const fileInput = document.getElementById('link_sertifikat');
     const fileNameElement = document.getElementById('file-name');
     const previewContainer = document.getElementById('image-preview-container');
@@ -7522,7 +6134,7 @@ window.initSertifikatEditPage = function(container) {
     const currentPreview = document.getElementById('current-image-preview');
     const originalFileName = container.dataset.originalFileName || '';
 
-    window.updateFileLabel = function(input) {
+    window.updateFileLabel = function (input) {
         const fileName = input.files[0]?.name;
 
         if (fileName) {
@@ -7551,7 +6163,7 @@ window.initSertifikatEditPage = function(container) {
         }
     };
 
-    window.toggleFileUpload = function(checkbox) {
+    window.toggleFileUpload = function (checkbox) {
         const fileUploadSection = document.getElementById('file-upload-section');
 
         if (checkbox.checked) {
@@ -7614,7 +6226,7 @@ window.initSertifikatEditPage = function(container) {
     const expiredDateInput = document.getElementById('expired_date');
     const permanentCheckbox = document.getElementById('permanent');
     const expiredDateBlock = document.getElementById('expired_date_block');
-    
+
     function updateExpiredDateState() {
         if (!expiredDateInput) return;
         const isPermanent = permanentCheckbox?.checked;
@@ -7642,7 +6254,7 @@ window.initSertifikatEditPage = function(container) {
         if (tanggalTerbitInput && expiredDateInput && tanggalTerbitInput.value && expiredDateInput.value) {
             const tanggalTerbit = new Date(tanggalTerbitInput.value);
             const expiredDate = new Date(expiredDateInput.value);
-            
+
             if (expiredDate <= tanggalTerbit) {
                 expiredDateInput.setCustomValidity('Tanggal expired harus setelah tanggal terbit');
                 expiredDateInput.reportValidity();
@@ -7654,9 +6266,9 @@ window.initSertifikatEditPage = function(container) {
         }
         return true;
     }
-    
+
     if (tanggalTerbitInput && expiredDateInput) {
-        tanggalTerbitInput.addEventListener('change', function() {
+        tanggalTerbitInput.addEventListener('change', function () {
             if (this.value) {
                 const nextDay = new Date(this.value);
                 nextDay.setDate(nextDay.getDate() + 1);
@@ -7664,7 +6276,7 @@ window.initSertifikatEditPage = function(container) {
             }
             validateExpiredDate();
         });
-        
+
         expiredDateInput.addEventListener('change', validateExpiredDate);
         validateExpiredDate();
     }
@@ -7682,7 +6294,7 @@ window.initSertifikatEditPage = function(container) {
                 e.preventDefault();
                 return false;
             }
-            
+
             const replaceCheckbox = document.getElementById('replace-file-checkbox');
             if (fileInput && fileInput.files.length > 0 && replaceCheckbox && !replaceCheckbox.checked) {
                 replaceCheckbox.checked = true;
@@ -7696,10 +6308,10 @@ window.initSertifikatEditPage = function(container) {
     }
 };
 
-/* ==========================================
-   PAGINATION AJAX & SCROLL RESTORATION HELPERS
-   ========================================== */
-document.addEventListener('click', function(e) {
+// ==========================================
+// PAGINATION SCROLL
+// ==========================================
+document.addEventListener('click', function (e) {
     const link = e.target.closest('.pagination-link');
     if (link) {
         const groupName = link.getAttribute('data-group');
@@ -7723,1373 +6335,6 @@ document.addEventListener('DOMContentLoaded', handlePaginationScroll);
 document.addEventListener('turbo:load', handlePaginationScroll);
 
 // ==========================================
-//   PROJECT EDIT PAGE
+// START ALPINE
 // ==========================================
-(function() {
-    // ----- state -----
-    let allUsersMap = new Map();
-    let allUsersArray = [];
-    let pendingUsers = { owner: null, leader: null, members: [] };
-    let selectedUsers = { owner: null, leader: null, members: [] };
-    let taskIndex = 0;
-    let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
-    let tempSelectedRoles = {};
-    let isCollaborativeMode = false;
-    let projectData = null;
-
-    // ----- helpers -----
-    function addUsersToMap(users) {
-        if (!Array.isArray(users)) return;
-        users.forEach(user => {
-            if (user && user.id && !allUsersMap.has(String(user.id))) {
-                allUsersMap.set(String(user.id), user);
-                allUsersArray.push(user);
-            }
-        });
-    }
-
-    function getUserById(id) {
-        const userId = String(id);
-        if (allUsersMap.has(userId)) {
-            return allUsersMap.get(userId);
-        }
-        return null;
-    }
-
-    // ----- pending / selected sync -----
-    function syncPendingFromSelected() {
-        pendingUsers = {
-            owner: selectedUsers.owner ? { ...selectedUsers.owner } : null,
-            leader: selectedUsers.leader ? { ...selectedUsers.leader } : null,
-            members: selectedUsers.members.map(m => ({ ...m }))
-        };
-    }
-
-    function applyPendingToSelected() {
-        selectedUsers.owner = pendingUsers.owner ? { ...pendingUsers.owner } : null;
-        selectedUsers.leader = pendingUsers.leader ? { ...pendingUsers.leader } : null;
-        selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
-    }
-
-    function saveCurrentModalRoles() {
-        tempSelectedRoles = {};
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.dataset.userId;
-            if (userId && select.value) {
-                tempSelectedRoles[userId] = select.value;
-            }
-        });
-    }
-
-    function restoreModalRoles() {
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.dataset.userId;
-            if (userId && tempSelectedRoles[userId]) {
-                select.value = tempSelectedRoles[userId];
-            }
-        });
-        refreshLeaderOptions();
-    }
-
-    // ----- task functions -----
-    function getAllowedTaskUsers(additionalUsers = []) {
-        const users = [];
-        const added = new Set();
-        const add = user => {
-            if (!user || added.has(String(user.id))) return;
-            added.add(String(user.id));
-            users.push({ id: user.id, name: user.nama_mahasiswa });
-        };
-
-        add(selectedUsers.owner);
-        add(selectedUsers.leader);
-        selectedUsers.members.forEach(add);
-        additionalUsers.forEach(add);
-        return users;
-    }
-
-    function renderTaskUserOptions(selectedId = '') {
-        const additionalUsers = [];
-        let fallbackName = null;
-
-        if (selectedId) {
-            const selectedTaskUser = getUserById(selectedId);
-            if (selectedTaskUser) {
-                additionalUsers.push(selectedTaskUser);
-            } else {
-                const taskData = (projectData?.existingTasks || []).find(t => String(t.user_id) === String(selectedId));
-                if (taskData && taskData.user_name) {
-                    fallbackName = taskData.user_name;
-                }
-            }
-        }
-
-        const users = getAllowedTaskUsers(additionalUsers);
-        let html = '<option value="">-- Pilih Penanggung Jawab --</option>';
-        users.forEach(user => {
-            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-        });
-
-        if (selectedId && fallbackName && !users.some(u => String(u.id) === String(selectedId))) {
-            html += `<option value="${selectedId}" selected>${fallbackName}</option>`;
-        }
-
-        return html;
-    }
-
-    function addTaskRow(taskData = null) {
-        const container = document.getElementById('tasks-container');
-        if (!container) return;
-
-        const index = taskIndex++;
-        const userId = taskData?.user_id ?? '';
-        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
-        const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
-
-        const taskItem = document.createElement('div');
-        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-
-        if (!isCollaborativeMode) {
-            const currentUser = projectData?.currentUser || { id: '', nama_mahasiswa: 'Unknown' };
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <input type="hidden" name="tasks[${index}][user_id]" value="${currentUser.id}">
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <input type="text" value="${currentUser.nama_mahasiswa} (Owner)"
-                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-                               readonly disabled>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                               placeholder="Deskripsikan tugas...">
-                    </div>
-                    <button type="button" onclick="window.removeTaskRow(this)"
-                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-                </div>
-            `;
-        } else {
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                               placeholder="Deskripsikan tugas...">
-                    </div>
-                    <button type="button" onclick="window.removeTaskRow(this)"
-                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-                </div>
-            `;
-        }
-
-        container.appendChild(taskItem);
-
-        if (isCollaborativeMode) {
-            const select = taskItem.querySelector('.task-user-select');
-            if (select) select.addEventListener('change', () => updateTaskUserOptions());
-        }
-    }
-
-    function removeTaskRow(button) {
-        const taskItem = button.closest('.task-item');
-        if (taskItem) taskItem.remove();
-        if (!document.querySelectorAll('.task-item').length) addTaskRow();
-    }
-
-    function updateTaskUserOptions() {
-        if (!isCollaborativeMode) return;
-        setTimeout(() => {
-            document.querySelectorAll('.task-user-select').forEach(select => {
-                const currentValue = select.value;
-                const newOptions = renderTaskUserOptions(currentValue);
-                select.innerHTML = newOptions;
-                if (currentValue) select.value = currentValue;
-            });
-        }, 50);
-    }
-
-    function saveCurrentTasks() {
-        const tasks = [];
-        document.querySelectorAll('.task-item').forEach(taskItem => {
-            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
-            const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
-            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
-            let userId = null;
-            if (userIdInput) userId = userIdInput.value;
-            const taskName = taskNameInput ? taskNameInput.value : '';
-            const taskId = taskIdInput ? taskIdInput.value : null;
-            if (taskName) {
-                tasks.push({
-                    id: taskId,
-                    user_id: userId || (projectData?.currentUser?.id || ''),
-                    name_task: taskName
-                });
-            }
-        });
-        return tasks;
-    }
-
-    function restoreTasks(tasks) {
-        const container = document.getElementById('tasks-container');
-        if (!container) return;
-        container.innerHTML = '';
-        taskIndex = 0;
-        if (tasks && tasks.length > 0) {
-            tasks.forEach(task => {
-                if (task.name_task) addTaskRow(task);
-            });
-        }
-        if (container.children.length === 0) addTaskRow();
-        if (isCollaborativeMode) setTimeout(() => updateTaskUserOptions(), 100);
-    }
-
-    // ----- modal / ajax -----
-    function fetchUsers(page = 1) {
-        if (!projectData) return;
-        const params = new URLSearchParams({
-            id: projectData.projectId,
-            page: page,
-            search: currentModalFilters.search,
-            angkatan: currentModalFilters.angkatan,
-            jurusan: currentModalFilters.jurusan,
-            keahlian: currentModalFilters.keahlian
-        });
-
-        const url = `/project/edit/${projectData.projectId}?${params}`;
-        fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.userListHtml;
-
-            const userElements = tempDiv.querySelectorAll('[data-user-id]');
-            const usersInPage = [];
-            userElements.forEach(el => {
-                const userId = el.getAttribute('data-user-id');
-                const nameEl = el.querySelector('.font-medium');
-                const emailEl = el.querySelector('.text-sm.text-gray-500');
-                const imgEl = el.querySelector('img');
-                if (userId && nameEl) {
-                    const user = {
-                        id: parseInt(userId),
-                        nama_mahasiswa: nameEl.textContent.trim(),
-                        email: emailEl ? emailEl.textContent.trim() : '',
-                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                    };
-                    usersInPage.push(user);
-                }
-            });
-
-            addUsersToMap(usersInPage);
-
-            document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-
-            attachRoleSelectEvents();
-            restoreModalRoles();
-
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = select.dataset.userId;
-                if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                    select.value = 'leader';
-                } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                    select.value = 'member';
-                }
-            });
-
-            refreshLeaderOptions();
-            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-        })
-        .catch(error => console.error('Error fetching users:', error));
-    }
-
-    function attachRoleSelectEvents() {
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.getAttribute('data-user-id');
-            if (userId) {
-                select.removeEventListener('change', select._handler);
-                const handler = function() {
-                    updateUserRole(this, userId, this.value);
-                    saveCurrentModalRoles();
-                };
-                select.addEventListener('change', handler);
-                select._handler = handler;
-            }
-        });
-    }
-
-    function updateUserRole(selectElement, userId, role) {
-        const user = getUserById(userId);
-        if (!user) {
-            console.error('User not found:', userId);
-            return;
-        }
-
-        const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
-        const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
-
-        if (isOwner && role === 'member') {
-            alert('Owner tidak bisa menjadi member.');
-            selectElement.value = isCurrentLeader ? 'leader' : '';
-            refreshLeaderOptions();
-            return;
-        }
-
-        if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
-            const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
-            if (!confirmChange) {
-                selectElement.value = isCurrentLeader ? 'leader' : '';
-                refreshLeaderOptions();
-                return;
-            }
-            pendingUsers.leader = null;
-        }
-
-        if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-            pendingUsers.leader = null;
-        }
-        pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
-
-        if (role === 'leader') {
-            pendingUsers.leader = user;
-        } else if (role === 'member') {
-            if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                pendingUsers.members.push(user);
-            }
-        }
-
-        refreshLeaderOptions();
-    }
-
-    function refreshLeaderOptions() {
-        const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
-        document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId = select.dataset.userId;
-            const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
-            const leaderOption = select.querySelector('option[value="leader"]');
-            if (!leaderOption) return;
-            if (isOwner) {
-                select.disabled = true;
-                select.value = 'leader';
-                return;
-            }
-            select.disabled = false;
-            if (leaderId && String(userId) !== String(leaderId)) {
-                leaderOption.disabled = true;
-                leaderOption.textContent = 'Leader (Sudah Dipilih)';
-                if (select.value === 'leader') {
-                    select.value = '';
-                }
-            } else {
-                leaderOption.disabled = false;
-                leaderOption.textContent = 'Leader';
-            }
-        });
-    }
-
-    // ----- modal open/close -----
-    function openUserModal() {
-        const toggle = document.getElementById('project-collaborative-toggle');
-        if (!toggle || !toggle.checked) {
-            alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
-            return;
-        }
-        syncPendingFromSelected();
-        document.getElementById('userModal').classList.remove('hidden');
-        fetchUsers(1);
-    }
-
-    function closeUserModal() {
-        document.getElementById('userModal').classList.add('hidden');
-    }
-
-    function confirmUserSelection() {
-        applyPendingToSelected();
-        updateFormInputs();
-        renderSelectedUsers();
-        // Update tasks without losing data
-        const currentTasks = saveCurrentTasks();
-        isCollaborativeMode = true;
-        restoreTasks(currentTasks);
-        closeUserModal();
-    }
-
-    // ----- form / ui -----
-    function updateFormInputs() {
-        const ownerId = selectedUsers.owner?.id || (projectData?.currentUser?.id || '');
-        document.getElementById('selected-owner-id').value = ownerId;
-        document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
-
-        const container = document.getElementById('members-hidden-container');
-        if (!container) return;
-        container.innerHTML = '';
-        selectedUsers.members.forEach(member => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'members[]';
-            input.value = member.id;
-            container.appendChild(input);
-        });
-    }
-
-    function renderSelectedUsers() {
-        const container = document.getElementById('selected-users-container');
-        const noMsg = document.getElementById('no-users-message');
-        if (!container || !noMsg) return;
-
-        const selected = [];
-        if (selectedUsers.owner) {
-            const isOwnerAsLeader = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id;
-            const role = isOwnerAsLeader ? 'Owner & Leader' : 'Owner';
-            selected.push({ ...selectedUsers.owner, role, isOwner: true });
-        } else if (projectData?.currentUser) {
-            selected.push({ ...projectData.currentUser, role: 'Owner', isOwner: true });
-        }
-
-        if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
-            selected.push({ ...selectedUsers.leader, role: 'Leader', isOwner: false });
-        }
-
-        selectedUsers.members.forEach(member => {
-            selected.push({ ...member, role: 'Member', isOwner: false });
-        });
-
-        if (selected.length === 0) {
-            container.innerHTML = '';
-            noMsg.classList.remove('hidden');
-            return;
-        }
-
-        noMsg.classList.add('hidden');
-        container.innerHTML = selected.map(user => {
-            const styles = {
-                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-            }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
-
-            const showRemoveButton = user.role !== 'Owner' && user.role !== 'Owner & Leader';
-            const photo = user.photo_profile ? `/storage/${user.photo_profile}` : null;
-            const initial = (user.nama_mahasiswa || '?').charAt(0).toUpperCase();
-
-            return `
-                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                    <div class="flex items-center gap-3">
-                        ${photo ?
-                            `<img src="${photo}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
-                            `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                <span class="font-semibold text-current">${initial}</span>
-                            </div>`
-                        }
-                        <div>
-                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa || 'Unknown'}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
-                        </div>
-                    </div>
-                    ${showRemoveButton ? `
-                    <button type="button" onclick="window.removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                    ` : ''}
-                </div>
-            `;
-        }).join('');
-    }
-
-    function removeUser(userId) {
-        if (selectedUsers.owner && String(selectedUsers.owner.id) === String(userId)) {
-            alert('Owner tidak dapat dihapus dari project.');
-            return;
-        }
-        if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
-            selectedUsers.leader = null;
-        }
-        selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
-        updateFormInputs();
-        renderSelectedUsers();
-        updateTaskUserOptions();
-    }
-
-    function loadSelectedUsersFromForm() {
-        if (!projectData) return;
-        selectedUsers.owner = projectData.currentUser || null;
-
-        const leaderId = projectData.leaderId;
-        if (leaderId && String(leaderId) !== String(projectData.currentUser?.id)) {
-            let leader = getUserById(leaderId);
-            if (!leader && projectData.existingTasks) {
-                const taskUser = projectData.existingTasks.find(t => String(t.user_id) === String(leaderId));
-                if (taskUser && taskUser.user_name) {
-                    leader = { id: leaderId, nama_mahasiswa: taskUser.user_name };
-                }
-            }
-            selectedUsers.leader = leader || null;
-        } else {
-            selectedUsers.leader = null;
-        }
-
-        selectedUsers.members = [];
-        const memberIds = projectData.memberIds || [];
-        memberIds.forEach(memberId => {
-            if (String(memberId) === String(projectData.currentUser?.id)) return;
-            if (selectedUsers.leader && String(memberId) === String(selectedUsers.leader.id)) return;
-            let member = getUserById(memberId);
-            if (!member && projectData.existingTasks) {
-                const taskUser = projectData.existingTasks.find(t => String(t.user_id) === String(memberId));
-                if (taskUser && taskUser.user_name) {
-                    member = { id: memberId, nama_mahasiswa: taskUser.user_name };
-                }
-            }
-            if (member) selectedUsers.members.push(member);
-        });
-
-        syncPendingFromSelected();
-    }
-
-    // ----- toggle collaborative mode -----
-    function toggleUserSelectionSection() {
-        const toggle = document.getElementById('project-collaborative-toggle');
-        const userSelectionSection = document.getElementById('user-selection-section');
-        const taskSection = document.getElementById('task-section');
-
-        if (toggle && userSelectionSection) {
-            if (toggle.checked) {
-                if (!isCollaborativeMode) {
-                    const currentTasks = saveCurrentTasks();
-                    isCollaborativeMode = true;
-                    userSelectionSection.style.display = 'block';
-                    if (taskSection) taskSection.classList.remove('hidden');
-                    restoreTasks(currentTasks);
-                } else {
-                    userSelectionSection.style.display = 'block';
-                    if (taskSection) taskSection.classList.remove('hidden');
-                }
-            } else {
-                if (isCollaborativeMode) {
-                    const currentTasks = saveCurrentTasks();
-                    isCollaborativeMode = false;
-                    userSelectionSection.style.display = 'none';
-                    if (taskSection) taskSection.classList.remove('hidden');
-
-                    selectedUsers.owner = projectData?.currentUser || null;
-                    selectedUsers.leader = null;
-                    selectedUsers.members = [];
-                    updateFormInputs();
-                    renderSelectedUsers();
-                    restoreTasks(currentTasks);
-                } else {
-                    userSelectionSection.style.display = 'none';
-                    if (taskSection) taskSection.classList.remove('hidden');
-                }
-            }
-        }
-    }
-
-    // ----- date validation -----
-    function setupDateValidation() {
-        const tanggalMulaiInput = document.getElementById('tanggal_mulai');
-        const tanggalAkhirInput = document.getElementById('tanggal_akhir');
-        if (!tanggalMulaiInput || !tanggalAkhirInput) return;
-
-        if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
-
-        tanggalMulaiInput.addEventListener('change', function() {
-            if (this.value) {
-                tanggalAkhirInput.min = this.value;
-                if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
-                    tanggalAkhirInput.value = '';
-                }
-            } else {
-                tanggalAkhirInput.min = '';
-            }
-        });
-
-        tanggalAkhirInput.addEventListener('change', function() {
-            if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
-                this.value = '';
-                alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
-            }
-        });
-    }
-
-    // ----- modal filters -----
-    function setupModalFilters() {
-        const searchInput = document.getElementById('modal-search');
-        const angkatanSelect = document.getElementById('modal-angkatan');
-        const jurusanSelect = document.getElementById('modal-jurusan');
-        const keahlianSelect = document.getElementById('modal-keahlian');
-
-        const fetchWithSave = (page) => {
-            saveCurrentModalRoles();
-            fetchUsers(page);
-        };
-
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                currentModalFilters.search = this.value;
-                fetchWithSave(1);
-            });
-        }
-        if (angkatanSelect) {
-            angkatanSelect.addEventListener('change', function() {
-                currentModalFilters.angkatan = this.value;
-                fetchWithSave(1);
-            });
-        }
-        if (jurusanSelect) {
-            jurusanSelect.addEventListener('change', function() {
-                currentModalFilters.jurusan = this.value;
-                fetchWithSave(1);
-            });
-        }
-        if (keahlianSelect) {
-            keahlianSelect.addEventListener('change', function() {
-                currentModalFilters.keahlian = this.value;
-                fetchWithSave(1);
-            });
-        }
-    }
-
-    // ----- pagination (delegated) -----
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('#modal-pagination a');
-        if (link) {
-            e.preventDefault();
-            const url = new URL(link.href);
-            const page = url.searchParams.get('page') || 1;
-            saveCurrentModalRoles();
-            fetchUsers(page);
-        }
-    });
-
-    // ----- initialize tasks -----
-    function initializeTaskRows() {
-        const container = document.getElementById('tasks-container');
-        if (!container) return;
-        container.innerHTML = '';
-        taskIndex = 0;
-
-        const tasks = projectData?.existingTasks || [];
-        if (tasks.length) {
-            tasks.forEach(task => addTaskRow(task));
-        }
-        if (container.children.length === 0) addTaskRow();
-
-        if (isCollaborativeMode) setTimeout(() => updateTaskUserOptions(), 100);
-    }
-
-    // ----- expose to window (for onclick) -----
-    window.openUserModal = openUserModal;
-    window.closeUserModal = closeUserModal;
-    window.confirmUserSelection = confirmUserSelection;
-    window.addTaskRow = addTaskRow;
-    window.removeTaskRow = removeTaskRow;
-    window.updateUserRole = updateUserRole;
-    window.fetchUsers = fetchUsers;
-    window.refreshLeaderOptions = refreshLeaderOptions;
-    window.applyPendingToSelected = applyPendingToSelected;
-    window.syncPendingFromSelected = syncPendingFromSelected;
-    window.saveCurrentModalRoles = saveCurrentModalRoles;
-    window.restoreModalRoles = restoreModalRoles;
-    window.getUserById = getUserById;
-    window.addUsersToMap = addUsersToMap;
-    window.renderSelectedUsers = renderSelectedUsers;
-    window.updateFormInputs = updateFormInputs;
-    window.removeUser = removeUser;
-    window.loadSelectedUsersFromForm = loadSelectedUsersFromForm;
-    window.toggleUserSelectionSection = toggleUserSelectionSection;
-    window.setupDateValidation = setupDateValidation;
-    window.setupModalFilters = setupModalFilters;
-    window.initializeTaskRows = initializeTaskRows;
-    window.saveCurrentTasks = saveCurrentTasks;
-    window.restoreTasks = restoreTasks;
-    window.updateTaskUserOptions = updateTaskUserOptions;
-    window.renderTaskUserOptions = renderTaskUserOptions;
-    window.getAllowedTaskUsers = getAllowedTaskUsers;
-    window.attachRoleSelectEvents = attachRoleSelectEvents;
-
-    // ----- auto-init when DOM ready -----
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('project-edit-data');
-        if (!container) return;
-
-        projectData = {
-            users: JSON.parse(container.dataset.users || '[]'),
-            currentUser: JSON.parse(container.dataset.currentUser || 'null'),
-            existingTasks: JSON.parse(container.dataset.existingTasks || '[]'),
-            projectId: container.dataset.projectId,
-            leaderId: container.dataset.leaderId || null,
-            memberIds: JSON.parse(container.dataset.memberIds || '[]')
-        };
-
-        addUsersToMap(projectData.users);
-        if (projectData.currentUser) addUsersToMap([projectData.currentUser]);
-
-        loadSelectedUsersFromForm();
-        renderSelectedUsers();
-
-        const toggle = document.getElementById('project-collaborative-toggle');
-        const label = document.getElementById('toggle-label');
-        if (toggle && label) {
-            const hasMembers = selectedUsers.members.length > 0 || selectedUsers.leader;
-            toggle.checked = hasMembers;
-            label.textContent = hasMembers ? 'Aktif' : 'Nonaktif';
-            isCollaborativeMode = hasMembers;
-            toggleUserSelectionSection();
-            initializeTaskRows();
-            toggle.addEventListener('change', function() {
-                label.textContent = this.checked ? 'Aktif' : 'Nonaktif';
-                toggleUserSelectionSection();
-            });
-        } else {
-            initializeTaskRows();
-        }
-
-        setupDateValidation();
-        setupModalFilters();
-    });
-})();
-
-// ==========================================
-//   PROJECT CREATE PAGE (Direct)
-//   Dijalankan jika elemen #project-create-data ada
-// ==========================================
-(function() {
-    document.addEventListener('DOMContentLoaded', function() {
-        const dataEl = document.getElementById('project-create-data');
-        if (!dataEl) return;
-
-        // Ambil data dari dataset
-        const currentUser = JSON.parse(dataEl.dataset.currentUser || 'null');
-        const oldTasks = JSON.parse(dataEl.dataset.oldTasks || '[]');
-        const routeCreate = dataEl.dataset.routeCreate || '';
-
-        // ------------------------------------------------------------------
-        // Semua fungsi dan state di-bungkus dalam scope agar tidak global
-        // ------------------------------------------------------------------
-        let allUsers = [];
-        let allUsersMap = new Map();
-        let currentModalFilters = { search: '', angkatan: '', jurusan: '', keahlian: '' };
-        let currentPage = 1;
-        let selectedUsers = { owner: null, leader: null, members: [] };
-        let pendingUsers = { owner: null, leader: null, members: [] };
-        let taskIndex = 0;
-        const userSelectionStorageKey = 'project_selected_users';
-
-        // ----- Storage helpers -----
-        function saveSelectedUsersToStorage() {
-            localStorage.setItem(userSelectionStorageKey, JSON.stringify({
-                owner: selectedUsers.owner,
-                leader: selectedUsers.leader,
-                members: selectedUsers.members
-            }));
-        }
-
-        function restoreSelectedUsersFromStorage() {
-            const stored = localStorage.getItem(userSelectionStorageKey);
-            if (!stored) return false;
-            try {
-                const parsed = JSON.parse(stored);
-                if (parsed.owner) selectedUsers.owner = parsed.owner;
-                if (parsed.leader) selectedUsers.leader = parsed.leader;
-                if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
-                return true;
-            } catch (e) {
-                console.warn('Unable to restore selected users:', e);
-                return false;
-            }
-        }
-
-        // ----- allUsers helpers -----
-        function addUsersToAllUsers(usersArray) {
-            if (!Array.isArray(usersArray)) return;
-            usersArray.forEach(user => {
-                if (!allUsersMap.has(String(user.id))) {
-                    allUsersMap.set(String(user.id), user);
-                    allUsers.push(user);
-                }
-            });
-        }
-
-        function getUserById(id) {
-            const userId = String(id);
-            return allUsersMap.has(userId) ? allUsersMap.get(userId) : null;
-        }
-
-        // ----- pendingUsers helpers -----
-        function syncPendingFromSelected() {
-            pendingUsers = {
-                owner: selectedUsers.owner ? { ...selectedUsers.owner } : null,
-                leader: selectedUsers.leader ? { ...selectedUsers.leader } : null,
-                members: selectedUsers.members.map(m => ({ ...m }))
-            };
-        }
-
-        function applyPendingToSelected() {
-            selectedUsers.owner = pendingUsers.owner ? { ...pendingUsers.owner } : null;
-            selectedUsers.leader = pendingUsers.leader ? { ...pendingUsers.leader } : null;
-            selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
-        }
-
-        function discardPending() {
-            pendingUsers = { owner: null, leader: null, members: [] };
-        }
-
-        // ----- Modal open/close -----
-        window.openUserModal = function() {
-            const toggle = document.getElementById('project-collaborative-toggle');
-            if (!toggle || !toggle.checked) {
-                alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
-                return;
-            }
-            syncPendingFromSelected();
-            document.getElementById('userModal').classList.remove('hidden');
-            fetchUsers(1);
-        };
-
-        window.closeUserModal = function() {
-            document.getElementById('userModal').classList.add('hidden');
-            discardPending();
-        };
-
-        window.cancelUserModal = function() {
-            discardPending();
-            document.getElementById('userModal').classList.add('hidden');
-        };
-
-        window.confirmUserSelection = function() {
-            applyPendingToSelected();
-            updateFormInputs();
-            renderSelectedUsers();
-            updateTaskSectionVisibility();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-            document.getElementById('userModal').classList.add('hidden');
-            discardPending();
-        };
-
-        // ----- Fetch users (AJAX) -----
-        function fetchUsers(page = 1) {
-            currentPage = page;
-            const params = new URLSearchParams({
-                page: page,
-                search: currentModalFilters.search,
-                angkatan: currentModalFilters.angkatan,
-                jurusan: currentModalFilters.jurusan,
-                keahlian: currentModalFilters.keahlian
-            });
-
-            fetch(`${routeCreate}?${params}`, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(res => res.json())
-            .then(data => {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = data.userListHtml;
-                const userElements = tempDiv.querySelectorAll('[data-user-id]');
-                const usersInPage = [];
-                userElements.forEach(el => {
-                    const userId = el.getAttribute('data-user-id');
-                    const nameEl = el.querySelector('.font-medium');
-                    const emailEl = el.querySelector('.text-sm.text-gray-500');
-                    const imgEl = el.querySelector('img');
-                    if (userId && nameEl) {
-                        usersInPage.push({
-                            id: parseInt(userId),
-                            nama_mahasiswa: nameEl.textContent.trim(),
-                            email: emailEl ? emailEl.textContent.trim() : '',
-                            photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                        });
-                    }
-                });
-                addUsersToAllUsers(usersInPage);
-                renderUserListWithRoles(data.userListHtml);
-                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-                refreshRoleSelections();
-                if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-            });
-        }
-
-        function renderUserListWithRoles(html) {
-            const container = document.getElementById('modal-user-list');
-            container.innerHTML = html;
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = String(select.dataset.userId);
-                const user = getUserById(userId);
-                if (user) {
-                    const userDiv = select.closest('[data-user-id]');
-                    if (userDiv) {
-                        const nameDiv = userDiv.querySelector('.font-medium');
-                        if (nameDiv && nameDiv.textContent !== user.nama_mahasiswa) {
-                            nameDiv.textContent = user.nama_mahasiswa;
-                        }
-                    }
-                }
-            });
-        }
-
-        // ----- Role assignment -----
-        window.updateUserRole = function(selectElement, userId, role) {
-            const user = getUserById(userId);
-            if (!user) {
-                console.error('User not found:', userId);
-                return;
-            }
-            const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
-            const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
-
-            if (isOwner && role === 'member') {
-                alert('Owner tidak bisa menjadi member.');
-                selectElement.value = isCurrentLeader ? 'leader' : '';
-                refreshRoleSelections();
-                return;
-            }
-
-            if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
-                if (!confirm(`Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`)) {
-                    selectElement.value = isCurrentLeader ? 'leader' : '';
-                    refreshRoleSelections();
-                    return;
-                }
-                pendingUsers.leader = null;
-            }
-
-            if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                pendingUsers.leader = null;
-            }
-            pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
-
-            if (role === 'leader') {
-                pendingUsers.leader = user;
-            } else if (role === 'member') {
-                if (!pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                    pendingUsers.members.push(user);
-                }
-            }
-            refreshRoleSelections();
-        };
-
-        function refreshRoleSelections() {
-            const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
-            const ownerId = pendingUsers.owner ? String(pendingUsers.owner.id) : null;
-
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = String(select.dataset.userId);
-                const isOwner = ownerId === userId;
-                const isLeader = leaderId === userId;
-                const isMember = pendingUsers.members.some(m => String(m.id) === userId);
-
-                if (isLeader) {
-                    select.value = 'leader';
-                } else if (isMember) {
-                    select.value = 'member';
-                } else {
-                    select.value = '';
-                }
-
-                const leaderOption = select.querySelector('option[value="leader"]');
-                const memberOption = select.querySelector('option[value="member"]');
-
-                if (leaderOption) {
-                    leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
-                    leaderOption.title = leaderOption.disabled ? 'Leader sudah dipilih' : '';
-                }
-                if (memberOption) {
-                    memberOption.disabled = false;
-                }
-                select.disabled = false;
-            });
-        }
-
-        // ----- Form inputs & rendering -----
-        function updateSelectedUsersBadge() {
-            const badge = document.getElementById('selected-users-badge');
-            if (!badge) return;
-            let count = 0;
-            if (selectedUsers.owner) count++;
-            if (selectedUsers.leader) count++;
-            count += selectedUsers.members.length;
-            badge.innerHTML = count === 0
-                ? ''
-                : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
-        }
-
-        function updateTaskSectionVisibility() {
-            const taskSection = document.getElementById('task-section');
-            if (!taskSection) return;
-            const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
-            if (hasUsers) {
-                taskSection.classList.remove('hidden');
-            } else {
-                taskSection.classList.add('hidden');
-                const container = document.getElementById('tasks-container');
-                if (container) { container.innerHTML = ''; taskIndex = 0; }
-            }
-        }
-
-        function updateFormInputs() {
-            document.getElementById('selected-owner-id').value = selectedUsers.owner?.id || '';
-            document.getElementById('selected-leader-id').value = selectedUsers.leader?.id || '';
-            document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
-
-            const memberInputs = document.getElementById('selected-members-inputs');
-            if (memberInputs) {
-                memberInputs.innerHTML = selectedUsers.members
-                    .map(member => `<input type="hidden" name="members[]" value="${member.id}">`)
-                    .join('');
-            }
-        }
-
-        function renderSelectedUsers() {
-            const container = document.getElementById('selected-users-container');
-            const noUsersMsg = document.getElementById('no-users-message');
-            if (!container || !noUsersMsg) return;
-
-            const selected = [];
-            if (selectedUsers.owner) {
-                const role = selectedUsers.leader && selectedUsers.leader.id === selectedUsers.owner.id ? 'Owner & Leader' : 'Owner';
-                selected.push({ ...selectedUsers.owner, role });
-            }
-            if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.owner.id !== selectedUsers.leader.id)) {
-                selected.push({ ...selectedUsers.leader, role: 'Leader' });
-            }
-            selectedUsers.members.forEach(member => selected.push({ ...member, role: 'Member' }));
-
-            if (!selected.length) {
-                container.innerHTML = '';
-                noUsersMsg.classList.remove('hidden');
-                return;
-            }
-
-            noUsersMsg.classList.add('hidden');
-            container.innerHTML = selected.map(user => {
-                const styles = {
-                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
-                }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
-
-                return `
-                    <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                        <div class="flex items-center gap-3">
-                            ${user.photo_profile
-                                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                                </div>`
-                            }
-                            <div>
-                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button type="button" onclick="editUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Edit Role">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </button>
-                            ${user.role !== 'Owner' ? `
-                            <button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80" title="Remove">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function deleteTasksForUser(userId) {
-            const userIdStr = String(userId);
-            document.querySelectorAll('.task-item').forEach(taskItem => {
-                const select = taskItem.querySelector('.task-user-select');
-                if (select && String(select.value) === userIdStr) taskItem.remove();
-            });
-            if (!document.querySelectorAll('.task-item').length) addTaskRow();
-        }
-
-        window.removeUser = function(userId) {
-            deleteTasksForUser(userId);
-            if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
-            selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
-            updateFormInputs();
-            renderSelectedUsers();
-            updateTaskUserOptions();
-            updateSelectedUsersBadge();
-            saveSelectedUsersToStorage();
-        };
-
-        window.editUser = function(userId) {
-            window.openUserModal();
-            setTimeout(() => {
-                const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
-                if (userElement) {
-                    userElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    userElement.style.backgroundColor = '#fef3c7';
-                    setTimeout(() => userElement.style.backgroundColor = '', 2000);
-                }
-            }, 500);
-        };
-
-        // ----- Task helpers -----
-        function getAllowedTaskUsers() {
-            const users = [];
-            const added = new Set();
-            const add = user => {
-                if (!user || added.has(user.id)) return;
-                added.add(user.id);
-                users.push({ id: user.id, name: user.nama_mahasiswa });
-            };
-            add(selectedUsers.owner);
-            add(selectedUsers.leader);
-            selectedUsers.members.forEach(add);
-            return users;
-        }
-
-        function renderTaskUserOptions(selectedId = '') {
-            const users = getAllowedTaskUsers();
-            let html = '<option value=""> Pilih Penanggung Jawab </option>';
-            users.forEach(user => {
-                html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
-            });
-            return html;
-        }
-
-        window.addTaskRow = function(taskData = null) {
-            const container = document.getElementById('tasks-container');
-            if (!container) return;
-            const index = taskIndex++;
-            const userId = taskData?.user_id ?? '';
-            const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
-            const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
-
-            const taskItem = document.createElement('div');
-            taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-            taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                            class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                            placeholder="Deskripsikan tugas...">
-                    </div>
-                    <button type="button" onclick="removeTaskRow(this)"
-                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
-                </div>
-            `;
-            container.appendChild(taskItem);
-            taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
-        };
-
-        window.removeTaskRow = function(button) {
-            button.closest('.task-item')?.remove();
-            if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
-        };
-
-        function cleanupInvalidTaskRows() {
-            const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
-            document.querySelectorAll('.task-item').forEach(taskItem => {
-                const select = taskItem.querySelector('.task-user-select');
-                if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
-            });
-            if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
-        }
-
-        function updateTaskUserOptions() {
-            document.querySelectorAll('.task-user-select').forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = renderTaskUserOptions(currentValue);
-                if (currentValue) select.value = currentValue;
-            });
-            cleanupInvalidTaskRows();
-        }
-
-        function initializeTaskRows(existingTasks = []) {
-            const container = document.getElementById('tasks-container');
-            if (!container) return;
-            container.innerHTML = '';
-            taskIndex = 0;
-            if (Array.isArray(existingTasks) && existingTasks.length) {
-                existingTasks.forEach(task => { if (task.user_id || task.name_task) window.addTaskRow(task); });
-            } else {
-                window.addTaskRow();
-            }
-            updateTaskUserOptions();
-        }
-
-        // ----- Modal filters -----
-        function setupModalFilters() {
-            document.getElementById('modal-search')?.addEventListener('input', function() {
-                currentModalFilters.search = this.value;
-                fetchUsers(1);
-            });
-            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
-                currentModalFilters.angkatan = this.value;
-                fetchUsers(1);
-            });
-            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
-                currentModalFilters.jurusan = this.value;
-                fetchUsers(1);
-            });
-            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
-                currentModalFilters.keahlian = this.value;
-                fetchUsers(1);
-            });
-        }
-
-        // ----- Pagination click (delegated) -----
-        document.addEventListener('click', function(e) {
-            const link = e.target.closest('#modal-pagination a');
-            if (link) {
-                e.preventDefault();
-                const url = link.getAttribute('href');
-                if (!url) return;
-                const page = new URL(url).searchParams.get('page') || 1;
-                fetchUsers(page);
-            }
-        });
-
-        // ----- Collaborative toggle -----
-        function toggleUserSelectionSection() {
-            const toggle = document.getElementById('project-collaborative-toggle');
-            const userSelectionSection = document.getElementById('user-selection-section');
-
-            if (!toggle || !userSelectionSection) return;
-
-            if (toggle.checked) {
-                userSelectionSection.style.display = 'block';
-                if (
-                    selectedUsers.leader &&
-                    selectedUsers.owner &&
-                    String(selectedUsers.leader.id) === String(selectedUsers.owner.id) &&
-                    selectedUsers.members.length === 0
-                ) {
-                    selectedUsers.leader = null;
-                    updateFormInputs();
-                    renderSelectedUsers();
-                    updateSelectedUsersBadge();
-                    saveSelectedUsersToStorage();
-                }
-            } else {
-                userSelectionSection.style.display = 'none';
-                selectedUsers.owner = currentUser;
-                selectedUsers.leader = currentUser;
-                selectedUsers.members = [];
-                updateFormInputs();
-                renderSelectedUsers();
-                updateTaskUserOptions();
-                updateSelectedUsersBadge();
-                saveSelectedUsersToStorage();
-            }
-        }
-
-        // ----- Date validation -----
-        function setupDateValidation() {
-            const tanggalMulaiInput = document.getElementById('tanggal_mulai');
-            const tanggalAkhirInput = document.getElementById('tanggal_akhir');
-            if (!tanggalMulaiInput || !tanggalAkhirInput) return;
-
-            if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
-
-            tanggalMulaiInput.addEventListener('change', function() {
-                if (this.value) {
-                    tanggalAkhirInput.min = this.value;
-                    if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
-                        tanggalAkhirInput.value = '';
-                    }
-                } else {
-                    tanggalAkhirInput.min = '';
-                }
-            });
-
-            tanggalAkhirInput.addEventListener('change', function() {
-                if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
-                    this.value = '';
-                    alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
-                }
-            });
-        }
-
-        // ----- Form submit -----
-        function onSubmitProjectForm() {
-            if (currentUser) selectedUsers.owner = currentUser;
-            if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
-                selectedUsers.leader = selectedUsers.owner;
-            }
-            updateFormInputs();
-            cleanupInvalidTaskRows();
-            updateTaskUserOptions();
-        }
-
-        // ----- Load from storage / form -----
-        function loadSelectedUsersFromForm() {
-            if (restoreSelectedUsersFromStorage()) {
-                updateFormInputs();
-                return;
-            }
-            const leaderId = document.getElementById('selected-leader-id')?.value;
-            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
-            if (leaderId) selectedUsers.leader = getUserById(leaderId);
-            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
-        }
-
-        // ----- Initialization -----
-        if (currentUser) {
-            addUsersToAllUsers([currentUser]);
-        }
-
-        loadSelectedUsersFromForm();
-        renderSelectedUsers();
-        setupModalFilters();
-        setupDateValidation();
-        updateTaskSectionVisibility();
-        updateSelectedUsersBadge();
-        initializeTaskRows(oldTasks);
-
-        document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
-
-        const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-        const toggleLabel = document.getElementById('toggle-label');
-        if (collaborativeToggle && toggleLabel) {
-            toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
-            toggleUserSelectionSection();
-            collaborativeToggle.addEventListener('change', function() {
-                toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
-                toggleUserSelectionSection();
-            });
-        }
-
-
-    });
-})();
-
-// Start Alpine AFTER all window.* components (e.g. notificationBell) are registered above.
-// This must stay at the very bottom of the file.
 Alpine.start();

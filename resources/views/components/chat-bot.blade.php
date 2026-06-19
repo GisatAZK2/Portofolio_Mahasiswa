@@ -1,14 +1,14 @@
 <button id="chatBotButton"
-    class="fixed bottom-50 sm:bottom-50 right-4 sm:right-6 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-1 sm:p-1 rounded-2xl shadow-lg transition-all duration-300 z-[100] group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
-    style="cursor: grab; user-select: none;">
+    class="bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white p-1 sm:p-1 rounded-2xl shadow-lg transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
+    style="position: fixed !important; bottom: 140px !important; right: 24px !important; z-index: 9999 !important; cursor: grab; user-select: none;">
     <img src="{{ asset('assets/Logo.svg') }}" class="w-10 h-10 sm:w-8 sm:h-8 group-[.chat-open]:hidden rounded-3xl">
     <img src="{{ asset('assets/Logo.svg') }}" class="w-9 h-9 sm:w-7 sm:h-7 hidden group-[.chat-open]:block rounded-3xl">
 </button>
 
 <!-- BUBBLE NOTIFICATION -->
 <div id="notificationBubble"
-    class="fixed bottom-55 sm:bottom-55 right-4 sm:right-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 z-[101] flex items-center gap-2 cursor-pointer transition-all duration-300 animate-bounce-subtle"
-    style="max-width: 280px; transform-origin: bottom right;">
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 flex items-center gap-2 cursor-pointer transition-all duration-300 animate-bounce-subtle"
+    style="position: fixed !important; bottom: 200px !important; right: 24px !important; z-index: 10000 !important; max-width: 280px; transform-origin: bottom right;">
     <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
         <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-6 h-6 sm:w-5 sm:h-5 rounded-full">
     </div>
@@ -24,8 +24,8 @@
 </div>
 
 <div id="chatWidget"
-    class="fixed bottom-40 sm:bottom-40 right-4 sm:right-6 w-[calc(100vw-2rem)] max-w-[360px] sm:max-w-[380px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[99] hidden transition-all duration-200 ease-out"
-    style="transform-origin: bottom right; max-height: min(600px, 85vh); display: flex; flex-direction: column;">
+    class="w-[calc(100vw-2rem)] max-w-[360px] sm:max-w-[380px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hidden transition-all duration-200 ease-out"
+    style="position: fixed !important; bottom: 140px !important; right: 24px !important; z-index: 9998 !important; transform-origin: bottom right; max-height: min(600px, 85vh); display: flex; flex-direction: column;">
 
     <div
         class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between flex-shrink-0">
@@ -108,7 +108,4 @@
             </button>
         </div>
     </div>
-        showBubble();
-        }, 1000);
-    });
-</script>
+</div>
