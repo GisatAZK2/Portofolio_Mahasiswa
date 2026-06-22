@@ -309,8 +309,6 @@
 
                         @if(!empty($pendidikanList))
                             <div class="relative">
-                                {{-- Timeline line --}}
-                                <div class="absolute left-5 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" style="margin-left: 1px;"></div>
 
                                 <div class="space-y-0">
                                     @foreach($pendidikanList as $index => $pend)
@@ -420,8 +418,6 @@
 
                         @if(!empty($pengalamanList))
                             <div class="relative">
-                                {{-- Timeline line --}}
-                                <div class="absolute left-5 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" style="margin-left: 1px;"></div>
 
                                 <div class="space-y-0">
                                     @foreach($pengalamanList as $index => $pkj)
