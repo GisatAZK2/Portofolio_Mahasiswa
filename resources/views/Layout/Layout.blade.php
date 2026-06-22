@@ -60,6 +60,8 @@
 
         main {
             flex: 1;
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 1rem;
@@ -210,10 +212,19 @@
             @include('components.header')
 
             <main class="overflow-auto">
-                <div class="">
+                <div class="grow">
                     @yield('content')
                 </div>
-                @hasSection('show_footer')
+                <!-- SESUDAH -->
+                @auth   
+                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
+                        @include('components.footer')
+                    @else
+                        <div class="hidden md:block">
+                            @include('components.footer')
+                        </div>
+                    @endif
+                @else
                     <div class="hidden md:block">
                         @include('components.footer')
                     </div>

@@ -15,7 +15,7 @@
             <!-- Left Column - Install Instructions -->
             <div class="space-y-4">
                 <!-- Android -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
+                <div class="get-app-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-6 h-6">
                             <svg viewBox="-22.5 0 301 301" version="1.1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" class="w-full h-full">
@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- iOS -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
+                <div class="get-app-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17.36 3 12.75 5.47 9.46c1.23-1.54 3.15-2.5 5-2.55 1.53-.05 2.98.86 3.92.86.93 0 2.67-1.06 4.5-.9.76.03 2.91.31 4.29 2.33-.11.07-2.56 1.5-2.53 4.48.03 2.58 2.26 3.44 2.28 3.45-.02.05-.36 1.22-1.18 2.42zM15.36 4.2c.78-.94 1.3-2.24 1.16-3.54-1.12.05-2.48.75-3.29 1.69-.72.84-1.35 2.18-1.18 3.47 1.25.1 2.52-.66 3.31-1.62z"/>
@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Desktop -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
+                <div class="get-app-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-6 h-6">
                             <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 92.77" class="w-full h-full">
@@ -73,7 +73,7 @@
             <!-- Right Column -->
             <div class="space-y-4">
                 <!-- QR Code -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 text-center">
+                <div class="get-app-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 text-center">
                     <h2 class="font-semibold text-gray-800 dark:text-white mb-3" data-translate="scan_qr" data-translate-page="get_app">Scan QR Code</h2>
                     <div id="qrcode" class="flex justify-center"></div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-3" data-translate="scan_qr_desc" data-translate-page="get_app">Scan dengan HP untuk install</p>
@@ -92,7 +92,7 @@
                 </div>
 
                 <!-- Features -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
+                <div class="get-app-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
                     <h3 class="font-semibold text-gray-800 dark:text-white mb-2" data-translate="keunggulan" data-translate-page="get_app">Keunggulan</h3>
                     <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <div class="flex items-center gap-2" data-translate="akses_cepat" data-translate-page="get_app">✓ Akses Cepat</div>
