@@ -60,6 +60,8 @@
 
         main {
             flex: 1;
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 1rem;
@@ -210,11 +212,11 @@
             @include('components.header')
 
             <main class="overflow-auto">
-                <div class="">
+                <div class="grow">
                     @yield('content')
                 </div>
                 <!-- SESUDAH -->
-                @auth
+                @auth   
                     @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
                         @include('components.footer')
                     @else
