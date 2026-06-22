@@ -1916,22 +1916,6 @@ export const id = {
         tentang_kami: 'Tentang Kami'
     },
 
-    mobile_nav: {
-        home: 'Beranda',
-        my_dashboard: 'Halaman Saya',
-        postingan: 'Postingan',
-        profil: 'Profil',
-        tambah_baru: 'Tambah Baru',
-        tambah_project_baru: 'Tambah Project Baru',
-        upload_project_kamu: 'Upload project kamu',
-        tambah_sertifikat_mobile: 'Tambah Sertifikat',
-        upload_sertifikatmu: 'Upload sertifikatmu',
-        tambah_postingan_mobile: 'Tambah Postingan',
-        bagikan_sesuatu: 'Bagikan sesuatu',
-        akun: 'Akun',
-        menu_tamu: 'Menu Tamu'
-    },
-
     offline: {
         offline_title: 'Anda Offline',
         offline_message: 'Sepertinya Anda tidak terhubung ke internet. Silakan periksa koneksi Anda dan coba lagi.',
