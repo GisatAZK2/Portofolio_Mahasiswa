@@ -268,7 +268,7 @@
         }
     </style>
 
-    <div class="min-h-screen dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me">
+    <div class=" dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me">
         <div class="max-w-7xl mx-auto">
             <div class="dashboard-container">
 
@@ -538,7 +538,7 @@
                                                         <div class="flex gap-3">
                                                             <div class="flex-1">
                                                                 <textarea id="comment-input-{{ $post->id_postingan }}" rows="2"
-                                                                    class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition"
+                                                                    class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition"
                                                                     data-translate-placeholder="comment_placeholder"
                                                                     data-translate-page="dashboard"></textarea>
                                                                 <div class="flex justify-end mt-2">

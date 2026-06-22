@@ -980,9 +980,23 @@
                                             <div class="flex flex-col justify-between">
                                                 <div class="flex items-start gap-4">
                                                     <div class="w-14 h-14 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                        <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-                                                        </svg>
+                                                             <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                      class="w-8 h-8 text-black" fill="currentColor"  viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve">
+                                    <g>
+                                        <g>
+                                            <rect x="286.875" y="239.062" width="114.75" height="19.125"/>
+                                            <rect x="229.5" y="181.688" width="172.125" height="19.125"/>
+                                            <path d="M420.75,28.688H38.25C17.212,28.688,0,45.9,0,66.938v248.625c0,21.037,17.212,38.25,38.25,38.25H76.5v76.5l47.812-47.812
+                                                l47.812,47.812v-76.5H420.75c21.037,0,38.25-17.213,38.25-38.25V66.938C459,45.9,441.787,28.688,420.75,28.688z M153,384.412
+                                                l-28.688-28.688l-28.688,28.688v-74.587c9.562,3.825,19.125,5.737,28.688,5.737s19.125-1.912,28.688-5.737V384.412z
+                                                M124.312,296.438c-26.775,0-47.812-21.037-47.812-47.812s21.038-47.812,47.812-47.812s47.812,21.037,47.812,47.812
+                                                S151.087,296.438,124.312,296.438z M439.875,315.562c0,11.475-7.65,19.125-19.125,19.125H172.125v-40.162
+                                                c11.475-11.476,19.125-28.688,19.125-45.9c0-36.337-30.6-66.938-66.938-66.938s-66.938,30.6-66.938,66.938
+                                                c0,19.125,7.65,34.425,19.125,45.9v40.162H38.25c-11.475,0-19.125-9.562-19.125-19.125V66.938c0-11.475,7.65-19.125,19.125-19.125
+                                                h382.5c11.475,0,19.125,9.562,19.125,19.125V315.562z"/>
+                                            <rect x="57.375" y="124.312" width="344.25" height="19.125"/>
+                                        </g>
+                                    </svg>
                                                     </div>
                                                     <div class="flex-1">
                                                         <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ $namaSertif }}</h4>
