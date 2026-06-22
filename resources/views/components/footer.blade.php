@@ -74,6 +74,11 @@
             </div>
         </div>
 
+        <!-- Map for Mobile -->
+        <div class="mt-4">
+            <div class="map-container map-wrapper"></div>
+        </div>
+
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
@@ -159,6 +164,11 @@
             </div>
         </div>
 
+        <!-- Map for Desktop -->
+        <div class="mt-4">
+            <div class="map-container map-wrapper"></div>
+        </div>
+
         <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
@@ -166,4 +176,253 @@
             </p>
         </div>
     </div>
+
+    
+<style>
+.footer-map {
+  margin-top: 1rem;
+}
+
+.footer-map h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1e293b;
+}
+
+.map-wrapper {
+  width: 100%;
+  max-width: 450px;
+  height: 180px;
+  margin: 0.5rem auto 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: relative;
+  background: #e2e8f0;
+}
+
+.map-address {
+  font-size: 11px;
+  margin-top: 6px;
+  color: #64748b;
+}
+
+/* Control styling */
+.map-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.map-controls select {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-family: inherit;
+  outline: none;
+}
+
+.map-controls select:hover {
+  background: #f1f5f9;
+}
+
+/* 3D toggle button */
+.btn-3d-toggle {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 10;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-3d-toggle:hover {
+  background: rgba(0,0,0,0.9);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-wrapper {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-wrapper {
+    height: 130px;
+  }
+}
+</style>
+
+<script>
+(function() {
+  
+  const POLMIND_COORDS = [107.082872, -6.288922]; 
+  const ZOOM_LEVEL = 17.5;
+  const PITCH_3D = 62;
+  const PITCH_2D = 0;
+  const BEARING = -25;
+
+  let maps = [];
+  let is3DMode = true;
+
+  const TILE_STYLES = {
+    'default': 'https://tiles.openfreemap.org/styles/liberty',
+    'bright': 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}.png',
+    'outdoor': 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png'
+  };
+
+  function initMaps() {
+    const containers = document.querySelectorAll('.map-container');
+    containers.forEach((container) => {
+      if (container.dataset.initialized) return;
+      container.dataset.initialized = 'true';
+
+      const map = new maplibregl.Map({
+        container: container,
+        style: TILE_STYLES['default'],
+        center: POLMIND_COORDS,
+        zoom: ZOOM_LEVEL,
+        pitch: PITCH_3D,
+        bearing: BEARING,
+        antialias: true,
+        attributionControl: true
+      });
+
+      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+      map.addControl(new maplibregl.ScaleControl(), 'bottom-left');
+
+      map.on('load', () => {
+        const markerElement = document.createElement('div');
+        markerElement.innerHTML = '<i class="fas fa-map-marker-alt" style="font-size: 32px; color: #e11d48; text-shadow: 0 2px 4px rgba(0,0,0,0.3);"></i>';
+        markerElement.style.cursor = 'pointer';
+        
+        new maplibregl.Marker({ element: markerElement })
+          .setLngLat(POLMIND_COORDS)
+          .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`
+            <div style="font-family: sans-serif; padding: 4px;">
+              <strong style="color: #1e293b;">🏫 Politeknik Mitra Industri</strong><br>
+              <span style="font-size: 12px;">MM2100 Industrial Town, Cikarang</span><br>
+              <span style="font-size: 11px; color: #64748b;">Kampus Industri Terintegrasi</span>
+            </div>
+          `))
+          .addTo(map);
+
+        add3DBuildingsLayer(map);
+      });
+
+      // Add 3D toggle button specifically inside this container
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'btn-3d-toggle';
+      toggleBtn.innerHTML = '<i class="fas fa-cube"></i> 3D Mode ON';
+      toggleBtn.addEventListener('click', () => {
+        is3DMode = !is3DMode;
+        maps.forEach(m => {
+          m.easeTo({
+            pitch: is3DMode ? PITCH_3D : PITCH_2D,
+            bearing: is3DMode ? BEARING : 0,
+            duration: 800,
+            zoom: is3DMode ? ZOOM_LEVEL : ZOOM_LEVEL - 0.5
+          });
+        });
+        document.querySelectorAll('.btn-3d-toggle').forEach(btn => {
+          btn.innerHTML = is3DMode ? '<i class="fas fa-cube"></i> 3D Mode ON' : '<i class="fas fa-map"></i> 3D Mode OFF';
+        });
+      });
+      container.appendChild(toggleBtn);
+
+      maps.push(map);
+    });
+  }
+
+  function add3DBuildingsLayer(map) {
+    if (!map.isStyleLoaded()) {
+      map.once('styledata', () => add3DBuildingsLayer(map));
+      return;
+    }
+
+    if (!map.getSource('openmaptiles')) {
+      map.addSource('openmaptiles', {
+        type: 'vector',
+        url: 'https://tiles.openfreemap.org/data/v3.json'
+      });
+    }
+
+    if (map.getLayer('3d-buildings')) {
+      map.removeLayer('3d-buildings');
+    }
+
+    map.addLayer({
+      'id': '3d-buildings',
+      'type': 'fill-extrusion',
+      'source': 'openmaptiles',
+      'source-layer': 'building',
+      'minzoom': 14,
+      'paint': {
+        'fill-extrusion-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'render_height'],
+          0, '#d4c9b8',
+          5, '#c4b8a8',
+          10, '#b4a898',
+          20, '#a49888',
+          30, '#948878'
+        ],
+        'fill-extrusion-height': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          14, 0,
+          15, ['get', 'render_height'],
+          18, ['get', 'render_height']
+        ],
+        'fill-extrusion-base': [
+          'case',
+          ['has', 'render_min_height'],
+          ['get', 'render_min_height'],
+          0
+        ],
+        'fill-extrusion-opacity': 0.9
+      }
+    });
+  }
+
+  // Run
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { initMaps(); });
+  } else {
+    initMaps();
+  }
+
+  // Resize handler
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { maps.forEach(m => m.resize()); }, 200);
+  });
+})();
+</script>
 </footer>

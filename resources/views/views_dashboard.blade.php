@@ -536,7 +536,7 @@
                                                         <div class="flex gap-3">
                                                             <div class="flex-1">
                                                                 <textarea id="comment-input-{{ $post->id_postingan }}" rows="2"
-                                                                    class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition"
+                                                                    class="comment-input w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none text-sm transition"
                                                                     data-translate-placeholder="comment_placeholder"
                                                                     data-translate-page="dashboard"></textarea>
                                                                 <div class="flex justify-end mt-2">
