@@ -211,7 +211,7 @@
                    onclick="event.stopPropagation();"
                    class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-50 text-blue-700 rounded-lg
                           hover:bg-blue-100 active:bg-blue-200 transition font-medium
-                          dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 dark:active:bg-blue-900/70
+                          dark:bg-blue-900/30 dark:text-blue-500 dark:hover:bg-blue-900/50 dark:active:bg-blue-900/70
                           shadow-sm hover:shadow-md">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -216,7 +216,7 @@
                     @yield('content')
                 </div>
                 <!-- SESUDAH -->
-                @auth   
+                @auth
                     @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
                         @include('components.footer')
                     @else

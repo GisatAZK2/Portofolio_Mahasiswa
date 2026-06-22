@@ -20,6 +20,7 @@ export const en = {
     start: 'Start',
     finish: 'End',
     see_all: 'See all',
+    preview_label: 'Preview',
     stk: 'Certificate',
     see_stk: 'See Certificate',
     empty_stk: 'No certificate link.',
@@ -253,7 +254,7 @@ export const en = {
     badge_my_post: 'My Post',
     badge_student_post: 'Student Post',
     empty_my_posts: 'You have not created any posts yet.',
-    empty_student_posts: 'No student posts yet.',
+    empty_student_posts: 'No posts yet.',
     game_label: 'Game',
     play_game: 'Play game',
     best_score: 'Best score',
@@ -1195,37 +1196,37 @@ export const en = {
     edu_now: 'Present',
     edu_empty: 'No education history to display',
 
-    postings: 'Posts',               // id: 'Postingannya', en: 'Posts'
-    postings_count: 'Posts',            // id: 'postingan', en: 'posts'
-    post_empty: 'No posts created yet.', // id: ... en: 'No posts created yet.'
-    read_more: 'Read more',         // id: ... en: 'Read more'
-    additional_skills_label: 'Additional:',  // id: ... en: 'Additional:'
-    empty_skills: 'No skills added yet', // id: ... en: 'No skills added yet'
-    leader_badge: 'Leader',                // id: 'Leader', en: 'Leader'
-    member_badge: 'Member',                // id: 'Member', en: 'Member'
-    no_team: 'No team members yet',      // id: ... en: 'No team members yet'
-    others: 'others',                     // id: 'lainnya', en: 'others'
-    empty_now: 'No ongoing projects',  // id: ... en: 'No ongoing projects'
-    empty_upcoming: 'No upcoming projects',   // id: ... en: 'No upcoming projects'
-    empty_completed: 'No completed projects',      // id: ... en: 'No completed projects'
-    empty_projects: 'No projects',    // id: ... en: 'No projects'
-    status_valid: 'Validity Status',        // id: ... en: 'Validity Status'
-    still_valid: 'Still Valid',          // id: ... en: 'Still Valid'
-    expired: 'Expired',                // id: ... en: 'Expired'
-    permanent: 'Permanent',                 // id: ... en: 'Permanent'
-    issued: 'Issued',                 // id: ... en: 'Issued'
-    expiry_date: 'Expiry Date',     // id: ... en: 'Expiry Date'
-    view_certificate: 'View Certificate',  // id: ... en: 'View Certificate'
-    no_cert_file: 'Certificate file not available', // id: ... en: 'Certificate file not available'
-    share: 'Share',                       // id: 'Share', en: 'Share' (sudah ada? kita tambahkan jika belum)
+    postings: 'Posts',               
+    postings_count: 'Posts',            
+    post_empty: 'No posts created yet.', 
+    read_more: 'Read more',         
+    additional_skills_label: 'Additional:',  
+    empty_skills: 'No skills added yet', 
+    leader_badge: 'Leader',                
+    member_badge: 'Member',                
+    no_team: 'No team members yet',      
+    others: 'others',                     
+    empty_now: 'No ongoing projects', 
+    empty_upcoming: 'No upcoming projects',   
+    empty_completed: 'No completed projects',       
+    empty_projects: 'No projects',      
+    status_valid: 'Validity Status',        
+    still_valid: 'Still Valid',         
+    expired: 'Expired',                
+    permanent: 'Permanent',                
+    issued: 'Issued',                 
+    expiry_date: 'Expiry Date',     
+    view_certificate: 'View Certificate', 
+    no_cert_file: 'Certificate file not available', 
+    share: 'Share',                     
     copy_link: 'Copy Link',
   },
   project: {
     project_saya: 'My Projects',
     deskripsi: 'Manage your projects, both those you lead and those you participate in as a team member.',
     tambah_project: 'Add New Project',
-    edit_project: 'Edit Project',
-    hapus_project: 'Delete Project',
+    edit_project: 'Edit',
+    hapus_project: 'Delete',
     pemilik: 'Owner',
     leader: 'Leader',
     anggota: 'Members',
@@ -1682,8 +1683,8 @@ export const en = {
     kelola_project_title: 'Manage Projects',
     kelola_project_desc: 'Add, edit, or delete projects in the system.',
     tambah_project: 'Add Project',
-    edit_project: 'Edit Project',
-    hapus_project: 'Delete Project',
+    edit_project: 'Edit',
+    hapus_project: 'Delete',
     nama_project: 'Project Name',
     deskripsi: 'Description',
     tanggal_mulai: 'Start Date',
