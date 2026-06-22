@@ -97,6 +97,7 @@ export const id = {
         label_account_status: 'Status Akun',
         status_active: 'Aktif',
         status_inactive: 'Nonaktif',
+        status_now : 'Sekarang',
 
         // tombol
         btn_save_changes: 'Simpan Perubahan',

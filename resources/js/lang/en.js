@@ -94,6 +94,7 @@ export const en = {
     label_account_status: 'Account Status',
     status_active: 'Active',
     status_inactive: 'Inactive',
+    status_now : 'Now',
 
     // tombol
     btn_save_changes: 'Save Changes',
