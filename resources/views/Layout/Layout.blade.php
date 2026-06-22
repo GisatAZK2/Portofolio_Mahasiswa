@@ -224,7 +224,10 @@
         </div>
     </div>
 
-    @include('components.up-page')
+    @hasSection('show_up_page')
+        @include('components.up-page')
+    @endif
+    
     @include('components.chat-bot')
 
 </body>

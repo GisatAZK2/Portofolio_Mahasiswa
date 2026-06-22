@@ -146,6 +146,7 @@ Route::middleware(['web', 'auth'])->group(function () {
             Route::get('/projectUser/edit', [ProjekController::class, 'edit'])->name('project.edit');
             Route::put('/projectUser/update', [ProjekController::class, 'update'])->name('project.update');
             Route::delete('/projectUser/delete', [ProjekController::class, 'destroy'])->name('project.destroy');
+            Route::post('/projectUser/check-duplicate', [ProjekController::class, 'checkDuplicate'])->name('project.checkDuplicate');
 
             // CRUD Sertifikat
             Route::resource('sertifikat', SertifikatController::class)->only([

@@ -1909,6 +1909,10 @@ export const en = {
     upload_sertifikatmu: 'Upload your certificate',
     tambah_postingan_mobile: 'Add Post',
     bagikan_sesuatu: 'Share something',
+    project_mahasiswa_saya: 'My Projects',
+    lihat_semua_project: 'See all projects',
+    sertifikat_mahasiswa_saya: 'My Certificates',
+    lihat_semua_sertifikat: 'See all certificates',
     akun: 'Account',
     menu_tamu: 'Guest Menu'
   },

@@ -190,11 +190,11 @@ export const id = {
         error_network: 'Terjadi kesalahan jaringan.',
         confirm_delete: 'Hapus keahlian tambahan ini?',
         empty_search_result: 'Tidak ada hasil. Ketik nama secara manual.',
-        label_select_from_list : 'Pilih dari daftar',
-        placeholder_choose_additional_skill : '-- Pilih Keahlian Tambahan --',
-        btn_request : 'Request',
-        label_or_custom_skill : 'Atau masukkan keahlian khusus',
-        btn_custom_skill : 'Tambah Keahlian Khusus',
+        label_select_from_list: 'Pilih dari daftar',
+        placeholder_choose_additional_skill: '-- Pilih Keahlian Tambahan --',
+        btn_request: 'Request',
+        label_or_custom_skill: 'Atau masukkan keahlian khusus',
+        btn_custom_skill: 'Tambah Keahlian Khusus',
     },
 
     keahlian_tambahan: {
@@ -2101,4 +2101,23 @@ export const id = {
         video_url_placeholder: 'https://youtube.com/...',
         password_title: 'Password harus minimal 8 karakter, mengandung minimal 1 huruf besar, dan tidak boleh ada spasi',
     },
+    mobile_nav: {
+        home: 'Beranda',
+        my_dashboard: 'Halaman Saya',
+        postingan: 'Postingan',
+        profil: 'Profil',
+        tambah_baru: 'Tambah Baru',
+        tambah_project_baru: 'Tambah Proyek Baru',
+        upload_project_kamu: 'Unggah proyek Anda',
+        tambah_sertifikat_mobile: 'Tambah Sertifikat',
+        upload_sertifikatmu: 'Unggah sertifikat Anda',
+        tambah_postingan_mobile: 'Tambah Postingan',
+        bagikan_sesuatu: 'Bagikan sesuatu',
+        project_mahasiswa_saya: 'Proyek Saya',
+        lihat_semua_project: 'Lihat semua proyek',
+        sertifikat_mahasiswa_saya: 'Sertifikat Saya',
+        lihat_semua_sertifikat: 'Lihat semua sertifikat',
+        akun: 'Akun',
+        menu_tamu: 'Menu Tamu'
+    }
 };

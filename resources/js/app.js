@@ -9729,7 +9729,79 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 
 })();
 
-//
+(function() {
+    let debounceTimer = null;
+
+    function getSelectedMemberIds() {
+        const ids = [];
+        document.querySelectorAll('input[name="members[]"]').forEach(el => {
+            if (el.value) ids.push(parseInt(el.value));
+        });
+        const leader = document.getElementById('selected-leader-id')?.value;
+        if (leader) ids.push(parseInt(leader));
+        return ids;
+    }
+
+    function checkDuplicate() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+        const name = document.querySelector('input[name="nama_project"]')?.value?.trim();
+        if (!name) return;
+
+        // Elemen ini hanya ada di halaman create project — skip kalau tidak ada
+        const warning   = document.getElementById('duplicate-warning');
+        const warningText = document.getElementById('duplicate-warning-text');
+        const submitBtn = document.getElementById('submit-btn');
+        if (!warning || !submitBtn) return;
+
+        // Baca CSRF dari meta tag (bukan Blade syntax)
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+        // Baca URL dari data attribute di #project-create-data
+        const createData = document.getElementById('project-create-data');
+        const checkUrl   = createData?.dataset.checkDuplicateUrl ?? '';
+        if (!checkUrl) return;
+
+        const memberIds = getSelectedMemberIds();
+
+        try {
+            const res = await fetch(checkUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({ nama_project: name, member_ids: memberIds }),
+            });
+            const data = await res.json();
+
+            if (data.is_duplicate) {
+                warning.classList.remove('hidden');
+                if (warningText) warningText.textContent = data.message;
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                warning.classList.add('hidden');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        } catch (e) {
+            // Jangan crash app kalau endpoint belum ada
+            console.warn('checkDuplicate error:', e);
+        }
+    }, 600);
+}
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('input[name="nama_project"]')?.addEventListener('input', checkDuplicate);
+        // trigger ulang saat member berubah (hook ke fungsi confirmUserSelection yang sudah ada)
+        const origConfirm = window.confirmUserSelection;
+        window.confirmUserSelection = function(...args) {
+            if (origConfirm) origConfirm.apply(this, args);
+            checkDuplicate();
+        };
+    });
+})();
 
 // Start Alpine AFTER all window.* components (e.g. notificationBell) are registered above.
 // This must stay at the very bottom of the file.

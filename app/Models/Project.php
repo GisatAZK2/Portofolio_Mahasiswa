@@ -21,6 +21,7 @@ class Project extends Model
         'id_mahasiswa',
         'leader_id',
         'translations',
+        'project_fingerprint'
     ];
 
     protected $casts = [
@@ -97,6 +98,14 @@ class Project extends Model
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader_id');
+    }
+
+    public static function generateFingerprint(string $name, array $memberIds): string
+    {
+        $normalized = strtolower(trim(preg_replace('/[^a-z0-9\s]/i', '', $name)));
+        $normalized = preg_replace('/\s+/', ' ', $normalized);
+        sort($memberIds);
+        return hash('sha256', $normalized . '|' . implode(',', $memberIds));
     }
 
     public function members(){

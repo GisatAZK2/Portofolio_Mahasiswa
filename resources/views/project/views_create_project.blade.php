@@ -43,6 +43,15 @@
                 @enderror
             </div>
 
+            <div id="duplicate-warning" class="hidden p-4 bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 text-yellow-800 dark:text-yellow-300 rounded-r-xl">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+                <p id="duplicate-warning-text" class="text-sm font-medium"></p>
+            </div>
+        </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     <span data-translate="deskripsi_opsional" data-translate-page="project_create"></span>
@@ -248,7 +257,7 @@
             </div>
 
             <div class="flex justify-end pt-4">
-                <button type="submit"
+                <button type="submit" id="submit-btn"
                     class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition shadow-md">
                     <span data-translate="save_project" data-translate-page="project_create">Simpan Project</span>
                 </button>
@@ -261,6 +270,7 @@
          data-current-user='@json($currentUserData)'
          data-old-tasks='@json(old('tasks', []))'
          data-route-create="{{ route('project.create') }}"
+        data-check-duplicate-url="{{ route('project.checkDuplicate') }}"
          data-translate-page="project_create"
          style="display:none;">
     </div>
