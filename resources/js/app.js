@@ -7979,7 +7979,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             keahlian: currentModalFilters.keahlian
         });
 
-        const url = `/project/edit/${projectData.projectId}?${params}`;
+        const url = `/${locale}/projectUser?${params}`;
         fetch(url, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
