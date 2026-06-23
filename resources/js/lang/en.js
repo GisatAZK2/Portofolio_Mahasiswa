@@ -1169,6 +1169,7 @@ export const en = {
     pjt_own: 'Project Owner',
     pjt_ownnone: 'No owner',
     pjt_noteam: 'No team members',
+    pjt_noleader: 'No leader',
     pjt_desc: 'Description',
     pjt_vidprev: 'Preview Video',
     empty_sertifikat: 'There is no certificates to be shown',

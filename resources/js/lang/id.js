@@ -1373,6 +1373,7 @@ export const id = {
         pjt_own: 'Pemilik proyek',
         pjt_ownnone: 'Tidak ada owner',
         pjt_noteam: 'Belum ada anggota tim',
+        pjt_noleader:' Tidak ada leader',
         pjt_desc: 'Deskripsi',
         pjt_vidprev: 'Pratinjau Video',
         empty_sertifikat: 'Belum Ada Sertifikat Yang Dapat Ditampilkan',
