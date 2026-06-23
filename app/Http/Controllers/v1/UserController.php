@@ -422,7 +422,7 @@ class UserController extends Controller
     $sertifikats = $user->sertifikats()->latest()->paginate(6, ['*'], 'sertifikats_page');
 
     // Learning corners
-    $learningCorners = LearningCorner::where('user_id', $userId)
+    $learningCorners = LearningCorner::where('id_mahasiswa', $userId)
         ->latest()
         ->paginate(6, ['*'], 'lc_page');
 

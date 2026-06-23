@@ -196,6 +196,9 @@ export const en = {
     label_or_custom_skill : 'Or enter a custom skill',
     btn_custom_skill : 'Add Custom Skill',
 
+    certificate_badge: 'Certificate',
+    
+
   },
 
   keahlian_tambahan: {
@@ -1578,6 +1581,7 @@ export const en = {
     add_project_to_start: 'Please add a new project to get started.',
     posted_by: 'Posted by',
     oleh: 'by',
+    project_label: 'Project',
   },
   sertifikat: {
     sertifikat_title: 'My Certificates',

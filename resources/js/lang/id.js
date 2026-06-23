@@ -197,6 +197,7 @@ export const id = {
         btn_request: 'Request',
         label_or_custom_skill: 'Atau masukkan keahlian khusus',
         btn_custom_skill: 'Tambah Keahlian Khusus',
+        certificate_badge: 'Sertifikat',
     },
 
     keahlian_tambahan: {
@@ -1582,6 +1583,7 @@ export const id = {
         diposting: 'Diposting',
         no_thumbnail_text: 'Tidak ada thumbnail tersedia',
         no_thumbnail_description: 'Tambahkan link video dengan benar',
+        project_label: 'Project',
     },
     sertifikat: {
         sertifikat_title: 'Sertifikat Saya',

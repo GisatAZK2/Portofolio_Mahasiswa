@@ -750,7 +750,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $projects->onlyQueryString()->links() }}
+                                {{ $projects->appends(request()->query())->links() }}
                             </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -804,7 +804,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $sertifikats->onlyQueryString()->links() }}
+                                {{ $sertifikats->appends(request()->query())->links() }}
                             </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -840,7 +840,7 @@
                                 @endforeach
                             </div>
                             <div class="mt-6">
-                                {{ $learningCorners->onlyQueryString()->links() }}
+                                {{ $learningCorners->appends(request()->query())->links() }}
                             </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
