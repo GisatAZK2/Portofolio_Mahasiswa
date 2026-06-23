@@ -8000,7 +8000,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             keahlian: currentModalFilters.keahlian
         });
 
-        const url = `/${locale}/projectUser?${params}`;
+        const url = `/${locale}/projectUser/edit?${params}`;
         fetch(url, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
