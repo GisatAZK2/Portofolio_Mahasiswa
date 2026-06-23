@@ -45,7 +45,7 @@
                     </div>
 
                     <!-- ══ Postingan Section ══ -->
-                    <div class="feed-section mb-10">
+                    <div id="postingan-section" class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-2">
                             <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300"
@@ -326,7 +326,7 @@
                     </div>
 
                     <!-- ══ Project Section ══ -->
-                    <div id="projects-page" class="feed-section mb-10">
+                    <div id="projects-section" class="feed-section mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300"
@@ -373,7 +373,7 @@
                     </div>
 
                     <!-- ══ Sertifikat Section ══ -->
-                    <div id="sertifikats-section" class="feed-section">
+                    <div id="sertifikat-section" class="feed-section">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-green-700 dark:text-green-300"

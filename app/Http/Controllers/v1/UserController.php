@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Jurusan;
 use App\Models\Keahlian;
 use App\Models\Angkatan;
+use App\Models\Project;
+use App\Models\LearningCorner;
 use App\Models\Keahlian_Tambahan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -395,21 +397,44 @@ class UserController extends Controller
         return redirect()->route('dashboard.me')->with('success', 'Anda telah logout.');
     }
 
-    public function profile()
-    {
-        $user = Auth::user()->load([
-            'jurusan',
-            'keahlian',
-            'angkatan',
-            'keahlianTambahan',
-        ]);
+    public function profile(Request $request)
+{
+    $user = Auth::user()->load([
+        'jurusan',
+        'keahlian',
+        'angkatan',
+        'keahlianTambahan',
+    ]);
 
-        $jurusans = Jurusan::all();
-        $keahlians = Keahlian::all();
-        $angkatans = Angkatan::all();
+    $userId = $user->id;
 
-        return view('auth.profile', compact('user', 'jurusans', 'keahlians', 'angkatans'));
-    }
+    $projectIds = Project::where('id_mahasiswa', $userId)
+    ->orWhere('leader_id', $userId)
+    ->pluck('id')
+    ->merge(
+        \DB::table('project_user')->where('user_id', $userId)->pluck('project_id')
+    )
+    ->unique();
+
+    $projects = Project::whereIn('id', $projectIds)->latest()->paginate(3, ['*'], 'projects_page');
+
+    // Sertifikat — sudah ada di relasi $user->sertifikats, tinggal paginate
+    $sertifikats = $user->sertifikats()->latest()->paginate(3, ['*'], 'sertifikats_page');
+
+    // Learning corners
+    $learningCorners = LearningCorner::where('id_mahasiswa', $userId)
+        ->latest()
+        ->paginate(3, ['*'], 'lc_page');
+
+    $jurusans  = Jurusan::all();
+    $keahlians = Keahlian::all();
+    $angkatans = Angkatan::all();
+
+    return view('auth.profile', compact(
+        'user', 'jurusans', 'keahlians', 'angkatans',
+        'projects', 'sertifikats', 'learningCorners'
+    ));
+}
 
     private function addKeahlianTambahan($user, $id_keahlian)
     {

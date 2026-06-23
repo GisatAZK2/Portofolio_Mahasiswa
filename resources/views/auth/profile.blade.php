@@ -639,8 +639,7 @@
 
                     @if(Auth::check())
                     <!-- Projects Section -->
-                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8" x-data="{ showAllProjects: false }">
-
+                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
@@ -651,18 +650,12 @@
                                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     <span data-translate="btn_add_project" data-translate-page="profile">Tambah Projek</span>
                                 </a>
-                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->projects->count() }} <span data-translate="project_count" data-translate-page="profile">proyek</span></span>
-                                @if($user->projects->count() > 3)
-                                    <button @click="showAllProjects = !showAllProjects" class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium flex items-center gap-1">
-                                        <span x-text="showAllProjects ? 'Tampilkan lebih sedikit' : 'Lihat semua' ({{ $user->projects->count() }})'"></span>
-                                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllProjects }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                                    </button>
-                                @endif
+                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $projects->total() }} <span data-translate="project_count" data-translate-page="profile">proyek</span></span>
                             </div>
                         </div>
-                        @if($user->projects->isNotEmpty())
+                        @if($projects->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                @foreach($user->projects as $index => $project)
+                                @foreach($projects as $project)
                                     @php
                                         $content = $project->translated('isi_content') ?? [];
                                         $nama = $content['nama_project'] ?? 'Tanpa Nama Project';
@@ -675,7 +668,7 @@
                                         $today = \Carbon\Carbon::today();
                                         $mulaiFormatted = $mulai ? $mulai->translatedFormat('M Y') : '—';
                                         $akhirFormatted = $akhir ? $akhir->translatedFormat('M Y') : 'Sekarang';
-                                       if ($mulai && $akhir) {
+                                        if ($mulai && $akhir) {
                                             if ($akhir < $today) { 
                                                 $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'; 
                                                 $statusText = 'Selesai'; 
@@ -710,11 +703,14 @@
                                                 $youtubeThumbnail = "https://img.youtube.com/vi/" . $videoId . "/maxresdefault.jpg";
                                             }
                                         }
+
+                                        $userId = Auth::id();
+                                        $role = $project->id_mahasiswa === $userId ? 'Owner'
+                                            : ($project->leader_id === $userId ? 'Leader' : 'Member');
+                                        $roleColor = $role === 'Owner' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                                            : ($role === 'Leader' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300');
                                     @endphp
-                                    <div class="bg-white dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm sm:hover:shadow-md md:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full group"
-                                        x-show="showAllProjects || {{ $index < 3 ? 'true' : 'false' }}"
-                                        x-transition:enter="transition ease-out duration-300"
-                                        x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+                                    <div class="bg-white dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm sm:hover:shadow-md md:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full group">
                                         <div class="relative w-full bg-black overflow-hidden">
                                             @if($youtubeEmbedUrl)
                                                 <div class="relative w-full pb-[56.25%] bg-gray-900 cursor-pointer" onclick="playVideo(this, '{{ $youtubeEmbedUrl }}')">
@@ -740,6 +736,9 @@
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1">{{ $nama }}</h3>
                                                 <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium {{ $statusClass }} whitespace-nowrap">{{ $statusText }}</span>
                                             </div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="text-xs px-2 py-0.5 rounded-full {{ $roleColor }}">{{ $role }}</span>
+                                            </div>
                                             <div class="text-sm text-gray-600 dark:text-gray-300 mb-3">Mulai:  {{ $mulaiFormatted }} → Selesai: {{ $akhirFormatted }}</div>
                                             @if($deskripsi)<p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3 flex-1">{{ $deskripsi }}</p>@endif
                                             <div class="flex flex-wrap gap-3 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -750,6 +749,9 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <div class="mt-6">
+                                {{ $projects->appends(request()->query())->links() }}
+                            </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -759,7 +761,7 @@
                     </section>
 
                     <!-- Sertifikat Section -->
-                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8" x-data="{ showAllSertifikat: false }">
+                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
@@ -770,12 +772,12 @@
                                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     <span data-translate="btn_add_certificate" data-translate-page="profile">Tambah Sertifikat</span>
                                 </a>
-                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->sertifikats?->count() ?? 0 }} <span data-translate="certificate_count" data-translate-page="profile">sertifikat</span></span>
+                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $sertifikats->total() }} <span data-translate="certificate_count" data-translate-page="profile">sertifikat</span></span>
                             </div>
                         </div>
-                        @if($user->sertifikats?->isNotEmpty() ?? false)
+                        @if($sertifikats->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                @foreach($user->sertifikats as $index => $sertifikat)
+                                @foreach($sertifikats as $sertifikat)
                                     @php
                                         $isInactive = ($sertifikat->status_pengajuan === 'Di Tolak' || !($sertifikat->is_active ?? true));
                                         $statusClass = match ($sertifikat->status_pengajuan) {
@@ -785,10 +787,7 @@
                                             default => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                                         };
                                     @endphp
-                                    <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden sm:hover:shadow-md md:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full {{ $isInactive ? 'opacity-70' : '' }}"
-                                        x-show="showAllSertifikat || {{ $index < 3 ? 'true' : 'false' }}"
-                                        x-transition:enter="transition ease-out duration-300"
-                                        x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+                                    <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden sm:hover:shadow-md md:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full {{ $isInactive ? 'opacity-70' : '' }}">
                                         <div class="p-6 flex flex-col flex-1">
                                             <div class="flex items-center gap-2 mb-3 flex-wrap">
                                                 <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium {{ $isInactive ? 'bg-gray-300 text-gray-700' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' }}" data-translate="certificate_badge" data-translate-page="profile">Sertifikat</span>
@@ -804,6 +803,9 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <div class="mt-6">
+                                {{ $sertifikats->appends(request()->query())->links() }}
+                            </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <p class="text-gray-600 dark:text-gray-400" data-translate="empty_certificates" data-translate-page="profile">Belum ada sertifikat yang ditambahkan.</p>
@@ -812,21 +814,18 @@
                     </section>
 
                     <!-- Learning Corners -->
-                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 mb-10" x-data="{ showAllLearning: false }">
+                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8 mb-10">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                                 <span data-translate="section_learning_corners" data-translate-page="profile">Learning Corners</span>
                             </h2>
-                            <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->learning_corners->count() }} <span data-translate="learning_corner_count" data-translate-page="profile">catatan</span></span>
+                            <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $learningCorners->total() }} <span data-translate="learning_corner_count" data-translate-page="profile">catatan</span></span>
                         </div>
-                        @if($user->learning_corners->isNotEmpty())
+                        @if($learningCorners->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                @foreach($user->learning_corners as $index => $entry)
-                                    <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden sm:hover:shadow-md md:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full"
-                                        x-show="showAllLearning || {{ $index < 3 ? 'true' : 'false' }}"
-                                        x-transition:enter="transition ease-out duration-300"
-                                        x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+                                @foreach($learningCorners as $entry)
+                                    <div class="bg-white dark:bg-gray-700/50 rounded-xl shadow-sm overflow-hidden sm:hover:shadow-md md:shadow-md transition-shadow border border-gray-200 dark:border-gray-600 flex flex-col h-full">
                                         <div class="p-6 flex-1 flex flex-col">
                                             @if (!empty($entry->content) && is_array($entry->content))
                                                 @foreach ($entry->translated('content') as $item)
@@ -839,6 +838,9 @@
                                         </div>
                                     </div>
                                 @endforeach
+                            </div>
+                            <div class="mt-6">
+                                {{ $learningCorners->appends(request()->query())->links() }}
                             </div>
                         @else
                             <div class="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-700">

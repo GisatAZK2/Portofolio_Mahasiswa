@@ -162,7 +162,13 @@
                 display: block;
             }
 
+            header {
+                position: absolute;
+                width: 100%;
+            }
+
             main {
+                padding-top: 70px !important;
                 padding-bottom: 5.5rem !important;
             }
         }
