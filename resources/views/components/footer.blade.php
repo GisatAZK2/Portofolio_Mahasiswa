@@ -1,6 +1,6 @@
 <footer class="dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-all duration-300" id="mainFooter">
     <!-- Mobile View -->
-    <div class="sm:block md:hidden px-4 py-4">
+    <div class="block md:hidden px-4 py-4">
         <div class="flex justify-between items-start">
             <div class="bg-black rounded-md p-1.5">
                 <img src="{{ asset('assets/logoFooter.webp') }}" alt="POLMIND Logo" class="h-7 w-auto">
