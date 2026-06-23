@@ -416,15 +416,15 @@ class UserController extends Controller
     )
     ->unique();
 
-    $projects = Project::whereIn('id', $projectIds)->latest()->paginate(6, ['*'], 'projects_page');
+    $projects = Project::whereIn('id', $projectIds)->latest()->paginate(3, ['*'], 'projects_page');
 
     // Sertifikat — sudah ada di relasi $user->sertifikats, tinggal paginate
-    $sertifikats = $user->sertifikats()->latest()->paginate(6, ['*'], 'sertifikats_page');
+    $sertifikats = $user->sertifikats()->latest()->paginate(3, ['*'], 'sertifikats_page');
 
     // Learning corners
     $learningCorners = LearningCorner::where('id_mahasiswa', $userId)
         ->latest()
-        ->paginate(6, ['*'], 'lc_page');
+        ->paginate(3, ['*'], 'lc_page');
 
     $jurusans  = Jurusan::all();
     $keahlians = Keahlian::all();
