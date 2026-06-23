@@ -242,19 +242,7 @@
                 <div class="grow">
                     @yield('content')
                 </div>
-                @auth
-                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
-                        @include('components.footer')
-                    @else
-                        <div class="hidden md:block">
-                            @include('components.footer')
-                        </div>
-                    @endif
-                @else
-                    <div class="hidden md:block">
-                        @include('components.footer')
-                    </div>
-                @endif
+                @include('components.footer')
             </main>
 
             @include('components.navigation_mahasiswa_mobile')

@@ -1,6 +1,6 @@
 <footer class="dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-all duration-300" id="mainFooter">
     <!-- Mobile View -->
-    <div class="block md:hidden px-4 py-4">
+    <div class="sm:block md:hidden px-4 py-4">
         <div class="flex justify-between items-start">
             <div class="bg-black rounded-md p-1.5">
                 <img src="{{ asset('assets/logoFooter.webp') }}" alt="POLMIND Logo" class="h-7 w-auto">
@@ -37,13 +37,16 @@
                     </svg>
                     <span data-translate="email" data-translate-page="footer">Email</span>
                 </a>
-                <a href="{{ env('CONTACT_MAPS', 'https://maps.app.goo.gl/UgUBmN7joH9fA2Jw5') }}"
-                   target="_blank" class="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-red-600">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <span data-translate="maps" data-translate-page="footer">Maps</span>
+                <a href="{{ env('CONTACT_MAPS', 'https://maps.app.goo.gl/UgUBmN7joH9fA2Jw5') }}" 
+                      onclick="openMapModal(event)"
+                      class="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-red-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span data-translate="maps" data-translate-page="footer">Maps</span>
                 </a>
             </div>
             <div class="flex gap-2">
@@ -75,19 +78,39 @@
         </div>
 
         <!-- Map for Mobile -->
-        <div class="mt-4">
-            <div class="map-container map-wrapper"></div>
-        </div>
+        <div id="mapModal"
+          class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
 
-        <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
-            <p class="text-[11px] text-gray-500 dark:text-gray-400">
-                &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
-                <span data-translate="all_rights" data-translate-page="footer">All rights reserved.</span>
-            </p>
-        </div>
+          <div class="relative w-[90%] max-w-3xl bg-white dark:bg-gray-900 rounded-xl shadow-xl p-4">
+
+              <!-- Close button -->
+              <button 
+                  onclick="closeMapModal()"
+                  class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl">
+                  ✕
+              </button>
+
+
+              <!-- MAP CONTENT -->
+              <div class="mt-4">
+                  <div class="map-container map-wrapper w-full h-[400px] rounded-lg overflow-hidden">
+                  </div>
+              </div>
+
+
+              <div class="text-center border-t border-gray-200 dark:border-gray-800 mt-3 pt-2">
+                  <p class="text-[11px] text-gray-500 dark:text-gray-400">
+                      &copy; {{ date('Y') }} {{ config('app.name', 'POLMIND') }}
+                      <span data-translate="all_rights" data-translate-page="footer">
+                          All rights reserved.
+                      </span>
+                  </p>
+              </div>
+
+          </div>
     </div>
 
-    <!-- Desktop View -->
+    <!-- Desktop & Tablet View -->
     <div class="hidden md:block px-6 py-3">
         <div class="flex items-center justify-between gap-4 flex-wrap">
             <div class="flex items-center gap-4">
