@@ -3166,9 +3166,20 @@ window.toggleMobileDarkMode = function() {
     window.syncDarkModeToggle();
 };
 
+function _buildLocaleUrl(lang) {
+    var SUPPORTED = ['id', 'en'];
+    var url = new URL(window.location.href);
+    var segs = url.pathname.split('/').filter(Boolean);
+    if (segs.length > 0 && SUPPORTED.indexOf(segs[0]) !== -1) {
+        segs.shift();
+    }
+    url.pathname = '/' + [lang].concat(segs).join('/');
+    return url.toString();
+}
+
 window.changeLanguageMobile = function(lang) {
     window.persistLocaleChoice(lang);
-    window.location.reload();
+    window.location.href = _buildLocaleUrl(lang);
 };
 
 window.persistLocaleChoice = function(lang) {
@@ -3226,7 +3237,7 @@ window.syncGuestDarkToggle = function() {
 
 window.changeGuestLanguage = function(lang) {
     window.persistLocaleChoice(lang);
-    window.location.reload();
+    window.location.href = _buildLocaleUrl(lang);
 };
 
 document.addEventListener('DOMContentLoaded', function() {
