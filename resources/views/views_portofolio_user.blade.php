@@ -628,8 +628,8 @@
                                         $linkGithub = $content['link_github'] ?? null;
                                         $linkVideo = $content['link_video'] ?? null;
 
-                                        $leader = $project->leader ?? $owner;
                                         $owner = $project->owner;
+                                        $leader = $project->leader ?? $owner;
                                         $isOwnerAndLeaderSame = $owner && $leader && $owner->id === $leader->id;
 
                                         $userRole = null;
