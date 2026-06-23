@@ -1794,10 +1794,50 @@ class AdminController extends Controller
     }
 
     //For Projects Pages
-    public function projects()
+    public function projects(Request $request)
     {
         $this->authorizeAccess();
-        $projects = Project::with(['mahasiswa', 'leader'])->latest()->paginate(12);
+        
+        $query = Project::with(['mahasiswa', 'leader']);
+        
+        // Filter berdasarkan nama project (search)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('isi_content->nama_project', 'like', "%{$search}%")
+                ->orWhereHas('mahasiswa', function($subQ) use ($search) {
+                    $subQ->where('nama_mahasiswa', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%");
+                })
+                ->orWhereHas('leader', function($subQ) use ($search) {
+                    $subQ->where('nama_mahasiswa', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%");
+                });
+            });
+        }
+        
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $status = $request->status;
+            $today = \Carbon\Carbon::today();
+            
+            $query->where(function($q) use ($status, $today) {
+                if ($status === 'Sedang Berjalan') {
+                    $q->where('tanggal_mulai', '<=', $today)
+                    ->where(function($sub) use ($today) {
+                        $sub->where('tanggal_akhir', '>=', $today)
+                            ->orWhereNull('tanggal_akhir');
+                    });
+                } elseif ($status === 'Selesai') {
+                    $q->where('tanggal_akhir', '<', $today);
+                } elseif ($status === 'Akan Datang') {
+                    $q->where('tanggal_mulai', '>', $today);
+                }
+            });
+        }
+        
+        $projects = $query->latest()->paginate(12)->withQueryString();
+        
         return view('admin.project', compact('projects'));
     }
 

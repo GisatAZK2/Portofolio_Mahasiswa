@@ -35,31 +35,32 @@
 
             <!-- Search and Filter Section -->
             <div class="mb-6 bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="relative flex-1">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input type="text" id="searchProject" placeholder="Cari nama project..."
-                            class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-                    <select id="filterStatus" class="px-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Semua Status</option>
-                        <option value="Sedang Berjalan">Sedang Berjalan</option>
-                        <option value="Selesai">Selesai</option>
-                        <option value="Akan Datang">Akan Datang</option>
-                    </select>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="resetFilters()"
-                            class="px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
-                            Reset
-                        </button>
-                        <button type="button" onclick="applyFilters()"
-                            class="px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all shadow-sm">
-                            Terapkan
-                        </button>
-                    </div>
-                </div>
+                <form method="GET" action="{{ route('admin.projects.index') }}" class="flex flex-col sm:flex-row gap-4">
+    <div class="relative flex-1">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input type="text" name="search" placeholder="Cari nama project..."
+            value="{{ request('search') }}"
+            class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500">
+    </div>
+    <select name="status" class="px-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        <option value="">Semua Status</option>
+        <option value="Sedang Berjalan" {{ request('status') == 'Sedang Berjalan' ? 'selected' : '' }}>Sedang Berjalan</option>
+        <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+        <option value="Akan Datang" {{ request('status') == 'Akan Datang' ? 'selected' : '' }}>Akan Datang</option>
+    </select>
+    <div class="flex gap-2">
+        <a href="{{ route('admin.projects.index') }}" 
+            class="px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+            Reset
+        </a>
+        <button type="submit"
+            class="px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all shadow-sm">
+            Terapkan
+        </button>
+    </div>
+</form>
             </div>
 
             <!-- Results Info & Bulk Actions -->
@@ -362,54 +363,32 @@
     <script>
         // Filter functions
         function applyFilters() {
-            const searchTerm = document.getElementById('searchProject').value.toLowerCase().trim();
+            const searchTerm = document.getElementById('searchProject').value;
             const statusFilter = document.getElementById('filterStatus').value;
             
-            const cards = document.querySelectorAll('.project-card');
-            const container = document.getElementById('projectCardsContainer');
-            const emptyState = document.getElementById('emptyState');
-            const paginationContainer = document.getElementById('paginationContainer');
+            // Redirect dengan parameter filter
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+            let url = `/${locale}/admin/manageProject`;
+            let params = new URLSearchParams();
             
-            let visibleCount = 0;
-            
-            cards.forEach(card => {
-                const projectName = card.dataset.projectName || '';
-                const projectStatus = card.dataset.projectStatus || '';
-                
-                const matchesSearch = !searchTerm || projectName.includes(searchTerm);
-                const matchesStatus = !statusFilter || projectStatus === statusFilter;
-                
-                if (matchesSearch && matchesStatus) {
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Update filtered count
-            document.getElementById('filteredCount').textContent = visibleCount;
-            document.getElementById('totalProjectCount').textContent = visibleCount;
-            
-            // Show/hide empty state
-            if (visibleCount === 0) {
-                if (container) container.style.display = 'none';
-                if (emptyState) emptyState.classList.remove('hidden');
-                if (paginationContainer) paginationContainer.style.display = 'none';
-            } else {
-                if (container) container.style.display = 'grid';
-                if (emptyState) emptyState.classList.add('hidden');
-                if (paginationContainer) paginationContainer.style.display = 'flex';
+            if (searchTerm) {
+                params.append('search', searchTerm);
+            }
+            if (statusFilter) {
+                params.append('status', statusFilter);
             }
             
-            // Reset checkboxes and update selection
-            updateSelectedProjects();
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            window.location.href = url;
         }
-        
+
         function resetFilters() {
-            document.getElementById('searchProject').value = '';
-            document.getElementById('filterStatus').value = '';
-            applyFilters();
+            // Redirect tanpa filter
+            const locale = document.querySelector('html').getAttribute('lang') || 'id';
+            window.location.href = `/${locale}/admin/manageProject`;
         }
         
         // Search on Enter key
