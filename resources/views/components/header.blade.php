@@ -1,4 +1,4 @@
-<header class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">
+<header class="bg-white/80 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">
     <div class="px-4 py-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-3">
 
@@ -21,7 +21,7 @@
             <!-- Mobile logo -->
             <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 select-none whitespace-nowrap">
-                    <img src="{{ asset('assets/Logo.svg') }}" alt="Logo" class="h-8 w-auto">
+                    <img src="{{ asset('assets/Logo.svg') }}" alt="Logo" class="h-8 rounded-xl w-auto">
                     <span class="text-xs font-semibold tracking-tight text-gray-800 dark:text-gray-100 font-sans">
                         Portofolio<span class="bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent font-extrabold ml-1">Mahasiswa</span>
                     </span>
