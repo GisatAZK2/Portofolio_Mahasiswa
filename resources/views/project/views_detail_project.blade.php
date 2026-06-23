@@ -71,7 +71,7 @@
                         <!-- Project Title -->
                         <h1
                             class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white order-first sm:order-none w-full sm:w-auto">
-                            {{ $project->isi_content['nama_project'] ?? 'Tanpa Judul' }}
+                            {{ $project->translated('isi_content')['nama_project'] ?? 'Tanpa Judul' }}
                         </h1>
 
                         @if ($canEdit)
@@ -128,8 +128,8 @@
                                 <span data-translate="desc_pjt" data-translate-page="pjt_detail">Deskripsi Proyek</span>
                             </h3>
                             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                @if(isset($project->isi_content['deskripsi']) && $project->isi_content['deskripsi'])
-                                    {{ $project->isi_content['deskripsi'] }}
+                                @if(isset($project->translated('isi_content')['deskripsi']) && $project->translated('isi_content')['deskripsi'])
+                                    {{ $project->translated('isi_content')['deskripsi'] }}
                                 @else
                                     <span data-translate="empty_desc" data-translate-page="pjt_detail">Tidak ada deskripsi untuk proyek ini.</span>
                                 @endif
