@@ -639,7 +639,7 @@
 
                     @if(Auth::check())
                     <!-- Projects Section -->
-                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8" x-data="{ showAllProjects: false }">
+                    <section class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
 
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -651,18 +651,12 @@
                                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     <span data-translate="btn_add_project" data-translate-page="profile">Tambah Projek</span>
                                 </a>
-                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $user->projects->count() }} <span data-translate="project_count" data-translate-page="profile">proyek</span></span>
-                                @if($user->projects->count() > 3)
-                                    <button @click="showAllProjects = !showAllProjects" class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium flex items-center gap-1">
-                                        <span x-text="showAllProjects ? 'Tampilkan lebih sedikit' : 'Lihat semua' ({{ $user->projects->count() }})'"></span>
-                                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showAllProjects }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                                    </button>
-                                @endif
+                                <span class="text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 py-1.5 rounded-full">{{ $projects->total() }} <span data-translate="project_count" data-translate-page="profile">proyek</span></span>
                             </div>
                         </div>
-                        @if($user->projects->isNotEmpty())
+                        @if($projects->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                @foreach($user->projects as $index => $project)
+                                 @foreach($projects as $project)
                                     @php
                                         $content = $project->translated('isi_content') ?? [];
                                         $nama = $content['nama_project'] ?? 'Tanpa Nama Project';
