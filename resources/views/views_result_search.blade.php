@@ -749,13 +749,23 @@
                 const replyText = window.locale === 'id' ? 'Balas' : 'Reply';
                 const editText = window.locale === 'id' ? 'Edit' : 'Edit';
                 const deleteText = window.locale === 'id' ? 'Hapus' : 'Delete';
-                let html = `
+                const userPortfolioUrl = comment.user && comment.user.username 
+                ? `/${window.locale}/portofolio?user=${comment.user.username}` 
+                : '#';
+            const avatarHtml = comment.user && comment.user.username 
+                ? `<a href="${userPortfolioUrl}">${getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}</a>` 
+                : getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs');
+            const nameHtml = comment.user && comment.user.username 
+                ? `<a href="${userPortfolioUrl}" class="font-semibold text-sm text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors">${userName}</a>` 
+                : `<span class="font-semibold text-sm text-gray-900 dark:text-gray-100">${userName}</span>`;
+
+            let html = `
                     <div class="comment-item transition-all duration-200 py-2" data-comment-id="${commentId}" data-postingan-id="${postinganId}" style="margin-left:${marginLeft}px;">
                         <div class="flex gap-3">
-                            ${getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}
+                            ${avatarHtml}
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="font-semibold text-sm text-gray-900 dark:text-gray-100">${userName}</span>
+                                    ${nameHtml}
                                     <span class="text-xs text-gray-500">${formatDate(comment.tanggal || comment.created_at)}</span>
                                 </div>
                                 <p class="comment-text text-sm text-gray-700 dark:text-gray-300 mt-1.5 leading-relaxed" id="comment-text-${commentId}">${commentText}</p>
