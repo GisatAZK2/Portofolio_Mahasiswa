@@ -98,6 +98,7 @@ export const id = {
         label_account_status: 'Status Akun',
         status_active: 'Aktif',
         status_inactive: 'Nonaktif',
+        status_now : 'Sekarang',
 
         // tombol
         btn_save_changes: 'Simpan Perubahan',
@@ -191,6 +192,11 @@ export const id = {
         error_network: 'Terjadi kesalahan jaringan.',
         confirm_delete: 'Hapus keahlian tambahan ini?',
         empty_search_result: 'Tidak ada hasil. Ketik nama secara manual.',
+        label_select_from_list: 'Pilih dari daftar',
+        placeholder_choose_additional_skill: '-- Pilih Keahlian Tambahan --',
+        btn_request: 'Request',
+        label_or_custom_skill: 'Atau masukkan keahlian khusus',
+        btn_custom_skill: 'Tambah Keahlian Khusus',
     },
 
     keahlian_tambahan: {
@@ -1367,6 +1373,7 @@ export const id = {
         pjt_own: 'Pemilik proyek',
         pjt_ownnone: 'Tidak ada owner',
         pjt_noteam: 'Belum ada anggota tim',
+        pjt_noleader:' Tidak ada leader',
         pjt_desc: 'Deskripsi',
         pjt_vidprev: 'Pratinjau Video',
         empty_sertifikat: 'Belum Ada Sertifikat Yang Dapat Ditampilkan',
@@ -1912,22 +1919,6 @@ export const id = {
         tentang_kami: 'Tentang Kami'
     },
 
-    mobile_nav: {
-        home: 'Beranda',
-        my_dashboard: 'Halaman Saya',
-        postingan: 'Postingan',
-        profil: 'Profil',
-        tambah_baru: 'Tambah Baru',
-        tambah_project_baru: 'Tambah Project Baru',
-        upload_project_kamu: 'Upload project kamu',
-        tambah_sertifikat_mobile: 'Tambah Sertifikat',
-        upload_sertifikatmu: 'Upload sertifikatmu',
-        tambah_postingan_mobile: 'Tambah Postingan',
-        bagikan_sesuatu: 'Bagikan sesuatu',
-        akun: 'Akun',
-        menu_tamu: 'Menu Tamu'
-    },
-
     offline: {
         offline_title: 'Anda Offline',
         offline_message: 'Sepertinya Anda tidak terhubung ke internet. Silakan periksa koneksi Anda dan coba lagi.',
@@ -2017,6 +2008,7 @@ export const id = {
         password_confirmation_placeholder: 'Ulangi password baru',
         btn_submit: 'Reset Password',
         btn_cancel: 'Batal',
+        submit_button: 'Reset Password',
     },
     passkey_management: {
         title: 'Kelola Passkey',
@@ -2097,4 +2089,23 @@ export const id = {
         video_url_placeholder: 'https://youtube.com/...',
         password_title: 'Password harus minimal 8 karakter, mengandung minimal 1 huruf besar, dan tidak boleh ada spasi',
     },
+    mobile_nav: {
+        home: 'Beranda',
+        my_dashboard: 'Halaman Saya',
+        postingan: 'Postingan',
+        profil: 'Profil',
+        tambah_baru: 'Tambah Baru',
+        tambah_project_baru: 'Tambah Proyek Baru',
+        upload_project_kamu: 'Unggah proyek Anda',
+        tambah_sertifikat_mobile: 'Tambah Sertifikat',
+        upload_sertifikatmu: 'Unggah sertifikat Anda',
+        tambah_postingan_mobile: 'Tambah Postingan',
+        bagikan_sesuatu: 'Bagikan sesuatu',
+        project_mahasiswa_saya: 'Proyek Saya',
+        lihat_semua_project: 'Lihat semua proyek',
+        sertifikat_mahasiswa_saya: 'Sertifikat Saya',
+        lihat_semua_sertifikat: 'Lihat semua sertifikat',
+        akun: 'Akun',
+        menu_tamu: 'Menu Tamu'
+    }
 };

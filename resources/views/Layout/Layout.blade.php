@@ -2,15 +2,35 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <script>
+     <script>
         (function () {
-            const storedLang = localStorage.getItem('lang');
-            if (storedLang && ['id', 'en'].includes(storedLang)) {
-                document.documentElement.lang = storedLang;
-                // Jika cookie belum sesuai, set cookie agar server juga pakai bahasa ini
-                if (!document.cookie.split('; ').some(row => row.startsWith('lang=' + storedLang))) {
-                    const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
-                    document.cookie = 'lang=' + storedLang + '; expires=' + expires + '; path=/; SameSite=Lax';
+            var SUPPORTED = ['id', 'en'];
+            var pathSegments = window.location.pathname.split('/').filter(Boolean);
+            var urlLang = SUPPORTED.indexOf(pathSegments[0]) !== -1 ? pathSegments[0] : null;
+            var storedLang = localStorage.getItem('lang');
+
+            if (urlLang && storedLang && SUPPORTED.indexOf(storedLang) !== -1 && urlLang !== storedLang) {
+                var newSegments = pathSegments.slice(1);
+                var newPath = '/' + [storedLang].concat(newSegments).join('/');
+                window.location.replace(newPath + window.location.search + window.location.hash);
+                return;
+            }
+ 
+            var lang = urlLang || storedLang;
+ 
+            if (lang && SUPPORTED.indexOf(lang) !== -1) {
+                document.documentElement.lang = lang;
+ 
+                if (urlLang && storedLang !== urlLang) {
+                    localStorage.setItem('lang', urlLang);
+                }
+
+                var cookieMatch = document.cookie.split('; ').some(function (row) {
+                    return row === 'lang=' + lang || row.startsWith('lang=' + lang + ';');
+                });
+                if (!cookieMatch) {
+                    var expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+                    document.cookie = 'lang=' + lang + '; expires=' + expires + '; path=/; SameSite=Lax';
                 }
             }
         })();
@@ -222,7 +242,6 @@
                 <div class="grow">
                     @yield('content')
                 </div>
-                <!-- SESUDAH -->
                 @auth
                     @if(auth()->user()->role === 'admin' || auth()->user()->role === 'dosen')
                         @include('components.footer')
@@ -235,14 +254,17 @@
                     <div class="hidden md:block">
                         @include('components.footer')
                     </div>
-                @endauth
+                @endif
             </main>
 
             @include('components.navigation_mahasiswa_mobile')
         </div>
     </div>
 
-    @include('components.up-page')
+    @hasSection('show_up_page')
+        @include('components.up-page')
+    @endif
+    
     @include('components.chat-bot')
 
 </body>

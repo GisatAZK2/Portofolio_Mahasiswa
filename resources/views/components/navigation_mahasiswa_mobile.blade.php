@@ -12,11 +12,13 @@
         $activeTab = '';
         if (request()->routeIs('dashboard')) $activeTab = 'home';
         elseif (request()->routeIs('dashboard.me')) $activeTab = 'mydash';
+        elseif (request()->routeIs('project.*')) $activeTab = 'project';
+        elseif (request()->routeIs('sertifikat.*')) $activeTab = 'sertifikat';
         elseif (request()->routeIs('postingan.*')) $activeTab = 'post';
         elseif (request()->routeIs('profile')) $activeTab = 'profile';
     @endphp
 
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed z-50">
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed z-10600">
         <div class="bnav-bar">
             {{-- Home --}}
             <a href="{{ route('dashboard', ['locale' => app()->getLocale()]) }}"
@@ -27,7 +29,7 @@
                               d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" />
                     </svg>
                 </div>
-                <span data-translate="dashboard_nonuser" data-translate-page="mobile_nav">Home</span>
+                <span data-translate="dashboard_nonuser">Home</span>
             </a>
 
             {{-- My Dashboard --}}
@@ -47,7 +49,7 @@
                     style="background:transparent;border:none;padding:0;margin-bottom:0">
                 <div class="bnav-fab">
                     <svg id="mobile-fab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 8h16M4 16h16" />
                     </svg>
                 </div>
             </button>
@@ -56,11 +58,11 @@
             <a href="{{ route('postingan.index', ['locale' => app()->getLocale()]) }}"
                class="bnav-item {{ $activeTab === 'post' ? 'active' : '' }}">
                 <div class="bnav-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
-                        <path d="M8 2v4"></path><path d="M16 2v4"></path>
-                        <path d="M3 10h18"></path>
-                        <circle cx="12" cy="14" r="2"></circle>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
                     </svg>
                 </div>
                 <span data-translate="postingan" data-translate-page="mobile_nav">Post</span>
@@ -86,11 +88,11 @@
 
     {{-- ===================== FAB BOTTOM SHEET ===================== --}}
     <div id="mobile-fab-overlay" onclick="closeMobileFab()"
-         class="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden transition-all duration-300 opacity-0">
+         class="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-10700 hidden transition-all duration-300 opacity-0">
     </div>
 
     <div id="mobile-fab-sheet"
-         class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
+         class="lg:hidden fixed bottom-0 left-0 right-0 z-10800 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
 
         <div class="flex justify-center pt-3 pb-1">
             <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
@@ -101,6 +103,23 @@
         </div>
 
         <div class="px-4 pb-4 space-y-2">
+            {{-- Lihat Project Saya --}}
+            <a href="{{ route('project.index', ['locale' => app()->getLocale()]) }}" onclick="closeMobileFab()"
+               class="flex items-center gap-4 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition active:scale-[0.98]">
+                <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="project_mahasiswa_saya" data-translate-page="mobile_nav">Project Saya</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="lihat_semua_project" data-translate-page="mobile_nav">Lihat semua project</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+
             <a href="{{ route('project.create', ['locale' => app()->getLocale()]) }}" onclick="closeMobileFab()"
                class="flex items-center gap-4 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition active:scale-[0.98]">
                 <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -111,6 +130,23 @@
                 <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="tambah_project_baru" data-translate-page="mobile_nav">Tambah Project Baru</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="upload_project_kamu" data-translate-page="mobile_nav">Upload project kamu</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+
+            {{-- Lihat Sertifikat Saya --}}
+            <a href="{{ route('sertifikat.index', ['locale' => app()->getLocale()]) }}" onclick="closeMobileFab()"
+               class="flex items-center gap-4 px-4 py-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition active:scale-[0.98]">
+                <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="sertifikat_mahasiswa_saya" data-translate-page="mobile_nav">Sertifikat Saya</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="lihat_semua_sertifikat" data-translate-page="mobile_nav">Lihat semua sertifikat</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -128,6 +164,23 @@
                 <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="tambah_sertifikat_mobile" data-translate-page="mobile_nav">Tambah Sertifikat</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="upload_sertifikatmu" data-translate-page="mobile_nav">Upload sertifikatmu</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+
+            {{-- Lihat Postingan --}}
+            <a href="{{ route('postingan.index', ['locale' => app()->getLocale()]) }}" onclick="closeMobileFab()"
+               class="flex items-center gap-4 px-4 py-3 rounded-xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition active:scale-[0.98]">
+                <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-white" data-translate="postingan" data-translate-page="mobile_nav">Postingan</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="lihat_semua_postingan" data-translate-page="mobile_nav">Lihat semua postingan</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -159,7 +212,7 @@
     </div>
 
     <div id="mobile-profile-sheet"
-         class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out">
+         class="lg:hidden fixed bottom-0 left-0 right-0 z-10900 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out">
 
         <div class="flex justify-center pt-3 pb-1">
             <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
@@ -280,7 +333,7 @@
 </div>
 
 <div id="guest-sheet"
-     class="lg:hidden bg-white dark:bg-gray-900 fixed bottom-0 left-0 right-0 z-50 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
+     class="lg:hidden bg-white dark:bg-gray-900 fixed bottom-0 left-0 right-0 z-10500 bottom-sheet shadow-2xl transform translate-y-full transition-transform duration-300 ease-out pb-safe">
 
     <div class="flex justify-center pt-3 pb-1">
         <div class="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>

@@ -141,7 +141,7 @@
                 {{ $userName }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-200 truncate">
-                {{ $post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? __('post_card.baru_saja') }}
+                {{ $post->created_at?->diffForHumans() ?? $post->tanggal?->diffForHumans() ?? 'Baru Saja' }}
             </p>
         </div>
     </a>
@@ -440,7 +440,7 @@
             @if($game || $thumbItem)
                 <div class="mt-3 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm">
                     @if($thumbItem)
-                        <img src="{{ asset('storage/' . ltrim($thumbItem, '/')) }}" alt="{{ __('post_card.thumbnail_game') }}" class="w-full h-36 object-cover">
+                        <img src="{{ asset('storage/' . ltrim($thumbItem, '/')) }}" alt="Thumbnail Game" class="w-full h-36 object-cover">
                     @else
                         <div class="w-full h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
                             <span data-translate="preview_game" data-translate-page="post_card">Preview Game</span>
@@ -448,7 +448,7 @@
                     @endif
                     <div class="p-3 flex items-center justify-between">
                         <div>
-                            <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $game->game_name ?? __('post_card.game') }}</div>
+                            <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $game->game_name ?? 'Game' }}</div>
                             <div class="text-xs text-gray-500">
                                 <span data-translate="mainkan_game" data-translate-page="post_card">Mainkan game langsung dari postingan</span>
                             </div>
@@ -506,7 +506,7 @@
                         @csrf
                         <div class="flex gap-3">
                             @if(auth()->user()->photo_profile && file_exists(public_path('storage/' . auth()->user()->photo_profile)))
-                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1" alt="{{ __('post_card.foto_profil') }}">
+                                <img src="{{ asset('storage/' . auth()->user()->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-1" alt="Foto Profil">
                             @else
                                 <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
                                     <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">
@@ -517,7 +517,7 @@
                             <div class="flex-1">
                                 <textarea name="komentar" rows="2"
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y text-sm"
-                                    placeholder="{{ __('post_card.tulis_komentar') }}"></textarea>
+                                    placeholder="Tulis komentar..."></textarea>
                                 <div class="flex justify-end mt-2">
                                     <button type="submit"
                                         class="px-5 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition submit-btn"
@@ -544,7 +544,7 @@
                                  data-comment-id="{{ $komentar->id_komentar }}"
                                  data-user-id="{{ $komentar->id_user }}">
                                 @if($komentar->user->photo_profile && file_exists(public_path('storage/' . $komentar->user->photo_profile)))
-                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5" alt="{{ __('post_card.foto_profil') }}">
+                                    <img src="{{ asset('storage/' . $komentar->user->photo_profile) }}" class="w-8 h-8 rounded-full object-cover mt-0.5" alt="Foto Profil">
                                 @else
                                     <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mt-0.5">
                                         <span class="text-gray-600 dark:text-gray-400 text-sm">
@@ -594,9 +594,9 @@
                 $expiredAt = $post->expired_date ? \Carbon\Carbon::parse($post->expired_date) : null;
                 $validityStatus = $expiredAt
                     ? ($expiredAt->isFuture() || $expiredAt->isToday()
-                        ? __('post_card.masih_berlaku')
-                        : __('post_card.kadarluwasa'))
-                    : __('post_card.permanen');
+                        ? 'Valid'
+                        : 'Expired')
+                    : 'Permanent';
                 $validityClass = $expiredAt
                     ? ($expiredAt->isFuture() || $expiredAt->isToday() ? 'text-green-800' : 'text-red-800')
                     : 'text-indigo-800';
@@ -606,15 +606,15 @@
             <div class="flex items-center gap-2 mb-3">
                 @if($post->status_pengajuan === 'Di Terima')
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        ✓ {{ __('post_card.diterima') }}
+                        ✓ Di Terima
                     </span>
                 @elseif($post->status_pengajuan === 'Ditolak')
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                        ✗ {{ __('post_card.ditolak') }}
+                        ✗ Di Tolak
                     </span>
                 @else
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        ⊙ {{ __('post_card.pengajuan') }}
+                        ⊙ Dalam Proses
                     </span>
                 @endif
             </div>

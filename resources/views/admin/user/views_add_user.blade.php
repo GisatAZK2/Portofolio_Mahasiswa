@@ -325,9 +325,7 @@
                             <div class="auw-photo-right">
                                 <p class="auw-preview-label">Preview</p>
                                 <div class="auw-preview-frame" id="previewFrame">
-                                    <img id="preview" src="https://via.placeholder.com/150"
-                                        class="auw-preview-img" alt="Preview foto"
-                                        onerror="this.src='https://via.placeholder.com/150?text=Error';">
+                                    <img id="preview"  class="auw-preview-img" alt="Preview foto">
                                     <div class="auw-preview-overlay" id="previewOverlay">
                                         <svg width="20" height="20" fill="none" stroke="white" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

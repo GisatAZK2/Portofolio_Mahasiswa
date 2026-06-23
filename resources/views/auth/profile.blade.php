@@ -73,15 +73,19 @@
                 </div>
             </div>
 
-            <!-- Actual Content -->
-            <div id="actual-content" class="contents" style="display: none;">
-
-                <div x-data="keahlianTambahan({
-                    options: @json($keahlians),
-                    mainSkillId: @json(Auth::user()->id_keahlian),
-                    list: @json($user->keahlianTambahan ?? []),
-                    selected: @json(old('id_keahlian_tambahan', ''))
-                })" x-init="init()" class="contents">
+             <!-- Actual Content -->
+<div id="actual-content" class="contents" style="display: none;">
+    <script>
+        window.__keahlianTambahanConfig = {
+            options: @json($keahlians),
+            mainSkillId: @json(Auth::user()->id_keahlian),
+            list: @json($user->keahlianTambahan ?? []),
+            selected: @json(old('id_keahlian_tambahan', '')),
+            indexUrl: @json(route('keahlian-tambahan.index')),
+            csrfToken: @json(csrf_token())
+        };
+    </script>
+    <div x-data="keahlianTambahan(window.__keahlianTambahanConfig)" x-init="init()" class="contents">
 
                     <!-- Alert Notification -->
                     <template x-if="showAlert">
@@ -263,14 +267,36 @@
                                 </div>
 
                                 <!-- NIM -->
-                                <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition cursor-pointer group"
+                                    onclick="toggleEdit('nim')">
+
                                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 flex items-center">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0h4" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-4 0h4" />
                                         </svg>
-                                        <span data-translate="label_nim" data-translate-page="profile">NIM</span>
+                                        <span data-translate="label_nim" data-translate-page="profile">
+                                            NIM
+                                        </span>
                                     </p>
-                                    <p class="text-base font-medium text-gray-800 dark:text-gray-200">{{ Auth::user()->nim ?? '-' }}</p>
+
+                                    <div class="flex items-center justify-between">
+                                        <p id="nim-display" class="text-base font-medium text-gray-800 dark:text-gray-200">
+                                            {{ Auth::user()->nim ?? '-' }}
+                                        </p>
+
+                                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition flex-shrink-0"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </div>
+
+                                    <input type="text"
+                                        id="nim-input"
+                                        name="nim"
+                                        class="hidden dark:bg-gray-800 dark:text-white text-center border-b border-indigo-500 focus:outline-none w-64 mx-auto bg-transparent"
+                                        value="{{ old('nim', Auth::user()->nim) }}">
                                 </div>
 
                                 <!-- Tanggal Lahir -->
@@ -833,7 +859,7 @@
     </div>
 
     {{-- MODAL TAMBAH PENDIDIKAN --}}
-    <div id="modal-pendidikan" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-pendidikan" class="fixed inset-0 hidden" style="z-index: 1100000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePendidikanModal()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-pendidikan-content">
@@ -930,7 +956,7 @@
     </div>
 
     <!-- MODAL DETAIL / EDIT PENDIDIKAN -->
-    <div id="modal-detail-pendidikan" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-detail-pendidikan" class="fixed inset-0 hidden" style="z-index: 100000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPendidikan()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pendidikan-content">
@@ -1069,7 +1095,7 @@
     </div>
 
     {{-- MODAL TAMBAH PENGALAMAN KERJA --}}
-    <div id="modal-pengalaman" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-pengalaman" class="fixed inset-0 hidden" style="z-index: 1000000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closePengalamanModal()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-pengalaman-content">
@@ -1193,7 +1219,7 @@
     </div>
 
     <!-- MODAL DETAIL / EDIT PENGALAMAN KERJA -->
-    <div id="modal-detail-pengalaman" class="fixed inset-0 hidden" style="z-index: 9999;" aria-modal="true" role="dialog">
+    <div id="modal-detail-pengalaman" class="fixed inset-0 hidden" style="z-index: 100000;" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailPengalaman()"></div>
         <div class="relative flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-detail-pengalaman-content">

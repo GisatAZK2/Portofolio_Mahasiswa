@@ -95,6 +95,7 @@ export const en = {
     label_account_status: 'Account Status',
     status_active: 'Active',
     status_inactive: 'Inactive',
+    status_now : 'Now',
 
     // tombol
     btn_save_changes: 'Save Changes',
@@ -187,7 +188,13 @@ export const en = {
     success_link_copied: 'Link successfully copied!',
     error_network: 'Network error occurred.',
     confirm_delete: 'Delete this additional skill?',
-    empty_search_result: 'No results found. Type the name manually.'
+    empty_search_result: 'No results found. Type the name manually.',
+
+    label_select_from_list : 'Select from the list',
+    placeholder_choose_additional_skill : '-- Choose Additional Skill --',
+    btn_request : 'Request',
+    label_or_custom_skill : 'Or enter a custom skill',
+    btn_custom_skill : 'Add Custom Skill',
 
   },
 
@@ -1162,6 +1169,7 @@ export const en = {
     pjt_own: 'Project Owner',
     pjt_ownnone: 'No owner',
     pjt_noteam: 'No team members',
+    pjt_noleader: 'No leader',
     pjt_desc: 'Description',
     pjt_vidprev: 'Preview Video',
     empty_sertifikat: 'There is no certificates to be shown',
@@ -1904,6 +1912,10 @@ export const en = {
     upload_sertifikatmu: 'Upload your certificate',
     tambah_postingan_mobile: 'Add Post',
     bagikan_sesuatu: 'Share something',
+    project_mahasiswa_saya: 'My Projects',
+    lihat_semua_project: 'See all projects',
+    sertifikat_mahasiswa_saya: 'My Certificates',
+    lihat_semua_sertifikat: 'See all certificates',
     akun: 'Account',
     menu_tamu: 'Guest Menu'
   },
@@ -2059,6 +2071,7 @@ export const en = {
     password_confirmation_placeholder: 'Re-enter your new password',
     btn_submit: 'Reset Password',
     btn_cancel: 'Cancel',
+    submit_button: 'Reset Password',
   },
 
   verify_otp: {

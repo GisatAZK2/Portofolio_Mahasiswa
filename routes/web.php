@@ -78,40 +78,40 @@ Route::get('/test-notification', function () {
 
 // ========== LOCALE PREFIX ROUTES ==========
 Route::prefix('{locale}')
-    ->where(['locale' => 'id|en'])        
-    ->middleware(['web', 'setlocale'])      
+    ->where(['locale' => 'id|en'])
+    ->middleware(['web', 'setlocale'])
     ->group(function () {
 
-        
-// ========== PASSKEY MANAGEMENT ROUTES ==========
-Route::middleware(['web', 'auth'])->group(function () {
-    Route::post('/webauthn/register/options', [PasskeyController::class, 'registerOptions']);
-    Route::post('/webauthn/register/verify', [PasskeyController::class, 'registerVerify']);
-    Route::get('/webauthn/passkeys', [PasskeyController::class, 'index']);
-    Route::delete('/webauthn/passkeys', [PasskeyController::class, 'destroy'])->name('webauthn.passkeys.destroy');
-    Route::get('/passkeys', function () {
-        return view('auth.passkey-management');
-    })->name('passkeys.index');
-});
+
+        // ========== PASSKEY MANAGEMENT ROUTES ==========
+        Route::middleware(['web', 'auth'])->group(function () {
+            Route::post('/webauthn/register/options', [PasskeyController::class, 'registerOptions']);
+            Route::post('/webauthn/register/verify', [PasskeyController::class, 'registerVerify']);
+            Route::get('/webauthn/passkeys', [PasskeyController::class, 'index']);
+            Route::delete('/webauthn/passkeys', [PasskeyController::class, 'destroy'])->name('webauthn.passkeys.destroy');
+            Route::get('/passkeys', function () {
+                return view('auth.passkey-management');
+            })->name('passkeys.index');
+        });
 
         // ========== GUEST ROUTES ==========
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/search', [DashboardController::class, 'search'])->name('search');
         Route::get('/search-suggestions', [DashboardController::class, 'searchSuggestions'])->name('search.suggestions');
         Route::get('/pagination-fragment', [DashboardController::class, 'paginationFragment'])->name('pagination.fragment');
-        
+
 
         Route::controller(KomentarController::class)
-    ->prefix('komentar')
-    ->middleware(['web'])   // <-- pastikan web middleware aktif agar session/CSRF bekerja
-    ->group(function () {
-        Route::get('/',        'index')->name('komentar.index');
-        Route::post('/',       'store')->name('komentar.store');
-        Route::put('/update',  'update')->name('komentar.update');
-        Route::delete('/destroy', 'destroy')->name('komentar.destroy');
-    });
- 
-       
+            ->prefix('komentar')
+            ->middleware(['web'])   // <-- pastikan web middleware aktif agar session/CSRF bekerja
+            ->group(function () {
+                Route::get('/', 'index')->name('komentar.index');
+                Route::post('/', 'store')->name('komentar.store');
+                Route::put('/update', 'update')->name('komentar.update');
+                Route::delete('/destroy', 'destroy')->name('komentar.destroy');
+            });
+
+
 
         // ========== MAHASISWA ROUTES (dengan 2FA) ==========
         Route::middleware(['auth', 'role:mahasiswa', '2fa'])->group(function () {
@@ -138,18 +138,23 @@ Route::middleware(['web', 'auth'])->group(function () {
 
             // Search Sekolah (public)
             Route::get('/sekolah/search', [UserController::class, 'searchSekolah'])->name('sekolah.search');
-            
+
             // CRUD Project
             Route::resource('project', ProjekController::class)->only([
-                'index', 'create', 'store'
+                'index',
+                'create',
+                'store'
             ]);
             Route::get('/projectUser/edit', [ProjekController::class, 'edit'])->name('project.edit');
             Route::put('/projectUser/update', [ProjekController::class, 'update'])->name('project.update');
             Route::delete('/projectUser/delete', [ProjekController::class, 'destroy'])->name('project.destroy');
+            Route::post('/projectUser/check-duplicate', [ProjekController::class, 'checkDuplicate'])->name('project.checkDuplicate');
 
             // CRUD Sertifikat
             Route::resource('sertifikat', SertifikatController::class)->only([
-                'index', 'create', 'store',
+                'index',
+                'create',
+                'store',
             ]);
             Route::get('/sertifikatUser/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
             Route::put('/sertifikatUser/update', [SertifikatController::class, 'update'])->name('sertifikat.update');
@@ -166,7 +171,7 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::post('/custom', [UserController::class, 'storeCustomKeahlianTambahan'])->name('custom');
             });
             Route::delete('/keahlian-tambahan/destroy', [UserController::class, 'destroyKeahlianTambahan'])->name('destroy');
-            
+
         });
         // ========== ADMIN ROUTES ==========
         Route::middleware(['auth', 'role:admin', '2fa'])->prefix('admin')->name('admin.')->group(function () {
@@ -204,7 +209,7 @@ Route::middleware(['web', 'auth'])->group(function () {
 
             Route::patch('/sertifikat/approve', [AdminController::class, 'approve'])->name('sertifikat.approve');
             Route::patch('/sertifikat/reject', [AdminController::class, 'reject'])->name('sertifikat.reject');
-           
+
 
             Route::prefix('manageAngkatan')->name('angkatan.')->group(function () {
                 Route::get('/', [AdminController::class, 'ListAngkatan'])->name('index');
@@ -266,7 +271,7 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::get('/', [DosenController::class, 'ListUser'])->name('index');
                 Route::get('/AddUser', [DosenController::class, 'ViewAddUser'])->name('ViewCreate');
                 Route::post('/StoreUser', [DosenController::class, 'AddUser'])->name('StoreUser');
-                 Route::get('/Details', [DosenController::class, 'DetailsUser'])->name('details');  // ✅ Sudah b
+                Route::get('/Details', [DosenController::class, 'DetailsUser'])->name('details');  // ✅ Sudah b
                 Route::patch('/edit', [DosenController::class, 'UpdateUser'])->name('edit');
                 Route::delete('/DeleteUser', [DosenController::class, 'destroyUser'])->name('destroy');
                 Route::patch('/update-status', [DosenController::class, 'updateStatus'])->name('update-status');
@@ -297,11 +302,13 @@ Route::middleware(['web', 'auth'])->group(function () {
             });
         });
 
-        
-            Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+
+        Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
         // ========== POSTINGAN ROUTES ==========
         Route::resource('postingan', PostinganController::class)->only([
-            'index', 'create', 'store',
+            'index',
+            'create',
+            'store',
         ]);
         Route::get('/postinganUser/edit', [PostinganController::class, 'edit'])->name('postingan.edit');
         Route::put('/postinganUser/update', [PostinganController::class, 'update'])->name('postingan.update');

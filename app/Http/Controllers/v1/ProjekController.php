@@ -38,13 +38,14 @@ class ProjekController extends Controller
 
     protected function userIsProjectManager(Project $project): bool
     {
-        $userId = Auth::id();
-        return $project->id_mahasiswa === $userId || $project->leader_id === $userId;
+        $userId = (int) Auth::id();
+        return (int) $project->id_mahasiswa === $userId 
+            || (int) $project->leader_id   === $userId;
     }
 
     protected function userIsProjectParticipant(Project $project, int $userId): bool
     {
-        if ($project->id_mahasiswa === $userId || $project->leader_id === $userId) {
+        if ((int) $project->id_mahasiswa === $userId || (int) $project->leader_id === $userId) {
             return true;
         }
 
@@ -401,20 +402,45 @@ class ProjekController extends Controller
             return back()->withInput()->withErrors(['project' => 'Minimal isi salah satu field']);
         }
 
+        $members = collect($request->members ?? [])
+    ->filter()
+    ->reject(fn($id) => $id == $request->leader)
+    ->map(fn($id) => (int) $id)
+    ->unique()
+    ->values()
+    ->all();
+
+$allMemberIds = collect($members)
+    ->push(Auth::id())
+    ->when($request->leader, fn($c) => $c->push($request->leader))
+    ->filter()
+    ->unique()
+    ->sort()
+    ->values()
+    ->all();
+
+$fingerprint = Project::generateFingerprint(
+    $request->nama_project,
+    $allMemberIds
+);
+
+if (Project::where('project_fingerprint', $fingerprint)->exists()) {
+    return back()
+        ->withInput()
+        ->withErrors([
+            'project' => 'Project dengan anggota yang sama sudah ada.'
+        ]);
+}
+
+
         $project = Project::create([
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
             'isi_content' => $content,
             'id_mahasiswa' => Auth::id(),
             'leader_id' => $request->leader,
+            'project_fingerprint' => $fingerprint
         ]);
-
-        // Attach members
-        $members = collect($request->members ?? [])
-            ->filter()
-            ->reject(fn($id) => $id == $request->leader)
-            ->map(fn($id) => (int) $id)
-            ->all();
 
         if (!empty($members)) {
             $project->members()->attach($members);
@@ -522,7 +548,10 @@ class ProjekController extends Controller
         ->where('id', $id)
         ->firstOrFail();
 
-    if (Auth::user()->role !== 'admin' && $project->id_mahasiswa !== $user->id) {
+    $isOwner  = $project->id_mahasiswa === $user->id;
+    $isLeader = $project->leader_id    === $user->id;
+
+    if (Auth::user()->role !== 'admin' && !$isOwner && !$isLeader) {
         abort(403, 'You can only edit your own projects');
     }
 
@@ -684,9 +713,14 @@ class ProjekController extends Controller
             $user = Auth::user();
         }
 
-        $project = Project::where('id', $id)
-            ->where('id_mahasiswa', $user->id)
-            ->firstOrFail();
+        $project = Project::findOrFail($id);
+
+        $isOwner  = (int) $project->id_mahasiswa === (int) $user->id;
+        $isLeader = (int) $project->leader_id    === (int) $user->id;
+
+        if (Auth::user()->role !== 'admin' && !$isOwner && !$isLeader) {
+            abort(403, 'You can only edit your own projects');
+        }
 
         // Rest of your update logic remains the same...
         $request->validate([
@@ -728,12 +762,50 @@ class ProjekController extends Controller
             ->values()
             ->all();
 
+        // Ambil member baru
+$members = collect($request->input('members', []))
+    ->filter()
+    ->reject(fn($memberId) => $memberId == $request->leader)
+    ->unique()
+    ->values()
+    ->all();
+
+// Susun semua user yang terlibat
+$allMemberIds = collect($members)
+    ->push($request->leader)
+    ->push($project->id_mahasiswa)
+    ->filter()
+    ->unique()
+    ->sort()
+    ->values()
+    ->all();
+
+// Generate fingerprint baru
+$newFingerprint = Project::generateFingerprint(
+    $request->nama_project,
+    $allMemberIds
+);
+
+// Cek apakah fingerprint sudah dipakai project lain
+$duplicateProject = Project::where('project_fingerprint', $newFingerprint)
+    ->where('id', '!=', $project->id)
+    ->exists();
+
+if ($duplicateProject) {
+    return back()
+        ->withInput()
+        ->withErrors([
+            'nama_project' => 'Project dengan anggota yang sama sudah ada.'
+        ]);
+}
+
         // Update project
         $project->update([
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_akhir' => $request->tanggal_akhir,
             'isi_content' => $content,
             'leader_id' => $request->leader,
+            'project_fingerprint' => $newFingerprint
         ]);
 
         // Handle members
@@ -1033,6 +1105,40 @@ class ProjekController extends Controller
             'statusColor'
         ));
     }
+
+    public function checkDuplicate(Request $request)
+{
+    $name = $request->input('nama_project', '');
+    $memberIds = $request->input('member_ids', []);
+
+    $fingerprint = Project::generateFingerprint($name, $memberIds);
+
+    $existing = Project::where('project_fingerprint', $fingerprint)
+        ->when($request->exclude_id, fn($q) => $q->where('id', '!=', $request->exclude_id))
+        ->first();
+
+    // cek similarity nama
+    $isDuplicate = (bool) $existing;
+    $message = '';
+    if ($existing) {
+        $existingName = $existing->isi_content['nama_project'] ?? '';
+        $message = "Project \"$existingName\" sudah ada dengan anggota yang sama.";
+    } else {
+        // fallback: cek similarity nama ≥ 75%
+        $normalized = strtolower(trim($name));
+        $similar = Project::all()->first(function ($p) use ($normalized) {
+            $otherName = strtolower($p->isi_content['nama_project'] ?? '');
+            similar_text($normalized, $otherName, $pct);
+            return $pct >= 75;
+        });
+        if ($similar) {
+            $isDuplicate = true;
+            $message = "Nama project mirip dengan \"" . ($similar->isi_content['nama_project'] ?? '') . "\" yang sudah ada.";
+        }
+    }
+
+    return response()->json(['is_duplicate' => $isDuplicate, 'message' => $message]);
+}
 
 
 }

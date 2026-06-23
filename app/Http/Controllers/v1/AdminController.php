@@ -169,64 +169,61 @@ class AdminController extends Controller
 
     //For Pages User
     public function ListUser(Request $request)
-    {
-        $this->authorizeAccess();
-        $users = User::whereIn('role', ['mahasiswa', 'admin', 'dosen'])
-            ->where('id', '!=', Auth::id()) // tidak tampilkan user yang sedang login
-            ->with(['jurusan', 'angkatan', 'keahlian'])
-            ->withCount([
-                'projects',
-                'sertifikats',
-                'learning_corners'
-            ])
-            ->orderBy('created_at', 'desc')
-            ->get();
+{
+    $this->authorizeAccess();
 
-        // Filter berdasarkan search
-        if ($request->has('search') && $request->input('search') != '') {
-            $search = $request->input('search');
-            $users = $users->filter(function ($user) use ($search) {
-                return str_contains(strtolower($user->nama_mahasiswa), strtolower($search)) ||
-                    str_contains(strtolower($user->username), strtolower($search)) ||
-                    str_contains(strtolower($user->email), strtolower($search));
-            });
-        }
+    $query = User::whereIn('role', ['mahasiswa', 'admin', 'dosen'])
+        ->where('id', '!=', Auth::id())
+        ->with(['jurusan', 'angkatan', 'keahlian'])
+        ->withCount([
+            'projects',
+            'sertifikats',
+            'learning_corners'
+        ]);
 
-        // Filter berdasarkan role
-        if ($request->has('role') && $request->input('role') != '') {
-            $role = $request->input('role');
-            $users = $users->filter(function ($user) use ($role) {
-                return $user->role === $role;
-            });
-        }
+    // Filter search
+    if ($request->filled('search')) {
+        $search = $request->search;
 
-        // Filter berdasarkan jurusan (prodi)
-        if ($request->has('jurusan') && $request->input('jurusan') != '') {
-            $jurusanId = $request->input('jurusan');
-            $users = $users->filter(function ($user) use ($jurusanId) {
-                // Some users may store FK as id_jurusan, others via relation
-                if (isset($user->id_jurusan) && $user->id_jurusan == $jurusanId)
-                    return true;
-                if ($user->jurusan?->id_jurusan == $jurusanId)
-                    return true;
-                return false;
-            });
-        }
-
-        // Filter berdasarkan status_pengajuan
-        if ($request->has('status_pengajuan') && $request->input('status_pengajuan') != '') {
-            $status = $request->input('status_pengajuan');
-            $users = $users->filter(function ($user) use ($status) {
-                return $user->status_pengajuan === $status;
-            });
-        }
-
-        $pendingKeahlianTambahanCount = \App\Models\Keahlian_Tambahan::where('status_pengajuan', 'Sedang Di Ajukan')->count();
-
-        $jurusan = Jurusan::all();
-
-        return view('admin.daftar-mahasiswa', compact('users', 'pendingKeahlianTambahanCount', 'jurusan'));
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_mahasiswa', 'like', "%{$search}%")
+              ->orWhere('username', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
     }
+
+    // Filter role
+    if ($request->filled('role')) {
+        $query->where('role', $request->role);
+    }
+
+    // Filter jurusan
+    if ($request->filled('jurusan')) {
+        $query->where('id_jurusan', $request->jurusan);
+    }
+
+    // Filter status pengajuan
+    if ($request->filled('status_pengajuan')) {
+        $query->where('status_pengajuan', $request->status_pengajuan);
+    }
+
+    $users = $query
+        ->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString(); // agar filter tetap saat pindah halaman
+
+    $pendingKeahlianTambahanCount = \App\Models\Keahlian_Tambahan::where(
+        'status_pengajuan',
+        'Sedang Di Ajukan'
+    )->count();
+
+    $jurusan = Jurusan::all();
+
+    return view(
+        'admin.daftar-mahasiswa',
+        compact('users', 'pendingKeahlianTambahanCount', 'jurusan')
+    );
+}
 
     public function ViewAddUser()
     {

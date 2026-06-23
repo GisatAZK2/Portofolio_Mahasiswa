@@ -31,7 +31,11 @@ function persistLocale(locale) {
   document.cookie = `lang=${locale}; expires=${expires}; path=/; SameSite=Lax`;
 }
 
-let currentLang = localStorage.getItem('lang') || getLocaleFromUrl() || DEFAULT_LANG;
+// FIX: URL locale is the source of truth (server rendered with it).
+// localStorage is only used as fallback when there is no locale in the URL.
+const urlLang = getLocaleFromUrl();
+const storedLang = localStorage.getItem('lang');
+let currentLang = urlLang || storedLang || DEFAULT_LANG;
 
 function applyTranslations() {
   const langData = translations[currentLang] || translations[DEFAULT_LANG];
@@ -69,6 +73,7 @@ function applyTranslations() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Sync localStorage & cookie to the effective lang (URL-first)
   persistLocale(currentLang);
 
   const select = document.getElementById('languageSelect');
