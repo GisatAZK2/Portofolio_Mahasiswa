@@ -141,20 +141,6 @@ class PostinganController extends Controller
         return view('postingan.views_detail_postingan', compact('postingan'));
     }
 
-    // User yang sudah login dengan role tertentu
-    if ($user->role === 'mahasiswa') {
-        $query->where('id_user', $user->id);
-    } elseif ($user->role === 'dosen') {
-        $query->whereHas('user', function ($q) use ($user) {
-            $q->where('role', 'mahasiswa')
-                ->where('id_angkatan', $user->id_angkatan)
-                ->where('id_jurusan', $user->id_jurusan)
-                ->where('id_keahlian', $user->id_keahlian);
-        });
-    } elseif ($user->role === 'admin') {
-        // Admin can see all
-    }
-
     $postingan = $query->where('id_postingan', $id)->firstOrFail();
 
     return view('postingan.views_detail_postingan', compact('postingan'));
