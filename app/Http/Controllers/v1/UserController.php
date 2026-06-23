@@ -542,8 +542,6 @@ class UserController extends Controller
                 return back()->with('error', $error);
             }
         }
-
-        unset($validated['nim']);
         unset($validated['id_keahlian_tambahan']);
 
         $newDeskripsi = $request->input('deskripsi');

@@ -2070,6 +2070,7 @@ export const en = {
     password_confirmation_placeholder: 'Re-enter your new password',
     btn_submit: 'Reset Password',
     btn_cancel: 'Cancel',
+    submit_button: 'Reset Password',
   },
 
   verify_otp: {

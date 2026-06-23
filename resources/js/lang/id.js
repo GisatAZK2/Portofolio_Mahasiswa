@@ -2007,6 +2007,7 @@ export const id = {
         password_confirmation_placeholder: 'Ulangi password baru',
         btn_submit: 'Reset Password',
         btn_cancel: 'Batal',
+        submit_button: 'Reset Password',
     },
     passkey_management: {
         title: 'Kelola Passkey',

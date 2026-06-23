@@ -131,6 +131,16 @@
                  data-session-success="{{ session('success') }}" 
                  data-session-error="{{ session('error') }}" 
                  data-errors-first="{{ $errors->any() ? $errors->first() : '' }}"></div>
+
+            <div class="pt-4">
+                <button
+                    type="submit"
+                    class="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    data-translate="submit_button"
+                    data-translate-page="reset_password">
+                    Reset Password
+                </button>
+            </div>
         </form>
     </div>
 </div>
