@@ -1,4 +1,4 @@
-<header class="bg-white/80 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all">
+<header id="main-header" class="bg-white/80 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all duration-300 transform">
     <div class="px-4 py-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-3">
 
@@ -16,7 +16,36 @@
                     </button>
                     @endif
                 @endauth
+                
+                <!-- Quick Access Dropdown (Mobile) -->
+                <div class="relative" id="mobile-quick-access">
+                    <button onclick="document.getElementById('mobile-quick-access-menu').classList.toggle('hidden')" class="text-gray-700 dark:text-gray-300 focus:outline-none p-1 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                        </svg>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="mobile-quick-access-menu" class="hidden absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-2 z-50">
+                        <div class="px-4 pb-2 mb-2 border-b border-gray-100 dark:border-gray-700">
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Akses Menu Beranda</span>
+                        </div>
+                        <a href="#postingan-section" onclick="document.getElementById('mobile-quick-access-menu').classList.add('hidden'); setTimeout(() => { const el = document.getElementById('postingan-section'); if(el) { document.querySelector('main').scrollTo({top: el.offsetTop - 80, behavior: 'smooth'}); } }, 100);" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700 font-medium">Postingan</a>
+                        <a href="#projects-section" onclick="document.getElementById('mobile-quick-access-menu').classList.add('hidden'); setTimeout(() => { const el = document.getElementById('projects-section'); if(el) { document.querySelector('main').scrollTo({top: el.offsetTop - 80, behavior: 'smooth'}); } }, 100);" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700 font-medium">Project</a>
+                        <a href="#sertifikat-section" onclick="document.getElementById('mobile-quick-access-menu').classList.add('hidden'); setTimeout(() => { const el = document.getElementById('sertifikat-section'); if(el) { document.querySelector('main').scrollTo({top: el.offsetTop - 80, behavior: 'smooth'}); } }, 100);" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700 font-medium">Sertifikat</a>
+                    </div>
+                </div>
             </div>
+
+            <script>
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    const dropdown = document.getElementById('mobile-quick-access');
+                    const menu = document.getElementById('mobile-quick-access-menu');
+                    if (dropdown && menu && !dropdown.contains(event.target)) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            </script>
 
             <!-- Mobile logo -->
             <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
@@ -294,3 +323,52 @@
         </div>
     </div>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.getElementById('main-header');
+        const mainElement = document.querySelector('main');
+        
+        if (!mainElement || !header) return;
+
+        let lastScrollY = mainElement.scrollTop;
+        let scrollTimeout;
+
+        mainElement.addEventListener('scroll', () => {
+            // Hanya sembunyikan di tampilan mobile (< 1024px)
+            if (window.innerWidth >= 1024) {
+                header.classList.remove('-translate-y-full');
+                return;
+            }
+
+            const currentScrollY = mainElement.scrollTop;
+
+            // Jika scroll ke bawah dan sudah melewati 50px
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                header.classList.add('-translate-y-full');
+            } 
+            // Jika scroll ke atas atau berada di posisi paling atas
+            else {
+                header.classList.remove('-translate-y-full');
+            }
+
+            lastScrollY = currentScrollY;
+
+            // Clear the timeout throughout the scroll
+            clearTimeout(scrollTimeout);
+
+            // Set a timeout to run after scrolling ends
+            scrollTimeout = setTimeout(() => {
+                header.classList.remove('-translate-y-full');
+            }, 800); // Muncul kembali setelah 800ms berhenti scroll
+        });
+
+        // Reset state jika di-resize ke desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                header.classList.remove('-translate-y-full');
+                clearTimeout(scrollTimeout);
+            }
+        });
+    });
+</script>
