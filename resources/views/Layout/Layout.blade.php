@@ -135,16 +135,15 @@
         }
 
         @media (max-width: 1023px) {
-            header {
-                position: absolute;
-                width: 100%;
-            }
-
-            main {
-                padding-top: 70px !important;
-                padding-bottom: 5.5rem !important;
-            }
+        header {
+            position: absolute;
+            width: 100%;
         }
+        main {
+            padding-top: 70px !important;
+            padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+    }
 
         #mobile-bottom-nav {
             position: fixed;
