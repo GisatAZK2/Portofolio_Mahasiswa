@@ -58,6 +58,35 @@
 }
 
 /* ==========================================
+   FLUID TYPOGRAPHY
+   ==========================================
+   Mengapa ini penting:
+   - HP fisik 720px dengan DPR=3 → CSS viewport hanya 240px
+   - Jika font-size tetap (px), teks terlalu besar/kecil di berbagai HP
+   - clamp() membuat semua unit rem otomatis skala dengan lebar layar
+   
+   Cara kerja:
+   - HP kecil (<360px CSS)   : font-size 13px (minimum)
+   - HP normal (360-457px)   : font-size skala linear (13px→16px)
+   - Tablet/Desktop (>457px) : font-size 16px (maksimum)
+   
+   Karena Tailwind menggunakan rem, SEMUA class text-xs/sm/base/lg/xl
+   otomatis ikut skala tanpa perlu mengubah class di Blade/HTML.
+   ========================================== */
+html {
+    font-size: clamp(13px, 3.5vw, 16px);
+}
+ 
+/* Spacing fluid — padding/margin juga ikut menyesuaikan */
+:root {
+    --spacing-fluid-xs:  clamp(0.25rem, 1.5vw, 0.5rem);
+    --spacing-fluid-sm:  clamp(0.5rem,  2vw,   0.75rem);
+    --spacing-fluid-md:  clamp(0.75rem, 3vw,   1rem);
+    --spacing-fluid-lg:  clamp(1rem,    4vw,   1.5rem);
+    --spacing-fluid-xl:  clamp(1.25rem, 5vw,   2rem);
+}
+
+/* ==========================================
    LAYOUT
    ========================================== */
 .content-wrapper {
