@@ -264,6 +264,11 @@ class DashboardController extends Controller
             return redirect($request->url() . '?user=' . $user->username);
         }
 
+        if ($user->slug) {
+            $currentLocale = $locale ?? app()->getLocale();
+            return redirect("/{$currentLocale}/portofolio/{$user->slug}", 301);
+        }
+
         if (in_array($user->role, ['admin', 'dosen'])) {
             return redirect()->back()->with('error', 'Halaman portofolio admin atau dosen tidak diperbolehkan dibuka.');
         }
@@ -307,6 +312,75 @@ class DashboardController extends Controller
         return view('views_portofolio_user', compact('user', 'postingans', 'projects', 'projectTab', 'isOwner'));
     }
 
+    public function showBySlug($locale, $slug)
+{
+    // Cari user berdasarkan slug
+    $user = User::where('slug', $slug)->firstOrFail();
+
+    // Set locale
+    if ($locale && in_array($locale, ['id', 'en'])) {
+        app()->setLocale($locale);
+        session(['locale' => $locale]);
+    }
+
+    // Cek role (admin/dosen tidak boleh akses portfolio)
+    if (in_array($user->role, ['admin', 'dosen'])) {
+        return redirect()->back()->with('error', 'Halaman portofolio admin atau dosen tidak diperbolehkan dibuka.');
+    }
+
+    // Cek status pengajuan
+    if (($user->status_pengajuan ?? '') !== 'Di Terima') {
+        return redirect()->back()->with('error', 'Portofolio belum disetujui, akses tidak diizinkan.');
+    }
+
+    // Load data yang diperlukan
+    $user->load([
+        'jurusan',
+        'angkatan',
+        'keahlian',
+        'keahlianTambahan' => fn($q) => $q->wherePivot('status_pengajuan', 'Di Terima'),
+        'postingans' => fn($q) => $q->latest(),
+        'sertifikats' => fn($q) => $q->where('is_active', true)->where('status_pengajuan', 'Di Terima'),
+        'learning_corners',
+    ]);
+
+    // Cek apakah user yang melihat adalah pemilik portfolio
+    $isOwner = Auth::check() && Auth::id() === $user->id;
+
+    // Ambil project tab dari request
+    $projectTab = request('project_tab', 'completed');
+    $today = Carbon::today();
+
+    // Ambil data postingan
+    $postingans = $user->postingans()->latest()->paginate(3)->fragment('postingan-section');
+
+    // Ambil data project dengan filter tab
+    $projectsQuery = Project::with(['owner', 'leader', 'members'])
+        ->where(function ($q) use ($user) {
+            $q->where('id_mahasiswa', $user->id)
+                ->orWhere('leader_id', $user->id)
+                ->orWhereHas('members', fn($qq) => $qq->where('users.id', $user->id));
+        });
+
+    // Filter berdasarkan tab (sama persis dengan function show)
+    match ($projectTab) {
+        'upcoming' => $projectsQuery->where('tanggal_mulai', '>', $today),
+        'completed' => $projectsQuery->whereNotNull('tanggal_akhir')->where('tanggal_akhir', '<', $today),
+        default => $projectsQuery->where('tanggal_mulai', '<=', $today)
+            ->where(fn($q) => $q->where('tanggal_akhir', '>=', $today)->orWhereNull('tanggal_akhir')),
+    };
+
+    $projects = $projectsQuery->latest()->paginate(5)->withQueryString()->fragment('project-section');
+
+    // Kirim ke view
+    return view('views_portofolio_user', compact(
+        'user',
+        'postingans',
+        'projects',
+        'projectTab',
+        'isOwner'
+    ));
+}
     // ══════════════════════════════════════════════════════════════════════════
     //  SEARCH
     // ══════════════════════════════════════════════════════════════════════════

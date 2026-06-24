@@ -14,6 +14,7 @@ use App\Models\Angkatan;
 use App\Models\Project;
 use App\Models\ProjectTask;
 use App\Traits\HasTranslations;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -64,6 +65,7 @@ class User extends Authenticatable
         'pengalaman_kerja',  // JSON: [{nama_pt, bagian_kerja, sertifikat_pendukung, tahun_mulai, tahun_akhir}]
         'pendidikan',         // JSON: [{nama_sekolah, jenjang, jurusan, tahun_masuk, tahun_lulus}]
         'translations',
+        'slug', // Tambahkan kolom slug
     ];
 
     protected $casts = [
@@ -154,6 +156,19 @@ class User extends Authenticatable
 
     protected static function booted(): void
     {
+       
+        static::creating(function (User $user) {
+            if (empty($user->slug) && !empty($user->nama_mahasiswa)) {
+                $user->slug = static::generateUniqueSlug($user->nama_mahasiswa);
+            }
+        });
+
+        static::updating(function (User $user) {
+            if (empty($user->slug) && !empty($user->nama_mahasiswa)) {
+                $user->slug = static::generateUniqueSlug($user->nama_mahasiswa, $user->id);
+            }
+        });
+
         static::deleting(function (User $user) {
             if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
                 Storage::disk('public')->delete($user->photo_profile);
@@ -184,6 +199,23 @@ class User extends Authenticatable
             $projects->each->delete();
         });
     }
+
+     public static function generateUniqueSlug(string $name, ?int $exceptId = null): string
+        {
+            $base  = Str::slug($name);
+            $slug  = $base;
+            $count = 1;
+        
+            while (
+                static::where('slug', $slug)
+                    ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+                    ->exists()
+            ) {
+                $slug = $base . '-' . $count++;
+            }
+        
+            return $slug;
+        }
 
     /**
      * The attributes that should be hidden for serialization.

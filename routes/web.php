@@ -315,8 +315,9 @@ Route::prefix('{locale}')
         Route::delete('/postinganUser/delete', [PostinganController::class, 'destroy'])->name('postingan.destroy');
 
         // ========== PUBLIC VIEW ROUTES ==========
-        Route::get('/portofolio', [DashboardController::class, 'show'])->name('portfolio.show');
+        Route::get('/portofolio/{slug}', [DashboardController::class, 'showBySlug'])->name('portfolio.slug')->where('slug', '[a-z0-9\-]+'); 
         Route::get('/projectUser', [ProjekController::class, 'show'])->name('project.show');
+        Route::get('/portofolio', [DashboardController::class, 'show'])->name('portfolio.show');
         Route::get('/ProjectMahasiswa', [ProjekController::class, 'project_user'])->name('project.project_user');
         Route::get('/postinganUser', [PostinganController::class, 'show'])->name('postingan.show');
 

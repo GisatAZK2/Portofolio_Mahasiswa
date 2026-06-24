@@ -3,7 +3,7 @@
 @section('show_footer', true)
 @section('show_up_page', true)
 
-@section('title', ($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio')
+@section('title', trim($user->nama_mahasiswa ?? 'Mahasiswa') . ' | Portfolio ' . ($user->jurusan?->nama_jurusan ?? '') . ' - Politeknik Mitra Industri')
 
 @section('meta')
     @php
@@ -26,9 +26,9 @@
         $portfolioImage = $user->photo_profile
             ? asset('storage/' . ltrim($user->photo_profile, '/'))
             : asset('assets/Logo.svg');
-        $portfolioUrl = route('portfolio.show', ['user' => $user->username]);
+        $portfolioUrl = $user->slug ? route('portfolio.slug', ['locale' => app()->getLocale(), 'slug' => $user->slug]) : route('portfolio.show', ['locale' => app()->getLocale(), 'user' => $user->username]);
     @endphp
-
+    <link rel="canonical" href="{{ $portfolioUrl }}">
     <meta name="description" content="{{ $portfolioDescription }}">
     <meta property="og:title" content="{{ $portfolioTitle }} | Portfolio">
     <meta property="og:description" content="{{ $portfolioDescription }}">
@@ -112,7 +112,9 @@
                                 {{-- Share Button --}}
                                 <div class="flex flex-col gap-2 pt-1">
                                     @php
-                                        $shareUrl = route('portfolio.show', ['user' => $user->username]);
+                                        $shareUrl = $user->slug 
+                                        ? route('portfolio.slug', ['locale' => app()->getLocale(), 'slug' => $user->slug]) 
+                                        : route('portfolio.show', ['locale' => app()->getLocale(), 'user' => $user->username]);
                                     @endphp
                                     <div class="relative group">
                                         <button class="flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600/50 hover:bg-indigo-700/50 text-white rounded-lg text-sm font-medium transition-colors"
