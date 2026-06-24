@@ -135,33 +135,6 @@
         }
 
         @media (max-width: 1023px) {
-            #sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                width: 280px;
-                z-index: 50;
-            }
-
-            #sidebar.open {
-                transform: translateX(0);
-            }
-
-            #sidebar-overlay {
-                position: fixed;
-                inset: 0;
-                z-index: 45;
-                background: rgba(0, 0, 0, 0.5);
-                display: none;
-            }
-
-            #sidebar-overlay.show {
-                display: block;
-            }
-
             header {
                 position: absolute;
                 width: 100%;
@@ -235,7 +208,7 @@
         @include('components.splash')
     @endif
 
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity duration-300">
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity duration-300">
     </div>
 
     <div class="app-layout">

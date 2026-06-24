@@ -35,7 +35,7 @@ Untuk admin/dosen tetap menggunakan sidebar.blade.php biasa
                                 d="M3 10.5L12 3l9 7.5M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" />
                         </svg>
                     </div>
-                    <span data-translate="dashboard_nonuser">Home</span>
+                    <span data-translate="dashboard_nonuser" data-translate-page="mobile_nav">Home</span>
                 </a>
 
                 {{-- My Dashboard --}}

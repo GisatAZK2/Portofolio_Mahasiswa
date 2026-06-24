@@ -2108,6 +2108,7 @@ export const id = {
         sertifikat_mahasiswa_saya: 'Sertifikat Saya',
         lihat_semua_sertifikat: 'Lihat semua sertifikat',
         akun: 'Akun',
-        menu_tamu: 'Menu Tamu'
+        menu_tamu: 'Menu Tamu',
+        dashboard_nonuser: 'Beranda',
     }
 };

@@ -1921,7 +1921,8 @@ export const en = {
     sertifikat_mahasiswa_saya: 'My Certificates',
     lihat_semua_sertifikat: 'See all certificates',
     akun: 'Account',
-    menu_tamu: 'Guest Menu'
+    menu_tamu: 'Guest Menu',
+    dashboard_nonuser: 'Home',
   },
 
   offline: {

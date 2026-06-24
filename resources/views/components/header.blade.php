@@ -18,6 +18,7 @@
                 @endauth
                 
                 <!-- Quick Access Dropdown (Mobile) -->
+               @if(request()->is('/') && (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'dosen'])))
                 <div class="relative" id="mobile-quick-access">
                     <button onclick="document.getElementById('mobile-quick-access-menu').classList.toggle('hidden')" class="text-gray-700 dark:text-gray-300 focus:outline-none p-1 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,6 +35,8 @@
                         <a href="#sertifikat-section" onclick="document.getElementById('mobile-quick-access-menu').classList.add('hidden'); setTimeout(() => { const el = document.getElementById('sertifikat-section'); if(el) { document.querySelector('main').scrollTo({top: el.offsetTop - 80, behavior: 'smooth'}); } }, 100);" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700 font-medium">Sertifikat</a>
                     </div>
                 </div>
+                @endif
+
             </div>
 
             <script>
