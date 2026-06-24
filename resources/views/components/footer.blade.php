@@ -75,8 +75,8 @@
         </div>
 
         <!-- Map for Mobile -->
-        <div id="mapModal"
-          class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+       <div id="mapModalMobile"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
 
           <div class="relative w-[90%] max-w-3xl bg-white dark:bg-gray-900 rounded-xl shadow-xl p-4">
 
@@ -319,6 +319,12 @@
     height: 130px;
   }
 }
+
+/* Tambahkan pengecualian untuk modal */
+.map-wrapper.h-\[400px\] {
+  height: 400px !important;
+  max-width: 100%;
+}
 </style>
 
 <script>
@@ -334,7 +340,7 @@
   let is3DMode = true;
 
   const TILE_STYLES = {
-    'default': 'https://tiles.openfreemap.org/styles/liberty',
+    'default': 'https://tiles.openfreemap.org/styles/positron',
     'bright': 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}.png',
     'outdoor': 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png'
   };
@@ -356,6 +362,11 @@
         attributionControl: true
       });
 
+      map.on('styleimagemissing', (e) => {
+          const emptyImage = { width: 1, height: 1, data: new Uint8Array(4) };
+          map.addImage(e.id, emptyImage);
+      });
+
       map.addControl(new maplibregl.NavigationControl(), 'top-right');
       map.addControl(new maplibregl.ScaleControl(), 'bottom-left');
 
@@ -363,17 +374,33 @@
         const markerElement = document.createElement('div');
         markerElement.innerHTML = '<i class="fas fa-map-marker-alt" style="font-size: 32px; color: #e11d48; text-shadow: 0 2px 4px rgba(0,0,0,0.3);"></i>';
         markerElement.style.cursor = 'pointer';
-        
-        new maplibregl.Marker({ element: markerElement })
-          .setLngLat(POLMIND_COORDS)
-          .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`
+
+        const popup = new maplibregl.Popup({ offset: 25, closeOnClick: false })
+          .setHTML(`
             <div style="font-family: sans-serif; padding: 4px;">
-              <strong style="color: #1e293b;">🏫 Politeknik Mitra Industri</strong><br>
+              <img src="/assets/Logo.svg" 
+                style="width:18px; height:18px; object-fit:contain;"
+                onerror="this.style.display='none'"
+              >
+              <strong style="color: #1e293b;">Politeknik Mitra Industri</strong>
+              <br>
               <span style="font-size: 12px;">MM2100 Industrial Town, Cikarang</span><br>
-              <span style="font-size: 11px; color: #64748b;">Kampus Industri Terintegrasi</span>
+              <span style="font-size: 11px; color: #64748b;">Kampus Industri Terintegrasi</span><br><br>
+              <a href="https://maps.app.goo.gl/oYfnbavYrtVo3L8N6"
+                target="_blank" rel="noopener"
+                style="display:inline-block;font-size:11px;color:#1d4ed8;font-weight:600;text-decoration:none;">
+                🗺️ Buka di Google Maps →
+              </a>
             </div>
-          `))
+          `);
+
+        const marker = new maplibregl.Marker({ element: markerElement })
+          .setLngLat(POLMIND_COORDS)
+          .setPopup(popup)
           .addTo(map);
+
+        // Auto-open popup
+        marker.togglePopup();
 
         add3DBuildingsLayer(map);
       });
@@ -420,39 +447,39 @@
     }
 
     map.addLayer({
-      'id': '3d-buildings',
-      'type': 'fill-extrusion',
-      'source': 'openmaptiles',
-      'source-layer': 'building',
-      'minzoom': 14,
-      'paint': {
-        'fill-extrusion-color': [
-          'interpolate',
-          ['linear'],
-          ['get', 'render_height'],
-          0, '#d4c9b8',
-          5, '#c4b8a8',
-          10, '#b4a898',
-          20, '#a49888',
-          30, '#948878'
-        ],
-        'fill-extrusion-height': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          14, 0,
-          15, ['get', 'render_height'],
-          18, ['get', 'render_height']
-        ],
-        'fill-extrusion-base': [
-          'case',
-          ['has', 'render_min_height'],
-          ['get', 'render_min_height'],
-          0
-        ],
-        'fill-extrusion-opacity': 0.9
-      }
-    });
+  'id': '3d-buildings',
+  'type': 'fill-extrusion',
+  'source': 'openmaptiles',
+  'source-layer': 'building',
+  'minzoom': 14,
+  'paint': {
+    'fill-extrusion-color': [
+      'interpolate',
+      ['linear'],
+      ['coalesce', ['get', 'render_height'], 0],  // ← tambah coalesce
+      0, '#d4c9b8',
+      5, '#c4b8a8',
+      10, '#b4a898',
+      20, '#a49888',
+      30, '#948878'
+    ],
+    'fill-extrusion-height': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      14, 0,
+      15, ['coalesce', ['get', 'render_height'], 0],  // ← tambah coalesce
+      18, ['coalesce', ['get', 'render_height'], 0]   // ← tambah coalesce
+    ],
+    'fill-extrusion-base': [
+      'case',
+      ['has', 'render_min_height'],
+      ['coalesce', ['get', 'render_min_height'], 0],  // ← tambah coalesce
+      0
+    ],
+    'fill-extrusion-opacity': 0.9 
+  }
+});
   }
 
   // Run
@@ -470,33 +497,40 @@
   });
 })();
 
-function openMapModal(e){
+// Ganti openMapModal
+function openMapModal(e) {
     e.preventDefault();
 
-    const modal = document.getElementById('mapModal');
+    // Deteksi mobile atau desktop berdasarkan lebar layar
+    const isMobile = window.innerWidth < 768;
+    const modalId = isMobile ? 'mapModalMobile' : 'mapModal';
+    const modal = document.getElementById(modalId);
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+
+    // Resize map setelah modal terlihat
+    setTimeout(() => {
+        maps.forEach(m => m.resize());
+    }, 100);
 }
 
-
-function closeMapModal(){
-
-    const modal = document.getElementById('mapModal');
-
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-
+// Ganti closeMapModal
+function closeMapModal() {
+    ['mapModal', 'mapModalMobile'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    });
 }
 
-
-// klik area luar modal untuk close
-document.getElementById('mapModal').addEventListener('click', function(e){
-
-    if(e.target === this){
+// Tambah click-outside untuk mobile juga
+document.getElementById('mapModalMobile').addEventListener('click', function(e) {
+    if (e.target === this) {
         closeMapModal();
     }
-
 });
 
 </script>
