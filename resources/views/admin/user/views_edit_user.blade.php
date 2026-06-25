@@ -432,8 +432,8 @@
                                 <div class="flex-shrink-0">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Foto Saat Ini</p>
                                     <div class="relative group">
-                                        <img id="previewImage"
-                                            src="{{ $user->photo_profile ? Storage::url($user->photo_profile) : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama_mahasiswa ?? 'U') . '&background=3b82f6&color=fff&size=128' }}"
+                                        <img id="previewImage" 
+                                            src="{{ $user->photo_profile ? Storage::url($user->photo_profile) : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama_mahasiswa ?? 'U') . '&background=3b82f6&color=fff&size=128' }}" 
                                             alt="Profile"
                                             class="w-24 h-24 object-cover rounded-2xl border-2 border-gray-200 dark:border-gray-600 transition group-hover:border-blue-400">
                                         <label for="photo_profile"
@@ -493,113 +493,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const currentRole = '{{ $user->role }}';
-
-    /* ── Photo preview ── */
-    const photoInput    = document.getElementById('photo_profile');
-    const previewImage  = document.getElementById('previewImage');
-    const fileNameLabel = document.getElementById('fileNameLabel');
-    const fileNameText  = document.getElementById('fileNameText');
-
-    photoInput.addEventListener('change', function () {
-        if (this.files && this.files[0]) {
-            const file   = this.files[0];
-            const reader = new FileReader();
-            reader.onload = e => { previewImage.src = e.target.result; };
-            reader.readAsDataURL(file);
-            fileNameText.textContent = file.name;
-            fileNameLabel.classList.remove('hidden');
-            fileNameLabel.classList.add('flex');
-        }
-    });
-
-    /* ── Password visibility toggle ── */
-    window.togglePassword = function (inputId, iconId) {
-        const input = document.getElementById(inputId);
-        const icon  = document.getElementById(iconId);
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
-        } else {
-            input.type = 'password';
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
-        }
-    };
-
-    /* ── Password strength hints ── */
-    const pwInput = document.getElementById('password');
-    const pwConf  = document.getElementById('password_confirmation');
-
-    function setHint(iconId, valid) {
-        const icon  = document.getElementById(iconId);
-        const check = icon.querySelector('i');
-        if (valid) {
-            icon.classList.add('border-green-400', 'bg-green-50', 'dark:bg-green-900/30');
-            icon.classList.remove('border-amber-300', 'dark:border-amber-600');
-            check.classList.remove('hidden');
-        } else {
-            icon.classList.remove('border-green-400', 'bg-green-50', 'dark:bg-green-900/30');
-            icon.classList.add('border-amber-300', 'dark:border-amber-600');
-            check.classList.add('hidden');
-        }
-    }
-
-    pwInput.addEventListener('input', function () {
-        const val = this.value;
-        setHint('icon-length', val.length >= 8);
-        setHint('icon-upper',  /[A-Z]/.test(val));
-        setHint('icon-space',  val.length > 0 && !/\s/.test(val));
-        checkMatch();
-    });
-
-    pwConf.addEventListener('input', checkMatch);
-
-    function checkMatch() {
-        const hint = document.getElementById('confirmMatchHint');
-        if (!pwConf.value) { hint.classList.add('hidden'); return; }
-        hint.classList.remove('hidden');
-        hint.classList.add('flex');
-        if (pwInput.value === pwConf.value) {
-            hint.innerHTML = '<i class="fas fa-circle-check text-green-500"></i><span class="text-green-600 dark:text-green-400">Password cocok</span>';
-        } else {
-            hint.innerHTML = '<i class="fas fa-circle-xmark text-red-500"></i><span class="text-red-500">Password tidak cocok</span>';
-        }
-    }
-
-    /* ── Reset button ── */
-    document.getElementById('resetBtn').addEventListener('click', function () {
-        if (confirm('Apakah Anda yakin ingin mereset semua perubahan?')) {
-            document.querySelector('form').reset();
-            fileNameLabel.classList.add('hidden');
-            fileNameLabel.classList.remove('flex');
-        }
-    });
-
-    /* ── Tanggal lahir validation ── */
-    const tanggalLahirInput = document.getElementById('tanggal_lahir');
-    if (tanggalLahirInput) {
-        tanggalLahirInput.addEventListener('change', function () {
-            const today = new Date().toISOString().split('T')[0];
-            if (this.value > today) {
-                alert('Tanggal lahir tidak boleh melebihi tanggal hari ini!');
-                this.value = '';
-            }
-        });
-    }
-
-});
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        if (typeof showPageInfo === 'function') {
-            showPageInfo("popup.edit_user");
-        }
-    });
-</script>
-@endpush

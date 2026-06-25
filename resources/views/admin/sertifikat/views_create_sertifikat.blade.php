@@ -232,7 +232,7 @@
                                                 </span>
                                             </td>
                                             <td class="px-4 py-4 text-center">
-                                                <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}"
+                                                <a href="{{ route('portfolio.slug', ['slug' => $user->slug]) }}"
                                                     onclick="event.stopImmediatePropagation()"
                                                     class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-block">
                                                     <span data-translate="see" data-translate-page="admin">Lihat</span>

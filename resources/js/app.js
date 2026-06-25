@@ -10474,4 +10474,2175 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     }
 };
 
+// ==========================================
+//   ADMIN: KELOLA ANGKATAN
+// ==========================================
+(function() {
+    let selectedIds = [];
+    let deleteId = null;
+
+    function updateSelectedIds() {
+        selectedIds = [];
+        document.querySelectorAll('.item-checkbox:checked').forEach(cb => {
+            selectedIds.push(cb.value);
+        });
+        const selectedIdsInput = document.getElementById('selectedIds');
+        if (selectedIdsInput) {
+            selectedIdsInput.value = JSON.stringify(selectedIds);
+        }
+    }
+
+    window.toggleAll = function(source) {
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.checked = source.checked;
+        });
+        updateSelectedIds();
+    };
+
+    window.confirmBulkDelete = function() {
+        updateSelectedIds();
+        let selectedIdsArray = [];
+        try {
+            const val = document.getElementById('selectedIds')?.value;
+            if (val) selectedIdsArray = JSON.parse(val);
+        } catch(e) { selectedIdsArray = []; }
+        if (selectedIdsArray.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Ada Data Dipilih',
+                text: 'Pilih data yang akan dihapus',
+                confirmButtonColor: '#3b82f6'
+            });
+            return;
+        }
+        Swal.fire({
+            title: 'Hapus Angkatan Terpilih?',
+            text: `${selectedIdsArray.length} angkatan akan dihapus permanen.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('bulkDeleteForm').submit();
+            }
+        });
+    };
+
+    window.openEditModal = function(angkatan) {
+        const editNama = document.getElementById('edit_nama');
+        const editMasuk = document.getElementById('edit_masuk');
+        const editKeluar = document.getElementById('edit_keluar');
+        const editForm = document.getElementById('editForm');
+        if (!editNama || !editMasuk || !editKeluar || !editForm) return;
+
+        editNama.value = angkatan.nama_angkatan;
+        editMasuk.value = angkatan.tahun_masuk.split(' ')[0];
+        editKeluar.value = angkatan.tahun_keluar ? angkatan.tahun_keluar.split(' ')[0] : '';
+
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        editForm.action = `/${locale}/admin/manageAngkatan/edit?id=${angkatan.id}`;
+        editForm.method = 'POST'; // karena ada @method('PATCH') di dalam form
+
+        document.getElementById('editModal').classList.remove('hidden');
+    };
+
+    window.closeModal = function() {
+        document.getElementById('editModal').classList.add('hidden');
+    };
+
+    window.openDeleteModal = function(id, name) {
+        deleteId = id;
+        document.getElementById('deleteName').textContent = name;
+        const deleteForm = document.getElementById('deleteForm');
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        deleteForm.action = `/${locale}/admin/manageAngkatan/DeleteAngkatan?id=${id}`;
+        deleteForm.method = 'POST'; // dengan @method('DELETE')
+        document.getElementById('deleteModal').classList.remove('hidden');
+    };
+
+    window.closeDeleteModal = function() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        deleteId = null;
+    };
+
+    // Tutup modal saat klik di luar
+    document.addEventListener('click', function(event) {
+        const editModal = document.getElementById('editModal');
+        const deleteModal = document.getElementById('deleteModal');
+        if (event.target === editModal) {
+            window.closeModal();
+        }
+        if (event.target === deleteModal) {
+            window.closeDeleteModal();
+        }
+    });
+
+    // Inisialisasi checkbox dan state setelah DOM siap
+    function initAngkatanPage() {
+        if (!document.getElementById('bulkDeleteForm')) return; // halaman bukan kelola angkatan
+        updateSelectedIds();
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateSelectedIds);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initAngkatanPage);
+    document.addEventListener('turbo:load', initAngkatanPage);
+
+    // Tampilkan popup info halaman (jika fungsi showPageInfo tersedia)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('bulkDeleteForm')) {
+            if (typeof showPageInfo === 'function') {
+                showPageInfo('popup.manage_angkatan');
+            }
+        }
+    });
+})();
+
+// ==========================================
+//   ADMIN: KELOLA KEAHLIAN
+// ==========================================
+(function() {
+    let selectedIds = [];
+    let deleteId = null;
+
+    function updateSelectedIds() {
+        selectedIds = [];
+        document.querySelectorAll('.item-checkbox:checked').forEach(cb => {
+            selectedIds.push(cb.value);
+        });
+        const selectedIdsInput = document.getElementById('selectedIds');
+        if (selectedIdsInput) {
+            selectedIdsInput.value = JSON.stringify(selectedIds);
+        }
+    }
+
+    window.toggleAll = function(source) {
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.checked = source.checked;
+        });
+        updateSelectedIds();
+    };
+
+    window.confirmBulkDelete = function() {
+        updateSelectedIds();
+        let selectedIdsArray = [];
+        try {
+            const val = document.getElementById('selectedIds')?.value;
+            if (val) selectedIdsArray = JSON.parse(val);
+        } catch(e) { selectedIdsArray = []; }
+        if (selectedIdsArray.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Ada Data Dipilih',
+                text: 'Pilih data yang akan dihapus',
+                confirmButtonColor: '#3b82f6'
+            });
+            return;
+        }
+        Swal.fire({
+            title: 'Hapus Keahlian Terpilih?',
+            text: `${selectedIdsArray.length} keahlian akan dihapus permanen.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('bulkDeleteForm').submit();
+            }
+        });
+    };
+
+    window.openEditModal = function(keahlian) {
+        const editNama = document.getElementById('edit_nama');
+        const editForm = document.getElementById('editForm');
+        if (!editNama || !editForm) return;
+
+        editNama.value = keahlian.nama_keahlian;
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        editForm.action = `/${locale}/admin/manageKeahlian/edit?id=${keahlian.id_keahlian}`;
+        editForm.method = 'POST';
+
+        document.getElementById('editModal').classList.remove('hidden');
+    };
+
+    window.closeModal = function() {
+        document.getElementById('editModal').classList.add('hidden');
+    };
+
+    window.closeDeleteModal = function() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        deleteId = null;
+    };
+
+    window.handleDelete = async function(id, name) {
+        const confirmed = await window.showConfirm?.() ?? confirm('Apakah Anda yakin ingin menghapus keahlian ini?');
+        if (!confirmed) return;
+
+        if (window.showLoading) window.showLoading('Menghapus...');
+
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        const url = `/${locale}/admin/manageKeahlian/DeleteKeahlian?id=${id}`;
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'DELETE';
+
+        form.appendChild(csrf);
+        form.appendChild(method);
+        document.body.appendChild(form);
+        form.submit();
+    };
+
+    // Tutup modal saat klik di luar
+    document.addEventListener('click', function(event) {
+        const editModal = document.getElementById('editModal');
+        const deleteModal = document.getElementById('deleteModal');
+        if (event.target === editModal) {
+            window.closeModal();
+        }
+        if (event.target === deleteModal) {
+            window.closeDeleteModal();
+        }
+    });
+
+    // Inisialisasi checkbox
+    function initKeahlianPage() {
+        if (!document.getElementById('bulkDeleteForm')) return; // bukan halaman ini
+        updateSelectedIds();
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateSelectedIds);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initKeahlianPage);
+    document.addEventListener('turbo:load', initKeahlianPage);
+
+    // Page Info
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('bulkDeleteForm')) {
+            if (typeof showPageInfo === 'function') {
+                showPageInfo('popup.manage_keahlian');
+            }
+        }
+    });
+})();
+
+// ==========================================
+//   ADMIN: KELOLA PRODI / JURUSAN
+// ==========================================
+(function() {
+    let selectedIds = [];
+    let deleteId = null;
+
+    function updateSelectedIds() {
+        selectedIds = [];
+        document.querySelectorAll('.item-checkbox:checked').forEach(cb => {
+            selectedIds.push(cb.value);
+        });
+        const selectedIdsInput = document.getElementById('selectedIds');
+        if (selectedIdsInput) {
+            selectedIdsInput.value = JSON.stringify(selectedIds);
+        }
+    }
+
+    window.toggleAll = function(source) {
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.checked = source.checked;
+        });
+        updateSelectedIds();
+    };
+
+    window.confirmBulkDelete = function() {
+        updateSelectedIds();
+        let selectedIdsArray = [];
+        try {
+            const val = document.getElementById('selectedIds')?.value;
+            if (val) selectedIdsArray = JSON.parse(val);
+        } catch(e) { selectedIdsArray = []; }
+        if (selectedIdsArray.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Ada Data Dipilih',
+                text: 'Pilih data yang akan dihapus',
+                confirmButtonColor: '#3b82f6'
+            });
+            return;
+        }
+        Swal.fire({
+            title: 'Hapus Jurusan Terpilih?',
+            text: `${selectedIdsArray.length} jurusan akan dihapus permanen.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('bulkDeleteForm').submit();
+            }
+        });
+    };
+
+    window.openEditModal = function(jurusan) {
+        const editNama = document.getElementById('edit_nama');
+        const editForm = document.getElementById('editForm');
+        if (!editNama || !editForm) return;
+
+        editNama.value = jurusan.nama_jurusan;
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        editForm.action = `/${locale}/admin/manageProdi/edit?id=${jurusan.id_jurusan}`;
+        editForm.method = 'POST';
+
+        document.getElementById('editModal').classList.remove('hidden');
+    };
+
+    window.closeModal = function() {
+        document.getElementById('editModal').classList.add('hidden');
+    };
+
+    window.handleDelete = async function(id, name) {
+        const confirmed = await window.showConfirm?.() ?? confirm('Apakah Anda yakin ingin menghapus jurusan ini?');
+        if (!confirmed) return;
+
+        if (window.showLoading) window.showLoading('Menghapus...');
+
+        const locale = document.querySelector('html').getAttribute('lang') || 'id';
+        const url = `/${locale}/admin/manageProdi/DeleteProdi?id=${id}`;
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'DELETE';
+
+        form.appendChild(csrf);
+        form.appendChild(method);
+        document.body.appendChild(form);
+        form.submit();
+    };
+
+    // Tutup modal saat klik di luar
+    document.addEventListener('click', function(event) {
+        const editModal = document.getElementById('editModal');
+        if (event.target === editModal) {
+            window.closeModal();
+        }
+    });
+
+    // Inisialisasi checkbox
+    function initProdiPage() {
+        if (!document.getElementById('bulkDeleteForm')) return; // bukan halaman ini
+        updateSelectedIds();
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateSelectedIds);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initProdiPage);
+    document.addEventListener('turbo:load', initProdiPage);
+
+    // Page Info
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('bulkDeleteForm')) {
+            if (typeof showPageInfo === 'function') {
+                showPageInfo('popup.manage_prodi');
+            }
+        }
+    });
+})();
+
+// ==========================================
+//   ADMIN: EDIT SERTIFIKAT
+// ==========================================
+(function() {
+    function initEditSertifikat() {
+        // Cek apakah ini halaman edit sertifikat
+        if (!document.getElementById('editForm')) return;
+
+        // ── Permanent toggle ────────────────────────────────────────────────
+        const permanentCheckbox = document.getElementById('permanent');
+        const expiredDateContainer = document.getElementById('expired-date-container');
+        const expiredDateInput = document.getElementById('expired_date');
+
+        function updateExpiredDateState() {
+            if (!permanentCheckbox || !expiredDateContainer || !expiredDateInput) return;
+            if (permanentCheckbox.checked) {
+                expiredDateContainer.style.display = 'none';
+                expiredDateInput.required = false;
+                expiredDateInput.value = '';
+            } else {
+                expiredDateContainer.style.display = 'block';
+                expiredDateInput.required = true;
+            }
+        }
+
+        if (permanentCheckbox) {
+            permanentCheckbox.addEventListener('change', updateExpiredDateState);
+            updateExpiredDateState(); // run on page load
+        }
+
+        // ── Date validation (expired_date must be after tanggal_terbit) ────
+        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
+
+        function updateMinExpiredDate() {
+            if (!tanggalTerbitInput || !expiredDateInput) return;
+            if (tanggalTerbitInput.value) {
+                const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+                const minDate = new Date(terbitDate);
+                minDate.setDate(minDate.getDate() + 1);
+                
+                expiredDateInput.min = minDate.toISOString().split('T')[0];
+                
+                if (expiredDateInput.value) {
+                    const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+                    if (expiredDate <= terbitDate) {
+                        expiredDateInput.value = '';
+                    }
+                }
+            }
+        }
+
+        function validateExpiredDate() {
+            if (!expiredDateInput || !tanggalTerbitInput) return;
+            if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
+            
+            const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
+            const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
+            
+            if (expiredDate <= terbitDate) {
+                expiredDateInput.value = '';
+                alert('Tanggal expired harus setelah tanggal terbit');
+            }
+        }
+
+        if (tanggalTerbitInput) {
+            tanggalTerbitInput.addEventListener('change', updateMinExpiredDate);
+            updateMinExpiredDate(); // run on page load
+        }
+
+        if (expiredDateInput) {
+            expiredDateInput.addEventListener('change', validateExpiredDate);
+        }
+
+        // ── File upload helpers ─────────────────────────────────────────────
+        window.updateFileLabel = function(input) {
+            const fileName = input.files[0]?.name;
+            const fileNameElement = document.getElementById('file-name');
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImage = document.getElementById('image-preview');
+            const currentPreview = document.getElementById('current-image-preview');
+
+            if (!fileNameElement || !previewContainer || !previewImage) return;
+
+            if (fileName) {
+                fileNameElement.textContent = fileName;
+
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                        if (currentPreview) currentPreview.classList.add('hidden');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            } else {
+                // Reset ke default atau file lama
+                const defaultText = fileNameElement.getAttribute('data-default-text') || 'PNG, JPG, GIF up to 5MB';
+                fileNameElement.textContent = defaultText;
+                previewContainer.classList.add('hidden');
+                previewImage.src = '#';
+                if (currentPreview) currentPreview.classList.remove('hidden');
+            }
+        };
+
+        window.toggleFileUpload = function(checkbox) {
+            const fileUploadSection = document.getElementById('file-upload-section');
+            const currentPreview = document.getElementById('current-image-preview');
+
+            if (!fileUploadSection) return;
+
+            if (checkbox.checked) {
+                fileUploadSection.classList.remove('hidden');
+                if (currentPreview) currentPreview.classList.add('hidden');
+
+                const fileInput = document.getElementById('link_sertifikat_input');
+                if (fileInput) {
+                    fileInput.value = '';
+                    window.updateFileLabel(fileInput);
+                }
+            } else {
+                fileUploadSection.classList.add('hidden');
+                if (currentPreview) currentPreview.classList.remove('hidden');
+
+                const previewContainer = document.getElementById('image-preview-container');
+                if (previewContainer) previewContainer.classList.add('hidden');
+            }
+        };
+
+        // ── Drag and drop ───────────────────────────────────────────────────
+        const dropZone = document.querySelector('.border-dashed');
+        const fileInput = document.getElementById('link_sertifikat_input');
+
+        if (dropZone && fileInput) {
+            const preventDefaults = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            };
+
+            const highlight = function() {
+                dropZone.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+            };
+
+            const unhighlight = function() {
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+            };
+
+            const handleDrop = function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files && files.length > 0) {
+                    // Jika ada file lama, aktifkan checkbox ganti file
+                    const replaceCheckbox = document.getElementById('replace-file-checkbox');
+                    if (replaceCheckbox && !replaceCheckbox.checked) {
+                        replaceCheckbox.checked = true;
+                        window.toggleFileUpload(replaceCheckbox);
+                    }
+
+                    fileInput.files = files;
+                    window.updateFileLabel(fileInput);
+
+                    const event = new Event('change', { bubbles: true });
+                    fileInput.dispatchEvent(event);
+                }
+            };
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            dropZone.addEventListener('drop', handleDrop, false);
+        }
+
+        // ── Page Info ──────────────────────────────────────────────────────
+        if (typeof showPageInfo === 'function') {
+            showPageInfo('popup.edit_sertifikat');
+        }
+    }
+
+    // Inisialisasi saat DOM siap dan setelah Turbo load
+    document.addEventListener('DOMContentLoaded', initEditSertifikat);
+    document.addEventListener('turbo:load', initEditSertifikat);
+})();
+
+// ==========================================
+//   ADMIN: EDIT USER
+// ==========================================
+(function() {
+    function initEditUser() {
+        // Cek apakah ini halaman edit user
+        const form = document.querySelector('form[action*="admin/users/edit"]');
+        if (!form) return;
+
+        const photoInput = document.getElementById('photo_profile');
+        const previewImage = document.getElementById('previewImage');
+        const fileNameLabel = document.getElementById('fileNameLabel');
+        const fileNameText = document.getElementById('fileNameText');
+
+        // ── Photo preview ──
+        if (photoInput && previewImage) {
+            photoInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    if (fileNameText && fileNameLabel) {
+                        fileNameText.textContent = file.name;
+                        fileNameLabel.classList.remove('hidden');
+                        fileNameLabel.classList.add('flex');
+                    }
+                }
+            });
+        }
+
+        // ── Password visibility toggle ──
+        window.togglePassword = function(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        };
+
+        // ── Password strength hints ──
+        const pwInput = document.getElementById('password');
+        const pwConf = document.getElementById('password_confirmation');
+
+        function setHint(iconId, valid) {
+            const icon = document.getElementById(iconId);
+            if (!icon) return;
+            const check = icon.querySelector('i');
+            if (valid) {
+                icon.classList.add('border-green-400', 'bg-green-50', 'dark:bg-green-900/30');
+                icon.classList.remove('border-amber-300', 'dark:border-amber-600');
+                if (check) check.classList.remove('hidden');
+            } else {
+                icon.classList.remove('border-green-400', 'bg-green-50', 'dark:bg-green-900/30');
+                icon.classList.add('border-amber-300', 'dark:border-amber-600');
+                if (check) check.classList.add('hidden');
+            }
+        }
+
+        function checkMatch() {
+            const hint = document.getElementById('confirmMatchHint');
+            if (!hint) return;
+            if (!pwConf || !pwConf.value) {
+                hint.classList.add('hidden');
+                return;
+            }
+            hint.classList.remove('hidden');
+            hint.classList.add('flex');
+            if (pwInput && pwConf && pwInput.value === pwConf.value) {
+                hint.innerHTML = '<i class="fas fa-circle-check text-green-500"></i><span class="text-green-600 dark:text-green-400">Password cocok</span>';
+            } else {
+                hint.innerHTML = '<i class="fas fa-circle-xmark text-red-500"></i><span class="text-red-500">Password tidak cocok</span>';
+            }
+        }
+
+        if (pwInput) {
+            pwInput.addEventListener('input', function() {
+                const val = this.value;
+                setHint('icon-length', val.length >= 8);
+                setHint('icon-upper', /[A-Z]/.test(val));
+                setHint('icon-space', val.length > 0 && !/\s/.test(val));
+                checkMatch();
+            });
+        }
+
+        if (pwConf) {
+            pwConf.addEventListener('input', checkMatch);
+        }
+
+        // ── Reset button ──
+        const resetBtn = document.getElementById('resetBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin mereset semua perubahan?')) {
+                    const form = document.querySelector('form');
+                    if (form) {
+                        form.reset();
+                        if (fileNameLabel) {
+                            fileNameLabel.classList.add('hidden');
+                            fileNameLabel.classList.remove('flex');
+                        }
+                        // Reset preview ke gambar awal (dari server)
+                        const originalSrc = previewImage?.getAttribute('data-original-src') ||
+                            previewImage?.src;
+                        if (previewImage && originalSrc) {
+                            previewImage.src = originalSrc;
+                        }
+                    }
+                }
+            });
+            // Simpan src asli untuk reset
+            if (previewImage) {
+                previewImage.setAttribute('data-original-src', previewImage.src);
+            }
+        }
+
+        // ── Tanggal lahir validation ──
+        const tanggalLahirInput = document.getElementById('tanggal_lahir');
+        if (tanggalLahirInput) {
+            tanggalLahirInput.addEventListener('change', function() {
+                const today = new Date().toISOString().split('T')[0];
+                if (this.value > today) {
+                    alert('Tanggal lahir tidak boleh melebihi tanggal hari ini!');
+                    this.value = '';
+                }
+            });
+        }
+
+        // ── Page Info ──
+        if (typeof showPageInfo === 'function') {
+            showPageInfo('popup.edit_user');
+        }
+    }
+
+    // Inisialisasi saat DOM siap dan setelah Turbo load
+    document.addEventListener('DOMContentLoaded', initEditUser);
+    document.addEventListener('turbo:load', initEditUser);
+})();
+
+// ==========================================
+//   DOSEN: EDIT USER
+// ==========================================
+(function() {
+    function initDosenEditUser() {
+        // Cek apakah ini halaman edit user (route dosen)
+        const form = document.querySelector('form[action*="dosen/users/edit"]');
+        if (!form) return;
+
+        const photoInput = document.getElementById('photo_profile');
+        const previewImage = document.getElementById('previewImage');
+        const fileNameLabel = document.getElementById('fileNameLabel');
+        const fileNameText = document.getElementById('fileNameText');
+
+        // ── Photo preview ──
+        if (photoInput && previewImage) {
+            photoInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    if (fileNameText && fileNameLabel) {
+                        fileNameText.textContent = file.name;
+                        fileNameLabel.classList.remove('hidden');
+                        fileNameLabel.classList.add('flex');
+                    }
+                }
+            });
+        }
+
+        // ── Password visibility toggle (gunakan fungsi yang sudah ada di window) ──
+        // Fungsi window.togglePassword sudah didefinisikan di blok ADMIN: EDIT USER.
+        // Tidak perlu mendefinisikan ulang.
+
+        // ── Password strength hints ──
+        const pwInput = document.getElementById('password');
+        const pwConf = document.getElementById('password_confirmation');
+
+        function setHint(iconId, valid) {
+            const icon = document.getElementById(iconId);
+            if (!icon) return;
+            const check = icon.querySelector('i');
+            if (valid) {
+                icon.classList.add('border-green-400', 'bg-green-50', 'dark:bg-green-900/30');
+                icon.classList.remove('border-amber-300', 'dark:border-amber-600');
+                if (check) check.classList.remove('hidden');
+            } else {
+                icon.classList.remove('border-green-400', 'bg-green-50', 'dark:bg-green-900/30');
+                icon.classList.add('border-amber-300', 'dark:border-amber-600');
+                if (check) check.classList.add('hidden');
+            }
+        }
+
+        function checkMatch() {
+            const hint = document.getElementById('confirmMatchHint');
+            if (!hint) return;
+            if (!pwConf || !pwConf.value) {
+                hint.classList.add('hidden');
+                return;
+            }
+            hint.classList.remove('hidden');
+            hint.classList.add('flex');
+            if (pwInput && pwConf && pwInput.value === pwConf.value) {
+                hint.innerHTML = '<i class="fas fa-circle-check text-green-500"></i><span class="text-green-600 dark:text-green-400">Password cocok</span>';
+            } else {
+                hint.innerHTML = '<i class="fas fa-circle-xmark text-red-500"></i><span class="text-red-500">Password tidak cocok</span>';
+            }
+        }
+
+        if (pwInput) {
+            pwInput.addEventListener('input', function() {
+                const val = this.value;
+                setHint('icon-length', val.length >= 8);
+                setHint('icon-upper', /[A-Z]/.test(val));
+                setHint('icon-space', val.length > 0 && !/\s/.test(val));
+                checkMatch();
+            });
+        }
+
+        if (pwConf) {
+            pwConf.addEventListener('input', checkMatch);
+        }
+
+        // ── Reset button ──
+        const resetBtn = document.getElementById('resetBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                if (confirm('Apakah Anda yakin ingin mereset semua perubahan?')) {
+                    const form = document.querySelector('form');
+                    if (form) {
+                        form.reset();
+                        if (fileNameLabel) {
+                            fileNameLabel.classList.add('hidden');
+                            fileNameLabel.classList.remove('flex');
+                        }
+                        // Reset preview ke gambar awal (dari server)
+                        const originalSrc = previewImage?.getAttribute('data-original-src') ||
+                            previewImage?.src;
+                        if (previewImage && originalSrc) {
+                            previewImage.src = originalSrc;
+                        }
+                    }
+                }
+            });
+            // Simpan src asli untuk reset
+            if (previewImage) {
+                previewImage.setAttribute('data-original-src', previewImage.src);
+            }
+        }
+
+        // ── Tanggal lahir validation ──
+        const tanggalLahirInput = document.getElementById('tanggal_lahir');
+        if (tanggalLahirInput) {
+            tanggalLahirInput.addEventListener('change', function() {
+                const today = new Date().toISOString().split('T')[0];
+                if (this.value > today) {
+                    alert('Tanggal lahir tidak boleh melebihi tanggal hari ini!');
+                    this.value = '';
+                }
+            });
+        }
+
+        // ── Page Info ──
+        if (typeof showPageInfo === 'function') {
+            showPageInfo('popup.dosen_edit_user');
+        }
+    }
+
+    // Inisialisasi saat DOM siap dan setelah Turbo load
+    document.addEventListener('DOMContentLoaded', initDosenEditUser);
+    document.addEventListener('turbo:load', initDosenEditUser);
+})();
+
+// ==========================================
+//   GAME MATEMATIKA
+// ==========================================
+(function() {
+    const container = document.getElementById('math-game-container');
+    if (!container) return;
+
+    class MathGame {
+        constructor(container) {
+            // Ambil data dari container
+            this.postinganId = container.dataset.postinganId || null;
+            this.currentGameId = container.dataset.gameId || null;
+            this.getScoreUrl = container.dataset.getScoreUrl || '';
+            this.saveScoreUrl = container.dataset.saveScoreUrl || '';
+            this.leaderboardUrl = container.dataset.leaderboardUrl || '';
+
+            // DOM elements
+            this.num1El = document.getElementById('num1');
+            this.num2El = document.getElementById('num2');
+            this.operatorSymbolEl = document.getElementById('operatorSymbol');
+            this.answerInput = document.getElementById('answerInput');
+            this.submitBtn = document.getElementById('submitBtn');
+            this.resetBtn = document.getElementById('resetGameBtn');
+            this.operatorSelect = document.getElementById('operatorSelect');
+            this.levelSelect = document.getElementById('levelSelect');
+            this.timerDisplay = document.getElementById('timerDisplay');
+            this.timerProgress = document.getElementById('timerProgress');
+            this.scoreValue = document.getElementById('scoreValue');
+            this.correctCountEl = document.getElementById('correctCount');
+            this.wrongCountEl = document.getElementById('wrongCount');
+            this.accuracyEl = document.getElementById('accuracy');
+            this.resultMessage = document.getElementById('resultMessage');
+            this.bestScoreInfo = document.getElementById('bestScoreInfo');
+
+            // Game state
+            this.operator = '+';
+            this.level = 'medium';
+            this.num1 = 0;
+            this.num2 = 0;
+            this.correctAnswer = 0;
+            this.score = 0;
+            this.correct = 0;
+            this.wrong = 0;
+            this.questionsAnswered = 0;
+            this.maxQuestions = 10;
+            this.timeLimitSeconds = 120;
+            this.timeRemaining = this.timeLimitSeconds;
+            this.timerInterval = null;
+            this.gameActive = true;
+            this.waitingForSubmit = false;
+            this.startTime = null;
+            this.gameStartTime = null;
+            this.highestScore = 0;
+            this.storageKey = `math_game_${this.postinganId}`;
+
+            this.pointMultiplier = { easy: 5, medium: 10, hard: 20 };
+
+            this.init();
+        }
+
+        init() {
+            const navType = this.getNavigationType();
+            if (navType === 'reload') {
+                this.restoreState();
+            } else {
+                this.resetGame(false);
+            }
+
+            this.fetchHighestScore();
+            this.generateQuestion();
+            this.startTimer();
+            this.attachEvents();
+        }
+
+        getNavigationType() {
+            try {
+                const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
+                if (navEntries && navEntries[0]) return navEntries[0].type;
+                if (performance.navigation && performance.navigation.type === 1) return 'reload';
+            } catch(e) {}
+            return 'navigate';
+        }
+
+        attachEvents() {
+            this.submitBtn.addEventListener('click', () => this.checkAnswer());
+            this.resetBtn.addEventListener('click', () => this.resetGame(true));
+            this.answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && this.gameActive && !this.waitingForSubmit) this.checkAnswer();
+            });
+            this.operatorSelect.addEventListener('change', () => {
+                this.operator = this.operatorSelect.value;
+                this.operatorSymbolEl.innerText = this.getOperatorSymbol();
+                if (this.gameActive && !this.waitingForSubmit) {
+                    this.resetGame(true);
+                }
+            });
+            this.levelSelect.addEventListener('change', () => {
+                this.level = this.levelSelect.value;
+                if (this.gameActive && !this.waitingForSubmit) {
+                    this.resetGame(true);
+                }
+            });
+        }
+
+        getOperatorSymbol() {
+            const map = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+            return map[this.operator] || this.operator;
+        }
+
+        generateQuestion() {
+            if (!this.gameActive) return;
+
+            let maxNum = 10, maxNum2 = 10;
+            if (this.level === 'easy') {
+                maxNum = 10; maxNum2 = 10;
+                if (this.operator === '*') maxNum = 5;
+                if (this.operator === '/') maxNum = 10;
+            } else if (this.level === 'medium') {
+                maxNum = 20; maxNum2 = 20;
+                if (this.operator === '*') maxNum = 12;
+                if (this.operator === '/') maxNum = 20;
+            } else { // hard
+                maxNum = 50; maxNum2 = 50;
+                if (this.operator === '*') maxNum = 20;
+                if (this.operator === '/') maxNum = 30;
+            }
+
+            let valid = false;
+            let attempts = 0;
+            while (!valid && attempts < 20) {
+                this.num1 = Math.floor(Math.random() * (maxNum + 1));
+                this.num2 = Math.floor(Math.random() * (maxNum2 + 1));
+
+                if (this.operator === '+') {
+                    this.correctAnswer = this.num1 + this.num2;
+                    valid = true;
+                } else if (this.operator === '-') {
+                    this.correctAnswer = this.num1 - this.num2;
+                    valid = (this.correctAnswer >= 0);
+                } else if (this.operator === '*') {
+                    this.correctAnswer = this.num1 * this.num2;
+                    valid = (this.correctAnswer <= 200);
+                } else if (this.operator === '/') {
+                    if (this.num2 === 0) { valid = false; continue; }
+                    if (this.num1 % this.num2 === 0) {
+                        this.correctAnswer = this.num1 / this.num2;
+                        valid = true;
+                    } else {
+                        valid = false;
+                    }
+                }
+                attempts++;
+            }
+            if (!valid) {
+                this.num1 = 5; this.num2 = 3; this.correctAnswer = 8;
+                if (this.operator === '-') { this.num1 = 10; this.num2 = 4; this.correctAnswer = 6; }
+                if (this.operator === '*') { this.num1 = 4; this.num2 = 3; this.correctAnswer = 12; }
+                if (this.operator === '/') { this.num1 = 12; this.num2 = 3; this.correctAnswer = 4; }
+            }
+
+            this.num1El.innerText = this.num1;
+            this.num2El.innerText = this.num2;
+            this.operatorSymbolEl.innerText = this.getOperatorSymbol();
+            this.answerInput.value = '';
+            this.resultMessage.innerText = '';
+            this.waitingForSubmit = false;
+            this.answerInput.disabled = false;
+            this.submitBtn.disabled = false;
+            this.answerInput.focus();
+            this.saveState();
+        }
+
+        async checkAnswer() {
+            if (this.waitingForSubmit || !this.gameActive) return;
+
+            const userAnswer = parseInt(this.answerInput.value.trim(), 10);
+            if (isNaN(userAnswer)) {
+                this.resultMessage.innerText = '⚠️ Masukkan angka!';
+                return;
+            }
+
+            const isCorrect = (userAnswer === this.correctAnswer);
+            const points = this.pointMultiplier[this.level];
+
+            if (isCorrect) {
+                this.score += points;
+                this.correct++;
+                this.resultMessage.innerHTML = `✅ Benar! +${points} poin`;
+                this.resultMessage.className = 'text-lg font-medium text-green-600';
+            } else {
+                this.wrong++;
+                this.resultMessage.innerHTML = `❌ Salah! Jawaban: ${this.correctAnswer}`;
+                this.resultMessage.className = 'text-lg font-medium text-red-600';
+            }
+
+            this.questionsAnswered++;
+            this.updateStatsUI();
+
+            if (this.score > this.highestScore) {
+                await this.saveScore(false);
+            }
+
+            if (this.questionsAnswered >= this.maxQuestions || this.timeRemaining <= 0) {
+                this.endGame();
+                return;
+            }
+
+            this.waitingForSubmit = true;
+            this.answerInput.disabled = true;
+            this.submitBtn.disabled = true;
+
+            setTimeout(() => {
+                this.generateQuestion();
+            }, 800);
+        }
+
+        updateStatsUI() {
+            this.scoreValue.innerText = this.score;
+            this.correctCountEl.innerText = this.correct;
+            this.wrongCountEl.innerText = this.wrong;
+            const total = this.correct + this.wrong;
+            const acc = total === 0 ? 0 : Math.round((this.correct / total) * 100);
+            this.accuracyEl.innerText = acc + '%';
+        }
+
+        startTimer() {
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            this.startTime = Date.now();
+            this.gameStartTime = Date.now();
+
+            this.timerInterval = setInterval(() => {
+                if (!this.gameActive) return;
+                const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                this.timeRemaining = Math.max(0, this.timeLimitSeconds - elapsed);
+
+                const mins = Math.floor(this.timeRemaining / 60);
+                const secs = this.timeRemaining % 60;
+                this.timerDisplay.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                const percent = (this.timeRemaining / this.timeLimitSeconds) * 100;
+                this.timerProgress.style.width = `${Math.max(0, percent)}%`;
+
+                if (this.timeRemaining <= 0 && this.gameActive) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                    this.endGame();
+                }
+            }, 1000);
+        }
+
+        async endGame() {
+            if (!this.gameActive) return;
+            this.gameActive = false;
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            this.answerInput.disabled = true;
+            this.submitBtn.disabled = true;
+
+            const isNewRecord = this.score > this.highestScore;
+            if (isNewRecord) {
+                await this.saveScore(true);
+            }
+
+            const message = isNewRecord
+                ? `🎉 Selesai! Skor akhir: ${this.score} 🎉\n🏆 Rekor Baru! 🏆`
+                : `Selesai! Skor akhir: ${this.score}\n📊 Skor tertinggi Anda: ${this.highestScore}`;
+
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire({
+                    title: 'Permainan Selesai',
+                    html: message.replace(/\n/g, '<br>'),
+                    icon: isNewRecord ? 'success' : 'info',
+                    confirmButtonText: 'Lihat Peringkat'
+                });
+            } else {
+                alert(message);
+            }
+
+            sessionStorage.removeItem(this.storageKey);
+            window.location.href = this.leaderboardUrl;
+        }
+
+        async resetGame(confirmReset = true) {
+            if (confirmReset) {
+                const ok = confirm('Mulai permainan baru? Skor saat ini akan hilang.');
+                if (!ok) return;
+            }
+            if (this.timerInterval) clearInterval(this.timerInterval);
+
+            this.score = 0;
+            this.correct = 0;
+            this.wrong = 0;
+            this.questionsAnswered = 0;
+            this.timeRemaining = this.timeLimitSeconds;
+            this.gameActive = true;
+            this.waitingForSubmit = false;
+            this.operator = this.operatorSelect.value;
+            this.level = this.levelSelect.value;
+
+            this.updateStatsUI();
+            this.timerDisplay.innerText = '02:00';
+            this.timerProgress.style.width = '100%';
+            this.resultMessage.innerText = '';
+            this.answerInput.disabled = false;
+            this.submitBtn.disabled = false;
+
+            this.startTimer();
+            this.generateQuestion();
+            sessionStorage.removeItem(this.storageKey);
+            this.saveState();
+        }
+
+        saveState() {
+            if (!this.gameActive) return;
+            const state = {
+                operator: this.operator,
+                level: this.level,
+                num1: this.num1,
+                num2: this.num2,
+                correctAnswer: this.correctAnswer,
+                score: this.score,
+                correct: this.correct,
+                wrong: this.wrong,
+                questionsAnswered: this.questionsAnswered,
+                timeRemaining: this.timeRemaining,
+                startTime: this.startTime,
+                gameStartTime: this.gameStartTime,
+                gameActive: this.gameActive
+            };
+            try {
+                sessionStorage.setItem(this.storageKey, JSON.stringify(state));
+            } catch(e) {}
+        }
+
+        restoreState() {
+            const saved = sessionStorage.getItem(this.storageKey);
+            if (!saved) return false;
+            try {
+                const s = JSON.parse(saved);
+                this.operator = s.operator;
+                this.level = s.level;
+                this.num1 = s.num1;
+                this.num2 = s.num2;
+                this.correctAnswer = s.correctAnswer;
+                this.score = s.score;
+                this.correct = s.correct;
+                this.wrong = s.wrong;
+                this.questionsAnswered = s.questionsAnswered;
+                this.timeRemaining = s.timeRemaining;
+                this.startTime = s.startTime;
+                this.gameStartTime = s.gameStartTime;
+                this.gameActive = s.gameActive;
+
+                this.operatorSelect.value = this.operator;
+                this.levelSelect.value = this.level;
+                this.operatorSymbolEl.innerText = this.getOperatorSymbol();
+
+                this.num1El.innerText = this.num1;
+                this.num2El.innerText = this.num2;
+                this.updateStatsUI();
+                this.answerInput.value = '';
+                this.resultMessage.innerText = '';
+
+                const mins = Math.floor(this.timeRemaining / 60);
+                const secs = this.timeRemaining % 60;
+                this.timerDisplay.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                const percent = (this.timeRemaining / this.timeLimitSeconds) * 100;
+                this.timerProgress.style.width = `${percent}%`;
+
+                return true;
+            } catch(e) { return false; }
+        }
+
+        async fetchHighestScore() {
+            try {
+                const response = await fetch(this.getScoreUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        id_postingan: this.postinganId,
+                        operator: this.operator,
+                        level: this.level
+                    })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    this.highestScore = data.highest_score || 0;
+                    if (this.bestScoreInfo) {
+                        if (this.highestScore > 0) {
+                            this.bestScoreInfo.innerHTML = `🏆 Skor tertinggi Anda: ${this.highestScore}`;
+                        } else {
+                            this.bestScoreInfo.innerHTML = '🎯 Mainkan dan raih skor tertinggi!';
+                        }
+                    }
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async saveScore(isFinal = false) {
+            if (this.score <= this.highestScore && isFinal === false) return;
+            try {
+                const response = await fetch(this.saveScoreUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        id_games: this.currentGameId,
+                        id_postingan: this.postinganId,
+                        score: this.score,
+                        playing_time: Math.floor((Date.now() - (this.gameStartTime || Date.now())) / 1000) + 's',
+                        operator: this.operator,
+                        level: this.level,
+                        is_final: isFinal
+                    })
+                });
+                const data = await response.json();
+                if (data.id_games) this.currentGameId = data.id_games;
+                if (this.score > this.highestScore) {
+                    this.highestScore = this.score;
+                    if (this.bestScoreInfo) {
+                        this.bestScoreInfo.innerHTML = `🏆 Skor tertinggi Anda: ${this.highestScore} ✨ Rekor Baru!`;
+                    }
+                }
+            } catch(e) { console.error(e); }
+        }
+    }
+
+    // Inisialisasi game
+    const game = new MathGame(container);
+    window.mathGame = game;
+})();
+
+// ==========================================
+//   GAME PUZZLE
+// ==========================================
+(function() {
+    const container = document.getElementById('puzzle-game-container');
+    if (!container) return;
+
+    const CONFIG = {
+        SIZE: 3,
+        TILE_COUNT: 9,
+        EMPTY_INDEX: 8,
+        timeLimit: 180,
+        baseScore: 1000,
+        movesPenalty: 10
+    };
+
+    let tiles = [];
+    let moves = 0;
+    let score = 0;
+    let gameActive = true;
+    let startTime = Date.now();
+    let timerInterval = null;
+    let gameStart = Date.now();
+    let currentGameId = null;
+    let highestScore = 0;
+    let remainingTime = 180;
+
+    const postinganId = container.dataset.postinganId || null;
+    const getScoreUrl = container.dataset.getScoreUrl || '';
+    const saveScoreUrl = container.dataset.saveScoreUrl || '';
+    const leaderboardUrl = container.dataset.leaderboardUrl || '';
+    const storageKey = `puzzle_state_postingan_${postinganId}`;
+
+    const containerEl = document.getElementById('puzzle-container');
+    const movesEl = document.getElementById('moves-count');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer-seconds');
+    const resultEl = document.getElementById('result');
+    const bestScoreInfoEl = document.getElementById('bestScoreInfo');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Load saved state from localStorage
+    function loadSavedState() {
+        const savedState = localStorage.getItem(storageKey);
+        if (savedState) {
+            try {
+                const state = JSON.parse(savedState);
+                if (state.tiles && Array.isArray(state.tiles)) {
+                    tiles = state.tiles;
+                }
+                if (state.moves !== undefined) {
+                    moves = state.moves;
+                    if (movesEl) movesEl.innerText = moves;
+                }
+                if (state.score !== undefined) {
+                    score = state.score;
+                    scoreEl.innerText = score;
+                }
+                if (state.remainingTime !== undefined && state.timestamp) {
+                    const timePassed = Math.floor((Date.now() - state.timestamp) / 1000);
+                    remainingTime = Math.max(0, state.remainingTime - timePassed);
+                    if (remainingTime <= 0) {
+                        finishGame(false);
+                        return false;
+                    }
+                } else {
+                    remainingTime = CONFIG.timeLimit;
+                }
+                if (state.startTime) {
+                    startTime = Date.now() - (state.elapsedTime || 0);
+                }
+                if (state.gameStart) {
+                    gameStart = Date.now() - (state.gameElapsed || 0);
+                }
+                if (state.currentGameId) {
+                    currentGameId = state.currentGameId;
+                }
+                if (state.gameActive !== undefined) {
+                    gameActive = state.gameActive;
+                }
+                render();
+                return true;
+            } catch (e) {
+                console.error('Error loading saved state:', e);
+            }
+        }
+        return false;
+    }
+
+    function saveCurrentState() {
+        if (!gameActive) return;
+        const timeElapsed = Date.now() - startTime;
+        const gameElapsed = Date.now() - gameStart;
+        const currentRemainingTime = timeRemainingSeconds();
+        const state = {
+            tiles: tiles,
+            moves: moves,
+            score: score,
+            remainingTime: currentRemainingTime,
+            elapsedTime: timeElapsed,
+            gameElapsed: gameElapsed,
+            startTime: startTime,
+            gameStart: gameStart,
+            currentGameId: currentGameId,
+            gameActive: gameActive,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function initTiles() {
+        tiles = [];
+        for (let i = 0; i < CONFIG.TILE_COUNT - 1; i++) {
+            tiles.push(i + 1);
+        }
+        tiles.push(null);
+        return tiles;
+    }
+
+    function shuffleTiles() {
+        for (let i = tiles.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+        }
+        if (!isSolvable()) {
+            for (let i = 0; i < tiles.length - 1; i++) {
+                if (tiles[i] !== null && tiles[i + 1] !== null) {
+                    [tiles[i], tiles[i + 1]] = [tiles[i + 1], tiles[i]];
+                    break;
+                }
+            }
+        }
+    }
+
+    function isSolvable() {
+        let inversions = 0;
+        const flatTiles = tiles.filter(t => t !== null);
+        for (let i = 0; i < flatTiles.length; i++) {
+            for (let j = i + 1; j < flatTiles.length; j++) {
+                if (flatTiles[i] > flatTiles[j]) inversions++;
+            }
+        }
+        const emptyRow = Math.floor(tiles.indexOf(null) / CONFIG.SIZE);
+        return (inversions % 2 === 0) === (CONFIG.SIZE % 2 !== 0 || emptyRow % 2 === 0);
+    }
+
+    function render() {
+        if (!containerEl) return;
+        containerEl.innerHTML = '';
+        const tileSize = 400 / CONFIG.SIZE;
+        tiles.forEach((tile, index) => {
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-center bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold rounded-lg shadow-md cursor-pointer transition-transform hover:scale-105';
+            div.style.width = `${tileSize - 4}px`;
+            div.style.height = `${tileSize - 4}px`;
+            div.style.fontSize = `${tileSize / 3}px`;
+            if (tile === null) {
+                div.className = 'bg-gray-300 dark:bg-gray-600 rounded-lg';
+                div.innerHTML = '';
+            } else {
+                div.innerHTML = tile;
+            }
+            div.addEventListener('click', () => moveTile(index));
+            containerEl.appendChild(div);
+        });
+    }
+
+    function moveTile(clickedIndex) {
+        if (!gameActive) return;
+        const emptyIndex = tiles.indexOf(null);
+        const clickedRow = Math.floor(clickedIndex / CONFIG.SIZE);
+        const clickedCol = clickedIndex % CONFIG.SIZE;
+        const emptyRow = Math.floor(emptyIndex / CONFIG.SIZE);
+        const emptyCol = emptyIndex % CONFIG.SIZE;
+        const isAdjacent = (Math.abs(clickedRow - emptyRow) + Math.abs(clickedCol - emptyCol)) === 1;
+        if (isAdjacent) {
+            [tiles[clickedIndex], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[clickedIndex]];
+            moves++;
+            updateScore();
+            if (movesEl) movesEl.innerText = moves;
+            render();
+            saveCurrentState();
+            if (isComplete()) {
+                finishGame(true);
+            }
+        }
+    }
+
+    function updateScore() {
+        const timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+        const timeBonus = Math.max(0, CONFIG.timeLimit - timeElapsed) * 5;
+        const movesPenalty = moves * CONFIG.movesPenalty;
+        score = Math.max(0, CONFIG.baseScore + timeBonus - movesPenalty);
+        if (scoreEl) scoreEl.innerText = score;
+        saveCurrentState();
+    }
+
+    function isComplete() {
+        for (let i = 0; i < CONFIG.TILE_COUNT - 1; i++) {
+            if (tiles[i] !== i + 1) return false;
+        }
+        return tiles[CONFIG.TILE_COUNT - 1] === null;
+    }
+
+    async function fetchHighestScore() {
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const response = await fetch(getScoreUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                },
+                body: JSON.stringify({
+                    id_postingan: postinganId,
+                    game_name: 'Puzzle'
+                }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                highestScore = data.highest_score || 0;
+                if (bestScoreInfoEl && highestScore > 0) {
+                    bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">Skor tertinggi Anda: ${highestScore}</span>`;
+                } else if (bestScoreInfoEl) {
+                    bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">Selesaikan puzzle dengan langkah sedikit!</span>`;
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching highest score:', err);
+        }
+    }
+
+    async function sendScore(isFinal = false) {
+        if (score <= highestScore && isFinal) {
+            return false;
+        }
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const payload = {
+                id_games: currentGameId,
+                id_postingan: postinganId,
+                score: parseInt(score, 10),
+                playing_time: getPlayingTime(),
+                game_name: 'Puzzle',
+                moves: moves
+            };
+            const res = await fetch(saveScoreUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) return false;
+            const data = await res.json();
+            if (data.id_games) currentGameId = data.id_games;
+            if (score > highestScore) {
+                highestScore = score;
+                if (bestScoreInfoEl) {
+                    bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">Skor tertinggi Anda: ${highestScore} ✨ Rekor Baru!</span>`;
+                }
+            }
+            saveCurrentState();
+            return true;
+        } catch (err) {
+            console.error('Error sending score:', err);
+            return false;
+        }
+    }
+
+    function getPlayingTime() {
+        const seconds = Math.floor((Date.now() - gameStart) / 1000);
+        return seconds + 's';
+    }
+
+    function timeRemainingSeconds() {
+        if (remainingTime !== undefined && remainingTime !== null) {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            return Math.max(0, remainingTime - elapsed);
+        }
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        return Math.max(0, CONFIG.timeLimit - elapsed);
+    }
+
+    function updateTimerDisplay() {
+        if (timerEl) {
+            const remaining = Math.ceil(timeRemainingSeconds());
+            timerEl.innerText = remaining;
+            if (remaining <= 10) {
+                timerEl.classList.add('text-red-600', 'dark:text-red-400');
+                timerEl.classList.remove('text-gray-900', 'dark:text-gray-100', 'text-yellow-600', 'dark:text-yellow-400');
+            } else if (remaining <= 30) {
+                timerEl.classList.add('text-yellow-600', 'dark:text-yellow-400');
+                timerEl.classList.remove('text-red-600', 'dark:text-red-400');
+            } else {
+                timerEl.classList.remove('text-red-600', 'dark:text-red-400', 'text-yellow-600', 'dark:text-yellow-400');
+            }
+        }
+    }
+
+    async function finishGame(completed = false) {
+        if (!gameActive) return;
+        gameActive = false;
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        localStorage.removeItem(storageKey);
+        if (completed) {
+            updateScore();
+            resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 Selamat! Puzzle terselesaikan! 🎉</span>';
+            await sendScore(true);
+        } else {
+            resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ Waktu habis!</span>';
+        }
+        setTimeout(() => {
+            window.location.href = leaderboardUrl;
+        }, 2000);
+    }
+
+    function shuffleGame() {
+        if (!gameActive) return;
+        shuffleTiles();
+        moves = 0;
+        if (movesEl) movesEl.innerText = moves;
+        updateScore();
+        render();
+        saveCurrentState();
+    }
+
+    function resetGame() {
+        if (!gameActive) return;
+        if (confirm('Mulai ulang permainan? Semua progres akan hilang.')) {
+            localStorage.removeItem(storageKey);
+            initTiles();
+            shuffleTiles();
+            moves = 0;
+            score = 0;
+            gameActive = true;
+            remainingTime = CONFIG.timeLimit;
+            startTime = Date.now();
+            gameStart = Date.now();
+            currentGameId = null;
+            if (movesEl) movesEl.innerText = moves;
+            if (scoreEl) scoreEl.innerText = score;
+            resultEl.innerHTML = '';
+            render();
+            saveCurrentState();
+            if (timerInterval) clearInterval(timerInterval);
+            startTimer();
+        }
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (!gameActive) return;
+            updateTimerDisplay();
+            updateScore();
+            if (timeRemainingSeconds() <= 0) {
+                clearInterval(timerInterval);
+                finishGame(false);
+            }
+        }, 1000);
+    }
+
+    // Event listeners
+    if (shuffleBtn) shuffleBtn.addEventListener('click', shuffleGame);
+    if (resetBtn) resetBtn.addEventListener('click', resetGame);
+
+    // Load saved state or initialize new game
+    const hasSavedState = loadSavedState();
+    if (!hasSavedState) {
+        initTiles();
+        shuffleTiles();
+        render();
+        startTime = Date.now();
+        gameStart = Date.now();
+        remainingTime = CONFIG.timeLimit;
+    } else {
+        if (remainingTime <= 0) {
+            finishGame(false);
+            return;
+        }
+        startTime = Date.now() - (CONFIG.timeLimit - remainingTime) * 1000;
+    }
+
+    fetchHighestScore();
+    startTimer();
+
+    // Save state periodically and on beforeunload
+    setInterval(() => {
+        if (gameActive) saveCurrentState();
+    }, 5000);
+
+    window.addEventListener('beforeunload', () => {
+        if (gameActive) saveCurrentState();
+    });
+})();
+
+// ==========================================
+//   GAME TTS (TEKA TEKI SILANG)
+// ==========================================
+(function() {
+    const container = document.getElementById('tts-game-container');
+    if (!container) return;
+
+    const postinganId = container.dataset.postinganId || null;
+    const getScoreUrl = container.dataset.getScoreUrl || '';
+    const saveScoreUrl = container.dataset.saveScoreUrl || '';
+    const leaderboardUrl = container.dataset.leaderboardUrl || '';
+    const storageKey = `tts_state_postingan_${postinganId}`;
+
+    // Crossword data
+    const crosswordData = {
+        size: 5,
+        grid: [
+            ['', '', '', '', ''],
+            ['', '', '', '', ''],
+            ['', '', '', '', ''],
+            ['', '', '', '', ''],
+            ['', '', '', '', '']
+        ],
+        answers: {
+            h: [
+                { row: 0, col: 0, length: 5, answer: 'BAHASA', clue: 'Alat komunikasi lisan dan tulisan (6 huruf)', id: 'h0' },
+                { row: 2, col: 0, length: 5, answer: 'ANGKA', clue: 'Simbol untuk mewakili bilangan (5 huruf)', id: 'h1' },
+                { row: 4, col: 0, length: 5, answer: 'SAINS', clue: 'Ilmu pengetahuan tentang alam (5 huruf)', id: 'h2' }
+            ],
+            v: [
+                { row: 0, col: 0, length: 5, answer: 'BASIC', clue: 'Dasar, pokok (5 huruf)', id: 'v0' },
+                { row: 0, col: 2, length: 5, answer: 'HARTA', clue: 'Kekayaan, barang berharga (5 huruf)', id: 'v1' },
+                { row: 0, col: 4, length: 5, answer: 'ANAK', clue: 'Buah hati, keturunan (4 huruf)', id: 'v2' }
+            ]
+        },
+        solved: []
+    };
+
+    let currentQuestion = null;
+    let currentDirection = null;
+    let score = 0;
+    let questionsSolved = 0;
+    const totalQuestions = crosswordData.answers.h.length + crosswordData.answers.v.length;
+    let gameActive = true;
+    let startTime = Date.now();
+    let gameStart = Date.now();
+    let timerInterval = null;
+    let currentGameId = null;
+    let highestScore = 0;
+    let remainingTime = 300;
+
+    const containerEl = document.getElementById('crossword-container');
+    const horizontalQuestionsEl = document.getElementById('horizontal-questions');
+    const verticalQuestionsEl = document.getElementById('vertical-questions');
+    const selectedQuestionEl = document.getElementById('selected-question');
+    const answerEl = document.getElementById('answer');
+    const resultEl = document.getElementById('result');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer-seconds');
+    const questionsLeftEl = document.getElementById('remaining-count');
+    const checkBtn = document.getElementById('checkBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const bestScoreInfoEl = document.getElementById('bestScoreInfo');
+
+    // Load saved state
+    function loadSavedState() {
+        const savedState = localStorage.getItem(storageKey);
+        if (savedState) {
+            try {
+                const state = JSON.parse(savedState);
+                if (state.solved && Array.isArray(state.solved)) {
+                    crosswordData.solved = state.solved;
+                    questionsSolved = state.solved.length;
+                }
+                if (state.score !== undefined) {
+                    score = state.score;
+                    scoreEl.innerText = score;
+                }
+                if (state.remainingTime !== undefined && state.timestamp) {
+                    const timePassed = Math.floor((Date.now() - state.timestamp) / 1000);
+                    remainingTime = Math.max(0, state.remainingTime - timePassed);
+                    if (remainingTime <= 0) {
+                        finishGame(false);
+                        return false;
+                    }
+                } else {
+                    remainingTime = 300;
+                }
+                if (state.startTime) {
+                    startTime = Date.now() - (state.elapsedTime || 0);
+                }
+                if (state.gameStart) {
+                    gameStart = Date.now() - (state.gameElapsed || 0);
+                }
+                if (state.currentGameId) {
+                    currentGameId = state.currentGameId;
+                }
+                updateQuestionsLeft();
+                return true;
+            } catch (e) {
+                console.error('Error loading saved state:', e);
+            }
+        }
+        return false;
+    }
+
+    function saveCurrentState() {
+        const timeElapsed = Date.now() - startTime;
+        const gameElapsed = Date.now() - gameStart;
+        const currentRemainingTime = timeRemainingSeconds();
+        const state = {
+            solved: crosswordData.solved,
+            score: score,
+            remainingTime: currentRemainingTime,
+            elapsedTime: timeElapsed,
+            gameElapsed: gameElapsed,
+            startTime: startTime,
+            gameStart: gameStart,
+            currentGameId: currentGameId,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function initGrid() {
+        containerEl.innerHTML = '';
+        for (let i = 0; i < crosswordData.size; i++) {
+            for (let j = 0; j < crosswordData.size; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'flex items-center justify-center bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 font-bold text-lg text-gray-900 dark:text-white';
+                cell.style.width = '60px';
+                cell.style.height = '60px';
+
+                let isActive = false;
+                let cellQuestion = null;
+                let cellDirection = null;
+
+                for (let q of crosswordData.answers.h) {
+                    if (i === q.row && j >= q.col && j < q.col + q.length) {
+                        isActive = true;
+                        cellQuestion = q;
+                        cellDirection = 'h';
+                        break;
+                    }
+                }
+                for (let q of crosswordData.answers.v) {
+                    if (j === q.col && i >= q.row && i < q.row + q.length) {
+                        isActive = true;
+                        cellQuestion = q;
+                        cellDirection = 'v';
+                        break;
+                    }
+                }
+
+                if (isActive) {
+                    cell.classList.add('cursor-pointer', 'hover:bg-green-100', 'dark:hover:bg-green-900');
+                    const solved = crosswordData.solved.find(s => s.questionId === cellQuestion.id);
+                    if (solved) {
+                        const letterIndex = cellDirection === 'h' ? j - cellQuestion.col : i - cellQuestion.row;
+                        cell.innerHTML = solved.answer[letterIndex] || '';
+                        cell.classList.add('bg-green-100', 'dark:bg-green-900', 'text-gray-900', 'dark:text-white');
+                    } else {
+                        cell.innerHTML = '?';
+                        cell.classList.add('text-gray-600', 'dark:text-gray-300');
+                    }
+                    cell.addEventListener('click', () => selectQuestion(cellQuestion, cellDirection));
+                } else {
+                    cell.classList.add('bg-gray-300', 'dark:bg-gray-700');
+                    cell.innerHTML = '';
+                }
+                containerEl.appendChild(cell);
+            }
+        }
+    }
+
+    function loadQuestions() {
+        horizontalQuestionsEl.innerHTML = '';
+        crosswordData.answers.h.forEach((q, idx) => {
+            const solved = crosswordData.solved.find(s => s.questionId === q.id);
+            const div = document.createElement('div');
+            div.className = `p-2 rounded cursor-pointer ${solved ? 'bg-green-100 dark:bg-green-900' : 'bg-gray-100 dark:bg-gray-800'} hover:bg-green-200 dark:hover:bg-green-800 text-gray-900 dark:text-gray-100`;
+            div.innerHTML = `<strong>${idx + 1}.</strong> ${q.clue} ${solved ? '✓' : ''}`;
+            div.addEventListener('click', () => selectQuestion(q, 'h'));
+            horizontalQuestionsEl.appendChild(div);
+        });
+
+        verticalQuestionsEl.innerHTML = '';
+        crosswordData.answers.v.forEach((q, idx) => {
+            const solved = crosswordData.solved.find(s => s.questionId === q.id);
+            const div = document.createElement('div');
+            div.className = `p-2 rounded cursor-pointer ${solved ? 'bg-green-100 dark:bg-green-900' : 'bg-gray-100 dark:bg-gray-800'} hover:bg-green-200 dark:hover:bg-green-800 text-gray-900 dark:text-gray-100`;
+            div.innerHTML = `<strong>${idx + 1}.</strong> ${q.clue} ${solved ? '✓' : ''}`;
+            div.addEventListener('click', () => selectQuestion(q, 'v'));
+            verticalQuestionsEl.appendChild(div);
+        });
+    }
+
+    function selectQuestion(question, direction) {
+        if (!gameActive) return;
+        currentQuestion = question;
+        currentDirection = direction;
+        selectedQuestionEl.innerHTML = `<strong class="text-gray-900 dark:text-white">Pertanyaan:</strong> <span class="text-gray-700 dark:text-gray-300">${question.clue}</span>`;
+        answerEl.value = '';
+        answerEl.focus();
+        resultEl.innerHTML = '';
+    }
+
+    function checkAnswer() {
+        if (!gameActive || !currentQuestion) {
+            resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">Pilih pertanyaan terlebih dahulu!</span>';
+            return;
+        }
+        const userAnswer = answerEl.value.trim().toUpperCase();
+        const isCorrect = userAnswer === currentQuestion.answer;
+        if (isCorrect) {
+            const alreadySolved = crosswordData.solved.find(s => s.questionId === currentQuestion.id);
+            if (!alreadySolved) {
+                const points = 100;
+                score += points;
+                questionsSolved++;
+                scoreEl.innerText = score;
+                crosswordData.solved.push({
+                    questionId: currentQuestion.id,
+                    question: currentQuestion,
+                    direction: currentDirection,
+                    answer: currentQuestion.answer
+                });
+                resultEl.innerHTML = `<span class="text-green-600 dark:text-green-400">✅ Benar! +${points} poin</span>`;
+                initGrid();
+                loadQuestions();
+                saveCurrentState();
+                if (questionsSolved >= totalQuestions) {
+                    finishGame(true);
+                }
+            } else {
+                resultEl.innerHTML = '<span class="text-yellow-600 dark:text-yellow-400">Pertanyaan ini sudah terjawab!</span>';
+            }
+        } else {
+            resultEl.innerHTML = `<span class="text-red-600 dark:text-red-400">❌ Salah! Jawaban yang benar adalah: ${currentQuestion.answer}</span>`;
+        }
+        answerEl.value = '';
+        updateQuestionsLeft();
+        sendScore(false);
+    }
+
+    function updateQuestionsLeft() {
+        const remaining = totalQuestions - questionsSolved;
+        if (questionsLeftEl) questionsLeftEl.innerText = remaining;
+    }
+
+    function updateScoreDisplay() {
+        const timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+        const timeBonus = Math.max(0, 300 - timeElapsed) * 2;
+        const questionBonus = questionsSolved * 50;
+        score = Math.max(0, questionBonus + timeBonus);
+        scoreEl.innerText = score;
+        saveCurrentState();
+    }
+
+    async function fetchHighestScore() {
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const response = await fetch(getScoreUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                },
+                body: JSON.stringify({
+                    id_postingan: postinganId,
+                    game_name: 'TTS'
+                }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                highestScore = data.highest_score || 0;
+                if (bestScoreInfoEl && highestScore > 0) {
+                    bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">Skor tertinggi Anda: ${highestScore}</span>`;
+                } else if (bestScoreInfoEl) {
+                    bestScoreInfoEl.innerHTML = `🎯 <span class="text-gray-700 dark:text-gray-300">Selesaikan semua teka-teki!</span>`;
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching highest score:', err);
+        }
+    }
+
+    async function sendScore(isFinal = false) {
+        if (score <= highestScore && isFinal) return false;
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const payload = {
+                id_games: currentGameId,
+                id_postingan: postinganId,
+                score: parseInt(score, 10),
+                playing_time: getPlayingTime(),
+                game_name: 'TTS',
+                questions_solved: questionsSolved
+            };
+            const res = await fetch(saveScoreUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) return false;
+            const data = await res.json();
+            if (data.id_games) currentGameId = data.id_games;
+            if (score > highestScore) {
+                highestScore = score;
+                if (bestScoreInfoEl) {
+                    bestScoreInfoEl.innerHTML = `🏆 <span class="text-gray-900 dark:text-white">Skor tertinggi Anda: ${highestScore} ✨ Rekor Baru!</span>`;
+                }
+            }
+            saveCurrentState();
+            return true;
+        } catch (err) {
+            console.error('Error sending score:', err);
+            return false;
+        }
+    }
+
+    function getPlayingTime() {
+        const seconds = Math.floor((Date.now() - gameStart) / 1000);
+        return seconds + 's';
+    }
+
+    function timeRemainingSeconds() {
+        if (remainingTime !== undefined && remainingTime !== null) {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            return Math.max(0, remainingTime - elapsed);
+        }
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        return Math.max(0, 300 - elapsed);
+    }
+
+    function updateTimerDisplay() {
+        if (timerEl) {
+            const remaining = Math.ceil(timeRemainingSeconds());
+            timerEl.innerText = remaining;
+            if (remaining <= 10) {
+                timerEl.classList.add('text-red-600', 'dark:text-red-400');
+                timerEl.classList.remove('text-gray-900', 'dark:text-gray-100', 'text-yellow-600', 'dark:text-yellow-400');
+            } else if (remaining <= 30) {
+                timerEl.classList.add('text-yellow-600', 'dark:text-yellow-400');
+                timerEl.classList.remove('text-red-600', 'dark:text-red-400');
+            } else {
+                timerEl.classList.remove('text-red-600', 'dark:text-red-400', 'text-yellow-600', 'dark:text-yellow-400');
+            }
+        }
+    }
+
+    async function finishGame(completed = false) {
+        if (!gameActive) return;
+        gameActive = false;
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        localStorage.removeItem(storageKey);
+        if (completed) {
+            updateScoreDisplay();
+            await sendScore(true);
+            resultEl.innerHTML = '<span class="text-green-600 dark:text-green-400">🎉 Selamat! Anda menyelesaikan semua teka-teki! 🎉</span>';
+        } else {
+            resultEl.innerHTML = '<span class="text-red-600 dark:text-red-400">⏰ Waktu habis!</span>';
+        }
+        setTimeout(() => {
+            window.location.href = leaderboardUrl;
+        }, 2000);
+    }
+
+    function resetGame() {
+        if (!gameActive) return;
+        if (confirm('Mulai ulang permainan? Semua progres akan hilang.')) {
+            localStorage.removeItem(storageKey);
+            crosswordData.solved = [];
+            questionsSolved = 0;
+            score = 0;
+            gameActive = true;
+            remainingTime = 300;
+            startTime = Date.now();
+            gameStart = Date.now();
+            currentGameId = null;
+            scoreEl.innerText = score;
+            resultEl.innerHTML = '';
+            selectedQuestionEl.innerHTML = '';
+            currentQuestion = null;
+            currentDirection = null;
+            initGrid();
+            loadQuestions();
+            updateQuestionsLeft();
+            updateTimerDisplay();
+            if (timerInterval) clearInterval(timerInterval);
+            startTimer();
+        }
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (!gameActive) return;
+            updateTimerDisplay();
+            updateScoreDisplay();
+            if (timeRemainingSeconds() <= 0) {
+                clearInterval(timerInterval);
+                finishGame(false);
+            }
+        }, 1000);
+    }
+
+    // Event listeners
+    checkBtn.addEventListener('click', checkAnswer);
+    if (resetBtn) resetBtn.addEventListener('click', resetGame);
+    answerEl.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter' && gameActive) checkAnswer();
+    });
+
+    // Load saved state or initialize new game
+    const hasSavedState = loadSavedState();
+    initGrid();
+    loadQuestions();
+    fetchHighestScore();
+    updateQuestionsLeft();
+    updateTimerDisplay();
+
+    if (!hasSavedState) {
+        startTime = Date.now();
+        gameStart = Date.now();
+        remainingTime = 300;
+    } else {
+        if (remainingTime <= 0) {
+            finishGame(false);
+            return;
+        }
+        startTime = Date.now() - (300 - remainingTime) * 1000;
+    }
+
+    startTimer();
+
+    // Save state periodically and on beforeunload
+    setInterval(() => {
+        if (gameActive) saveCurrentState();
+    }, 5000);
+
+    window.addEventListener('beforeunload', () => {
+        if (gameActive) saveCurrentState();
+    });
+})();
+
 Alpine.start();

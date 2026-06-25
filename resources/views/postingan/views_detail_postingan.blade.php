@@ -48,7 +48,7 @@
                             </div>
                             <div>
                                 <div class="flex flex-wrap gap-2 mt-1">
-                                    <a href="{{ route('portfolio.slug', ['user' => $postingan->user->slug]) }}"
+                                    <a href="{{ route('portfolio.slug', ['slug' => $postingan->user->slug]) }}"
                                        class="font-bold text-gray-900 dark:text-gray-100 text-lg hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ $postingan->user->nama_mahasiswa }}</a>
                                     @if(!empty($postingan->user->jurusan))
                                         <span class="text-[14px] px-2 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">{{ $postingan->user->jurusan['nama_jurusan'] ?? '-' }}</span>
