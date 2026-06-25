@@ -19,6 +19,7 @@
         $userPhoto = null;
         $userName = 'Pengguna';
         $userId = null;
+        $userSlug = null;
 
         // Data untuk project terkait
         $relatedProject = null;
@@ -53,6 +54,7 @@
                 $userPhoto = $post->mahasiswa->photo_profile;
                 $userName = $post->mahasiswa->nama_mahasiswa ?? 'Pengguna';
                 $userId = $post->mahasiswa->id;
+                $userSlug  = $post->mahasiswa->slug; 
             }
 
             if (isset($post->project)) {
@@ -81,12 +83,14 @@
                 $userPhoto = $post->mahasiswa->photo_profile;
                 $userName = $post->mahasiswa->nama_mahasiswa ?? 'Pengguna';
                 $userId = $post->mahasiswa->id;
+                $userSlug  = $post->mahasiswa->slug;
             }
         } elseif ($post->type === 'sertifikat') {
             if ($post->mahasiswa) {
                 $userPhoto = $post->mahasiswa->photo_profile;
                 $userName = $post->mahasiswa->nama_mahasiswa ?? 'Pengguna';
                 $userId = $post->mahasiswa->id;
+                $userSlug  = $post->mahasiswa->slug;
             }
         }
 
@@ -117,7 +121,7 @@
     @endphp
 
     <!-- User Info -->
-    <a href="{{ $userId ? route('portfolio.show', ['user' => $userId]) : '#' }}"
+    <a href="{{ $userSlug ? route('portfolio.slug', ['slug' => $userSlug]) : '#' }}"
         class="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 hover:opacity-80 transition-opacity min-w-0">
         <div
             class="w-7 h-7 sm:w-8 md:w-9 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm shrink-0 relative">

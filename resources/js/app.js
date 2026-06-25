@@ -10446,4 +10446,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ==================== RESULT SEARCH PAGE ====================
+// toggleSeeMore — dipindahkan dari views/result_search.blade.php
+window.toggleSeeMore = function (gridClass, button, totalCount) {
+    const grid = document.querySelector(`.${gridClass}`);
+    const items = grid.querySelectorAll(`.${gridClass.replace('-grid', '-item')}`);
+    const hidden = Array.from(items).filter(item => item.classList.contains('hidden'));
+
+    if (hidden.length > 0) {
+        hidden.forEach(item => item.classList.remove('hidden'));
+        button.innerHTML = `
+            <span data-translate="sembunyi" data-translate-page="result_search">Sembunyikan</span>
+            <svg class="w-4 h-4 ml-1 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+        `;
+    } else {
+        items.forEach((item, index) => {
+            if (index >= 3) item.classList.add('hidden');
+        });
+        button.innerHTML = `
+            <span data-translate="tampil" data-translate-page="result_search">Lihat semua</span>
+            <svg class="w-4 h-4 ml-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+        `;
+    }
+};
+
 Alpine.start();

@@ -56,7 +56,7 @@
                                     @if($top3->count() >= 2)
                                         @php $item2 = $top3[1]; $user2 = $item2['user']; @endphp
                                         <div class="text-center flex-1 pb-8">
-                                            <a href="{{ route('portfolio.show', ['user' => $user2->username ?? $user2->id]) }}" class="relative inline-block">
+                                            <a href="{{ route('portfolio.slug', ['user' => $user2->slug]) }}" class="relative inline-block">
                                                 <div class="w-20 h-20 rounded-full border-3 border-[#009BD6] overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-lg">
                                                     @if($user2 && $user2->photo_profile && file_exists(public_path('storage/' . $user2->photo_profile)))
                                                         <img src="{{ asset('storage/' . $user2->photo_profile) }}" class="w-full h-full object-cover">
@@ -67,7 +67,7 @@
                                                 <div class="absolute -top-2 -right-2 w-6 h-6 bg-[#009BD6] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">2</div>
                                             </a>
                                             <div class="mt-2">
-                                                <a href="{{ route('portfolio.show', ['user' => $user2->username ?? $user2->id]) }}" class="text-gray-800 dark:text-white font-semibold text-xs truncate max-w-[100px] mx-auto block hover:text-blue-600 transition">
+                                                <a href="{{ route('portfolio.slug', ['user' => $user2->slug]) }}" class="text-gray-800 dark:text-white font-semibold text-xs truncate max-w-[100px] mx-auto block hover:text-blue-600 transition">
                                                     {{ $user2->nama_mahasiswa ?? 'User' }}
                                                 </a>
                                                 <div class="text-[#009BD6] font-bold text-base mt-1">{{ number_format($item2['total_score']) }}</div>
@@ -79,7 +79,7 @@
                                     @if($top3->count() >= 1)
                                         @php $item1 = $top3[0]; $user1 = $item1['user']; @endphp
                                         <div class="text-center flex-1 -mt-8">
-                                            <a href="{{ route('portfolio.show', ['user' => $user1->username ?? $user1->id]) }}" class="relative inline-block">
+                                            <a href="{{ route('portfolio.slug', ['user' => $user1->slug]) }}" class="relative inline-block">
                                                 <div class="w-24 h-24 rounded-full border-3 border-[#FFAA00] overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-xl">
                                                     @if($user1 && $user1->photo_profile && file_exists(public_path('storage/' . $user1->photo_profile)))
                                                         <img src="{{ asset('storage/' . $user1->photo_profile) }}" class="w-full h-full object-cover">
@@ -94,7 +94,7 @@
                                                 </div>
                                             </a>
                                             <div class="mt-3">
-                                                <a href="{{ route('portfolio.show', ['user' => $user1->username ?? $user1->id]) }}" class="text-gray-800 dark:text-white font-bold text-sm truncate max-w-[120px] mx-auto block hover:text-blue-600 transition">
+                                                <a href="{{ route('portfolio.slug', ['user' => $user1->slug]) }}" class="text-gray-800 dark:text-white font-bold text-sm truncate max-w-[120px] mx-auto block hover:text-blue-600 transition">
                                                     {{ $user1->nama_mahasiswa ?? 'User' }}
                                                 </a>
                                                 <div class="text-[#FFAA00] font-bold text-xl mt-1">{{ number_format($item1['total_score']) }}</div>
@@ -106,7 +106,7 @@
                                     @if($top3->count() >= 3)
                                         @php $item3 = $top3[2]; $user3 = $item3['user']; @endphp
                                         <div class="text-center flex-1 pb-8">
-                                            <a href="{{ route('portfolio.show', ['user' => $user3->username ?? $user3->id]) }}" class="relative inline-block">
+                                            <a href="{{ route('portfolio.slug', ['user' => $user3->slug]) }}" class="relative inline-block">
                                                 <div class="w-20 h-20 rounded-full border-3 border-[#00D95F] overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-lg">
                                                     @if($user3 && $user3->photo_profile && file_exists(public_path('storage/' . $user3->photo_profile)))
                                                         <img src="{{ asset('storage/' . $user3->photo_profile) }}" class="w-full h-full object-cover">
@@ -117,7 +117,7 @@
                                                 <div class="absolute -top-2 -right-2 w-6 h-6 bg-[#00D95F] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">3</div>
                                             </a>
                                             <div class="mt-2">
-                                                <a href="{{ route('portfolio.show', ['user' => $user3->username ?? $user3->id]) }}" class="text-gray-800 dark:text-white font-semibold text-xs truncate max-w-[100px] mx-auto block hover:text-blue-600 transition">
+                                                <a href="{{ route('portfolio.slug', ['user' => $user3->slug]) }}" class="text-gray-800 dark:text-white font-semibold text-xs truncate max-w-[100px] mx-auto block hover:text-blue-600 transition">
                                                     {{ $user3->nama_mahasiswa ?? 'User' }}
                                                 </a>
                                                 <div class="text-[#00D95F] font-bold text-base mt-1">{{ number_format($item3['total_score']) }}</div>
@@ -135,7 +135,7 @@
                                         @if($top3->count() >= 2)
                                             @php $item2 = $top3[1]; $user2 = $item2['user']; @endphp
                                             <div class="text-center w-full">
-                                                <a href="{{ route('portfolio.show', ['user' => $user2->username ?? $user2->id]) }}" class="relative inline-block">
+                                                <a href="{{ route('portfolio.slug', ['user' => $user2->slug]) }}" class="relative inline-block">
                                                     <div class="w-20 h-20 rounded-full border-3 border-[#009BD6] overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-lg">
                                                         @if($user2 && $user2->photo_profile && file_exists(public_path('storage/' . $user2->photo_profile)))
                                                             <img src="{{ asset('storage/' . $user2->photo_profile) }}" class="w-full h-full object-cover">
@@ -146,7 +146,7 @@
                                                     <div class="absolute -top-2 -right-2 w-7 h-7 bg-[#009BD6] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">2</div>
                                                 </a>
                                                 <div class="mt-3">
-                                                    <a href="{{ route('portfolio.show', ['user' => $user2->username ?? $user2->id]) }}" class="text-gray-800 dark:text-white font-semibold text-sm truncate max-w-[120px] mx-auto block hover:text-blue-600 transition">
+                                                    <a href="{{ route('portfolio.slug', ['user' => $user2->slug]) }}" class="text-gray-800 dark:text-white font-semibold text-sm truncate max-w-[120px] mx-auto block hover:text-blue-600 transition">
                                                         {{ $user2->nama_mahasiswa ?? 'User' }}
                                                     </a>
                                                     <div class="text-[#009BD6] font-bold text-lg mt-1">{{ number_format($item2['total_score']) }}</div>
@@ -158,7 +158,7 @@
                                         @if($top3->count() >= 1)
                                             @php $item1 = $top3[0]; $user1 = $item1['user']; @endphp
                                             <div class="text-center w-full">
-                                                <a href="{{ route('portfolio.show', ['user' => $user1->username ?? $user1->id]) }}" class="relative inline-block">
+                                                <a href="{{ route('portfolio.slug', ['user' => $user1->slug]) }}" class="relative inline-block">
                                                     <div class="w-28 h-28 rounded-full border-3 border-[#FFAA00] overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-xl">
                                                         @if($user1 && $user1->photo_profile && file_exists(public_path('storage/' . $user1->photo_profile)))
                                                             <img src="{{ asset('storage/' . $user1->photo_profile) }}" class="w-full h-full object-cover">
@@ -173,7 +173,7 @@
                                                     </div>
                                                 </a>
                                                 <div class="mt-4">
-                                                    <a href="{{ route('portfolio.show', ['user' => $user1->username ?? $user1->id]) }}" class="text-gray-800 dark:text-white font-bold text-base truncate max-w-[150px] mx-auto block hover:text-blue-600 transition">
+                                                    <a href="{{ route('portfolio.slug', ['user' => $user1->slug]) }}" class="text-gray-800 dark:text-white font-bold text-base truncate max-w-[150px] mx-auto block hover:text-blue-600 transition">
                                                         {{ $user1->nama_mahasiswa ?? 'User' }}
                                                     </a>
                                                     <div class="text-[#FFAA00] font-bold text-2xl mt-1">{{ number_format($item1['total_score']) }}</div>
@@ -185,7 +185,7 @@
                                         @if($top3->count() >= 3)
                                             @php $item3 = $top3[2]; $user3 = $item3['user']; @endphp
                                             <div class="text-center w-full">
-                                                <a href="{{ route('portfolio.show', ['user' => $user3->username ?? $user3->id]) }}" class="relative inline-block">
+                                                <a href="{{ route('portfolio.slug', ['user' => $user3->slug]) }}" class="relative inline-block">
                                                     <div class="w-20 h-20 rounded-full border-3 border-[#00D95F] overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-lg">
                                                         @if($user3 && $user3->photo_profile && file_exists(public_path('storage/' . $user3->photo_profile)))
                                                             <img src="{{ asset('storage/' . $user3->photo_profile) }}" class="w-full h-full object-cover">
@@ -196,7 +196,7 @@
                                                     <div class="absolute -top-2 -right-2 w-7 h-7 bg-[#00D95F] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">3</div>
                                                 </a>
                                                 <div class="mt-3">
-                                                    <a href="{{ route('portfolio.show', ['user' => $user3->username ?? $user3->id]) }}" class="text-gray-800 dark:text-white font-semibold text-sm truncate max-w-[120px] mx-auto block hover:text-blue-600 transition">
+                                                    <a href="{{ route('portfolio.slug', ['user' => $user3->slug]) }}" class="text-gray-800 dark:text-white font-semibold text-sm truncate max-w-[120px] mx-auto block hover:text-blue-600 transition">
                                                         {{ $user3->nama_mahasiswa ?? 'User' }}
                                                     </a>
                                                     <div class="text-[#00D95F] font-bold text-lg mt-1">{{ number_format($item3['total_score']) }}</div>
@@ -298,7 +298,7 @@
                                         
                                         <!-- Player Info dengan Link -->
                                         <div class="col-span-7 md:col-span-4">
-                                            <a href="{{ route('portfolio.show', ['user' => $user->username ?? $user->id]) }}" class="flex items-center gap-3 group">
+                                            <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}" class="flex items-center gap-3 group">
                                                 <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center shadow-md flex-shrink-0">
                                                     @if($avatar)
                                                         <img src="{{ $avatar }}" alt="{{ $user->nama_mahasiswa ?? 'User' }}" class="w-full h-full object-cover">

@@ -201,7 +201,7 @@
                                             $displayUser = $leader ?? $mahasiswa;
                                             $userName = $displayUser->nama_mahasiswa ?? 'User';
                                         @endphp
-                                        <a href="{{ route('portfolio.show', ['user' => $displayUser?->id ?? '#']) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                        <a href="{{ route('portfolio.slug', ['user' => $displayUser?->slug ?? '#']) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @if($displayUser && $displayUser->photo_profile && Storage::disk('public')->exists($displayUser->photo_profile))
                                                 <img src="{{ Storage::url($displayUser->photo_profile) }}" 
                                                      alt="{{ $userName }}" 
@@ -213,7 +213,7 @@
                                             @endif
                                         </a>
                                         <div>
-                                            <a href="{{ route('portfolio.show', ['user' => $displayUser?->id ?? '#']) }}" 
+                                            <a href="{{ route('portfolio.slug', ['user' => $displayUser?->slug ?? '#']) }}" 
                                                class="font-semibold text-gray-900 dark:text-white hover:text-indigo-600 transition-colors">
                                                 {{ $userName }}
                                             </a>
@@ -226,7 +226,7 @@
                                     @if($mahasiswa && $leader && !$isSameUser)
                                         <div class="flex items-center gap-2 mb-3 pl-2 border-l-2 border-gray-300 dark:border-gray-600">
                                             <span class="text-xs text-gray-500 dark:text-gray-400">Owner:</span>
-                                            <a href="{{ route('portfolio.show', ['user' => $mahasiswa->id]) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400">
+                                            <a href="{{ route('portfolio.slug', ['user' => $mahasiswa->slug]) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400">
                                                 {{ $mahasiswa->nama_mahasiswa }}
                                             </a>
                                         </div>

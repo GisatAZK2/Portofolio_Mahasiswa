@@ -701,7 +701,7 @@
                                                         <span data-translate="pjt_leader" data-translate-page="portofolio_user">Project Leader</span>
                                                     </p>
                                                     @if($leader)
-                                                        <a href="{{ route('portfolio.show', ['user' => $leader->username]) }}"
+                                                        <a href="{{ route('portfolio.slug', ['slug' => $leader->slug]) }}"
                                                             class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                             {{ $leader->nama_mahasiswa }}
                                                         </a>
@@ -755,7 +755,7 @@
 
                                             {{-- Anggota Tim --}}
                                             @if($project->members->isNotEmpty())
-                                                <a href="{{ route('portfolio.show', ['user' => $project->members->first()->username]) }}">
+                                                <a href="{{ route('portfolio.slug', ['slug' => $project->members->first()->slug]) }}">
                                                     <div class="mt-2">
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
                                                             <span data-translate="team" data-translate-page="portofolio_user">Anggota Tim</span> ({{ $project->members->count() }})
@@ -830,7 +830,7 @@
                                                         <p class="text-xs text-gray-500 dark:text-gray-400">
                                                             <span data-translate="pjt_created_by" data-translate-page="portofolio_user">Created By</span>
                                                         </p>
-                                                        <a href="{{ route('portfolio.show', ['user' => $owner->username]) }}"
+                                                        <a href="{{ route('portfolio.slug', ['slug' => $owner->slug]) }}"
                                                             class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                             {{ $owner->nama_mahasiswa }}
                                                         </a>

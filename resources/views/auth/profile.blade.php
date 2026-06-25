@@ -214,7 +214,7 @@
                             <!-- Portfolio Buttons -->
                             <div class="flex justify-end gap-2 mt-1">
                                 @php
-                                    $portfolioUrl = route('portfolio.show', ['user' => Auth::user()->username]);
+                                    $portfolioUrl = route('portfolio.slug', ['user' => Auth::user()->slug]);
                                 @endphp
                                 <button type="button" onclick="copyLink('{{ $portfolioUrl }}')" class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700/50 text-white text-sm font-medium rounded-lg transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

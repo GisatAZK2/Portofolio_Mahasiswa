@@ -192,7 +192,7 @@
                                             <input type="checkbox" value="{{ $project->id }}"
                                                 class="project-checkbox w-4 h-4 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                                         </label>
-                                        <a href="{{ route('portfolio.show', ['user' => ($leader ?? $mahasiswa)->id]) }}"
+                                        <a href="{{ route('portfolio.slug', ['user' => ($leader ?? $mahasiswa)->slug]) }}"
                                             class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                             @php
                                                 $displayUser = $leader ?? $mahasiswa;
@@ -212,7 +212,7 @@
 
                                         <div>
                                             <div class="flex items-center gap-2 flex-wrap">
-                                                <a href="{{ route('portfolio.show', ['user' => ($leader ?? $mahasiswa)->id]) }}"
+                                                <a href="{{ route('portfolio.slug', ['user' => ($leader ?? $mahasiswa)->slug]) }}"
                                                     class="font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                     {{ $userName }}
                                                 </a>
@@ -236,7 +236,7 @@
 
                                     @if($mahasiswa && $leader && !$isSameUser)
                                         <div class="flex items-center gap-2 mb-3 pl-2 border-l-2 border-gray-300 dark:border-gray-600">
-                                            <a href="{{ route('portfolio.show', ['user' => $mahasiswa->id]) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                            <a href="{{ route('portfolio.slug', ['user' => $mahasiswa->slug]) }}" class="flex-shrink-0 hover:opacity-80 transition-opacity">
                                                 @if($mahasiswa->photo_profile && Storage::disk('public')->exists($mahasiswa->photo_profile))
                                                     <img src="{{ Storage::url($mahasiswa->photo_profile) }}" alt="{{ $mahasiswa->nama_mahasiswa }}" class="w-6 h-6 rounded-full object-cover">
                                                 @else
@@ -247,7 +247,7 @@
                                             </a>
                                             <span class="text-xs text-gray-600 dark:text-gray-400">
                                                 <span class="text-gray-500 dark:text-gray-500">Owner:</span>
-                                                <a href="{{ route('portfolio.show', ['user' => $mahasiswa->id]) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                                <a href="{{ route('portfolio.slug', ['user' => $mahasiswa->slug]) }}" class="font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                                                     {{ $mahasiswa->nama_mahasiswa }}
                                                 </a>
                                             </span>

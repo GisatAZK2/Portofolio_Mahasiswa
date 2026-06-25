@@ -211,7 +211,7 @@
                                             <!-- Header -->
                                             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                                                 <div class="flex items-center gap-3">
-                                                    <a href="{{ route('portfolio.show', ['user' => $post->user->username]) }}"
+                                                    <a href="{{ route('portfolio.slug', ['slug' => $post->user->slug]) }}"
                                                         class="flex items-center gap-3">
                                                         <div class="relative w-10 h-10 flex-shrink-0">
                                                             <img src="{{ asset('storage/' . $post->user->photo_profile) }}"

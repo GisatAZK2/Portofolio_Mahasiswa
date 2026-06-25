@@ -214,7 +214,7 @@
                                     <td class="px-6 py-5">
     <div class="flex items-center justify-center gap-2">
         @if(isUserDataComplete($user))
-            <a href="{{ route('portfolio.show', ['user' => $user->id]) }}"
+            <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}"
                class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                title="Lihat Portfolio">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,7 +295,7 @@
                                         @endif
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <a href="{{ route('portfolio.show', ['user' => $user->id]) }}"
+                                        <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}"
                                            class="font-semibold text-lg text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 block">
                                             {{ $user->nama_mahasiswa ?? 'Pengguna' }}
                                         </a>
@@ -354,12 +354,11 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Action Buttons -->
+                            
                             <!-- Action Buttons -->
 <div class="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-5 py-4 flex gap-3">
     @if(isUserDataComplete($user))
-        <a href="{{ route('portfolio.show', $user->id) }}"
+        <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}"
            class="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 rounded-xl transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

@@ -458,7 +458,7 @@
                                 <td class="px-3 py-3">
                                     <div class="flex space-x-2">
                                         @if (in_array($user->role, ['mahasiswa', 'dosen']))
-                                            <a href="{{ route('portfolio.show', ['user' => $user->id]) }}"
+                                            <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}"
                                                 class="text-blue-500 hover:text-blue-700 transition-colors" title="Lihat Portfolio">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -637,7 +637,7 @@
 
                     <div class="flex justify-end space-x-3 pt-3 border-t border-gray-200 dark:border-gray-600 mobile-card-buttons">
                         @if (in_array($user->role, ['mahasiswa', 'dosen']))
-                            <a href="{{ route('portfolio.show', ['user' => $user->id]) }}" class="text-blue-500 hover:text-blue-700 p-2 transition-colors"
+                            <a href="{{ route('portfolio.slug', ['user' => $user->slug]) }}" class="text-blue-500 hover:text-blue-700 p-2 transition-colors"
                                 title="Lihat Portfolio">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">

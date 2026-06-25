@@ -105,6 +105,7 @@
                                 $userName = $displayUser->nama_mahasiswa ?? 'Pengguna';
                                 $userId = $displayUser->id ?? null;
                                 $userPhoto = $displayUser->photo_profile ?? null;
+                                $userSlug    = $displayUser->slug ?? null;
 
                                 $viewCount = $project->views ?? $project->unique_views_count ?? 0;
 
@@ -115,7 +116,7 @@
                             <div class="flex flex-col rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-900 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-all duration-300 p-3 sm:p-4 lg:p-5">
 
                                 {{-- [A] User info --}}
-                                <a href="{{ $userId ? route('portfolio.show', ['user' => $userId]) : '#' }}"
+                                <a href="{{ $userSlug ? route('portfolio.slug', ['slug' => $userSlug]) : '#' }}"
                                     class="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity h-10 overflow-hidden shrink-0">
                                     <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-100 shadow-sm shrink-0 relative">
                                         @if($userPhoto && Storage::disk('public')->exists($userPhoto))
