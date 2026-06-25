@@ -168,7 +168,7 @@
                                             </div>
                                         @endif
                                         <div>
-                                            <a href="{{ route('portfolio.slug', ['slug' => $owner->slug]) }}"
+                                            <a href="{{ route('portfolio.show', ['user' => $owner->username]) }}"
                                                 class="text-sm font-medium text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                                                 {{ $owner->nama_mahasiswa }}
                                             </a>
@@ -208,7 +208,7 @@
                                             </div>
                                         @endif
                                         <div>
-                                            <a href="{{ route('portfolio.slug', ['slug' => $leader->slug]) }}"
+                                            <a href="{{ route('portfolio.show', ['user' => $leader->username]) }}"
                                                 class="text-sm font-medium text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                                                 {{ $leader->nama_mahasiswa }}
                                             </a>
@@ -234,7 +234,7 @@
 
                                 <div class="space-y-2">
                                     @forelse($project->members as $member)
-                                    <a href="{{ route('portfolio.slug', ['slug' => $member->slug]) }}">
+                                    <a href="{{ route('portfolio.show', ['user' => $member->username]) }}">
                                         @if($member->id !== $project->leader_id)
                                             <div
                                                 class="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 max-w-max">
@@ -248,7 +248,7 @@
                                                         {{ strtoupper(mb_substr(trim($member->nama_mahasiswa ?? 'M'), 0, 1)) }}
                                                     </div>
                                                 @endif
-                                                <a href="{{ route('portfolio.slug', ['slug' => $member->slug]) }}"
+                                                <a href="{{ route('portfolio.show', ['user' => $member->username]) }}"
                                                     class="text-sm text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                                                     {{ $member->nama_mahasiswa }}
                                                 </a>
