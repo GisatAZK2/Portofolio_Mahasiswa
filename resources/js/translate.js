@@ -51,20 +51,23 @@ function applyTranslations() {
     const key = el.dataset.translate;
 
     if (page && key) {
-      const text = translateKey(page, key);
-      if (text !== el.textContent) {
-        el.textContent = text;
-      }
+        const text = translateKey(page, key);
+        if (text !== el.textContent) {
+            el.textContent = text;
+        }
     }
 
     const placeholderKey = el.dataset.translatePlaceholder;
     if (placeholderKey) {
-      const placeholderText = translateKey(page, placeholderKey);
-      if (placeholderText && placeholderText !== el.getAttribute('placeholder')) {
-        el.setAttribute('placeholder', placeholderText);
-      }
+        const placeholderText = translateKey(page, placeholderKey);
+        if (placeholderText && placeholderText !== el.getAttribute('placeholder')) {
+            el.setAttribute('placeholder', placeholderText);
+        }
     }
-  });
+
+    // Tandai elemen sudah diterjemahkan → muncul
+    el.classList.add('translated');
+});
 
   const select = document.getElementById('languageSelect');
   if (select && select.value !== currentLang) {
