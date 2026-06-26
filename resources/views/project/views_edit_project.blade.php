@@ -9,6 +9,7 @@
             'user_id'   => $task->user_id,
             'user_name' => $task->user?->nama_mahasiswa,
             'name_task' => $task->name_task,
+            'is_done'   => $task->is_done,  // ← TAMBAHKAN INI
         ];
     })->toArray();
 @endphp

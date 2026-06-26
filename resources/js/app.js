@@ -6362,6 +6362,7 @@ window.initProjectCreatePage = function(container) {
         const userId   = taskData?.user_id ?? '';
         const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
         const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+        const isDone   = taskData?.is_done ? true : false; // ← TAMBAHKAN
 
         const taskItem = document.createElement('div');
         taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
@@ -6380,6 +6381,20 @@ window.initProjectCreatePage = function(container) {
                         class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                         placeholder="Deskripsikan tugas...">
                 </div>
+
+                {{-- ↓ TAMBAHKAN BLOK INI ↓ --}}
+                <div class="flex items-center gap-2 mt-1">
+                    <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                    <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                        id="is_done_${index}"
+                        class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        ${isDone ? 'checked' : ''}>
+                    <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">
+                        Tugas Selesai
+                    </label>
+                </div>
+                {{-- ↑ SAMPAI SINI ↑ --}}
+
                 <button type="button" onclick="removeTaskRow(this)"
                     class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
             </div>
@@ -6696,6 +6711,7 @@ window.initProjectEditPage = function(container) {
         const index = taskIndex++;
         const userId = taskData?.user_id ?? '';
         const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+        const isDone = taskData?.is_done ? true : false;
         const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
 
         const taskItem = document.createElement('div');
@@ -6717,6 +6733,16 @@ window.initProjectEditPage = function(container) {
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
                                class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
                                placeholder="Deskripsikan tugas...">
+                            <div class="flex items-center gap-2 mt-1">
+                                <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                                <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                                    id="is_done_${index}"
+                                    class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                    ${isDone ? 'checked' : ''}>
+                                <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">
+                                    Tugas Selesai
+                                </label>
+                            </div>
                     </div>
                     <button type="button" onclick="removeTaskRow(this)" 
                             class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
@@ -6737,6 +6763,16 @@ window.initProjectEditPage = function(container) {
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}" 
                                class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
                                placeholder="Deskripsikan tugas...">
+                        <div class="flex items-center gap-2 mt-1">
+                                <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                                <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                                    id="is_done_${index}"
+                                    class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                    ${isDone ? 'checked' : ''}>
+                                <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">
+                                    Tugas Selesai
+                                </label>
+                        </div>
                     </div>
                     <button type="button" onclick="removeTaskRow(this)" 
                             class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
@@ -6774,27 +6810,27 @@ window.initProjectEditPage = function(container) {
     function saveCurrentTasks() {
         const tasks = [];
         document.querySelectorAll('.task-item').forEach(taskItem => {
-            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+            const userIdInput  = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
             const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
-            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
-            
+            const taskIdInput  = taskItem.querySelector('input[name$="[id]"]');
+            const isDoneInput  = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
+
             let userId = null;
-            if (userIdInput) {
-                userId = userIdInput.value;
-            }
-            
+            if (userIdInput) { userId = userIdInput.value; }
+
             const taskName = taskNameInput ? taskNameInput.value : '';
-            const taskId = taskIdInput ? taskIdInput.value : null;
-            
+            const taskId   = taskIdInput ? taskIdInput.value : null;
+            const isDone   = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
+
             if (taskName) {
                 tasks.push({
-                    id: taskId,
-                    user_id: userId || currentUser.id,
-                    name_task: taskName
+                    id:        taskId,
+                    user_id:   userId || currentUser.id,
+                    name_task: taskName,
+                    is_done:   isDone, // ← TAMBAHKAN
                 });
             }
         });
-        
         return tasks;
     }
 
@@ -7879,6 +7915,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         const userId = taskData?.user_id ?? '';
         const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
         const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+        const isDone = taskData?.is_done ? true : false;
 
         const taskItem = document.createElement('div');
         taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
@@ -7900,6 +7937,14 @@ document.addEventListener('turbo:load', handlePaginationScroll);
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
                                class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                placeholder="Deskripsikan tugas...">
+                          <div class="flex items-center gap-2 mt-2">
+                                <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                                <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                                    id="is_done_${index}"
+                                    class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                    ${isDone ? 'checked' : ''}>
+                                <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">Tugas Selesai</label>
+                            </div>
                     </div>
                     <button type="button" onclick="window.removeTaskRow(this)"
                             class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
@@ -7956,18 +8001,24 @@ document.addEventListener('turbo:load', handlePaginationScroll);
     function saveCurrentTasks() {
         const tasks = [];
         document.querySelectorAll('.task-item').forEach(taskItem => {
-            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+            const userIdInput  = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
             const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
-            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+            const taskIdInput  = taskItem.querySelector('input[name$="[id]"]');
+            const isDoneInput  = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
+
             let userId = null;
-            if (userIdInput) userId = userIdInput.value;
+            if (userIdInput) { userId = userIdInput.value; }
+
             const taskName = taskNameInput ? taskNameInput.value : '';
-            const taskId = taskIdInput ? taskIdInput.value : null;
+            const taskId   = taskIdInput ? taskIdInput.value : null;
+            const isDone   = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
+
             if (taskName) {
                 tasks.push({
-                    id: taskId,
-                    user_id: userId || (projectData?.currentUser?.id || ''),
-                    name_task: taskName
+                    id:        taskId,
+                    user_id:   userId || currentUser.id,
+                    name_task: taskName,
+                    is_done:   isDone, // ← TAMBAHKAN
                 });
             }
         });
@@ -8916,6 +8967,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             const userId = taskData?.user_id ?? '';
             const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
             const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
+            const isDone = taskData?.is_done ? true : false;
 
             const taskItem = document.createElement('div');
             taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
@@ -8924,7 +8976,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
                 <div class="grid gap-4 md:grid-cols-3 items-end">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" required>
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
@@ -8933,6 +8985,16 @@ document.addEventListener('turbo:load', handlePaginationScroll);
                         <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
                             class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                             placeholder="Deskripsikan tugas...">
+                         <div class="flex items-center gap-2 mt-1">
+                            <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                            <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                                id="is_done_${index}"
+                                class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                ${isDone ? 'checked' : ''}>
+                            <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">
+                                Tugas Selesai
+                            </label>
+                        </div>
                     </div>
                     <button type="button" onclick="removeTaskRow(this)"
                         class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>

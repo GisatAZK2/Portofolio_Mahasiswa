@@ -335,10 +335,18 @@ class ProjekController extends Controller
                     ->first();
 
                 if ($existingTask) {
-                    $existingTask->update([
-                        'user_id' => $userId,
+                    $updateData = [
+                        'user_id'   => $userId,
                         'name_task' => $name,
-                    ]);
+                    ];
+
+                    // Update is_done hanya jika dikirim dari request
+                    if (array_key_exists('is_done', $task) && $task['is_done'] !== null) {
+                        $updateData['is_done'] = (bool) $task['is_done'];
+                    }
+
+                    $existingTask->update($updateData);
+
                     $savedTaskIds[] = $existingTask->id;
                     continue;
                 }
@@ -348,7 +356,7 @@ class ProjekController extends Controller
                 'project_id' => $project->id,
                 'user_id' => $userId,
                 'name_task' => $name,
-                'is_done' => false,
+                'is_done'    => isset($task['is_done']) ? (bool)$task['is_done'] : false,
             ]);
 
             $savedTaskIds[] = $newTask->id;
@@ -386,7 +394,9 @@ class ProjekController extends Controller
             'members.*' => 'nullable|exists:users,id|different:leader',
             'tasks' => 'nullable|array',
             'tasks.*.user_id' => 'required|exists:users,id',
-            'tasks.*.name_task' => 'required|string|max:255',
+            'tasks.*.name_task' => 'required|string',
+            'tasks.*.is_done'   => 'sometimes|boolean',
+
         ]);
 
         $content = array_filter($request->only([
@@ -737,7 +747,8 @@ if (Project::where('project_fingerprint', $fingerprint)->exists()) {
             'tasks' => 'nullable|array',
             'tasks.*.id' => 'sometimes|nullable|integer|exists:project_tasks,id',
             'tasks.*.user_id' => 'sometimes|nullable|exists:users,id',
-            'tasks.*.name_task' => 'sometimes|nullable|string|max:255',
+            'tasks.*.name_task' => 'sometimes|nullable|string',
+            'tasks.*.is_done'   => 'sometimes|boolean',
         ]);
 
         // Prepare content array
@@ -838,16 +849,14 @@ if ($duplicateProject) {
         $submittedTasks = collect($request->input('tasks', []))
             ->map(function ($task) {
                 return [
-                    'id' => $task['id'] ?? null,
-                    'user_id' => $task['user_id'] ?? null,
+                    'id'        => $task['id'] ?? null,
+                    'user_id'   => $task['user_id'] ?? null,
                     'name_task' => trim($task['name_task'] ?? ''),
+                    'is_done'   => isset($task['is_done']) ? (bool)$task['is_done'] : null, // ← TAMBAHKAN
                 ];
             })
-            ->filter(function ($task) {
-                return !empty($task['user_id']) && !empty($task['name_task']);
-            })
-            ->values()
-            ->all();
+            ->filter(fn($task) => !empty($task['user_id']) && !empty($task['name_task']))
+            ->values()->all();
 
         $savedTaskIds = $this->createProjectTasks($project, $submittedTasks, false);
 
