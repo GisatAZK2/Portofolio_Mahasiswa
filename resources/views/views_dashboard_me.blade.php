@@ -157,7 +157,7 @@
                     </div>
 
                     <!-- Postingan Sendiri -->
-                    <div id="postingan-section" class="feed-section mb-10">
+                    <div id="postingan-section" class="feed-section mb-10" data-pagination-group="postingan">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300" data-translate="ur_post"
@@ -445,7 +445,7 @@
                     </div>
 
                     <!-- Project -->
-                    <div id="projects-section" class="mb-10">
+                    <div id="projects-section" class="mb-10" data-pagination-group="project">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300" data-translate="project"
@@ -491,7 +491,7 @@
                     </div>
 
                     <!-- Sertifikat -->
-                    <div id="sertifikat-section" class="mb-10">
+                    <div id="sertifikat-section" class="mb-10"  data-pagination-group="sertifikat">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="sertifikat"
@@ -547,7 +547,7 @@
                      RIGHT COLUMN: Sidebar
                 ============================================================ -->
                 <div class="sidebar-column">
-                    <div
+                    <div data-pagination-group="learning_corner"
                         class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>

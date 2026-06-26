@@ -45,7 +45,7 @@
                     </div>
 
                     <!-- ══ Postingan Section ══ -->
-                    <div id="postingan-section" class="feed-section mb-10">
+                    <div id="postingan-section" class="feed-section mb-10" data-pagination-group="postingan">
                         <div class="flex items-center gap-2 mb-2">
                             <div class="w-1 h-5 bg-indigo-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300"
@@ -326,7 +326,7 @@
                     </div>
 
                     <!-- ══ Project Section ══ -->
-                    <div id="projects-section" class="feed-section mb-10">
+                    <div id="projects-section" class="feed-section mb-10" data-pagination-group="project">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-orange-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-orange-600 dark:text-orange-300"
@@ -373,7 +373,7 @@
                     </div>
 
                     <!-- ══ Sertifikat Section ══ -->
-                    <div id="sertifikat-section" class="feed-section">
+                    <div id="sertifikat-section" class="feed-section"  data-pagination-group="sertifikat">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-green-700 dark:text-green-300"
@@ -423,8 +423,8 @@
                      RIGHT COLUMN: Sidebar
                 ════════════════════════════════════════ -->
                 <div class="sidebar-column">
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6">
+                    <div 
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6" data-pagination-group="learning_corner">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
                             <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300"
