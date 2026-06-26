@@ -327,6 +327,10 @@
 }
 </style>
 
+<!-- Di footer.blade.php, tambah sebelum <script> map: -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.css">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4/dist/maplibre-gl.js"></script>
+
 <script>
 (function() {
   
@@ -508,11 +512,6 @@ function openMapModal(e) {
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-
-    // Resize map setelah modal terlihat
-    setTimeout(() => {
-        maps.forEach(m => m.resize());
-    }, 100);
 }
 
 // Ganti closeMapModal
