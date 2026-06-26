@@ -7782,7 +7782,7 @@ function handlePaginationScroll() {
         if (element) {
             setTimeout(function () {
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            }, 1200);
         }
         sessionStorage.removeItem('scrollToGroup');
     }

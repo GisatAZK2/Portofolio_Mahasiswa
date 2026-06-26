@@ -491,7 +491,7 @@
                     </div>
 
                     <!-- Sertifikat -->
-                    <div id="sertifikat-section" class="mb-10"  data-pagination-group="sertifikat">
+                    <div id="sertifikat-section" class="mb-10">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-green-600 rounded-full"></div>
                             <h3 class="text-lg font-semibold text-green-700 dark:text-green-300" data-translate="sertifikat"
