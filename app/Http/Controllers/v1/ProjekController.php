@@ -239,30 +239,23 @@ class ProjekController extends Controller
         if ($users->count() > 0) {
             foreach ($users as $user) {
                 $userListHtml .= '
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2" data-user-id="' . $user->id . '">
-                    <div class="flex items-center gap-3">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2" data-user-id="' . $user->id . '">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
                         ' . ($user->photo_profile
-                    ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
-                    : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                            <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
-                    . strtoupper(substr($user->nama_mahasiswa, 0, 1)) .
-                    '</span>
-                       </div>'
-                ) . '
-                        <div>
-                            <div class="font-medium text-gray-900 dark:text-gray-100">'
-                    . e($user->nama_mahasiswa) .
-                    '</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none"
-                                 title="' . e($user->email) . '">'
-                    . e($user->email) .
-                    '</div>
+                            ? '<img src="/storage/' . $user->photo_profile . '" class="w-10 h-10 rounded-full object-cover flex-shrink-0">'
+                            : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
+                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold">' . strtoupper(substr($user->nama_mahasiswa, 0, 1)) . '</span>
+                            </div>'
+                        ) . '
+                        <div class="min-w-0 flex-1">
+                            <div class="font-medium text-gray-900 dark:text-gray-100 break-words">' . e($user->nama_mahasiswa) . '</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 break-all" title="' . e($user->email) . '">' . e($user->email) . '</div>
                         </div>
                     </div>
-                    <div>
-                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
-                            data-user-id="' . $user->id . '"
-                            onchange="updateUserRole(this, ' . $user->id . ', this.value)">
+                    <div class="mt-2 sm:mt-0 flex-shrink-0">
+                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm w-full sm:w-auto"
+                                data-user-id="' . $user->id . '"
+                                onchange="updateUserRole(this, ' . $user->id . ', this.value)">
                             <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
                             <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt">Leader</option>
                             <option value="member" data-translate="member_role" data-translate-page="dosen_add_pjt">Member</option>
@@ -627,29 +620,28 @@ if (Project::where('project_fingerprint', $fingerprint)->exists()) {
                     $selectedRole = 'member';
                 }
 
-                $userListHtml .= '
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2" data-user-id="' . $u->id . '">
-                    <div class="flex items-center gap-3">
+               $userListHtml .= '
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2" data-user-id="' . $u->id . '">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
                         ' . ($u->photo_profile
-                    ? '<img src="/storage/' . $u->photo_profile . '" class="w-10 h-10 rounded-full object-cover">'
-                    : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                            <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
-                    . strtoupper(substr($u->nama_mahasiswa, 0, 1)) .
-                    '</span>
-                       </div>'
-                ) . '
-                        <div>
-                            <div class="font-medium text-gray-900 dark:text-gray-100">'
-                    . e($u->nama_mahasiswa) .
-                    '</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[145px] md:max-w-none"
-                                 title="' . e($u->email) . '">'
-                    . e($u->email) .
-                    '</div>
+                            ? '<img src="/storage/' . $u->photo_profile . '" class="w-10 h-10 rounded-full object-cover flex-shrink-0">'
+                            : '<div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
+                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold">'
+                                . strtoupper(substr($u->nama_mahasiswa, 0, 1)) .
+                                '</span>
+                            </div>'
+                        ) . '
+                        <div class="min-w-0 flex-1">
+                            <div class="font-medium text-gray-900 dark:text-gray-100 break-words">'
+                                . e($u->nama_mahasiswa) .
+                            '</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 break-all" title="' . e($u->email) . '">'
+                                . e($u->email) .
+                            '</div>
                         </div>
                     </div>
-                    <div>
-                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm"
+                    <div class="mt-2 sm:mt-0 flex-shrink-0">
+                        <select class="user-role-select px-3 py-1 border border-gray-300 dark:border-gray-500 rounded-lg text-sm w-full sm:w-auto"
                             data-user-id="' . $u->id . '">
                             <option value="" data-translate="choose_role" data-translate-page="dosen_add_pjt">-- Pilih Role --</option>
                             <option value="leader" data-translate="leader_role" data-translate-page="dosen_add_pjt"' . ($selectedRole == 'leader' ? 'selected' : '') . '>Leader</option>
