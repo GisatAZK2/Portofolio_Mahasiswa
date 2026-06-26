@@ -317,6 +317,37 @@ class UserController extends Controller
         $hasPasskey = $user->passkeys()->count() > 0;
 
         if ($hasPasskey) {
+            // ── Cek apakah browser/device ini sudah dipercaya (trusted) ─────────
+            $cookieName = 'passkey_trusted_' . $user->id;
+            $rawToken   = $request->cookie($cookieName);
+
+            if ($rawToken) {
+                $hashedToken = hash('sha256', $rawToken);
+                $trusted = \App\Models\TrustedDevice::where('user_id', $user->id)
+                    ->where('token', $hashedToken)
+                    ->where('expires_at', '>', now())
+                    ->first();
+
+                if ($trusted) {
+                    // Device dipercaya — skip verifikasi passkey, langsung login
+                    Auth::login($user, $request->boolean('remember'));
+                    session(['user_role' => $user->role]);
+                    $request->session()->regenerate();
+
+                    if ($user->role === 'admin') {
+                        return redirect()->route('admin.index')
+                            ->with('success', 'Login berhasil! Selamat datang Admin.');
+                    }
+                    if ($user->role === 'dosen') {
+                        return redirect()->route('dosen.dashboard')
+                            ->with('success', 'Login berhasil! Selamat datang Dosen.');
+                    }
+                    return redirect()->route('dashboard.me')
+                        ->with('success', 'Login berhasil! Selamat datang kembali.');
+                }
+            }
+            // ─────────────────────────────────────────────────────────────────────
+
             session(['2fa_user_id' => $user->id]);
             session(['2fa_requires_verification' => true]);
             session(['2fa_remember' => $request->boolean('remember')]);
@@ -338,6 +369,7 @@ class UserController extends Controller
 
         return redirect()->route('dashboard.me')->with('success', 'Login berhasil! Selamat datang kembali.');
     }
+
 
     public function forgotpasswordpage()
     {

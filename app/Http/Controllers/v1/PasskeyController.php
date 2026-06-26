@@ -166,6 +166,39 @@ class PasskeyController extends Controller
             // Set session that 2FA is verified
             Session::put('2fa_verified', true);
 
+            // ── Buat trusted device token (cookie 7 hari) ──────────────────────
+            $rawToken    = \Illuminate\Support\Str::random(64);
+            $hashedToken = hash('sha256', $rawToken);
+            $expiresAt   = now()->addDays(7);
+
+            // Simpan hash ke database
+            \App\Models\TrustedDevice::create([
+                'user_id'    => $user->id,
+                'token'      => $hashedToken,
+                'expires_at' => $expiresAt,
+            ]);
+
+            // Cleanup token lama yang sudah expired milik user ini
+            \App\Models\TrustedDevice::where('user_id', $user->id)
+                ->where('expires_at', '<=', now())
+                ->delete();
+
+            // Cookie: 7 hari dalam menit, httpOnly, secure
+            $cookieName   = 'passkey_trusted_' . $user->id;
+            $cookieMinutes = 60 * 24 * 7; // 7 hari
+            $trustedCookie = cookie(
+                $cookieName,
+                $rawToken,
+                $cookieMinutes,
+                '/',
+                null,
+                config('session.secure', false), // secure flag sesuai config
+                true,                             // httpOnly
+                false,
+                'Lax'
+            );
+            // ───────────────────────────────────────────────────────────────────
+
             // Redirect based on role
             $redirect = match($user->role) {
                 'admin' => route('admin.index'),
@@ -174,10 +207,10 @@ class PasskeyController extends Controller
             };
 
             return response()->json([
-                'success' => true,
-                'message' => 'Verifikasi berhasil',
+                'success'  => true,
+                'message'  => 'Verifikasi berhasil',
                 'redirect' => $redirect
-            ]);
+            ])->withCookie($trustedCookie);
 
         } catch (\Exception $e) {
             Log::error('2FA verify error: ' . $e->getMessage());
@@ -187,6 +220,7 @@ class PasskeyController extends Controller
             ], 500);
         }
     }
+
 
     // ==================== REGULAR PASSKEY METHODS ====================
 

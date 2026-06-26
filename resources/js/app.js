@@ -1028,6 +1028,39 @@ window.checkSessionAlerts = function () {
     }
 };
 
+function initPasskeyManagement() {
+    // Muat daftar passkey saat halaman terbuka
+    if (typeof window.loadPasskeys === 'function') {
+        window.loadPasskeys();
+    }
+
+    const nameInput = document.getElementById('passkeyName');
+    const addBtn = document.getElementById('addPasskeyBtn');
+    if (!nameInput || !addBtn) return;
+
+    const validate = () => {
+        addBtn.disabled = nameInput.value.trim() === '';
+    };
+
+    nameInput.addEventListener('input', validate);
+    validate(); // initial state
+
+    addBtn.addEventListener('click', () => {
+        if (typeof window.registerPasskey === 'function') {
+            window.registerPasskey();
+        }
+    });
+
+    nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !addBtn.disabled) {
+            e.preventDefault();
+            if (typeof window.registerPasskey === 'function') {
+                window.registerPasskey();
+            }
+        }
+    });
+}
+
 window.runPageInitializers = function () {
     // Passkey Management Page
     if (document.getElementById('passkeyName') && document.getElementById('addPasskeyBtn')) {
@@ -1113,27 +1146,7 @@ window.runPageInitializers = function () {
     }
 };
 
-function initPasskeyManagement() {
-    const nameInput = document.getElementById('passkeyName');
-    const addBtn = document.getElementById('addPasskeyBtn');
-    if (!nameInput || !addBtn) return;
 
-    const validate = () => {
-        addBtn.disabled = nameInput.value.trim() === '';
-    };
-
-    nameInput.addEventListener('input', validate);
-    validate(); // initial state
-
-    addBtn.addEventListener('click', window.registerPasskey);
-
-    nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !addBtn.disabled) {
-            e.preventDefault();
-            window.registerPasskey();
-        }
-    });
-}
 
 function initVerifyPasskey() {
     const verifyBtn = document.getElementById('verifyPasskeyBtn');
@@ -6811,14 +6824,14 @@ window.initProjectEditPage = function (container) {
             const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
             const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
             const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
-            const isDoneInput = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
 
             let userId = null;
-            if (userIdInput) { userId = userIdInput.value; }
+            if (userIdInput) {
+                userId = userIdInput.value;
+            }
 
             const taskName = taskNameInput ? taskNameInput.value : '';
             const taskId = taskIdInput ? taskIdInput.value : null;
-            const isDone = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
 
             if (taskName) {
                 tasks.push({
@@ -6829,6 +6842,7 @@ window.initProjectEditPage = function (container) {
                 });
             }
         });
+
         return tasks;
     }
 
@@ -8296,17 +8310,17 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
 
             return `
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-2xl ${styles}">
-                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                        ${user.photo_profile
-                    ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
-                    : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
-                                <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
+                    <div class="flex items-center gap-3">
+                        ${photo ?
+                    `<img src="${photo}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
+                    `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                                <span class="font-semibold text-current">${initial}</span>
                             </div>`
                 }
-                        <div class="min-w-0 flex-1">
-                            <div class="font-medium break-words">${user.role}: ${user.nama_mahasiswa}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 break-all">${user.email || ''}</div>
+                        <div>
+                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa || 'Unknown'}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 mt-2 sm:mt-0 flex-shrink-0">
@@ -8907,14 +8921,14 @@ document.addEventListener('turbo:load', handlePaginationScroll);
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-2xl ${styles}">
                         <div class="flex items-center gap-3 flex-1 min-w-0">
                             ${user.photo_profile
-                        ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
-                        : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
+                        ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                        : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
                                     <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                                 </div>`
                     }
-                            <div class="min-w-0 flex-1">
-                                <div class="font-medium break-words">${user.role}: ${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 break-all">${user.email || ''}</div>
+                            <div>
+                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 mt-2 sm:mt-0 flex-shrink-0">
@@ -13954,3 +13968,134 @@ window.initAdminProjectEdit = function () {
 };
 
 Alpine.start();
+/* ==========================================
+   MOBILE BOTTOM NAVIGATION JS
+   ========================================== */
+window.fabOpen = false;
+window.profileOpen = false;
+window.guestOpen = false;
+
+function showOverlay(el) {
+    if (!el) return;
+    el.classList.remove('hidden');
+    el.style.pointerEvents = 'auto';
+    // Trigger reflow
+    void el.offsetWidth;
+    el.classList.remove('opacity-0');
+}
+
+function hideOverlay(el) {
+    if (!el) return;
+    el.style.pointerEvents = 'none';
+    el.classList.add('opacity-0');
+    setTimeout(() => { if (el.classList.contains('opacity-0')) el.classList.add('hidden'); }, 300);
+}
+
+function openSheet(sheet, overlay) {
+    if (!sheet) return;
+    sheet.classList.remove('hidden');
+    void sheet.offsetWidth;
+    sheet.classList.remove('translate-y-full');
+    if (overlay) showOverlay(overlay);
+}
+
+function closeSheet(sheet, overlay) {
+    if (!sheet) return;
+    sheet.classList.add('translate-y-full');
+    if (overlay) hideOverlay(overlay);
+}
+
+window.toggleMobileFab = function () {
+    window.fabOpen ? window.closeMobileFab() : window.openMobileFab();
+}
+window.openMobileFab = function () {
+    window.fabOpen = true;
+    openSheet(document.getElementById('mobile-fab-sheet'), document.getElementById('mobile-fab-overlay'));
+    const icon = document.getElementById('mobile-fab-icon');
+    if (icon) icon.style.transform = 'rotate(45deg)';
+}
+window.closeMobileFab = function () {
+    window.fabOpen = false;
+    closeSheet(document.getElementById('mobile-fab-sheet'), document.getElementById('mobile-fab-overlay'));
+    const icon = document.getElementById('mobile-fab-icon');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+}
+
+window.toggleMobileProfile = function () {
+    window.profileOpen ? window.closeMobileProfile() : window.openMobileProfile();
+}
+window.openMobileProfile = function () {
+    window.profileOpen = true;
+    openSheet(document.getElementById('mobile-profile-sheet'), document.getElementById('mobile-profile-overlay'));
+}
+window.closeMobileProfile = function () {
+    window.profileOpen = false;
+    closeSheet(document.getElementById('mobile-profile-sheet'), document.getElementById('mobile-profile-overlay'));
+}
+
+window.toggleGuestSheet = function () {
+    window.guestOpen ? window.closeGuestSheet() : window.openGuestSheet();
+}
+window.openGuestSheet = function () {
+    window.guestOpen = true;
+    openSheet(document.getElementById('guest-sheet'), document.getElementById('guest-sheet-overlay'));
+}
+window.closeGuestSheet = function () {
+    window.guestOpen = false;
+    closeSheet(document.getElementById('guest-sheet'), document.getElementById('guest-sheet-overlay'));
+}
+
+window.toggleMobileDarkMode = function () {
+    window.toggleDarkMode();
+}
+window.toggleGuestDarkMode = function () {
+    window.toggleDarkMode();
+}
+
+window.changeLanguageMobile = function (locale) {
+    const url = new URL(window.location.href);
+    const segments = url.pathname.split('/');
+    const langs = ['id', 'en'];
+    if (langs.includes(segments[1])) {
+        segments[1] = locale;
+    } else {
+        segments.splice(1, 0, locale);
+    }
+    url.pathname = segments.join('/');
+    window.location.href = url.toString();
+}
+window.changeGuestLanguage = function (locale) {
+    window.changeLanguageMobile(locale);
+}
+
+/* Swipe to close */
+document.addEventListener('DOMContentLoaded', () => {
+    const sheets = [
+        { id: 'mobile-fab-sheet', close: window.closeMobileFab },
+        { id: 'mobile-profile-sheet', close: window.closeMobileProfile },
+        { id: 'guest-sheet', close: window.closeGuestSheet }
+    ];
+    sheets.forEach(({ id, close }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        let startY = 0, currentY = 0, dragging = false;
+        el.addEventListener('touchstart', e => {
+            startY = e.touches[0].clientY;
+            dragging = true;
+            el.style.transition = 'none';
+        }, { passive: true });
+        el.addEventListener('touchmove', e => {
+            if (!dragging) return;
+            currentY = e.touches[0].clientY;
+            const delta = Math.max(0, currentY - startY);
+            el.style.transform = 'translateY(' + delta + 'px)';
+        }, { passive: true });
+        el.addEventListener('touchend', () => {
+            dragging = false;
+            el.style.transition = '';
+            if (currentY - startY > 80) close();
+            else el.style.transform = '';
+        });
+    });
+});
+
