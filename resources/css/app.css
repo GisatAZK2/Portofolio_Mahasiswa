@@ -1043,9 +1043,12 @@ textarea:focus {
     width: 48px;
     height: 48px;
     margin-top: -16px;
+    border: 5px solid;
     box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
 }
+
 .dark .bnav-item.active .bnav-icon-wrap {
+    border: 5px solid #1e3a8a;
     background: #1e3a8a;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
