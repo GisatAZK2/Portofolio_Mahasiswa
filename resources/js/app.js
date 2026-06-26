@@ -228,7 +228,7 @@ function initDarkMode() {
     }
 }
 
-window.checkSessionAlerts = function() {
+window.checkSessionAlerts = function () {
     const flashEl = document.getElementById('flash-message');
     if (flashEl) {
         const success = flashEl.getAttribute('data-success');
@@ -359,13 +359,13 @@ document.addEventListener('DOMContentLoaded', () => {
  * Supports both static IDs and dynamic element context.
  * @param {string|HTMLElement} target
  */
-window.togglePasswordVisibility = function(target) {
-    const input = typeof target === 'string' 
-        ? document.getElementById(target) 
+window.togglePasswordVisibility = function (target) {
+    const input = typeof target === 'string'
+        ? document.getElementById(target)
         : (target || document.getElementById('password'));
-        
+
     if (!input) return;
-    
+
     // Find associated icons/buttons
     const parent = input.parentElement;
     const eyeShowIcon = document.getElementById('eye-icon-show') || parent.querySelector('.eye-icon-show') || parent.querySelector('.eye-icon');
@@ -383,13 +383,13 @@ window.togglePasswordVisibility = function(target) {
 };
 
 // Show Alert Banner in Login Form
-window.showAlert = function(message, type = 'error') {
+window.showAlert = function (message, type = 'error') {
     const alertDiv = document.getElementById('alertMessage');
     if (!alertDiv) return;
-    
-    alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'bg-blue-100', 
-                              'text-green-800', 'text-red-800', 'text-yellow-800', 'text-blue-800');
-    
+
+    alertDiv.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-yellow-100', 'bg-blue-100',
+        'text-green-800', 'text-red-800', 'text-yellow-800', 'text-blue-800');
+
     if (type === 'success') {
         alertDiv.classList.add('bg-green-100', 'text-green-800');
     } else if (type === 'warning') {
@@ -399,24 +399,24 @@ window.showAlert = function(message, type = 'error') {
     } else {
         alertDiv.classList.add('bg-red-100', 'text-red-800');
     }
-    
+
     alertDiv.innerHTML = message;
     alertDiv.classList.remove('hidden');
-    
+
     setTimeout(() => {
         alertDiv.classList.add('hidden');
     }, 5000);
 };
 
 // Generic Profile Photo Preview
-document.addEventListener('change', function(e) {
+document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'photo_profile') {
         const file = e.target.files[0];
         const preview = document.getElementById('profile-preview');
         const placeholder = document.getElementById('profile-placeholder') || document.getElementById('profile-preview-placeholder');
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 if (preview) {
                     preview.src = ev.target.result;
                     preview.classList.remove('hidden');
@@ -433,14 +433,14 @@ document.addEventListener('change', function(e) {
 });
 
 // Generic Background Image Preview
-document.addEventListener('change', function(e) {
+document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'background_image') {
         const file = e.target.files[0];
         const previewContainer = document.getElementById('backgroundPreviewContainer');
         const previewImage = document.getElementById('backgroundPreview');
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = function (ev) {
                 if (previewImage) previewImage.src = ev.target.result;
                 if (previewContainer) previewContainer.classList.remove('hidden');
             };
@@ -459,14 +459,14 @@ let otpTimeLeft = 300;
 let otpCanResend = false;
 let otpIsTimerRunning = true;
 
-window.initOtpTimer = function(initialSeconds = 300, resendUrl) {
+window.initOtpTimer = function (initialSeconds = 300, resendUrl) {
     otpTimeLeft = initialSeconds;
     otpIsTimerRunning = true;
     otpCanResend = false;
-    
+
     clearInterval(otpTimerInterval);
     updateOtpTimerDisplay();
-    
+
     otpTimerInterval = setInterval(() => {
         if (otpTimeLeft > 0 && otpIsTimerRunning) {
             otpTimeLeft--;
@@ -475,13 +475,13 @@ window.initOtpTimer = function(initialSeconds = 300, resendUrl) {
             clearInterval(otpTimerInterval);
             otpIsTimerRunning = false;
             otpCanResend = true;
-            
+
             const resendBtn = document.getElementById('resend-otp-btn');
             if (resendBtn) {
                 resendBtn.disabled = false;
                 resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
-            
+
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
                     icon: 'warning',
@@ -508,11 +508,11 @@ function formatOtpTime(seconds) {
 function updateOtpTimerDisplay() {
     const timerElement = document.getElementById('timer');
     const timerBar = document.getElementById('timer-bar');
-    
+
     if (timerElement) {
         timerElement.textContent = formatOtpTime(otpTimeLeft);
     }
-    
+
     if (timerBar) {
         const percentage = (Math.max(0, otpTimeLeft) / 300) * 100;
         timerBar.style.width = `${percentage}%`;
@@ -529,7 +529,7 @@ function updateOtpTimerDisplay() {
     }
 }
 
-window.resendOtp = function(resendUrl) {
+window.resendOtp = function (resendUrl) {
     if (!otpCanResend && otpTimeLeft > 0) {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -542,10 +542,10 @@ window.resendOtp = function(resendUrl) {
         }
         return;
     }
-    
+
     const emailInput = document.getElementById('email-input');
     const email = emailInput ? emailInput.value : '';
-    
+
     if (!email) {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -557,7 +557,7 @@ window.resendOtp = function(resendUrl) {
         }
         return;
     }
-    
+
     if (typeof Swal !== 'undefined') {
         Swal.fire({
             title: 'Mengirim Kode OTP...',
@@ -565,7 +565,7 @@ window.resendOtp = function(resendUrl) {
             didOpen: () => Swal.showLoading()
         });
     }
-    
+
     fetch(resendUrl, {
         method: 'POST',
         headers: {
@@ -574,47 +574,47 @@ window.resendOtp = function(resendUrl) {
         },
         body: JSON.stringify({ email: email })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (typeof Swal !== 'undefined') Swal.close();
-        if (data.success) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Kode OTP baru telah dikirim ke email Anda.',
-                    confirmButtonColor: '#3b82f6',
-                    timer: 2000
-                });
+        .then(response => response.json())
+        .then(data => {
+            if (typeof Swal !== 'undefined') Swal.close();
+            if (data.success) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Kode OTP baru telah dikirim ke email Anda.',
+                        confirmButtonColor: '#3b82f6',
+                        timer: 2000
+                    });
+                }
+                window.initOtpTimer(300, resendUrl);
+                const otpInput = document.getElementById('otp');
+                if (otpInput) otpInput.value = '';
+            } else {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message || 'Gagal mengirim kode OTP. Silakan coba lagi.',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                }
             }
-            window.initOtpTimer(300, resendUrl);
-            const otpInput = document.getElementById('otp');
-            if (otpInput) otpInput.value = '';
-        } else {
+        })
+        .catch(error => {
             if (typeof Swal !== 'undefined') {
+                Swal.close();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Gagal',
-                    text: data.message || 'Gagal mengirim kode OTP. Silakan coba lagi.',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan. Silakan coba lagi.',
                     confirmButtonColor: '#3b82f6'
                 });
             }
-        }
-    })
-    .catch(error => {
-        if (typeof Swal !== 'undefined') {
-            Swal.close();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Terjadi kesalahan. Silakan coba lagi.',
-                confirmButtonColor: '#3b82f6'
-            });
-        }
-    });
+        });
 };
 
-window.clearOtp = function() {
+window.clearOtp = function () {
     const otpInput = document.getElementById('otp');
     if (otpInput) {
         otpInput.value = '';
@@ -623,7 +623,7 @@ window.clearOtp = function() {
 };
 
 // WebAuthn 2FA Login Verification
-window.verifyWithPasskey = async function() {
+window.verifyWithPasskey = async function () {
     const btn = document.getElementById('verifyPasskeyBtn');
     if (!btn) return;
     const originalHtml = btn.innerHTML;
@@ -690,7 +690,7 @@ window.verifyWithPasskey = async function() {
         } else if (error.message) {
             errorMessage = error.message;
         }
-        
+
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 icon: 'error',
@@ -717,7 +717,7 @@ function buildPasskeyUrl(path) {
     return locale ? `/${locale}${path}` : path;
 }
 
-window.loadPasskeys = async function() {
+window.loadPasskeys = async function () {
     const container = document.getElementById('passkeysList');
     if (!container) return;
     container.innerHTML = `
@@ -731,7 +731,7 @@ window.loadPasskeys = async function() {
             </div>
         </div>
     `;
-    
+
     try {
         const url = buildPasskeyUrl('/webauthn/passkeys');
         const response = await fetch(url, {
@@ -741,12 +741,12 @@ window.loadPasskeys = async function() {
             },
             credentials: 'same-origin'
         });
-        
+
         if (response.status === 401) {
             window.location.href = buildPasskeyUrl('/login');
             return;
         }
-        
+
         const result = await response.json();
         if (result.success && result.data && result.data.length > 0) {
             renderPasskeysList(result.data);
@@ -759,7 +759,7 @@ window.loadPasskeys = async function() {
     }
 };
 
-window.deletePasskey = async function(id, name) {
+window.deletePasskey = async function (id, name) {
     if (typeof Swal === 'undefined') return;
     const result = await Swal.fire({
         title: 'Hapus Passkey?',
@@ -771,7 +771,7 @@ window.deletePasskey = async function(id, name) {
         confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal'
     });
-    
+
     if (result.isConfirmed) {
         Swal.fire({
             title: 'Memproses...',
@@ -779,7 +779,7 @@ window.deletePasskey = async function(id, name) {
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         });
-        
+
         try {
             const locale = getPasskeyLocale();
             const url = `/${locale}/webauthn/passkeys?id=${id}`;
@@ -792,7 +792,7 @@ window.deletePasskey = async function(id, name) {
                 },
                 credentials: 'same-origin'
             });
-            
+
             const data = await response.json();
             if (data.success) {
                 Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Passkey berhasil dihapus', timer: 2000, showConfirmButton: false });
@@ -807,22 +807,22 @@ window.deletePasskey = async function(id, name) {
     }
 };
 
-window.registerPasskey = async function() {
+window.registerPasskey = async function () {
     const nameInput = document.getElementById('passkeyName');
     if (!nameInput) return;
     const name = nameInput.value.trim();
-    
+
     if (!name) {
         if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Peringatan', text: 'Masukkan nama perangkat terlebih dahulu', confirmButtonColor: '#3085d6' });
         nameInput.focus();
         return;
     }
-    
+
     if (!window.PublicKeyCredential) {
         if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Tidak Didukung', text: 'Browser Anda tidak mendukung WebAuthn.', confirmButtonColor: '#3085d6' });
         return;
     }
-    
+
     const btn = document.getElementById('addPasskeyBtn');
     if (!btn) return;
     const originalHtml = btn.innerHTML;
@@ -834,7 +834,7 @@ window.registerPasskey = async function() {
         </svg>
         <span>Memproses...</span>
     `;
-    
+
     try {
         const optionsUrl = buildPasskeyUrl('/webauthn/register/options');
         const optionsResponse = await fetch(optionsUrl, {
@@ -846,10 +846,10 @@ window.registerPasskey = async function() {
             },
             credentials: 'same-origin'
         });
-        
+
         if (!optionsResponse.ok) throw new Error('Gagal mendapatkan konfigurasi autentikasi');
         const options = await optionsResponse.json();
-        
+
         let credential;
         try {
             credential = await SimpleWebAuthnBrowser.startRegistration(options);
@@ -858,7 +858,7 @@ window.registerPasskey = async function() {
             else if (err.name === 'NotSupportedError') throw new Error('Perangkat Anda tidak mendukung metode autentikasi yang diminta');
             else throw new Error('Gagal melakukan autentikasi: ' + (err.message || err));
         }
-        
+
         const verifyUrl = buildPasskeyUrl('/webauthn/register/verify');
         const verifyResponse = await fetch(verifyUrl, {
             method: 'POST',
@@ -870,7 +870,7 @@ window.registerPasskey = async function() {
             body: JSON.stringify({ credential, name }),
             credentials: 'same-origin'
         });
-        
+
         const result = await verifyResponse.json();
         if (result.success) {
             if (typeof Swal !== 'undefined') Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Passkey berhasil ditambahkan!', timer: 2000, showConfirmButton: false });
@@ -893,7 +893,7 @@ function renderPasskeysList(passkeys) {
     const container = document.getElementById('passkeysList');
     if (!container) return;
     container.innerHTML = '';
-    
+
     passkeys.forEach(passkey => {
         const div = document.createElement('div');
         div.className = 'group flex justify-between items-center p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-150';
@@ -950,18 +950,18 @@ function escapePasskeyHtml(text) {
    PAGE-SPECIFIC INITIALIZERS
    ========================================== */
 
-window.checkSessionAlerts = function() {
+window.checkSessionAlerts = function () {
     const body = document.body;
     const sessionData = document.getElementById('session-alert-data');
     if (!body && !sessionData) return;
-    
+
     const success = sessionData ? (sessionData.dataset.sessionSuccess || sessionData.getAttribute('data-session-success')) : (body ? (body.dataset.sessionSuccess || body.getAttribute('data-session-success')) : null);
     const error = sessionData ? (sessionData.dataset.sessionError || sessionData.getAttribute('data-session-error')) : (body ? (body.dataset.sessionError || body.getAttribute('data-session-error')) : null);
     const warning = sessionData ? (sessionData.dataset.sessionWarning || sessionData.getAttribute('data-session-warning')) : (body ? (body.dataset.sessionWarning || body.getAttribute('data-session-warning')) : null);
     const errorsFirst = sessionData ? (sessionData.dataset.errorsFirst || sessionData.getAttribute('data-errors-first')) : (body ? (body.dataset.errorsFirst || body.getAttribute('data-errors-first')) : null);
     const errorsAll = sessionData ? (sessionData.dataset.errorsAll || sessionData.getAttribute('data-errors-all')) : null;
     const isBlocked = sessionData ? (sessionData.dataset.isBlocked || sessionData.getAttribute('data-is-blocked')) : null;
-    
+
     if (success) {
         if (typeof Swal !== 'undefined' && window.showSuccessAlert) {
             window.showSuccessAlert(success);
@@ -1028,7 +1028,7 @@ window.checkSessionAlerts = function() {
     }
 };
 
-window.runPageInitializers = function() {
+window.runPageInitializers = function () {
     // Passkey Management Page
     if (document.getElementById('passkeyName') && document.getElementById('addPasskeyBtn')) {
         initPasskeyManagement();
@@ -1117,16 +1117,16 @@ function initPasskeyManagement() {
     const nameInput = document.getElementById('passkeyName');
     const addBtn = document.getElementById('addPasskeyBtn');
     if (!nameInput || !addBtn) return;
-    
+
     const validate = () => {
         addBtn.disabled = nameInput.value.trim() === '';
     };
-    
+
     nameInput.addEventListener('input', validate);
     validate(); // initial state
-    
+
     addBtn.addEventListener('click', window.registerPasskey);
-    
+
     nameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !addBtn.disabled) {
             e.preventDefault();
@@ -1139,9 +1139,9 @@ function initVerifyPasskey() {
     const verifyBtn = document.getElementById('verifyPasskeyBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     if (!verifyBtn || !cancelBtn) return;
-    
+
     verifyBtn.addEventListener('click', window.verifyWithPasskey);
-    
+
     cancelBtn.addEventListener('click', async () => {
         if (typeof Swal === 'undefined') return;
         const result = await Swal.fire({
@@ -1156,7 +1156,7 @@ function initVerifyPasskey() {
             window.location.href = '/login';
         }
     });
-    
+
     // Auto trigger verification when page loads
     setTimeout(() => {
         window.verifyWithPasskey();
@@ -1169,23 +1169,23 @@ function initVerifyOtp() {
     const clearBtn = document.getElementById('clear-otp-btn');
     const resendBtn = document.getElementById('resend-otp-btn');
     const cancelButton = document.querySelector('.cancel-btn');
-    
+
     if (!form || !otpInput) return;
-    
+
     const resendUrl = resendBtn ? resendBtn.getAttribute('data-resend-url') : '';
     window.initOtpTimer(300, resendUrl);
-    
+
     if (clearBtn) {
         clearBtn.addEventListener('click', window.clearOtp);
     }
-    
+
     if (resendBtn) {
         resendBtn.addEventListener('click', () => {
             window.resendOtp(resendUrl);
         });
     }
-    
-    otpInput.addEventListener('input', function(e) {
+
+    otpInput.addEventListener('input', function (e) {
         this.value = this.value.replace(/[^0-9]/g, '');
         if (this.value.length > 6) {
             this.value = this.value.slice(0, 6);
@@ -1200,8 +1200,8 @@ function initVerifyOtp() {
             }
         }
     });
-    
-    otpInput.addEventListener('paste', function(e) {
+
+    otpInput.addEventListener('paste', function (e) {
         e.preventDefault();
         const pastedText = (e.clipboardData || window.clipboardData).getData('text');
         const numbers = pastedText.replace(/[^0-9]/g, '').slice(0, 6);
@@ -1209,8 +1209,8 @@ function initVerifyOtp() {
         const event = new Event('input', { bubbles: true });
         this.dispatchEvent(event);
     });
-    
-    form.addEventListener('submit', function(e) {
+
+    form.addEventListener('submit', function (e) {
         const submitButton = this.querySelector('button[type="submit"]');
         const otp = otpInput.value;
         if (!otp) {
@@ -1234,9 +1234,9 @@ function initVerifyOtp() {
             window.showLoading('Memverifikasi kode OTP...');
         }
     });
-    
+
     if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
+        cancelButton.addEventListener('click', function (e) {
             if (otpInput.value.trim() !== '') {
                 e.preventDefault();
                 Swal.fire({
@@ -1256,8 +1256,8 @@ function initVerifyOtp() {
             }
         });
     }
-    
-    otpInput.addEventListener('keypress', function(e) {
+
+    otpInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && this.value.length === 6) {
             e.preventDefault();
             form.dispatchEvent(new Event('submit'));
@@ -1268,7 +1268,7 @@ function initVerifyOtp() {
 function initForgotPassword() {
     const cancelButton = document.querySelector('a[href*="login"]');
     if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
+        cancelButton.addEventListener('click', function (e) {
             const emailInput = document.getElementById('email');
             if (emailInput && emailInput.value.trim() !== '') {
                 e.preventDefault();
@@ -1295,24 +1295,23 @@ function initResetPassword() {
     const passwordInput = document.getElementById('password');
     const strengthBar = document.getElementById('password-strength-bar');
     const strengthText = document.getElementById('password-strength-text');
-    
+
     if (passwordInput && strengthBar && strengthText) {
-        passwordInput.addEventListener('input', function() {
+        passwordInput.addEventListener('input', function () {
             const result = checkPasswordStrength(this.value);
             strengthBar.className = `h-full transition-all duration-300 rounded-full ${result.color}`;
             strengthBar.style.width = `${result.width}%`;
             strengthText.textContent = result.text;
-            strengthText.className = `font-medium ${
-                result.level === 'weak' ? 'text-red-600' : 
-                result.level === 'medium' ? 'text-orange-600' : 
-                result.level === 'strong' ? 'text-green-600' : ''
-            }`;
+            strengthText.className = `font-medium ${result.level === 'weak' ? 'text-red-600' :
+                    result.level === 'medium' ? 'text-orange-600' :
+                        result.level === 'strong' ? 'text-green-600' : ''
+                }`;
         });
     }
-    
+
     const passwordField = document.getElementById('password');
     const confirmField = document.getElementById('password-confirm');
-    
+
     if (passwordField && confirmField) {
         const createMatchIndicator = () => {
             let indicator = document.getElementById('password-match-indicator');
@@ -1324,7 +1323,7 @@ function initResetPassword() {
             }
             return indicator;
         };
-        
+
         const checkMatch = () => {
             const indicator = createMatchIndicator();
             if (confirmField.value === '') {
@@ -1338,14 +1337,14 @@ function initResetPassword() {
                 indicator.className = 'mt-2 text-xs';
             }
         };
-        
+
         passwordField.addEventListener('input', checkMatch);
         confirmField.addEventListener('input', checkMatch);
     }
-    
+
     const cancelButton = document.querySelector('a[href*="login"]');
     if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
+        cancelButton.addEventListener('click', function (e) {
             const passwordInput = document.getElementById('password');
             if (passwordInput && passwordInput.value.trim() !== '') {
                 e.preventDefault();
@@ -1366,14 +1365,14 @@ function initResetPassword() {
             }
         });
     }
-    
+
     const form = document.querySelector('form');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             const submitButton = this.querySelector('button[type="submit"]');
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('password-confirm').value;
-            
+
             if (!password) {
                 e.preventDefault();
                 window.showErrorAlert('Silakan masukkan password baru Anda.');
@@ -1389,7 +1388,7 @@ function initResetPassword() {
                 window.showErrorAlert('Konfirmasi password tidak cocok. Silakan periksa kembali.');
                 return false;
             }
-            
+
             if (submitButton) {
                 submitButton.disabled = true;
                 submitButton.innerHTML = 'Memproses...';
@@ -1406,11 +1405,11 @@ function checkPasswordStrength(password) {
     if (password.match(/[A-Z]+/)) strength++;
     if (password.match(/[0-9]+/)) strength++;
     if (password.match(/[$@#&!]+/)) strength++;
-    
+
     let strengthLevel = '';
     let strengthColor = '';
     let strengthText = '';
-    
+
     if (password.length === 0) {
         strengthText = '-';
     } else if (strength <= 2) {
@@ -1426,7 +1425,7 @@ function checkPasswordStrength(password) {
         strengthColor = 'bg-green-500';
         strengthText = 'Kuat';
     }
-    
+
     return { level: strengthLevel, color: strengthColor, text: strengthText, width: (strength / 5) * 100 };
 }
 
@@ -1454,7 +1453,7 @@ function initRegisterPage() {
     });
 }
 
-window.openRegisterCropperModal = function(file) {
+window.openRegisterCropperModal = function (file) {
     const modal = document.getElementById('cropper-modal');
     const img = document.getElementById('cropper-image');
     if (registerCropperObjectUrl) URL.revokeObjectURL(registerCropperObjectUrl);
@@ -1486,7 +1485,7 @@ window.openRegisterCropperModal = function(file) {
     }
 };
 
-window.closeRegisterCropperModal = function() {
+window.closeRegisterCropperModal = function () {
     const modal = document.getElementById('cropper-modal');
     if (modal) modal.classList.add('hidden');
     document.body.style.overflow = '';
@@ -1500,11 +1499,11 @@ window.closeRegisterCropperModal = function() {
     }
 };
 
-window.cancelCropper = function() {
+window.cancelCropper = function () {
     window.closeRegisterCropperModal();
 };
 
-window.confirmCrop = function() {
+window.confirmCrop = function () {
     if (!registerCropperInstance) return window.closeRegisterCropperModal();
     registerCropperInstance.getCroppedCanvas({ width: 800, height: 800, imageSmoothingQuality: 'high' }).toBlob(function (blob) {
         if (!blob) return alert('Gagal memproses gambar');
@@ -1577,11 +1576,11 @@ function initProfilePage() {
     }
 }
 
-window.toggleEdit = function(field) {
+window.toggleEdit = function (field) {
     const displayEl = document.getElementById(field + '-display');
-    const inputEl   = document.getElementById(field + '-input');
-    const customEl  = document.getElementById(field + '-custom-input');
-    const saveBtn   = document.getElementById('save-button-container');
+    const inputEl = document.getElementById(field + '-input');
+    const customEl = document.getElementById(field + '-custom-input');
+    const saveBtn = document.getElementById('save-button-container');
     if (!displayEl || !inputEl) return;
     displayEl.classList.add('hidden');
     inputEl.classList.remove('hidden');
@@ -1594,7 +1593,7 @@ window.toggleEdit = function(field) {
     if (saveBtn) saveBtn.classList.remove('hidden');
 };
 
-window.openProfileCropperModal = function(file) {
+window.openProfileCropperModal = function (file) {
     const modal = document.getElementById('cropper-modal');
     const image = document.getElementById('cropper-image');
     const zoomRange = document.getElementById('cropper-zoom-range');
@@ -1616,7 +1615,7 @@ window.openProfileCropperModal = function(file) {
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    
+
     image.onload = function () {
         profileCropperInstance = new Cropper(image, {
             aspectRatio: 1,
@@ -1632,7 +1631,7 @@ window.openProfileCropperModal = function(file) {
     image.src = profileCropperObjectUrl;
 };
 
-window.closeCropperModal = function() {
+window.closeCropperModal = function () {
     const modal = document.getElementById('cropper-modal');
     if (!modal) return;
     modal.classList.add('hidden');
@@ -1647,7 +1646,7 @@ window.closeCropperModal = function() {
     }
 };
 
-window.cancelProfileCropper = function() {
+window.cancelProfileCropper = function () {
     const input = document.getElementById('photo_profile_input');
     if (input) {
         input.value = '';
@@ -1655,7 +1654,7 @@ window.cancelProfileCropper = function() {
     window.closeCropperModal();
 };
 
-window.cropperZoom = function(amount) {
+window.cropperZoom = function (amount) {
     if (!profileCropperInstance) return;
     profileCropperInstance.zoom(amount);
     const zoomRange = document.getElementById('cropper-zoom-range');
@@ -1672,7 +1671,7 @@ document.getElementById('cropper-zoom-range')?.addEventListener('input', functio
     }
 });
 
-window.confirmProfileCrop = function() {
+window.confirmProfileCrop = function () {
     if (!profileCropperInstance || !profileCropperFile) return;
     const outputType = ['image/png', 'image/jpeg'].includes(profileCropperFile.type) ? profileCropperFile.type : 'image/jpeg';
     const outputExt = outputType === 'image/png' ? 'png' : 'jpg';
@@ -1706,7 +1705,7 @@ window.confirmProfileCrop = function() {
     }, outputType, 0.92);
 };
 
-window.validateTanggalLahir = function(input) {
+window.validateTanggalLahir = function (input) {
     const selectedDate = new Date(input.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -1725,14 +1724,14 @@ window.validateTanggalLahir = function(input) {
     }
 };
 
-window.updatePreview = function() {
+window.updatePreview = function () {
     const inputEl = document.getElementById('video-input');
     if (!inputEl) return;
-    const input   = inputEl.value;
+    const input = inputEl.value;
     const preview = document.getElementById('videoPreview');
-    const iframe  = document.getElementById('previewFrame');
+    const iframe = document.getElementById('previewFrame');
     if (!preview || !iframe) return;
-    
+
     const embedUrl = convertToEmbed(input);
     if (embedUrl) { iframe.src = embedUrl; preview.classList.remove('hidden'); }
     else { preview.classList.add('hidden'); iframe.src = ''; }
@@ -1745,7 +1744,7 @@ function convertToEmbed(url) {
     return url;
 }
 
-window.playVideo = function(element, embedUrl) {
+window.playVideo = function (element, embedUrl) {
     const iframe = document.createElement('iframe');
     iframe.className = 'absolute inset-0 w-full h-full';
     iframe.src = embedUrl + '?autoplay=1&rel=0';
@@ -1755,7 +1754,7 @@ window.playVideo = function(element, embedUrl) {
     element.appendChild(iframe);
 };
 
-window.copyLink = function(url) {
+window.copyLink = function (url) {
     navigator.clipboard.writeText(url).then(() => {
         const n = document.createElement('div');
         n.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
@@ -1766,8 +1765,8 @@ window.copyLink = function(url) {
 };
 
 // Modal Toggles (Education)
-window.openPendidikanModal = function() {
-    const modal   = document.getElementById('modal-pendidikan');
+window.openPendidikanModal = function () {
+    const modal = document.getElementById('modal-pendidikan');
     const content = document.getElementById('modal-pendidikan-content');
     if (!modal || !content) return;
     modal.classList.remove('hidden');
@@ -1778,8 +1777,8 @@ window.openPendidikanModal = function() {
     });
 };
 
-window.closePendidikanModal = function() {
-    const modal   = document.getElementById('modal-pendidikan');
+window.closePendidikanModal = function () {
+    const modal = document.getElementById('modal-pendidikan');
     const content = document.getElementById('modal-pendidikan-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -1789,8 +1788,8 @@ window.closePendidikanModal = function() {
 };
 
 // Modal Toggles (Experience)
-window.openPengalamanModal = function() {
-    const modal   = document.getElementById('modal-pengalaman');
+window.openPengalamanModal = function () {
+    const modal = document.getElementById('modal-pengalaman');
     const content = document.getElementById('modal-pengalaman-content');
     if (!modal || !content) return;
     modal.classList.remove('hidden');
@@ -1801,8 +1800,8 @@ window.openPengalamanModal = function() {
     });
 };
 
-window.closePengalamanModal = function() {
-    const modal   = document.getElementById('modal-pengalaman');
+window.closePengalamanModal = function () {
+    const modal = document.getElementById('modal-pengalaman');
     const content = document.getElementById('modal-pengalaman-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -1811,12 +1810,12 @@ window.closePengalamanModal = function() {
 };
 
 // Handle AJAX Pengalaman Submit
-window.handlePengalamanSubmit = async function(event) {
+window.handlePengalamanSubmit = async function (event) {
     event.preventDefault();
-    const form      = event.target;
+    const form = event.target;
     const submitBtn = document.getElementById('btn-submit-pengalaman');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     const mulaiVal = document.getElementById('form-tahun_mulai')?.value;
     const akhirVal = document.getElementById('form-tahun_akhir')?.value;
@@ -1869,13 +1868,13 @@ window.handlePengalamanSubmit = async function(event) {
 
 // Search Sekolah Logic
 let searchSekolahTimer = null;
-window.searchSekolah = function(query) {
+window.searchSekolah = function (query) {
     clearTimeout(searchSekolahTimer);
-    const dropdown   = document.getElementById('sekolah-dropdown');
-    const list       = document.getElementById('sekolah-dropdown-list');
+    const dropdown = document.getElementById('sekolah-dropdown');
+    const list = document.getElementById('sekolah-dropdown-list');
     const loadingIcon = document.getElementById('sekolah-loading-icon');
-    const searchIcon  = document.getElementById('sekolah-search-icon');
-    const locale      = document.querySelector('html').getAttribute('lang') || 'id';
+    const searchIcon = document.getElementById('sekolah-search-icon');
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     if (query.length < 2) { if (dropdown) dropdown.classList.add('hidden'); return; }
 
@@ -1887,7 +1886,7 @@ window.searchSekolah = function(query) {
             const response = await fetch(`/${locale}/sekolah/search?q=${encodeURIComponent(query)}`);
             const data = await response.json();
             if (list) list.innerHTML = '';
-            
+
             if (data.length === 0) {
                 if (list) list.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">Tidak ada hasil. Ketik nama secara manual.</div>';
             } else {
@@ -1914,7 +1913,7 @@ window.searchSekolah = function(query) {
 };
 
 // Sertifikat Upload Helpers
-window.handleSertifikatFile = function(input) {
+window.handleSertifikatFile = function (input) {
     const file = input.files[0];
     if (!file) return;
     document.getElementById('sertifikat-upload-placeholder')?.classList.add('hidden');
@@ -1926,7 +1925,7 @@ window.handleSertifikatFile = function(input) {
     if (sizeEl) sizeEl.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
 };
 
-window.clearSertifikatFile = function(event) {
+window.clearSertifikatFile = function (event) {
     if (event) event.stopPropagation();
     const input = document.getElementById('sertifikat-file-input');
     if (input) input.value = '';
@@ -1935,12 +1934,12 @@ window.clearSertifikatFile = function(event) {
 };
 
 // Modal Detail/Edit Pendidikan
-window.openDetailPendidikan = async function(id) {
+window.openDetailPendidikan = async function (id) {
     window.updateUrlParam('pend', id);
-    const modal   = document.getElementById('modal-detail-pendidikan');
+    const modal = document.getElementById('modal-detail-pendidikan');
     const content = document.getElementById('modal-detail-pendidikan-content');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const TODAY = new Date().toISOString().split('T')[0];
 
     if (!modal || !content) return;
@@ -1958,7 +1957,7 @@ window.openDetailPendidikan = async function(id) {
     document.getElementById('pend-skeleton')?.classList.remove('hidden');
 
     try {
-        const res  = await fetch(`/${locale}/pendidikan/detail?id=${id}`, {
+        const res = await fetch(`/${locale}/pendidikan/detail?id=${id}`, {
             headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
         });
         const json = await res.json();
@@ -1970,15 +1969,15 @@ window.openDetailPendidikan = async function(id) {
         if (idInput) idInput.value = d.id;
 
         const jenjangIcons = {
-            'S1':'🎓','S2':'🎓','S3':'🎓',
-            'D1':'📚','D2':'📚','D3':'📚','D4':'📚',
-            'SMA/SMK':'🏫','SMP':'🏫','SD':'🏫',
-            'Kursus/Pelatihan':'📖'
+            'S1': '🎓', 'S2': '🎓', 'S3': '🎓',
+            'D1': '📚', 'D2': '📚', 'D3': '📚', 'D4': '📚',
+            'SMA/SMK': '🏫', 'SMP': '🏫', 'SD': '🏫',
+            'Kursus/Pelatihan': '📖'
         };
         const iconEl = document.getElementById('pend-view-icon');
-        if (iconEl) iconEl.textContent   = jenjangIcons[d.jenjang] || '🏛️';
+        if (iconEl) iconEl.textContent = jenjangIcons[d.jenjang] || '🏛️';
         const namaEl = document.getElementById('pend-view-nama');
-        if (namaEl) namaEl.textContent    = d.nama_sekolah || '-';
+        if (namaEl) namaEl.textContent = d.nama_sekolah || '-';
         const jenjangEl = document.getElementById('pend-view-jenjang');
         if (jenjangEl) jenjangEl.textContent = d.jenjang || '';
         const jurusanEl = document.getElementById('pend-view-jurusan');
@@ -2016,7 +2015,7 @@ window.openDetailPendidikan = async function(id) {
             lulusField.style.opacity = masihKuliah ? '0.4' : '1';
         }
         if (lulusInput) lulusInput.disabled = masihKuliah;
-        
+
         const errEl = document.getElementById('edit-pend-lulus-error');
         if (errEl) errEl.classList.add('hidden');
 
@@ -2027,9 +2026,9 @@ window.openDetailPendidikan = async function(id) {
     }
 };
 
-window.closeDetailPendidikan = function() {
+window.closeDetailPendidikan = function () {
     window.updateUrlParam('pend', null);
-    const modal   = document.getElementById('modal-detail-pendidikan');
+    const modal = document.getElementById('modal-detail-pendidikan');
     const content = document.getElementById('modal-detail-pendidikan-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -2037,7 +2036,7 @@ window.closeDetailPendidikan = function() {
     setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
 };
 
-window.switchToPendidikanEdit = function() {
+window.switchToPendidikanEdit = function () {
     document.getElementById('pend-view-mode')?.classList.add('hidden');
     document.getElementById('pend-edit-mode')?.classList.remove('hidden');
     document.getElementById('pend-view-actions')?.classList.add('hidden');
@@ -2049,7 +2048,7 @@ window.switchToPendidikanEdit = function() {
     }
 };
 
-window.switchToPendidikanView = function() {
+window.switchToPendidikanView = function () {
     document.getElementById('pend-view-mode')?.classList.remove('hidden');
     document.getElementById('pend-edit-mode')?.classList.add('hidden');
     document.getElementById('pend-view-actions')?.classList.remove('hidden');
@@ -2061,16 +2060,16 @@ window.switchToPendidikanView = function() {
     }
 };
 
-window.savePendidikanEdit = async function() {
-    const id           = document.getElementById('pend-edit-id').value;
+window.savePendidikanEdit = async function () {
+    const id = document.getElementById('pend-edit-id').value;
     const nama_sekolah = document.getElementById('pend-edit-nama_sekolah').value.trim();
-    const jenjang      = document.getElementById('pend-edit-jenjang').value;
-    const jurusan_sek  = document.getElementById('pend-edit-jurusan_sek').value.trim();
-    const tahun_masuk  = document.getElementById('pend-edit-tahun_masuk').value;
-    const tahun_lulus  = document.getElementById('pend-edit-tahun_lulus').value;
+    const jenjang = document.getElementById('pend-edit-jenjang').value;
+    const jurusan_sek = document.getElementById('pend-edit-jurusan_sek').value.trim();
+    const tahun_masuk = document.getElementById('pend-edit-tahun_masuk').value;
+    const tahun_lulus = document.getElementById('pend-edit-tahun_lulus').value;
     const masih_kuliah = document.getElementById('pend-edit-masih_kuliah').checked ? '1' : '0';
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     if (!nama_sekolah || !jenjang || !tahun_masuk) {
         if (window.showErrorAlert) window.showErrorAlert('Harap isi field yang wajib diisi.');
@@ -2108,14 +2107,14 @@ window.savePendidikanEdit = async function() {
     }
 };
 
-window.confirmDeletePendidikan = async function() {
+window.confirmDeletePendidikan = async function () {
     const id = document.getElementById('pend-edit-id').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const confirmed = await window.showConfirmAlert();
     if (!confirmed) return;
     try {
-        const res  = await fetch(`/${locale}/pendidikan/destroy?id=${id}`, {
+        const res = await fetch(`/${locale}/pendidikan/destroy?id=${id}`, {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
         });
@@ -2133,12 +2132,12 @@ window.confirmDeletePendidikan = async function() {
 };
 
 // Modal Detail/Edit Pengalaman Kerja
-window.openDetailPengalaman = async function(id) {
+window.openDetailPengalaman = async function (id) {
     window.updateUrlParam('pkj', id);
-    const modal   = document.getElementById('modal-detail-pengalaman');
+    const modal = document.getElementById('modal-detail-pengalaman');
     const content = document.getElementById('modal-detail-pengalaman-content');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const TODAY = new Date().toISOString().split('T')[0];
 
     if (!modal || !content) return;
@@ -2156,14 +2155,14 @@ window.openDetailPengalaman = async function(id) {
     document.getElementById('pkj-skeleton')?.classList.remove('hidden');
 
     try {
-        const res  = await fetch(`/${locale}/pengalaman-kerja/detail?id=${id}`, {
+        const res = await fetch(`/${locale}/pengalaman-kerja/detail?id=${id}`, {
             headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
         });
         const json = await res.json();
         if (!json.success) return;
         const d = json.data;
         document.getElementById('pkj-skeleton')?.classList.add('hidden');
-        
+
         const idInput = document.getElementById('pkj-edit-id');
         if (idInput) idInput.value = d.id;
 
@@ -2235,7 +2234,7 @@ window.openDetailPengalaman = async function(id) {
             akhirField.style.opacity = masihBekerja ? '0.4' : '1';
         }
         if (akhirInput) akhirInput.disabled = masihBekerja;
-        
+
         const errEl = document.getElementById('edit-pkj-akhir-error');
         if (errEl) errEl.classList.add('hidden');
 
@@ -2246,9 +2245,9 @@ window.openDetailPengalaman = async function(id) {
     }
 };
 
-window.closeDetailPengalaman = function() {
+window.closeDetailPengalaman = function () {
     window.updateUrlParam('pkj', null);
-    const modal   = document.getElementById('modal-detail-pengalaman');
+    const modal = document.getElementById('modal-detail-pengalaman');
     const content = document.getElementById('modal-detail-pengalaman-content');
     if (!modal || !content) return;
     content.classList.remove('scale-100', 'opacity-100');
@@ -2256,7 +2255,7 @@ window.closeDetailPengalaman = function() {
     setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
 };
 
-window.switchToPengalamanEdit = function() {
+window.switchToPengalamanEdit = function () {
     document.getElementById('pkj-view-mode')?.classList.add('hidden');
     document.getElementById('pkj-edit-mode')?.classList.remove('hidden');
     document.getElementById('pkj-view-actions')?.classList.add('hidden');
@@ -2268,7 +2267,7 @@ window.switchToPengalamanEdit = function() {
     }
 };
 
-window.switchToPengalamanView = function() {
+window.switchToPengalamanView = function () {
     document.getElementById('pkj-view-mode')?.classList.remove('hidden');
     document.getElementById('pkj-edit-mode')?.classList.add('hidden');
     document.getElementById('pkj-view-actions')?.classList.remove('hidden');
@@ -2280,17 +2279,17 @@ window.switchToPengalamanView = function() {
     }
 };
 
-window.savePengalamanEdit = async function() {
-    const id             = document.getElementById('pkj-edit-id').value;
-    const nama_pt        = document.getElementById('pkj-edit-nama_pt').value.trim();
-    const bagian_kerja   = document.getElementById('pkj-edit-bagian_kerja').value.trim();
+window.savePengalamanEdit = async function () {
+    const id = document.getElementById('pkj-edit-id').value;
+    const nama_pt = document.getElementById('pkj-edit-nama_pt').value.trim();
+    const bagian_kerja = document.getElementById('pkj-edit-bagian_kerja').value.trim();
     const jenis_pekerjaan = document.getElementById('pkj-edit-jenis_pekerjaan').value;
-    const deskripsi      = document.getElementById('pkj-edit-deskripsi').value.trim();
-    const tahun_mulai  = document.getElementById('pkj-edit-tahun_mulai').value;
-    const tahun_akhir  = document.getElementById('pkj-edit-tahun_akhir').value;
+    const deskripsi = document.getElementById('pkj-edit-deskripsi').value.trim();
+    const tahun_mulai = document.getElementById('pkj-edit-tahun_mulai').value;
+    const tahun_akhir = document.getElementById('pkj-edit-tahun_akhir').value;
     const masih_bekerja = document.getElementById('pkj-edit-masih_bekerja').checked ? '1' : '0';
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
 
     if (!nama_pt || !bagian_kerja || !jenis_pekerjaan || !tahun_mulai) {
         if (window.showErrorAlert) window.showErrorAlert('Harap isi field yang wajib diisi.');
@@ -2308,7 +2307,7 @@ window.savePengalamanEdit = async function() {
     if (masih_bekerja === '0' && tahun_akhir) body.append('tahun_akhir', tahun_akhir);
 
     try {
-        const res  = await fetch(`/${locale}/pengalaman-kerja/update?id=${id}`, {
+        const res = await fetch(`/${locale}/pengalaman-kerja/update?id=${id}`, {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body.toString()
@@ -2327,14 +2326,14 @@ window.savePengalamanEdit = async function() {
     }
 };
 
-window.confirmDeletePengalaman = async function() {
+window.confirmDeletePengalaman = async function () {
     const id = document.getElementById('pkj-edit-id').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const locale    = document.querySelector('html').getAttribute('lang') || 'id';
+    const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const confirmed = await window.showConfirmAlert();
     if (!confirmed) return;
     try {
-        const res  = await fetch(`/${locale}/pengalaman-kerja/destroy?id=${id}`, {
+        const res = await fetch(`/${locale}/pengalaman-kerja/destroy?id=${id}`, {
             method: 'DELETE',
             headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
         });
@@ -2352,7 +2351,7 @@ window.confirmDeletePengalaman = async function() {
 };
 
 // Helper: update URL parameter
-window.updateUrlParam = function(key, value) {
+window.updateUrlParam = function (key, value) {
     const url = new URL(window.location.href);
     if (value) url.searchParams.set(key, value);
     else url.searchParams.delete(key);
@@ -2360,7 +2359,7 @@ window.updateUrlParam = function(key, value) {
 };
 
 // Date helper logic for modals
-window.onAddPendTahunMasukChange = function(masukVal) {
+window.onAddPendTahunMasukChange = function (masukVal) {
     const lulusInput = document.getElementById('add-pend-tahun_lulus');
     if (!lulusInput) return;
     lulusInput.min = masukVal;
@@ -2374,7 +2373,7 @@ window.onAddPendTahunMasukChange = function(masukVal) {
     }
 };
 
-window.validateAddPendTahunLulus = function(input) {
+window.validateAddPendTahunLulus = function (input) {
     const masukVal = document.getElementById('add-pend-tahun_masuk')?.value;
     if (masukVal && input.value && input.value < masukVal) {
         const errEl = document.getElementById('add-pend-lulus-error');
@@ -2386,7 +2385,7 @@ window.validateAddPendTahunLulus = function(input) {
     }
 };
 
-window.toggleAddPendTahunLulus = function(checkbox) {
+window.toggleAddPendTahunLulus = function (checkbox) {
     const field = document.getElementById('add-pend-tahun-lulus-field');
     const input = document.getElementById('add-pend-tahun_lulus');
     if (!field || !input) return;
@@ -2399,7 +2398,7 @@ window.toggleAddPendTahunLulus = function(checkbox) {
     }
 };
 
-window.onEditPendTahunMasukChange = function(masukVal) {
+window.onEditPendTahunMasukChange = function (masukVal) {
     const lulusInput = document.getElementById('pend-edit-tahun_lulus');
     if (!lulusInput) return;
     lulusInput.min = masukVal;
@@ -2413,7 +2412,7 @@ window.onEditPendTahunMasukChange = function(masukVal) {
     }
 };
 
-window.validateEditPendTahunLulus = function(input) {
+window.validateEditPendTahunLulus = function (input) {
     const masukVal = document.getElementById('pend-edit-tahun_masuk')?.value;
     if (masukVal && input.value && input.value < masukVal) {
         const errEl = document.getElementById('edit-pend-lulus-error');
@@ -2425,7 +2424,7 @@ window.validateEditPendTahunLulus = function(input) {
     }
 };
 
-window.toggleEditTahunLulus = function(checkbox) {
+window.toggleEditTahunLulus = function (checkbox) {
     const field = document.getElementById('pend-edit-tahun-lulus-field');
     const input = document.getElementById('pend-edit-tahun_lulus');
     if (!field || !input) return;
@@ -2438,7 +2437,7 @@ window.toggleEditTahunLulus = function(checkbox) {
     }
 };
 
-window.onAddPkjTahunMulaiChange = function(mulaiVal) {
+window.onAddPkjTahunMulaiChange = function (mulaiVal) {
     const akhirInput = document.getElementById('form-tahun_akhir');
     if (!akhirInput) return;
     akhirInput.min = mulaiVal;
@@ -2452,7 +2451,7 @@ window.onAddPkjTahunMulaiChange = function(mulaiVal) {
     }
 };
 
-window.validateAddPkjTahunAkhir = function(input) {
+window.validateAddPkjTahunAkhir = function (input) {
     const mulaiVal = document.getElementById('form-tahun_mulai')?.value;
     if (mulaiVal && input.value && input.value < mulaiVal) {
         const errEl = document.getElementById('add-pkj-akhir-error');
@@ -2464,7 +2463,7 @@ window.validateAddPkjTahunAkhir = function(input) {
     }
 };
 
-window.toggleAddPkjTahunAkhir = function(checkbox) {
+window.toggleAddPkjTahunAkhir = function (checkbox) {
     const field = document.getElementById('add-pkj-tahun-akhir-field');
     const input = document.getElementById('form-tahun_akhir');
     if (!field || !input) return;
@@ -2477,7 +2476,7 @@ window.toggleAddPkjTahunAkhir = function(checkbox) {
     }
 };
 
-window.onEditPkjTahunMulaiChange = function(mulaiVal) {
+window.onEditPkjTahunMulaiChange = function (mulaiVal) {
     const akhirInput = document.getElementById('pkj-edit-tahun_akhir');
     if (!akhirInput) return;
     akhirInput.min = mulaiVal;
@@ -2491,7 +2490,7 @@ window.onEditPkjTahunMulaiChange = function(mulaiVal) {
     }
 };
 
-window.validateEditPkjTahunAkhir = function(input) {
+window.validateEditPkjTahunAkhir = function (input) {
     const mulaiVal = document.getElementById('pkj-edit-tahun_mulai')?.value;
     if (mulaiVal && input.value && input.value < mulaiVal) {
         const errEl = document.getElementById('edit-pkj-akhir-error');
@@ -2503,7 +2502,7 @@ window.validateEditPkjTahunAkhir = function(input) {
     }
 };
 
-window.toggleEditTahunAkhir = function(checkbox) {
+window.toggleEditTahunAkhir = function (checkbox) {
     const field = document.getElementById('pkj-edit-tahun-akhir-field');
     const input = document.getElementById('pkj-edit-tahun_akhir');
     if (!field || !input) return;
@@ -2516,7 +2515,7 @@ window.toggleEditTahunAkhir = function(checkbox) {
     }
 };
 
-window.toYMD = function(dateStr) {
+window.toYMD = function (dateStr) {
     if (!dateStr) return '';
     const s = String(dateStr).trim();
     if (/^\d{2}-\d{2}-\d{4}$/.test(s)) {
@@ -2529,7 +2528,7 @@ window.toYMD = function(dateStr) {
 /* =====================================================================
    ALPINE.JS KEAHLIAN TAMBAHAN GLOBAL COMPONENT
    ===================================================================== */
-window.keahlianTambahan = function(config) {
+window.keahlianTambahan = function (config) {
     return {
         keahlianOptions: config.options || [],
         mainSkillId: config.mainSkillId || null,
@@ -2586,9 +2585,9 @@ window.keahlianTambahan = function(config) {
                 const locale = document.querySelector('html').getAttribute('lang') || 'id';
                 const response = await fetch(`/${locale}/keahlian-tambahan/destroy?id=${id}`, {
                     method: 'DELETE',
-                    headers: { 
-                        'X-CSRF-TOKEN': config.csrfToken || document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 
-                        'Accept': 'application/json' 
+                    headers: {
+                        'X-CSRF-TOKEN': config.csrfToken || document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
                     }
                 });
                 const data = await response.json();
@@ -2608,11 +2607,11 @@ window.keahlianTambahan = function(config) {
     };
 };
 
-window.submitCustomKeahlian = async function() {
+window.submitCustomKeahlian = async function () {
     const input = document.getElementById('custom-keahlian-input');
     if (!input) return;
     const customKeahlian = input.value.trim();
-    
+
     if (!customKeahlian) {
         if (window.showErrorAlert) {
             window.showErrorAlert('Masukkan nama keahlian terlebih dahulu');
@@ -2621,7 +2620,7 @@ window.submitCustomKeahlian = async function() {
         }
         return;
     }
-    
+
     if (customKeahlian.length > 100) {
         if (window.showErrorAlert) {
             window.showErrorAlert('Nama keahlian maksimal 100 karakter');
@@ -2630,20 +2629,20 @@ window.submitCustomKeahlian = async function() {
         }
         return;
     }
-    
+
     const submitBtn = document.querySelector('#custom-keahlian-input + button');
     const originalText = submitBtn ? submitBtn.innerHTML : '';
-    
+
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Mengirim...';
     }
-    
+
     const locale = document.querySelector('html').getAttribute('lang') || 'id';
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const formData = new FormData();
     formData.append('custom_keahlian_tambahan', customKeahlian);
-    
+
     try {
         const response = await fetch(`/${locale}/keahlian-tambahan/custom`, {
             method: 'POST',
@@ -2653,9 +2652,9 @@ window.submitCustomKeahlian = async function() {
             },
             body: formData
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             input.value = '';
             if (window.showSuccessAlert) {
@@ -2687,10 +2686,10 @@ window.submitCustomKeahlian = async function() {
 };
 
 // Event listener for Enter on custom skill input
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const customInput = document.getElementById('custom-keahlian-input');
     if (customInput) {
-        customInput.addEventListener('keypress', function(e) {
+        customInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 window.submitCustomKeahlian();
@@ -2710,7 +2709,7 @@ if (typeof window.playVideoInCard === 'undefined') {
      * @param {string} type       - 'youtube' | 'direct'
      * @param {string} src        - YouTube video ID atau URL video langsung
      */
-    window.playVideoInCard = function(wrapperId, type, src) {
+    window.playVideoInCard = function (wrapperId, type, src) {
         const wrapper = document.getElementById(wrapperId);
         if (!wrapper) return;
 
@@ -2797,9 +2796,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAndRedirect() {
         if (navigator.onLine) {
-            const destination = document.referrer && !document.referrer.includes('offline') 
-                                ? document.referrer 
-                                : homeUrl;
+            const destination = document.referrer && !document.referrer.includes('offline')
+                ? document.referrer
+                : homeUrl;
             window.location.href = destination;
         }
     }
@@ -2841,20 +2840,20 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ==========================================
    COMPONENT: HELP
    ========================================== */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Get all FAQ items
     const faqItems = document.querySelectorAll('.faq-item');
     if (faqItems.length === 0) return;
-    
+
     // Auto-slide effect: open one by one with delay
     let currentIndex = 0;
-    
+
     function openNextFAQ() {
         if (currentIndex < faqItems.length) {
             const item = faqItems[currentIndex];
             const answer = item.querySelector('.faq-answer');
             const icon = item.querySelector('.faq-icon');
-            
+
             if (!answer || !icon) return;
 
             // Close all other FAQs
@@ -2869,12 +2868,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
+
             // Open current FAQ with animation
             answer.style.maxHeight = answer.scrollHeight + 'px';
             answer.style.opacity = '1';
             icon.style.transform = 'rotate(180deg)';
-            
+
             // Move to next after delay
             currentIndex++;
             setTimeout(openNextFAQ, 3000);
@@ -2886,24 +2885,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         }
     }
-    
+
     // Start auto-slide
     setTimeout(openNextFAQ, 500);
-    
+
     // Add click functionality for manual toggle
     faqItems.forEach((item, index) => {
         const question = item.querySelector('h3');
         const answer = item.querySelector('.faq-answer');
         const icon = item.querySelector('.faq-icon');
-        
+
         if (!question || !answer || !icon) return;
 
-        question.addEventListener('click', function(e) {
+        question.addEventListener('click', function (e) {
             e.stopPropagation();
-            
+
             // Toggle current FAQ
             const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
-            
+
             // Close all FAQs
             faqItems.forEach((otherItem) => {
                 const otherAnswer = otherItem.querySelector('.faq-answer');
@@ -2914,13 +2913,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     otherIcon.style.transform = 'rotate(0deg)';
                 }
             });
-            
+
             // Open clicked FAQ if it was closed
             if (!isOpen) {
                 answer.style.maxHeight = answer.scrollHeight + 'px';
                 answer.style.opacity = '1';
                 icon.style.transform = 'rotate(180deg)';
-                
+
                 // Update current index for auto-slide
                 currentIndex = index + 1;
             }
@@ -2931,7 +2930,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ==========================================
    COMPONENT: SPLASH SCREEN
    ========================================== */
-(function() {
+(function () {
     // Source-of-truth ada di SERVER (cookie 'splash_shown'), dicek di Layout.blade.php
     // sebelum @include('components.splash'). Kalau cookie itu sudah ada, server tidak
     // akan mengirim markup splash sama sekali -- jadi tidak ada flash di halaman berikutnya.
@@ -3069,7 +3068,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         initSplash();
 
-        window.resetSplash = function() {
+        window.resetSplash = function () {
             clearSplashShownCookie();
             window.location.reload();
         };
@@ -3079,7 +3078,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ==========================================
    COMPONENT: MOBILE NAVIGATION
    ========================================== */
-window.toggleMobileFab = function() {
+window.toggleMobileFab = function () {
     const sheet = document.getElementById('mobile-fab-sheet');
     const overlay = document.getElementById('mobile-fab-overlay');
     const icon = document.getElementById('mobile-fab-icon');
@@ -3099,7 +3098,7 @@ window.toggleMobileFab = function() {
     }
 };
 
-window.closeMobileFab = function() {
+window.closeMobileFab = function () {
     const sheet = document.getElementById('mobile-fab-sheet');
     const overlay = document.getElementById('mobile-fab-overlay');
     const icon = document.getElementById('mobile-fab-icon');
@@ -3111,7 +3110,7 @@ window.closeMobileFab = function() {
     setTimeout(() => overlay.classList.add('hidden'), 300);
 };
 
-window.toggleMobileProfile = function() {
+window.toggleMobileProfile = function () {
     const sheet = document.getElementById('mobile-profile-sheet');
     const overlay = document.getElementById('mobile-profile-overlay');
     if (!sheet || !overlay) return;
@@ -3129,7 +3128,7 @@ window.toggleMobileProfile = function() {
     }
 };
 
-window.closeMobileProfile = function() {
+window.closeMobileProfile = function () {
     const sheet = document.getElementById('mobile-profile-sheet');
     const overlay = document.getElementById('mobile-profile-overlay');
     if (!sheet || !overlay) return;
@@ -3139,7 +3138,7 @@ window.closeMobileProfile = function() {
     setTimeout(() => overlay.classList.add('hidden'), 300);
 };
 
-window.syncDarkModeToggle = function() {
+window.syncDarkModeToggle = function () {
     const isDark = document.documentElement.classList.contains('dark');
     const toggleSpan = document.querySelector('#mobile-dark-toggle span');
     const toggleDiv = document.getElementById('mobile-dark-toggle');
@@ -3159,7 +3158,7 @@ window.syncDarkModeToggle = function() {
     }
 };
 
-window.toggleMobileDarkMode = function() {
+window.toggleMobileDarkMode = function () {
     const html = document.documentElement;
     html.classList.toggle('dark');
     localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
@@ -3177,19 +3176,19 @@ function _buildLocaleUrl(lang) {
     return url.toString();
 }
 
-window.changeLanguageMobile = function(lang) {
+window.changeLanguageMobile = function (lang) {
     window.persistLocaleChoice(lang);
     window.location.href = _buildLocaleUrl(lang);
 };
 
-window.persistLocaleChoice = function(lang) {
+window.persistLocaleChoice = function (lang) {
     localStorage.setItem('lang', lang);
     const days = 365;
     const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
     document.cookie = `lang=${lang}; expires=${expires}; path=/; SameSite=Lax`;
 };
 
-window.toggleGuestSheet = function() {
+window.toggleGuestSheet = function () {
     const sheet = document.getElementById('guest-sheet');
     const overlay = document.getElementById('guest-sheet-overlay');
     if (!sheet || !overlay) return;
@@ -3206,7 +3205,7 @@ window.toggleGuestSheet = function() {
     }
 };
 
-window.closeGuestSheet = function() {
+window.closeGuestSheet = function () {
     const sheet = document.getElementById('guest-sheet');
     const overlay = document.getElementById('guest-sheet-overlay');
     if (!sheet || !overlay) return;
@@ -3216,14 +3215,14 @@ window.closeGuestSheet = function() {
     setTimeout(() => overlay.classList.add('hidden'), 300);
 };
 
-window.toggleGuestDarkMode = function() {
+window.toggleGuestDarkMode = function () {
     const html = document.documentElement;
     html.classList.toggle('dark');
     localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
     window.syncGuestDarkToggle();
 };
 
-window.syncGuestDarkToggle = function() {
+window.syncGuestDarkToggle = function () {
     const isDark = document.documentElement.classList.contains('dark');
     const toggleSpan = document.querySelector('#guest-dark-toggle span');
     if (toggleSpan) {
@@ -3235,12 +3234,12 @@ window.syncGuestDarkToggle = function() {
     }
 };
 
-window.changeGuestLanguage = function(lang) {
+window.changeGuestLanguage = function (lang) {
     window.persistLocaleChoice(lang);
     window.location.href = _buildLocaleUrl(lang);
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     window.syncDarkModeToggle();
     window.syncGuestDarkToggle();
 
@@ -3273,7 +3272,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ==========================================
    COMPONENT: SIDEBAR
    ========================================== */
-window.previewPhoto = function(event) {
+window.previewPhoto = function (event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -3284,7 +3283,7 @@ window.previewPhoto = function(event) {
     reader.readAsDataURL(file);
 };
 
-window.toggleSidebarSettingDropdown = function() {
+window.toggleSidebarSettingDropdown = function () {
     const el = document.getElementById('settingMenu');
     const arrow = document.getElementById('settingArrow');
     if (el && arrow) {
@@ -3293,7 +3292,7 @@ window.toggleSidebarSettingDropdown = function() {
     }
 };
 
-window.toggleSidebarDarkMode = function() {
+window.toggleSidebarDarkMode = function () {
     const html = document.documentElement;
     const isDark = html.classList.toggle('dark');
     localStorage.setItem('darkMode', isDark);
@@ -3312,7 +3311,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Tutup setting dropdown saat klik di luar
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const settingMenu = document.getElementById('settingMenu');
     if (!settingMenu) return;
     const isToggleBtn = e.target.closest('button[onclick*="toggleSidebarSettingDropdown"]');
@@ -3344,7 +3343,7 @@ document.addEventListener('DOMContentLoaded', () => {
             || key;
     }
 
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         const q = this.value.toLowerCase().trim();
         if (!q) { searchResults.classList.add('hidden'); return; }
         const filtered = allMenus
@@ -3389,20 +3388,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function performPostSearch(term) {
         if (!isDashboard()) return;
 
-        const allPosts   = document.querySelectorAll('#postingan-container .post-card');
+        const allPosts = document.querySelectorAll('#postingan-container .post-card');
         const pagination = document.getElementById('postingan-pagination');
         const noResultEl = document.getElementById('postingan-no-results');
 
-        const badge      = document.getElementById('header-post-search-badge');
-        const countEl    = document.getElementById('header-post-search-count');
-        const badgeMob   = document.getElementById('header-post-search-badge-mobile');
+        const badge = document.getElementById('header-post-search-badge');
+        const countEl = document.getElementById('header-post-search-count');
+        const badgeMob = document.getElementById('header-post-search-badge-mobile');
         const countMobEl = document.getElementById('header-post-search-count-mobile');
-        const clearBtn   = document.getElementById('header-post-search-clear');
+        const clearBtn = document.getElementById('header-post-search-clear');
 
         if (term.length < 2) {
             allPosts.forEach(p => { p.style.display = ''; restoreTitle(p); });
             if (pagination) pagination.style.display = '';
-            if (badge)    badge.style.display    = 'none';
+            if (badge) badge.style.display = 'none';
             if (badgeMob) badgeMob.classList.add('hidden');
             if (clearBtn) clearBtn.style.display = 'none';
             if (noResultEl) noResultEl.remove();
@@ -3416,11 +3415,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let visible = 0;
         allPosts.forEach(post => {
             const dataTitle = post.getAttribute('data-post-title') || '';
-            const dataDesc  = post.getAttribute('data-post-description') || '';
-            const dataAuth  = post.getAttribute('data-post-author') || '';
+            const dataDesc = post.getAttribute('data-post-description') || '';
+            const dataAuth = post.getAttribute('data-post-author') || '';
             const uiTitleEl = post.querySelector('h3');
-            const uiTitle   = uiTitleEl ? uiTitleEl.innerText.toLowerCase() : '';
-            const lc  = term.toLowerCase();
+            const uiTitle = uiTitleEl ? uiTitleEl.innerText.toLowerCase() : '';
+            const lc = term.toLowerCase();
             const hit = dataTitle.includes(lc) || dataDesc.includes(lc) || dataAuth.includes(lc) || uiTitle.includes(lc);
 
             if (hit) {
@@ -3483,7 +3482,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     containerEl.innerHTML = `<div class="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">Tidak ada hasil</div>`;
                 } else {
                     const grouped = data.reduce((acc, item) => { acc[item.type] = acc[item.type] || []; acc[item.type].push(item); return acc; }, {});
-                    const titles  = { mahasiswa: 'Mahasiswa', project: 'Project', sertifikat: 'Sertifikat', postingan: 'Postingan' };
+                    const titles = { mahasiswa: 'Mahasiswa', project: 'Project', sertifikat: 'Sertifikat', postingan: 'Postingan' };
                     let html = '';
                     Object.keys(titles).forEach(type => {
                         const items = grouped[type] || [];
@@ -3511,10 +3510,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initUnifiedSearch() {
         const desktopInput = document.getElementById('unified-search-input');
-        const mobileInput  = document.getElementById('unified-search-input-mobile');
-        const clearBtn     = document.getElementById('header-post-search-clear');
-        const suggDesktop  = document.getElementById('search-suggestions');
-        const suggMobile   = document.getElementById('search-suggestions-mobile');
+        const mobileInput = document.getElementById('unified-search-input-mobile');
+        const clearBtn = document.getElementById('header-post-search-clear');
+        const suggDesktop = document.getElementById('search-suggestions');
+        const suggMobile = document.getElementById('search-suggestions-mobile');
 
         if (!desktopInput && !mobileInput) return;
 
@@ -3538,7 +3537,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const term = e.target.value.trim();
             // Sync both inputs
             if (e.target === desktopInput && mobileInput) mobileInput.value = e.target.value;
-            if (e.target === mobileInput && desktopInput)  desktopInput.value = e.target.value;
+            if (e.target === mobileInput && desktopInput) desktopInput.value = e.target.value;
 
             // Live post filter (dashboard only)
             clearTimeout(postTimer);
@@ -3553,21 +3552,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (desktopInput) desktopInput.addEventListener('input', onInput);
-        if (mobileInput)  mobileInput.addEventListener('input', onInput);
+        if (mobileInput) mobileInput.addEventListener('input', onInput);
 
         if (clearBtn) {
             clearBtn.addEventListener('click', function () {
                 if (desktopInput) desktopInput.value = '';
-                if (mobileInput)  mobileInput.value  = '';
+                if (mobileInput) mobileInput.value = '';
                 performPostSearch('');
                 if (suggDesktop) suggDesktop.classList.add('hidden');
-                if (suggMobile)  suggMobile.classList.add('hidden');
+                if (suggMobile) suggMobile.classList.add('hidden');
                 checkFiltersActive();
             });
         }
 
         // Filter dropdowns — also trigger post search sync
-        ['filter-jurusan','filter-keahlian','filter-angkatan'].forEach(id => {
+        ['filter-jurusan', 'filter-keahlian', 'filter-angkatan'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', checkFiltersActive);
         });
@@ -3579,7 +3578,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!e.target.closest('#unified-search-input') && !e.target.closest('#search-suggestions') &&
                 !e.target.closest('#unified-search-input-mobile') && !e.target.closest('#search-suggestions-mobile')) {
                 if (suggDesktop) suggDesktop.classList.add('hidden');
-                if (suggMobile)  suggMobile.classList.add('hidden');
+                if (suggMobile) suggMobile.classList.add('hidden');
             }
         });
     }
@@ -3596,13 +3595,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchUrl = desktopInput?.dataset.searchUrl || mobileInput?.dataset.searchUrl || '/search';
 
     function buildSearchUrl(inputId, jurusanId, keahlianId, angkatanId) {
-        const q        = document.getElementById(inputId)?.value?.trim() || '';
-        const jurusan  = document.getElementById(jurusanId)?.value  || '';
+        const q = document.getElementById(inputId)?.value?.trim() || '';
+        const jurusan = document.getElementById(jurusanId)?.value || '';
         const keahlian = document.getElementById(keahlianId)?.value || '';
         const angkatan = document.getElementById(angkatanId)?.value || '';
-        const params   = new URLSearchParams();
-        if (q)        params.set('q', q);
-        if (jurusan)  params.set('jurusan', jurusan);
+        const params = new URLSearchParams();
+        if (q) params.set('q', q);
+        if (jurusan) params.set('jurusan', jurusan);
         if (keahlian) params.set('keahlian', keahlian);
         if (angkatan) params.set('angkatan', angkatan);
         return `${searchUrl}${params.toString() ? '?' + params.toString() : ''}`;
@@ -3666,7 +3665,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Notification Bell Alpine Component
-window.notificationBell = function(data) {
+window.notificationBell = function (data) {
     const currentLocale = document.documentElement.lang || 'id';
 
     return {
@@ -3684,12 +3683,12 @@ window.notificationBell = function(data) {
             return notifications.filter(item => {
                 if (item.read === 1 || item.read === true) return false;
                 const notifData = item.data || {};
-                const selected  = notifData.selected_users;
+                const selected = notifData.selected_users;
                 if (notifData.target_type === 'specific') {
                     if (!selected) return false;
                     if (Array.isArray(selected)) return selected.map(Number).includes(Number(this.userId));
                     if (typeof selected === 'string' && selected.startsWith('[')) {
-                        try { const p = JSON.parse(selected); return Array.isArray(p) ? p.map(Number).includes(Number(this.userId)) : false; } catch(e) {}
+                        try { const p = JSON.parse(selected); return Array.isArray(p) ? p.map(Number).includes(Number(this.userId)) : false; } catch (e) { }
                     }
                     return Number(selected) === Number(this.userId);
                 }
@@ -3707,12 +3706,12 @@ window.notificationBell = function(data) {
         },
 
         getCurrentNotificationIds() { return this.notifications.map(n => n.id); },
-        getUnreadNotificationIds()  { return this.notifications.filter(n => !n.read).map(n => n.id); },
+        getUnreadNotificationIds() { return this.notifications.filter(n => !n.read).map(n => n.id); },
 
         getIconBg(type) {
             const colors = {
-                'user-registered':      'bg-gradient-to-br from-blue-500 to-indigo-600',
-                'project-created':      'bg-gradient-to-br from-green-500 to-emerald-600',
+                'user-registered': 'bg-gradient-to-br from-blue-500 to-indigo-600',
+                'project-created': 'bg-gradient-to-br from-green-500 to-emerald-600',
                 'certificate-uploaded': 'bg-gradient-to-br from-purple-500 to-pink-600',
             };
             return colors[type] || 'bg-gradient-to-br from-gray-500 to-gray-600';
@@ -3721,10 +3720,10 @@ window.notificationBell = function(data) {
         formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
-            const now  = new Date();
+            const now = new Date();
             const diff = Math.floor((now - date) / 1000);
-            if (diff < 60)    return 'Baru saja';
-            if (diff < 3600)  return Math.floor(diff / 60) + ' menit lalu';
+            if (diff < 60) return 'Baru saja';
+            if (diff < 3600) return Math.floor(diff / 60) + ' menit lalu';
             if (diff < 86400) return Math.floor(diff / 3600) + ' jam lalu';
             return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
         },
@@ -3738,7 +3737,7 @@ window.notificationBell = function(data) {
             if (this.pollingInterval) clearInterval(this.pollingInterval);
             this.pollingInterval = setInterval(async () => {
                 try {
-                    const res  = await fetch(`/${currentLocale}/api/notifications/unread-count`);
+                    const res = await fetch(`/${currentLocale}/api/notifications/unread-count`);
                     const data = await res.json();
                     if (data.count !== this.unreadCount) await this.loadNotifications();
                 } catch (e) { console.error('Polling error:', e); }
@@ -3749,7 +3748,7 @@ window.notificationBell = function(data) {
             if (this.isLoading) return;
             this.isLoading = true;
             try {
-                const res  = await fetch(`/${currentLocale}/api/notifications?page=${this.page}`);
+                const res = await fetch(`/${currentLocale}/api/notifications?page=${this.page}`);
                 const data = await res.json();
                 this.notifications = this.filterNotifications(data.data || []);
                 this.updateUnreadCount();
@@ -3764,8 +3763,8 @@ window.notificationBell = function(data) {
                 window.location.href = item.data.link;
             } else {
                 const routes = {
-                    'user-registered':      `/${locale}/admin/manageUser`,
-                    'project-created':      `/${locale}/admin/manageProject`,
+                    'user-registered': `/${locale}/admin/manageUser`,
+                    'project-created': `/${locale}/admin/manageProject`,
                     'certificate-uploaded': `/${locale}/admin/manageSertifikat`,
                 };
                 window.location.href = routes[item.type] || `/${locale}/dashboard`;
@@ -3775,14 +3774,14 @@ window.notificationBell = function(data) {
         async markAsRead(id) {
             try {
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const res  = await fetch(`/${currentLocale}/api/notifications/mark-read?id=${id}`, {
+                const res = await fetch(`/${currentLocale}/api/notifications/mark-read?id=${id}`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'same-origin'
                 });
                 const result = await res.json();
                 if (result.success) await this.loadNotifications();
-            } catch(e) { console.error('Mark as read error:', e); }
+            } catch (e) { console.error('Mark as read error:', e); }
         },
 
         async markAllAsRead() {
@@ -3790,7 +3789,7 @@ window.notificationBell = function(data) {
             if (!ids.length) { this.showToast('Tidak ada notifikasi yang belum dibaca', 'info'); return; }
             try {
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const res  = await fetch(`/${currentLocale}/api/notifications/mark-all-read`, {
+                const res = await fetch(`/${currentLocale}/api/notifications/mark-all-read`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'same-origin',
@@ -3799,7 +3798,7 @@ window.notificationBell = function(data) {
                 const result = await res.json();
                 if (result.success) { await this.loadNotifications(); this.showToast(result.message || 'Semua notifikasi telah ditandai dibaca', 'success'); }
                 else this.showToast('Gagal menandai notifikasi', 'error');
-            } catch(e) { this.showToast('Gagal menandai notifikasi. Silakan coba lagi.', 'error'); }
+            } catch (e) { this.showToast('Gagal menandai notifikasi. Silakan coba lagi.', 'error'); }
         },
 
         async clearAll() {
@@ -3808,7 +3807,7 @@ window.notificationBell = function(data) {
             if (!confirm(`Apakah Anda yakin ingin menghapus ${ids.length} notifikasi?`)) return;
             try {
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                const res  = await fetch(`/${currentLocale}/api/notifications/clear-all`, {
+                const res = await fetch(`/${currentLocale}/api/notifications/clear-all`, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'same-origin',
@@ -3817,16 +3816,15 @@ window.notificationBell = function(data) {
                 const result = await res.json();
                 if (result.success) { await this.loadNotifications(); this.showToast(result.message || 'Notifikasi telah dihapus', 'success'); }
                 else this.showToast('Gagal menghapus notifikasi', 'error');
-            } catch(e) { this.showToast('Gagal menghapus notifikasi. Silakan coba lagi.', 'error'); }
+            } catch (e) { this.showToast('Gagal menghapus notifikasi. Silakan coba lagi.', 'error'); }
         },
 
         updateUnreadCount() { this.unreadCount = this.notifications.filter(n => !n.read).length; },
 
         showToast(message, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = `fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm ${
-                type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-gray-800')
-            } text-white`;
+            toast.className = `fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm ${type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-gray-800')
+                } text-white`;
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
@@ -3837,7 +3835,7 @@ window.notificationBell = function(data) {
 // Placeholder typing effect
 (function () {
     function getPlaceholderTexts() {
-        const lang  = localStorage.getItem('lang') || 'id';
+        const lang = localStorage.getItem('lang') || 'id';
         const texts = {
             id: ['Cari Mahasiswa...', 'Cari Portofolio...', 'Cari Sertifikat...', 'Cari Postingan...'],
             en: ['Search Students...', 'Search Portfolio...', 'Search Certificate...', 'Search Posts...']
@@ -3876,8 +3874,8 @@ window.notificationBell = function(data) {
 })();
 
 // Outside click triggers suggestions box hide
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('#search-input') && !e.target.closest('#search-suggestions') && 
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('#search-input') && !e.target.closest('#search-suggestions') &&
         !e.target.closest('#search-input-mobile') && !e.target.closest('#search-suggestions-mobile')) {
         document.querySelectorAll('#search-suggestions, #search-suggestions-mobile').forEach(box => box.classList.add('hidden'));
     }
@@ -4184,7 +4182,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'terima kasih': 'Sama-sama! Senang bisa membantu Anda 😊 Jika ada pertanyaan lain, jangan ragu untuk bertanya lagi ya!',
         'makasih': 'Sama-sama! Senang bisa membantu 😊',
         'bye': 'Sampai jumpa! 👋 Kembali lagi jika ada pertanyaan lain. Semoga harimu menyenangkan!',
-        'dimana' : 'Polmind Berada Di MM2100, No. S85, Vasanta Innopark'
+        'dimana': 'Polmind Berada Di MM2100, No. S85, Vasanta Innopark'
     };
 
     const quickQuestionsPool = [
@@ -4634,7 +4632,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     // Page Info initialization
     const isLearningCornerPage = document.querySelector('[data-page-info="popup.user_create_learning_corner"]') ||
-                                 document.querySelector('[data-page-info="popup.user_edit_learning_corner"]');
+        document.querySelector('[data-page-info="popup.user_edit_learning_corner"]');
     if (!isLearningCornerPage) return;
 
     // Dynamic Items (Create & Edit)
@@ -4826,14 +4824,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addItemBtn = document.getElementById('add-item');
 
     const isPostinganPage = document.querySelector('[data-page-info="popup.semua_postingan"]') ||
-                            document.querySelector('[data-page-info="popup.create_postingan"]') ||
-                            document.querySelector('[data-page-info="popup.edit_postingan"]');
+        document.querySelector('[data-page-info="popup.create_postingan"]') ||
+        document.querySelector('[data-page-info="popup.edit_postingan"]');
 
     if (isPostinganPage && itemsContainer && addItemBtn) {
         let itemIndex = parseInt(itemsContainer.getAttribute('data-item-count') || '0', 10);
         const isCreatePage = itemsContainer.getAttribute('data-is-create') === 'true';
 
-        window.addItem = function() {
+        window.addItem = function () {
             const container = document.getElementById('items-container');
             const newItem = document.createElement('div');
             newItem.className = 'item p-5 bg-white dark:bg-gray-800 relative group';
@@ -4900,7 +4898,7 @@ document.addEventListener('DOMContentLoaded', () => {
             itemIndex++;
         };
 
-        window.previewImage = function(input) {
+        window.previewImage = function (input) {
             const index = input.dataset.index;
             const previewContainer = document.getElementById(`image-preview-${index}`);
             const uploadPlaceholder = document.getElementById(`upload-placeholder-${index}`);
@@ -4924,7 +4922,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     previewContainer.innerHTML = `
                         <div class="image-preview-container">
                             <img src="${e.target.result}" alt="Preview" class="max-h-48 rounded-lg shadow-md">
@@ -4942,7 +4940,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        window.removePreview = function(btn, index) {
+        window.removePreview = function (btn, index) {
             const previewContainer = document.getElementById(`image-preview-${index}`);
             const uploadPlaceholder = document.getElementById(`upload-placeholder-${index}`);
             const fileInput = document.querySelector(`input[data-index="${index}"]`);
@@ -4957,7 +4955,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
         };
 
-        window.attachTypeListener = function(itemElement) {
+        window.attachTypeListener = function (itemElement) {
             const select = itemElement.querySelector('.type-select');
             const fileDiv = itemElement.querySelector('.file-input');
             const linkInput = itemElement.querySelector('.link-input');
@@ -5017,56 +5015,56 @@ document.addEventListener('DOMContentLoaded', () => {
         addItemBtn.addEventListener('click', window.addItem);
 
         // ===== INISIALISASI TAMBAHAN UNTUK EDIT POSTINGAN =====
-// Auto-resize textarea
-const judul = document.getElementById('judul');
-const deskripsi = document.getElementById('deskripsi');
+        // Auto-resize textarea
+        const judul = document.getElementById('judul');
+        const deskripsi = document.getElementById('deskripsi');
 
-if (judul) {
-    judul.style.height = '';
-    judul.style.height = judul.scrollHeight + 'px';
-    judul.addEventListener('input', function() {
-        this.style.height = '';
-        this.style.height = this.scrollHeight + 'px';
-    });
-}
+        if (judul) {
+            judul.style.height = '';
+            judul.style.height = judul.scrollHeight + 'px';
+            judul.addEventListener('input', function () {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        }
 
-if (deskripsi) {
-    deskripsi.style.height = '';
-    deskripsi.style.height = deskripsi.scrollHeight + 'px';
-    deskripsi.addEventListener('input', function() {
-        this.style.height = '';
-        this.style.height = this.scrollHeight + 'px';
-    });
-}
+        if (deskripsi) {
+            deskripsi.style.height = '';
+            deskripsi.style.height = deskripsi.scrollHeight + 'px';
+            deskripsi.addEventListener('input', function () {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        }
 
-// Game toggle
-const gameEnabledEl = document.getElementById('game_enabled');
-if (gameEnabledEl) {
-    const gameNameEl = document.getElementById('game_name');
-    const gameThumbEl = document.getElementById('game_thumbnail');
-    const thumbnailContainer = document.getElementById('thumbnail_container');
-    const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
-    const removeThumbInput = document.getElementById('remove_thumbnail');
+        // Game toggle
+        const gameEnabledEl = document.getElementById('game_enabled');
+        if (gameEnabledEl) {
+            const gameNameEl = document.getElementById('game_name');
+            const gameThumbEl = document.getElementById('game_thumbnail');
+            const thumbnailContainer = document.getElementById('thumbnail_container');
+            const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
+            const removeThumbInput = document.getElementById('remove_thumbnail');
 
-    function updateGameState() {
-        const checked = gameEnabledEl.checked;
-        if (gameNameEl) gameNameEl.disabled = !checked;
-        if (gameThumbEl) gameThumbEl.disabled = !checked;
-        if (thumbnailContainer) thumbnailContainer.style.display = checked ? 'block' : 'none';
-        if (!checked && removeThumbInput) removeThumbInput.value = '1';
-    }
+            function updateGameState() {
+                const checked = gameEnabledEl.checked;
+                if (gameNameEl) gameNameEl.disabled = !checked;
+                if (gameThumbEl) gameThumbEl.disabled = !checked;
+                if (thumbnailContainer) thumbnailContainer.style.display = checked ? 'block' : 'none';
+                if (!checked && removeThumbInput) removeThumbInput.value = '1';
+            }
 
-    gameEnabledEl.addEventListener('change', updateGameState);
+            gameEnabledEl.addEventListener('change', updateGameState);
 
-    if (removeThumbBtn) {
-        removeThumbBtn.addEventListener('click', function() {
-            const container = document.getElementById('current_thumbnail_container');
-            if (container) container.remove();
-            if (removeThumbInput) removeThumbInput.value = '1';
-            if (gameThumbEl) gameThumbEl.value = '';
-        });
-    }
-}
+            if (removeThumbBtn) {
+                removeThumbBtn.addEventListener('click', function () {
+                    const container = document.getElementById('current_thumbnail_container');
+                    if (container) container.remove();
+                    if (removeThumbInput) removeThumbInput.value = '1';
+                    if (gameThumbEl) gameThumbEl.value = '';
+                });
+            }
+        }
     }
 
     // Textarea auto-resize on load
@@ -5076,7 +5074,7 @@ if (gameEnabledEl) {
     if (judul) {
         judul.style.height = '';
         judul.style.height = judul.scrollHeight + 'px';
-        judul.addEventListener('input', function() {
+        judul.addEventListener('input', function () {
             this.style.height = '';
             this.style.height = this.scrollHeight + 'px';
         });
@@ -5085,7 +5083,7 @@ if (gameEnabledEl) {
     if (deskripsi) {
         deskripsi.style.height = '';
         deskripsi.style.height = deskripsi.scrollHeight + 'px';
-        deskripsi.addEventListener('input', function() {
+        deskripsi.addEventListener('input', function () {
             this.style.height = '';
             this.style.height = this.scrollHeight + 'px';
         });
@@ -5100,7 +5098,7 @@ if (gameEnabledEl) {
         const removeThumbBtn = document.getElementById('remove_thumbnail_btn');
         const removeThumbInput = document.getElementById('remove_thumbnail');
 
-        gameEnabledEl.addEventListener('change', function() {
+        gameEnabledEl.addEventListener('change', function () {
             const checked = this.checked;
             if (gameNameEl) gameNameEl.disabled = !checked;
             if (gameThumbEl) gameThumbEl.disabled = !checked;
@@ -5109,7 +5107,7 @@ if (gameEnabledEl) {
         });
 
         if (removeThumbBtn) {
-            removeThumbBtn.addEventListener('click', function() {
+            removeThumbBtn.addEventListener('click', function () {
                 const container = document.getElementById('current_thumbnail_container');
                 if (container) container.remove();
                 if (removeThumbInput) removeThumbInput.value = '1';
@@ -5136,7 +5134,7 @@ if (gameEnabledEl) {
    ========================================== */
 
 // ===================== GLOBAL CONFIG =====================
-window.currentUserId   = null;
+window.currentUserId = null;
 window.currentUserName = "";
 window.currentUserPhoto = "";
 window.locale = document.querySelector('html')?.getAttribute('lang') || 'id';
@@ -5179,7 +5177,7 @@ function getHeaders() {
 }
 
 // ===================== LOAD COMMENTS =====================
-window.loadComments = async function(postinganId) {
+window.loadComments = async function (postinganId) {
     const container = document.getElementById(`comments-container-${postinganId}`);
     if (!container) return;
 
@@ -5234,18 +5232,18 @@ function renderCommentWithReplies(comment, level, postinganId) {
     const commentId = String(comment.id_komentar);
     postinganId = String(postinganId);
 
-    const replyText  = (window.locale === 'id') ? 'Balas'  : 'Reply';
-    const editText   = (window.locale === 'id') ? 'Edit'   : 'Edit';
-    const deleteText = (window.locale === 'id') ? 'Hapus'  : 'Delete';
+    const replyText = (window.locale === 'id') ? 'Balas' : 'Reply';
+    const editText = (window.locale === 'id') ? 'Edit' : 'Edit';
+    const deleteText = (window.locale === 'id') ? 'Hapus' : 'Delete';
 
-    const userPortfolioUrl = comment.user && comment.user.username 
-        ? `/${window.locale}/portofolio?user=${comment.user.username}` 
+    const userPortfolioUrl = comment.user && comment.user.username
+        ? `/${window.locale}/portofolio?user=${comment.user.username}`
         : '#';
-    const avatarHtml = comment.user && comment.user.username 
-        ? `<a href="${userPortfolioUrl}">${getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}</a>` 
+    const avatarHtml = comment.user && comment.user.username
+        ? `<a href="${userPortfolioUrl}">${getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}</a>`
         : getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs');
-    const nameHtml = comment.user && comment.user.username 
-        ? `<a href="${userPortfolioUrl}" class="font-semibold text-sm text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors">${userName}</a>` 
+    const nameHtml = comment.user && comment.user.username
+        ? `<a href="${userPortfolioUrl}" class="font-semibold text-sm text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors">${userName}</a>`
         : `<span class="font-semibold text-sm text-gray-900 dark:text-gray-100">${userName}</span>`;
 
     let html = `
@@ -5309,26 +5307,26 @@ function renderCommentWithReplies(comment, level, postinganId) {
 function attachCommentEventListeners(container, postinganId) {
     if (!container.hasAttribute('data-delegated')) {
         container.setAttribute('data-delegated', 'true');
-        container.addEventListener('click', function(e) {
+        container.addEventListener('click', function (e) {
             const btn = e.target.closest('[data-action]');
             if (!btn) return;
 
-            const commentId  = btn.getAttribute('data-comment-id');
-            const pid        = btn.getAttribute('data-postingan-id');
-            const action     = btn.getAttribute('data-action');
+            const commentId = btn.getAttribute('data-comment-id');
+            const pid = btn.getAttribute('data-postingan-id');
+            const action = btn.getAttribute('data-action');
 
-            if (action === 'reply')       window.showReplyForm(commentId, pid);
-            else if (action === 'edit')   window.showEditForm(commentId, pid);
+            if (action === 'reply') window.showReplyForm(commentId, pid);
+            else if (action === 'edit') window.showEditForm(commentId, pid);
             else if (action === 'delete') window.deleteComment(commentId, pid, btn.getAttribute('data-type') || 'full');
-            else if (action === 'save-edit')   window.saveEdit(commentId, pid);
+            else if (action === 'save-edit') window.saveEdit(commentId, pid);
             else if (action === 'cancel-edit') window.cancelEdit(commentId);
         });
     }
 }
 
 // ===================== SUBMIT COMMENT =====================
-window.submitComment = async function(postinganId) {
-    const textarea  = document.getElementById(`comment-input-${postinganId}`);
+window.submitComment = async function (postinganId) {
+    const textarea = document.getElementById(`comment-input-${postinganId}`);
     const commentText = textarea.value.trim();
 
     if (!commentText) {
@@ -5381,9 +5379,9 @@ async function submitReply(form, postinganId) {
     if (form.hasAttribute('data-submitting')) return;
     form.setAttribute('data-submitting', 'true');
 
-    const textarea   = form.querySelector('textarea[name="komentar"]');
+    const textarea = form.querySelector('textarea[name="komentar"]');
     const commentText = textarea.value.trim();
-    const parentId   = form.querySelector('input[name="parent_id"]').value;
+    const parentId = form.querySelector('input[name="parent_id"]').value;
 
     if (!commentText) {
         if (window.showPageInfo) window.showPageInfo('Balasan tidak boleh kosong', 'warning', 2000);
@@ -5436,13 +5434,13 @@ async function submitReply(form, postinganId) {
 }
 
 // ===================== SHOW REPLY FORM =====================
-window.showReplyForm = function(parentCommentId, postinganId) {
+window.showReplyForm = function (parentCommentId, postinganId) {
     parentCommentId = String(parentCommentId);
     const replyFormContainer = document.getElementById(`reply-form-${parentCommentId}`);
     if (!replyFormContainer) return;
 
-    const sendText        = (window.locale === 'id') ? 'Kirim'  : 'Send';
-    const cancelText      = (window.locale === 'id') ? 'Batal'  : 'Cancel';
+    const sendText = (window.locale === 'id') ? 'Kirim' : 'Send';
+    const cancelText = (window.locale === 'id') ? 'Batal' : 'Cancel';
     const placeholderText = (window.locale === 'id') ? 'Tulis balasan...' : 'Write a reply...';
 
     if (replyFormContainer.innerHTML.trim() !== '' && !replyFormContainer.classList.contains('hidden')) {
@@ -5473,15 +5471,15 @@ window.showReplyForm = function(parentCommentId, postinganId) {
 };
 
 // ===================== SHOW EDIT FORM =====================
-window.showEditForm = function(commentId, postinganId) {
-    commentId   = String(commentId);
+window.showEditForm = function (commentId, postinganId) {
+    commentId = String(commentId);
     postinganId = String(postinganId);
 
     const commentTextEl = document.getElementById(`comment-text-${commentId}`);
     if (!commentTextEl) return;
 
     const originalText = commentTextEl.innerText;
-    const commentItem  = commentTextEl.closest('.comment-item');
+    const commentItem = commentTextEl.closest('.comment-item');
 
     const existingEditForm = document.getElementById(`edit-form-${commentId}`);
     if (existingEditForm) {
@@ -5492,8 +5490,8 @@ window.showEditForm = function(commentId, postinganId) {
         return;
     }
 
-    const saveText   = (window.locale === 'id') ? 'Simpan' : 'Save';
-    const cancelText = (window.locale === 'id') ? 'Batal'  : 'Cancel';
+    const saveText = (window.locale === 'id') ? 'Simpan' : 'Save';
+    const cancelText = (window.locale === 'id') ? 'Batal' : 'Cancel';
 
     const editForm = document.createElement('div');
     editForm.className = 'edit-form mt-2';
@@ -5516,7 +5514,7 @@ window.showEditForm = function(commentId, postinganId) {
 };
 
 // ===================== SAVE EDIT =====================
-window.saveEdit = async function(commentId, postinganId) {
+window.saveEdit = async function (commentId, postinganId) {
     commentId = String(commentId);
     const editForm = document.getElementById(`edit-form-${commentId}`);
     if (!editForm) return;
@@ -5573,10 +5571,10 @@ window.saveEdit = async function(commentId, postinganId) {
 };
 
 // ===================== CANCEL EDIT =====================
-window.cancelEdit = function(commentId) {
+window.cancelEdit = function (commentId) {
     commentId = String(commentId);
     const commentTextEl = document.getElementById(`comment-text-${commentId}`);
-    const editForm      = document.getElementById(`edit-form-${commentId}`);
+    const editForm = document.getElementById(`edit-form-${commentId}`);
     if (!commentTextEl) return;
 
     const commentItem = commentTextEl.closest('.comment-item');
@@ -5588,8 +5586,8 @@ window.cancelEdit = function(commentId) {
 };
 
 // ===================== DELETE COMMENT =====================
-window.deleteComment = async function(commentId, postinganId, type = 'full') {
-    commentId   = String(commentId);
+window.deleteComment = async function (commentId, postinganId, type = 'full') {
+    commentId = String(commentId);
     postinganId = String(postinganId);
 
     const confirmMessageSingle = (window.locale === 'id')
@@ -5646,10 +5644,10 @@ function updateTotalCommentCount(delta) {
 }
 
 // ===================== SHARE =====================
-window.toggleShare = function(btn) {
+window.toggleShare = function (btn) {
     const url = window.location.href;
     if (navigator.share) {
-        navigator.share({ url }).catch(() => {});
+        navigator.share({ url }).catch(() => { });
         return;
     }
     navigator.clipboard.writeText(url).then(() => {
@@ -5661,8 +5659,8 @@ window.toggleShare = function(btn) {
 };
 
 // ===================== PAGE INITIALIZER FOR DETAIL POSTINGAN =====================
-window.initPostinganDetailPage = function(container) {
-    window.currentUserId   = container.dataset.userId === 'null' ? null : parseInt(container.dataset.userId);
+window.initPostinganDetailPage = function (container) {
+    window.currentUserId = container.dataset.userId === 'null' ? null : parseInt(container.dataset.userId);
     window.currentUserName = container.dataset.userName || '';
     window.currentUserPhoto = container.dataset.userPhoto || '';
     window.locale = container.dataset.locale || document.querySelector('html').getAttribute('lang') || 'id';
@@ -5675,7 +5673,7 @@ window.initPostinganDetailPage = function(container) {
     // Like button
     const likeBtn = container.querySelector('.like-btn');
     if (likeBtn) {
-        likeBtn.addEventListener('click', function(e) {
+        likeBtn.addEventListener('click', function (e) {
             e.preventDefault();
             const pid = this.dataset.postinganId;
             fetch(`/${window.locale}/postingan/toggle-like?id=${pid}`, {
@@ -5685,29 +5683,29 @@ window.initPostinganDetailPage = function(container) {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const icon      = likeBtn.querySelector('svg');
-                    const countSpan = likeBtn.querySelector('.like-count');
-                    if (data.liked) {
-                        likeBtn.classList.add('text-red-500', 'dark:text-red-400');
-                        icon.classList.add('fill-current', 'text-red-500');
-                    } else {
-                        likeBtn.classList.remove('text-red-500', 'dark:text-red-400');
-                        icon.classList.remove('fill-current', 'text-red-500');
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const icon = likeBtn.querySelector('svg');
+                        const countSpan = likeBtn.querySelector('.like-count');
+                        if (data.liked) {
+                            likeBtn.classList.add('text-red-500', 'dark:text-red-400');
+                            icon.classList.add('fill-current', 'text-red-500');
+                        } else {
+                            likeBtn.classList.remove('text-red-500', 'dark:text-red-400');
+                            icon.classList.remove('fill-current', 'text-red-500');
+                        }
+                        if (countSpan) countSpan.textContent = data.like_count;
                     }
-                    if (countSpan) countSpan.textContent = data.like_count;
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                })
+                .catch(error => console.error('Error:', error));
         });
     }
 
     // Comment toggle button
     const commentToggle = container.querySelector('.comment-toggle');
     if (commentToggle) {
-        commentToggle.addEventListener('click', function(e) {
+        commentToggle.addEventListener('click', function (e) {
             e.preventDefault();
             const commentsSection = document.getElementById('comments');
             if (commentsSection) {
@@ -5719,7 +5717,7 @@ window.initPostinganDetailPage = function(container) {
     // Share button
     const shareBtn = container.querySelector('.share-btn');
     if (shareBtn) {
-        shareBtn.addEventListener('click', function(e) {
+        shareBtn.addEventListener('click', function (e) {
             e.preventDefault();
             const url = container.dataset.postUrl;
             const title = container.dataset.postUserName;
@@ -5739,21 +5737,21 @@ window.initPostinganDetailPage = function(container) {
     }
 
     // Post Menu Dropdown
-    const postMenuBtn       = document.getElementById('postMenuButton');
-    const postMenuDropdown  = document.getElementById('postMenuDropdown');
+    const postMenuBtn = document.getElementById('postMenuButton');
+    const postMenuDropdown = document.getElementById('postMenuDropdown');
     const postMenuContainer = document.getElementById('postMenuContainer');
 
     if (postMenuBtn && postMenuDropdown) {
-        postMenuBtn.addEventListener('click', function(e) {
+        postMenuBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             postMenuDropdown.classList.toggle('hidden');
         });
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (postMenuContainer && !postMenuContainer.contains(e.target)) {
                 postMenuDropdown.classList.add('hidden');
             }
         });
-        postMenuDropdown.addEventListener('click', function(e) {
+        postMenuDropdown.addEventListener('click', function (e) {
             e.stopPropagation();
         });
     }
@@ -5762,7 +5760,7 @@ window.initPostinganDetailPage = function(container) {
 /* ==========================================
    VIEWS_PROJECT_USER.BLADE.PHP SCRIPTS
    ========================================== */
-window.puPlayVideo = function(wrapperId, type, src) {
+window.puPlayVideo = function (wrapperId, type, src) {
     const wrapper = document.getElementById(wrapperId);
     if (!wrapper) return;
 
@@ -5799,7 +5797,7 @@ window.puPlayVideo = function(wrapperId, type, src) {
 /* ==========================================
    VIEWS_DETAIL_PROJECT.BLADE.PHP SCRIPTS
    ========================================== */
-window.openImageModal = function(imageSrc) {
+window.openImageModal = function (imageSrc) {
     const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     if (modal && modalImage) {
@@ -5810,7 +5808,7 @@ window.openImageModal = function(imageSrc) {
     }
 };
 
-window.closeImageModal = function() {
+window.closeImageModal = function () {
     const modal = document.getElementById('imageModal');
     if (modal) {
         modal.classList.add('hidden');
@@ -5826,7 +5824,7 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-window.initProjectDetailPage = function(container) {
+window.initProjectDetailPage = function (container) {
     // Individual delete buttons
     container.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {
@@ -5937,9 +5935,9 @@ window.initProjectDetailPage = function(container) {
 /* ==========================================
    VIEWS_CREATE_PROJECT.BLADE.PHP SCRIPTS
    ========================================== */
-window.initProjectCreatePage = function(container) {
-    let allUsers = []; 
-    let allUsersMap = new Map(); 
+window.initProjectCreatePage = function (container) {
+    let allUsers = [];
+    let allUsersMap = new Map();
     const currentUser = JSON.parse(container.dataset.currentUser || 'null');
     const userSelectionStorageKey = 'project_selected_users';
 
@@ -5967,8 +5965,8 @@ window.initProjectCreatePage = function(container) {
         if (!stored) return false;
         try {
             const parsed = JSON.parse(stored);
-            if (parsed.owner)  selectedUsers.owner   = parsed.owner;
-            if (parsed.leader) selectedUsers.leader  = parsed.leader;
+            if (parsed.owner) selectedUsers.owner = parsed.owner;
+            if (parsed.leader) selectedUsers.leader = parsed.leader;
             if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
             return true;
         } catch (e) {
@@ -5997,15 +5995,15 @@ window.initProjectCreatePage = function(container) {
 
     function syncPendingFromSelected() {
         pendingUsers = {
-            owner:   selectedUsers.owner   ? { ...selectedUsers.owner }   : null,
-            leader:  selectedUsers.leader  ? { ...selectedUsers.leader }  : null,
+            owner: selectedUsers.owner ? { ...selectedUsers.owner } : null,
+            leader: selectedUsers.leader ? { ...selectedUsers.leader } : null,
             members: selectedUsers.members.map(m => ({ ...m }))
         };
     }
 
     function applyPendingToSelected() {
-        selectedUsers.owner   = pendingUsers.owner   ? { ...pendingUsers.owner }   : null;
-        selectedUsers.leader  = pendingUsers.leader  ? { ...pendingUsers.leader }  : null;
+        selectedUsers.owner = pendingUsers.owner ? { ...pendingUsers.owner } : null;
+        selectedUsers.leader = pendingUsers.leader ? { ...pendingUsers.leader } : null;
         selectedUsers.members = pendingUsers.members.map(m => ({ ...m }));
     }
 
@@ -6013,7 +6011,7 @@ window.initProjectCreatePage = function(container) {
         pendingUsers = { owner: null, leader: null, members: [] };
     }
 
-    window.openUserModal = function() {
+    window.openUserModal = function () {
         const toggle = document.getElementById('project-collaborative-toggle');
         if (!toggle || !toggle.checked) {
             alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
@@ -6024,17 +6022,17 @@ window.initProjectCreatePage = function(container) {
         fetchUsers(1);
     }
 
-    window.closeUserModal = function() {
+    window.closeUserModal = function () {
         document.getElementById('userModal').classList.add('hidden');
         discardPending();
     }
 
-    window.cancelUserModal = function() {
+    window.cancelUserModal = function () {
         discardPending();
         document.getElementById('userModal').classList.add('hidden');
     }
 
-    window.confirmUserSelection = function() {
+    window.confirmUserSelection = function () {
         applyPendingToSelected();
         updateFormInputs();
         renderSelectedUsers();
@@ -6050,9 +6048,9 @@ window.initProjectCreatePage = function(container) {
         currentPage = page;
         const params = new URLSearchParams({
             page: page,
-            search:   currentModalFilters.search,
+            search: currentModalFilters.search,
             angkatan: currentModalFilters.angkatan,
-            jurusan:  currentModalFilters.jurusan,
+            jurusan: currentModalFilters.jurusan,
             keahlian: currentModalFilters.keahlian
         });
 
@@ -6061,50 +6059,50 @@ window.initProjectCreatePage = function(container) {
         fetch(`${fetchUrl}?${params}`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(res => res.json())
-        .then(data => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.userListHtml;
-            
-            const userElements = tempDiv.querySelectorAll('[data-user-id]');
-            const usersInPage = [];
-            
-            userElements.forEach(el => {
-                const userId = el.getAttribute('data-user-id');
-                const nameEl = el.querySelector('.font-medium');
-                const emailEl = el.querySelector('.text-sm.text-gray-500');
-                const imgEl = el.querySelector('img');
-                
-                if (userId && nameEl) {
-                    const user = {
-                        id: parseInt(userId),
-                        nama_mahasiswa: nameEl.textContent.trim(),
-                        email: emailEl ? emailEl.textContent.trim() : '',
-                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                    };
-                    usersInPage.push(user);
+            .then(res => res.json())
+            .then(data => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data.userListHtml;
+
+                const userElements = tempDiv.querySelectorAll('[data-user-id]');
+                const usersInPage = [];
+
+                userElements.forEach(el => {
+                    const userId = el.getAttribute('data-user-id');
+                    const nameEl = el.querySelector('.font-medium');
+                    const emailEl = el.querySelector('.text-sm.text-gray-500');
+                    const imgEl = el.querySelector('img');
+
+                    if (userId && nameEl) {
+                        const user = {
+                            id: parseInt(userId),
+                            nama_mahasiswa: nameEl.textContent.trim(),
+                            email: emailEl ? emailEl.textContent.trim() : '',
+                            photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                        };
+                        usersInPage.push(user);
+                    }
+                });
+
+                addUsersToAllUsers(usersInPage);
+                renderUserListWithRoles(data.userListHtml);
+                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+                refreshRoleSelections();
+
+                if (typeof window.refreshTranslations === 'function') {
+                    window.refreshTranslations();
                 }
             });
-            
-            addUsersToAllUsers(usersInPage);
-            renderUserListWithRoles(data.userListHtml);
-            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-            refreshRoleSelections();
-            
-            if (typeof window.refreshTranslations === 'function') {
-                window.refreshTranslations();
-            }
-        });
     }
-    
+
     function renderUserListWithRoles(html) {
         const uListContainer = document.getElementById('modal-user-list');
         uListContainer.innerHTML = html;
-        
+
         document.querySelectorAll('.user-role-select').forEach(select => {
             const userId = String(select.dataset.userId);
             const user = getUserById(userId);
-            
+
             if (user) {
                 const userDiv = select.closest('[data-user-id]');
                 if (userDiv) {
@@ -6117,14 +6115,14 @@ window.initProjectCreatePage = function(container) {
         });
     }
 
-    window.updateUserRole = function(selectElement, userId, role) {
+    window.updateUserRole = function (selectElement, userId, role) {
         const user = getUserById(userId);
         if (!user) {
             console.error('User not found:', userId);
             return;
         }
 
-        const isOwner         = pendingUsers.owner  && String(pendingUsers.owner.id)  === String(userId);
+        const isOwner = pendingUsers.owner && String(pendingUsers.owner.id) === String(userId);
         const isCurrentLeader = pendingUsers.leader && String(pendingUsers.leader.id) === String(userId);
 
         if (isOwner && role === 'member') {
@@ -6164,11 +6162,11 @@ window.initProjectCreatePage = function(container) {
 
     function refreshRoleSelections() {
         const leaderId = pendingUsers.leader ? String(pendingUsers.leader.id) : null;
-        const ownerId  = pendingUsers.owner  ? String(pendingUsers.owner.id)  : null;
+        const ownerId = pendingUsers.owner ? String(pendingUsers.owner.id) : null;
 
         document.querySelectorAll('.user-role-select').forEach(select => {
-            const userId   = String(select.dataset.userId);
-            const isOwner  = ownerId  === userId;
+            const userId = String(select.dataset.userId);
+            const isOwner = ownerId === userId;
             const isLeader = leaderId === userId;
             const isMember = pendingUsers.members.some(m => String(m.id) === userId);
 
@@ -6185,7 +6183,7 @@ window.initProjectCreatePage = function(container) {
 
             if (leaderOption) {
                 leaderOption.disabled = !!(leaderId && leaderId !== userId && !isLeader);
-                leaderOption.title    = leaderOption.disabled ? 'Leader sudah dipilih' : '';
+                leaderOption.title = leaderOption.disabled ? 'Leader sudah dipilih' : '';
             }
 
             if (memberOption) {
@@ -6200,7 +6198,7 @@ window.initProjectCreatePage = function(container) {
         const badge = document.getElementById('selected-users-badge');
         if (!badge) return;
         let count = 0;
-        if (selectedUsers.owner)  count++;
+        if (selectedUsers.owner) count++;
         if (selectedUsers.leader) count++;
         count += selectedUsers.members.length;
         badge.innerHTML = count === 0
@@ -6225,8 +6223,8 @@ window.initProjectCreatePage = function(container) {
         const ownerEl = document.getElementById('selected-owner-id');
         const leaderEl = document.getElementById('selected-leader-id');
         const membersEl = document.getElementById('selected-members-ids');
-        if (ownerEl) ownerEl.value = selectedUsers.owner?.id  || '';
-        if (leaderEl) leaderEl.value  = selectedUsers.leader?.id || '';
+        if (ownerEl) ownerEl.value = selectedUsers.owner?.id || '';
+        if (leaderEl) leaderEl.value = selectedUsers.leader?.id || '';
         if (membersEl) membersEl.value = selectedUsers.members.map(m => m.id).join(',');
 
         const memberInputs = document.getElementById('selected-members-inputs');
@@ -6239,7 +6237,7 @@ window.initProjectCreatePage = function(container) {
 
     function renderSelectedUsers() {
         const containerSelected = document.getElementById('selected-users-container');
-        const noUsersMsg   = document.getElementById('no-users-message');
+        const noUsersMsg = document.getElementById('no-users-message');
         if (!containerSelected || !noUsersMsg) return;
 
         const selected = [];
@@ -6262,21 +6260,21 @@ window.initProjectCreatePage = function(container) {
         noUsersMsg.classList.add('hidden');
         containerSelected.innerHTML = selected.map(user => {
             const styles = {
-                'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
             }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
 
             return `
                 <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
                      <div class="flex items-center gap-3">
                          ${user.photo_profile
-                             ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                             : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                    ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                    : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
                                     <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                                 </div>`
-                         }
+                }
                          <div>
                              <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
                              <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
@@ -6309,9 +6307,9 @@ window.initProjectCreatePage = function(container) {
         if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
     }
 
-    window.removeUser = function(userId) {
+    window.removeUser = function (userId) {
         deleteTasksForUser(userId);
-        if (selectedUsers.leader?.id == userId)  selectedUsers.leader  = null;
+        if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
         selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
         updateFormInputs();
         renderSelectedUsers();
@@ -6320,7 +6318,7 @@ window.initProjectCreatePage = function(container) {
         saveSelectedUsersToStorage();
     }
 
-    window.editUser = function(userId) {
+    window.editUser = function (userId) {
         window.openUserModal();
         setTimeout(() => {
             const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
@@ -6355,14 +6353,14 @@ window.initProjectCreatePage = function(container) {
         return html;
     }
 
-    window.addTaskRow = function(taskData = null) {
+    window.addTaskRow = function (taskData = null) {
         const tContainer = document.getElementById('tasks-container');
         if (!tContainer) return;
-        const index    = taskIndex++;
-        const userId   = taskData?.user_id ?? '';
+        const index = taskIndex++;
+        const userId = taskData?.user_id ?? '';
         const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
         const hiddenId = taskData?.id ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">` : '';
-        const isDone   = taskData?.is_done ? true : false; // ← TAMBAHKAN
+        const isDone = taskData?.is_done ? true : false; // ← TAMBAHKAN
 
         const taskItem = document.createElement('div');
         taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
@@ -6403,7 +6401,7 @@ window.initProjectCreatePage = function(container) {
         taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
     }
 
-    window.removeTaskRow = function(button) {
+    window.removeTaskRow = function (button) {
         button.closest('.task-item')?.remove();
         if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
     }
@@ -6420,7 +6418,7 @@ window.initProjectCreatePage = function(container) {
     function updateTaskUserOptions() {
         document.querySelectorAll('.task-user-select').forEach(select => {
             const currentValue = select.value;
-            select.innerHTML   = renderTaskUserOptions(currentValue);
+            select.innerHTML = renderTaskUserOptions(currentValue);
             if (currentValue) select.value = currentValue;
         });
         cleanupInvalidTaskRows();
@@ -6463,7 +6461,7 @@ window.initProjectCreatePage = function(container) {
         const link = e.target.closest('#modal-pagination a');
         if (link) {
             e.preventDefault();
-            const url  = link.getAttribute('href');
+            const url = link.getAttribute('href');
             if (!url) return;
             const page = new URL(url).searchParams.get('page') || 1;
             fetchUsers(page);
@@ -6472,7 +6470,7 @@ window.initProjectCreatePage = function(container) {
     document.addEventListener('click', pagListener);
 
     function toggleUserSelectionSection() {
-        const toggle             = document.getElementById('project-collaborative-toggle');
+        const toggle = document.getElementById('project-collaborative-toggle');
         const userSelectionSection = document.getElementById('user-selection-section');
 
         if (!toggle || !userSelectionSection) return;
@@ -6494,8 +6492,8 @@ window.initProjectCreatePage = function(container) {
             }
         } else {
             userSelectionSection.style.display = 'none';
-            selectedUsers.owner   = currentUser;
-            selectedUsers.leader  = currentUser;
+            selectedUsers.owner = currentUser;
+            selectedUsers.leader = currentUser;
             selectedUsers.members = [];
             updateFormInputs();
             renderSelectedUsers();
@@ -6506,8 +6504,8 @@ window.initProjectCreatePage = function(container) {
     }
 
     function setupDateValidation() {
-        const tanggalMulaiInput  = document.getElementById('tanggal_mulai');
-        const tanggalAkhirInput  = document.getElementById('tanggal_akhir');
+        const tanggalMulaiInput = document.getElementById('tanggal_mulai');
+        const tanggalAkhirInput = document.getElementById('tanggal_akhir');
         if (!tanggalMulaiInput || !tanggalAkhirInput) return;
 
         if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
@@ -6546,7 +6544,7 @@ window.initProjectCreatePage = function(container) {
             updateFormInputs();
             return;
         }
-        const leaderId  = document.getElementById('selected-leader-id')?.value;
+        const leaderId = document.getElementById('selected-leader-id')?.value;
         const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
         if (leaderId) selectedUsers.leader = getUserById(leaderId);
         selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
@@ -6570,7 +6568,7 @@ window.initProjectCreatePage = function(container) {
     if (pForm) pForm.addEventListener('submit', onSubmitProjectForm);
 
     const collaborativeToggle = document.getElementById('project-collaborative-toggle');
-    const toggleLabel         = document.getElementById('toggle-label');
+    const toggleLabel = document.getElementById('toggle-label');
     if (collaborativeToggle && toggleLabel) {
         toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
         toggleUserSelectionSection();
@@ -6588,7 +6586,7 @@ window.initProjectCreatePage = function(container) {
 /* ==========================================
    VIEWS_EDIT_PROJECT.BLADE.PHP SCRIPTS
    ========================================== */
-window.initProjectEditPage = function(container) {
+window.initProjectEditPage = function (container) {
     let allUsersMap = new Map();
     let allUsersArray = [];
     let pendingUsers = { owner: null, leader: null, members: [] };
@@ -6704,7 +6702,7 @@ window.initProjectEditPage = function(container) {
         return html;
     }
 
-    window.addTaskRow = function(taskData = null) {
+    window.addTaskRow = function (taskData = null) {
         const tContainer = document.getElementById('tasks-container');
         if (!tContainer) return;
 
@@ -6716,7 +6714,7 @@ window.initProjectEditPage = function(container) {
 
         const taskItem = document.createElement('div');
         taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
-        
+
         if (!isCollaborativeMode) {
             taskItem.innerHTML = `
                 ${hiddenId}
@@ -6781,14 +6779,14 @@ window.initProjectEditPage = function(container) {
         }
 
         tContainer.appendChild(taskItem);
-        
+
         if (isCollaborativeMode) {
             const select = taskItem.querySelector('.task-user-select');
             if (select) select.addEventListener('change', () => updateTaskUserOptions());
         }
     }
 
-    window.removeTaskRow = function(button) {
+    window.removeTaskRow = function (button) {
         const taskItem = button.closest('.task-item');
         if (taskItem) taskItem.remove();
         if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
@@ -6796,7 +6794,7 @@ window.initProjectEditPage = function(container) {
 
     function updateTaskUserOptions() {
         if (!isCollaborativeMode) return;
-        
+
         setTimeout(() => {
             document.querySelectorAll('.task-user-select').forEach(select => {
                 const currentValue = select.value;
@@ -6810,24 +6808,24 @@ window.initProjectEditPage = function(container) {
     function saveCurrentTasks() {
         const tasks = [];
         document.querySelectorAll('.task-item').forEach(taskItem => {
-            const userIdInput  = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
             const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
-            const taskIdInput  = taskItem.querySelector('input[name$="[id]"]');
-            const isDoneInput  = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
+            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+            const isDoneInput = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
 
             let userId = null;
             if (userIdInput) { userId = userIdInput.value; }
 
             const taskName = taskNameInput ? taskNameInput.value : '';
-            const taskId   = taskIdInput ? taskIdInput.value : null;
-            const isDone   = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
+            const taskId = taskIdInput ? taskIdInput.value : null;
+            const isDone = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
 
             if (taskName) {
                 tasks.push({
-                    id:        taskId,
-                    user_id:   userId || currentUser.id,
+                    id: taskId,
+                    user_id: userId || currentUser.id,
                     name_task: taskName,
-                    is_done:   isDone, // ← TAMBAHKAN
+                    is_done: isDone, // ← TAMBAHKAN
                 });
             }
         });
@@ -6837,10 +6835,10 @@ window.initProjectEditPage = function(container) {
     function restoreTasks(tasks) {
         const tContainer = document.getElementById('tasks-container');
         if (!tContainer) return;
-        
+
         tContainer.innerHTML = '';
         taskIndex = 0;
-        
+
         if (tasks && tasks.length > 0) {
             tasks.forEach(task => {
                 if (task.name_task) {
@@ -6848,11 +6846,11 @@ window.initProjectEditPage = function(container) {
                 }
             });
         }
-        
+
         if (tContainer.children.length === 0) {
             window.addTaskRow();
         }
-        
+
         if (isCollaborativeMode) {
             setTimeout(() => updateTaskUserOptions(), 100);
         }
@@ -6867,9 +6865,9 @@ window.initProjectEditPage = function(container) {
         if (Array.isArray(existingTasksData) && existingTasksData.length) {
             existingTasksData.forEach(task => window.addTaskRow(task));
         }
-        
+
         if (tContainer.children.length === 0) window.addTaskRow();
-        
+
         if (isCollaborativeMode) {
             setTimeout(() => updateTaskUserOptions(), 100);
         }
@@ -6889,74 +6887,74 @@ window.initProjectEditPage = function(container) {
         fetch(`${fetchUrl}?${params}`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(response => response.json())
-        .then(data => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.userListHtml;
-            
-            const userElements = tempDiv.querySelectorAll('[data-user-id]');
-            const usersInPage = [];
-            
-            userElements.forEach(el => {
-                const userId = el.getAttribute('data-user-id');
-                const nameEl = el.querySelector('.font-medium');
-                const emailEl = el.querySelector('.text-sm.text-gray-500');
-                const imgEl = el.querySelector('img');
-                
-                if (userId && nameEl) {
-                    const user = {
-                        id: parseInt(userId),
-                        nama_mahasiswa: nameEl.textContent.trim(),
-                        email: emailEl ? emailEl.textContent.trim() : '',
-                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                    };
-                    usersInPage.push(user);
-                }
-            });
-            
-            addUsersToMap(usersInPage);
-            
-            document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-            
-            attachRoleSelectEvents();
-            restoreModalRoles();
-            
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = select.dataset.userId;
-                if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                    select.value = 'leader';
-                } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                    select.value = 'member';
-                }
-            });
-            
-            refreshLeaderOptions();
-            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-        })
-        .catch(error => console.error('Error fetching users:', error));
+            .then(response => response.json())
+            .then(data => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data.userListHtml;
+
+                const userElements = tempDiv.querySelectorAll('[data-user-id]');
+                const usersInPage = [];
+
+                userElements.forEach(el => {
+                    const userId = el.getAttribute('data-user-id');
+                    const nameEl = el.querySelector('.font-medium');
+                    const emailEl = el.querySelector('.text-sm.text-gray-500');
+                    const imgEl = el.querySelector('img');
+
+                    if (userId && nameEl) {
+                        const user = {
+                            id: parseInt(userId),
+                            nama_mahasiswa: nameEl.textContent.trim(),
+                            email: emailEl ? emailEl.textContent.trim() : '',
+                            photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                        };
+                        usersInPage.push(user);
+                    }
+                });
+
+                addUsersToMap(usersInPage);
+
+                document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+
+                attachRoleSelectEvents();
+                restoreModalRoles();
+
+                document.querySelectorAll('.user-role-select').forEach(select => {
+                    const userId = select.dataset.userId;
+                    if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+                        select.value = 'leader';
+                    } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
+                        select.value = 'member';
+                    }
+                });
+
+                refreshLeaderOptions();
+                if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+            })
+            .catch(error => console.error('Error fetching users:', error));
     }
 
     function attachRoleSelectEvents() {
         document.querySelectorAll('.user-role-select').forEach(select => {
-            select.addEventListener('change', function() {
+            select.addEventListener('change', function () {
                 const userId = this.dataset.userId;
                 const role = this.value;
                 const user = getUserById(userId);
-                
+
                 if (!user) return;
-                
+
                 if (role === 'leader' && pendingUsers.leader && String(pendingUsers.leader.id) !== String(userId)) {
                     const confirmChange = confirm(`Anda yakin ingin mengganti leader dari "${pendingUsers.leader.nama_mahasiswa}" menjadi "${user.nama_mahasiswa}"?`);
                     if (!confirmChange) {
                         this.value = '';
                         return;
                     }
-                    
+
                     const oldLeaderSelect = document.querySelector(`.user-role-select[data-user-id="${pendingUsers.leader.id}"]`);
                     if (oldLeaderSelect) oldLeaderSelect.value = '';
                 }
-                
+
                 if (role === 'leader') {
                     pendingUsers.leader = user;
                     pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
@@ -6973,7 +6971,7 @@ window.initProjectEditPage = function(container) {
                     }
                     pendingUsers.members = pendingUsers.members.filter(m => String(m.id) !== String(userId));
                 }
-                
+
                 refreshLeaderOptions();
             });
         });
@@ -6984,7 +6982,7 @@ window.initProjectEditPage = function(container) {
         document.querySelectorAll('.user-role-select').forEach(select => {
             const userId = select.dataset.userId;
             const optionLeader = select.querySelector('option[value="leader"]');
-            
+
             if (optionLeader) {
                 if (hasLeader && (!pendingUsers.leader || String(pendingUsers.leader.id) !== String(userId))) {
                     optionLeader.disabled = true;
@@ -6995,7 +6993,7 @@ window.initProjectEditPage = function(container) {
         });
     }
 
-    window.openUserModal = function() {
+    window.openUserModal = function () {
         if (!isCollaborativeMode) {
             alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
             return;
@@ -7005,15 +7003,15 @@ window.initProjectEditPage = function(container) {
         fetchUsers(1);
     }
 
-    window.closeUserModal = function() {
+    window.closeUserModal = function () {
         document.getElementById('userModal').classList.add('hidden');
     }
 
-    window.cancelUserModal = function() {
+    window.cancelUserModal = function () {
         document.getElementById('userModal').classList.add('hidden');
     }
 
-    window.confirmUserSelection = function() {
+    window.confirmUserSelection = function () {
         applyPendingToSelected();
         updateFormInputs();
         renderSelectedUsers();
@@ -7085,11 +7083,11 @@ window.initProjectEditPage = function(container) {
                 <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
                     <div class="flex items-center gap-3">
                         ${user.photo_profile
-                            ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                            : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                    ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                    : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
                                    <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                                </div>`
-                        }
+                }
                         <div>
                             <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
                             <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
@@ -7113,7 +7111,7 @@ window.initProjectEditPage = function(container) {
         }).join('');
     }
 
-    window.removeUser = function(userId) {
+    window.removeUser = function (userId) {
         if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
         selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
         updateFormInputs();
@@ -7122,7 +7120,7 @@ window.initProjectEditPage = function(container) {
         updateSelectedUsersBadge();
     }
 
-    window.editUser = function(userId) {
+    window.editUser = function (userId) {
         window.openUserModal();
         setTimeout(() => {
             const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
@@ -7143,27 +7141,27 @@ window.initProjectEditPage = function(container) {
         if (toggle.checked) {
             userSelectionSection.style.display = 'block';
             isCollaborativeMode = true;
-            
+
             if (selectedUsers.leader && selectedUsers.owner && String(selectedUsers.leader.id) === String(selectedUsers.owner.id) && selectedUsers.members.length === 0) {
                 selectedUsers.leader = null;
                 updateFormInputs();
                 renderSelectedUsers();
                 updateSelectedUsersBadge();
             }
-            
+
             const currentTasks = saveCurrentTasks();
             restoreTasks(currentTasks);
         } else {
             userSelectionSection.style.display = 'none';
             isCollaborativeMode = false;
-            
+
             selectedUsers.leader = null;
             selectedUsers.members = [];
-            
+
             updateFormInputs();
             renderSelectedUsers();
             updateSelectedUsersBadge();
-            
+
             const currentTasks = saveCurrentTasks();
             restoreTasks(currentTasks);
         }
@@ -7172,14 +7170,14 @@ window.initProjectEditPage = function(container) {
     function setupDateValidation() {
         const tanggalMulaiInput = document.getElementById('tanggal_mulai');
         const tanggalAkhirInput = document.getElementById('tanggal_akhir');
-        
+
         if (!tanggalMulaiInput || !tanggalAkhirInput) return;
 
         if (tanggalMulaiInput.value) {
             tanggalAkhirInput.min = tanggalMulaiInput.value;
         }
 
-        tanggalMulaiInput.addEventListener('change', function() {
+        tanggalMulaiInput.addEventListener('change', function () {
             if (this.value) {
                 tanggalAkhirInput.min = this.value;
                 if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
@@ -7190,7 +7188,7 @@ window.initProjectEditPage = function(container) {
             }
         });
 
-        tanggalAkhirInput.addEventListener('change', function() {
+        tanggalAkhirInput.addEventListener('change', function () {
             if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
                 this.value = '';
                 alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
@@ -7200,16 +7198,16 @@ window.initProjectEditPage = function(container) {
 
     function loadSelectedUsersFromForm() {
         selectedUsers.owner = currentUser;
-        
+
         if (projectLeaderId) {
             const lead = getUserById(projectLeaderId);
             if (lead) selectedUsers.leader = lead;
         }
-        
+
         if (projectMemberIds && projectMemberIds.length > 0) {
             selectedUsers.members = projectMemberIds.map(id => getUserById(id)).filter(Boolean);
         }
-        
+
         updateFormInputs();
     }
 
@@ -7218,42 +7216,42 @@ window.initProjectEditPage = function(container) {
         const angkatanSelect = document.getElementById('modal-angkatan');
         const jurusanSelect = document.getElementById('modal-jurusan');
         const keahlianSelect = document.getElementById('modal-keahlian');
-        
+
         const fetchWithSave = (page) => {
             saveCurrentModalRoles();
             fetchUsers(page);
         };
-        
+
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 currentModalFilters.search = this.value;
                 fetchWithSave(1);
             });
         }
-        
+
         if (angkatanSelect) {
-            angkatanSelect.addEventListener('change', function() {
+            angkatanSelect.addEventListener('change', function () {
                 currentModalFilters.angkatan = this.value;
                 fetchWithSave(1);
             });
         }
-        
+
         if (jurusanSelect) {
-            jurusanSelect.addEventListener('change', function() {
+            jurusanSelect.addEventListener('change', function () {
                 currentModalFilters.jurusan = this.value;
                 fetchWithSave(1);
             });
         }
-        
+
         if (keahlianSelect) {
-            keahlianSelect.addEventListener('change', function() {
+            keahlianSelect.addEventListener('change', function () {
                 currentModalFilters.keahlian = this.value;
                 fetchWithSave(1);
             });
         }
     }
 
-    const pagListener = function(e) {
+    const pagListener = function (e) {
         const link = e.target.closest('#modal-pagination a');
         if (link) {
             e.preventDefault();
@@ -7267,27 +7265,27 @@ window.initProjectEditPage = function(container) {
 
     loadSelectedUsersFromForm();
     renderSelectedUsers();
-    
+
     const collaborativeToggle = document.getElementById('project-collaborative-toggle');
     const toggleLabel = document.getElementById('toggle-label');
-    
+
     if (collaborativeToggle && toggleLabel) {
         const hasMembers = selectedUsers.members.length > 0 || selectedUsers.leader;
         collaborativeToggle.checked = hasMembers;
         toggleLabel.textContent = hasMembers ? 'Aktif' : 'Nonaktif';
         isCollaborativeMode = hasMembers;
-        
+
         toggleUserSelectionSection();
         initializeTaskRows();
-        
-        collaborativeToggle.addEventListener('change', function() {
+
+        collaborativeToggle.addEventListener('change', function () {
             toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
             toggleUserSelectionSection();
         });
     } else {
         initializeTaskRows();
     }
-    
+
     setupDateValidation();
     setupModalFilters();
 
@@ -7299,8 +7297,8 @@ window.initProjectEditPage = function(container) {
 /* ==========================================
    VIEWS_SERTIFIKAT.BLADE.PHP SCRIPTS
    ========================================== */
-window.initSertifikatListPage = function(container) {
-    window.filterStatus = function(status) {
+window.initSertifikatListPage = function (container) {
+    window.filterStatus = function (status) {
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
             if (btn.dataset.filter === status) {
@@ -7396,7 +7394,7 @@ window.initSertifikatListPage = function(container) {
 /* ==========================================
    VIEWS_SERTIFIKAT_USER.BLADE.PHP SCRIPTS
    ========================================== */
-window.initSertifikatUserPage = function(container) {
+window.initSertifikatUserPage = function (container) {
     container.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', async function (e) {
             e.preventDefault();
@@ -7443,13 +7441,13 @@ window.initSertifikatUserPage = function(container) {
 /* ==========================================
    VIEWS_CREATE_SERTIFIKAT.BLADE.PHP SCRIPTS
    ========================================== */
-window.initSertifikatCreatePage = function(container) {
+window.initSertifikatCreatePage = function (container) {
     const fileInput = document.getElementById('link_sertifikat');
     const fileNameElement = document.getElementById('file-name');
     const previewContainer = document.getElementById('image-preview-container');
     const previewImage = document.getElementById('image-preview');
 
-    window.updateFileLabel = function(input) {
+    window.updateFileLabel = function (input) {
         const fileName = input.files[0]?.name;
 
         if (fileName) {
@@ -7507,7 +7505,7 @@ window.initSertifikatCreatePage = function(container) {
     const expiredDateInput = document.getElementById('expired_date');
     const permanentCheckbox = document.getElementById('permanent');
     const expiredDateBlock = document.getElementById('expired_date_block');
-    
+
     function updateExpiredDateState() {
         if (!expiredDateInput) return;
         const isPermanent = permanentCheckbox?.checked;
@@ -7535,7 +7533,7 @@ window.initSertifikatCreatePage = function(container) {
         if (tanggalTerbitInput && expiredDateInput && tanggalTerbitInput.value && expiredDateInput.value) {
             const tanggalTerbit = new Date(tanggalTerbitInput.value);
             const expiredDate = new Date(expiredDateInput.value);
-            
+
             if (expiredDate <= tanggalTerbit) {
                 expiredDateInput.setCustomValidity('Tanggal expired harus setelah tanggal terbit');
                 expiredDateInput.reportValidity();
@@ -7547,9 +7545,9 @@ window.initSertifikatCreatePage = function(container) {
         }
         return true;
     }
-    
+
     if (tanggalTerbitInput && expiredDateInput) {
-        tanggalTerbitInput.addEventListener('change', function() {
+        tanggalTerbitInput.addEventListener('change', function () {
             if (this.value) {
                 const nextDay = new Date(this.value);
                 nextDay.setDate(nextDay.getDate() + 1);
@@ -7565,10 +7563,10 @@ window.initSertifikatCreatePage = function(container) {
     }
 
     updateExpiredDateState();
-    
+
     const form = container.querySelector('form');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             updateExpiredDateState();
             if (!validateExpiredDate()) {
                 e.preventDefault();
@@ -7584,7 +7582,7 @@ window.initSertifikatCreatePage = function(container) {
 /* ==========================================
    VIEWS_EDIT_SERTIFIKAT.BLADE.PHP SCRIPTS
    ========================================== */
-window.initSertifikatEditPage = function(container) {
+window.initSertifikatEditPage = function (container) {
     const fileInput = document.getElementById('link_sertifikat');
     const fileNameElement = document.getElementById('file-name');
     const previewContainer = document.getElementById('image-preview-container');
@@ -7592,7 +7590,7 @@ window.initSertifikatEditPage = function(container) {
     const currentPreview = document.getElementById('current-image-preview');
     const originalFileName = container.dataset.originalFileName || '';
 
-    window.updateFileLabel = function(input) {
+    window.updateFileLabel = function (input) {
         const fileName = input.files[0]?.name;
 
         if (fileName) {
@@ -7621,7 +7619,7 @@ window.initSertifikatEditPage = function(container) {
         }
     };
 
-    window.toggleFileUpload = function(checkbox) {
+    window.toggleFileUpload = function (checkbox) {
         const fileUploadSection = document.getElementById('file-upload-section');
 
         if (checkbox.checked) {
@@ -7684,7 +7682,7 @@ window.initSertifikatEditPage = function(container) {
     const expiredDateInput = document.getElementById('expired_date');
     const permanentCheckbox = document.getElementById('permanent');
     const expiredDateBlock = document.getElementById('expired_date_block');
-    
+
     function updateExpiredDateState() {
         if (!expiredDateInput) return;
         const isPermanent = permanentCheckbox?.checked;
@@ -7712,7 +7710,7 @@ window.initSertifikatEditPage = function(container) {
         if (tanggalTerbitInput && expiredDateInput && tanggalTerbitInput.value && expiredDateInput.value) {
             const tanggalTerbit = new Date(tanggalTerbitInput.value);
             const expiredDate = new Date(expiredDateInput.value);
-            
+
             if (expiredDate <= tanggalTerbit) {
                 expiredDateInput.setCustomValidity('Tanggal expired harus setelah tanggal terbit');
                 expiredDateInput.reportValidity();
@@ -7724,9 +7722,9 @@ window.initSertifikatEditPage = function(container) {
         }
         return true;
     }
-    
+
     if (tanggalTerbitInput && expiredDateInput) {
-        tanggalTerbitInput.addEventListener('change', function() {
+        tanggalTerbitInput.addEventListener('change', function () {
             if (this.value) {
                 const nextDay = new Date(this.value);
                 nextDay.setDate(nextDay.getDate() + 1);
@@ -7734,7 +7732,7 @@ window.initSertifikatEditPage = function(container) {
             }
             validateExpiredDate();
         });
-        
+
         expiredDateInput.addEventListener('change', validateExpiredDate);
         validateExpiredDate();
     }
@@ -7752,7 +7750,7 @@ window.initSertifikatEditPage = function(container) {
                 e.preventDefault();
                 return false;
             }
-            
+
             const replaceCheckbox = document.getElementById('replace-file-checkbox');
             if (fileInput && fileInput.files.length > 0 && replaceCheckbox && !replaceCheckbox.checked) {
                 replaceCheckbox.checked = true;
@@ -7769,7 +7767,7 @@ window.initSertifikatEditPage = function(container) {
 /* ==========================================
    PAGINATION AJAX & SCROLL RESTORATION HELPERS
    ========================================== */
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const link = e.target.closest('.pagination-link');
     if (link) {
         const groupName = link.getAttribute('data-group');
@@ -7795,7 +7793,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 // ==========================================
 //   PROJECT EDIT PAGE
 // ==========================================
-(function() {
+(function () {
     // ----- state -----
     let allUsersMap = new Map();
     let allUsersArray = [];
@@ -7923,61 +7921,83 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         if (!isCollaborativeMode) {
             const currentUser = projectData?.currentUser || { id: '', nama_mahasiswa: 'Unknown' };
             taskItem.innerHTML = `
-                ${hiddenId}
-                <input type="hidden" name="tasks[${index}][user_id]" value="${currentUser.id}">
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <input type="text" value="${currentUser.nama_mahasiswa} (Owner)"
-                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-                               readonly disabled>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                               placeholder="Deskripsikan tugas...">
-                          <div class="flex items-center gap-2 mt-2">
-                                <input type="hidden" name="tasks[${index}][is_done]" value="0">
-                                <input type="checkbox" name="tasks[${index}][is_done]" value="1"
-                                    id="is_done_${index}"
-                                    class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                                    ${isDone ? 'checked' : ''}>
-                                <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">Tugas Selesai</label>
-                            </div>
-                    </div>
-                    <button type="button" onclick="window.removeTaskRow(this)"
-                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+            ${hiddenId}
+            <input type="hidden" name="tasks[${index}][user_id]" value="${currentUser.id}">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <!-- Kolom 1: Penanggung Jawab (readonly) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Penanggung Jawab</label>
+                    <input type="text" value="${currentUser.nama_mahasiswa} (Owner)"
+                           class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm"
+                           readonly disabled>
                 </div>
-            `;
+
+                <!-- Kolom 2: Nama Tugas + Checkbox -->
+                <div class="md:col-span-2 space-y-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                               class="task-name-input w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm"
+                               placeholder="Deskripsikan tugas...">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                        <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                            id="is_done_${index}"
+                            class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            ${isDone ? 'checked' : ''}>
+                        <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">Tugas Selesai</label>
+                    </div>
+                </div>
+
+                <!-- Kolom 3: Tombol Hapus -->
+                <div class="flex items-end justify-end md:justify-start">
+                    <button type="button" onclick="window.removeTaskRow(this)"
+                            class="px-4 py-2.5 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900 transition">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        `;
         } else {
             taskItem.innerHTML = `
-                ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                            ${renderTaskUserOptions(userId)}
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                               class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                               placeholder="Deskripsikan tugas...">
-                         <div class="flex items-center gap-2 mt-2">
-                                <input type="hidden" name="tasks[${index}][is_done]" value="0">
-                                <input type="checkbox" name="tasks[${index}][is_done]" value="1"
-                                    id="is_done_${index}"
-                                    class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                                    ${isDone ? 'checked' : ''}>
-                                <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">Tugas Selesai</label>
-                        </div>
-                    </div>
-                    <button type="button" onclick="window.removeTaskRow(this)"
-                            class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+            ${hiddenId}
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <!-- Kolom 1: Penanggung Jawab (select) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Penanggung Jawab</label>
+                    <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm">
+                        ${renderTaskUserOptions(userId)}
+                    </select>
                 </div>
-            `;
+
+                <!-- Kolom 2: Nama Tugas + Checkbox -->
+                <div class="md:col-span-2 space-y-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nama Tugas</label>
+                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                               class="task-name-input w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm"
+                               placeholder="Deskripsikan tugas...">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="hidden" name="tasks[${index}][is_done]" value="0">
+                        <input type="checkbox" name="tasks[${index}][is_done]" value="1"
+                            id="is_done_${index}"
+                            class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            ${isDone ? 'checked' : ''}>
+                        <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">Tugas Selesai</label>
+                    </div>
+                </div>
+
+                <!-- Kolom 3: Tombol Hapus -->
+                <div class="flex items-end justify-end md:justify-start">
+                    <button type="button" onclick="window.removeTaskRow(this)"
+                            class="px-4 py-2.5 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900 transition">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        `;
         }
 
         container.appendChild(taskItem);
@@ -8009,24 +8029,24 @@ document.addEventListener('turbo:load', handlePaginationScroll);
     function saveCurrentTasks() {
         const tasks = [];
         document.querySelectorAll('.task-item').forEach(taskItem => {
-            const userIdInput  = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+            const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
             const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
-            const taskIdInput  = taskItem.querySelector('input[name$="[id]"]');
-            const isDoneInput  = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
+            const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+            const isDoneInput = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
 
             let userId = null;
             if (userIdInput) { userId = userIdInput.value; }
 
             const taskName = taskNameInput ? taskNameInput.value : '';
-            const taskId   = taskIdInput ? taskIdInput.value : null;
-            const isDone   = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
+            const taskId = taskIdInput ? taskIdInput.value : null;
+            const isDone = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
 
             if (taskName) {
                 tasks.push({
-                    id:        taskId,
-                    user_id:   userId || currentUser.id,
+                    id: taskId,
+                    user_id: userId || currentUser.id,
                     name_task: taskName,
-                    is_done:   isDone, // ← TAMBAHKAN
+                    is_done: isDone, // ← TAMBAHKAN
                 });
             }
         });
@@ -8063,50 +8083,50 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         fetch(url, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(response => response.json())
-        .then(data => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.userListHtml;
+            .then(response => response.json())
+            .then(data => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data.userListHtml;
 
-            const userElements = tempDiv.querySelectorAll('[data-user-id]');
-            const usersInPage = [];
-            userElements.forEach(el => {
-                const userId = el.getAttribute('data-user-id');
-                const nameEl = el.querySelector('.font-medium');
-                const emailEl = el.querySelector('.text-sm.text-gray-500');
-                const imgEl = el.querySelector('img');
-                if (userId && nameEl) {
-                    const user = {
-                        id: parseInt(userId),
-                        nama_mahasiswa: nameEl.textContent.trim(),
-                        email: emailEl ? emailEl.textContent.trim() : '',
-                        photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                    };
-                    usersInPage.push(user);
-                }
-            });
+                const userElements = tempDiv.querySelectorAll('[data-user-id]');
+                const usersInPage = [];
+                userElements.forEach(el => {
+                    const userId = el.getAttribute('data-user-id');
+                    const nameEl = el.querySelector('.font-medium');
+                    const emailEl = el.querySelector('.text-sm.text-gray-500');
+                    const imgEl = el.querySelector('img');
+                    if (userId && nameEl) {
+                        const user = {
+                            id: parseInt(userId),
+                            nama_mahasiswa: nameEl.textContent.trim(),
+                            email: emailEl ? emailEl.textContent.trim() : '',
+                            photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                        };
+                        usersInPage.push(user);
+                    }
+                });
 
-            addUsersToMap(usersInPage);
+                addUsersToMap(usersInPage);
 
-            document.getElementById('modal-user-list').innerHTML = data.userListHtml;
-            document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+                document.getElementById('modal-user-list').innerHTML = data.userListHtml;
+                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
 
-            attachRoleSelectEvents();
-            restoreModalRoles();
+                attachRoleSelectEvents();
+                restoreModalRoles();
 
-            document.querySelectorAll('.user-role-select').forEach(select => {
-                const userId = select.dataset.userId;
-                if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
-                    select.value = 'leader';
-                } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
-                    select.value = 'member';
-                }
-            });
+                document.querySelectorAll('.user-role-select').forEach(select => {
+                    const userId = select.dataset.userId;
+                    if (pendingUsers.leader && String(pendingUsers.leader.id) === String(userId)) {
+                        select.value = 'leader';
+                    } else if (pendingUsers.members.some(m => String(m.id) === String(userId))) {
+                        select.value = 'member';
+                    }
+                });
 
-            refreshLeaderOptions();
-            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-        })
-        .catch(error => console.error('Error fetching users:', error));
+                refreshLeaderOptions();
+                if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+            })
+            .catch(error => console.error('Error fetching users:', error));
     }
 
     function attachRoleSelectEvents() {
@@ -8114,7 +8134,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             const userId = select.getAttribute('data-user-id');
             if (userId) {
                 select.removeEventListener('change', select._handler);
-                const handler = function() {
+                const handler = function () {
                     updateUserRole(this, userId, this.value);
                     saveCurrentModalRoles();
                 };
@@ -8269,21 +8289,21 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         noMsg.classList.add('hidden');
         container.innerHTML = selected.map(user => {
             const styles = {
-                'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
             }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
 
             return `
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-2xl ${styles}">
                     <div class="flex items-center gap-3 flex-1 min-w-0">
                         ${user.photo_profile
-                            ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
-                            : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
+                    ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
+                    : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
                                 <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                             </div>`
-                        }
+                }
                         <div class="min-w-0 flex-1">
                             <div class="font-medium break-words">${user.role}: ${user.nama_mahasiswa}</div>
                             <div class="text-sm text-gray-500 dark:text-gray-400 break-all">${user.email || ''}</div>
@@ -8404,7 +8424,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 
         if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
 
-        tanggalMulaiInput.addEventListener('change', function() {
+        tanggalMulaiInput.addEventListener('change', function () {
             if (this.value) {
                 tanggalAkhirInput.min = this.value;
                 if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
@@ -8415,7 +8435,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             }
         });
 
-        tanggalAkhirInput.addEventListener('change', function() {
+        tanggalAkhirInput.addEventListener('change', function () {
             if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
                 this.value = '';
                 alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
@@ -8436,25 +8456,25 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         };
 
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 currentModalFilters.search = this.value;
                 fetchWithSave(1);
             });
         }
         if (angkatanSelect) {
-            angkatanSelect.addEventListener('change', function() {
+            angkatanSelect.addEventListener('change', function () {
                 currentModalFilters.angkatan = this.value;
                 fetchWithSave(1);
             });
         }
         if (jurusanSelect) {
-            jurusanSelect.addEventListener('change', function() {
+            jurusanSelect.addEventListener('change', function () {
                 currentModalFilters.jurusan = this.value;
                 fetchWithSave(1);
             });
         }
         if (keahlianSelect) {
-            keahlianSelect.addEventListener('change', function() {
+            keahlianSelect.addEventListener('change', function () {
                 currentModalFilters.keahlian = this.value;
                 fetchWithSave(1);
             });
@@ -8462,7 +8482,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
     }
 
     // ----- pagination (delegated) -----
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const link = e.target.closest('#modal-pagination a');
         if (link) {
             e.preventDefault();
@@ -8520,7 +8540,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
     window.attachRoleSelectEvents = attachRoleSelectEvents;
 
     // ----- auto-init when DOM ready -----
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const container = document.getElementById('project-edit-data');
         if (!container) return;
 
@@ -8548,7 +8568,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             isCollaborativeMode = hasMembers;
             toggleUserSelectionSection();
             initializeTaskRows();
-            toggle.addEventListener('change', function() {
+            toggle.addEventListener('change', function () {
                 label.textContent = this.checked ? 'Aktif' : 'Nonaktif';
                 toggleUserSelectionSection();
             });
@@ -8565,8 +8585,8 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 //   PROJECT CREATE PAGE (Direct)
 //   Dijalankan jika elemen #project-create-data ada
 // ==========================================
-(function() {
-    document.addEventListener('DOMContentLoaded', function() {
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
         const dataEl = document.getElementById('project-create-data');
         if (!dataEl) return;
 
@@ -8647,7 +8667,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         }
 
         // ----- Modal open/close -----
-        window.openUserModal = function() {
+        window.openUserModal = function () {
             const toggle = document.getElementById('project-collaborative-toggle');
             if (!toggle || !toggle.checked) {
                 alert('Harap aktifkan mode kolaboratif terlebih dahulu untuk menambah user.');
@@ -8658,17 +8678,17 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             fetchUsers(1);
         };
 
-        window.closeUserModal = function() {
+        window.closeUserModal = function () {
             document.getElementById('userModal').classList.add('hidden');
             discardPending();
         };
 
-        window.cancelUserModal = function() {
+        window.cancelUserModal = function () {
             discardPending();
             document.getElementById('userModal').classList.add('hidden');
         };
 
-        window.confirmUserSelection = function() {
+        window.confirmUserSelection = function () {
             applyPendingToSelected();
             updateFormInputs();
             renderSelectedUsers();
@@ -8694,32 +8714,32 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             fetch(`${routeCreate}?${params}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
-            .then(res => res.json())
-            .then(data => {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = data.userListHtml;
-                const userElements = tempDiv.querySelectorAll('[data-user-id]');
-                const usersInPage = [];
-                userElements.forEach(el => {
-                    const userId = el.getAttribute('data-user-id');
-                    const nameEl = el.querySelector('.font-medium');
-                    const emailEl = el.querySelector('.text-sm.text-gray-500');
-                    const imgEl = el.querySelector('img');
-                    if (userId && nameEl) {
-                        usersInPage.push({
-                            id: parseInt(userId),
-                            nama_mahasiswa: nameEl.textContent.trim(),
-                            email: emailEl ? emailEl.textContent.trim() : '',
-                            photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
-                        });
-                    }
+                .then(res => res.json())
+                .then(data => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data.userListHtml;
+                    const userElements = tempDiv.querySelectorAll('[data-user-id]');
+                    const usersInPage = [];
+                    userElements.forEach(el => {
+                        const userId = el.getAttribute('data-user-id');
+                        const nameEl = el.querySelector('.font-medium');
+                        const emailEl = el.querySelector('.text-sm.text-gray-500');
+                        const imgEl = el.querySelector('img');
+                        if (userId && nameEl) {
+                            usersInPage.push({
+                                id: parseInt(userId),
+                                nama_mahasiswa: nameEl.textContent.trim(),
+                                email: emailEl ? emailEl.textContent.trim() : '',
+                                photo_profile: imgEl ? imgEl.getAttribute('src')?.replace('/storage/', '') : null
+                            });
+                        }
+                    });
+                    addUsersToAllUsers(usersInPage);
+                    renderUserListWithRoles(data.userListHtml);
+                    document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
+                    refreshRoleSelections();
+                    if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
                 });
-                addUsersToAllUsers(usersInPage);
-                renderUserListWithRoles(data.userListHtml);
-                document.getElementById('modal-pagination').innerHTML = data.paginationHtml;
-                refreshRoleSelections();
-                if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-            });
         }
 
         function renderUserListWithRoles(html) {
@@ -8741,7 +8761,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         }
 
         // ----- Role assignment -----
-        window.updateUserRole = function(selectElement, userId, role) {
+        window.updateUserRole = function (selectElement, userId, role) {
             const user = getUserById(userId);
             if (!user) {
                 console.error('User not found:', userId);
@@ -8877,21 +8897,21 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             // Di dalam fungsi renderSelectedUsers()
             container.innerHTML = selected.map(user => {
                 const styles = {
-                    'Owner':           'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
-                    'Leader':          'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-                    'Owner & Leader':  'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
-                    'Member':          'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
+                    'Owner': 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+                    'Leader': 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+                    'Owner & Leader': 'bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+                    'Member': 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200'
                 }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
 
                 return `
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-2xl ${styles}">
                         <div class="flex items-center gap-3 flex-1 min-w-0">
                             ${user.photo_profile
-                                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
-                                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
+                        ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
+                        : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
                                     <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                                 </div>`
-                            }
+                    }
                             <div class="min-w-0 flex-1">
                                 <div class="font-medium break-words">${user.role}: ${user.nama_mahasiswa}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400 break-all">${user.email || ''}</div>
@@ -8924,7 +8944,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             if (!document.querySelectorAll('.task-item').length) addTaskRow();
         }
 
-        window.removeUser = function(userId) {
+        window.removeUser = function (userId) {
             deleteTasksForUser(userId);
             if (selectedUsers.leader?.id == userId) selectedUsers.leader = null;
             selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
@@ -8935,7 +8955,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             saveSelectedUsersToStorage();
         };
 
-        window.editUser = function(userId) {
+        window.editUser = function (userId) {
             window.openUserModal();
             setTimeout(() => {
                 const userElement = document.querySelector(`.user-role-select[data-user-id="${userId}"]`)?.closest('[data-user-id]');
@@ -8971,7 +8991,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             return html;
         }
 
-        window.addTaskRow = function(taskData = null) {
+        window.addTaskRow = function (taskData = null) {
             const container = document.getElementById('tasks-container');
             if (!container) return;
             const index = taskIndex++;
@@ -8984,38 +9004,47 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
             taskItem.innerHTML = `
                 ${hiddenId}
-                <div class="grid gap-4 md:grid-cols-3 items-end">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <!-- Kolom 1: Penanggung Jawab -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Penanggung Jawab</label>
-                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white" required>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Penanggung Jawab</label>
+                        <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm" required>
                             ${renderTaskUserOptions(userId)}
                         </select>
                     </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Nama Tugas</label>
-                        <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                            class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                            placeholder="Deskripsikan tugas...">
-                         <div class="flex items-center gap-2 mt-1">
+
+                    <!-- Kolom 2: Nama Tugas + Checkbox (di bawah input) -->
+                    <div class="md:col-span-2 space-y-2">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nama Tugas</label>
+                            <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                                class="task-name-input w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm"
+                                placeholder="Deskripsikan tugas...">
+                        </div>
+                        <div class="flex items-center gap-2">
                             <input type="hidden" name="tasks[${index}][is_done]" value="0">
                             <input type="checkbox" name="tasks[${index}][is_done]" value="1"
                                 id="is_done_${index}"
                                 class="task-is-done w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                 ${isDone ? 'checked' : ''}>
-                            <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">
-                                Tugas Selesai
-                            </label>
+                            <label for="is_done_${index}" class="text-sm text-gray-700 dark:text-gray-300">Tugas Selesai</label>
                         </div>
                     </div>
-                    <button type="button" onclick="removeTaskRow(this)"
-                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl">Hapus</button>
+
+                    <!-- Kolom 3: Tombol Hapus -->
+                    <div class="flex items-end justify-end md:justify-start">
+                        <button type="button" onclick="removeTaskRow(this)"
+                            class="px-4 py-2.5 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900 transition">
+                            Hapus
+                        </button>
+                    </div>
                 </div>
             `;
             container.appendChild(taskItem);
             taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
         };
 
-        window.removeTaskRow = function(button) {
+        window.removeTaskRow = function (button) {
             button.closest('.task-item')?.remove();
             if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
         };
@@ -9053,26 +9082,26 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 
         // ----- Modal filters -----
         function setupModalFilters() {
-            document.getElementById('modal-search')?.addEventListener('input', function() {
+            document.getElementById('modal-search')?.addEventListener('input', function () {
                 currentModalFilters.search = this.value;
                 fetchUsers(1);
             });
-            document.getElementById('modal-angkatan')?.addEventListener('change', function() {
+            document.getElementById('modal-angkatan')?.addEventListener('change', function () {
                 currentModalFilters.angkatan = this.value;
                 fetchUsers(1);
             });
-            document.getElementById('modal-jurusan')?.addEventListener('change', function() {
+            document.getElementById('modal-jurusan')?.addEventListener('change', function () {
                 currentModalFilters.jurusan = this.value;
                 fetchUsers(1);
             });
-            document.getElementById('modal-keahlian')?.addEventListener('change', function() {
+            document.getElementById('modal-keahlian')?.addEventListener('change', function () {
                 currentModalFilters.keahlian = this.value;
                 fetchUsers(1);
             });
         }
 
         // ----- Pagination click (delegated) -----
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const link = e.target.closest('#modal-pagination a');
             if (link) {
                 e.preventDefault();
@@ -9125,7 +9154,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 
             if (tanggalMulaiInput.value) tanggalAkhirInput.min = tanggalMulaiInput.value;
 
-            tanggalMulaiInput.addEventListener('change', function() {
+            tanggalMulaiInput.addEventListener('change', function () {
                 if (this.value) {
                     tanggalAkhirInput.min = this.value;
                     if (tanggalAkhirInput.value && tanggalAkhirInput.value < this.value) {
@@ -9136,7 +9165,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
                 }
             });
 
-            tanggalAkhirInput.addEventListener('change', function() {
+            tanggalAkhirInput.addEventListener('change', function () {
                 if (this.value && tanggalMulaiInput.value && this.value < tanggalMulaiInput.value) {
                     this.value = '';
                     alert('Tanggal selesai harus setelah atau sama dengan tanggal mulai.');
@@ -9187,7 +9216,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         if (collaborativeToggle && toggleLabel) {
             toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
             toggleUserSelectionSection();
-            collaborativeToggle.addEventListener('change', function() {
+            collaborativeToggle.addEventListener('change', function () {
                 toggleLabel.textContent = this.checked ? 'Aktif' : 'Nonaktif';
                 toggleUserSelectionSection();
             });
@@ -9759,9 +9788,9 @@ document.addEventListener('turbo:load', handlePaginationScroll);
         });
         // Null-safe: update DOM counter elements hanya jika ada di halaman
         const visibleCountEl = document.getElementById('paginationVisibleCount');
-        const totalCountEl   = document.getElementById('paginationTotalCount');
+        const totalCountEl = document.getElementById('paginationTotalCount');
         if (visibleCountEl) visibleCountEl.textContent = pageIndices.size;
-        if (totalCountEl)   totalCountEl.textContent   = _paginationTotal;
+        if (totalCountEl) totalCountEl.textContent = _paginationTotal;
         renderPaginationButtons();
     }
 
@@ -9823,7 +9852,7 @@ document.addEventListener('turbo:load', handlePaginationScroll);
 
 })();
 
-(function() {
+(function () {
     let debounceTimer = null;
 
     function getSelectedMemberIds() {
@@ -9837,60 +9866,60 @@ document.addEventListener('turbo:load', handlePaginationScroll);
     }
 
     function checkDuplicate() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
-        const name = document.querySelector('input[name="nama_project"]')?.value?.trim();
-        if (!name) return;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => {
+            const name = document.querySelector('input[name="nama_project"]')?.value?.trim();
+            if (!name) return;
 
-        // Elemen ini hanya ada di halaman create project — skip kalau tidak ada
-        const warning   = document.getElementById('duplicate-warning');
-        const warningText = document.getElementById('duplicate-warning-text');
-        const submitBtn = document.getElementById('submit-btn');
-        if (!warning || !submitBtn) return;
+            // Elemen ini hanya ada di halaman create project — skip kalau tidak ada
+            const warning = document.getElementById('duplicate-warning');
+            const warningText = document.getElementById('duplicate-warning-text');
+            const submitBtn = document.getElementById('submit-btn');
+            if (!warning || !submitBtn) return;
 
-        // Baca CSRF dari meta tag (bukan Blade syntax)
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+            // Baca CSRF dari meta tag (bukan Blade syntax)
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
-        // Baca URL dari data attribute di #project-create-data
-        const createData = document.getElementById('project-create-data');
-        const checkUrl   = createData?.dataset.checkDuplicateUrl ?? '';
-        if (!checkUrl) return;
+            // Baca URL dari data attribute di #project-create-data
+            const createData = document.getElementById('project-create-data');
+            const checkUrl = createData?.dataset.checkDuplicateUrl ?? '';
+            if (!checkUrl) return;
 
-        const memberIds = getSelectedMemberIds();
+            const memberIds = getSelectedMemberIds();
 
-        try {
-            const res = await fetch(checkUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify({ nama_project: name, member_ids: memberIds }),
-            });
-            const data = await res.json();
+            try {
+                const res = await fetch(checkUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ nama_project: name, member_ids: memberIds }),
+                });
+                const data = await res.json();
 
-            if (data.is_duplicate) {
-                warning.classList.remove('hidden');
-                if (warningText) warningText.textContent = data.message;
-                submitBtn.disabled = true;
-                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            } else {
-                warning.classList.add('hidden');
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                if (data.is_duplicate) {
+                    warning.classList.remove('hidden');
+                    if (warningText) warningText.textContent = data.message;
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    warning.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            } catch (e) {
+                // Jangan crash app kalau endpoint belum ada
+                console.warn('checkDuplicate error:', e);
             }
-        } catch (e) {
-            // Jangan crash app kalau endpoint belum ada
-            console.warn('checkDuplicate error:', e);
-        }
-    }, 600);
-}
+        }, 600);
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('input[name="nama_project"]')?.addEventListener('input', checkDuplicate);
         // trigger ulang saat member berubah (hook ke fungsi confirmUserSelection yang sudah ada)
         const origConfirm = window.confirmUserSelection;
-        window.confirmUserSelection = function(...args) {
+        window.confirmUserSelection = function (...args) {
             if (origConfirm) origConfirm.apply(this, args);
             checkDuplicate();
         };
@@ -9906,20 +9935,20 @@ window.cpCharts = window.cpCharts || {};
 
 window.commentLastUpdated = {};
 
-window.escapeHtml = function(text) {
+window.escapeHtml = function (text) {
     if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 };
 
-window.formatDate = function(dateString) {
+window.formatDate = function (dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
-window.getAvatarHtml = function(user, size = 'w-8 h-8', textSize = 'text-sm') {
+window.getAvatarHtml = function (user, size = 'w-8 h-8', textSize = 'text-sm') {
     if (user && user.photo_profile && user.photo_profile !== 'null' && user.photo_profile !== '') {
         const photoPath = user.photo_profile.startsWith('http') ? user.photo_profile : `/storage/${user.photo_profile}`;
         return `<img src="${photoPath}" class="${size} rounded-full object-cover" onerror="this.src='https://ui-avatars.com/api/?background=6366f1&color=fff&size=100&name=${encodeURIComponent(user.nama_mahasiswa || 'U')}'">`;
@@ -9931,7 +9960,7 @@ window.getAvatarHtml = function(user, size = 'w-8 h-8', textSize = 'text-sm') {
         </div>`;
 };
 
-window.getHeaders = function() {
+window.getHeaders = function () {
     return {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -9971,7 +10000,7 @@ window.loadComments = async function (postinganId) {
     }
 };
 
-window.renderCommentWithReplies = function(comment, level, postinganId) {
+window.renderCommentWithReplies = function (comment, level, postinganId) {
     const marginLeft = Math.min(level * 28, 56);
     const isOwnComment = window.currentUserId && comment.id_user == window.currentUserId;
     const isLoggedIn = window.currentUserId !== null && window.currentUserId !== 'null';
@@ -9981,14 +10010,14 @@ window.renderCommentWithReplies = function(comment, level, postinganId) {
     const replyText = window.locale === 'id' ? 'Balas' : 'Reply';
     const editText = window.locale === 'id' ? 'Edit' : 'Edit';
     const deleteText = window.locale === 'id' ? 'Hapus' : 'Delete';
-    const userPortfolioUrl = comment.user && comment.user.username 
-        ? `/${window.locale}/portofolio?user=${comment.user.username}` 
+    const userPortfolioUrl = comment.user && comment.user.username
+        ? `/${window.locale}/portofolio?user=${comment.user.username}`
         : '#';
-    const avatarHtml = comment.user && comment.user.username 
-        ? `<a href="${userPortfolioUrl}">${window.getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}</a>` 
+    const avatarHtml = comment.user && comment.user.username
+        ? `<a href="${userPortfolioUrl}">${window.getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs')}</a>`
         : window.getAvatarHtml(comment.user, 'w-8 h-8', 'text-xs');
-    const nameHtml = comment.user && comment.user.username 
-        ? `<a href="${userPortfolioUrl}" class="font-semibold text-sm text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors">${userName}</a>` 
+    const nameHtml = comment.user && comment.user.username
+        ? `<a href="${userPortfolioUrl}" class="font-semibold text-sm text-gray-900 dark:text-gray-100 hover:text-indigo-600 transition-colors">${userName}</a>`
         : `<span class="font-semibold text-sm text-gray-900 dark:text-gray-100">${userName}</span>`;
 
     let html = `
@@ -10029,7 +10058,7 @@ window.renderCommentWithReplies = function(comment, level, postinganId) {
     return html;
 };
 
-window.attachCommentEventListeners = function(container, postinganId) {
+window.attachCommentEventListeners = function (container, postinganId) {
     if (container.hasAttribute('data-delegated')) return;
     container.setAttribute('data-delegated', 'true');
     container.addEventListener('click', function (e) {
@@ -10062,7 +10091,7 @@ window.submitComment = async function (postinganId) {
     finally { if (submitBtn) { submitBtn.classList.remove('btn-loading'); submitBtn.innerHTML = origHtml; submitBtn.disabled = false; } }
 };
 
-window.submitReply = async function(form, postinganId) {
+window.submitReply = async function (form, postinganId) {
     if (form.hasAttribute('data-submitting')) return;
     form.setAttribute('data-submitting', 'true');
     const textarea = form.querySelector('textarea[name="komentar"]');
@@ -10178,7 +10207,7 @@ window.deleteComment = async function (commentId, postinganId, type = 'full') {
     finally { window.closeLoading?.(); }
 };
 
-window.updateCommentCount = async function(postinganId, delta) {
+window.updateCommentCount = async function (postinganId, delta) {
     const el = document.querySelector(`.comment-toggle[data-postingan-id="${postinganId}"] .comment-count`);
     if (el) el.innerText = Math.max(0, (parseInt(el.innerText) || 0) + delta);
 };
@@ -10424,11 +10453,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reveal skeletons
     setTimeout(() => {
         ['postingan-skeleton', 'project-skeleton', 'sertifikat-skeleton', 'learning-skeleton',
-         'learning-skeleton-sidebar', 'total-lrn-skeleton', 'total-pjt-skeleton', 'total-stk-skeleton']
+            'learning-skeleton-sidebar', 'total-lrn-skeleton', 'total-pjt-skeleton', 'total-stk-skeleton']
             .forEach(id => document.getElementById(id)?.classList.add('hidden'));
 
         ['postingan-content-wrapper', 'project-content-wrapper', 'sertifikat-content-wrapper', 'learning-content-wrapper',
-         'learning-content-wrapper-sidebar', 'total-lrn-wrapper', 'total-pjt-wrapper', 'total-stk-wrapper']
+            'learning-content-wrapper-sidebar', 'total-lrn-wrapper', 'total-pjt-wrapper', 'total-stk-wrapper']
             .forEach(id => document.getElementById(id)?.classList.remove('hidden'));
 
         window.sortPostinganByGame?.();
@@ -10550,7 +10579,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   ADMIN: KELOLA ANGKATAN
 // ==========================================
-(function() {
+(function () {
     let selectedIds = [];
     let deleteId = null;
 
@@ -10565,20 +10594,20 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
     }
 
-    window.toggleAll = function(source) {
+    window.toggleAll = function (source) {
         document.querySelectorAll('.item-checkbox').forEach(cb => {
             cb.checked = source.checked;
         });
         updateSelectedIds();
     };
 
-    window.confirmBulkDelete = function() {
+    window.confirmBulkDelete = function () {
         updateSelectedIds();
         let selectedIdsArray = [];
         try {
             const val = document.getElementById('selectedIds')?.value;
             if (val) selectedIdsArray = JSON.parse(val);
-        } catch(e) { selectedIdsArray = []; }
+        } catch (e) { selectedIdsArray = []; }
         if (selectedIdsArray.length === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -10605,7 +10634,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         });
     };
 
-    window.openEditModal = function(angkatan) {
+    window.openEditModal = function (angkatan) {
         const editNama = document.getElementById('edit_nama');
         const editMasuk = document.getElementById('edit_masuk');
         const editKeluar = document.getElementById('edit_keluar');
@@ -10623,11 +10652,11 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         document.getElementById('editModal').classList.remove('hidden');
     };
 
-    window.closeModal = function() {
+    window.closeModal = function () {
         document.getElementById('editModal').classList.add('hidden');
     };
 
-    window.openDeleteModal = function(id, name) {
+    window.openDeleteModal = function (id, name) {
         deleteId = id;
         document.getElementById('deleteName').textContent = name;
         const deleteForm = document.getElementById('deleteForm');
@@ -10637,13 +10666,13 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         document.getElementById('deleteModal').classList.remove('hidden');
     };
 
-    window.closeDeleteModal = function() {
+    window.closeDeleteModal = function () {
         document.getElementById('deleteModal').classList.add('hidden');
         deleteId = null;
     };
 
     // Tutup modal saat klik di luar
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const editModal = document.getElementById('editModal');
         const deleteModal = document.getElementById('deleteModal');
         if (event.target === editModal) {
@@ -10667,7 +10696,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     document.addEventListener('turbo:load', initAngkatanPage);
 
     // Tampilkan popup info halaman (jika fungsi showPageInfo tersedia)
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('bulkDeleteForm')) {
             if (typeof showPageInfo === 'function') {
                 showPageInfo('popup.manage_angkatan');
@@ -10679,7 +10708,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   ADMIN: KELOLA KEAHLIAN
 // ==========================================
-(function() {
+(function () {
     let selectedIds = [];
     let deleteId = null;
 
@@ -10694,20 +10723,20 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
     }
 
-    window.toggleAll = function(source) {
+    window.toggleAll = function (source) {
         document.querySelectorAll('.item-checkbox').forEach(cb => {
             cb.checked = source.checked;
         });
         updateSelectedIds();
     };
 
-    window.confirmBulkDelete = function() {
+    window.confirmBulkDelete = function () {
         updateSelectedIds();
         let selectedIdsArray = [];
         try {
             const val = document.getElementById('selectedIds')?.value;
             if (val) selectedIdsArray = JSON.parse(val);
-        } catch(e) { selectedIdsArray = []; }
+        } catch (e) { selectedIdsArray = []; }
         if (selectedIdsArray.length === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -10734,7 +10763,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         });
     };
 
-    window.openEditModal = function(keahlian) {
+    window.openEditModal = function (keahlian) {
         const editNama = document.getElementById('edit_nama');
         const editForm = document.getElementById('editForm');
         if (!editNama || !editForm) return;
@@ -10747,16 +10776,16 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         document.getElementById('editModal').classList.remove('hidden');
     };
 
-    window.closeModal = function() {
+    window.closeModal = function () {
         document.getElementById('editModal').classList.add('hidden');
     };
 
-    window.closeDeleteModal = function() {
+    window.closeDeleteModal = function () {
         document.getElementById('deleteModal').classList.add('hidden');
         deleteId = null;
     };
 
-    window.handleDelete = async function(id, name) {
+    window.handleDelete = async function (id, name) {
         const confirmed = await window.showConfirm?.() ?? confirm('Apakah Anda yakin ingin menghapus keahlian ini?');
         if (!confirmed) return;
 
@@ -10786,7 +10815,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     };
 
     // Tutup modal saat klik di luar
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const editModal = document.getElementById('editModal');
         const deleteModal = document.getElementById('deleteModal');
         if (event.target === editModal) {
@@ -10810,7 +10839,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     document.addEventListener('turbo:load', initKeahlianPage);
 
     // Page Info
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('bulkDeleteForm')) {
             if (typeof showPageInfo === 'function') {
                 showPageInfo('popup.manage_keahlian');
@@ -10822,7 +10851,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   ADMIN: KELOLA PRODI / JURUSAN
 // ==========================================
-(function() {
+(function () {
     let selectedIds = [];
     let deleteId = null;
 
@@ -10837,20 +10866,20 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
     }
 
-    window.toggleAll = function(source) {
+    window.toggleAll = function (source) {
         document.querySelectorAll('.item-checkbox').forEach(cb => {
             cb.checked = source.checked;
         });
         updateSelectedIds();
     };
 
-    window.confirmBulkDelete = function() {
+    window.confirmBulkDelete = function () {
         updateSelectedIds();
         let selectedIdsArray = [];
         try {
             const val = document.getElementById('selectedIds')?.value;
             if (val) selectedIdsArray = JSON.parse(val);
-        } catch(e) { selectedIdsArray = []; }
+        } catch (e) { selectedIdsArray = []; }
         if (selectedIdsArray.length === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -10877,7 +10906,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         });
     };
 
-    window.openEditModal = function(jurusan) {
+    window.openEditModal = function (jurusan) {
         const editNama = document.getElementById('edit_nama');
         const editForm = document.getElementById('editForm');
         if (!editNama || !editForm) return;
@@ -10890,11 +10919,11 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         document.getElementById('editModal').classList.remove('hidden');
     };
 
-    window.closeModal = function() {
+    window.closeModal = function () {
         document.getElementById('editModal').classList.add('hidden');
     };
 
-    window.handleDelete = async function(id, name) {
+    window.handleDelete = async function (id, name) {
         const confirmed = await window.showConfirm?.() ?? confirm('Apakah Anda yakin ingin menghapus jurusan ini?');
         if (!confirmed) return;
 
@@ -10924,7 +10953,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     };
 
     // Tutup modal saat klik di luar
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const editModal = document.getElementById('editModal');
         if (event.target === editModal) {
             window.closeModal();
@@ -10944,7 +10973,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     document.addEventListener('turbo:load', initProdiPage);
 
     // Page Info
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('bulkDeleteForm')) {
             if (typeof showPageInfo === 'function') {
                 showPageInfo('popup.manage_prodi');
@@ -10956,7 +10985,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   ADMIN: EDIT SERTIFIKAT
 // ==========================================
-(function() {
+(function () {
     function initEditSertifikat() {
         // Cek apakah ini halaman edit sertifikat
         if (!document.getElementById('editForm')) return;
@@ -10992,9 +11021,9 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
                 const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
                 const minDate = new Date(terbitDate);
                 minDate.setDate(minDate.getDate() + 1);
-                
+
                 expiredDateInput.min = minDate.toISOString().split('T')[0];
-                
+
                 if (expiredDateInput.value) {
                     const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
                     if (expiredDate <= terbitDate) {
@@ -11007,10 +11036,10 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         function validateExpiredDate() {
             if (!expiredDateInput || !tanggalTerbitInput) return;
             if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
-            
+
             const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
             const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
-            
+
             if (expiredDate <= terbitDate) {
                 expiredDateInput.value = '';
                 alert('Tanggal expired harus setelah tanggal terbit');
@@ -11027,7 +11056,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
 
         // ── File upload helpers ─────────────────────────────────────────────
-        window.updateFileLabel = function(input) {
+        window.updateFileLabel = function (input) {
             const fileName = input.files[0]?.name;
             const fileNameElement = document.getElementById('file-name');
             const previewContainer = document.getElementById('image-preview-container');
@@ -11041,7 +11070,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         previewImage.src = e.target.result;
                         previewContainer.classList.remove('hidden');
                         if (currentPreview) currentPreview.classList.add('hidden');
@@ -11058,7 +11087,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
             }
         };
 
-        window.toggleFileUpload = function(checkbox) {
+        window.toggleFileUpload = function (checkbox) {
             const fileUploadSection = document.getElementById('file-upload-section');
             const currentPreview = document.getElementById('current-image-preview');
 
@@ -11087,20 +11116,20 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         const fileInput = document.getElementById('link_sertifikat_input');
 
         if (dropZone && fileInput) {
-            const preventDefaults = function(e) {
+            const preventDefaults = function (e) {
                 e.preventDefault();
                 e.stopPropagation();
             };
 
-            const highlight = function() {
+            const highlight = function () {
                 dropZone.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
             };
 
-            const unhighlight = function() {
+            const unhighlight = function () {
                 dropZone.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
             };
 
-            const handleDrop = function(e) {
+            const handleDrop = function (e) {
                 const dt = e.dataTransfer;
                 const files = dt.files;
 
@@ -11150,7 +11179,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   ADMIN: EDIT USER
 // ==========================================
-(function() {
+(function () {
     function initEditUser() {
         // Cek apakah ini halaman edit user
         const form = document.querySelector('form[action*="admin/users/edit"]');
@@ -11163,11 +11192,11 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 
         // ── Photo preview ──
         if (photoInput && previewImage) {
-            photoInput.addEventListener('change', function() {
+            photoInput.addEventListener('change', function () {
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         previewImage.src = e.target.result;
                     };
                     reader.readAsDataURL(file);
@@ -11181,7 +11210,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
 
         // ── Password visibility toggle ──
-        window.togglePassword = function(inputId, iconId) {
+        window.togglePassword = function (inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
             if (!input || !icon) return;
@@ -11230,7 +11259,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
 
         if (pwInput) {
-            pwInput.addEventListener('input', function() {
+            pwInput.addEventListener('input', function () {
                 const val = this.value;
                 setHint('icon-length', val.length >= 8);
                 setHint('icon-upper', /[A-Z]/.test(val));
@@ -11246,7 +11275,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         // ── Reset button ──
         const resetBtn = document.getElementById('resetBtn');
         if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
+            resetBtn.addEventListener('click', function () {
                 if (confirm('Apakah Anda yakin ingin mereset semua perubahan?')) {
                     const form = document.querySelector('form');
                     if (form) {
@@ -11273,7 +11302,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         // ── Tanggal lahir validation ──
         const tanggalLahirInput = document.getElementById('tanggal_lahir');
         if (tanggalLahirInput) {
-            tanggalLahirInput.addEventListener('change', function() {
+            tanggalLahirInput.addEventListener('change', function () {
                 const today = new Date().toISOString().split('T')[0];
                 if (this.value > today) {
                     alert('Tanggal lahir tidak boleh melebihi tanggal hari ini!');
@@ -11296,7 +11325,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   DOSEN: EDIT USER
 // ==========================================
-(function() {
+(function () {
     function initDosenEditUser() {
         // Cek apakah ini halaman edit user (route dosen)
         const form = document.querySelector('form[action*="dosen/users/edit"]');
@@ -11309,11 +11338,11 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 
         // ── Photo preview ──
         if (photoInput && previewImage) {
-            photoInput.addEventListener('change', function() {
+            photoInput.addEventListener('change', function () {
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         previewImage.src = e.target.result;
                     };
                     reader.readAsDataURL(file);
@@ -11366,7 +11395,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         }
 
         if (pwInput) {
-            pwInput.addEventListener('input', function() {
+            pwInput.addEventListener('input', function () {
                 const val = this.value;
                 setHint('icon-length', val.length >= 8);
                 setHint('icon-upper', /[A-Z]/.test(val));
@@ -11382,7 +11411,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         // ── Reset button ──
         const resetBtn = document.getElementById('resetBtn');
         if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
+            resetBtn.addEventListener('click', function () {
                 if (confirm('Apakah Anda yakin ingin mereset semua perubahan?')) {
                     const form = document.querySelector('form');
                     if (form) {
@@ -11409,7 +11438,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
         // ── Tanggal lahir validation ──
         const tanggalLahirInput = document.getElementById('tanggal_lahir');
         if (tanggalLahirInput) {
-            tanggalLahirInput.addEventListener('change', function() {
+            tanggalLahirInput.addEventListener('change', function () {
                 const today = new Date().toISOString().split('T')[0];
                 if (this.value > today) {
                     alert('Tanggal lahir tidak boleh melebihi tanggal hari ini!');
@@ -11432,7 +11461,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   GAME MATEMATIKA
 // ==========================================
-(function() {
+(function () {
     const container = document.getElementById('math-game-container');
     if (!container) return;
 
@@ -11508,7 +11537,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
                 const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
                 if (navEntries && navEntries[0]) return navEntries[0].type;
                 if (performance.navigation && performance.navigation.type === 1) return 'reload';
-            } catch(e) {}
+            } catch (e) { }
             return 'navigate';
         }
 
@@ -11666,7 +11695,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 
                 const mins = Math.floor(this.timeRemaining / 60);
                 const secs = this.timeRemaining % 60;
-                this.timerDisplay.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                this.timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 const percent = (this.timeRemaining / this.timeLimitSeconds) * 100;
                 this.timerProgress.style.width = `${Math.max(0, percent)}%`;
 
@@ -11758,7 +11787,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
             };
             try {
                 sessionStorage.setItem(this.storageKey, JSON.stringify(state));
-            } catch(e) {}
+            } catch (e) { }
         }
 
         restoreState() {
@@ -11792,12 +11821,12 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 
                 const mins = Math.floor(this.timeRemaining / 60);
                 const secs = this.timeRemaining % 60;
-                this.timerDisplay.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                this.timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 const percent = (this.timeRemaining / this.timeLimitSeconds) * 100;
                 this.timerProgress.style.width = `${percent}%`;
 
                 return true;
-            } catch(e) { return false; }
+            } catch (e) { return false; }
         }
 
         async fetchHighestScore() {
@@ -11825,7 +11854,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
                         }
                     }
                 }
-            } catch(e) { console.error(e); }
+            } catch (e) { console.error(e); }
         }
 
         async saveScore(isFinal = false) {
@@ -11855,7 +11884,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
                         this.bestScoreInfo.innerHTML = `🏆 Skor tertinggi Anda: ${this.highestScore} ✨ Rekor Baru!`;
                     }
                 }
-            } catch(e) { console.error(e); }
+            } catch (e) { console.error(e); }
         }
     }
 
@@ -11867,7 +11896,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   GAME PUZZLE
 // ==========================================
-(function() {
+(function () {
     const container = document.getElementById('puzzle-game-container');
     if (!container) return;
 
@@ -12269,7 +12298,7 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
 // ==========================================
 //   GAME TTS (TEKA TEKI SILANG)
 // ==========================================
-(function() {
+(function () {
     const container = document.getElementById('tts-game-container');
     if (!container) return;
 
