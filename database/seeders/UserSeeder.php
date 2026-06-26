@@ -115,7 +115,79 @@ class UserSeeder extends Seeder
             User::insert($users);
         }
 
-        $this->command->info('✅ Berhasil membuat 100 user dummy!');
+        $this->command->info(' Berhasil membuat 100 user dummy!');
         $this->command->info('Password default : password123');
+
+        // ─── Akun Admin ───────────────────────────────────────────────────────
+        $this->command->info('Membuat akun admin...');
+
+        User::withoutEvents(function () use ($jurusans, $keahlians, $angkatans, $photoProfiles, $backgroundUrls) {
+            User::updateOrCreate(
+                ['email' => 'admin@portofolio.com'],
+                [
+                    'nama_mahasiswa'   => 'Administrator',
+                    'username'         => 'admin',
+                    'slug'             => 'administrator',
+                    'email'            => 'admin@portofolio.com',
+                    'password'         => Hash::make('admin123'),
+                    'photo_profile'    => $photoProfiles[0],
+                    'background_url'   => $backgroundUrls[0],
+                    'status_pengajuan' => 'Di Terima',
+                    'deskripsi'        => 'Akun administrator sistem portofolio mahasiswa.',
+                    'keterangan'       => 'Admin utama sistem.',
+                    'id_jurusan'       => $jurusans->first()->id_jurusan,
+                    'id_keahlian'      => $keahlians->first()->id_keahlian,
+                    'id_angkatan'      => $angkatans->first()->id,
+                    'is_active'        => true,
+                    'role'             => 'admin',
+                    'video_url'        => null,
+                    'nim'              => null,
+                    'tanggal_lahir'    => '1990-01-01',
+                    'remember_token'   => null,
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ]
+            );
+        });
+
+        $this->command->info('  Akun admin berhasil dibuat!');
+        $this->command->info('   Email    : admin@portofolio.com');
+        $this->command->info('   Password : admin123');
+
+        // ─── Akun Dosen ───────────────────────────────────────────────────────
+        $this->command->info('Membuat 1 akun dosen...');
+
+        User::withoutEvents(function () use ($jurusans, $keahlians, $angkatans, $photoProfiles, $backgroundUrls) {
+            User::updateOrCreate(
+                ['email' => 'budi.santoso@portofolio.com'],
+                [
+                    'nama_mahasiswa'   => 'Dr. Budi Santoso, M.Kom',
+                    'username'         => 'dosen_budi',
+                    'slug'             => 'dr-budi-santoso-mkom',
+                    'email'            => 'budi.santoso@portofolio.com',
+                    'password'         => Hash::make('dosen123'),
+                    'photo_profile'    => $photoProfiles[1],
+                    'background_url'   => $backgroundUrls[1],
+                    'status_pengajuan' => 'Di Terima',
+                    'deskripsi'        => 'Dosen pengampu mata kuliah Pemrograman Web dan Mobile.',
+                    'keterangan'       => 'Dosen Tetap Prodi Teknik Informatika.',
+                    'id_jurusan'       => $jurusans->first()->id_jurusan,
+                    'id_keahlian'      => $keahlians->first()->id_keahlian,
+                    'id_angkatan'      => $angkatans->first()->id,
+                    'is_active'        => true,
+                    'role'             => 'dosen',
+                    'video_url'        => null,
+                    'nim'              => null,
+                    'tanggal_lahir'    => '1985-03-15',
+                    'remember_token'   => null,
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ]
+            );
+        });
+
+        $this->command->info(' Akun dosen berhasil dibuat!');
+        $this->command->info('   Email    : budi.santoso@portofolio.com');
+        $this->command->info('   Password : dosen123');
     }
 }

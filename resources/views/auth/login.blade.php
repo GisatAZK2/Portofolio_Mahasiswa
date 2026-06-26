@@ -125,11 +125,12 @@
                             <div class="text-sm text-blue-800">
                                 <p class="font-medium"
                                    data-translate="passkey_info_title" data-translate-page="login">Keamanan Ekstra dengan Passkey</p>
-                                <p class="text-xs mt-0.5"
-                                   data-translate="passkey_info_desc" data-translate-page="login">
-                                    Jika Anda memiliki passkey (Face ID/Touch ID), Anda akan diminta verifikasi 
-                                    tambahan setelah memasukkan password untuk keamanan maksimal.
-                                </p>
+                                 <p class="text-xs mt-0.5"
+                                    data-translate="passkey_info_desc" data-translate-page="login">
+                                     Jika Anda memiliki passkey (Face ID/Touch ID), verifikasi hanya diminta 
+                                     <strong>sekali setiap 7 hari</strong> per browser/perangkat. Ganti browser 
+                                     atau hapus data akan meminta verifikasi ulang.
+                                 </p>
                             </div>
                         </div>
                     </div>
