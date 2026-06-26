@@ -12747,4 +12747,1210 @@ window.toggleSeeMore = function (gridClass, button, totalCount) {
     });
 })();
 
+window.initAdminProjectCreate = function () {
+    const container = document.getElementById('admin-project-create-data');
+    if (!container) return;
+
+    const allUsers    = JSON.parse(container.dataset.users    || '[]');
+    const oldTasks    = JSON.parse(container.dataset.oldTasks || '[]');
+    const fetchUrl    = container.dataset.fetchUrl   || '';
+    const hasOldData  = container.dataset.hasOldData === 'true';
+    const storageKey  = 'admin_project_selected_users';
+
+    let selectedUsers = { owner: null, leader: null, members: [] };
+    let taskIndex     = 0;
+    let filterTimer   = null;
+
+    // ─── Storage helpers ─────────────────────────────────────────────────────
+
+    function saveSelectedUsersToStorage() {
+        localStorage.setItem(storageKey, JSON.stringify({
+            owner:   selectedUsers.owner,
+            leader:  selectedUsers.leader,
+            members: selectedUsers.members,
+        }));
+    }
+
+    function restoreSelectedUsersFromStorage() {
+        const stored = localStorage.getItem(storageKey);
+        if (!stored) return false;
+        try {
+            const parsed = JSON.parse(stored);
+            if (parsed.owner)                      selectedUsers.owner   = parsed.owner;
+            if (parsed.leader)                     selectedUsers.leader  = parsed.leader;
+            if (Array.isArray(parsed.members))     selectedUsers.members = parsed.members;
+            return true;
+        } catch (err) {
+            console.warn('Unable to restore selected users from storage:', err);
+            return false;
+        }
+    }
+
+    // ─── Badge ───────────────────────────────────────────────────────────────
+
+    function updateSelectedUsersBadge() {
+        const badge = document.getElementById('selected-users-badge');
+        if (!badge) return;
+
+        const count = (selectedUsers.owner ? 1 : 0)
+                    + (selectedUsers.leader ? 1 : 0)
+                    + selectedUsers.members.length;
+
+        badge.innerHTML = count
+            ? `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`
+            : '';
+    }
+
+    // ─── Task-section visibility ──────────────────────────────────────────────
+
+    function updateTaskSectionVisibility() {
+        const taskSection = document.getElementById('task-section');
+        if (!taskSection) return;
+
+        const hasUsers = selectedUsers.owner
+                      || selectedUsers.leader
+                      || selectedUsers.members.length > 0;
+
+        if (hasUsers) {
+            taskSection.classList.remove('hidden');
+        } else {
+            taskSection.classList.add('hidden');
+            const tasksContainer = document.getElementById('tasks-container');
+            if (tasksContainer) {
+                tasksContainer.innerHTML = '';
+                taskIndex = 0;
+            }
+        }
+    }
+
+    // ─── Modal open / close ───────────────────────────────────────────────────
+
+    function openUserModal() {
+        document.getElementById('userModal').classList.remove('hidden');
+        sessionStorage.setItem('admin_project_modal_open', '1');
+        sessionStorage.removeItem('admin_project_user_page');
+
+        document.getElementById('modal-search').value    = '';
+        document.getElementById('modal-angkatan').value  = '';
+        document.getElementById('modal-jurusan').value   = '';
+        document.getElementById('modal-keahlian').value  = '';
+
+        applyUserFilters();
+    }
+
+    function closeUserModal() {
+        document.getElementById('userModal').classList.add('hidden');
+        sessionStorage.removeItem('admin_project_modal_open');
+        sessionStorage.removeItem('admin_project_user_page');
+    }
+
+    // ─── AJAX: filter + pagination ────────────────────────────────────────────
+
+    function applyUserFilters() {
+        sessionStorage.removeItem('admin_project_user_page');
+
+        const search   = document.getElementById('modal-search')?.value.trim();
+        const angkatan = document.getElementById('modal-angkatan')?.value;
+        const jurusan  = document.getElementById('modal-jurusan')?.value;
+        const keahlian = document.getElementById('modal-keahlian')?.value;
+
+        const params = new URLSearchParams();
+        if (search)   params.set('search',   search);
+        if (angkatan) params.set('angkatan', angkatan);
+        if (jurusan)  params.set('jurusan',  jurusan);
+        if (keahlian) params.set('keahlian', keahlian);
+
+        fetchUserList(fetchUrl + '?' + params.toString());
+    }
+
+    function fetchUserList(url) {
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+        })
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('modal-user-list').innerHTML            = data.userListHtml;
+            document.getElementById('modal-pagination-container').innerHTML = data.paginationHtml;
+            setSelectedRolesInModal();
+            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+            attachPaginationListeners();
+        })
+        .catch(err => console.error('Error loading users:', err));
+    }
+
+    function attachPaginationListeners() {
+        document.querySelectorAll(
+            '[data-pagination-group="admin_project_user_selection"] .pagination-link'
+        ).forEach(link => {
+            // Clone to wipe any previous listener
+            const newLink = link.cloneNode(true);
+            link.parentNode.replaceChild(newLink, link);
+
+            newLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                fetchUserList(this.href);
+            });
+        });
+    }
+
+    // ─── Role selects inside modal ────────────────────────────────────────────
+
+    function setSelectedRolesInModal() {
+        document.querySelectorAll('#modal-user-list .user-role-select').forEach(select => {
+            // Resolve userId from onchange attribute or data-user-id
+            let userId = null;
+            const onchangeAttr = select.getAttribute('onchange');
+            if (onchangeAttr) {
+                const match = onchangeAttr.match(/updateUserRole\(this,\s*(\d+),/);
+                if (match) userId = parseInt(match[1]);
+            }
+            if (!userId && select.hasAttribute('data-user-id')) {
+                userId = parseInt(select.getAttribute('data-user-id'));
+            }
+            if (!userId) return;
+
+            const isOwner  = selectedUsers.owner?.id  === userId;
+            const isLeader = selectedUsers.leader?.id === userId;
+            const isMember = selectedUsers.members.some(m => m.id === userId);
+
+            const ownerOpt  = select.querySelector('option[value="owner"]');
+            const leaderOpt = select.querySelector('option[value="leader"]');
+            const memberOpt = select.querySelector('option[value="member"]');
+
+            if (ownerOpt)  ownerOpt.disabled  = selectedUsers.owner  !== null && !isOwner;
+            if (leaderOpt) leaderOpt.disabled = selectedUsers.leader !== null && !isLeader;
+            if (memberOpt) memberOpt.disabled = isOwner || isLeader;
+
+            if      (isOwner)  select.value = 'owner';
+            else if (isLeader) select.value = 'leader';
+            else if (isMember) select.value = 'member';
+            else               select.value = '';
+        });
+    }
+
+    // ─── Update role from modal select ────────────────────────────────────────
+
+    function updateUserRole(selectElement, userId, role) {
+        const userDiv = selectElement.closest('.flex.items-center.justify-between');
+        if (!userDiv) return;
+
+        const img            = userDiv.querySelector('img');
+        const photo_profile  = img?.src ? img.src.split('/storage/')[1] : null;
+        const nama_mahasiswa = userDiv.querySelector('.font-medium')?.textContent ?? 'Unknown';
+        const email          = userDiv.querySelector('.text-sm')?.textContent ?? '';
+        const user           = { id: userId, nama_mahasiswa, email, photo_profile };
+
+        // Guard: duplicate owner
+        if (role === 'owner' && selectedUsers.owner && selectedUsers.owner.id !== userId) {
+            alert('Owner sudah dipilih. Hapus owner yang ada terlebih dahulu jika ingin mengganti.');
+            selectElement.value = '';
+            setSelectedRolesInModal();
+            return;
+        }
+
+        // Guard: replace leader with confirmation
+        if (role === 'leader' && selectedUsers.leader && selectedUsers.leader.id !== userId) {
+            if (!confirm('Leader sudah ada. Ganti leader?')) {
+                selectElement.value = '';
+                setSelectedRolesInModal();
+                return;
+            }
+            selectedUsers.leader = null;
+        }
+
+        // Remove this user from any existing role
+        if (selectedUsers.owner?.id  === userId) selectedUsers.owner  = null;
+        if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+        selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+
+        // Assign new role
+        if      (role === 'owner')  selectedUsers.owner  = user;
+        else if (role === 'leader') selectedUsers.leader = user;
+        else if (role === 'member') selectedUsers.members.push(user);
+
+        _syncAfterUserChange();
+        setSelectedRolesInModal();
+    }
+
+    function confirmUserSelection() {
+        _syncAfterUserChange();
+        sessionStorage.removeItem('admin_project_modal_open');
+        closeUserModal();
+    }
+
+    // ─── Form inputs ──────────────────────────────────────────────────────────
+
+    function updateFormInputs() {
+        document.getElementById('selected-owner-id').value = selectedUsers.owner?.id ?? '';
+
+        // Effective leader: explicit leader, OR owner acts as leader when members exist
+        const effectiveLeaderId = selectedUsers.leader?.id
+            ?? (selectedUsers.owner && selectedUsers.members.length > 0 ? selectedUsers.owner.id : null);
+        document.getElementById('selected-leader-id').value  = effectiveLeaderId ?? '';
+        document.getElementById('selected-members-ids').value = selectedUsers.members.map(m => m.id).join(',');
+    }
+
+    // ─── Render selected users (main form) ───────────────────────────────────
+
+    function getRoleDisplay(roleKey) {
+        if (typeof window.translations !== 'undefined' && window.currentLang) {
+            const pageData = window.translations[window.currentLang]?.dosen_add_pjt
+                          ?? window.translations.id?.dosen_add_pjt;
+            if (pageData?.[roleKey]) return pageData[roleKey];
+        }
+        return { owner_role: 'Owner', leader_role: 'Leader', member_role: 'Member', owner_leader_role: 'Owner & Leader' }[roleKey] ?? roleKey;
+    }
+
+    function renderSelectedUsers() {
+        const container   = document.getElementById('selected-users-container');
+        const noUsersMsg  = document.getElementById('no-users-message');
+        if (!container || !noUsersMsg) return;
+
+        const selected = [];
+
+        if (selectedUsers.owner) {
+            const ownerIsAlsoLeader = selectedUsers.leader?.id === selectedUsers.owner.id;
+            const ownerActsAsLeader = !selectedUsers.leader && selectedUsers.members.length > 0;
+            const roleKey = (ownerIsAlsoLeader || ownerActsAsLeader) ? 'owner_leader_role' : 'owner_role';
+            selected.push({ ...selectedUsers.owner, role: roleKey });
+        }
+
+        if (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id) {
+            selected.push({ ...selectedUsers.leader, role: 'leader_role' });
+        }
+
+        selectedUsers.members.forEach(m => selected.push({ ...m, role: 'member_role' }));
+
+        if (!selected.length) {
+            container.innerHTML = '';
+            noUsersMsg.classList.remove('hidden');
+            return;
+        }
+
+        noUsersMsg.classList.add('hidden');
+        container.innerHTML = selected.map(user => {
+            const roleDisplay   = getRoleDisplay(user.role);
+            const avatarHtml    = user.photo_profile
+                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                       <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                   </div>`;
+            return `
+                <div class="flex items-center justify-between p-4 border rounded-2xl bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200">
+                    <div class="flex items-center gap-3">
+                        ${avatarHtml}
+                        <div>
+                            <div class="font-medium">${roleDisplay}: ${user.nama_mahasiswa}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="window.removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>`;
+        }).join('');
+    }
+
+    function removeUser(userId) {
+        if (selectedUsers.owner?.id  === userId) selectedUsers.owner  = null;
+        if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+        selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+        _syncAfterUserChange();
+    }
+
+    // ─── Internal sync helper (DRY) ───────────────────────────────────────────
+
+    function _syncAfterUserChange() {
+        updateFormInputs();
+        renderSelectedUsers();
+        updateTaskSectionVisibility();
+        updateTaskUserOptions();
+        updateSelectedUsersBadge();
+        saveSelectedUsersToStorage();
+    }
+
+    // ─── Load initial user state ──────────────────────────────────────────────
+
+    function loadSelectedUsersFromForm() {
+        if (restoreSelectedUsersFromStorage()) {
+            updateFormInputs();
+            return;
+        }
+        const ownerId   = document.getElementById('selected-owner-id')?.value;
+        const leaderId  = document.getElementById('selected-leader-id')?.value;
+        const memberIds = (document.getElementById('selected-members-ids')?.value || '')
+                            .split(',').filter(Boolean);
+
+        if (ownerId)  selectedUsers.owner   = getUserById(ownerId);
+        if (leaderId) selectedUsers.leader  = getUserById(leaderId);
+        selectedUsers.members = memberIds.map(getUserById).filter(Boolean);
+    }
+
+    function getUserById(id) {
+        return allUsers.find(u => String(u.id) === String(id)) ?? null;
+    }
+
+    // ─── Task helpers ─────────────────────────────────────────────────────────
+
+    function getAllowedTaskUsers() {
+        const users = [];
+        const seen  = new Set();
+        const push  = user => {
+            if (!user || seen.has(user.id)) return;
+            seen.add(user.id);
+            users.push({ id: user.id, name: user.nama_mahasiswa });
+        };
+        push(selectedUsers.owner);
+        push(selectedUsers.leader);
+        selectedUsers.members.forEach(push);
+        return users;
+    }
+
+    function renderTaskUserOptions(selectedId = '') {
+        const users = getAllowedTaskUsers();
+        return '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>'
+            + users.map(u => `<option value="${u.id}" ${String(u.id) === String(selectedId) ? 'selected' : ''}>${u.name}</option>`).join('');
+    }
+
+    function addTaskRow(taskData = null) {
+        const tasksContainer = document.getElementById('tasks-container');
+        if (!tasksContainer) return;
+
+        const index    = taskIndex++;
+        const userId   = taskData?.user_id ?? '';
+        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+        const hiddenId = taskData?.id
+            ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">`
+            : '';
+
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+        taskItem.innerHTML = `
+            ${hiddenId}
+            <div class="grid gap-4 md:grid-cols-3 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                           data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
+                    <select name="tasks[${index}][user_id]"
+                            class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                        ${renderTaskUserOptions(userId)}
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                           data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
+                    <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                           class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                           placeholder="Nama tugas..."
+                           data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
+                </div>
+                <button type="button" onclick="window.removeTaskRow(this)"
+                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl"
+                        data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
+            </div>`;
+
+        tasksContainer.appendChild(taskItem);
+        taskItem.querySelector('.task-user-select')
+                ?.addEventListener('change', updateTaskUserOptions);
+
+        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+    }
+
+    function removeTaskRow(button) {
+        button.closest('.task-item')?.remove();
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function cleanupInvalidTaskRows() {
+        const allowed = new Set(getAllowedTaskUsers().map(u => String(u.id)));
+        document.querySelectorAll('.task-item').forEach(item => {
+            const sel = item.querySelector('.task-user-select');
+            if (!sel || !sel.value || !allowed.has(sel.value)) item.remove();
+        });
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function updateTaskUserOptions() {
+        document.querySelectorAll('.task-user-select').forEach(select => {
+            const current = select.value;
+            select.innerHTML = renderTaskUserOptions(current);
+            if (current) select.value = current;
+        });
+        cleanupInvalidTaskRows();
+        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+    }
+
+    function initializeTaskRows(existingTasks = []) {
+        const tasksContainer = document.getElementById('tasks-container');
+        if (!tasksContainer) return;
+        tasksContainer.innerHTML = '';
+        taskIndex = 0;
+
+        const validTasks = Array.isArray(existingTasks)
+            ? existingTasks.filter(t => t.user_id || t.name_task)
+            : [];
+
+        if (validTasks.length) {
+            validTasks.forEach(addTaskRow);
+        } else {
+            addTaskRow();
+        }
+        updateTaskUserOptions();
+    }
+
+    // ─── Modal filters setup ──────────────────────────────────────────────────
+
+    function setupModalFilters() {
+        const searchInput = document.getElementById('modal-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                clearTimeout(filterTimer);
+                filterTimer = setTimeout(applyUserFilters, 500);
+            });
+        }
+        ['modal-angkatan', 'modal-jurusan', 'modal-keahlian'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', applyUserFilters);
+        });
+    }
+
+    // ─── Form submit guard ────────────────────────────────────────────────────
+
+    function onSubmitProjectForm(event) {
+        if (!selectedUsers.owner) {
+            alert('Owner harus dipilih.');
+            event.preventDefault();
+            return;
+        }
+        updateFormInputs();
+        cleanupInvalidTaskRows();
+        updateTaskUserOptions();
+    }
+
+    // ─── Date validation ──────────────────────────────────────────────────────
+
+    function setupDateValidation() {
+        const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
+        const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
+        if (!tanggalMulai || !tanggalAkhir) return;
+
+        tanggalMulai.addEventListener('change', function () {
+            if (this.value) {
+                const minEnd = new Date(this.value);
+                minEnd.setDate(minEnd.getDate() + 1);
+                const minEndStr = minEnd.toISOString().split('T')[0];
+                tanggalAkhir.min = minEndStr;
+                if (tanggalAkhir.value && tanggalAkhir.value < minEndStr) {
+                    tanggalAkhir.value = '';
+                }
+            } else {
+                tanggalAkhir.min = '';
+            }
+        });
+    }
+
+    // ─── Expose functions called from inline HTML ─────────────────────────────
+
+    window.updateUserRole       = updateUserRole;
+    window.removeUser           = removeUser;
+    window.removeTaskRow        = removeTaskRow;
+    window.addTaskRow           = addTaskRow;
+    window.openUserModal        = openUserModal;
+    window.closeUserModal       = closeUserModal;
+    window.confirmUserSelection = confirmUserSelection;
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!hasOldData) localStorage.removeItem(storageKey);
+
+        loadSelectedUsersFromForm();
+        renderSelectedUsers();
+        setupModalFilters();
+        setupDateValidation();
+        updateTaskSectionVisibility();
+        updateSelectedUsersBadge();
+        initializeTaskRows(oldTasks);
+
+        document.getElementById('projectForm')
+                ?.addEventListener('submit', onSubmitProjectForm);
+
+        if (sessionStorage.getItem('admin_project_modal_open') === '1') {
+            openUserModal();
+        }
+    });
+};
+
+window.initAdminProjectEdit = function () {
+    const container = document.getElementById('admin-project-edit-data');
+    if (!container) return;
+
+    const project       = JSON.parse(container.dataset.project       || '{}');
+    const allUsers      = JSON.parse(container.dataset.users         || '[]');
+    const existingTasks = JSON.parse(container.dataset.existingTasks || '[]');
+    const fetchUrl      = container.dataset.fetchUrl   || '';
+    const hasOldData    = container.dataset.hasOldData === 'true';
+    const storageKey    = 'admin_project_edit_selected_users';
+
+    // SessionStorage keys scoped to this page
+    const SESSION_MODAL_KEY = 'admin_project_edit_modal_open';
+    const SESSION_PAGE_KEY  = 'admin_project_edit_user_page';
+
+    let selectedUsers = { owner: null, leader: null, members: [] };
+    let taskIndex     = 0;
+    let filterTimer   = null;
+
+    // ─── Initialize from project data ────────────────────────────────────────
+    // Blade should pre-resolve old() fallbacks into data-project:
+    //   data-project="{{ json_encode([
+    //       'owner_id'   => old('owner',  $project->id_mahasiswa),
+    //       'leader_id'  => old('leader', $project->leader_id),
+    //       'member_ids' => old('members')
+    //                         ? implode(',', old('members'))
+    //                         : $project->members->pluck('id')->implode(','),
+    //   ]) }}"
+
+    function initializeSelectedUsersFromProject() {
+        const ownerId   = String(project.owner_id   || '');
+        const leaderId  = String(project.leader_id  || '');
+        const memberIds = String(project.member_ids || '');
+
+        if (ownerId) {
+            const owner = getUserById(ownerId);
+            if (owner) selectedUsers.owner = owner;
+        }
+
+        // Leader is only stored separately when different from owner
+        if (leaderId && leaderId !== ownerId) {
+            const leader = getUserById(leaderId);
+            if (leader) selectedUsers.leader = leader;
+        }
+
+        if (memberIds) {
+            memberIds.split(',').forEach(id => {
+                if (!id || id === ownerId || id === leaderId) return;
+                const member = getUserById(id);
+                if (member && !selectedUsers.members.some(m => m.id == member.id)) {
+                    selectedUsers.members.push(member);
+                }
+            });
+        }
+    }
+
+    // ─── Storage helpers ─────────────────────────────────────────────────────
+
+    function saveSelectedUsersToStorage() {
+        localStorage.setItem(storageKey, JSON.stringify({
+            owner:   selectedUsers.owner,
+            leader:  selectedUsers.leader,
+            members: selectedUsers.members,
+        }));
+    }
+
+    function restoreSelectedUsersFromStorage() {
+        const stored = localStorage.getItem(storageKey);
+        if (!stored) return false;
+        try {
+            const parsed = JSON.parse(stored);
+            if (parsed.owner)                  selectedUsers.owner   = parsed.owner;
+            if (parsed.leader)                 selectedUsers.leader  = parsed.leader;
+            if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
+            return true;
+        } catch (err) {
+            console.warn('Unable to restore selected users from storage:', err);
+            return false;
+        }
+    }
+
+    // ─── Badge ───────────────────────────────────────────────────────────────
+
+    function updateSelectedUsersBadge() {
+        const badge = document.getElementById('selected-users-badge');
+        if (!badge) return;
+
+        // Separate leader only counts if different from owner
+        const count = (selectedUsers.owner ? 1 : 0)
+                    + (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id ? 1 : 0)
+                    + selectedUsers.members.length;
+
+        badge.innerHTML = count
+            ? `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`
+            : '';
+    }
+
+    // ─── Task-section visibility ──────────────────────────────────────────────
+
+    function updateTaskSectionVisibility() {
+        const taskSection = document.getElementById('task-section');
+        if (!taskSection) return;
+
+        const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
+
+        if (hasUsers) {
+            taskSection.classList.remove('hidden');
+        } else {
+            taskSection.classList.add('hidden');
+            const tasksContainer = document.getElementById('tasks-container');
+            if (tasksContainer) {
+                tasksContainer.innerHTML = '';
+                taskIndex = 0;
+            }
+        }
+    }
+
+    // ─── Modal open / close ───────────────────────────────────────────────────
+
+    function openUserModal() {
+        document.getElementById('userModal').classList.remove('hidden');
+        sessionStorage.setItem(SESSION_MODAL_KEY, '1');
+        sessionStorage.removeItem(SESSION_PAGE_KEY);
+        document.getElementById('modal-search').value   = '';
+        document.getElementById('modal-angkatan').value = '';
+        document.getElementById('modal-jurusan').value  = '';
+        document.getElementById('modal-keahlian').value = '';
+        applyUserFilters();
+    }
+
+    function closeUserModal() {
+        document.getElementById('userModal').classList.add('hidden');
+        sessionStorage.removeItem(SESSION_MODAL_KEY);
+        sessionStorage.removeItem(SESSION_PAGE_KEY);
+    }
+
+    // ─── AJAX: filter + pagination ────────────────────────────────────────────
+
+    function applyUserFilters() {
+        sessionStorage.removeItem(SESSION_PAGE_KEY);
+
+        const search   = document.getElementById('modal-search')?.value.trim();
+        const angkatan = document.getElementById('modal-angkatan')?.value;
+        const jurusan  = document.getElementById('modal-jurusan')?.value;
+        const keahlian = document.getElementById('modal-keahlian')?.value;
+
+        const params = new URLSearchParams();
+        if (search)   params.set('search',   search);
+        if (angkatan) params.set('angkatan', angkatan);
+        if (jurusan)  params.set('jurusan',  jurusan);
+        if (keahlian) params.set('keahlian', keahlian);
+
+        fetchUserList(fetchUrl + '?' + params.toString());
+    }
+
+    function fetchUserList(url) {
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+        })
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('modal-user-list').innerHTML            = data.userListHtml;
+            document.getElementById('modal-pagination-container').innerHTML = data.paginationHtml;
+            setSelectedRolesInModal();
+            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+            attachPaginationListeners();
+        })
+        .catch(err => console.error('Error loading users:', err));
+    }
+
+    function attachPaginationListeners() {
+        document.querySelectorAll(
+            '[data-pagination-group="admin_project_user_selection"] .pagination-link'
+        ).forEach(link => {
+            const newLink = link.cloneNode(true);
+            link.parentNode.replaceChild(newLink, link);
+            newLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                fetchUserList(this.href);
+            });
+        });
+    }
+
+    // ─── Role selects inside modal ────────────────────────────────────────────
+
+    function setSelectedRolesInModal() {
+        document.querySelectorAll('#modal-user-list .user-role-select').forEach(select => {
+            let userId = null;
+            const onchangeAttr = select.getAttribute('onchange');
+            if (onchangeAttr) {
+                const match = onchangeAttr.match(/updateUserRole\(this,\s*(\d+),/);
+                if (match) userId = parseInt(match[1]);
+            }
+            if (!userId && select.hasAttribute('data-user-id')) {
+                userId = parseInt(select.getAttribute('data-user-id'));
+            }
+            if (!userId) return;
+
+            const isOwner = selectedUsers.owner?.id === userId;
+            // isLeader: explicitly set as leader AND not the same user as owner
+            const isLeader = selectedUsers.leader?.id === userId
+                          && (!selectedUsers.owner || selectedUsers.owner.id !== userId);
+            const isMember = selectedUsers.members.some(m => m.id === userId);
+
+            const ownerOpt  = select.querySelector('option[value="owner"]');
+            const leaderOpt = select.querySelector('option[value="leader"]');
+            const memberOpt = select.querySelector('option[value="member"]');
+
+            // Owner slot is locked if someone else is already owner
+            if (ownerOpt) ownerOpt.disabled = selectedUsers.owner !== null && !isOwner;
+
+            // Leader slot is locked if there's already a separate leader that isn't this user,
+            // UNLESS this user is the current owner (owner can always take the leader role too)
+            if (leaderOpt) {
+                const hasOtherLeader = selectedUsers.leader !== null && !isLeader;
+                const userIsOwner    = selectedUsers.owner?.id === userId;
+                leaderOpt.disabled   = hasOtherLeader && !userIsOwner;
+            }
+
+            // Member slot is unavailable for whoever is currently owner or leader
+            if (memberOpt) {
+                memberOpt.disabled = (selectedUsers.owner?.id === userId)
+                                  || (selectedUsers.leader?.id === userId);
+            }
+
+            if      (isOwner)  select.value = 'owner';
+            else if (isLeader) select.value = 'leader';
+            else if (isMember) select.value = 'member';
+            else               select.value = '';
+        });
+    }
+
+    // ─── Update role from modal select ────────────────────────────────────────
+
+    function updateUserRole(selectElement, userId, role) {
+        const userDiv = selectElement.closest('.flex.items-center.justify-between');
+        if (!userDiv) return;
+
+        const img            = userDiv.querySelector('img');
+        const photo_profile  = img?.src ? img.src.split('/storage/')[1] : null;
+        const nama_mahasiswa = userDiv.querySelector('.font-medium')?.textContent ?? 'Unknown';
+        const email          = userDiv.querySelector('.text-sm')?.textContent ?? '';
+        const user           = { id: userId, nama_mahasiswa, email, photo_profile };
+
+        if (role === 'owner') {
+            // Replace existing owner after confirmation
+            if (selectedUsers.owner && selectedUsers.owner.id !== userId) {
+                if (!confirm('Owner sudah dipilih. Apakah Anda ingin mengganti owner yang ada?')) {
+                    selectElement.value = '';
+                    setSelectedRolesInModal();
+                    return;
+                }
+                // Only remove leader if the OLD owner was also the leader
+                if (selectedUsers.leader?.id === selectedUsers.owner.id) {
+                    selectedUsers.leader = null;
+                }
+                selectedUsers.owner = null;
+            }
+
+            selectedUsers.owner   = user;
+            selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+
+        } else if (role === 'leader') {
+            // Replace separate (non-owner) leader after confirmation
+            const hasDistinctLeader = selectedUsers.leader
+                                   && selectedUsers.leader.id !== userId
+                                   && selectedUsers.leader.id !== selectedUsers.owner?.id;
+            if (hasDistinctLeader) {
+                if (!confirm('Leader sudah dipilih. Apakah Anda ingin mengganti leader yang ada?')) {
+                    selectElement.value = '';
+                    setSelectedRolesInModal();
+                    return;
+                }
+                selectedUsers.leader = null;
+            }
+
+            if (selectedUsers.owner?.id === userId) {
+                // Owner is doubling as leader — allowed; keep the select showing 'owner'
+                selectedUsers.leader = user;
+                setTimeout(() => {
+                    const ownerSelect = document.querySelector(`.user-role-select[data-user-id="${userId}"]`);
+                    if (ownerSelect && ownerSelect.value !== 'owner') ownerSelect.value = 'owner';
+                }, 100);
+            } else {
+                selectedUsers.leader  = user;
+                selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+            }
+
+        } else if (role === 'member') {
+            if (selectedUsers.owner?.id === userId) {
+                alert('User ini adalah Owner, tidak bisa dijadikan Member.');
+                selectElement.value = 'owner';
+                setSelectedRolesInModal();
+                return;
+            }
+            if (selectedUsers.leader?.id === userId) {
+                alert('User ini adalah Leader, tidak bisa dijadikan Member.');
+                selectElement.value = 'leader';
+                setSelectedRolesInModal();
+                return;
+            }
+            if (!selectedUsers.members.some(m => m.id === userId)) {
+                selectedUsers.members.push(user);
+            }
+
+        } else if (role === '') {
+            // Deselect: remove from whichever slot(s) this user occupies
+            if (selectedUsers.owner?.id === userId) {
+                // If owner was also acting as leader, clear both
+                if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+                selectedUsers.owner = null;
+            }
+            if (selectedUsers.leader?.id === userId && selectedUsers.leader?.id !== selectedUsers.owner?.id) {
+                selectedUsers.leader = null;
+            }
+            selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+        }
+
+        _syncAfterUserChange();
+        setSelectedRolesInModal();
+    }
+
+    function confirmUserSelection() {
+        _syncAfterUserChange();
+        sessionStorage.removeItem(SESSION_MODAL_KEY);
+        closeUserModal();
+    }
+
+    // ─── Form inputs ──────────────────────────────────────────────────────────
+
+    function updateFormInputs() {
+        document.getElementById('selected-owner-id').value = selectedUsers.owner?.id ?? '';
+
+        // Leader ID — send even when leader === owner (signals owner-as-leader intent)
+        document.getElementById('selected-leader-id').value = selectedUsers.leader?.id ?? '';
+
+        // Members: strip anyone who is also owner or leader
+        const filteredMembers = selectedUsers.members.filter(
+            m => m.id !== selectedUsers.owner?.id && m.id !== selectedUsers.leader?.id
+        );
+        const memberIds = filteredMembers.map(m => m.id).join(',');
+        document.getElementById('selected-members-ids').value = memberIds;
+
+        // Keep members[] hidden inputs in sync for form submission
+        document.querySelectorAll('input[name="members[]"]').forEach(el => el.remove());
+        if (memberIds) {
+            const form = document.getElementById('projectForm');
+            memberIds.split(',').forEach(id => {
+                const input   = document.createElement('input');
+                input.type    = 'hidden';
+                input.name    = 'members[]';
+                input.value   = id;
+                form?.appendChild(input);
+            });
+        }
+    }
+
+    // ─── Render selected users (main form) ───────────────────────────────────
+
+    function getRoleDisplay(roleKey) {
+        if (typeof window.translations !== 'undefined' && window.currentLang) {
+            const pageData = window.translations[window.currentLang]?.dosen_add_pjt
+                          ?? window.translations.id?.dosen_add_pjt;
+            if (pageData?.[roleKey]) return pageData[roleKey];
+        }
+        return {
+            owner_role:        'Owner',
+            leader_role:       'Leader',
+            member_role:       'Member',
+            owner_leader_role: 'Owner & Leader',
+        }[roleKey] ?? roleKey;
+    }
+
+    function renderSelectedUsers() {
+        const usersContainer = document.getElementById('selected-users-container');
+        const noUsersMsg     = document.getElementById('no-users-message');
+        if (!usersContainer || !noUsersMsg) return;
+
+        const selected = [];
+
+        if (selectedUsers.owner) {
+            const isAlsoLeader = !selectedUsers.leader
+                              || selectedUsers.leader.id === selectedUsers.owner.id;
+            const roleKey = isAlsoLeader && selectedUsers.members.length > 0
+                ? 'owner_leader_role'
+                : 'owner_role';
+            selected.push({ ...selectedUsers.owner, role: roleKey });
+        }
+
+        // Show separate leader row only when leader differs from owner
+        if (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id) {
+            selected.push({ ...selectedUsers.leader, role: 'leader_role' });
+        }
+
+        // Members who are not also owner or leader
+        selectedUsers.members.forEach(member => {
+            if (member.id !== selectedUsers.owner?.id && member.id !== selectedUsers.leader?.id) {
+                selected.push({ ...member, role: 'member_role' });
+            }
+        });
+
+        if (!selected.length) {
+            usersContainer.innerHTML = '';
+            noUsersMsg.classList.remove('hidden');
+            return;
+        }
+
+        noUsersMsg.classList.add('hidden');
+        usersContainer.innerHTML = selected.map(user => {
+            const roleDisplay = getRoleDisplay(user.role);
+            const avatarHtml  = user.photo_profile
+                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                       <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                   </div>`;
+            return `
+                <div class="flex items-center justify-between p-4 border rounded-2xl bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200">
+                    <div class="flex items-center gap-3">
+                        ${avatarHtml}
+                        <div>
+                            <div class="font-medium">${roleDisplay}: ${user.nama_mahasiswa}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="window.removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>`;
+        }).join('');
+    }
+
+    function removeUser(userId) {
+        if (selectedUsers.owner?.id === userId) {
+            // If owner was doubling as leader, clear leader too
+            if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+            selectedUsers.owner = null;
+        }
+        // Remove standalone leader (guard against accidental double-clear)
+        if (selectedUsers.leader?.id === userId && selectedUsers.leader?.id !== selectedUsers.owner?.id) {
+            selectedUsers.leader = null;
+        }
+        selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+        _syncAfterUserChange();
+    }
+
+    // ─── Internal sync helper (DRY) ───────────────────────────────────────────
+
+    function _syncAfterUserChange() {
+        updateFormInputs();
+        renderSelectedUsers();
+        updateTaskSectionVisibility();
+        updateTaskUserOptions();
+        updateSelectedUsersBadge();
+        saveSelectedUsersToStorage();
+    }
+
+    // ─── Load initial user state ──────────────────────────────────────────────
+
+    function loadSelectedUsersFromForm() {
+        // Clear stale storage unless we're recovering from a failed form submission
+        if (!hasOldData) localStorage.removeItem(storageKey);
+
+        // Try storage first (covers browser back / modal-reopen), otherwise init from project
+        if (!restoreSelectedUsersFromStorage()) {
+            initializeSelectedUsersFromProject();
+        }
+
+        updateFormInputs();
+    }
+
+    function getUserById(id) {
+        const user = allUsers.find(u => String(u.id) === String(id));
+        if (!user) console.warn(`User with id ${id} not found in allUsers`);
+        return user ?? null;
+    }
+
+    // ─── Task helpers ─────────────────────────────────────────────────────────
+
+    function getAllowedTaskUsers() {
+        const users = [];
+        const seen  = new Set();
+        const push  = user => {
+            if (!user || seen.has(user.id)) return;
+            seen.add(user.id);
+            users.push({ id: user.id, name: user.nama_mahasiswa });
+        };
+        push(selectedUsers.owner);
+        // Skip leader if same as owner — already added above
+        if (selectedUsers.leader?.id !== selectedUsers.owner?.id) push(selectedUsers.leader);
+        selectedUsers.members.forEach(push);
+        return users;
+    }
+
+    function renderTaskUserOptions(selectedId = '') {
+        const users = getAllowedTaskUsers();
+        return '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>'
+            + users.map(u =>
+                `<option value="${u.id}" ${String(u.id) === String(selectedId) ? 'selected' : ''}>${u.name}</option>`
+            ).join('');
+    }
+
+    function addTaskRow(taskData = null) {
+        const tasksContainer = document.getElementById('tasks-container');
+        if (!tasksContainer) return;
+
+        const index    = taskIndex++;
+        const userId   = taskData?.user_id ?? '';
+        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+        const hiddenId = taskData?.id
+            ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">`
+            : '';
+
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-900';
+        taskItem.innerHTML = `
+            ${hiddenId}
+            <div class="grid gap-4 md:grid-cols-3 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                           data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
+                    <select name="tasks[${index}][user_id]"
+                            class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                        ${renderTaskUserOptions(userId)}
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                           data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
+                    <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
+                           class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                           placeholder="Nama tugas..."
+                           data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
+                </div>
+                <button type="button" onclick="window.removeTaskRow(this)"
+                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl"
+                        data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
+            </div>`;
+
+        tasksContainer.appendChild(taskItem);
+        taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
+        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+    }
+
+    function removeTaskRow(button) {
+        button.closest('.task-item')?.remove();
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function cleanupInvalidTaskRows() {
+        const allowed = new Set(getAllowedTaskUsers().map(u => String(u.id)));
+        document.querySelectorAll('.task-item').forEach(item => {
+            const sel = item.querySelector('.task-user-select');
+            if (!sel || !sel.value || !allowed.has(sel.value)) item.remove();
+        });
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+    }
+
+    function updateTaskUserOptions() {
+        document.querySelectorAll('.task-user-select').forEach(select => {
+            const current = select.value;
+            select.innerHTML = renderTaskUserOptions(current);
+            if (current) select.value = current;
+        });
+        cleanupInvalidTaskRows();
+        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+    }
+
+    function initializeTaskRows() {
+        const tasksContainer = document.getElementById('tasks-container');
+        if (!tasksContainer) return;
+        tasksContainer.innerHTML = '';
+        taskIndex = 0;
+
+        const validTasks = existingTasks.filter(t => t.user_id || t.name_task);
+        if (validTasks.length) {
+            validTasks.forEach(addTaskRow);
+        } else {
+            addTaskRow();
+        }
+        updateTaskUserOptions();
+    }
+
+    // ─── Modal filters setup ──────────────────────────────────────────────────
+
+    function setupModalFilters() {
+        const searchInput = document.getElementById('modal-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                clearTimeout(filterTimer);
+                filterTimer = setTimeout(applyUserFilters, 500);
+            });
+        }
+        ['modal-angkatan', 'modal-jurusan', 'modal-keahlian'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', applyUserFilters);
+        });
+    }
+
+    // ─── Form submit guard ────────────────────────────────────────────────────
+
+    function onSubmitProjectForm(event) {
+        if (!selectedUsers.owner) {
+            alert('Owner harus dipilih.');
+            event.preventDefault();
+            return;
+        }
+        updateFormInputs();
+        cleanupInvalidTaskRows();
+        updateTaskUserOptions();
+    }
+
+    // ─── Date validation ──────────────────────────────────────────────────────
+
+    function setupDateValidation() {
+        const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
+        const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
+        if (!tanggalMulai || !tanggalAkhir) return;
+
+        tanggalMulai.addEventListener('change', function () {
+            if (this.value) {
+                const minEnd = new Date(this.value);
+                minEnd.setDate(minEnd.getDate() + 1);
+                const minEndStr = minEnd.toISOString().split('T')[0];
+                tanggalAkhir.min = minEndStr;
+                if (tanggalAkhir.value && tanggalAkhir.value < minEndStr) {
+                    tanggalAkhir.value = '';
+                }
+            } else {
+                tanggalAkhir.min = '';
+            }
+        });
+    }
+
+    // ─── Expose functions called from inline HTML ─────────────────────────────
+
+    window.updateUserRole       = updateUserRole;
+    window.removeUser           = removeUser;
+    window.removeTaskRow        = removeTaskRow;
+    window.addTaskRow           = addTaskRow;
+    window.openUserModal        = openUserModal;
+    window.closeUserModal       = closeUserModal;
+    window.confirmUserSelection = confirmUserSelection;
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSelectedUsersFromForm();
+        renderSelectedUsers();
+        setupModalFilters();
+        setupDateValidation();
+        updateTaskSectionVisibility();
+        updateSelectedUsersBadge();
+        initializeTaskRows();
+
+        document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+
+        if (sessionStorage.getItem(SESSION_MODAL_KEY) === '1') openUserModal();
+
+        if (typeof showPageInfo === 'function') showPageInfo('popup.edit_project');
+    });
+};
+
 Alpine.start();
