@@ -1,23 +1,6 @@
 @extends('Layout.Layout')
 @section('title', 'Edit Project Mahasiswa')
 @section('content')
-    <div id="admin-project-edit-data"
-        data-project="{{ json_encode($project) }}"
-        data-users="{{ json_encode($users) }}"
-        data-existing-tasks="{{ json_encode($existingTasks) }}"
-        data-fetch-url="{{ route('admin.projects.details', ['id' => $project->id]) }}"
-        data-selected-owner="{{ old('owner', $project->id_mahasiswa) }}"
-        data-selected-leader="{{ old('leader', $project->leader_id) }}"
-        data-selected-members="{{ json_encode(old('members', $project->members->pluck('id')->toArray())) }}"
-        data-angkatan="{{ json_encode($angkatans) }}"
-        data-jurusan="{{ json_encode($jurusans) }}"
-        data-keahlian="{{ json_encode($keahlians) }}"
-        data-current-search="{{ $search ?? '' }}"
-        data-current-angkatan="{{ $angkatan ?? '' }}"
-        data-current-jurusan="{{ $jurusan ?? '' }}"
-        data-current-keahlian="{{ $keahlian ?? '' }}"
-    ></div>
-
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div class="p-4 md:p-8 max-w-7xl mx-auto">
            
@@ -50,10 +33,50 @@
                 </div>
             @endif
 
-            <!-- Form - Gunakan PUT untuk update -->
+            {{-- ============================================================
+                 CONTAINER: semua data PHP dipass lewat data-* attribute,
+                 tidak ada lagi @json / old() di dalam <script> 
+            ============================================================= --}}
+            @php
+                // Prepare existing tasks from old input or database
+                $existingTasks = [];
+                if (old('tasks')) {
+                    foreach (old('tasks') as $task) {
+                        if (isset($task['user_id']) && isset($task['name_task'])) {
+                            $existingTasks[] = [
+                                'id'        => $task['id']        ?? null,
+                                'user_id'   => $task['user_id'],
+                                'name_task' => $task['name_task'],
+                            ];
+                        }
+                    }
+                } else {
+                    $existingTasks = $project->tasks->map(fn($t) => [
+                        'id'        => $t->id,
+                        'user_id'   => $t->user_id,
+                        'name_task' => $t->name_task ?? '',
+                    ])->toArray();
+                }
+
+                $hasOldData = old('members') || old('owner') || old('leader') ? 'true' : 'false';
+            @endphp
+
+            <div
+                id="admin-project-edit-container"
+                data-users="{{ json_encode($users instanceof \Illuminate\Pagination\AbstractPaginator ? $users->items() : $users->values()->all()) }}"
+                data-existing-tasks="{{ json_encode($existingTasks) }}"
+                data-owner-id="{{ old('owner', $project->id_mahasiswa) }}"
+                data-leader-id="{{ old('leader', $project->leader_id) }}"
+                data-member-ids="{{ old('members') ? implode(',', old('members')) : $project->members->pluck('id')->implode(',') }}"
+                data-has-old-data="{{ $hasOldData }}"
+                data-fetch-url="{{ route('admin.projects.details', ['id' => $project->id]) }}"
+                data-project-id="{{ $project->id }}"
+            ></div>
+
+            <!-- Form -->
             <form method="POST" action="{{ route('admin.projects.update', ['id' => $project->id]) }}" class="space-y-6 md:space-y-7" id="projectForm">
                 @csrf
-                @method('PUT')  {{-- Ubah dari POST ke PUT --}}
+                @method('PUT')
                 
                 <!-- User Selection Section -->
                 <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -70,21 +93,24 @@
                         </button>
                     </div>
 
-                    <!-- Selected Users Display -->
-                    <div id="selected-users-container" class="space-y-3">
-                        <!-- Users will be displayed here -->
-                    </div>
+                    <!-- Badge jumlah user terpilih -->
+                    <div id="selected-users-badge" class="mb-3"></div>
 
-                    <div id="no-users-message" data-translate="no_users_selected" data-translate-page="dosen_add_pjt" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <!-- Selected Users Display -->
+                    <div id="selected-users-container" class="space-y-3"></div>
+
+                    <div id="no-users-message" data-translate="no_users_selected" data-translate-page="dosen_add_pjt"
+                        class="text-center py-8 text-gray-500 dark:text-gray-400">
                         Belum ada user yang dipilih. Klik "Tambah User" untuk memulai.
                     </div>
                 </div>
 
-                <!-- Hidden inputs for selected users -->
-                <input type="hidden" name="owner" id="selected-owner-id" value="{{ old('owner', $project->id_mahasiswa) }}">
-                <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader', $project->leader_id) }}">
+                <!-- Hidden inputs untuk user yang dipilih -->
+                <input type="hidden" name="owner"   id="selected-owner-id"   value="{{ old('owner',   $project->id_mahasiswa) }}">
+                <input type="hidden" name="leader"  id="selected-leader-id"  value="{{ old('leader',  $project->leader_id) }}">
                 <input type="hidden" name="members" id="selected-members-ids" value="{{ old('members') ? implode(',', old('members')) : $project->members->pluck('id')->implode(',') }}">
                 <input type="hidden" name="is_collaborative" id="is_collaborative" value="1">
+                {{-- members[] dinamis ditambahkan oleh JS --}}
                 
                 <!-- Nama Project -->
                 <div>
@@ -121,8 +147,8 @@
                     <div id="tasks-container" class="space-y-4"></div>
                     <button type="button" onclick="addTaskRow()"
                         class="mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:cursor-pointer hover:underline flex items-center gap-1">
-                        <span class="text-xl">+</span> <span data-translate="add_task_opt"
-                            data-translate-page="dosen_add_pjt">Tambah Tugas</span>
+                        <span class="text-xl">+</span>
+                        <span data-translate="add_task_opt" data-translate-page="dosen_add_pjt">Tambah Tugas</span>
                     </button>
                 </div>
 
@@ -190,13 +216,10 @@
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-3 pt-8 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex-1"></div>
-
-                    <a href="{{ route('admin.projects.index') }}" data-translate="cancel"
-                        data-translate-page="dosen_add_pjt"
+                    <a href="{{ route('admin.projects.index') }}" data-translate="cancel" data-translate-page="dosen_add_pjt"
                         class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto">
                         Batal
                     </a>
-
                     <button type="submit" data-translate="upd_pjt" data-translate-page="dosen_add_pjt"
                         class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto">
                         Update Project
@@ -226,15 +249,12 @@
                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div class="relative">
-                                <input type="text" id="modal-search" value="{{ $search ?? '' }}" data-translate-placeholder="search_name_placeholder" data-translate-page="dosen_add_pjt" placeholder="Cari nama mahasiswa..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 
-                                    dark:bg-gray-600 dark:text-white dark:border-gray-500 
-                                    rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                <input type="text" id="modal-search" data-translate-placeholder="search_name_placeholder" data-translate-page="dosen_add_pjt"
+                                    placeholder="Cari nama mahasiswa..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:bg-gray-600 dark:text-white dark:border-gray-500 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
                                 <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" 
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                     </svg>
                                 </div>
                             </div>
@@ -263,23 +283,25 @@
                     <div class="mt-4" data-pagination-group="admin_project_user_selection">
                         <div class="max-h-96 overflow-y-auto">
                             <div id="modal-user-list" class="space-y-2">
-                                <!-- Users will be loaded here -->
+                                <!-- Diisi via AJAX -->
                             </div>
                         </div>
                         <div class="mt-4" id="modal-pagination-container">
-                             @if($users instanceof \Illuminate\Pagination\AbstractPaginator)
-        {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection']) }}
-    @endif
+                            @if($users instanceof \Illuminate\Pagination\AbstractPaginator)
+                                {{ $users->render('vendor.pagination.custom_ajax', ['groupName' => 'admin_project_user_selection']) }}
+                            @endif
                         </div>
                     </div>
                 </div>
 
                 <!-- Modal Footer -->
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button onclick="closeUserModal()" data-translate="cancel" data-translate-page="dosen_add_pjt" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    <button onclick="closeUserModal()" data-translate="cancel" data-translate-page="dosen_add_pjt"
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
                         Batal
                     </button>
-                    <button onclick="confirmUserSelection()" data-translate="confirm" data-translate-page="dosen_add_pjt" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                    <button onclick="confirmUserSelection()" data-translate="confirm" data-translate-page="dosen_add_pjt"
+                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
                         Konfirmasi
                     </button>
                 </div>
@@ -287,70 +309,13 @@
         </div>
     </div>
 
-    @php
-        // Prepare existing tasks from old input or from the database
-        $existingTasks = [];
-        if (old('tasks')) {
-            // Use old input if available (after validation error)
-            $oldTasks = old('tasks');
-            foreach ($oldTasks as $index => $task) {
-                if (isset($task['user_id']) && isset($task['name_task'])) {
-                    $existingTasks[] = [
-                        'id' => $task['id'] ?? null,
-                        'user_id' => $task['user_id'],
-                        'name_task' => $task['name_task'],
-                    ];
-                }
-            }
-        } else {
-            // Otherwise load from database
-            $existingTasks = $project->tasks->map(function($task) {
-                return [
-                    'id' => $task->id,
-                    'user_id' => $task->user_id,
-                    'name_task' => $task->name_task ?? '',
-                ];
-            })->toArray();
-        }
-        
-        $selectedOwner = old('owner') ? App\Models\User::find(old('owner')) : $project->mahasiswa;
-        $selectedLeader = old('leader') ? App\Models\User::find(old('leader')) : $project->leader;
-        $selectedMemberIds = old('members') ? old('members') : $project->members->pluck('id')->toArray();
-        $selectedMembers = App\Models\User::whereIn('id', (array) $selectedMemberIds)->get();
-        $selectedUsersData = [
-            'owner' => $selectedOwner ? [
-                'id' => $selectedOwner->id,
-                'nama_mahasiswa' => $selectedOwner->nama_mahasiswa,
-                'email' => $selectedOwner->email,
-                'photo_profile' => $selectedOwner->photo_profile,
-            ] : null,
-            'leader' => $selectedLeader ? [
-                'id' => $selectedLeader->id,
-                'nama_mahasiswa' => $selectedLeader->nama_mahasiswa,
-                'email' => $selectedLeader->email,
-                'photo_profile' => $selectedLeader->photo_profile,
-            ] : null,
-            'members' => $selectedMembers->map(function($member) {
-                return [
-                    'id' => $member->id,
-                    'nama_mahasiswa' => $member->nama_mahasiswa,
-                    'email' => $member->email,
-                    'photo_profile' => $member->photo_profile,
-                ];
-            })->toArray(),
-        ];
-        
-        // Convert existingTasks to JSON safely
-        $existingTasksJson = json_encode($existingTasks);
-    @endphp
-
+    {{-- Inisiasi modul dari app.js --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof initAdminProjectEdit === 'function') {
-                initAdminProjectEdit();
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('admin-project-edit-container');
+            if (container && typeof window.initAdminProjectEditPage === 'function') {
+                window.initAdminProjectEditPage(container);
             }
         });
     </script>
-
-   
 @endsection

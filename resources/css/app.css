@@ -2404,3 +2404,11 @@ textarea:focus {
     padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
+[data-translate] {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+[data-translate].translated {
+    opacity: 1;
+}

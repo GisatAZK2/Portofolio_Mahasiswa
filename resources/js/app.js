@@ -1028,39 +1028,6 @@ window.checkSessionAlerts = function () {
     }
 };
 
-function initPasskeyManagement() {
-    // Muat daftar passkey saat halaman terbuka
-    if (typeof window.loadPasskeys === 'function') {
-        window.loadPasskeys();
-    }
-
-    const nameInput = document.getElementById('passkeyName');
-    const addBtn = document.getElementById('addPasskeyBtn');
-    if (!nameInput || !addBtn) return;
-
-    const validate = () => {
-        addBtn.disabled = nameInput.value.trim() === '';
-    };
-
-    nameInput.addEventListener('input', validate);
-    validate(); // initial state
-
-    addBtn.addEventListener('click', () => {
-        if (typeof window.registerPasskey === 'function') {
-            window.registerPasskey();
-        }
-    });
-
-    nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !addBtn.disabled) {
-            e.preventDefault();
-            if (typeof window.registerPasskey === 'function') {
-                window.registerPasskey();
-            }
-        }
-    });
-}
-
 window.runPageInitializers = function () {
     // Passkey Management Page
     if (document.getElementById('passkeyName') && document.getElementById('addPasskeyBtn')) {
@@ -1146,7 +1113,30 @@ window.runPageInitializers = function () {
     }
 };
 
+function initPasskeyManagement() {
+if (typeof window.loadPasskeys === 'function') {
+        window.loadPasskeys(); // ← BARU
+    }
+    const nameInput = document.getElementById('passkeyName');
+    const addBtn = document.getElementById('addPasskeyBtn');
+    if (!nameInput || !addBtn) return;
 
+    const validate = () => {
+        addBtn.disabled = nameInput.value.trim() === '';
+    };
+
+    nameInput.addEventListener('input', validate);
+    validate(); // initial state
+
+    addBtn.addEventListener('click', window.registerPasskey);
+
+    nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !addBtn.disabled) {
+            e.preventDefault();
+            window.registerPasskey();
+        }
+    });
+}
 
 function initVerifyPasskey() {
     const verifyBtn = document.getElementById('verifyPasskeyBtn');
@@ -6824,14 +6814,14 @@ window.initProjectEditPage = function (container) {
             const userIdInput = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
             const taskNameInput = taskItem.querySelector('input[name$="[name_task]"]');
             const taskIdInput = taskItem.querySelector('input[name$="[id]"]');
+            const isDoneInput = taskItem.querySelector('input.task-is-done[type="checkbox"]'); // ← TAMBAHKAN
 
             let userId = null;
-            if (userIdInput) {
-                userId = userIdInput.value;
-            }
+            if (userIdInput) { userId = userIdInput.value; }
 
             const taskName = taskNameInput ? taskNameInput.value : '';
             const taskId = taskIdInput ? taskIdInput.value : null;
+            const isDone = isDoneInput ? isDoneInput.checked : false; // ← TAMBAHKAN
 
             if (taskName) {
                 tasks.push({
@@ -6842,7 +6832,6 @@ window.initProjectEditPage = function (container) {
                 });
             }
         });
-
         return tasks;
     }
 
@@ -8310,17 +8299,17 @@ document.addEventListener('turbo:load', handlePaginationScroll);
             }[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200';
 
             return `
-                <div class="flex items-center justify-between p-4 border rounded-2xl ${styles}">
-                    <div class="flex items-center gap-3">
-                        ${photo ?
-                    `<img src="${photo}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">` :
-                    `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                                <span class="font-semibold text-current">${initial}</span>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-2xl ${styles}">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        ${user.photo_profile
+                    ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
+                    : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
+                                <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                             </div>`
                 }
-                        <div>
-                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa || 'Unknown'}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-medium break-words">${user.role}: ${user.nama_mahasiswa}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 break-all">${user.email || ''}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 mt-2 sm:mt-0 flex-shrink-0">
@@ -8921,14 +8910,14 @@ document.addEventListener('turbo:load', handlePaginationScroll);
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border rounded-2xl ${styles}">
                         <div class="flex items-center gap-3 flex-1 min-w-0">
                             ${user.photo_profile
-                        ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                        : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                        ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 flex-shrink-0">`
+                        : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800 flex-shrink-0">
                                     <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
                                 </div>`
                     }
-                            <div>
-                                <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
+                            <div class="min-w-0 flex-1">
+                                <div class="font-medium break-words">${user.role}: ${user.nama_mahasiswa}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400 break-all">${user.email || ''}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 mt-2 sm:mt-0 flex-shrink-0">
@@ -13300,66 +13289,31 @@ window.initAdminProjectCreate = function () {
     });
 };
 
-window.initAdminProjectEdit = function () {
-    const container = document.getElementById('admin-project-edit-data');
-    if (!container) return;
+/* ==========================================
+   ADMIN VIEWS_EDIT_PROJECT.BLADE.PHP SCRIPTS
+   ========================================== */
+window.initAdminProjectEditPage = function (container) {
+    const allUsers       = JSON.parse(container.dataset.users        || '[]');
+    const existingTasks  = JSON.parse(container.dataset.existingTasks|| '[]');
+    const initialOwner   = container.dataset.ownerId   || '';
+    const initialLeader  = container.dataset.leaderId  || '';
+    const initialMembers = container.dataset.memberIds || '';   // comma-separated
+    const fetchUrl       = container.dataset.fetchUrl;          // route admin.projects.details
 
-    const project       = JSON.parse(container.dataset.project       || '{}');
-    const allUsers      = JSON.parse(container.dataset.users         || '[]');
-    const existingTasks = JSON.parse(container.dataset.existingTasks || '[]');
-    const fetchUrl      = container.dataset.fetchUrl   || '';
-    const hasOldData    = container.dataset.hasOldData === 'true';
-    const storageKey    = 'admin_project_edit_selected_users';
-
-    // SessionStorage keys scoped to this page
-    const SESSION_MODAL_KEY = 'admin_project_edit_modal_open';
-    const SESSION_PAGE_KEY  = 'admin_project_edit_user_page';
+    const userSelectionStorageKey = 'admin_project_edit_selected_users';
 
     let selectedUsers = { owner: null, leader: null, members: [] };
     let taskIndex     = 0;
     let filterTimer   = null;
 
-    // ─── Initialize from project data ────────────────────────────────────────
-    // Blade should pre-resolve old() fallbacks into data-project:
-    //   data-project="{{ json_encode([
-    //       'owner_id'   => old('owner',  $project->id_mahasiswa),
-    //       'leader_id'  => old('leader', $project->leader_id),
-    //       'member_ids' => old('members')
-    //                         ? implode(',', old('members'))
-    //                         : $project->members->pluck('id')->implode(','),
-    //   ]) }}"
-
-    function initializeSelectedUsersFromProject() {
-        const ownerId   = String(project.owner_id   || '');
-        const leaderId  = String(project.leader_id  || '');
-        const memberIds = String(project.member_ids || '');
-
-        if (ownerId) {
-            const owner = getUserById(ownerId);
-            if (owner) selectedUsers.owner = owner;
-        }
-
-        // Leader is only stored separately when different from owner
-        if (leaderId && leaderId !== ownerId) {
-            const leader = getUserById(leaderId);
-            if (leader) selectedUsers.leader = leader;
-        }
-
-        if (memberIds) {
-            memberIds.split(',').forEach(id => {
-                if (!id || id === ownerId || id === leaderId) return;
-                const member = getUserById(id);
-                if (member && !selectedUsers.members.some(m => m.id == member.id)) {
-                    selectedUsers.members.push(member);
-                }
-            });
-        }
+    // ── Helpers ──────────────────────────────────────────────────────
+    function getUserById(id) {
+        return allUsers.find(u => String(u.id) === String(id)) || null;
     }
 
-    // ─── Storage helpers ─────────────────────────────────────────────────────
-
+    // ── Storage ───────────────────────────────────────────────────────
     function saveSelectedUsersToStorage() {
-        localStorage.setItem(storageKey, JSON.stringify({
+        localStorage.setItem(userSelectionStorageKey, JSON.stringify({
             owner:   selectedUsers.owner,
             leader:  selectedUsers.leader,
             members: selectedUsers.members,
@@ -13367,84 +13321,103 @@ window.initAdminProjectEdit = function () {
     }
 
     function restoreSelectedUsersFromStorage() {
-        const stored = localStorage.getItem(storageKey);
+        const stored = localStorage.getItem(userSelectionStorageKey);
         if (!stored) return false;
         try {
             const parsed = JSON.parse(stored);
-            if (parsed.owner)                  selectedUsers.owner   = parsed.owner;
-            if (parsed.leader)                 selectedUsers.leader  = parsed.leader;
-            if (Array.isArray(parsed.members)) selectedUsers.members = parsed.members;
+            if (parsed.owner)                      selectedUsers.owner   = parsed.owner;
+            if (parsed.leader)                     selectedUsers.leader  = parsed.leader;
+            if (Array.isArray(parsed.members))     selectedUsers.members = parsed.members;
             return true;
-        } catch (err) {
-            console.warn('Unable to restore selected users from storage:', err);
+        } catch (e) {
+            console.warn('Unable to restore selected users from storage:', e);
             return false;
         }
     }
 
-    // ─── Badge ───────────────────────────────────────────────────────────────
+    // ── Initialize selection from project data ────────────────────────
+    function initializeSelectedUsersFromProject() {
+        if (initialOwner) {
+            const owner = getUserById(initialOwner);
+            if (owner) selectedUsers.owner = owner;
+        }
+        if (initialLeader && initialLeader !== initialOwner) {
+            const leader = getUserById(initialLeader);
+            if (leader) selectedUsers.leader = leader;
+        }
+        if (initialMembers) {
+            initialMembers.split(',').forEach(id => {
+                if (id && id !== initialOwner && id !== initialLeader) {
+                    const member = getUserById(id);
+                    if (member && !selectedUsers.members.some(m => m.id == member.id)) {
+                        selectedUsers.members.push(member);
+                    }
+                }
+            });
+        }
+    }
 
+    function loadSelectedUsersFromForm() {
+        const hasOldData = container.dataset.hasOldData === 'true';
+        if (!hasOldData) {
+            localStorage.removeItem(userSelectionStorageKey);
+        }
+        const restored = restoreSelectedUsersFromStorage();
+        if (!restored) {
+            initializeSelectedUsersFromProject();
+        }
+        updateFormInputs();
+    }
+
+    // ── Badge ─────────────────────────────────────────────────────────
     function updateSelectedUsersBadge() {
         const badge = document.getElementById('selected-users-badge');
         if (!badge) return;
-
-        // Separate leader only counts if different from owner
-        const count = (selectedUsers.owner ? 1 : 0)
-                    + (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id ? 1 : 0)
-                    + selectedUsers.members.length;
-
-        badge.innerHTML = count
-            ? `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`
-            : '';
+        let count = 0;
+        if (selectedUsers.owner) count++;
+        if (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id) count++;
+        count += selectedUsers.members.length;
+        badge.innerHTML = count === 0
+            ? ''
+            : `<span class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold">${count} user(s) terpilih</span>`;
     }
 
-    // ─── Task-section visibility ──────────────────────────────────────────────
-
+    // ── Task section visibility ───────────────────────────────────────
     function updateTaskSectionVisibility() {
         const taskSection = document.getElementById('task-section');
         if (!taskSection) return;
-
         const hasUsers = selectedUsers.owner || selectedUsers.leader || selectedUsers.members.length > 0;
-
         if (hasUsers) {
             taskSection.classList.remove('hidden');
         } else {
             taskSection.classList.add('hidden');
-            const tasksContainer = document.getElementById('tasks-container');
-            if (tasksContainer) {
-                tasksContainer.innerHTML = '';
-                taskIndex = 0;
-            }
+            const tContainer = document.getElementById('tasks-container');
+            if (tContainer) { tContainer.innerHTML = ''; taskIndex = 0; }
         }
     }
 
-    // ─── Modal open / close ───────────────────────────────────────────────────
-
-    function openUserModal() {
+    // ── Modal ─────────────────────────────────────────────────────────
+    window.openUserModal = function () {
         document.getElementById('userModal').classList.remove('hidden');
-        sessionStorage.setItem(SESSION_MODAL_KEY, '1');
-        sessionStorage.removeItem(SESSION_PAGE_KEY);
-        document.getElementById('modal-search').value   = '';
-        document.getElementById('modal-angkatan').value = '';
-        document.getElementById('modal-jurusan').value  = '';
-        document.getElementById('modal-keahlian').value = '';
+        sessionStorage.setItem('admin_project_edit_modal_open', '1');
+        document.getElementById('modal-search').value     = '';
+        document.getElementById('modal-angkatan').value   = '';
+        document.getElementById('modal-jurusan').value    = '';
+        document.getElementById('modal-keahlian').value   = '';
         applyUserFilters();
-    }
+    };
 
-    function closeUserModal() {
+    window.closeUserModal = function () {
         document.getElementById('userModal').classList.add('hidden');
-        sessionStorage.removeItem(SESSION_MODAL_KEY);
-        sessionStorage.removeItem(SESSION_PAGE_KEY);
-    }
+        sessionStorage.removeItem('admin_project_edit_modal_open');
+    };
 
-    // ─── AJAX: filter + pagination ────────────────────────────────────────────
-
+    // ── AJAX filter / pagination ──────────────────────────────────────
     function applyUserFilters() {
-        sessionStorage.removeItem(SESSION_PAGE_KEY);
-
-        const search   = document.getElementById('modal-search')?.value.trim();
-        const angkatan = document.getElementById('modal-angkatan')?.value;
-        const jurusan  = document.getElementById('modal-jurusan')?.value;
-        const keahlian = document.getElementById('modal-keahlian')?.value;
+        const search    = document.getElementById('modal-search')?.value.trim()    || '';
+        const angkatan  = document.getElementById('modal-angkatan')?.value         || '';
+        const jurusan   = document.getElementById('modal-jurusan')?.value          || '';
+        const keahlian  = document.getElementById('modal-keahlian')?.value         || '';
 
         const params = new URLSearchParams();
         if (search)   params.set('search',   search);
@@ -13452,43 +13425,60 @@ window.initAdminProjectEdit = function () {
         if (jurusan)  params.set('jurusan',  jurusan);
         if (keahlian) params.set('keahlian', keahlian);
 
-        fetchUserList(fetchUrl + '?' + params.toString());
-    }
-
-    function fetchUserList(url) {
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-            },
+        fetch(`${fetchUrl}?${params}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
         })
-        .then(r => r.json())
-        .then(data => {
-            document.getElementById('modal-user-list').innerHTML            = data.userListHtml;
-            document.getElementById('modal-pagination-container').innerHTML = data.paginationHtml;
-            setSelectedRolesInModal();
-            if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-            attachPaginationListeners();
-        })
-        .catch(err => console.error('Error loading users:', err));
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('modal-user-list').innerHTML          = data.userListHtml;
+                document.getElementById('modal-pagination-container').innerHTML = data.paginationHtml;
+                setSelectedRolesInModal();
+                if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+                attachPaginationListeners();
+            })
+            .catch(err => console.error('Error loading users:', err));
     }
 
     function attachPaginationListeners() {
-        document.querySelectorAll(
-            '[data-pagination-group="admin_project_user_selection"] .pagination-link'
-        ).forEach(link => {
+        document.querySelectorAll('[data-pagination-group="admin_project_user_selection"] .pagination-link').forEach(link => {
             const newLink = link.cloneNode(true);
             link.parentNode.replaceChild(newLink, link);
             newLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                fetchUserList(this.href);
+                fetch(this.href, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        document.getElementById('modal-user-list').innerHTML             = data.userListHtml;
+                        document.getElementById('modal-pagination-container').innerHTML  = data.paginationHtml;
+                        setSelectedRolesInModal();
+                        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+                        attachPaginationListeners();
+                    })
+                    .catch(err => console.error('Error loading page:', err));
             });
         });
     }
 
-    // ─── Role selects inside modal ────────────────────────────────────────────
+    function setupModalFilters() {
+        const searchInput   = document.getElementById('modal-search');
+        const angkatanSel   = document.getElementById('modal-angkatan');
+        const jurusanSel    = document.getElementById('modal-jurusan');
+        const keahlianSel   = document.getElementById('modal-keahlian');
 
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                clearTimeout(filterTimer);
+                filterTimer = setTimeout(applyUserFilters, 500);
+            });
+        }
+        if (angkatanSel) angkatanSel.addEventListener('change', applyUserFilters);
+        if (jurusanSel)  jurusanSel.addEventListener('change',  applyUserFilters);
+        if (keahlianSel) keahlianSel.addEventListener('change', applyUserFilters);
+    }
+
+    // ── Modal role selects ────────────────────────────────────────────
     function setSelectedRolesInModal() {
         document.querySelectorAll('#modal-user-list .user-role-select').forEach(select => {
             let userId = null;
@@ -13502,91 +13492,63 @@ window.initAdminProjectEdit = function () {
             }
             if (!userId) return;
 
-            const isOwner = selectedUsers.owner?.id === userId;
-            // isLeader: explicitly set as leader AND not the same user as owner
-            const isLeader = selectedUsers.leader?.id === userId
-                          && (!selectedUsers.owner || selectedUsers.owner.id !== userId);
+            const isOwner  = selectedUsers.owner?.id  === userId;
+            const isLeader = selectedUsers.leader?.id === userId && !isOwner;
             const isMember = selectedUsers.members.some(m => m.id === userId);
 
             const ownerOpt  = select.querySelector('option[value="owner"]');
             const leaderOpt = select.querySelector('option[value="leader"]');
             const memberOpt = select.querySelector('option[value="member"]');
 
-            // Owner slot is locked if someone else is already owner
-            if (ownerOpt) ownerOpt.disabled = selectedUsers.owner !== null && !isOwner;
+            if (ownerOpt)  ownerOpt.disabled  = selectedUsers.owner  !== null && !isOwner;
+            if (leaderOpt) leaderOpt.disabled  = selectedUsers.leader !== null && !isLeader && (!selectedUsers.owner || selectedUsers.owner.id !== userId);
+            if (memberOpt) memberOpt.disabled  = isOwner || isLeader;
 
-            // Leader slot is locked if there's already a separate leader that isn't this user,
-            // UNLESS this user is the current owner (owner can always take the leader role too)
-            if (leaderOpt) {
-                const hasOtherLeader = selectedUsers.leader !== null && !isLeader;
-                const userIsOwner    = selectedUsers.owner?.id === userId;
-                leaderOpt.disabled   = hasOtherLeader && !userIsOwner;
-            }
-
-            // Member slot is unavailable for whoever is currently owner or leader
-            if (memberOpt) {
-                memberOpt.disabled = (selectedUsers.owner?.id === userId)
-                                  || (selectedUsers.leader?.id === userId);
-            }
-
-            if      (isOwner)  select.value = 'owner';
-            else if (isLeader) select.value = 'leader';
-            else if (isMember) select.value = 'member';
-            else               select.value = '';
+            select.value = isOwner ? 'owner' : isLeader ? 'leader' : isMember ? 'member' : '';
         });
     }
 
-    // ─── Update role from modal select ────────────────────────────────────────
-
-    function updateUserRole(selectElement, userId, role) {
-        const userDiv = selectElement.closest('.flex.items-center.justify-between');
+    // ── Role update (called by onchange in modal list HTML) ───────────
+    window.updateUserRole = function (selectElement, userId, role) {
+        const userDiv      = selectElement.closest('.flex.items-center.justify-between');
         if (!userDiv) return;
-
-        const img            = userDiv.querySelector('img');
-        const photo_profile  = img?.src ? img.src.split('/storage/')[1] : null;
-        const nama_mahasiswa = userDiv.querySelector('.font-medium')?.textContent ?? 'Unknown';
-        const email          = userDiv.querySelector('.text-sm')?.textContent ?? '';
-        const user           = { id: userId, nama_mahasiswa, email, photo_profile };
+        const img          = userDiv.querySelector('img');
+        const photo_profile = img?.src ? img.src.split('/storage/')[1] : null;
+        const nameDiv      = userDiv.querySelector('.font-medium');
+        const nama_mahasiswa = nameDiv ? nameDiv.textContent.trim() : 'Unknown';
+        const emailDiv     = userDiv.querySelector('.text-sm');
+        const email        = emailDiv ? emailDiv.textContent.trim() : '';
+        const user         = { id: userId, nama_mahasiswa, email, photo_profile };
 
         if (role === 'owner') {
-            // Replace existing owner after confirmation
             if (selectedUsers.owner && selectedUsers.owner.id !== userId) {
-                if (!confirm('Owner sudah dipilih. Apakah Anda ingin mengganti owner yang ada?')) {
+                if (!confirm('Owner sudah dipilih. Ganti owner yang ada?')) {
                     selectElement.value = '';
                     setSelectedRolesInModal();
                     return;
                 }
-                // Only remove leader if the OLD owner was also the leader
                 if (selectedUsers.leader?.id === selectedUsers.owner.id) {
                     selectedUsers.leader = null;
                 }
                 selectedUsers.owner = null;
             }
-
             selectedUsers.owner   = user;
             selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
 
         } else if (role === 'leader') {
-            // Replace separate (non-owner) leader after confirmation
-            const hasDistinctLeader = selectedUsers.leader
-                                   && selectedUsers.leader.id !== userId
-                                   && selectedUsers.leader.id !== selectedUsers.owner?.id;
-            if (hasDistinctLeader) {
-                if (!confirm('Leader sudah dipilih. Apakah Anda ingin mengganti leader yang ada?')) {
+            if (selectedUsers.leader && selectedUsers.leader.id !== userId && selectedUsers.leader.id !== selectedUsers.owner?.id) {
+                if (!confirm('Leader sudah dipilih. Ganti leader yang ada?')) {
                     selectElement.value = '';
                     setSelectedRolesInModal();
                     return;
                 }
-                selectedUsers.leader = null;
+                if (selectedUsers.leader?.id !== selectedUsers.owner?.id) {
+                    selectedUsers.leader = null;
+                }
             }
-
             if (selectedUsers.owner?.id === userId) {
-                // Owner is doubling as leader — allowed; keep the select showing 'owner'
                 selectedUsers.leader = user;
-                setTimeout(() => {
-                    const ownerSelect = document.querySelector(`.user-role-select[data-user-id="${userId}"]`);
-                    if (ownerSelect && ownerSelect.value !== 'owner') ownerSelect.value = 'owner';
-                }, 100);
+                // Jangan ubah select ke 'owner', biarkan owner tetap
             } else {
                 selectedUsers.leader  = user;
                 selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
@@ -13609,12 +13571,10 @@ window.initAdminProjectEdit = function () {
                 selectedUsers.members.push(user);
             }
 
-        } else if (role === '') {
-            // Deselect: remove from whichever slot(s) this user occupies
+        } else { // '' → hapus dari semua role
             if (selectedUsers.owner?.id === userId) {
-                // If owner was also acting as leader, clear both
-                if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
                 selectedUsers.owner = null;
+                if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
             }
             if (selectedUsers.leader?.id === userId && selectedUsers.leader?.id !== selectedUsers.owner?.id) {
                 selectedUsers.leader = null;
@@ -13622,198 +13582,177 @@ window.initAdminProjectEdit = function () {
             selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
         }
 
-        _syncAfterUserChange();
-        setSelectedRolesInModal();
-    }
-
-    function confirmUserSelection() {
-        _syncAfterUserChange();
-        sessionStorage.removeItem(SESSION_MODAL_KEY);
-        closeUserModal();
-    }
-
-    // ─── Form inputs ──────────────────────────────────────────────────────────
-
-    function updateFormInputs() {
-        document.getElementById('selected-owner-id').value = selectedUsers.owner?.id ?? '';
-
-        // Leader ID — send even when leader === owner (signals owner-as-leader intent)
-        document.getElementById('selected-leader-id').value = selectedUsers.leader?.id ?? '';
-
-        // Members: strip anyone who is also owner or leader
-        const filteredMembers = selectedUsers.members.filter(
-            m => m.id !== selectedUsers.owner?.id && m.id !== selectedUsers.leader?.id
-        );
-        const memberIds = filteredMembers.map(m => m.id).join(',');
-        document.getElementById('selected-members-ids').value = memberIds;
-
-        // Keep members[] hidden inputs in sync for form submission
-        document.querySelectorAll('input[name="members[]"]').forEach(el => el.remove());
-        if (memberIds) {
-            const form = document.getElementById('projectForm');
-            memberIds.split(',').forEach(id => {
-                const input   = document.createElement('input');
-                input.type    = 'hidden';
-                input.name    = 'members[]';
-                input.value   = id;
-                form?.appendChild(input);
-            });
-        }
-    }
-
-    // ─── Render selected users (main form) ───────────────────────────────────
-
-    function getRoleDisplay(roleKey) {
-        if (typeof window.translations !== 'undefined' && window.currentLang) {
-            const pageData = window.translations[window.currentLang]?.dosen_add_pjt
-                          ?? window.translations.id?.dosen_add_pjt;
-            if (pageData?.[roleKey]) return pageData[roleKey];
-        }
-        return {
-            owner_role:        'Owner',
-            leader_role:       'Leader',
-            member_role:       'Member',
-            owner_leader_role: 'Owner & Leader',
-        }[roleKey] ?? roleKey;
-    }
-
-    function renderSelectedUsers() {
-        const usersContainer = document.getElementById('selected-users-container');
-        const noUsersMsg     = document.getElementById('no-users-message');
-        if (!usersContainer || !noUsersMsg) return;
-
-        const selected = [];
-
-        if (selectedUsers.owner) {
-            const isAlsoLeader = !selectedUsers.leader
-                              || selectedUsers.leader.id === selectedUsers.owner.id;
-            const roleKey = isAlsoLeader && selectedUsers.members.length > 0
-                ? 'owner_leader_role'
-                : 'owner_role';
-            selected.push({ ...selectedUsers.owner, role: roleKey });
-        }
-
-        // Show separate leader row only when leader differs from owner
-        if (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id) {
-            selected.push({ ...selectedUsers.leader, role: 'leader_role' });
-        }
-
-        // Members who are not also owner or leader
-        selectedUsers.members.forEach(member => {
-            if (member.id !== selectedUsers.owner?.id && member.id !== selectedUsers.leader?.id) {
-                selected.push({ ...member, role: 'member_role' });
-            }
-        });
-
-        if (!selected.length) {
-            usersContainer.innerHTML = '';
-            noUsersMsg.classList.remove('hidden');
-            return;
-        }
-
-        noUsersMsg.classList.add('hidden');
-        usersContainer.innerHTML = selected.map(user => {
-            const roleDisplay = getRoleDisplay(user.role);
-            const avatarHtml  = user.photo_profile
-                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
-                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
-                       <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
-                   </div>`;
-            return `
-                <div class="flex items-center justify-between p-4 border rounded-2xl bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200">
-                    <div class="flex items-center gap-3">
-                        ${avatarHtml}
-                        <div>
-                            <div class="font-medium">${roleDisplay}: ${user.nama_mahasiswa}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email}</div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="window.removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>`;
-        }).join('');
-    }
-
-    function removeUser(userId) {
-        if (selectedUsers.owner?.id === userId) {
-            // If owner was doubling as leader, clear leader too
-            if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
-            selectedUsers.owner = null;
-        }
-        // Remove standalone leader (guard against accidental double-clear)
-        if (selectedUsers.leader?.id === userId && selectedUsers.leader?.id !== selectedUsers.owner?.id) {
-            selectedUsers.leader = null;
-        }
-        selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
-        _syncAfterUserChange();
-    }
-
-    // ─── Internal sync helper (DRY) ───────────────────────────────────────────
-
-    function _syncAfterUserChange() {
         updateFormInputs();
         renderSelectedUsers();
         updateTaskSectionVisibility();
         updateTaskUserOptions();
         updateSelectedUsersBadge();
         saveSelectedUsersToStorage();
+        setSelectedRolesInModal();
+    };
+
+    window.confirmUserSelection = function () {
+        updateFormInputs();
+        renderSelectedUsers();
+        updateTaskSectionVisibility();
+        updateTaskUserOptions();
+        updateSelectedUsersBadge();
+        saveSelectedUsersToStorage();
+        sessionStorage.removeItem('admin_project_edit_modal_open');
+        window.closeUserModal();
+    };
+
+    // ── Form inputs sync ──────────────────────────────────────────────
+    function updateFormInputs() {
+        const ownerEl   = document.getElementById('selected-owner-id');
+        const leaderEl  = document.getElementById('selected-leader-id');
+        const membersEl = document.getElementById('selected-members-ids');
+
+        if (ownerEl) ownerEl.value = selectedUsers.owner?.id || '';
+
+        let leaderId = '';
+        if (selectedUsers.leader) {
+            leaderId = selectedUsers.leader.id;
+        }
+        if (leaderEl) leaderEl.value = leaderId;
+
+        const memberIds = selectedUsers.members
+            .filter(m => m.id !== selectedUsers.owner?.id && m.id !== selectedUsers.leader?.id)
+            .map(m => m.id)
+            .join(',');
+        if (membersEl) membersEl.value = memberIds;
+
+        // Array hidden inputs
+        document.querySelectorAll('input[name="members[]"]').forEach(i => i.remove());
+        if (memberIds) {
+            memberIds.split(',').forEach(id => {
+                const input    = document.createElement('input');
+                input.type     = 'hidden';
+                input.name     = 'members[]';
+                input.value    = id;
+                document.getElementById('projectForm').appendChild(input);
+            });
+        }
     }
 
-    // ─── Load initial user state ──────────────────────────────────────────────
+    // ── Render selected users list ────────────────────────────────────
+    function renderSelectedUsers() {
+        const containerEl  = document.getElementById('selected-users-container');
+        const noUsersMsg   = document.getElementById('no-users-message');
+        if (!containerEl || !noUsersMsg) return;
 
-    function loadSelectedUsersFromForm() {
-        // Clear stale storage unless we're recovering from a failed form submission
-        if (!hasOldData) localStorage.removeItem(storageKey);
+        const selected = [];
 
-        // Try storage first (covers browser back / modal-reopen), otherwise init from project
-        if (!restoreSelectedUsersFromStorage()) {
-            initializeSelectedUsersFromProject();
+        if (selectedUsers.owner) {
+            const isAlsoLeader = !selectedUsers.leader || selectedUsers.leader.id === selectedUsers.owner.id;
+            selected.push({
+                ...selectedUsers.owner,
+                role: (isAlsoLeader && selectedUsers.members.length > 0) ? 'Owner & Leader' : 'Owner',
+            });
+        }
+        if (selectedUsers.leader && (!selectedUsers.owner || selectedUsers.leader.id !== selectedUsers.owner.id)) {
+            selected.push({ ...selectedUsers.leader, role: 'Leader' });
+        }
+        selectedUsers.members.forEach(member => {
+            if (member.id !== selectedUsers.owner?.id && member.id !== selectedUsers.leader?.id) {
+                selected.push({ ...member, role: 'Member' });
+            }
+        });
+
+        if (!selected.length) {
+            containerEl.innerHTML = '';
+            noUsersMsg.classList.remove('hidden');
+            return;
         }
 
+        noUsersMsg.classList.add('hidden');
+
+        const styleMap = {
+            'Owner':          'bg-blue-50  dark:bg-blue-950  border-blue-200  dark:border-blue-800  text-blue-800  dark:text-blue-200',
+            'Leader':         'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
+            'Owner & Leader': 'bg-teal-50  dark:bg-teal-950  border-teal-200  dark:border-teal-800  text-teal-800  dark:text-teal-200',
+            'Member':         'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200',
+        };
+
+        containerEl.innerHTML = selected.map(user => {
+            const style  = styleMap[user.role] || 'bg-gray-50 dark:bg-gray-950 border-gray-200 text-gray-800';
+            const avatar = user.photo_profile
+                ? `<img src="/storage/${user.photo_profile}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800">`
+                : `<div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-800">
+                       <span class="font-semibold text-current">${user.nama_mahasiswa.charAt(0).toUpperCase()}</span>
+                   </div>`;
+
+            const removeBtn = user.role !== 'Owner'
+                ? `<button type="button" onclick="removeUser(${user.id})" class="text-current p-1 rounded-lg hover:opacity-80">
+                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                       </svg>
+                   </button>`
+                : '';
+
+            return `
+                <div class="flex items-center justify-between p-4 border rounded-2xl ${style}">
+                    <div class="flex items-center gap-3">
+                        ${avatar}
+                        <div>
+                            <div class="font-medium">${user.role}: ${user.nama_mahasiswa}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${user.email || ''}</div>
+                        </div>
+                    </div>
+                    ${removeBtn}
+                </div>`;
+        }).join('');
+    }
+
+    window.removeUser = function (userId) {
+        if (selectedUsers.owner?.id === userId) {
+            selectedUsers.owner = null;
+            if (selectedUsers.leader?.id === userId) selectedUsers.leader = null;
+        }
+        if (selectedUsers.leader?.id === userId && selectedUsers.leader?.id !== selectedUsers.owner?.id) {
+            selectedUsers.leader = null;
+        }
+        selectedUsers.members = selectedUsers.members.filter(m => m.id !== userId);
+
         updateFormInputs();
-    }
+        renderSelectedUsers();
+        updateTaskSectionVisibility();
+        updateTaskUserOptions();
+        updateSelectedUsersBadge();
+        saveSelectedUsersToStorage();
+    };
 
-    function getUserById(id) {
-        const user = allUsers.find(u => String(u.id) === String(id));
-        if (!user) console.warn(`User with id ${id} not found in allUsers`);
-        return user ?? null;
-    }
-
-    // ─── Task helpers ─────────────────────────────────────────────────────────
-
+    // ── Task rows ─────────────────────────────────────────────────────
     function getAllowedTaskUsers() {
         const users = [];
-        const seen  = new Set();
-        const push  = user => {
-            if (!user || seen.has(user.id)) return;
-            seen.add(user.id);
+        const added = new Set();
+        const add = user => {
+            if (!user || added.has(user.id)) return;
+            added.add(user.id);
             users.push({ id: user.id, name: user.nama_mahasiswa });
         };
-        push(selectedUsers.owner);
-        // Skip leader if same as owner — already added above
-        if (selectedUsers.leader?.id !== selectedUsers.owner?.id) push(selectedUsers.leader);
-        selectedUsers.members.forEach(push);
+        add(selectedUsers.owner);
+        if (selectedUsers.leader && selectedUsers.leader.id !== selectedUsers.owner?.id) add(selectedUsers.leader);
+        selectedUsers.members.forEach(add);
         return users;
     }
 
     function renderTaskUserOptions(selectedId = '') {
         const users = getAllowedTaskUsers();
-        return '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>'
-            + users.map(u =>
-                `<option value="${u.id}" ${String(u.id) === String(selectedId) ? 'selected' : ''}>${u.name}</option>`
-            ).join('');
+        let html = '<option value="" data-translate="pick_rsp" data-translate-page="dosen_add_pjt">-- Pilih Penanggung Jawab --</option>';
+        users.forEach(user => {
+            html += `<option value="${user.id}" ${String(user.id) === String(selectedId) ? 'selected' : ''}>${user.name}</option>`;
+        });
+        return html;
     }
 
-    function addTaskRow(taskData = null) {
-        const tasksContainer = document.getElementById('tasks-container');
-        if (!tasksContainer) return;
+    window.addTaskRow = function (taskData = null) {
+        const tContainer = document.getElementById('tasks-container');
+        if (!tContainer) return;
 
         const index    = taskIndex++;
-        const userId   = taskData?.user_id ?? '';
-        const taskName = taskData?.name_task ? taskData.name_task.replace(/"/g, '&quot;') : '';
+        const userId   = taskData?.user_id   ?? '';
+        const taskName = taskData?.name_task  ? taskData.name_task.replace(/"/g, '&quot;') : '';
         const hiddenId = taskData?.id
             ? `<input type="hidden" name="tasks[${index}][id]" value="${taskData.id}">`
             : '';
@@ -13824,87 +13763,92 @@ window.initAdminProjectEdit = function () {
             ${hiddenId}
             <div class="grid gap-4 md:grid-cols-3 items-end">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
-                           data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
-                    <select name="tasks[${index}][user_id]"
-                            class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="rsp_task" data-translate-page="dosen_add_pjt">Penanggung Jawab</label>
+                    <select name="tasks[${index}][user_id]" class="task-user-select w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                         ${renderTaskUserOptions(userId)}
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
-                           data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2" data-translate="nm_task" data-translate-page="dosen_add_pjt">Nama Tugas</label>
                     <input type="text" name="tasks[${index}][name_task]" value="${taskName}"
-                           class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                           placeholder="Nama tugas..."
-                           data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
+                        class="task-name-input w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                        placeholder="Nama tugas..."
+                        data-translate-placeholder="task_placeholder" data-translate-page="dosen_add_pjt">
                 </div>
-                <button type="button" onclick="window.removeTaskRow(this)"
-                        class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl"
-                        data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
+                <button type="button" onclick="removeTaskRow(this)"
+                    class="self-start mt-6 px-4 py-3 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-xl"
+                    data-translate="del" data-translate-page="dosen_add_pjt">Hapus</button>
             </div>`;
 
-        tasksContainer.appendChild(taskItem);
-        taskItem.querySelector('.task-user-select')?.addEventListener('change', updateTaskUserOptions);
-        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
-    }
+        tContainer.appendChild(taskItem);
+        const select = taskItem.querySelector('.task-user-select');
+        if (select) select.addEventListener('change', updateTaskUserOptions);
 
-    function removeTaskRow(button) {
-        button.closest('.task-item')?.remove();
-        if (!document.querySelectorAll('.task-item').length) addTaskRow();
-    }
+        if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
+    };
+
+    window.removeTaskRow = function (button) {
+        const taskItem = button.closest('.task-item');
+        if (taskItem) taskItem.remove();
+        if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
+    };
 
     function cleanupInvalidTaskRows() {
-        const allowed = new Set(getAllowedTaskUsers().map(u => String(u.id)));
-        document.querySelectorAll('.task-item').forEach(item => {
-            const sel = item.querySelector('.task-user-select');
-            if (!sel || !sel.value || !allowed.has(sel.value)) item.remove();
+        const allowedIds = getAllowedTaskUsers().map(u => String(u.id));
+        document.querySelectorAll('.task-item').forEach(taskItem => {
+            const select = taskItem.querySelector('.task-user-select');
+            if (!select || !select.value || !allowedIds.includes(select.value)) taskItem.remove();
         });
-        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+        if (!document.querySelectorAll('.task-item').length) window.addTaskRow();
     }
 
     function updateTaskUserOptions() {
         document.querySelectorAll('.task-user-select').forEach(select => {
-            const current = select.value;
-            select.innerHTML = renderTaskUserOptions(current);
-            if (current) select.value = current;
+            const currentValue = select.value;
+            select.innerHTML = renderTaskUserOptions(currentValue);
+            if (currentValue) select.value = currentValue;
         });
         cleanupInvalidTaskRows();
         if (typeof window.refreshTranslations === 'function') window.refreshTranslations();
     }
 
     function initializeTaskRows() {
-        const tasksContainer = document.getElementById('tasks-container');
-        if (!tasksContainer) return;
-        tasksContainer.innerHTML = '';
+        const tContainer = document.getElementById('tasks-container');
+        if (!tContainer) return;
+        tContainer.innerHTML = '';
         taskIndex = 0;
 
-        const validTasks = existingTasks.filter(t => t.user_id || t.name_task);
-        if (validTasks.length) {
-            validTasks.forEach(addTaskRow);
+        if (Array.isArray(existingTasks) && existingTasks.length) {
+            existingTasks.forEach(task => {
+                if (task.user_id || task.name_task) window.addTaskRow(task);
+            });
         } else {
-            addTaskRow();
+            window.addTaskRow();
         }
         updateTaskUserOptions();
     }
 
-    // ─── Modal filters setup ──────────────────────────────────────────────────
+    // ── Date validation ───────────────────────────────────────────────
+    function setupDateValidation() {
+        const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
+        const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
+        if (!tanggalMulai || !tanggalAkhir) return;
 
-    function setupModalFilters() {
-        const searchInput = document.getElementById('modal-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                clearTimeout(filterTimer);
-                filterTimer = setTimeout(applyUserFilters, 500);
-            });
-        }
-        ['modal-angkatan', 'modal-jurusan', 'modal-keahlian'].forEach(id => {
-            document.getElementById(id)?.addEventListener('change', applyUserFilters);
+        tanggalMulai.addEventListener('change', function () {
+            if (this.value) {
+                const startDate   = new Date(this.value);
+                const minEndDate  = new Date(startDate);
+                minEndDate.setDate(startDate.getDate() + 1);
+                const minStr      = minEndDate.toISOString().split('T')[0];
+                tanggalAkhir.min  = minStr;
+                if (tanggalAkhir.value && tanggalAkhir.value < minStr) tanggalAkhir.value = '';
+            } else {
+                tanggalAkhir.min = '';
+            }
         });
     }
 
-    // ─── Form submit guard ────────────────────────────────────────────────────
-
+    // ── Form submit ───────────────────────────────────────────────────
     function onSubmitProjectForm(event) {
         if (!selectedUsers.owner) {
             alert('Owner harus dipilih.');
@@ -13916,55 +13860,24 @@ window.initAdminProjectEdit = function () {
         updateTaskUserOptions();
     }
 
-    // ─── Date validation ──────────────────────────────────────────────────────
+    // ── Boot ──────────────────────────────────────────────────────────
+    loadSelectedUsersFromForm();
+    renderSelectedUsers();
+    setupModalFilters();
+    updateTaskSectionVisibility();
+    updateSelectedUsersBadge();
+    initializeTaskRows();
 
-    function setupDateValidation() {
-        const tanggalMulai = document.querySelector('input[name="tanggal_mulai"]');
-        const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]');
-        if (!tanggalMulai || !tanggalAkhir) return;
+    document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
+    setupDateValidation();
 
-        tanggalMulai.addEventListener('change', function () {
-            if (this.value) {
-                const minEnd = new Date(this.value);
-                minEnd.setDate(minEnd.getDate() + 1);
-                const minEndStr = minEnd.toISOString().split('T')[0];
-                tanggalAkhir.min = minEndStr;
-                if (tanggalAkhir.value && tanggalAkhir.value < minEndStr) {
-                    tanggalAkhir.value = '';
-                }
-            } else {
-                tanggalAkhir.min = '';
-            }
-        });
+    if (sessionStorage.getItem('admin_project_edit_modal_open') === '1') {
+        window.openUserModal();
     }
 
-    // ─── Expose functions called from inline HTML ─────────────────────────────
-
-    window.updateUserRole       = updateUserRole;
-    window.removeUser           = removeUser;
-    window.removeTaskRow        = removeTaskRow;
-    window.addTaskRow           = addTaskRow;
-    window.openUserModal        = openUserModal;
-    window.closeUserModal       = closeUserModal;
-    window.confirmUserSelection = confirmUserSelection;
-
-    // ─── Boot ─────────────────────────────────────────────────────────────────
-
-    document.addEventListener('DOMContentLoaded', function () {
-        loadSelectedUsersFromForm();
-        renderSelectedUsers();
-        setupModalFilters();
-        setupDateValidation();
-        updateTaskSectionVisibility();
-        updateSelectedUsersBadge();
-        initializeTaskRows();
-
-        document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
-
-        if (sessionStorage.getItem(SESSION_MODAL_KEY) === '1') openUserModal();
-
-        if (typeof showPageInfo === 'function') showPageInfo('popup.edit_project');
-    });
+    if (typeof window.showPageInfo === 'function') {
+        window.showPageInfo('popup.edit_project');
+    }
 };
 
 Alpine.start();
@@ -14098,4 +14011,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
