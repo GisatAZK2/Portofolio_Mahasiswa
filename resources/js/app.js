@@ -10447,3 +10447,134 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 Alpine.start();
+/* ==========================================
+   MOBILE BOTTOM NAVIGATION JS
+   ========================================== */
+window.fabOpen = false;
+window.profileOpen = false;
+window.guestOpen = false;
+
+function showOverlay(el) {
+    if(!el) return;
+    el.classList.remove('hidden');
+    el.style.pointerEvents = 'auto';
+    // Trigger reflow
+    void el.offsetWidth;
+    el.classList.remove('opacity-0');
+}
+
+function hideOverlay(el) {
+    if(!el) return;
+    el.style.pointerEvents = 'none';
+    el.classList.add('opacity-0');
+    setTimeout(() => { if (el.classList.contains('opacity-0')) el.classList.add('hidden'); }, 300);
+}
+
+function openSheet(sheet, overlay) {
+    if(!sheet) return;
+    sheet.classList.remove('hidden');
+    void sheet.offsetWidth;
+    sheet.classList.remove('translate-y-full');
+    if(overlay) showOverlay(overlay);
+}
+
+function closeSheet(sheet, overlay) {
+    if(!sheet) return;
+    sheet.classList.add('translate-y-full');
+    if(overlay) hideOverlay(overlay);
+}
+
+window.toggleMobileFab = function() {
+    window.fabOpen ? window.closeMobileFab() : window.openMobileFab();
+}
+window.openMobileFab = function() {
+    window.fabOpen = true;
+    openSheet(document.getElementById('mobile-fab-sheet'), document.getElementById('mobile-fab-overlay'));
+    const icon = document.getElementById('mobile-fab-icon');
+    if (icon) icon.style.transform = 'rotate(45deg)';
+}
+window.closeMobileFab = function() {
+    window.fabOpen = false;
+    closeSheet(document.getElementById('mobile-fab-sheet'), document.getElementById('mobile-fab-overlay'));
+    const icon = document.getElementById('mobile-fab-icon');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+}
+
+window.toggleMobileProfile = function() {
+    window.profileOpen ? window.closeMobileProfile() : window.openMobileProfile();
+}
+window.openMobileProfile = function() {
+    window.profileOpen = true;
+    openSheet(document.getElementById('mobile-profile-sheet'), document.getElementById('mobile-profile-overlay'));
+}
+window.closeMobileProfile = function() {
+    window.profileOpen = false;
+    closeSheet(document.getElementById('mobile-profile-sheet'), document.getElementById('mobile-profile-overlay'));
+}
+
+window.toggleGuestSheet = function() {
+    window.guestOpen ? window.closeGuestSheet() : window.openGuestSheet();
+}
+window.openGuestSheet = function() {
+    window.guestOpen = true;
+    openSheet(document.getElementById('guest-sheet'), document.getElementById('guest-sheet-overlay'));
+}
+window.closeGuestSheet = function() {
+    window.guestOpen = false;
+    closeSheet(document.getElementById('guest-sheet'), document.getElementById('guest-sheet-overlay'));
+}
+
+window.toggleMobileDarkMode = function() {
+    window.toggleDarkMode();
+}
+window.toggleGuestDarkMode = function() {
+    window.toggleDarkMode();
+}
+
+window.changeLanguageMobile = function(locale) {
+    const url = new URL(window.location.href);
+    const segments = url.pathname.split('/');
+    const langs = ['id', 'en'];
+    if (langs.includes(segments[1])) {
+        segments[1] = locale;
+    } else {
+        segments.splice(1, 0, locale);
+    }
+    url.pathname = segments.join('/');
+    window.location.href = url.toString();
+}
+window.changeGuestLanguage = function(locale) {
+    window.changeLanguageMobile(locale);
+}
+
+/* Swipe to close */
+document.addEventListener('DOMContentLoaded', () => {
+    const sheets = [
+        { id: 'mobile-fab-sheet', close: window.closeMobileFab },
+        { id: 'mobile-profile-sheet', close: window.closeMobileProfile },
+        { id: 'guest-sheet', close: window.closeGuestSheet }
+    ];
+    sheets.forEach(({ id, close }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        let startY = 0, currentY = 0, dragging = false;
+        el.addEventListener('touchstart', e => {
+            startY = e.touches[0].clientY;
+            dragging = true;
+            el.style.transition = 'none';
+        }, { passive: true });
+        el.addEventListener('touchmove', e => {
+            if (!dragging) return;
+            currentY = e.touches[0].clientY;
+            const delta = Math.max(0, currentY - startY);
+            el.style.transform = 'translateY(' + delta + 'px)';
+        }, { passive: true });
+        el.addEventListener('touchend', () => {
+            dragging = false;
+            el.style.transition = '';
+            if (currentY - startY > 80) close();
+            else el.style.transform = '';
+        });
+    });
+});
+

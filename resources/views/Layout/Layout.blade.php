@@ -156,22 +156,7 @@
             pointer-events: none;
         }
 
-        .bnav-bar {
-            pointer-events: auto;
-            margin: 0 16px;
-            border-radius: 32px;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
 
-        .dark .bnav-bar {
-            background: #1e293b;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
     </style>
 
     @yield('meta')
