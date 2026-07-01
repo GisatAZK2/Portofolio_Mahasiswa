@@ -1,5 +1,10 @@
 @extends('Layout.Layout')
-@section('title', 'Sertifikat Saya')
+@section('title', 'My Certificates')
+
+@section('meta')
+    <meta name="description" content="View your certificates, validity status, and published details in one place.">
+@endsection
+
 @section('content')
     <div class="p-6 lg:p-8" id="sertifikat-user-container">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">

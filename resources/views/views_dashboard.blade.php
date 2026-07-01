@@ -3,6 +3,10 @@
 @section('show_up_page', true)
 @section('title', 'Dashboard')
 
+@section('meta')
+    <meta name="description" content="Explore the latest student posts, projects, certifications, and learning corners on the platform.">
+@endsection
+
 @section('content')
 
 

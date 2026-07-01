@@ -1,7 +1,12 @@
 @extends('Layout.Layout')
 @section('show_footer', true)
 @section('show_up_page', true)
-@section('title', 'Project milik mahasiswa')
+@section('title', 'Student Projects')
+
+@section('meta')
+    <meta name="description" content="Browse student projects, timelines, links, and media from the portfolio community.">
+@endsection
+
 @section('content')
 
 <!-- Project User Page Styles migrated to app.css -->

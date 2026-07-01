@@ -1,7 +1,11 @@
 @extends('Layout.Layout')
 @section('show_footer', true)
 @section('show_up_page', true)
-@section('title', 'Hasil Pencarian')
+@section('title', 'Search Results')
+
+@section('meta')
+    <meta name="description" content="Search for students, posts, projects, and certificates with advanced filters and relevant results.">
+@endsection
 
 @section('content')
     <style>

@@ -1,6 +1,10 @@
 @extends('Layout.Layout')
 @section('title', 'Dashboard')
 
+@section('meta')
+    <meta name="description" content="Manage your personal dashboard, posts, projects, certifications, and learning activities in one place.">
+@endsection
+
 @section('content')
 
     <div class=" dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me">

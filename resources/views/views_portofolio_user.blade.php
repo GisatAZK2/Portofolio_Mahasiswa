@@ -21,8 +21,8 @@
             ->all();
         $portfolioKeahlianText = !empty($portfolioKeahlian)
             ? implode(', ', $portfolioKeahlian)
-            : 'Belum ada keahlian terdaftar';
-        $portfolioDescription = "Portfolio {$portfolioTitle} — {$portfolioProdi}, Angkatan {$portfolioAngkatan}. Keahlian: {$portfolioKeahlianText}.";
+            : 'No skills registered yet';
+        $portfolioDescription = "Portfolio of {$portfolioTitle} from {$portfolioProdi}, Batch {$portfolioAngkatan}. Skills: {$portfolioKeahlianText}.";
         $portfolioImage = $user->photo_profile
             ? asset('storage/' . ltrim($user->photo_profile, '/'))
             : asset('assets/Logo.svg');
