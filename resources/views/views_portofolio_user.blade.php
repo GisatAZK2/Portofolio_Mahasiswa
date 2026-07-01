@@ -700,11 +700,15 @@
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-0.5">
                                                         <span data-translate="pjt_leader" data-translate-page="portofolio_user">Project Leader</span>
                                                     </p>
-                                                    @if($leader)
-                                                        <a href="{{ route('portfolio.slug', ['slug' => $leader->slug]) }}"
+                                                    @if($leader && $leader->slug)
+                                                        <a href="{{ route('portfolio.slug', ['locale' => app()->getLocale(), 'slug' => $leader->slug]) }}"
                                                             class="text-base font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
                                                             {{ $leader->nama_mahasiswa }}
                                                         </a>
+                                                    @elseif($leader)
+                                                        <p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                            {{ $leader->nama_mahasiswa }}
+                                                        </p>
                                                     @else
                                                         <p class="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
                                                             <span data-translate="pjt_noleader" data-translate-page="portofolio_user">Tidak ada leader</span>
@@ -755,7 +759,13 @@
 
                                             {{-- Anggota Tim --}}
                                             @if($project->members->isNotEmpty())
-                                                <a href="{{ route('portfolio.slug', ['slug' => $project->members->first()->slug]) }}">
+                                                @php
+                                                    $firstMember = $project->members->first();
+                                                    $teamLink = ($firstMember && $firstMember->slug)
+                                                        ? route('portfolio.slug', ['locale' => app()->getLocale(), 'slug' => $firstMember->slug])
+                                                        : '#';
+                                                @endphp
+                                                <a href="{{ $teamLink }}">
                                                     <div class="mt-2">
                                                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
                                                             <span data-translate="team" data-translate-page="portofolio_user">Anggota Tim</span> ({{ $project->members->count() }})
@@ -830,10 +840,16 @@
                                                         <p class="text-xs text-gray-500 dark:text-gray-400">
                                                             <span data-translate="pjt_created_by" data-translate-page="portofolio_user">Created By</span>
                                                         </p>
-                                                        <a href="{{ route('portfolio.slug', ['slug' => $owner->slug]) }}"
-                                                            class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
-                                                            {{ $owner->nama_mahasiswa }}
-                                                        </a>
+                                                        @if($owner->slug)
+                                                            <a href="{{ route('portfolio.slug', ['locale' => app()->getLocale(), 'slug' => $owner->slug]) }}"
+                                                                class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block">
+                                                                {{ $owner->nama_mahasiswa }}
+                                                            </a>
+                                                        @else
+                                                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                                {{ $owner->nama_mahasiswa }}
+                                                            </p>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @endif
