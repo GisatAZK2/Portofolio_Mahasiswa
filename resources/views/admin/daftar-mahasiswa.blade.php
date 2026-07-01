@@ -359,6 +359,7 @@
                             <tr data-item-index="{{ $index }}" class="paginated-item hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td class="px-3 py-3">
                                     <input type="checkbox" name="selected[]" value="{{ $user->id }}"
+                                        data-status="{{ $user->status_pengajuan }}"
                                         class="item-checkbox rounded text-blue-600 focus:ring-blue-500">
                                 </td>
                                 <td class="px-3 py-3">
@@ -531,6 +532,7 @@
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" name="selected[]" value="{{ $user->id }}"
+                                data-status="{{ $user->status_pengajuan }}"
                                 class="item-checkbox rounded text-blue-600 focus:ring-blue-500">
                         </div>
                         <span

@@ -1721,17 +1721,22 @@ public function EditProjects(Request $request)
     {
         $this->authorizeAccess();
 
-        $ids = $request->input('selected_ids', '');
+        $selectedIds = $request->input('selected_ids', []);
 
-        if (is_string($ids)) {
-            $ids = explode(',', $ids);
+        if (is_string($selectedIds)) {
+            $decoded = json_decode($selectedIds, true);
+            if (is_array($decoded)) {
+                $selectedIds = $decoded;
+            } else {
+                $selectedIds = explode(',', $selectedIds);
+            }
         }
 
-        if (!is_array($ids)) {
-            $ids = [];
+        if (!is_array($selectedIds)) {
+            $selectedIds = [$selectedIds];
         }
 
-        $ids = array_filter(array_map('intval', $ids));
+        $ids = array_values(array_filter(array_map('intval', $selectedIds)));
 
         if (empty($ids)) {
             return redirect()->back()->with('error', 'Tidak ada project terpilih untuk dihapus.');

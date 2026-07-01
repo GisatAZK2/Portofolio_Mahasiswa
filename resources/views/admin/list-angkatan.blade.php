@@ -12,7 +12,7 @@
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="selected_ids" id="selectedIds" value="">
-                    <button type="button" onclick="confirmBulkDelete()"
+                    <button type="button" onclick="confirmBulkDeleteAngkatan()"
                         class="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center text-sm sm:text-base flex-1 sm:flex-initial justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -43,7 +43,7 @@
                 <thead>
                     <tr class="bg-gray-100 dark:bg-gray-700">
                         <th class="px-6 py-3 text-left">
-                            <input type="checkbox" onclick="toggleAll(this)"
+                            <input type="checkbox" onclick="toggleAllAngkatan(this)"
                                 class="rounded text-blue-600 focus:ring-blue-500">
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
@@ -86,7 +86,7 @@
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg>
                                     </a>
-                                    <button onclick="openEditModal({{ json_encode($angkatan) }})"
+                                    <button onclick="openEditModalAngkatan({{ json_encode($angkatan) }})"
                                         class="text-yellow-500 hover:text-yellow-700 transition-colors" title="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -94,7 +94,7 @@
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
-                                    <button onclick="openDeleteModal({{ $angkatan->id }}, '{{ $angkatan->nama_angkatan }}')"
+                                    <button onclick="openDeleteModalAngkatan({{ $angkatan->id }}, '{{ $angkatan->nama_angkatan }}')"
                                         class="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
@@ -160,7 +160,7 @@
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                         </a>
-                        <button onclick="openEditModal({{ json_encode($angkatan) }})"
+                        <button onclick="openEditModalAngkatan({{ json_encode($angkatan) }})"
                             class="text-yellow-500 hover:text-yellow-700 p-2 transition-colors" title="Edit">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -168,7 +168,7 @@
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                         </button>
-                        <button onclick="openDeleteModal({{ $angkatan->id }}, '{{ $angkatan->nama_angkatan }}')"
+                        <button onclick="openDeleteModalAngkatan({{ $angkatan->id }}, '{{ $angkatan->nama_angkatan }}')"
                             class="text-red-500 hover:text-red-700 p-2 transition-colors" title="Hapus">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -216,7 +216,7 @@
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white">
                     </div>
                     <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
-                        <button type="button" onclick="closeModal()"
+                        <button type="button" onclick="closeModalAngkatan()"
                             class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 w-full sm:w-auto">
                             Batal
                         </button>
@@ -246,7 +246,7 @@
                     Apakah Anda yakin ingin menghapus angkatan <span id="deleteName" class="font-bold"></span>?
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
-                    <button onclick="closeDeleteModal()"
+                    <button onclick="closeDeleteModalAngkatan()"
                         class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 w-full sm:w-auto">
                         Batal
                     </button>

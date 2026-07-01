@@ -396,7 +396,7 @@
                                     </div>
                                     <template x-if="!loading">
                                         <div class="space-y-3 mb-4">
-                                            <template x-for="(item, index) in keahlianList" :key="item.id">
+                                            <template x-for="(item, index) in (keahlianList || [])" :key="item?.id || item?.id_keahlian || index">
                                                 <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border"
                                                     :class="{
                                                         'border-green-500 dark:border-green-400': item.status_pengajuan === 'Di Terima',

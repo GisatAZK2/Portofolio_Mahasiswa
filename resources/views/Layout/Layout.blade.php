@@ -178,7 +178,21 @@
             document.documentElement.classList.add('dark');
         }
     </script>
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alert.js', 'resources/js/translate.js'])
+
+    @php
+        $viteEntries = [
+            'resources/css/app.css',
+            'resources/js/app.js',
+            'resources/js/alert.js',
+            'resources/js/translate.js',
+        ];
+
+        if (auth()->check() && in_array(auth()->user()->role, ['admin', 'dosen'], true)) {
+            $viteEntries[] = 'resources/js/admin.js';
+        }
+    @endphp
+
+    @vite($viteEntries)
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-800 antialiased">
