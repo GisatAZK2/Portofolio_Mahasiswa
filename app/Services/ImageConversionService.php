@@ -21,12 +21,30 @@ class ImageConversionService
         if ($image && function_exists('imagewebp')) {
             $tempFile = tempnam(sys_get_temp_dir(), 'webp_');
             if ($tempFile === false) {
+                imagedestroy($image);
                 return self::storeFallback($file, $directory);
             }
 
-            imagesavealpha($image, true);
-            $converted = imagewebp($image, $tempFile, $quality);
-            imagedestroy($image);
+            try {
+                $image = self::normalizeToTrueColor($image);
+                if ($image === false) {
+                    throw new \RuntimeException('Unable to prepare image for WebP conversion.');
+                }
+
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+                $converted = @imagewebp($image, $tempFile, $quality);
+            } catch (\Throwable $e) {
+                if (is_resource($image) || $image instanceof \GdImage) {
+                    imagedestroy($image);
+                }
+                @unlink($tempFile);
+                return self::storeFallback($file, $directory);
+            }
+
+            if (is_resource($image) || $image instanceof \GdImage) {
+                imagedestroy($image);
+            }
 
             if ($converted && file_exists($tempFile)) {
                 $contents = file_get_contents($tempFile);
@@ -63,6 +81,34 @@ class ImageConversionService
             default:
                 return false;
         }
+    }
+
+    protected static function normalizeToTrueColor($image)
+    {
+        if (!$image instanceof \GdImage) {
+            return false;
+        }
+
+        if (function_exists('imageistruecolor') && imageistruecolor($image)) {
+            return $image;
+        }
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $truecolorImage = imagecreatetruecolor($width, $height);
+
+        if ($truecolorImage === false) {
+            return false;
+        }
+
+        imagealphablending($truecolorImage, false);
+        imagesavealpha($truecolorImage, true);
+        $transparent = imagecolorallocatealpha($truecolorImage, 255, 255, 255, 127);
+        imagefill($truecolorImage, 0, 0, $transparent);
+        imagecopy($truecolorImage, $image, 0, 0, 0, 0, $width, $height);
+        imagedestroy($image);
+
+        return $truecolorImage;
     }
 
     protected static function storeFallback(UploadedFile $file, string $directory): string
