@@ -10,7 +10,7 @@
                     <span data-translate="sertifikat_desc" data-translate-page="sertifikat"></span>
                 </p>
             </div>
-            <a href="{{ route('sertifikat.create') }}"
+            <a id="sertifikat-create-button" href="{{ route('sertifikat.create') }}"
                 class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">

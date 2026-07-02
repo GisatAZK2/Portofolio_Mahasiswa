@@ -36,6 +36,7 @@ window.Alpine = Alpine;
 import './modules/core/helpers.js';
 import './modules/core/dark-mode.js';
 import { initPWA } from './modules/core/pwa.js';
+import { initUserGuide } from './modules/core/user-guide.js';
 
 // ==========================================
 // UI COMPONENTS
@@ -181,6 +182,8 @@ window.runPageInitializers = function () {
         // Language dropdown sync
         const langSelect = document.getElementById('languageSelect');
         if (langSelect) langSelect.value = localStorage.getItem('lang') || 'id';
+        // User guide
+        initUserGuide();
     });
 });
 

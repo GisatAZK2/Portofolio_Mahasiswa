@@ -254,7 +254,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end gap-4 pt-8 border-t border-gray-200">
+                <div id="sertifikat-action-buttons" class="flex justify-end gap-4 pt-8 border-t border-gray-200">
                     <a href="{{ route('sertifikat.index') }}"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white rounded-lg transition duration-200 font-medium shadow-sm hover:shadow-md">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -33,7 +33,7 @@
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         <span data-translate="ttl_lrn" data-translate-page="msh_lrn_add">Judul Catatan</span> <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="judul" id="judul" value="{{ old('judul') }}"
+                    <input type="text" name="judul" id="learning-corner-title-input" value="{{ old('judul') }}"
                         placeholder="Judul Catatan disini.." required
                         class="w-full px-4 py-3 border border-gray-300 dark:placeholder:text-white dark:bg-gray-400 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
@@ -45,7 +45,7 @@
                 <div class="pt-6 border-t border-gray-200">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Konten Tambahan (opsional)</h3>
-                        <button type="button" id="add-item" name="project_id" value="$project->project_id"
+                        <button type="button" id="learning-corner-add-item" name="project_id" value="$project->project_id"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -61,7 +61,7 @@
 
                 <!-- Submit -->
                 <div class="flex justify-end pt-8 border-t border-gray-200">
-                    <button data-translate="sv_lrn" data-translate-page="msh_lrn_add" type="submit"
+                    <button id="learning-corner-submit" data-translate="sv_lrn" data-translate-page="msh_lrn_add" type="submit"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
                         Simpan Catatan
                     </button>

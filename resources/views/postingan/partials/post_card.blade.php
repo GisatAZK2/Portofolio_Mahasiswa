@@ -47,7 +47,7 @@
         : 'border-l-4 border-l-emerald-400 dark:border-l-emerald-500';
 @endphp
 
-<div class="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300
+<div class="post-card bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300
             border border-gray-100 dark:border-gray-800 {{ $borderAccent }} flex flex-col h-full">
 
     {{-- Badge kepemilikan (hanya tampil untuk admin/dosen) --}}
@@ -206,7 +206,7 @@
 
         {{-- Action Buttons --}}
         @if ($canEdit)
-            <div class="flex gap-3">
+            <div class="post-card-actions flex gap-3">
                 <a href="{{ route('postingan.edit', ['id' => $post->id_postingan]) }}"
                    onclick="event.stopPropagation();"
                    class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-50 text-blue-700 rounded-lg

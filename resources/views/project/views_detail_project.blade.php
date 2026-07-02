@@ -56,7 +56,7 @@
                     }
                 @endphp
 
-                <div class="mb-6">
+                <div id="project-detail-status" class="mb-6">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-3">
                             <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColor }}"
@@ -142,7 +142,7 @@
                             $leader = $project->leader;
                             $sameOwnerLeader = $owner && $leader && $owner->id === $leader->id;
                         @endphp
-                        <div class="space-y-4">
+                        <div id="project-detail-team" class="space-y-4">
                             <!-- Project Owner -->
                             <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5">
                                 <h3
@@ -575,7 +575,7 @@
                                     </form>
                                 @endif
 
-                                <a href="{{ route('learning-corner.create', ['project_id' => $project->id]) }}"
+                                <a id="project-detail-add-learning-corner" href="{{ route('learning-corner.create', ['project_id' => $project->id]) }}"
                                     class="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm font-medium flex items-center justify-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

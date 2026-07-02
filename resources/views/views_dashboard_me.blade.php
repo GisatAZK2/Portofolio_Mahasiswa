@@ -7,7 +7,11 @@
 
 @section('content')
 
-    <div class=" dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me">
+    @php
+        $dashboardProfileComplete = Auth::check() && Auth::user()->nama_mahasiswa && Auth::user()->nim && Auth::user()->id_jurusan && Auth::user()->id_angkatan && Auth::user()->tanggal_lahir && Auth::user()->photo_profile;
+    @endphp
+
+    <div class=" dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-dashboard-type="me" data-profile-complete="{{ $dashboardProfileComplete ? '1' : '0' }}">
         <div class="max-w-7xl mx-auto">
             <div class="dashboard-container">
 

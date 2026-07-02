@@ -2,7 +2,7 @@
 @section('title', 'Postingan Saya')
 
 @section('content')
-    <div class="p-6 lg:p-8">
+    <div id="postingan-list-page" class="p-6 lg:p-8" data-page-info="popup.semua_postingan">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-50" data-translate="ttl" data-translate-page="post">Postingan Saya</h1>
@@ -10,7 +10,7 @@
                     Kelola semua postingan yang telah Anda buat.
                 </p>
             </div>
-            <a href="{{ route('postingan.create') }}"
+            <a id="postingan-add-btn" href="{{ route('postingan.create') }}"
                 class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

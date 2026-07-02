@@ -364,7 +364,7 @@
                             data-translate="cancel" data-translate-page="edit_post">
                             Batal
                         </a>
-                        <button type="submit"
+                        <button id="postingan-update-btn" type="submit"
                             class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

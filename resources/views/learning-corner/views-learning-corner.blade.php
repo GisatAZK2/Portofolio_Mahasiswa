@@ -2,14 +2,14 @@
 @section('title', 'Learning Corner Saya')
 @section('content')
     <div class="p-6 lg:p-8" data-page-info="popup.semua_learning_corner">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div id="learning-corner-list-header" class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Learning Corner Saya</h1>
                 <p class="text-gray-600">
                     Kelola semua postingan Learning Corner kamu di sini.
                 </p>
             </div>
-            <a href="{{ route('learning-corner.create') }}"
+            <a id="learning-corner-list-create" href="{{ route('learning-corner.create') }}"
                 class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +30,7 @@
                 <p class="mt-4 text-gray-600">Belum ada entri di Learning Corner.</p>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="learning-corner-list-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($entries as $entry)
                     <div
                         class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">

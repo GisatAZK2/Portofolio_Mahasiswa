@@ -12,7 +12,7 @@
                     <span data-translate="deskripsi" data-translate-page="project"></span>
                 </p>
             </div>
-            <a href="{{ route('project.create', ['locale' => get_current_locale()]) }}"
+            <a id="project-list-add-btn" href="{{ route('project.create', ['locale' => get_current_locale()]) }}"
                 class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +32,7 @@
                 <p class="mt-4 text-gray-600 dark:text-gray-200" data-translate="no_project" data-translate-page="project"></p>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="project-list-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($projects as $project)
                     @php
                         $content = is_string($project->translated('isi_content'))
@@ -172,8 +172,8 @@
 
                             <!-- Tombol Aksi - hanya untuk Pemilik & Leader -->
                             @if ($canEdit)
-                                <div class="flex gap-3  mt-5 border-t dark:border-gray-700 pt-5">
-                                    <a href="{{ route('project.edit', ['locale' => app()->getLocale(), 'id' => $project->id]) }}"
+                                <div class="project-action-buttons flex gap-3 mt-5 border-t dark:border-gray-700 pt-5">
+                                    <a id="project-edit-btn-{{ $project->id }}" href="{{ route('project.edit', ['locale' => app()->getLocale(), 'id' => $project->id]) }}"
                                         class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 active:bg-blue-200 transition font-medium dark:bg-blue-900/30 dark:text-blue-500 dark:hover:bg-blue-900/50 dark:active:bg-blue-900/70 shadow-sm hover:shadow-md">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5m-7-10l3 3m0 0l-3 3m3-3H9"/>

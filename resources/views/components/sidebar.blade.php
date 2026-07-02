@@ -630,7 +630,7 @@ if (Auth::check()) {
 
     {{-- ======================== SETTING DROPDOWN ======================== --}}
     <div class="relative mt-auto shrink-0 border-t border-gray-200 dark:border-gray-700">
-        <button onclick="toggleSidebarSettingDropdown()"
+        <button id="sidebar-settings-button" onclick="toggleSidebarSettingDropdown()"
             class="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
             <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -664,7 +664,7 @@ if (Auth::check()) {
     @auth
     <div class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shrink-0">
         <div x-data="{ open: false }">
-            <button @click="open = !open" @click.away="open = false"
+            <button id="sidebar-profile-button" @click="open = !open" @click.away="open = false"
                 class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors group">
                 <div class="w-9 h-9 rounded-lg overflow-hidden shrink-0">
                     @if(Auth::user()->photo_profile)

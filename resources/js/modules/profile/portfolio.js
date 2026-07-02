@@ -92,6 +92,7 @@ window.playVideo = function (element, embedUrl) {
 // MODAL PENDIDIKAN TOGGLES
 // ==========================================
 window.openPendidikanModal = function () {
+    window.hideUserGuide?.();
     const modal = document.getElementById('modal-pendidikan');
     const content = document.getElementById('modal-pendidikan-content');
     if (!modal || !content) return;
@@ -111,6 +112,7 @@ window.closePendidikanModal = function () {
 };
 
 window.openPengalamanModal = function () {
+    window.hideUserGuide?.();
     const modal = document.getElementById('modal-pengalaman');
     const content = document.getElementById('modal-pengalaman-content');
     if (!modal || !content) return;

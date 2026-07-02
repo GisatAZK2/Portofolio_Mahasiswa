@@ -65,7 +65,7 @@
             </div>
 
             <!-- Project Collaborative Toggle -->
-            <div class="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div id="project-collaborative-wrapper" class="flex items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div>
                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100" data-translate="collaborative_mode_title" data-translate-page="project_create"></p>
                     <p class="text-sm text-gray-500 dark:text-gray-400" data-translate="collaborative_mode_desc" data-translate-page="project_create"></p>

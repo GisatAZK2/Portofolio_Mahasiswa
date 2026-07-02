@@ -128,7 +128,7 @@
                 </div>
 
                 <!-- Upload File Sertifikat -->
-                <div>
+                <div id="file-upload-section">
                     <label for="link_sertifikat" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         <span data-translate="upload_file_sertifikat" data-translate-page="sertifikat_create"></span> <span
                             class="text-red-500">*</span>
@@ -204,7 +204,7 @@
                         </svg>
                         <span data-translate="cancel" data-translate-page="sertifikat_create"></span>
                     </a>
-                    <button type="submit"
+                    <button type="submit" id="sertifikat-action-buttons"
                         class="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg transition duration-200 font-medium shadow-md hover:shadow-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

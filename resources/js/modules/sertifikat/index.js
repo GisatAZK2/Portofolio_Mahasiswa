@@ -198,8 +198,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function dismissChatPermanently() {
+        permanentlyCloseBubble();
+        localStorage.setItem('chatWidgetDismissed', 'true');
+    }
+
     function showBubble() {
-        if (bubblePermanentlyClosed) {
+        const chatWidgetDismissed = localStorage.getItem('chatWidgetDismissed') === 'true';
+        if (bubblePermanentlyClosed || chatWidgetDismissed) {
             if (notificationBubble) {
                 notificationBubble.style.display = 'none';
                 notificationBubble.style.visibility = 'hidden';
@@ -223,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
         closeBubbleBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            permanentlyCloseBubble();
+            dismissChatPermanently();
         });
     }
 
@@ -570,6 +576,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chatWidget.classList.add('hidden');
         isChatOpen = false;
         chatButton.classList.remove('chat-open');
+        dismissChatPermanently();
     }
 
     if (chatButton) {

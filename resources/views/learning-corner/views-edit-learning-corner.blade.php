@@ -35,7 +35,7 @@
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Judul Catatan <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" name="judul" id="judul" value="{{ old('judul', $learningCorner->judul) }}" required
+                    <input type="text" name="judul" id="learning-corner-title-input" value="{{ old('judul', $learningCorner->judul) }}" required
                         class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:text-white rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
                     @error('judul')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -46,7 +46,7 @@
                 <div class="pt-6 border-t border-gray-200">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Konten Tambahan</h3>
-                        <button type="button" id="add-item"
+                        <button type="button" id="learning-corner-add-item"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -110,7 +110,7 @@
                         class="px-8 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition">
                         Batal
                     </a>
-                    <button type="submit"
+                    <button id="learning-corner-submit" type="submit"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
                         Simpan Perubahan
                     </button>
