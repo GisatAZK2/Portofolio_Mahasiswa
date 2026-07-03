@@ -6,7 +6,10 @@
 
 export function initUserGuide() {
     const guideBtn = document.getElementById('userGuideButton');
-    if (!guideBtn || !window.driver || !window.driver.js || !window.driver.js.driver) {
+    const guideBtnMobile = document.getElementById('userGuideButtonMobile');
+    
+    if (!guideBtn && !guideBtnMobile) return;
+    if (!window.driver || !window.driver.js || !window.driver.js.driver) {
         return;
     }
 
@@ -1439,7 +1442,8 @@ export function initUserGuide() {
     // "pilih user" modal (#userModal) open when they click bantuan, jump
     // straight to that step (member_role / step 5) instead of restarting the
     // whole tour from step 1 — matches where the user already is in the flow.
-    guideBtn.addEventListener('click', (e) => {
+    
+    const handleGuideClick = (e) => {
         e.preventDefault();
 
         if (isProjectFormFlow) {
@@ -1477,5 +1481,13 @@ export function initUserGuide() {
         }
 
         startTour();
-    });
+    };
+
+    if (guideBtn) {
+        guideBtn.addEventListener('click', handleGuideClick);
+    }
+    
+    if (guideBtnMobile) {
+        guideBtnMobile.addEventListener('click', handleGuideClick);
+    }
 }

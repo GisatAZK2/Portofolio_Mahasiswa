@@ -12,6 +12,7 @@
         const currentUser = JSON.parse(dataEl.dataset.currentUser || 'null');
         const oldTasks = JSON.parse(dataEl.dataset.oldTasks || '[]');
         const routeCreate = dataEl.dataset.routeCreate || '';
+        const isRetry = dataEl.dataset.isRetry === 'true';
 
         // ------------------------------------------------------------------
         // Semua fungsi dan state di-bungkus dalam scope agar tidak global
@@ -539,6 +540,10 @@
 
             if (toggle.checked) {
                 userSelectionSection.style.display = 'block';
+                if (!selectedUsers.owner && currentUser) {
+                    selectedUsers.owner = currentUser;
+                    updateFormInputs();
+                }
                 if (
                     selectedUsers.leader &&
                     selectedUsers.owner &&
@@ -562,6 +567,7 @@
                 updateSelectedUsersBadge();
                 saveSelectedUsersToStorage();
             }
+            updateTaskSectionVisibility();
         }
 
         // ----- Date validation -----
@@ -603,15 +609,41 @@
         }
 
         // ----- Load from storage / form -----
+        function buildUserFallback(id) {
+            return {
+                id: id,
+                nama_mahasiswa: `Anggota #${id}`,
+                email: '',
+                photo_profile: null
+            };
+        }
+
         function loadSelectedUsersFromForm() {
-            if (restoreSelectedUsersFromStorage()) {
+            selectedUsers.owner = currentUser || null;
+
+            if (isRetry && restoreSelectedUsersFromStorage()) {
                 updateFormInputs();
                 return;
             }
+
             const leaderId = document.getElementById('selected-leader-id')?.value;
-            const memberIds = document.getElementById('selected-members-ids')?.value.split(',').filter(id => id) || [];
-            if (leaderId) selectedUsers.leader = getUserById(leaderId);
-            selectedUsers.members = memberIds.map(id => getUserById(id)).filter(Boolean);
+            const memberIds = (document.getElementById('selected-members-ids')?.value || '')
+                .split(',')
+                .map(id => String(id).trim())
+                .filter(id => id);
+
+            if (leaderId) {
+                selectedUsers.leader = getUserById(leaderId) || buildUserFallback(leaderId);
+            } else {
+                selectedUsers.leader = null;
+            }
+
+            selectedUsers.members = memberIds
+                .filter(id => String(id) !== String(leaderId))
+                .filter(id => !currentUser || String(id) !== String(currentUser.id))
+                .map(id => getUserById(id) || buildUserFallback(id));
+
+            updateFormInputs();
         }
 
         // ----- Initialization -----
@@ -632,6 +664,9 @@
         const collaborativeToggle = document.getElementById('project-collaborative-toggle');
         const toggleLabel = document.getElementById('toggle-label');
         if (collaborativeToggle && toggleLabel) {
+            const hasLeader = selectedUsers.leader && String(selectedUsers.leader.id) !== String(currentUser?.id);
+            const hasMembers = selectedUsers.members.length > 0;
+            collaborativeToggle.checked = hasLeader || hasMembers;
             toggleLabel.textContent = collaborativeToggle.checked ? 'Aktif' : 'Nonaktif';
             toggleUserSelectionSection();
             collaborativeToggle.addEventListener('change', function () {

@@ -261,15 +261,26 @@
         </div>
     </div>
 
-    @hasSection('show_up_page')
-        @include('components.up-page')
+    @php
+        $isCreateEditPage = request()->routeIs('*.create', '*.edit', 'project.create', 'project.edit', 
+                                                 'postingan.create', 'postingan.edit', 'learning-corner.create', 
+                                                 'learning-corner.edit', 'sertifikat.create', 'sertifikat.edit') || 
+                            str_contains(request()->path(), 'create') || 
+                            str_contains(request()->path(), 'edit') || 
+                            str_contains(request()->path(), 'pembuatan');
+    @endphp
+
+    @if(!$isCreateEditPage)
+        @include('components.chat-bot')
+        @hasSection('show_up_page')
+            @include('components.up-page')
+        @endif
     @endif
-    
-    @include('components.chat-bot')
 
     @auth
+        <!-- User Guide Button (Desktop only) -->
         <button id="userGuideButton"
-            class="bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 dark:from-emerald-600 dark:to-teal-700 dark:hover:from-emerald-700 dark:hover:to-teal-800 text-white p-2.5 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 cursor-pointer"
+            class="hidden lg:flex bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 dark:from-emerald-600 dark:to-teal-700 dark:hover:from-emerald-700 dark:hover:to-teal-800 text-white p-2.5 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 cursor-pointer"
             style="position: fixed !important; bottom: 84px !important; right: 24px !important; z-index: 9999 !important;"
             title="Mulai Panduan">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">

@@ -118,7 +118,11 @@
             <input type="hidden" name="owner" id="selected-owner-id" value="{{ Auth::id() }}">
             <input type="hidden" name="leader" id="selected-leader-id" value="{{ old('leader') }}">
             <input type="hidden" id="selected-members-ids" value="{{ old('members') ? implode(',', old('members')) : '' }}">
-            <div id="selected-members-inputs" class="hidden"></div>
+            <div id="selected-members-inputs" class="hidden">
+                @foreach(old('members', []) as $memberId)
+                    <input type="hidden" name="members[]" value="{{ $memberId }}">
+                @endforeach
+            </div>
 
             <!-- User selection modal -->
             <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
@@ -270,6 +274,7 @@
          data-current-user='@json($currentUserData)'
          data-old-tasks='@json(old('tasks', []))'
          data-route-create="{{ route('project.create') }}"
+         data-is-retry="{{ $errors->any() ? 'true' : 'false' }}"
         data-check-duplicate-url="{{ route('project.checkDuplicate') }}"
          data-translate-page="project_create"
          style="display:none;">
