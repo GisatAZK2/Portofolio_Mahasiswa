@@ -379,11 +379,14 @@
                     </button>
                 </div>
 
-                <p class="text-center mt-5 text-gray-600 text-sm sm:text-base"
-                   data-translate="login_prompt" data-translate-page="register">
-                    Sudah punya akun?
+                <p class="text-center mt-5 text-gray-600 text-sm sm:text-base">
+                    <span data-translate="login_prompt" data-translate-page="register">
+                        Sudah punya akun?
+                    </span>
                     <a href="{{ route('login') }}"
-                        class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline">
+                        class="text-blue-600 hover:text-blue-800 font-medium underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                        data-translate="login_link"
+                        data-translate-page="register">
                         {{ __('login_link') }}
                     </a>
                 </p>

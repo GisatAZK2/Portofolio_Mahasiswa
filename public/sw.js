@@ -1,8 +1,10 @@
 "use strict";
 
 const CACHE_NAME = "offline-cache-v2";
+const IMAGE_CACHE_NAME = "image-cache-v1";
 const OFFLINE_URL = "/offline";
 const API_CACHE_NAME = "api-cache-v1";
+const apiEndpoints = ['/api/', '/webauthn/'];
 
 // Files to cache for offline access
 const filesToCache = [
@@ -10,7 +12,8 @@ const filesToCache = [
     "/",
     "/manifest.json",
     "/css/app.css",
-    "/js/app.js"
+    "/js/app.js",
+    "/assets/Logo.svg"
 ];
 
 
@@ -36,7 +39,7 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME && cacheName !== API_CACHE_NAME) {
+                    if (cacheName !== CACHE_NAME && cacheName !== API_CACHE_NAME && cacheName !== IMAGE_CACHE_NAME) {
                         console.log("[Service Worker] Deleting old cache:", cacheName);
                         return caches.delete(cacheName);
                     }
@@ -71,6 +74,27 @@ self.addEventListener("fetch", (event) => {
                 })
         );
     } 
+    // Handle image requests with cache-first strategy
+    else if (event.request.destination === 'image' || /\.(png|jpe?g|webp|avif|svg|gif)$/.test(url.pathname)) {
+        event.respondWith(
+            caches.match(event.request).then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                return fetch(event.request).then((response) => {
+                    if (response && response.status === 200) {
+                        const responseClone = response.clone();
+                        caches.open(IMAGE_CACHE_NAME).then((cache) => {
+                            cache.put(event.request, responseClone);
+                        });
+                    }
+                    return response;
+                }).catch(() => {
+                    return caches.match(OFFLINE_URL);
+                });
+            })
+        );
+    }
     // Handle API requests (optional)
     else if (apiEndpoints.some(endpoint => url.pathname.includes(endpoint))) {
         event.respondWith(

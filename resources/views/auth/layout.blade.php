@@ -39,19 +39,16 @@
 <body class="">
 
 
-    <div class="flex h-screen">
+    <div class="flex flex-col min-h-screen">
 
-        <div class="flex-1 flex flex-col">
+        <!-- Page content -->
+        <main class="flex-1 overflow-auto">
+            @yield('content')
+        </main>
 
-            <!-- Page content -->
-            <main class="overflow-auto">
-                @yield('content')
-                
-            @include('components.footer')
-            </main>
+        <!-- Footer -->
+        @include('components.footer')
 
-
-        </div>
     </div>
 
     @include('components.chat-bot')

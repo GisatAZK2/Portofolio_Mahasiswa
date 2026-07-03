@@ -2059,7 +2059,7 @@ export const en = {
     label_custom_keahlian: 'Or Enter Your Own Skill',
     btn_submit: 'Submit Information →',
     login_prompt: 'Already have an account?',
-    login_link: 'Sign In',
+    login_link: 'Log In',
     select_jurusan: 'Select Major',
     select_angkatan: 'Select Enrollment Year',
     select_keahlian: 'Select Skill',

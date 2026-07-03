@@ -1994,7 +1994,7 @@ export const id = {
         label_custom_keahlian: 'Atau masukkan skill sendiri',
         btn_submit: 'Kirim Data →',
         login_prompt: 'Sudah punya akun?',
-        login_link: 'Masuk aja',
+        login_link: 'Login',
         select_jurusan: 'Pilih jurusan',
         select_angkatan: 'Pilih Angkatan',
         select_keahlian: 'Pilih keahlian',
