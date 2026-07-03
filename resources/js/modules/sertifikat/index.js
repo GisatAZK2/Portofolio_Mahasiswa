@@ -766,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dynamic Items (Create & Edit)
     const itemsContainer = document.getElementById('items-container');
-    const addItemBtn = document.getElementById('add-item');
+    const addItemBtn = document.getElementById('learning-corner-add-item') || document.getElementById('add-item');
 
     if (itemsContainer && addItemBtn) {
         let itemIndex = parseInt(itemsContainer.getAttribute('data-item-count') || '0', 10);

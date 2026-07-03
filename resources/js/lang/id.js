@@ -198,6 +198,8 @@ export const id = {
         label_or_custom_skill: 'Atau masukkan keahlian khusus',
         btn_custom_skill: 'Tambah Keahlian Khusus',
         certificate_badge: 'Sertifikat',
+
+        btn_open_portfolio : 'Buka Portfolio Anda',
     },
 
     keahlian_tambahan: {

@@ -212,7 +212,7 @@
                             </div>
 
                             <!-- Portfolio Buttons -->
-                            <div class="flex justify-end gap-2 mt-1">
+                            <div class="flex flex-col sm:flex-row justify-end gap-2 mt-1">
                                 @php
                                     $portfolioUrl = route('portfolio.slug', ['slug' => Auth::user()->slug]);
                                 @endphp
@@ -222,6 +222,9 @@
                                     </svg>
                                     <span data-translate="btn_share_portfolio" data-translate-page="profile">Bagikan Portfolio</span>
                                 </button>
+                                <a href="{{ $portfolioUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                    <span data-translate="btn_open_portfolio" data-translate-page="profile">Buka Portfolio Anda</span>
+                                </a>
                             </div>
 
                             <!-- Name and Username -->

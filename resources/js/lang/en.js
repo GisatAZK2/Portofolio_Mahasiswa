@@ -197,6 +197,8 @@ export const en = {
     btn_custom_skill : 'Add Custom Skill',
 
     certificate_badge: 'Certificate',
+
+    btn_open_portfolio : 'Open Your Portfolio',
     
 
   },
