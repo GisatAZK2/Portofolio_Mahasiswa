@@ -114,6 +114,18 @@ export function initUserGuide() {
                 posts: {
                     title: 'Daftar Postingan',
                     desc: 'Daftar artikel dan postingan yang telah Anda publikasikan.'
+                },
+                mobile_nav: {
+                    title: 'Navigasi Mobile',
+                    desc: 'Akses menu utama melalui navigation bar di bawah layar Anda.'
+                },
+                mobile_fab: {
+                    title: 'Tombol Aksi Cepat',
+                    desc: 'Tap untuk membuka menu pilihan cepat: Project, Sertifikat, dan Postingan.'
+                },
+                mobile_profile: {
+                    title: 'Menu Profil Mobile',
+                    desc: 'Akses profil, pengaturan, bahasa, dan logout dari menu ini.'
                 }
             },
             dosen_dashboard: {
@@ -492,6 +504,20 @@ export function initUserGuide() {
                 desc: 'Need help? Ask our virtual chatbot assistant anytime 24/7.'
             },
             student_dashboard: {
+                header: {
+                    title: 'Dashboard Header',
+                    desc: 'This is the main header of your dashboard with global navigation and display controls.',
+                    complete_desc: 'Your profile data is complete. Great, all important information is filled in.',
+                    incomplete_desc: 'Your profile data is incomplete. Please complete important information for optimal guide experience.'
+                },
+                settings: {
+                    title: 'Settings Menu',
+                    desc: 'Open language and dark mode settings from this sidebar menu.'
+                },
+                profile_menu: {
+                    title: 'Profile Menu',
+                    desc: 'Access your account, profile, or two-factor verification from this menu.'
+                },
                 stats_lrn: {
                     title: 'Learning Corner Stats',
                     desc: 'Monitor the total modules or subjects you have studied.'
@@ -511,6 +537,18 @@ export function initUserGuide() {
                 posts: {
                     title: 'Your Posts Feed',
                     desc: 'List of articles and updates you have published.'
+                },
+                mobile_nav: {
+                    title: 'Mobile Navigation',
+                    desc: 'Access main menu through the navigation bar at the bottom of your screen.'
+                },
+                mobile_fab: {
+                    title: 'Quick Action Button',
+                    desc: 'Tap to open the quick menu: Projects, Certificates, and Posts.'
+                },
+                mobile_profile: {
+                    title: 'Mobile Profile Menu',
+                    desc: 'Access your profile, settings, language, and logout from this menu.'
                 }
             },
             dosen_dashboard: {
@@ -905,16 +943,74 @@ export function initUserGuide() {
                 const dashboardRoot = document.querySelector('[data-dashboard-type="me"]');
                 const profileComplete = dashboardRoot?.dataset.profileComplete === '1';
                 const headerDesc = profileComplete ? t.student_dashboard.header.complete_desc : t.student_dashboard.header.incomplete_desc;
+                const isMobile = window.innerWidth < 1024;
 
-                if (document.getElementById('main-header')) {
-                    pageSteps.push(step('#main-header', t.student_dashboard.header.title, headerDesc));
+                if (!isMobile) {
+                    // Desktop steps
+                    if (document.getElementById('main-header')) {
+                        pageSteps.push(step('#main-header', t.student_dashboard.header.title, headerDesc));
+                    }
+                    if (document.getElementById('sidebar-settings-button')) {
+                        pageSteps.push(step('#sidebar-settings-button', t.student_dashboard.settings.title, t.student_dashboard.settings.desc));
+                    }
+                    if (document.getElementById('sidebar-profile-button')) {
+                        pageSteps.push(step('#sidebar-profile-button', t.student_dashboard.profile_menu.title, t.student_dashboard.profile_menu.desc));
+                    }
+                } else {
+                    // Mobile steps - navigation bar
+                    if (document.getElementById('mobile-bottom-nav')) {
+                        pageSteps.push(step('#mobile-bottom-nav', t.student_dashboard.mobile_nav.title, t.student_dashboard.mobile_nav.desc));
+                    }
+                    // Mobile FAB button with modal opening
+                    if (document.getElementById('mobile-fab-btn')) {
+                        pageSteps.push(step('#mobile-fab-btn', t.student_dashboard.mobile_fab.title, t.student_dashboard.mobile_fab.desc, {
+                            onHighlightStarted: () => {
+                                const fabSheet = document.getElementById('mobile-fab-sheet');
+                                const fabOverlay = document.getElementById('mobile-fab-overlay');
+                                if (fabSheet && fabOverlay) {
+                                    fabOverlay.classList.remove('hidden');
+                                    fabOverlay.classList.add('opacity-100');
+                                    fabSheet.classList.remove('translate-y-full');
+                                }
+                            },
+                            onDeselected: () => {
+                                const fabSheet = document.getElementById('mobile-fab-sheet');
+                                const fabOverlay = document.getElementById('mobile-fab-overlay');
+                                if (fabSheet && fabOverlay) {
+                                    fabOverlay.classList.add('hidden');
+                                    fabOverlay.classList.remove('opacity-100');
+                                    fabSheet.classList.add('translate-y-full');
+                                }
+                            }
+                        }));
+                    }
+                    // Mobile Profile button with modal opening
+                    const profileBtn = document.querySelector('#mobile-bottom-nav .bnav-item:last-child');
+                    if (profileBtn) {
+                        pageSteps.push(step(profileBtn, t.student_dashboard.mobile_profile.title, t.student_dashboard.mobile_profile.desc, {
+                            onHighlightStarted: () => {
+                                const profileSheet = document.getElementById('mobile-profile-sheet');
+                                const profileOverlay = document.getElementById('mobile-profile-overlay');
+                                if (profileSheet && profileOverlay) {
+                                    profileOverlay.classList.remove('hidden');
+                                    profileOverlay.classList.add('opacity-100');
+                                    profileSheet.classList.remove('translate-y-full');
+                                }
+                            },
+                            onDeselected: () => {
+                                const profileSheet = document.getElementById('mobile-profile-sheet');
+                                const profileOverlay = document.getElementById('mobile-profile-overlay');
+                                if (profileSheet && profileOverlay) {
+                                    profileOverlay.classList.add('hidden');
+                                    profileOverlay.classList.remove('opacity-100');
+                                    profileSheet.classList.add('translate-y-full');
+                                }
+                            }
+                        }));
+                    }
                 }
-                if (document.getElementById('sidebar-settings-button')) {
-                    pageSteps.push(step('#sidebar-settings-button', t.student_dashboard.settings.title, t.student_dashboard.settings.desc));
-                }
-                if (document.getElementById('sidebar-profile-button')) {
-                    pageSteps.push(step('#sidebar-profile-button', t.student_dashboard.profile_menu.title, t.student_dashboard.profile_menu.desc));
-                }
+                
+                // Stats and content sections (for both desktop and mobile)
                 if (document.getElementById('total-lrn-wrapper')) {
                     pageSteps.push(step('#total-lrn-wrapper', t.student_dashboard.stats_lrn.title, t.student_dashboard.stats_lrn.desc));
                 }
