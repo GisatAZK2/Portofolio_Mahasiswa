@@ -996,6 +996,68 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Pengajuan keahlian tambahan berhasil ditolak.');
     }
 
+    public function bulkApproveKeahlianTambahan(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $ids = $request->input('selected_ids');
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada pengajuan yang dipilih.'
+            ], 422);
+        }
+
+        $affected = Keahlian_Tambahan::whereIn('id', $ids)
+            ->where('status_pengajuan', 'Sedang Di Ajukan')
+            ->update([
+                'status_pengajuan' => 'Di Terima',
+                'is_active' => true,
+                'keterangan' => null,
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "{$affected} pengajuan keahlian tambahan berhasil disetujui."
+        ]);
+    }
+
+    public function bulkRejectKeahlianTambahan(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $request->validate(['keterangan' => 'required|string|max:500']);
+
+        $ids = $request->input('selected_ids');
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada pengajuan yang dipilih.'
+            ], 422);
+        }
+
+        $affected = Keahlian_Tambahan::whereIn('id', $ids)
+            ->where('status_pengajuan', 'Sedang Di Ajukan')
+            ->update([
+                'status_pengajuan' => 'Di Tolak',
+                'is_active' => false,
+                'keterangan' => $request->keterangan,
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "{$affected} pengajuan keahlian tambahan berhasil ditolak."
+        ]);
+    }
+
     //For Pages Sertifikat
     public function sertifikat(Request $request)
     {

@@ -1,4 +1,4 @@
-@extends('Layout.Layout')
+﻿@extends('Layout.Layout')
 @section('title', 'Tambah Project Mahasiswa Baru')
 @section('content')
     <div id="admin-project-create-data"
@@ -285,11 +285,4 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof initAdminProjectCreate === 'function') {
-                initAdminProjectCreate();
-            }
-        });
-    </script>
 @endsection

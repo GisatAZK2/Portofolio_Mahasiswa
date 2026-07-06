@@ -194,6 +194,8 @@ Route::prefix('{locale}')
                 Route::get('/', [AdminController::class, 'ListUserKeahlianTambahan'])->name('index');
                 Route::patch('/approve', [AdminController::class, 'approveKeahlianTambahan'])->name('approve');
                 Route::patch('/reject', [AdminController::class, 'rejectKeahlianTambahan'])->name('reject');
+                Route::patch('/bulk-approve', [AdminController::class, 'bulkApproveKeahlianTambahan'])->name('bulkApprove');
+                Route::patch('/bulk-reject', [AdminController::class, 'bulkRejectKeahlianTambahan'])->name('bulkReject');
             });
 
             Route::prefix('manageSertifikat')->name('sertifikat.')->group(function () {

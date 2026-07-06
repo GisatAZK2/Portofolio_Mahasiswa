@@ -106,11 +106,35 @@
             </form>
         </div>
 
+        {{-- Bulk Actions Bar --}}
+        <div id="bulkActionsBar" class="hidden bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 rounded-lg p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="text-sm text-indigo-700 dark:text-indigo-300 font-medium">
+                <span id="selectedCountText">0</span> pengajuan dipilih
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" id="bulkApproveBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Terima Terpilih
+                </button>
+                <button type="button" id="bulkRejectBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Tolak Terpilih
+                </button>
+            </div>
+        </div>
+
         <!-- Table - Desktop View -->
         <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full w-full table-auto bg-white dark:bg-gray-800 text-sm responsive-compact-table">
                 <thead>
                     <tr class="bg-gray-100 dark:bg-gray-700">
+                        <th class="px-4 py-3 text-left w-10">
+                            <input type="checkbox" id="selectAllCheckbox" class="rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+                        </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                             data-translate="tbl_foto"
                             data-translate-page="keahlian_tambahan">Foto</th>
@@ -137,6 +161,9 @@
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($applications as $application)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td class="px-3 py-3">
+                                <input type="checkbox" value="{{ $application->id }}" class="application-checkbox rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+                            </td>
                             <td class="px-3 py-3">
                                 @if($application->mahasiswa->photo_profile && Storage::disk('public')->exists($application->mahasiswa->photo_profile))
                                     <img src="{{ asset('storage/' . ltrim($application->mahasiswa->photo_profile, '/')) }}"
@@ -202,7 +229,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                 @if(request('search'))
                                     <span data-translate="empty_search"
                                           data-translate-page="keahlian_tambahan">Tidak ada hasil pencarian.</span>
@@ -226,7 +253,10 @@
         <!-- Mobile View - Card Layout -->
         <div class="md:hidden space-y-4">
             @forelse($applications as $application)
-                <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600">
+                <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600 relative">
+                    <div class="absolute top-4 right-4">
+                        <input type="checkbox" value="{{ $application->id }}" class="application-checkbox-mobile rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+                    </div>
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center space-x-3">
                             @if($application->mahasiswa->photo_profile && Storage::disk('public')->exists($application->mahasiswa->photo_profile))
@@ -390,46 +420,35 @@
         </div>
     </div>
 
-    <script>
-    function getCurrentLocale() {
-        const path = window.location.pathname;
-        const match = path.match(/^\/(id|en)\//);
-        return match ? match[1] : 'id'; // default ke id
-    }
+    <!-- Bulk Reject Modal -->
+    <div id="bulkRejectModal" class="fixed inset-0 bg-black/60 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+            <div class="mt-3">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tolak Pengajuan Keahlian Tambahan Terpilih</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    Berikan alasan penolakan untuk semua pengajuan terpilih:
+                </p>
+                <form id="bulkRejectForm">
+                    <div class="mb-4">
+                        <label for="bulk_keterangan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Alasan Penolakan
+                        </label>
+                        <textarea id="bulk_keterangan" name="keterangan" rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-gray-100"
+                            placeholder="Masukkan alasan penolakan..." required></textarea>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="closeBulkRejectModal()"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            Tolak Semua
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    function openApproveModal(userId, userName) {
-        const locale = getCurrentLocale();
-        document.getElementById('approveUserName').textContent = userName;
-        document.getElementById('approveForm').action = `/${locale}/admin/manageUserKeahlianTambahan/approve?user_id=${userId}`;
-        document.getElementById('approveModal').classList.remove('hidden');
-    }
-
-    function closeApproveModal() {
-        document.getElementById('approveModal').classList.add('hidden');
-    }
-
-    function openRejectModal(userId, userName) {
-        const locale = getCurrentLocale();
-        document.getElementById('rejectUserName').textContent = userName;
-        document.getElementById('rejectForm').action = `/${locale}/admin/manageUserKeahlianTambahan/reject?user_id=${userId}`;
-        document.getElementById('rejectModal').classList.remove('hidden');
-    }
-
-    function closeRejectModal() {
-        document.getElementById('rejectModal').classList.add('hidden');
-        document.getElementById('keterangan').value = '';
-    }
-
-    // Close modals when clicking outside
-    window.onclick = function(event) {
-        const approveModal = document.getElementById('approveModal');
-        const rejectModal = document.getElementById('rejectModal');
-        if (event.target == approveModal) {
-            closeApproveModal();
-        }
-        if (event.target == rejectModal) {
-            closeRejectModal();
-        }
-    }
-</script>
 @endsection

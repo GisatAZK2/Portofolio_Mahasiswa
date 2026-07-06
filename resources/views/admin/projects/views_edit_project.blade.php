@@ -1,4 +1,4 @@
-@extends('Layout.Layout')
+﻿@extends('Layout.Layout')
 @section('title', 'Edit Project Mahasiswa')
 @section('content')
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -310,12 +310,4 @@
     </div>
 
     {{-- Inisiasi modul dari app.js --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const container = document.getElementById('admin-project-edit-container');
-            if (container && typeof window.initAdminProjectEditPage === 'function') {
-                window.initAdminProjectEditPage(container);
-            }
-        });
-    </script>
 @endsection

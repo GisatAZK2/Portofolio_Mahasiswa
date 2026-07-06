@@ -62,24 +62,5 @@
         </form>
     </div>
 
-    <script>
-        // Validasi agar tahun keluar tidak lebih kecil dari tahun masuk
-        document.getElementById('tahun_keluar').addEventListener('change', function () {
-            let tahunMasuk = document.getElementById('tahun_masuk').value;
-            let tahunKeluar = this.value;
-
-            if (tahunKeluar && tahunKeluar < tahunMasuk) {
-                alert('Tahun keluar tidak boleh lebih kecil dari tahun masuk');
-                this.value = '';
-            }
-        });
-    </script>
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.add_angkatan");
-        });
-    </script>
 
 @endsection
