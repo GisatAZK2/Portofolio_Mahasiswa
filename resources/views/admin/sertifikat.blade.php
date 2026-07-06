@@ -19,25 +19,25 @@
         {{-- ===== ACTION BUTTONS ===== --}}
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end mb-6">
             {{-- Bulk Delete --}}
-            <button type="button" id="bulkDeleteBtn"
+            <button type="button" id="bulkDeleteBtnSertifikat"
                 class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium w-full sm:w-auto">
                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
                 <span data-translate="delete_selected" data-translate-page="project_detail">Hapus Terpilih</span>
-                (<span id="selectedCount">0</span>)
+                (<span id="selectedCountSertifikat">0</span>)
             </button>
 
             {{-- Bulk Approve --}}
-            <button type="button" id="bulkApproveBtn"
+            <button type="button" id="bulkApproveBtnSertifikat"
                 class="inline-flex items-center justify-center px-4 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium w-full sm:w-auto">
                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span data-translate="approve_selected" data-translate-page="admin">Setujui Terpilih</span>
-                (<span id="selectedCountApprove">0</span>)
+                (<span id="selectedCountApproveSertifikat">0</span>)
             </button>
 
             {{-- Add Certificate --}}
@@ -53,7 +53,7 @@
         {{-- ===== FILTER SECTION ===== --}}
         <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md mb-6 border border-gray-100 dark:border-gray-800">
             {{-- Filter Toggle Button (Mobile) --}}
-            <button type="button" id="filterToggleBtn"
+            <button type="button" id="filterToggleBtnSertifikat"
                 class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 sm:hidden">
                 <span class="flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,13 +62,13 @@
                     </svg>
                     Filter & Pencarian
                 </span>
-                <svg id="filterChevron" class="w-4 h-4 transition-transform duration-200" fill="none"
+                <svg id="filterChevronSertifikat" class="w-4 h-4 transition-transform duration-200" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
 
-            <div id="filterContent" class="hidden sm:block p-4 sm:p-6">
+            <div id="filterContentSertifikat" class="hidden sm:block p-4 sm:p-6">
                 <form action="{{ route('admin.sertifikat.index') }}" method="GET" id="filterForm">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                         {{-- Search --}}
@@ -173,7 +173,7 @@
             <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-3 mb-4 border border-gray-100 dark:border-gray-800">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="selectAllCheckbox"
+                        <input type="checkbox" id="selectAllCheckboxSertifikat"
                             class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                         <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
                             data-translate="plh_semua" data-translate-page="admin">Pilih Semua</span>
@@ -185,7 +185,7 @@
                             {{ $sertifikat->total() }}
                         </span>
                         <span class="text-indigo-600 font-semibold">
-                            Dipilih: <span id="totalSelected">0</span>
+                            Dipilih: <span id="totalSelectedSertifikat">0</span>
                         </span>
                     </div>
                 </div>
@@ -221,7 +221,7 @@
             <form id="bulkDeleteForm" action="{{ route('admin.sertifikat.bulk-destroy') }}" method="POST" style="display:none;">
                 @csrf
                 @method('DELETE')
-                <input type="hidden" name="selected_ids" id="selectedIdsInput" value="">
+                <input type="hidden" name="selected_ids" id="selectedIdsInputSertifikat" value="">
             </form>
 
             {{-- Card Grid --}}
@@ -482,7 +482,7 @@
             overflow: hidden;
         }
 
-        #selectAllCheckbox:indeterminate {
+        #selectAllCheckboxSertifikat:indeterminate {
             background-color: #4f46e5;
             border-color: #4f46e5;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath stroke='white' d='M0 2h4'/%3E%3C/svg%3E");
@@ -497,7 +497,7 @@
         }
 
         /* Filter chevron transition */
-        #filterChevron {
+        #filterChevronSertifikat {
             transition: transform 0.2s ease;
         }
     </style>

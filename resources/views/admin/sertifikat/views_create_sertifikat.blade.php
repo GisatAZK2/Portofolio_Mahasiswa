@@ -117,7 +117,7 @@
                             class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                             Reset Filter
                         </a>
-                        <button type="button" onclick="applyFilters()"
+                        <button type="button" onclick="window.applySertifikatFilters()"
                             class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                             <span data-translate="trp_filter" data-translate-page="admin">Terapkan Filter</span>
                         </button>
@@ -139,7 +139,7 @@
                                 <div class="flex items-center gap-4" id="selected-user-content">
                                     <!-- Diisi oleh JavaScript -->
                                 </div>
-                                <button type="button" onclick="clearSelectedUser()"
+                                <button type="button" onclick="window.clearSelectedUser()"
                                     class="text-green-600 dark:text-green-400 hover:text-red-600 transition">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
@@ -186,12 +186,18 @@
                                     class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                     @forelse($users as $user)
                                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group"
-                                            onclick="selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
+                                            data-angkatan="{{ $user->id_angkatan }}"
+                                            data-angkatan-name="{{ $user->angkatan->nama_angkatan ?? $user->angkatan->tahun_angkatan ?? '' }}"
+                                            data-jurusan="{{ $user->id_jurusan }}"
+                                            data-jurusan-name="{{ $user->jurusan->nama_jurusan ?? '' }}"
+                                            data-keahlian="{{ $user->id_keahlian }}"
+                                            data-keahlian-name="{{ $user->keahlian->nama_keahlian ?? '' }}"
+                                            onclick="window.selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
                                             <td class="px-4 py-4">
                                                 <input type="radio" name="user_radio" value="{{ $user->id }}"
                                                     class="user-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
                                                     {{ old('user_id') == $user->id ? 'checked' : '' }}
-                                                    onchange="event.stopImmediatePropagation(); selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
+                                                    onchange="event.stopImmediatePropagation(); window.selectUser({{ $user->id }}, '{{ addslashes($user->nama_mahasiswa) }}', '{{ $user->photo_profile ?? '' }}', '{{ $user->email ?? '' }}')">
                                             </td>
                                             <td class="px-4 py-4">
                                                 <div class="flex items-center gap-3">
@@ -358,7 +364,7 @@
                                     <span data-translate="up_file" data-translate-page="admin">Upload file</span>
                                     <input id="link_sertifikat" name="link_sertifikat" type="file"
                                         accept="image/jpeg,image/png,image/gif,image/jpg" class="sr-only"
-                                        onchange="updateFileLabel(this)">
+                                        onchange="window.updateFileLabel(this)">
                                 </label>
                                 <p class="pl-1" data-translate="or_drag" data-translate-page="admin">atau drag and drop</p>
                             </div>

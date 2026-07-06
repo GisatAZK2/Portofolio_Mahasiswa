@@ -4,7 +4,7 @@
  */
 
 // ===== APPLY FILTER =====
-window.applyFilters = window.applyFilters || function() {
+window.applySertifikatFilters = function() {
     const url = new URL(window.location.href);
     const searchInput = document.getElementById('search-input');
     const angkatanFilter = document.getElementById('angkatan-filter');
@@ -204,32 +204,62 @@ document.addEventListener('DOMContentLoaded', function () {
         searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                window.applyFilters();
+                window.applySertifikatFilters();
             }
         });
     }
 
-    // User search (client-side filter on table rows)
+    // ===== REAL-TIME TABLE FILTERING =====
     const userSearchInput = document.getElementById('user-search');
-    if (userSearchInput) {
-        userSearchInput.addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase().trim();
-            const rows       = document.querySelectorAll('#user-table-body tr');
+    const angkatanFilter = document.getElementById('angkatan-filter');
+    const jurusanFilter = document.getElementById('jurusan-filter');
+    const keahlianFilter = document.getElementById('keahlian-filter');
 
-            rows.forEach(row => {
-                if (!row.cells || row.cells.length < 2) return;
+    function filterTableRows() {
+        const searchTerm = userSearchInput ? userSearchInput.value.toLowerCase().trim() : '';
+        const selectedAngkatan = angkatanFilter ? angkatanFilter.value : '';
+        const selectedJurusan = jurusanFilter ? jurusanFilter.value : '';
+        const selectedKeahlian = keahlianFilter ? keahlianFilter.value : '';
+        const rows = document.querySelectorAll('#user-table-body tr');
 
-                const nameEl  = row.cells[1].querySelector('.font-medium');
-                const emailEl = row.cells[1].querySelector('.text-xs');
-                if (!nameEl) return;
+        rows.forEach(row => {
+            if (!row.cells || row.cells.length < 2) return;
 
-                const name  = nameEl.textContent.toLowerCase();
-                const email = emailEl ? emailEl.textContent.toLowerCase() : '';
+            // Get search fields
+            const nameEl = row.cells[1].querySelector('.font-medium');
+            const emailEl = row.cells[1].querySelector('.text-xs');
+            if (!nameEl) return;
 
-                row.style.display = (name.includes(searchTerm) || email.includes(searchTerm)) ? '' : 'none';
-            });
+            const name = nameEl.textContent.toLowerCase();
+            const email = emailEl ? emailEl.textContent.toLowerCase() : '';
+
+            // Check search term match
+            const matchesSearch = searchTerm === '' || name.includes(searchTerm) || email.includes(searchTerm);
+
+            // Get filter data from row attributes
+            const rowAngkatan = row.getAttribute('data-angkatan');
+            const rowJurusan = row.getAttribute('data-jurusan');
+            const rowKeahlian = row.getAttribute('data-keahlian');
+
+            // Check filter matches
+            const matchesAngkatan = selectedAngkatan === '' || rowAngkatan === selectedAngkatan;
+            const matchesJurusan = selectedJurusan === '' || rowJurusan === selectedJurusan;
+            const matchesKeahlian = selectedKeahlian === '' || rowKeahlian === selectedKeahlian;
+
+            // Display row only if all criteria match
+            const shouldDisplay = matchesSearch && matchesAngkatan && matchesJurusan && matchesKeahlian;
+            row.style.display = shouldDisplay ? '' : 'none';
         });
     }
+
+    // Setup listeners for real-time filtering
+    if (userSearchInput) {
+        userSearchInput.addEventListener('input', filterTableRows);
+    }
+
+    if (angkatanFilter) angkatanFilter.addEventListener('change', filterTableRows);
+    if (jurusanFilter) jurusanFilter.addEventListener('change', filterTableRows);
+    if (keahlianFilter) keahlianFilter.addEventListener('change', filterTableRows);
 
     // ===== PAGE INFO =====
     if (typeof showPageInfo === 'function') {

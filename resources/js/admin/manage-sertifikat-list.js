@@ -1,22 +1,16 @@
-/**
- * resources/js/admin/manage-sertifikat-list.js
- * Admin Manage Sertifikat List — sertifikat.blade.php
- *
- * Session alerts are passed via data-* attributes on #sertifikat-page-container
- */
+function initSertifikatListPage() {
+    const container = document.getElementById('sertifikat-page-container');
+    if (!container) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Guard: hanya jalan di halaman Manage Sertifikat.
-    // Tanpa ini, ID seperti #bulkApproveBtn yang kepakai juga di halaman
-    // admin lain (mis. Keahlian Tambahan) ikut kena manipulasi (disabled dsb)
-    // karena admin.js memuat semua script admin sekaligus di setiap halaman.
-    if (!document.getElementById('sertifikat-page-container')) return;
+    // Guard: cegah initSertifikatListPage() jalan dobel dalam satu page load
+    // (mis. karena DOMContentLoaded & turbo:load sama-sama fire)
+    if (container.dataset.sertifikatInitialized === 'true') return;
+    container.dataset.sertifikatInitialized = 'true';
 
     // ===== FILTER TOGGLE (Mobile) =====
-    const filterToggleBtn = document.getElementById('filterToggleBtn');
-    const filterContent = document.getElementById('filterContent');
-    const filterChevron = document.getElementById('filterChevron');
+    const filterToggleBtn = document.getElementById('filterToggleBtnSertifikat');
+    const filterContent = document.getElementById('filterContentSertifikat');
+    const filterChevron = document.getElementById('filterChevronSertifikat');
 
     if (filterToggleBtn) {
         filterToggleBtn.addEventListener('click', () => {
@@ -27,17 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== BULK SELECT =====
-    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-    const certificateCheckboxes = document.querySelectorAll('.certificate-checkbox');
-    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-    const bulkApproveBtn = document.getElementById('bulkApproveBtn');
-    const selectedCount = document.getElementById('selectedCount');
-    const selectedCountApprove = document.getElementById('selectedCountApprove');
-    const totalSelected = document.getElementById('totalSelected');
-    const selectedIdsInput = document.getElementById('selectedIdsInput');
+    let selectAllCheckbox = document.getElementById('selectAllCheckboxSertifikat');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtnSertifikat');
+    const bulkApproveBtn = document.getElementById('bulkApproveBtnSertifikat');
+    const selectedCount = document.getElementById('selectedCountSertifikat');
+    const selectedCountApprove = document.getElementById('selectedCountApproveSertifikat');
+    const totalSelected = document.getElementById('totalSelectedSertifikat');
+    const selectedIdsInput = document.getElementById('selectedIdsInputSertifikat');
+
+    function getCertificateCheckboxes() {
+        return document.querySelectorAll('.certificate-checkbox');
+    }
 
     function updateCardBorder(checkbox) {
         const card = checkbox.closest('.certificate-card');
+        if (!card) return;
+
         if (checkbox.checked) {
             card.classList.add('border-indigo-500', 'border-4');
             card.classList.remove('border-2');
@@ -48,8 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSelectedCount() {
+        const allCheckboxes = getCertificateCheckboxes();
         const checked = document.querySelectorAll('.certificate-checkbox:checked');
         const count = checked.length;
+        const total = allCheckboxes.length;
 
         if (selectedCount) selectedCount.textContent = count;
         if (selectedCountApprove) selectedCountApprove.textContent = count;
@@ -62,36 +63,56 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedIdsInput.value = JSON.stringify(Array.from(checked).map(cb => cb.value));
         }
 
-        if (selectAllCheckbox) {
-            if (count === certificateCheckboxes.length && count > 0) {
+        // Update selectAllCheckbox state
+        if (selectAllCheckbox && total > 0) {
+            selectAllCheckbox.indeterminate = false;
+            if (count === total) {
                 selectAllCheckbox.checked = true;
-                selectAllCheckbox.indeterminate = false;
             } else if (count === 0) {
                 selectAllCheckbox.checked = false;
-                selectAllCheckbox.indeterminate = false;
             } else {
+                selectAllCheckbox.checked = false;
                 selectAllCheckbox.indeterminate = true;
             }
         }
     }
 
+    // Setup selectAllCheckbox listener - clean approach (clone untuk buang listener lama)
     if (selectAllCheckbox) {
+        const freshSelectAll = selectAllCheckbox.cloneNode(true);
+        selectAllCheckbox.parentNode.replaceChild(freshSelectAll, selectAllCheckbox);
+        selectAllCheckbox = freshSelectAll; // reassign, bukan redeclare
+
         selectAllCheckbox.addEventListener('change', function () {
-            certificateCheckboxes.forEach(cb => {
-                cb.checked = this.checked;
+            const isChecked = this.checked;
+            getCertificateCheckboxes().forEach(cb => {
+                cb.checked = isChecked;
                 updateCardBorder(cb);
             });
             updateSelectedCount();
+        }, false);
+    }
+
+    // Setup individual checkbox listeners
+    function setupCheckboxListeners() {
+        getCertificateCheckboxes().forEach(cb => {
+            // Hapus semua event listener lama
+            const newCb = cb.cloneNode(true);
+            cb.parentNode.replaceChild(newCb, cb);
+
+            // Setup ulang dengan listener baru
+            newCb.addEventListener('change', function () {
+                updateCardBorder(this);
+                updateSelectedCount();
+            }, false);
+
+            // Update visual state
+            updateCardBorder(newCb);
         });
     }
 
-    certificateCheckboxes.forEach(cb => {
-        updateCardBorder(cb);
-        cb.addEventListener('change', function () {
-            updateCardBorder(this);
-            updateSelectedCount();
-        });
-    });
+    setupCheckboxListeners();
+    updateSelectedCount();
 
     // ===== BULK DELETE =====
     if (bulkDeleteBtn) {
@@ -248,4 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof showPageInfo === 'function') {
         showPageInfo("popup.admin_sertifikat");
     }
-});
+}
+
+// Export untuk dipanggil dari app.js
+window.initSertifikatListPage = initSertifikatListPage;
