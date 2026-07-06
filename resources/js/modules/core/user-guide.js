@@ -57,6 +57,10 @@ export function initUserGuide() {
         pageKey = 'profile_page';
     } else if (document.getElementById('passkeysList') || document.getElementById('passkeyName') || document.getElementById('addPasskeyBtn')) {
         pageKey = 'passkey_management';
+    } else if (document.getElementById('loginForm')) {
+        pageKey = 'login_page';
+    } else if (document.getElementById('registerForm')) {
+        pageKey = 'register_page';
     } else if (window.location.pathname.includes('/search')) {
         pageKey = 'search_results';
     }
@@ -81,6 +85,54 @@ export function initUserGuide() {
             chatbot: {
                 title: 'Asisten Virtual POLMIND',
                 desc: 'Butuh bantuan cepat akademik atau fitur? Asisten virtual kami siap melayani Anda 24/7.'
+            },
+            login_page: {
+                header: {
+                    title: 'Halaman Masuk',
+                    desc: 'Masukkan kredensial Anda untuk masuk ke akun dan melanjutkan ke dashboard.'
+                },
+                email: {
+                    title: 'Email atau Username',
+                    desc: 'Isi email atau username yang terdaftar pada akun Anda.'
+                },
+                password: {
+                    title: 'Password',
+                    desc: 'Masukkan kata sandi akun Anda dengan aman.'
+                },
+                remember: {
+                    title: 'Ingat Saya',
+                    desc: 'Centang opsi ini jika Anda ingin akun tetap tersimpan di perangkat ini.'
+                },
+                submit: {
+                    title: 'Masuk Sekarang',
+                    desc: 'Klik tombol ini untuk melanjutkan proses login.'
+                },
+                register: {
+                    title: 'Daftar Akun Baru',
+                    desc: 'Gunakan tautan ini jika Anda belum memiliki akun.'
+                }
+            },
+            register_page: {
+                header: {
+                    title: 'Halaman Pendaftaran',
+                    desc: 'Lengkapi formulir pendaftaran untuk membuat akun baru.'
+                },
+                photo: {
+                    title: 'Foto Profil',
+                    desc: 'Unggah foto profil opsional untuk mempercantik akun Anda.'
+                },
+                nim: {
+                    title: 'NIM',
+                    desc: 'Masukkan NIM Anda sesuai data kampus.'
+                },
+                name: {
+                    title: 'Nama Lengkap',
+                    desc: 'Tulis nama lengkap Anda dengan benar.'
+                },
+                submit: {
+                    title: 'Kirim Data Pendaftaran',
+                    desc: 'Klik tombol ini untuk mengirim formulir pendaftaran.'
+                }
             },
             student_dashboard: {
                 header: {
@@ -527,6 +579,54 @@ export function initUserGuide() {
                 title: 'POLMIND Virtual Assistant',
                 desc: 'Need help? Ask our virtual chatbot assistant anytime 24/7.'
             },
+            login_page: {
+                header: {
+                    title: 'Login Page',
+                    desc: 'Enter your credentials to access your account and continue to the dashboard.'
+                },
+                email: {
+                    title: 'Email or Username',
+                    desc: 'Fill in the registered email address or username for your account.'
+                },
+                password: {
+                    title: 'Password',
+                    desc: 'Enter your account password securely.'
+                },
+                remember: {
+                    title: 'Remember Me',
+                    desc: 'Tick this option if you want your session saved on this device.'
+                },
+                submit: {
+                    title: 'Sign In',
+                    desc: 'Click here to continue the login process.'
+                },
+                register: {
+                    title: 'Create a New Account',
+                    desc: 'Use this link if you do not yet have an account.'
+                }
+            },
+            register_page: {
+                header: {
+                    title: 'Registration Page',
+                    desc: 'Complete the registration form to create a new account.'
+                },
+                photo: {
+                    title: 'Profile Photo',
+                    desc: 'Upload an optional profile photo to personalize your account.'
+                },
+                nim: {
+                    title: 'Student ID',
+                    desc: 'Enter your student ID as registered with the campus.'
+                },
+                name: {
+                    title: 'Full Name',
+                    desc: 'Write your full name accurately.'
+                },
+                submit: {
+                    title: 'Submit Registration',
+                    desc: 'Click here to send your registration form.'
+                }
+            },
             student_dashboard: {
                 header: {
                     title: 'Dashboard Header',
@@ -957,7 +1057,7 @@ export function initUserGuide() {
     };
 
     const isProjectFormFlow = pageKey === 'project_form';
-    const isPageSpecificGuide = ['projects_list', 'project_detail', 'learning_corner_list', 'learning_corner_create', 'learning_corner_edit', 'certificates_list', 'certificate_form', 'postingan_list', 'postingan_create', 'postingan_edit', 'postingan_detail', 'profile_page', 'passkey_management'].includes(pageKey);
+    const isPageSpecificGuide = ['projects_list', 'project_detail', 'learning_corner_list', 'learning_corner_create', 'learning_corner_edit', 'certificates_list', 'certificate_form', 'postingan_list', 'postingan_create', 'postingan_edit', 'postingan_detail', 'profile_page', 'passkey_management', 'login_page', 'register_page'].includes(pageKey);
     // Distinguish create vs edit within the project_form flow — the create
     // blade renders #project-create-data, the edit blade renders
     // #project-edit-data. Used to skip the closing chatbot step in create mode.
@@ -985,6 +1085,50 @@ export function initUserGuide() {
 
         // 3. Page specific steps
         switch (pageKey) {
+            case 'login_page': {
+                if (document.querySelector('main > div.relative.w-full.max-w-lg')) {
+                    pageSteps.push(step('main > div.relative.w-full.max-w-lg', t.login_page.header.title, t.login_page.header.desc));
+                }
+                if (document.getElementById('login')) {
+                    pageSteps.push(step('#login', t.login_page.email.title, t.login_page.email.desc));
+                }
+                if (document.getElementById('password')) {
+                    pageSteps.push(step('#password', t.login_page.password.title, t.login_page.password.desc));
+                }
+                if (document.getElementById('remember')) {
+                    pageSteps.push(step('#remember', t.login_page.remember.title, t.login_page.remember.desc));
+                }
+                const loginSubmit = document.querySelector('#loginForm button[type="submit"]');
+                if (loginSubmit) {
+                    pageSteps.push(step(loginSubmit, t.login_page.submit.title, t.login_page.submit.desc));
+                }
+                const registerLink = document.querySelector('#loginForm a[href*="pengajuan-akun"], #loginForm a[href*="register"]');
+                if (registerLink) {
+                    pageSteps.push(step(registerLink, t.login_page.register.title, t.login_page.register.desc));
+                }
+                break;
+            }
+
+            case 'register_page': {
+                if (document.querySelector('main > div.relative.max-w-2xl.w-full.mx-auto.justify-center')) {
+                    pageSteps.push(step('main > div.relative.max-w-2xl.w-full.mx-auto.justify-center', t.register_page.header.title, t.register_page.header.desc));
+                }
+                if (document.getElementById('photo_profile')) {
+                    pageSteps.push(step('#photo_profile', t.register_page.photo.title, t.register_page.photo.desc));
+                }
+                if (document.querySelector('input[name="nim"]')) {
+                    pageSteps.push(step('input[name="nim"]', t.register_page.nim.title, t.register_page.nim.desc));
+                }
+                if (document.querySelector('input[name="nama_mahasiswa"]')) {
+                    pageSteps.push(step('input[name="nama_mahasiswa"]', t.register_page.name.title, t.register_page.name.desc));
+                }
+                const registerSubmit = document.querySelector('#registerForm button[type="submit"]');
+                if (registerSubmit) {
+                    pageSteps.push(step(registerSubmit, t.register_page.submit.title, t.register_page.submit.desc));
+                }
+                break;
+            }
+
             case 'student_dashboard': {
                 const dashboardRoot = document.querySelector('[data-dashboard-type="me"]');
                 const profileComplete = dashboardRoot?.dataset.profileComplete === '1';

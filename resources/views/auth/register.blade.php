@@ -50,7 +50,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="space-y-7 sm:space-y-8">
+            <form id="registerForm" method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="space-y-7 sm:space-y-8">
                 @csrf
 
                 <!-- Foto Profil -->
