@@ -55,6 +55,8 @@ export function initUserGuide() {
         pageKey = 'postingan_detail';
     } else if (document.getElementById('form-profile')) {
         pageKey = 'profile_page';
+    } else if (document.getElementById('passkeysList') || document.getElementById('passkeyName') || document.getElementById('addPasskeyBtn')) {
+        pageKey = 'passkey_management';
     } else if (window.location.pathname.includes('/search')) {
         pageKey = 'search_results';
     }
@@ -481,9 +483,31 @@ export function initUserGuide() {
                     title: 'Bagikan Portofolio',
                     desc: 'Salin tautan portofolio online Anda untuk dibagikan ke rekruter atau media sosial.'
                 },
+                open_portfolio: {
+                    title: 'Buka Portofolio Anda',
+                    desc: 'Klik untuk melihat halaman portofolio publik Anda di tab baru.'
+                },
                 skills: {
                     title: 'Keahlian Tambahan',
                     desc: 'Ajukan keahlian tambahan yang Anda kuasai untuk divalidasi oleh dosen.'
+                }
+            },
+            passkey_management: {
+                header: {
+                    title: 'Kelola Passkey',
+                    desc: 'Tambahkan atau hapus passkey untuk perlindungan akun yang lebih aman.'
+                },
+                list: {
+                    title: 'Passkey Terdaftar',
+                    desc: 'Lihat semua passkey yang sudah terdaftar pada akun Anda.'
+                },
+                device_name: {
+                    title: 'Nama Perangkat',
+                    desc: 'Masukkan nama yang mudah Anda kenali untuk perangkat ini.'
+                },
+                add_button: {
+                    title: 'Tambah Passkey Baru',
+                    desc: 'Klik untuk mendaftarkan passkey baru ke akun Anda.'
                 }
             }
         },
@@ -804,9 +828,31 @@ export function initUserGuide() {
                     title: 'Share Portfolio',
                     desc: 'Copy your public portfolio link to share with recruiters or on social media.'
                 },
+                open_portfolio: {
+                    title: 'Open Your Portfolio',
+                    desc: 'Click to view your public portfolio page in a new tab.'
+                },
                 skills: {
                     title: 'Additional Skills',
                     desc: 'Submit additional skills you have mastered for lecturer validation.'
+                }
+            },
+            passkey_management: {
+                header: {
+                    title: 'Manage Passkeys',
+                    desc: 'Add or remove passkeys to strengthen your account security.'
+                },
+                list: {
+                    title: 'Registered Passkeys',
+                    desc: 'Review all passkeys already registered to your account.'
+                },
+                device_name: {
+                    title: 'Device Name',
+                    desc: 'Enter a name that helps you recognize this device.'
+                },
+                add_button: {
+                    title: 'Add a New Passkey',
+                    desc: 'Click to register a new passkey for your account.'
                 }
             }
         }
@@ -911,7 +957,7 @@ export function initUserGuide() {
     };
 
     const isProjectFormFlow = pageKey === 'project_form';
-    const isPageSpecificGuide = ['projects_list', 'project_detail', 'learning_corner_list', 'learning_corner_create', 'learning_corner_edit', 'certificates_list', 'certificate_form', 'postingan_list', 'postingan_create', 'postingan_edit', 'postingan_detail', 'profile_page'].includes(pageKey);
+    const isPageSpecificGuide = ['projects_list', 'project_detail', 'learning_corner_list', 'learning_corner_create', 'learning_corner_edit', 'certificates_list', 'certificate_form', 'postingan_list', 'postingan_create', 'postingan_edit', 'postingan_detail', 'profile_page', 'passkey_management'].includes(pageKey);
     // Distinguish create vs edit within the project_form flow — the create
     // blade renders #project-create-data, the edit blade renders
     // #project-edit-data. Used to skip the closing chatbot step in create mode.
@@ -1231,6 +1277,22 @@ export function initUserGuide() {
                 pageSteps.push(...buildProjectFormSteps());
                 break;
 
+            case 'passkey_management': {
+                if (document.querySelector('.max-w-4xl.mx-auto.py-8.px-4')) {
+                    pageSteps.push(step('.max-w-4xl.mx-auto.py-8.px-4', t.passkey_management.header.title, t.passkey_management.header.desc));
+                }
+                if (document.getElementById('passkeysList')) {
+                    pageSteps.push(step('#passkeysList', t.passkey_management.list.title, t.passkey_management.list.desc));
+                }
+                if (document.getElementById('passkeyName')) {
+                    pageSteps.push(step('#passkeyName', t.passkey_management.device_name.title, t.passkey_management.device_name.desc));
+                }
+                if (document.getElementById('addPasskeyBtn')) {
+                    pageSteps.push(step('#addPasskeyBtn', t.passkey_management.add_button.title, t.passkey_management.add_button.desc));
+                }
+                break;
+            }
+
             case 'profile_page': {
                 const profileFieldChecks = [
                     {
@@ -1311,6 +1373,18 @@ export function initUserGuide() {
                         desc: t.profile_page.certificate_section.desc
                     }
                 ];
+
+                if (document.getElementById('change-cover-btn')) {
+                    pageSteps.push(step('#change-cover-btn', t.profile_page.cover.title, t.profile_page.cover.desc));
+                }
+
+                if (document.getElementById('share-portfolio-btn')) {
+                    pageSteps.push(step('#share-portfolio-btn', t.profile_page.share.title, t.profile_page.share.desc));
+                }
+
+                if (document.getElementById('open-portfolio-btn')) {
+                    pageSteps.push(step('#open-portfolio-btn', t.profile_page.open_portfolio.title, t.profile_page.open_portfolio.desc));
+                }
 
                 // 1) LENGKAPI PROFIL — selalu jadi step paling awal
                 const incompleteProfileField = profileFieldChecks.find((check) => {
