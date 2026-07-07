@@ -192,7 +192,7 @@
                                                  src="https://img.youtube.com/vi/{{ $youtube_id }}/hqdefault.jpg"
                                                  alt="Video {{ $nama }}"
                                                  loading="lazy"
-                                                 onerror="this.src='https://img.youtube.com/vi/{{ $youtube_id }}/0.jpg'">
+                                                 onerror="this.src='/assets/LogoFooter.webp'">
 
                                             <div class="pu-play-overlay">
                                                 <div class="pu-play-btn">
