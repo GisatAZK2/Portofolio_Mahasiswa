@@ -223,8 +223,7 @@
 
     @auth
         @if(Auth::user()->role == 'mahasiswa')
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
-            <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+            {{-- Driver.js dimuat melalui bundle Vite dari package npm. --}}
         @endif
     @endauth
 

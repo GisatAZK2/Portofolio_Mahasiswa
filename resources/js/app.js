@@ -170,9 +170,7 @@ window.runPageInitializers = function () {
     if (sertifikatCreateContainer) window.initSertifikatCreatePage?.(sertifikatCreateContainer);
     const sertifikatEditContainer = document.getElementById('sertifikat-edit-container');
     if (sertifikatEditContainer) window.initSertifikatEditPage?.(sertifikatEditContainer);
-    // Admin Sertifikat Management
-    if (typeof window.initSertifikatListPage === 'function') window.initSertifikatListPage();
-};
+    };
 
 // Jalankan init saat DOM siap dan setelah Turbo navigasi
 ['DOMContentLoaded', 'turbo:load'].forEach(evt => {

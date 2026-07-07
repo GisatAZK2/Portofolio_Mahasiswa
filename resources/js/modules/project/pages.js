@@ -1484,9 +1484,11 @@ window.initProjectEditPage = function (container) {
 /* ==========================================
    VIEWS_SERTIFIKAT.BLADE.PHP SCRIPTS
    ========================================== */
-window.initSertifikatListPage = function (container) {
+window.initSertifikatListPage = function (container = document) {
+    const root = container && typeof container.querySelectorAll === 'function' ? container : document;
+
     window.filterStatus = function (status) {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        root.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
             if (btn.dataset.filter === status) {
                 btn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
@@ -1506,7 +1508,7 @@ window.initSertifikatListPage = function (container) {
             }
         });
 
-        const cards = document.querySelectorAll('.sertifikat-card');
+        const cards = root.querySelectorAll('.sertifikat-card');
         let visibleCount = 0;
 
         cards.forEach(card => {
@@ -1519,10 +1521,10 @@ window.initSertifikatListPage = function (container) {
             }
         });
 
-        const noDataMessage = document.querySelector('.no-data-message');
+        const noDataMessage = root.querySelector('.no-data-message');
         if (visibleCount === 0) {
             if (!noDataMessage) {
-                const gridContainer = document.querySelector('.grid');
+                const gridContainer = root.querySelector('.grid');
                 if (gridContainer) {
                     const message = document.createElement('div');
                     message.className = 'no-data-message col-span-full text-center py-12 bg-gray-50 dark:bg-gray-900 dark:border-gray-900 rounded-xl border border-gray-200';
@@ -1536,7 +1538,7 @@ window.initSertifikatListPage = function (container) {
                 }
             }
         } else {
-            const existingMessage = document.querySelector('.no-data-message');
+            const existingMessage = root.querySelector('.no-data-message');
             if (existingMessage) {
                 existingMessage.remove();
             }
@@ -1545,7 +1547,7 @@ window.initSertifikatListPage = function (container) {
         localStorage.setItem('sertifikatFilter', status);
     };
 
-    container.querySelectorAll('.delete-btn').forEach(btn => {
+    root.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             const form = this.closest('form');

@@ -1,3 +1,6 @@
+import { driver as createDriver } from 'driver.js';
+import 'driver.js/dist/driver.css';
+
 /**
  * resources/js/modules/core/user-guide.js
  *
@@ -9,11 +12,13 @@ export function initUserGuide() {
     const guideBtnMobile = document.getElementById('userGuideButtonMobile');
     
     if (!guideBtn && !guideBtnMobile) return;
-    if (!window.driver || !window.driver.js || !window.driver.js.driver) {
+
+    const driverFactory = typeof createDriver === 'function' ? createDriver : window?.driver?.js?.driver;
+    if (typeof driverFactory !== 'function') {
         return;
     }
 
-    const driver = window.driver.js.driver;
+    const driver = driverFactory;
 
     // Detect page context
     let pageKey = 'generic';
