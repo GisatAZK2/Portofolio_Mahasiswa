@@ -174,6 +174,11 @@ function showPageInfo(message, type = "info", duration = 2000) {
         return;
     }
 
+    // Only show page-info toasts for authenticated users when the flag is present
+    if (typeof window.isAuthenticated !== 'undefined' && !window.isAuthenticated) {
+        return;
+    }
+
     const container = ensureToastContainer();
     // Prevent multiple page-info toasts stacking up — show only one at a time
     if (container && container.childElementCount > 0) {

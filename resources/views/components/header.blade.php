@@ -337,6 +337,11 @@
         </div>
     </div>
 </header>
+@auth
+    <script>window.isAuthenticated = true;</script>
+@else
+    <script>window.isAuthenticated = false;</script>
+@endauth
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
