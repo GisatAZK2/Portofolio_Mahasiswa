@@ -143,6 +143,17 @@ function setDismissedPageInfo(key) {
     localStorage.setItem(DISMISSED_PAGE_INFO_KEY, JSON.stringify(dismissed));
 }
 
+function ensureToastContainer() {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'fixed top-4 right-4 z-[99999] flex flex-col items-end gap-3 max-w-[min(92vw,24rem)] pointer-events-none';
+        document.body.appendChild(container);
+    }
+    return container;
+}
+
 // Fungsi untuk menampilkan toast page info
 function showPageInfo(message, type = "info", duration = 2000) {
     const lang = localStorage.getItem("lang") || "id";
@@ -157,15 +168,17 @@ function showPageInfo(message, type = "info", duration = 2000) {
         }
     }
 
-    if (messageKey) {
-        const dismissed = getDismissedPageInfo();
-        if (dismissed[messageKey]) {
-            return;
-        }
+    const toastId = messageKey || (typeof message === 'string' ? `toast:${type}:${message}` : `toast:${type}`);
+    const dismissed = getDismissedPageInfo();
+    if (dismissed[toastId]) {
+        return;
     }
 
-    const container = document.getElementById("toast-container");
-    if (!container) return;
+    const container = ensureToastContainer();
+    // Prevent multiple page-info toasts stacking up — show only one at a time
+    if (container && container.childElementCount > 0) {
+        return;
+    }
 
     const colors = {
         info: "text-black bg-gray-200 dark:bg-blue-900 dark:text-white",
@@ -195,8 +208,8 @@ function showPageInfo(message, type = "info", duration = 2000) {
     const toast = document.createElement("div");
 
     toast.className =
-        `flex pointer-events-auto mt-15 items-start gap-3 rounded-xl shadow-lg px-4 py-3 text-sm
-        transition-all duration-300 transform -translate-y-6 opacity-0
+        `flex pointer-events-auto items-start gap-3 rounded-xl shadow-lg px-4 py-3 text-sm
+        transition-all duration-300 transform -translate-y-3 opacity-0
         ${colors[type]}`;
 
     toast.innerHTML = `
@@ -208,18 +221,19 @@ function showPageInfo(message, type = "info", duration = 2000) {
     container.appendChild(toast);
 
     requestAnimationFrame(() => {
-        toast.classList.remove("translate-x-10", "opacity-0");
+        toast.classList.remove("-translate-y-3", "opacity-0");
+        toast.classList.add("translate-y-0");
     });
 
     const removeToast = (userClicked = false) => {
-        toast.classList.add("opacity-0", "translate-x-10");
+        toast.classList.add("opacity-0", "translate-y-2");
 
         setTimeout(() => {
             toast.remove();
         }, 300);
 
-        if (userClicked && messageKey) {
-            setDismissedPageInfo(messageKey);
+        if (userClicked) {
+            setDismissedPageInfo(toastId);
         }
     };
 

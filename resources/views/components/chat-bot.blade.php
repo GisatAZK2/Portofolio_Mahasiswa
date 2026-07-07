@@ -7,7 +7,7 @@
 
 <!-- BUBBLE NOTIFICATION -->
 <div id="notificationBubble"
-    class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 flex items-center gap-2 cursor-pointer transition-all duration-300 animate-bounce-subtle"
+    class="hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 items-center gap-2 cursor-pointer transition-all duration-300 animate-bounce-subtle"
     style="position: fixed !important; bottom: 200px !important; right: 24px !important; z-index: 10000 !important; max-width: 280px; transform-origin: bottom right;">
     <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
         <img src="{{ asset('assets/Logo.svg') }}" alt="POLMIND Logo" class="w-6 h-6 sm:w-5 sm:h-5 rounded-full">

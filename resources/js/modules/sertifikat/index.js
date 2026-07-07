@@ -193,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bubblePermanentlyClosed = true;
 
         if (notificationBubble) {
+            notificationBubble.classList.add('hidden');
             notificationBubble.style.display = 'none';
             notificationBubble.style.visibility = 'hidden';
         }
@@ -207,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const chatWidgetDismissed = localStorage.getItem('chatWidgetDismissed') === 'true';
         if (bubblePermanentlyClosed || chatWidgetDismissed) {
             if (notificationBubble) {
+                notificationBubble.classList.add('hidden');
                 notificationBubble.style.display = 'none';
                 notificationBubble.style.visibility = 'hidden';
             }
@@ -214,11 +216,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (notificationBubble) {
+            notificationBubble.classList.remove('hidden');
             notificationBubble.style.display = 'flex';
             notificationBubble.style.visibility = 'visible';
 
             setTimeout(() => {
                 if (notificationBubble && notificationBubble.style.display === 'flex') {
+                    notificationBubble.classList.add('hidden');
                     notificationBubble.style.display = 'none';
                 }
             }, 8000);
