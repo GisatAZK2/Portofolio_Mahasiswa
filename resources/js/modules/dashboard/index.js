@@ -224,8 +224,43 @@ window.updateCommentCount = async function (postinganId, delta) {
 // ==========================================
 // MODAL HELPERS (cp prefix = create post)
 // ==========================================
-window.cpOpenModal = function (id) { const el = document.getElementById(id); if (el) { el.classList.add('show'); document.body.style.overflow = 'hidden'; } };
-window.cpCloseModal = function (id) { const el = document.getElementById(id); if (el) { el.classList.remove('show'); document.body.style.overflow = ''; } };
+window.cpOpenModal = function (id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    requestAnimationFrame(() => {
+        const body = el.querySelector('.cp-modal-body');
+        if (body) {
+            body.scrollTop = 0;
+            if (body.scrollHeight > body.clientHeight) {
+                body.classList.add('cp-scroll-hint');
+                const hintAmount = Math.min(120, Math.max(60, Math.floor(body.clientHeight * 0.18)));
+                setTimeout(() => {
+                    body.scrollTo({ top: hintAmount, behavior: 'smooth' });
+                }, 100);
+                setTimeout(() => {
+                    body.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 900);
+                setTimeout(() => {
+                    body.classList.remove('cp-scroll-hint');
+                }, 2300);
+            }
+        }
+
+        const modal = el.querySelector('.cp-modal');
+        if (modal) {
+            modal.scrollTop = 0;
+            const firstInput = modal.querySelector('input, textarea, select, button');
+            if (firstInput) {
+                firstInput.focus({ preventScroll: true });
+            }
+        }
+    });
+};
+window.cpCloseModal = function (id) { const el = document.getElementById(id); if (el) { el.classList.remove('show'); document.body.style.overflow = ''; const body = el.querySelector('.cp-modal-body'); if (body) body.classList.remove('cp-scroll-hint'); } };
 window.cpOverlayClick = function (e, id) { if (e.target === document.getElementById(id)) window.cpCloseModal(id); };
 window.cpPreviewImage = function (e, imgId, wrapId) {
     const file = e.target.files[0]; if (!file) return;
