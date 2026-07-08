@@ -1882,6 +1882,7 @@ export const en = {
     scan_qr: 'Scan QR Code',
     scan_qr_desc: 'Scan with your phone to install',
     install_button: 'INSTALL',
+    install_button_hint: 'Or click the install button above',
     install_button_desc: 'Click to install directly on your device',
     keunggulan: 'Advantages',
     akses_cepat: '✓ Quick Access',

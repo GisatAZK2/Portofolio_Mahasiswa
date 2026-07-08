@@ -1899,6 +1899,7 @@ export const id = {
         scan_qr: 'Scan QR Code',
         scan_qr_desc: 'Scan dengan HP untuk install',
         install_button: 'INSTALL',
+        install_button_hint: 'Atau dengan klik tombol install di atas',
         install_button_desc: 'Klik untuk install langsung di perangkat Anda',
         keunggulan: 'Keunggulan',
         akses_cepat: '✓ Akses Cepat',

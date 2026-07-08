@@ -88,7 +88,8 @@
                         </svg>
                         <span data-translate="install_button" data-translate-page="get_app">INSTALL</span>
                     </button>
-                    <p class="text-xs text-blue-100 mt-3" data-translate="install_button_desc" data-translate-page="get_app">Klik untuk install langsung di perangkat Anda</p>
+                    <p class="text-xs text-white mt-3" data-translate="install_button_hint" data-translate-page="get_app">Atau dengan klik tombol install di atas</p>
+                    <p class="text-xs text-white mt-3" data-translate="install_button_desc" data-translate-page="get_app">Klik untuk install langsung di perangkat Anda</p>
                 </div>
 
                 <!-- Features -->
@@ -104,4 +105,20 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const qrcodeEl = document.getElementById('qrcode');
+        if (!qrcodeEl || typeof QRCode === 'undefined') return;
+
+        qrcodeEl.innerHTML = '';
+        new QRCode(qrcodeEl, {
+            text: '{{ url()->current() }}',
+            width: 180,
+            height: 180,
+            colorDark: '#111827',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    });
+</script>
 @endsection
