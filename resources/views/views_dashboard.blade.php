@@ -429,7 +429,7 @@
                 <div class="sidebar-column">
                     <div 
                         class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700 sticky top-6" data-pagination-group="learning_corner">
-                        <div class="flex items-center gap-2 mb-4">
+                        <div id="learning-corner-sidebar" class="flex items-center gap-2 mb-4">
                             <div class="w-1 h-5 bg-purple-600 rounded-full"></div>
                             <h3 class="text-base font-semibold text-purple-700 dark:text-purple-300"
                                 data-translate="learning_corner"

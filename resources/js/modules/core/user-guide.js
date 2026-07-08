@@ -161,6 +161,30 @@ export function initUserGuide() {
                     title: 'Statistik Sertifikat',
                     desc: 'Pantau total sertifikasi kompetensi Anda yang terdaftar.'
                 },
+                game_leaderboard: {
+                    title: 'Peringkat Permainan',
+                    desc: 'Buka leaderboard permainan jika ada konten game yang tersedia untuk melihat peringkat Anda.'
+                },
+                posts_section: {
+                    title: 'Postingan Mahasiswa',
+                    desc: 'Jelajahi feed postingan terbaru dari mahasiswa lain, termasuk komentar dan berbagi.'
+                },
+                projects_section: {
+                    title: 'Bagian Project',
+                    desc: 'Lihat daftar project yang sedang diposting dan buka detailnya lebih lanjut.'
+                },
+                certificates_section: {
+                    title: 'Bagian Sertifikat',
+                    desc: 'Temukan sertifikat kompetensi yang tersedia di dashboard Anda.'
+                },
+                learning_corner_section: {
+                    title: 'Learning Corner',
+                    desc: 'Pantau catatan belajar dan konten pembelajaran yang tampil di sidebar.'
+                },
+                dosen_carousel: {
+                    title: 'Daftar Dosen',
+                    desc: 'Lihat daftar dosen yang tersedia melalui carousel di sisi kanan dashboard.'
+                },
                 create_post: {
                     title: 'Bagikan Perihal Baru',
                     desc: 'Tulis artikel atau bagikan foto kegiatan seru Anda di sini.'
@@ -1210,11 +1234,26 @@ export function initUserGuide() {
                 if (document.getElementById('total-stk-wrapper')) {
                     pageSteps.push(step('#total-stk-wrapper', t.student_dashboard.stats_stk.title, t.student_dashboard.stats_stk.desc));
                 }
-                if (document.querySelector('.create-post-box')) {
-                    pageSteps.push(step('.create-post-box', t.student_dashboard.create_post.title, t.student_dashboard.create_post.desc));
+                if (document.querySelector('a[href*="game.leaderboard"]')) {
+                    pageSteps.push(step('a[href*="game.leaderboard"]', t.student_dashboard.game_leaderboard.title, t.student_dashboard.game_leaderboard.desc));
                 }
                 if (document.getElementById('postingan-section')) {
-                    pageSteps.push(step('#postingan-section', t.student_dashboard.posts.title, t.student_dashboard.posts.desc));
+                    pageSteps.push(step('#postingan-section', t.student_dashboard.posts_section.title, t.student_dashboard.posts_section.desc));
+                }
+                if (document.getElementById('projects-section')) {
+                    pageSteps.push(step('#projects-section', t.student_dashboard.projects_section.title, t.student_dashboard.projects_section.desc));
+                }
+                if (document.getElementById('sertifikat-section')) {
+                    pageSteps.push(step('#sertifikat-section', t.student_dashboard.certificates_section.title, t.student_dashboard.certificates_section.desc));
+                }
+                if (document.getElementById('learning-corner-sidebar')) {
+                    pageSteps.push(step('#learning-corner-sidebar', t.student_dashboard.learning_corner_section.title, t.student_dashboard.learning_corner_section.desc));
+                }
+                if (document.getElementById('dosenCarouselTrack')) {
+                    pageSteps.push(step('#dosenCarouselTrack', t.student_dashboard.dosen_carousel.title, t.student_dashboard.dosen_carousel.desc));
+                }
+                if (document.querySelector('.create-post-box')) {
+                    pageSteps.push(step('.create-post-box', t.student_dashboard.create_post.title, t.student_dashboard.create_post.desc));
                 }
                 break;
             }
