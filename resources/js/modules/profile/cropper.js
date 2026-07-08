@@ -81,6 +81,7 @@ window.confirmCrop = function () {
 let profileCropperInstance = null;
 let profileCropperFile = null;
 let profileCropperObjectUrl = null;
+let profileCropperMode = 'profile';
 
 export function initProfilePage() {
     const photoProfileInput = document.getElementById('photo_profile_input');
@@ -88,7 +89,7 @@ export function initProfilePage() {
         photoProfileInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (!file) return;
-            window.openProfileCropperModal(file);
+            window.openProfileCropperModal(file, 'profile');
         });
     }
     const bgInput = document.getElementById('background_input');
@@ -96,16 +97,7 @@ export function initProfilePage() {
         bgInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (ev) {
-                const coverDiv = document.querySelector('#actual-content .relative.h-48');
-                if (coverDiv) {
-                    coverDiv.style.backgroundImage = `url('${ev.target.result}')`;
-                    coverDiv.classList.add('bg-cover', 'bg-center');
-                }
-            };
-            reader.readAsDataURL(file);
-            document.getElementById('save-button-container')?.classList.remove('hidden');
+            window.openProfileCropperModal(file, 'cover');
         });
     }
     window.updatePreview?.();
@@ -114,22 +106,43 @@ export function initProfilePage() {
     if (skeleton && actualContent) { skeleton.classList.add('hidden'); actualContent.style.display = 'block'; }
 }
 
-window.openProfileCropperModal = function (file) {
+window.openProfileCropperModal = function (file, mode = 'profile') {
     const modal = document.getElementById('cropper-modal');
     const image = document.getElementById('cropper-image');
     const zoomRange = document.getElementById('cropper-zoom-range');
-    if (!modal || !image || !zoomRange) return;
+    const title = document.getElementById('cropper-title');
+    const desc = document.getElementById('cropper-desc');
+    const confirmBtn = document.getElementById('cropper-confirm-button');
+    if (!modal || !image || !zoomRange || !title || !desc || !confirmBtn) return;
     if (profileCropperInstance) { profileCropperInstance.destroy(); profileCropperInstance = null; }
+    profileCropperMode = mode;
     profileCropperFile = file;
     if (profileCropperObjectUrl) { URL.revokeObjectURL(profileCropperObjectUrl); profileCropperObjectUrl = null; }
     profileCropperObjectUrl = URL.createObjectURL(file);
     zoomRange.value = '1';
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    if (mode === 'cover') {
+        title.textContent = 'Sesuaikan Foto Cover';
+        desc.textContent = 'Pilih area lebar yang ingin ditampilkan sebagai cover.';
+        confirmBtn.textContent = 'Gunakan Cover';
+    } else {
+        title.textContent = 'Sesuaikan Foto Profil';
+        desc.textContent = 'Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.';
+        confirmBtn.textContent = 'Gunakan Foto';
+    }
     image.onload = function () {
+        const aspectRatio = mode === 'cover' ? 16 / 6 : 1;
         profileCropperInstance = new Cropper(image, {
-            aspectRatio: 1, viewMode: 1, movable: true, zoomable: true,
-            responsive: true, autoCropArea: 1, background: false, preview: '#cropper-preview-container',
+            aspectRatio,
+            viewMode: 1,
+            movable: true,
+            zoomable: true,
+            responsive: true,
+            autoCropArea: 1,
+            background: false,
+            preview: '#cropper-preview-container',
+            dragMode: 'move',
         });
     };
     image.src = profileCropperObjectUrl;
@@ -145,7 +158,8 @@ window.closeCropperModal = function () {
 };
 
 window.cancelProfileCropper = function () {
-    const input = document.getElementById('photo_profile_input');
+    const inputId = profileCropperMode === 'cover' ? 'background_input' : 'photo_profile_input';
+    const input = document.getElementById(inputId);
     if (input) input.value = '';
     window.closeCropperModal();
 };
@@ -170,26 +184,39 @@ window.confirmProfileCrop = function () {
     if (!profileCropperInstance || !profileCropperFile) return;
     const outputType = ['image/png', 'image/jpeg'].includes(profileCropperFile.type) ? profileCropperFile.type : 'image/jpeg';
     const outputExt = outputType === 'image/png' ? 'png' : 'jpg';
-    profileCropperInstance.getCroppedCanvas({ width: 512, height: 512, imageSmoothingQuality: 'high' }).toBlob(function (blob) {
+    const cropSize = profileCropperMode === 'cover' ? { width: 1600, height: 600 } : { width: 512, height: 512 };
+    profileCropperInstance.getCroppedCanvas({ ...cropSize, imageSmoothingQuality: 'high' }).toBlob(function (blob) {
         if (!blob) return;
         const fileName = profileCropperFile.name.replace(/\.[^/.]+$/, `.${outputExt}`);
         const croppedFile = new File([blob], fileName, { type: outputType });
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(croppedFile);
-        const input = document.getElementById('photo_profile_input');
+        const inputId = profileCropperMode === 'cover' ? 'background_input' : 'photo_profile_input';
+        const input = document.getElementById(inputId);
         if (input) input.files = dataTransfer.files;
-        const preview = document.getElementById('profile-preview');
-        const placeholder = document.getElementById('profile-preview-placeholder');
-        const objectUrl = URL.createObjectURL(blob);
-        if (preview) {
-            preview.src = objectUrl;
-        } else if (placeholder) {
-            const newImg = document.createElement('img');
-            newImg.id = 'profile-preview';
-            newImg.className = 'w-full h-full object-cover';
-            newImg.src = objectUrl;
-            placeholder.replaceWith(newImg);
+
+        if (profileCropperMode === 'cover') {
+            const objectUrl = URL.createObjectURL(blob);
+            const coverDiv = document.querySelector('#actual-content .relative.h-48');
+            if (coverDiv) {
+                coverDiv.style.backgroundImage = `url('${objectUrl}')`;
+                coverDiv.classList.add('bg-cover', 'bg-center');
+            }
+        } else {
+            const preview = document.getElementById('profile-preview');
+            const placeholder = document.getElementById('profile-preview-placeholder');
+            const objectUrl = URL.createObjectURL(blob);
+            if (preview) {
+                preview.src = objectUrl;
+            } else if (placeholder) {
+                const newImg = document.createElement('img');
+                newImg.id = 'profile-preview';
+                newImg.className = 'w-full h-full object-cover';
+                newImg.src = objectUrl;
+                placeholder.replaceWith(newImg);
+            }
         }
+
         document.getElementById('save-button-container')?.classList.remove('hidden');
         window.closeCropperModal();
     }, outputType, 0.92);

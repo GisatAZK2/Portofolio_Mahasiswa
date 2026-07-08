@@ -171,8 +171,8 @@
                                 <div class="w-full max-w-[42rem] rounded-3xl bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
                                     <div class="flex items-start justify-between gap-3 px-4 py-4 border-b border-gray-200 dark:border-gray-700">
                                         <div>
-                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-translate="cropper_title" data-translate-page="profile">Sesuaikan Foto Profil</h3>
-                                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" data-translate="cropper_desc" data-translate-page="profile">Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.</p>
+                                            <h3 id="cropper-title" class="text-lg font-semibold text-gray-900 dark:text-white" data-translate="cropper_title" data-translate-page="profile">Sesuaikan Foto Profil</h3>
+                                            <p id="cropper-desc" class="mt-1 text-sm text-gray-500 dark:text-gray-400" data-translate="cropper_desc" data-translate-page="profile">Posisikan dan perbesar gambar lalu pilih Gunakan Foto untuk melihat preview.</p>
                                         </div>
                                         <button type="button" onclick="closeCropperModal()" class="rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300 transition">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +206,7 @@
                                     </div>
                                     <div class="cropper-footer flex flex-col gap-3 sm:flex-row items-stretch justify-end border-t border-gray-200 dark:border-gray-700 px-5 py-4 bg-gray-50 dark:bg-gray-950/90">
                                         <button type="button" onclick="cancelProfileCropper()" class="w-full sm:w-auto rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition" data-translate="btn_cancel" data-translate-page="profile">Batal</button>
-                                        <button type="button" onclick="confirmProfileCrop()" class="w-full sm:w-auto rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition" data-translate="btn_use_photo" data-translate-page="profile">Gunakan Foto</button>
+                                        <button id="cropper-confirm-button" type="button" onclick="confirmProfileCrop()" class="w-full sm:w-auto rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition" data-translate="btn_use_photo" data-translate-page="profile">Gunakan Foto</button>
                                     </div>
                                 </div>
                             </div>
