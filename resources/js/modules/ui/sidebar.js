@@ -100,6 +100,22 @@ export function initSidebar() {
     });
 }
 
+window.toggleMinimalSidebar = function () {
+    const compact = document.body.classList.toggle('sidebar-compact');
+    localStorage.setItem('sidebarCompact', compact ? '1' : '0');
+};
+
+function initSidebarCompactMode() {
+    if (localStorage.getItem('sidebarCompact') === '1') {
+        document.body.classList.add('sidebar-compact');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initSidebar();
+    initSidebarCompactMode();
+});
+
 window.previewPhoto = function (event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -131,5 +147,3 @@ window.toggleDropdown = function (section) {
     menu.classList.toggle('hidden');
     arrow.classList.toggle('rotate-180');
 };
-
-document.addEventListener('DOMContentLoaded', initSidebar);

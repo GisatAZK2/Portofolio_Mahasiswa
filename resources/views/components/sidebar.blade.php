@@ -57,10 +57,17 @@ if (Auth::check()) {
             <img id="logo-zoom" class="cursor-pointer w-10 h-10 rounded-xl object-cover transition-all duration-300"
                 src="{{ asset('assets/Logo.svg') }}" alt="Logo">
         </div>
-        <div>
+        <div class="flex-1 min-w-0">
             <p class="text-gray-900 dark:text-white text-sm font-semibold leading-tight">PortofolioKu</p>
             <p class="text-gray-500 dark:text-gray-400 text-xs mt-0.5">Politeknik Mitra Industri</p>
         </div>
+        <button type="button" onclick="toggleMinimalSidebar()"
+            class="sidebar-toggle-button hidden lg:inline-flex items-center justify-center p-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            title="Toggle sidebar compact">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
     </div>
 
     {{-- ======================== SEARCH ======================== --}}
@@ -691,7 +698,7 @@ if (Auth::check()) {
                 @elseif(Auth::user()->role === 'dosen')
                     <span class="sb-badge-role dosen shrink-0">Dosen</span>
                 @endif
-                <svg :class="{ 'rotate-180': open }" class="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg :class="{ 'rotate-180': open }" class="sb-profile-arrow w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
