@@ -3,7 +3,7 @@
 @section('title', 'Project Saya')
 
 @section('content')
-    <div id="all-projects-container" data-page-info="all-projects" class="p-6 lg:p-8">
+    <div id="all-projects-container" data-page-info="popup.all_projects" class="p-6 lg:p-8">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
                 <h1 data-translate="project_saya" data-translate-page="project"

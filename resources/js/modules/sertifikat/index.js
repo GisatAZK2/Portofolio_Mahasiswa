@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'terima kasih': 'Sama-sama! Senang bisa membantu Anda 😊 Jika ada pertanyaan lain, jangan ragu untuk bertanya lagi ya!',
         'makasih': 'Sama-sama! Senang bisa membantu 😊',
         'bye': 'Sampai jumpa! 👋 Kembali lagi jika ada pertanyaan lain. Semoga harimu menyenangkan!',
-        'dimana': 'Polmind Berada Di MM2100, No. S85, Vasanta Innopark'
+        'dimana': 'Polmind Berada Di MM2100, Area Vasanta Innopark'
     };
 
     const quickQuestionsPool = [

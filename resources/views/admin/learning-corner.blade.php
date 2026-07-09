@@ -1,7 +1,7 @@
 @extends('Layout.Layout')
 @section('title', 'Learning Corner Saya')
 @section('content')
-    <div id="learning-corner-container" class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4" data-session-success="{{ session('success') }}">
+    <div id="learning-corner-container" class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4" data-session-success="{{ session('success') }}" data-page-info="popup.admin_mange_learning_corner">
         <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-200">Learning Corner Mahasiswa</h1>
             <p class="text-gray-600 dark:text-gray-200">

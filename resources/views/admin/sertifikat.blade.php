@@ -1,7 +1,7 @@
 ﻿@extends('Layout.Layout')
 @section('title', 'Sertifikat Saya')
 @section('content')
-    <div id="sertifikat-page-container" class="p-3 sm:p-6 lg:p-8 dark:bg-gray-700 rounded-2xl">
+    <div id="sertifikat-page-container" class="p-3 sm:p-6 lg:p-8 dark:bg-gray-700 rounded-2xl" data-page-info="popup.admin_mange_sertifikat">
 
         {{-- ===== HEADER ===== --}}
         <div class="mb-6">

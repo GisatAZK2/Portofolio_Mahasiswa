@@ -2,7 +2,7 @@
 @section('title', 'Kelola Angkatan')
 @section('content')
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6" data-page-info="popup.admin_mange_angkatan">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h2 class="text-xl sm:text-2xl font-bold dark:text-white" data-translate='title_agkt'

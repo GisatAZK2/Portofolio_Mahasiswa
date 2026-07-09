@@ -87,7 +87,7 @@
         }
     </style>
 
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 px-4 sm:px-6 lg:px-8" data-page-info="popup.admin_detail_prodi">
         <div class="max-w-7xl mx-auto">
             
             <!-- Header -->

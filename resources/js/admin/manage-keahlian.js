@@ -135,9 +135,6 @@
     // Page Info
     document.addEventListener('DOMContentLoaded', function () {
         if (document.getElementById('bulkDeleteForm')) {
-            if (typeof showPageInfo === 'function') {
-                showPageInfo('popup.manage_keahlian');
-            }
         }
     });
 })();

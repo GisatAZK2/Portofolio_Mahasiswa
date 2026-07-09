@@ -3,7 +3,7 @@
 @section('title', 'Edit Notifikasi')
 
 @section('content')
-<div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+<div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6" data-page-info="popup.admin_edit_notification">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit Notifikasi</h1>
         <a href="{{ route('admin.notifications.index', app()->getLocale()) }}"

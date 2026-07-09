@@ -2,7 +2,7 @@
 @section('title', 'Tambah Sertifikat Baru')
 
 @section('content')
-    <div class="min-h-screen">
+    <div class="min-h-screen" data-page-info="popup.admin_create_sertifikat">
         <div class="p-8">
             <!-- Header -->
             <div class="mb-8 text-center md:text-left">
@@ -90,7 +90,7 @@
                                 class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500">
                                 <option data-translate="all_jrs" data-translate-page="admin" value="">Semua Jurusan</option>
                                 @foreach($jurusans as $jrs)
-                                    <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
+                                    <option value="{{ $jrs->id_jurusan }}" {{ ($jurusan ?? '') == $jrs->id_jurusan ? 'selected' : '' }}>
                                         {{ $jrs->nama_jurusan }}
                                     </option>
                                 @endforeach
@@ -104,7 +104,7 @@
                                 <option data-translate="all_skill" data-translate-page="admin" value="">Semua Keahlian
                                 </option>
                                 @foreach($keahlians as $keahlianItem)
-                                    <option value="{{ $keahlianItem->id }}" {{ ($keahlian ?? '') == $keahlianItem->id ? 'selected' : '' }}>
+                                    <option value="{{ $keahlianItem->id_keahlian }}" {{ ($keahlian ?? '') == $keahlianItem->id_keahlian ? 'selected' : '' }}>
                                         {{ $keahlianItem->nama_keahlian }}
                                     </option>
                                 @endforeach

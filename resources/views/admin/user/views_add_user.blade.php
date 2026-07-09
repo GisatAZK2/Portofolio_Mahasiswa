@@ -2,7 +2,7 @@
 @section('title', 'Tambah User Baru')
 
 @section('content')
-<div id="add-user-form-container" class="add-user-wrapper" data-import-url="{{ route('admin.users.importExcel') }}" data-old-role="{{ old('role') }}" data-default-role="{{ (auth()->check() && auth()->user()->role === 'admin') ? 'admin' : '' }}">
+<div id="add-user-form-container" class="add-user-wrapper" data-import-url="{{ route('admin.users.importExcel') }}" data-old-role="{{ old('role') }}" data-default-role="{{ (auth()->check() && auth()->user()->role === 'admin') ? 'admin' : '' }}" data-page-info="popup.admin_add_user">
 
     {{-- ===== HEADER ===== --}}
     <div class="auw-header">

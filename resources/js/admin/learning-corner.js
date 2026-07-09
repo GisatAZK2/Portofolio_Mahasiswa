@@ -38,7 +38,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.admin_learning_corner");
-    }
 });

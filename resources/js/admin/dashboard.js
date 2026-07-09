@@ -174,8 +174,4 @@ document.addEventListener('DOMContentLoaded', function () {
         createSparkline('chart-lecturers', '#8B5CF6');
     }
 
-    // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.admin_dashboard");
-    }
 });

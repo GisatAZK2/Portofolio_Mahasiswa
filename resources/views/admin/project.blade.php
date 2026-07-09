@@ -1,7 +1,7 @@
 ﻿@extends('Layout.Layout')
 
 @section('content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-800 rounded-2xl py-4 sm:py-6 px-3 sm:px-6 lg:px-8" data-page-info="popup.admin_mange_projects">
         <div class="max-w-7xl mx-auto">
 
             @if(session('success'))

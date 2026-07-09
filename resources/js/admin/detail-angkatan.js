@@ -360,8 +360,4 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('filter-jurusan').addEventListener('change', applyFiltersMahasiswa);
     document.getElementById('filter-status').addEventListener('change', applyFiltersMahasiswa);
 
-    // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.detail_angkatan");
-    }
 });

@@ -1,7 +1,7 @@
 ﻿@extends('Layout.Layout')
 @section('title', 'Edit Project Mahasiswa')
 @section('content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950" data-page-info="popup.admin_edit_projects">
         <div class="p-4 md:p-8 max-w-7xl mx-auto">
            
             <!-- Header -->

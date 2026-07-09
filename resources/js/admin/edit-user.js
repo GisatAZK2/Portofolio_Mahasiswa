@@ -135,9 +135,6 @@
         }
 
         // ── Page Info ──
-        if (typeof showPageInfo === 'function') {
-            showPageInfo('popup.edit_user');
-        }
     }
 
     // Inisialisasi saat DOM siap dan setelah Turbo load

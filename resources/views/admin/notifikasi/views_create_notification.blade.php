@@ -3,7 +3,7 @@
 @section('title', 'Tambah Notifikasi')
 
 @section('content')
-<div id="notification-form-container" data-load-users-url="{{ route('admin.notifications.load-users', app()->getLocale()) }}?page=__PAGE__&search=__SEARCH__" class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+<div id="notification-form-container" data-load-users-url="{{ route('admin.notifications.load-users', app()->getLocale()) }}?page=__PAGE__&search=__SEARCH__" class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6" data-page-info="popup.admin_add_notification">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Tambah Notifikasi Baru</h1>
         <a href="{{ route('admin.notifications.index', app()->getLocale()) }}"

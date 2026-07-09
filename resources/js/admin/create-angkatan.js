@@ -18,8 +18,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.add_angkatan");
-    }
 });

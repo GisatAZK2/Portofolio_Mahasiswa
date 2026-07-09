@@ -3,7 +3,7 @@
 
 @section('content')
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" data-page-info="popup.admin_add_prodi">
         <div class="mb-6">
             <h2 class="text-2xl font-bold dark:text-white" data-translate="tambah_jurusan_title" data-translate-page="admin">Tambah Jurusan Baru</h2>
         </div>

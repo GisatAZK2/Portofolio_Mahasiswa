@@ -3,7 +3,7 @@
 @section('title', 'Edit User')
 
 @section('content')
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-4 py-6" data-page-info="popup.admin_edit_user">
         <div class="max-w-4xl mx-auto">
 
             {{-- Header --}}

@@ -3,7 +3,7 @@
 @section('title', 'Edit Sertifikat')
 
 @section('content')
-    <div id="sertifikat-edit-container" class="container mx-auto px-4 py-6">
+    <div id="sertifikat-edit-container" class="container mx-auto px-4 py-6" data-page-info="popup.admin_edit_sertifikat">
         <div class="max-w-4xl mx-auto">
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">

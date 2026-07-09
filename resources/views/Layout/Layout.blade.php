@@ -294,3 +294,36 @@
 </body>
 
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            if (!localStorage.getItem('lang')) {
+                var htmlLang = document.documentElement.lang || 'id';
+                localStorage.setItem('lang', htmlLang);
+            }
+
+            var el = document.querySelector('[data-page-info]') || document.getElementById('page-info') || document.getElementById('flash-message');
+            if (!el) return;
+
+            var key = el.getAttribute('data-page-info') || (el.dataset && el.dataset.pageInfo) || '';
+            var type = el.getAttribute('data-page-info-type') || (el.dataset && el.dataset.pageInfoType) || 'info';
+            var duration = parseInt(el.getAttribute('data-page-info-duration') || (el.dataset && el.dataset.pageInfoDuration)) || 3000;
+
+            if (!key && el.id === 'flash-message') {
+                if (el.dataset && el.dataset.success) {
+                    key = el.dataset.success;
+                    type = 'success';
+                } else if (el.dataset && el.dataset.error) {
+                    key = el.dataset.error;
+                    type = 'error';
+                }
+            }
+
+            if (key && typeof window.showPageInfo === 'function') {
+                window.showPageInfo(key, type, duration);
+            }
+        } catch (e) {
+            console.error('page-info loader error', e);
+        }
+    });
+</script>

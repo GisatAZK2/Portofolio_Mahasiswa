@@ -266,9 +266,6 @@ function initSertifikatListPage() {
     updateSelectedCount();
 
     // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.admin_sertifikat");
-    }
 }
 
 // Export untuk dipanggil dari app.js

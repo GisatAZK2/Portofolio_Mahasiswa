@@ -615,9 +615,6 @@
             if (flashInfo) Swal.fire({ icon: 'info', title: 'Informasi', text: flashInfo, confirmButtonColor: '#3b82f6' });
         }
 
-        // Page info popup
-        if (typeof showPageInfo === 'function') showPageInfo('popup.manage_users');
     });
 
 })();
-

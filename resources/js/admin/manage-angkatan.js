@@ -118,13 +118,5 @@
     document.addEventListener('DOMContentLoaded', initAngkatanPage);
     document.addEventListener('turbo:load', initAngkatanPage);
 
-    // Tampilkan popup info halaman (jika fungsi showPageInfo tersedia)
-    document.addEventListener('DOMContentLoaded', function () {
-        if (document.getElementById('bulkDeleteForm')) {
-            if (typeof showPageInfo === 'function') {
-                showPageInfo('popup.manage_angkatan');
-            }
-        }
-    });
 })();
 

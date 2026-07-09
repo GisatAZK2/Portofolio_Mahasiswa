@@ -154,7 +154,4 @@ document.addEventListener('DOMContentLoaded', function() {
     window.updateSelectedProjects();
 
     // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.admin_projects");
-    }
 });

@@ -58,7 +58,7 @@
             50% { opacity: 0.6; }
         }
     </style>
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 px-4 sm:px-6 lg:px-8" data-page-info="popup.admin_dashboard">
         <div class="max-w-7xl mx-auto">
             <div id="header-skeleton" class="space-y-4 mb-10">
                 <div class="skeleton h-8 w-1/3"></div>

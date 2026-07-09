@@ -3,7 +3,7 @@
 @section('title', 'Kelola Notifikasi')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-3 sm:px-4">
+<div class="max-w-7xl mx-auto px-3 sm:px-4" data-page-info="popup.admin_manage_notification">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Kelola Notifikasi</h1>

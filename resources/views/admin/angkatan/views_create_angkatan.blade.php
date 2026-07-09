@@ -2,7 +2,7 @@
 @section('title', 'Tambah Angkatan')
 @section('content')
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" data-page-info="popup.admin_add_angkatan">
         <div class="mb-6">
             <h2 class="text-2xl font-bold dark:text-white" data-translate="tambah_angkatan" data-translate-page="admin">Tambah Angkatan Baru</h2>
         </div>

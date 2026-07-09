@@ -261,8 +261,4 @@ document.addEventListener('DOMContentLoaded', function () {
     if (jurusanFilter) jurusanFilter.addEventListener('change', filterTableRows);
     if (keahlianFilter) keahlianFilter.addEventListener('change', filterTableRows);
 
-    // ===== PAGE INFO =====
-    if (typeof showPageInfo === 'function') {
-        showPageInfo("popup.add_sertifikat");
-    }
 });

@@ -381,8 +381,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addImportButton();
-
-    if (typeof showPageInfo === 'function') {
-        showPageInfo('popup.add_user');
-    }
 });
