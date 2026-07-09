@@ -30,7 +30,7 @@
             }
         }
     </style>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6" data-page-info="popup.admin_manage_Keahlian_tambahan">
+    <div id="manage-keahlian-tambahan" class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6" data-page-info="popup.admin_manage_Keahlian_tambahan">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>

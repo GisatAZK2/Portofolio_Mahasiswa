@@ -709,13 +709,12 @@
             <input type="hidden" name="status_pengajuan" id="hidden_status_pengajuan">
             <input type="hidden" name="keterangan_tolak" id="hidden_keterangan_tolak">
         </form>
+        {{-- Flash message data for JS (dibaca oleh app.js) --}}
+        <div id="manage-users-data"
+             data-flash-success="{{ session('success') ?? '' }}"
+             data-flash-error="{{ session('error') ?? '' }}"
+             data-flash-info="{{ session('info') ?? '' }}"
+             class="hidden"></div>
     </div>
-
-    {{-- Flash message data for JS (dibaca oleh app.js) --}}
-    <div id="manage-users-data"
-         data-flash-success="{{ session('success') ?? '' }}"
-         data-flash-error="{{ session('error') ?? '' }}"
-         data-flash-info="{{ session('info') ?? '' }}"
-         class="hidden"></div>
 
 @endsection

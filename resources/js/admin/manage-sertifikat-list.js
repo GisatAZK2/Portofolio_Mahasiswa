@@ -30,7 +30,7 @@ function initSertifikatListPage() {
     const selectedIdsInput = document.getElementById('selectedIdsInputSertifikat');
 
     function getCertificateCheckboxes() {
-        return document.querySelectorAll('.certificate-checkbox');
+        return container.querySelectorAll('.certificate-checkbox');
     }
 
     function updateCardBorder(checkbox) {
@@ -48,7 +48,7 @@ function initSertifikatListPage() {
 
     function updateSelectedCount() {
         const allCheckboxes = getCertificateCheckboxes();
-        const checked = document.querySelectorAll('.certificate-checkbox:checked');
+        const checked = container.querySelectorAll('.certificate-checkbox:checked');
         const count = checked.length;
         const total = allCheckboxes.length;
 
@@ -118,7 +118,7 @@ function initSertifikatListPage() {
     if (bulkDeleteBtn) {
         bulkDeleteBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            const checkedCount = document.querySelectorAll('.certificate-checkbox:checked').length;
+            const checkedCount = container.querySelectorAll('.certificate-checkbox:checked').length;
             if (checkedCount === 0) return;
 
             const confirmed = await Swal.fire({
@@ -138,7 +138,7 @@ function initSertifikatListPage() {
             Swal.fire({ title: 'Menghapus...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
 
             try {
-                const ids = Array.from(document.querySelectorAll('.certificate-checkbox:checked')).map(cb => cb.value);
+                const ids = Array.from(container.querySelectorAll('.certificate-checkbox:checked')).map(cb => cb.value);
                 const locale = document.querySelector('html').getAttribute('lang') || 'id';
                 const response = await fetch(`/${locale}/admin/manageSertifikat/bulk-destroy`, {
                     method: 'DELETE',
@@ -164,7 +164,7 @@ function initSertifikatListPage() {
     if (bulkApproveBtn) {
         bulkApproveBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            const checkedCount = document.querySelectorAll('.certificate-checkbox:checked').length;
+            const checkedCount = container.querySelectorAll('.certificate-checkbox:checked').length;
             if (checkedCount === 0) return;
 
             const confirmed = await Swal.fire({
@@ -184,7 +184,7 @@ function initSertifikatListPage() {
             Swal.fire({ title: 'Memproses...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
 
             try {
-                const ids = Array.from(document.querySelectorAll('.certificate-checkbox:checked')).map(cb => cb.value);
+                const ids = Array.from(container.querySelectorAll('.certificate-checkbox:checked')).map(cb => cb.value);
                 const locale = document.querySelector('html').getAttribute('lang') || 'id';
                 const response = await fetch(`/${locale}/admin/manageSertifikat/bulk-approve`, {
                     method: 'PATCH',
@@ -207,7 +207,7 @@ function initSertifikatListPage() {
     }
 
     // ===== APPROVE SINGLE =====
-    document.querySelectorAll('.approve-btn').forEach(button => {
+    container.querySelectorAll('.approve-btn').forEach(button => {
         button.addEventListener('click', async function (e) {
             e.preventDefault();
             const confirmed = await Swal.fire({
@@ -229,18 +229,21 @@ function initSertifikatListPage() {
     });
 
     // ===== REJECT MODAL =====
-    document.querySelectorAll('.reject-btn').forEach(button => {
+    container.querySelectorAll('.reject-btn').forEach(button => {
         button.addEventListener('click', function () {
-            document.getElementById(`rejectModal-${this.dataset.id}`).classList.remove('hidden');
+            const modal = container.querySelector(`#rejectModal-${this.dataset.id}`);
+            if (modal) modal.classList.remove('hidden');
         });
     });
-    document.querySelectorAll('.cancel-reject').forEach(button => {
+    container.querySelectorAll('.cancel-reject').forEach(button => {
         button.addEventListener('click', function () {
-            this.closest('.fixed').classList.add('hidden');
+            const fixed = this.closest('.fixed');
+            if (fixed && container.contains(fixed)) fixed.classList.add('hidden');
         });
     });
-    window.addEventListener('click', function (e) {
-        if (e.target.classList.contains('fixed')) {
+    // Handle outside clicks only for modals inside this container
+    container.addEventListener('click', function (e) {
+        if (e.target.classList.contains('fixed') && container.contains(e.target)) {
             e.target.classList.add('hidden');
         }
     });

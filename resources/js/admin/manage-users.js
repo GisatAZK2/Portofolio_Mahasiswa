@@ -12,9 +12,9 @@
     let allEmailsVisible = true;
 
     // ============ EXPORT FUNCTIONS ============
-    function getExportData() {
+    function getExportData(root) {
         const users = [];
-        const allItems = document.querySelectorAll('.paginated-item');
+        const allItems = root.querySelectorAll('.paginated-item');
         allItems.forEach(row => {
             let userData = {};
             const desktopCells = row.querySelectorAll('td');
@@ -122,7 +122,8 @@
     }
 
     window.exportToExcel = function () {
-        const users = getExportData();
+        const root = document;
+        const users = getExportData(root);
         if (users.length === 0) {
             Swal.fire({ icon: 'warning', title: 'Tidak Ada Data', text: 'Tidak ada data pengguna yang dapat diexport.', confirmButtonColor: '#3b82f6' });
             return;
@@ -147,7 +148,8 @@
     };
 
     window.exportToWord = function () {
-        const users = getExportData();
+        const root = document;
+        const users = getExportData(root);
         if (users.length === 0) {
             Swal.fire({ icon: 'warning', title: 'Tidak Ada Data', text: 'Tidak ada data pengguna yang dapat diexport.', confirmButtonColor: '#3b82f6' });
             return;
@@ -176,14 +178,16 @@
 
     // ============ EMAIL TOGGLE FUNCTIONS ============
     window.toggleIndividualEmailVisibility = function (button, isMobile = false) {
+        const root = document;
         let emailCell, eyeShow, eyeHide;
         if (isMobile) {
             const wrapper = button.closest('.flex-1');
-            emailCell = wrapper.querySelector('.email-cell-mobile');
+            emailCell = wrapper ? wrapper.querySelector('.email-cell-mobile') : null;
             eyeShow = button.querySelector('.email-eye-show-mobile');
             eyeHide = button.querySelector('.email-eye-hide-mobile');
         } else {
-            emailCell = button.previousElementSibling;
+            // prefer local previous sibling within same root
+            emailCell = button.previousElementSibling && root.contains(button.previousElementSibling) ? button.previousElementSibling : null;
             eyeShow = button.querySelector('.email-eye-show');
             eyeHide = button.querySelector('.email-eye-hide');
         }
@@ -201,13 +205,15 @@
 
     function toggleAllEmailsVisibility() {
         allEmailsVisible = !allEmailsVisible;
-        const headerEyeShow = document.getElementById('header-eye-icon-show');
-        const headerEyeHide = document.getElementById('header-eye-icon-hide');
+        const root = document;
+        const headerEyeShow = root.querySelector('#header-eye-icon-show');
+        const headerEyeHide = root.querySelector('#header-eye-icon-hide');
 
-        document.querySelectorAll('.email-toggle-btn').forEach(btn => {
-            const emailCell = btn.previousElementSibling;
+        root.querySelectorAll('.email-toggle-btn').forEach(btn => {
+            const emailCell = btn.previousElementSibling && root.contains(btn.previousElementSibling) ? btn.previousElementSibling : null;
             const eyeShow = btn.querySelector('.email-eye-show');
             const eyeHide = btn.querySelector('.email-eye-hide');
+            if (!emailCell) return;
             if (allEmailsVisible) {
                 emailCell.textContent = emailCell.dataset.email;
                 emailCell.title = emailCell.dataset.email;
@@ -221,11 +227,12 @@
             }
         });
 
-        document.querySelectorAll('.email-toggle-btn-mobile').forEach(btn => {
+        root.querySelectorAll('.email-toggle-btn-mobile').forEach(btn => {
             const wrapper = btn.closest('.flex-1');
-            const emailCell = wrapper.querySelector('.email-cell-mobile');
+            const emailCell = wrapper ? wrapper.querySelector('.email-cell-mobile') : null;
             const eyeShow = btn.querySelector('.email-eye-show-mobile');
             const eyeHide = btn.querySelector('.email-eye-hide-mobile');
+            if (!emailCell) return;
             if (allEmailsVisible) {
                 emailCell.textContent = emailCell.dataset.email;
                 emailCell.title = emailCell.dataset.email;
@@ -248,30 +255,30 @@
     // ============ CHECKBOX & SELECT ALL ============
     let selectedIds = [];
 
-    function getAllCheckboxes() {
-        return Array.from(document.querySelectorAll('.item-checkbox'));
+    function getAllCheckboxes(root) {
+        return Array.from(root.querySelectorAll('.item-checkbox'));
     }
 
-    function getVisibleCheckboxes() {
-        return getAllCheckboxes().filter(checkbox => checkbox.offsetParent !== null);
+    function getVisibleCheckboxes(root) {
+        return getAllCheckboxes(root).filter(checkbox => checkbox.offsetParent !== null);
     }
 
-    function setCheckboxStateByValue(value, checked) {
-        getAllCheckboxes().forEach(checkbox => {
+    function setCheckboxStateByValue(root, value, checked) {
+        getAllCheckboxes(root).forEach(checkbox => {
             if (checkbox.value === value) checkbox.checked = checked;
         });
     }
 
-    function updateSelectedIds() {
+    function updateSelectedIds(root) {
         const selectedSet = new Set();
-        getAllCheckboxes().forEach(checkbox => {
+        getAllCheckboxes(root).forEach(checkbox => {
             if (checkbox.checked) selectedSet.add(checkbox.value);
         });
         selectedIds = Array.from(selectedSet);
-        const totalSelectedEl = document.getElementById('totalSelected');
+        const totalSelectedEl = root.querySelector('#totalSelected');
         if (totalSelectedEl) totalSelectedEl.textContent = selectedIds.length;
 
-        const bulkForm = document.getElementById('bulkDeleteForm');
+        const bulkForm = root.querySelector('#bulkDeleteForm');
         if (bulkForm) {
             bulkForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
             selectedIds.forEach(id => {
@@ -283,7 +290,7 @@
             });
         }
 
-        const bulkApproveForm = document.getElementById('bulkApproveForm');
+        const bulkApproveForm = root.querySelector('#bulkApproveForm');
         if (bulkApproveForm) {
             bulkApproveForm.querySelectorAll('input[name="selected_ids[]"]').forEach(input => input.remove());
             selectedIds.forEach(id => {
@@ -295,13 +302,13 @@
             });
         }
 
-        const allCheckboxes = getAllCheckboxes();
+        const allCheckboxes = getAllCheckboxes(root);
         const allUniqueIds = [...new Set(allCheckboxes.map(cb => cb.value))];
-        const visibleCheckboxes = getVisibleCheckboxes();
+        const visibleCheckboxes = getVisibleCheckboxes(root);
         const visibleUniqueIds = [...new Set(visibleCheckboxes.map(cb => cb.value))];
 
-        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-        const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
+        const selectAllCheckbox = root.querySelector('#selectAllCheckbox');
+        const tableSelectAllCheckbox = root.querySelector('#tableSelectAllCheckbox');
 
         if (selectAllCheckbox) {
             if (selectedIds.length === allUniqueIds.length && allUniqueIds.length > 0) {
@@ -330,13 +337,13 @@
             }
         }
 
-        const mobileDeleteBtn = document.getElementById('mobileBulkDeleteBtn');
-        const mobileApproveBtn = document.getElementById('mobileBulkApproveBtn');
-        const desktopDeleteBtn = document.getElementById('desktopBulkDeleteBtn');
-        const desktopApproveBtn = document.getElementById('desktopBulkApproveBtn');
+        const mobileDeleteBtn = root.querySelector('#mobileBulkDeleteBtn');
+        const mobileApproveBtn = root.querySelector('#mobileBulkApproveBtn');
+        const desktopDeleteBtn = root.querySelector('#desktopBulkDeleteBtn');
+        const desktopApproveBtn = root.querySelector('#desktopBulkApproveBtn');
         const enable = selectedIds.length > 0;
 
-        const selectedCheckboxes = getAllCheckboxes().filter(cb => selectedIds.includes(cb.value));
+        const selectedCheckboxes = getAllCheckboxes(root).filter(cb => selectedIds.includes(cb.value));
         const hasPending = selectedCheckboxes.some(cb => cb.dataset.status === 'Sedang Di Ajukan');
 
         const approveEnable = enable && hasPending;
@@ -363,14 +370,16 @@
     }
 
     window.toggleAllUsers = function (source, onlyVisible = false) {
-        const targetCheckboxes = onlyVisible ? getVisibleCheckboxes() : getAllCheckboxes();
+        const root = document;
+        const targetCheckboxes = onlyVisible ? getVisibleCheckboxes(root) : getAllCheckboxes(root);
         const targetValues = [...new Set(targetCheckboxes.map(cb => cb.value))];
-        targetValues.forEach(value => setCheckboxStateByValue(value, source.checked));
-        updateSelectedIds();
+        targetValues.forEach(value => setCheckboxStateByValue(root, value, source.checked));
+        updateSelectedIds(root);
     };
 
     window.confirmBulkDelete = function () {
-        updateSelectedIds();
+        const root = document;
+        updateSelectedIds(root);
         if (selectedIds.length === 0) {
             Swal.fire({ icon: 'warning', title: 'Tidak Ada Data Dipilih', text: 'Silakan pilih minimal satu pengguna.', confirmButtonColor: '#3b82f6' });
             return;
@@ -386,12 +395,13 @@
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {
-            if (result.isConfirmed) document.getElementById('bulkDeleteForm').submit();
+            if (result.isConfirmed) root.querySelector('#bulkDeleteForm')?.submit();
         });
     };
 
     window.confirmBulkApprove = function () {
-        updateSelectedIds();
+        const root = document;
+        updateSelectedIds(root);
         if (selectedIds.length === 0) {
             Swal.fire({ icon: 'warning', title: 'Tidak Ada Data Dipilih', text: 'Silakan pilih minimal satu pengguna.', confirmButtonColor: '#3b82f6' });
             return;
@@ -407,7 +417,7 @@
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {
-            if (result.isConfirmed) document.getElementById('bulkApproveForm').submit();
+            if (result.isConfirmed) root.querySelector('#bulkApproveForm')?.submit();
         });
     };
 
@@ -566,14 +576,16 @@
     // ============ INITIALIZATION ============
     document.addEventListener('DOMContentLoaded', function () {
         // Hanya jalankan jika elemen halaman manage-users ada
-        if (!document.getElementById('manage-users-data')) return;
+        const pageData = document.getElementById('manage-users-data');
+        if (!pageData) return;
+        const root = document;
 
         // Email header toggle
-        const emailHeaderToggle = document.getElementById('emailHeaderToggle');
+        const emailHeaderToggle = root.querySelector('#emailHeaderToggle');
         if (emailHeaderToggle) emailHeaderToggle.addEventListener('click', toggleAllEmailsVisibility);
 
         // Desktop email toggle buttons
-        document.querySelectorAll('.email-toggle-btn').forEach(btn => {
+        root.querySelectorAll('.email-toggle-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 window.toggleIndividualEmailVisibility(this, false);
@@ -581,31 +593,30 @@
         });
 
         // Mobile email toggle buttons
-        document.querySelectorAll('.email-toggle-btn-mobile').forEach(btn => {
+        root.querySelectorAll('.email-toggle-btn-mobile').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 window.toggleIndividualEmailVisibility(this, true);
             });
         });
 
-        updateSelectedIds();
+        updateSelectedIds(root);
         updateClientPagination();
 
-        document.addEventListener('change', function (event) {
+        root.addEventListener('change', function (event) {
             if (event.target instanceof HTMLInputElement && event.target.classList.contains('item-checkbox')) {
-                setCheckboxStateByValue(event.target.value, event.target.checked);
-                updateSelectedIds();
+                setCheckboxStateByValue(root, event.target.value, event.target.checked);
+                updateSelectedIds(root);
             }
         });
 
-        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        const selectAllCheckbox = root.querySelector('#selectAllCheckbox');
         if (selectAllCheckbox) selectAllCheckbox.addEventListener('change', function () { window.toggleAllUsers(this, false); });
 
-        const tableSelectAllCheckbox = document.getElementById('tableSelectAllCheckbox');
+        const tableSelectAllCheckbox = root.querySelector('#tableSelectAllCheckbox');
         if (tableSelectAllCheckbox) tableSelectAllCheckbox.addEventListener('change', function () { window.toggleAllUsers(this, true); });
 
         // Flash messages dibaca dari data attribute (bukan dari @if Blade)
-        const pageData = document.getElementById('manage-users-data');
         if (pageData) {
             const flashSuccess = pageData.dataset.flashSuccess;
             const flashError = pageData.dataset.flashError;

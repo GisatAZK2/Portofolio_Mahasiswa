@@ -162,7 +162,7 @@ window.runPageInitializers = function () {
     const projectEditContainer = document.getElementById('project-edit-container');
     if (projectEditContainer) window.initProjectEditPage?.(projectEditContainer);
     // Sertifikat
-    const sertifikatListContainer = document.getElementById('sertifikat-list-container');
+    const sertifikatListContainer = document.getElementById('sertifikat-page-container');
     if (sertifikatListContainer) window.initSertifikatListPage?.(sertifikatListContainer);
     const sertifikatUserContainer = document.getElementById('sertifikat-user-container');
     if (sertifikatUserContainer) window.initSertifikatUserPage?.(sertifikatUserContainer);
