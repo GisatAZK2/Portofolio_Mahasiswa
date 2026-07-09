@@ -588,7 +588,7 @@
         root.querySelectorAll('.email-toggle-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
-                window.toggleIndividualEmailVisibility(this, false);
+                window.toggleIndividualEmailVisibility(btn, false);
             });
         });
 
@@ -596,7 +596,7 @@
         root.querySelectorAll('.email-toggle-btn-mobile').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
-                window.toggleIndividualEmailVisibility(this, true);
+                window.toggleIndividualEmailVisibility(btn, true);
             });
         });
 
@@ -611,10 +611,18 @@
         });
 
         const selectAllCheckbox = root.querySelector('#selectAllCheckbox');
-        if (selectAllCheckbox) selectAllCheckbox.addEventListener('change', function () { window.toggleAllUsers(this, false); });
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function () {
+                window.toggleAllUsers(selectAllCheckbox, false);
+            });
+        }
 
         const tableSelectAllCheckbox = root.querySelector('#tableSelectAllCheckbox');
-        if (tableSelectAllCheckbox) tableSelectAllCheckbox.addEventListener('change', function () { window.toggleAllUsers(this, true); });
+        if (tableSelectAllCheckbox) {
+            tableSelectAllCheckbox.addEventListener('change', function () {
+                window.toggleAllUsers(tableSelectAllCheckbox, true);
+            });
+        }
 
         // Flash messages dibaca dari data attribute (bukan dari @if Blade)
         if (pageData) {

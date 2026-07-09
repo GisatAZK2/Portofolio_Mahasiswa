@@ -10,7 +10,8 @@ function getCurrentLocale() {
 }
 
 (function () {
-    const root = document.getElementById('keahlian-tambahan-page') || document.getElementById('manage-keahlian-tambahan') || document.body;
+    const root = document.getElementById('keahlian-tambahan-page') || document.getElementById('manage-keahlian-tambahan');
+    if (!root) return;
 
     window.openApproveModal = function(userId, userName) {
         const locale = getCurrentLocale();
