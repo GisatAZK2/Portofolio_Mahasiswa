@@ -71,8 +71,8 @@
                     <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
                         Dashboard Admin
                     </h1>
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">
-                        Selamat datang kembali, <span class="font-medium text-indigo-600 dark:text-indigo-400">{{ Auth::user()->nama_mahasiswa ?? Auth::user()->name ?? 'Admin' }}</span>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400" >
+                        <span data-translate="admin_dashboard_welcome" data-translate-page="admin">Selamat datang kembali,</span> <span class="font-medium text-indigo-600 dark:text-indigo-400">{{ Auth::user()->nama_mahasiswa ?? Auth::user()->name ?? 'Admin' }}</span>
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" data-translate="admin_dashboard_desc" data-translate-page="admin">
                         Kelola dashboard admin Anda di sini.

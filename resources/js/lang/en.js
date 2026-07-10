@@ -939,6 +939,7 @@ export const en = {
     grafik_status_mahasiswa: 'Student Status Chart',
     daftar_mahasiswa: 'Student List',
     tidak_ada_mahasiswa_prodi: 'No students in this department.',
+    admin_dashboard_welcome : 'Welcome Back, ',
     //Halmaan tambah user
     info_adduser: 'Basic Information',
     nm_lgkp: 'Full Name',

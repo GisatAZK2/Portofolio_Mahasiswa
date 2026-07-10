@@ -785,6 +785,7 @@ export const id = {
         cari_nama_mahasiswa: 'Cari nama mahasiswa...',
         aksi: 'Aksi',
         tidak_ada_data_jurusan: 'Tidak ada data Jurusan',
+        admin_dashboard_welcome : 'Selamat Datang Kembali, ',
         edit_jurusan: 'Edit Jurusan',
         hapus_jurusan: 'Hapus Jurusan',
         hapus_jurusan_prompt: 'Apakah Anda yakin ingin menghapus jurusan',
