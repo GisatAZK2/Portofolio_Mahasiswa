@@ -16,7 +16,12 @@ function getCurrentLang() {
 function translate(key) {
     const lang = getCurrentLang();
     return getTranslation(lang, key) || key;
-}                    
+}
+
+function canShowPageInfo() {
+    const hasPageInfoTarget = document.querySelector('[data-page-info], [data-info-page]');
+    return window.isAuthenticated === true && !!hasPageInfoTarget;
+}
 
 const t = translate;
 
@@ -156,6 +161,10 @@ function ensureToastContainer() {
 
 // Fungsi untuk menampilkan toast page info
 function showPageInfo(message, type = "info", duration = 2000) {
+    if (!canShowPageInfo()) {
+        return;
+    }
+
     const lang = localStorage.getItem("lang") || "id";
     let messageKey = null;
     const originalMessage = message;

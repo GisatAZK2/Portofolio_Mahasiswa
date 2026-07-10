@@ -190,26 +190,26 @@
     <div id="editModal" class="fixed inset-0 hidden overflow-y-auto h-full w-full z-50">
         <div class="relative top-20 mx-auto p-5 border w-11/12 sm:w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div class="mt-3">
-                <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4">Edit Angkatan</h3>
+                <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4" data-translate="edit_angkatan" data-translate-page="admin">Edit Angkatan</h3>
                 <form id="editForm" method="POST">
                     @csrf
                     @method('PATCH')
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" data-translate="edit_nama_angkatan" data-translate-page="admin">
                             Nama Angkatan
                         </label>
                         <input type="text" name="nama_angkatan" id="edit_nama" required
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white">
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" data-translate="edit_tahun_masuk_angkatan" data-translate-page="admin">
                             Tahun Masuk
                         </label>
                         <input type="date" name="tahun_masuk" id="edit_masuk" required
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white">
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" data-translate="edit_tahun_keluar_angkatan" data-translate-page="admin">
                             Tahun Keluar
                         </label>
                         <input type="date" name="tahun_keluar" id="edit_keluar"
@@ -218,11 +218,11 @@
                     <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
                         <button type="button" onclick="closeModalAngkatan()"
                             class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 w-full sm:w-auto">
-                            Batal
+                            <P data-translate="cancel" data-translate-page="admin">Batal</P>
                         </button>
                         <button type="submit"
                             class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-full sm:w-auto">
-                            Simpan
+                            <P data-translate="save" data-translate-page="admin">Simpan</P>
                         </button>
                     </div>
                 </form>

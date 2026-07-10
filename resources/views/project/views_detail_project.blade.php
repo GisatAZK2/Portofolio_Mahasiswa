@@ -2,7 +2,7 @@
 @section('title', 'Detail Proyek')
 @section('content')
     <!-- CONTENT -->
-    <div id="project-detail-container" data-page-info="project-detail" class="min-h-screen bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
+    <div id="project-detail-container" data-page-info="popup.project_detail" class="min-h-screen bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
         <div class="p-4 sm:p-6 lg:p-10 space-y-6 sm:space-y-8 lg:space-y-10 max-w-7xl mx-auto">
 
             <!-- PROJECT CARD -->

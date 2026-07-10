@@ -460,11 +460,6 @@
                                 <tbody id="previewBody"></tbody>
                             </table>
                         </div>
-                        <div class="auw-excel-apply-row">
-                            <button type="button" onclick="applyExcelData()" class="auw-btn-apply">
-                                Terapkan Data ke Form
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>{{-- /Excel Import --}}

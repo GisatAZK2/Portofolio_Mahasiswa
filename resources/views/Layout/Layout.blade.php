@@ -302,10 +302,12 @@
                 localStorage.setItem('lang', htmlLang);
             }
 
-            var el = document.querySelector('[data-page-info]') || document.getElementById('page-info') || document.getElementById('flash-message');
+            var el = document.querySelector('[data-page-info], [data-info-page]') || document.getElementById('page-info') || document.getElementById('flash-message');
             if (!el) return;
 
-            var key = el.getAttribute('data-page-info') || (el.dataset && el.dataset.pageInfo) || '';
+            if (window.isAuthenticated !== true) return;
+
+            var key = el.getAttribute('data-page-info') || el.getAttribute('data-info-page') || (el.dataset && el.dataset.pageInfo) || '';
             var type = el.getAttribute('data-page-info-type') || (el.dataset && el.dataset.pageInfoType) || 'info';
             var duration = parseInt(el.getAttribute('data-page-info-duration') || (el.dataset && el.dataset.pageInfoDuration)) || 3000;
 

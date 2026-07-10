@@ -371,6 +371,14 @@ export const en = {
     pick_rsp: '-- Pick Responsible Person --',
   },
 
+  learning_corner: {
+    note_title: 'Note Title',
+    edit_note_description: 'Edit the title or add/edit/delete existing content.',
+    edit_note : 'Edit Note',
+    cancel: 'Cancel',
+    save: 'Save',
+  },
+
   msh_lrn_add: {
     ttl_form: 'Add new notes',
     desc_form: 'Write what you have learnt today or knowledge that you want to share.',
@@ -501,6 +509,7 @@ export const en = {
     edit_postingan : 'Edit Your Post',
     all_projects: 'All Your Projects',
     edit_projects: 'Edit Your Projects Was Created',
+    project_detail: 'Project Details: Finish your project tasks here and explore the Learning Corner.',
   },
   dosen_dashboard: {
     dashboard_dosen: 'Lecturer Dashboard',
@@ -940,6 +949,11 @@ export const en = {
     daftar_mahasiswa: 'Student List',
     tidak_ada_mahasiswa_prodi: 'No students in this department.',
     admin_dashboard_welcome : 'Welcome Back, ',
+    edit_keahlian : 'Edit Skill',
+    edit_angkatan : 'Edit Cohort',
+    edit_nama_angkatan : 'Cohort Name',
+    edit_tahun_masuk_angkatan : 'Year In',
+    edit_tahun_keluar_angkatan : 'Year Out',
     //Halmaan tambah user
     info_adduser: 'Basic Information',
     nm_lgkp: 'Full Name',

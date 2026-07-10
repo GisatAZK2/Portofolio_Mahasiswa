@@ -7,8 +7,9 @@
 
             <!-- Header -->
             <div class="mb-10 text-center md:text-left">
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Edit Catatan</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">Ubah judul or tambah/ubah/hapus konten yang sudah ada.
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200" data-translate="edit_note" data-translate-page="learning_corner">Edit Catatan</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-400" data-translate="edit_note_description" data-translate-page="learning_corner">
+                    Ubah judul atau tambah/ubah/hapus konten yang sudah ada.
                 </p>
             </div>
 
@@ -33,7 +34,7 @@
                 <!-- Judul -->
                 <div>
                     <label for="judul" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Judul Catatan <span class="text-red-500">*</span>
+                        <p data-translate="note_title" data-translate-page="learning_corner">Judul Catatan</p> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="judul" id="learning-corner-title-input" value="{{ old('judul', $learningCorner->judul) }}" required
                         class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-500 dark:text-white rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition @error('judul') border-red-500 @enderror">
@@ -108,11 +109,11 @@
                 <div class="flex justify-end pt-8 border-t border-gray-200 space-x-4">
                     <a href="{{ route('project.index') }}"
                         class="px-8 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition">
-                        Batal
+                        <p data-translate="cancel" data-translate-page="learning_corner">Batal</p> 
                     </a>
                     <button id="learning-corner-submit" type="submit"
                         class="px-10 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
-                        Simpan Perubahan
+                        <p data-translate="save" data-translate-page="learning_corner">Simpan Perubahan</p>
                     </button>
                 </div>
             </form>
