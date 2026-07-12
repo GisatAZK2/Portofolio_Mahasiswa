@@ -216,8 +216,12 @@
             'resources/js/translate.js',
         ];
 
-        if (auth()->check() && in_array(auth()->user()->role, ['admin', 'dosen'], true)) {
+        if (auth()->check() && auth()->user()->role === 'admin') {
             $viteEntries[] = 'resources/js/admin.js';
+        }
+
+        if (auth()->check() && auth()->user()->role === 'dosen') {
+            $viteEntries[] = 'resources/js/dosen.js';
         }
     @endphp
 

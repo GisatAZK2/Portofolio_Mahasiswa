@@ -110,18 +110,8 @@ class DosenController extends Controller
 
         $query->where('status_pengajuan', 'Di Terima');
 
-        if ($dosen->id_jurusan || $dosen->id_angkatan || $dosen->id_keahlian) {
-            $query->where(function ($q) use ($dosen) {
-                if ($dosen->id_jurusan) {
-                    $q->where('id_jurusan', $dosen->id_jurusan);
-                }
-                if ($dosen->id_angkatan) {
-                    $q->where('id_angkatan', $dosen->id_angkatan);
-                }
-                if ($dosen->id_keahlian) {
-                    $q->where('id_keahlian', $dosen->id_keahlian);
-                }
-            });
+        if ($dosen->id_jurusan) {
+            $query->where('id_jurusan', $dosen->id_jurusan);
         }
 
         return $query;
@@ -136,12 +126,6 @@ class DosenController extends Controller
 
             if ($dosen->id_jurusan) {
                 $q->where('id_jurusan', $dosen->id_jurusan);
-            }
-            if ($dosen->id_angkatan) {
-                $q->where('id_angkatan', $dosen->id_angkatan);
-            }
-            if ($dosen->id_keahlian) {
-                $q->where('id_keahlian', $dosen->id_keahlian);
             }
         });
 
@@ -182,17 +166,23 @@ class DosenController extends Controller
             });
         }
 
+        $angkatan = $request->input('angkatan', '');
+        $jurusan = $request->input('jurusan', '');
+        $keahlian = $request->input('keahlian', '');
+
+        if ($angkatan) {
+            $query->where('id_angkatan', $angkatan);
+        }
+        if ($keahlian) {
+            $query->where('id_keahlian', $keahlian);
+        }
+
         $users = $query->get();
 
         // Retrieve all Angkatan and Jurusan data
         $angkatans = Angkatan::all();
         $jurusans = Jurusan::all();
         $keahlians = Keahlian::all();
-
-        // Get the selected angkatan and jurusan from the request
-        $angkatan = $request->input('angkatan', '');
-        $jurusan = $request->input('jurusan', '');
-        $keahlian = $request->input('keahlian', '');
 
         return view('dosen.daftar-mahasiswa', compact(
             'users',
@@ -512,9 +502,6 @@ class DosenController extends Controller
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
         }
-        if ($dosen->id_keahlian) {
-            $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
-        }
         if ($dosen->id_angkatan) {
             $angkatans = $angkatans->where('id', $dosen->id_angkatan);
         }
@@ -523,6 +510,11 @@ class DosenController extends Controller
             ->where('id', $id);
 
         $user = $this->getdosenFilterScope($user)->firstOrFail();
+
+        if ($user->id_keahlian != $dosen->id_keahlian) {
+            return redirect()->route('dosen.users.index')
+                ->with('error', 'Anda tidak memiliki akses untuk mengedit mahasiswa dengan keahlian berbeda.');
+        }
 
         return view('dosen.user.views_edit_user', compact(
             'user',
@@ -546,6 +538,11 @@ class DosenController extends Controller
 
     $user = User::where('id', $id);
     $user = $this->getdosenFilterScope($user)->firstOrFail();
+
+    if ($user->id_keahlian != $dosen->id_keahlian) {
+        return redirect()->route('dosen.users.index')
+            ->with('error', 'Anda tidak memiliki akses untuk mengedit mahasiswa dengan keahlian berbeda.');
+    }
 
     $rules = [
         'nama_mahasiswa' => ['sometimes', 'required', 'string', 'max:100'],
@@ -697,6 +694,12 @@ class DosenController extends Controller
         $userQuery = User::where('id', $id);
         $user = $this->getdosenFilterScope($userQuery)->firstOrFail();
 
+        $dosen = Auth::user();
+        if ($user->id_keahlian != $dosen->id_keahlian) {
+            return redirect()->route('dosen.users.index')
+                ->with('error', 'Anda tidak memiliki akses untuk menghapus mahasiswa dengan keahlian berbeda.');
+        }
+
         if ($user->photo_profile && Storage::disk('public')->exists($user->photo_profile)) {
             Storage::disk('public')->delete($user->photo_profile);
         }
@@ -765,9 +768,6 @@ class DosenController extends Controller
         $dosen = Auth::user();
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
-        }
-        if ($dosen->id_keahlian) {
-            $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
         }
         if ($dosen->id_angkatan) {
             $angkatans = $angkatans->where('id', $dosen->id_angkatan);
@@ -896,9 +896,6 @@ class DosenController extends Controller
         $dosen = Auth::user();
         if ($dosen->id_jurusan) {
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
-        }
-        if ($dosen->id_keahlian) {
-            $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
         }
         if ($dosen->id_angkatan) {
             $angkatans = $angkatans->where('id', $dosen->id_angkatan);
@@ -1165,10 +1162,6 @@ class DosenController extends Controller
             $jurusans = $jurusans->where('id_jurusan', $dosen->id_jurusan);
         }
 
-        if ($dosen->id_keahlian) {
-            $keahlians = $keahlians->where('id_keahlian', $dosen->id_keahlian);
-        }
-
         if ($dosen->id_angkatan) {
             $angkatans = $angkatans->where('id', $dosen->id_angkatan);
         }
@@ -1404,6 +1397,11 @@ public function EditProjects(Request $request)
     public function StoreProject(Request $request)
     {
         $this->authorizeAccess();
+
+        if (empty($request->owner) && !empty($request->leader)) {
+            $request->merge(['owner' => $request->leader]);
+        }
+
         $request->merge([
             'members' => collect($request->members)
                 ->filter(fn($id) => !empty($id))
@@ -1521,6 +1519,10 @@ public function EditProjects(Request $request)
         }
 
         $project = Project::findOrFail($id);
+
+        if (empty($request->owner) && !empty($request->leader)) {
+            $request->merge(['owner' => $request->leader]);
+        }
 
         $request->validate([
             'nama_project' => 'required|string|max:255',

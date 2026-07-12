@@ -794,6 +794,8 @@ export const en = {
     show: 'Showing',
     from: 'from',
     user: 'users',
+    btn_search : 'Search',
+    search_label_list_mhs : 'Search Student',
     admin_dashboard_title: 'Admin Dashboard',
     admin_dashboard_desc: 'System activity summary and key statistics.',
     button_add_user: 'Add User',

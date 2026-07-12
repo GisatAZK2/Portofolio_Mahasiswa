@@ -39,11 +39,6 @@ import './admin/manage-sertifikat.js';
 import './admin/edit-user.js';
 
 // ==========================================
-// DOSEN: EDIT USER
-// ==========================================
-import './admin/dosen-edit-user.js';
-
-// ==========================================
 // ADMIN: DASHBOARD (index.blade.php)
 // ==========================================
 import './admin/dashboard.js';

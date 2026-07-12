@@ -28,107 +28,106 @@
             {{-- Filter Section --}}
             <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-8 border border-gray-100 dark:border-gray-800">
                 <form action="{{ route('dosen.users.index') }}" method="GET" id="filterForm">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-                        <!-- Search -->
-                        <div class="lg:col-span-3">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pencarian</label>
-                           <div class="relative">
-                            <input type="text"
-                                name="search"
-                                value="{{ request('search') }}"
-                                placeholder="Cari data..."
-                                data-translate-placeholder="search_placeholder"
-                                data-translate-page="admin"
-                                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+                    <div class="space-y-6">
+                        <!-- Search + Search Button -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-translate="search_label_list_mhs" data-translate-page="admin">Pencarian</label>
+                            <div class="flex gap-3">
+                                <div class="relative flex-1">
+                                    <input type="text"
+                                        name="search"
+                                        value="{{ request('search') }}"
+                                        placeholder="Cari data..."
+                                        data-translate-placeholder="search_placeholder"
+                                        data-translate-page="admin"
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
 
-                            <div class="absolute left-3 top-3">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                                    <div class="absolute left-3 top-3">
+                                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <button type="submit"
+                                    class="shrink-0 inline-flex items-center justify-center px-5 py-2.5 bg-gray-800 hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 text-white text-sm font-medium rounded-xl shadow-sm hover:shadow-lg transition-all duration-200">
+                                    <svg class="w-5 h-5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <span class="hidden sm:inline" data-translate="btn_search" data-translate-page="admin"></span>
+                                </button>
                             </div>
                         </div>
+
+                        <!-- Angkatan, Keahlian, Apply Filter -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:items-end">
+                            <!-- Angkatan -->
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                    data-translate="angkatan"
+                                    data-translate-page="admin">
+                                    Angkatan
+                                </label>
+
+                                <select name="angkatan"
+                                    class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+
+                                    <option value=""
+                                        data-translate="all_angkatan"
+                                        data-translate-page="admin">
+                                        Semua Angkatan
+                                    </option>
+
+                                    @foreach($angkatans as $angkatanItem)
+                                        <option value="{{ $angkatanItem->id }}"
+                                            {{ request('angkatan') == $angkatanItem->id ? 'selected' : '' }}>
+                                            {{ $angkatanItem->nama_angkatan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Keahlian -->
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                    data-translate="keahlian"
+                                    data-translate-page="admin">
+                                    Keahlian
+                                </label>
+
+                                <select name="keahlian"
+                                    class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+
+                                    <option value=""
+                                        data-translate="all_keahlian"
+                                        data-translate-page="admin">
+                                        Semua Keahlian
+                                    </option>
+
+                                    @foreach($keahlians as $keahlianItem)
+                                        <option value="{{ $keahlianItem->id_keahlian }}"
+                                            {{ request('keahlian') == $keahlianItem->id_keahlian ? 'selected' : '' }}>
+                                            {{ $keahlianItem->nama_keahlian }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Apply Filter -->
+                            <div>
+                                <button type="submit"
+                                    class="w-full inline-flex items-center justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm hover:shadow-lg transition-all duration-200">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                    </svg>
+                                    <span data-translate="trp_filter" data-translate-page="admin"></span>
+                                </button>
+                            </div>
                         </div>
-                       <!-- Angkatan -->
-<div>
-    <label
-        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        data-translate="angkatan"
-        data-translate-page="admin">
-        Angkatan
-    </label>
-
-    <select name="angkatan"
-        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-
-        <option value=""
-            data-translate="all_angkatan"
-            data-translate-page="admin">
-            Semua Angkatan
-        </option>
-
-        @foreach($angkatans as $angkatanItem)
-            <option value="{{ $angkatanItem->id }}"
-                {{ request('angkatan') == $angkatanItem->id ? 'selected' : '' }}>
-                {{ $angkatanItem->nama_angkatan }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-<!-- Jurusan -->
-<div>
-    <label
-        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        data-translate="jurusan"
-        data-translate-page="admin">
-        Jurusan
-    </label>
-
-    <select name="jurusan"
-        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-
-        <option value=""
-            data-translate="all_jurusan"
-            data-translate-page="admin">
-            Semua Jurusan
-        </option>
-
-        @foreach($jurusans as $jurusanItem)
-            <option value="{{ $jurusanItem->id_jurusan }}"
-                {{ request('jurusan') == $jurusanItem->id_jurusan ? 'selected' : '' }}>
-                {{ $jurusanItem->nama_jurusan }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-<!-- Keahlian -->
-<div>
-    <label
-        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        data-translate="keahlian"
-        data-translate-page="admin">
-        Keahlian
-    </label>
-
-    <select name="keahlian"
-        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-
-        <option value=""
-            data-translate="all_keahlian"
-            data-translate-page="admin">
-            Semua Keahlian
-        </option>
-
-        @foreach($keahlians as $keahlianItem)
-            <option value="{{ $keahlianItem->id_keahlian }}"
-                {{ request('keahlian') == $keahlianItem->id_keahlian ? 'selected' : '' }}>
-                {{ $keahlianItem->nama_keahlian }}
-            </option>
-        @endforeach
-    </select>
-</div>
                     </div>
                 </form>
             </div>
@@ -168,10 +167,16 @@
                                                 @endif
                                             </div>
                                             <div>
-                                                <a href="{{ route('dosen.users.details', ['id' => $user->id]) }}"
-                                                   class="font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
-                                                    {{ $user->nama_mahasiswa ?? 'Pengguna' }}
-                                                </a>
+                                                @if($user->id_keahlian == Auth::user()->id_keahlian)
+                                                    <a href="{{ route('dosen.users.details', ['id' => $user->id]) }}"
+                                                       class="font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+                                                        {{ $user->nama_mahasiswa ?? 'Pengguna' }}
+                                                    </a>
+                                                @else
+                                                    <span class="font-semibold text-gray-500 dark:text-gray-400 cursor-not-allowed" title="Keahlian berbeda">
+                                                        {{ $user->nama_mahasiswa ?? 'Pengguna' }}
+                                                    </span>
+                                                @endif
                                                 @if($user->email)
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
                                                         {{ $user->email }}
@@ -242,18 +247,44 @@
                                                 </div>
                                             @endif
                                             
-                                            <form action="{{ route('dosen.users.destroy', ['id' => $user->id]) }}" method="POST" class="inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
+                                            @if($user->id_keahlian == Auth::user()->id_keahlian)
+                                                <a href="{{ route('dosen.users.details', ['id' => $user->id]) }}"
+                                                   class="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-colors"
+                                                   title="Edit Pengguna">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                </a>
+
+                                                <form action="{{ route('dosen.users.destroy', ['id' => $user->id]) }}" method="POST" class="inline delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button"
+                                                        class="delete-btn p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                        title="Hapus Pengguna"
+                                                        data-name="{{ addslashes($user->nama_mahasiswa ?? $user->username) }}">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @else
                                                 <button type="button"
-                                                    class="delete-btn p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                                    title="Hapus Pengguna"
-                                                    data-name="{{ addslashes($user->nama_mahasiswa ?? $user->username) }}">
+                                                    class="p-2 text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                                                    title="Tidak dapat mengedit mahasiswa dengan keahlian berbeda" disabled>
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                </button>
+
+                                                <button type="button"
+                                                    class="p-2 text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                                                    title="Tidak dapat menghapus mahasiswa dengan keahlian berbeda" disabled>
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
                                                 </button>
-                                            </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -386,17 +417,43 @@
                                     </div>
                                 @endif
 
-                                <form action="{{ route('dosen.users.destroy', ['id' => $user->id]) }}" method="POST" class="inline delete-form">
-                                    @csrf
-                                    @method('DELETE')
+                                @if($user->id_keahlian == Auth::user()->id_keahlian)
+                                    <a href="{{ route('dosen.users.details', ['id' => $user->id]) }}"
+                                       class="px-5 py-3 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-950 rounded-xl transition-colors"
+                                       title="Edit Pengguna">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+
+                                    <form action="{{ route('dosen.users.destroy', ['id' => $user->id]) }}" method="POST" class="inline delete-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button"
+                                            class="delete-btn px-5 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-950 rounded-xl transition-colors"
+                                            data-name="{{ addslashes($user->nama_mahasiswa ?? $user->username) }}">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @else
                                     <button type="button"
-                                        class="delete-btn px-5 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-950 rounded-xl transition-colors"
-                                        data-name="{{ addslashes($user->nama_mahasiswa ?? $user->username) }}">
+                                        class="px-5 py-3 text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                                        title="Tidak dapat mengedit mahasiswa dengan keahlian berbeda" disabled>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+
+                                    <button type="button"
+                                        class="px-5 py-3 text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                                        title="Tidak dapat menghapus mahasiswa dengan keahlian berbeda" disabled>
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
-                                </form>
+                                @endif
                             </div>
                         </div>
                     @empty
@@ -459,81 +516,4 @@
 
    
 
-    <script>
-        let currentDeleteForm = null;
-
-        function openUpdateModal(userId, userName) {
-            const modal = document.getElementById('updateModal');
-            const form = document.getElementById('updateForm');
-            document.getElementById('modalNama').textContent = userName;
-            form.action = `/user/${userId}/update-status`;
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeUpdateModal() {
-            const modal = document.getElementById('updateModal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            currentDeleteForm = null;
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Toggle keterangan tolak
-            const statusSelect = document.getElementById('status_pengajuan');
-            if (statusSelect) {
-                statusSelect.addEventListener('change', function () {
-                    const field = document.getElementById('keteranganTolakField');
-                    if (this.value === 'Di Tolak') {
-                        field.classList.remove('hidden');
-                        document.getElementById('keterangan_tolak').required = true;
-                    } else {
-                        field.classList.add('hidden');
-                        document.getElementById('keterangan_tolak').required = false;
-                    }
-                });
-            }
-
-            // Delete buttons
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    currentDeleteForm = this.closest('form');
-                    const userName = this.getAttribute('data-name');
-                    document.getElementById('deleteUserName').textContent = userName;
-                    document.getElementById('deleteModal').classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
-                });
-            });
-
-            // Confirm delete
-            document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-                if (currentDeleteForm) {
-                    currentDeleteForm.submit();
-                }
-            });
-
-            // Close modals on outside click
-            document.querySelectorAll('#updateModal, #deleteModal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        if (this.id === 'updateModal') closeUpdateModal();
-                        else closeDeleteModal();
-                    }
-                });
-            });
-
-            // Escape key
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') {
-                    closeUpdateModal();
-                    closeDeleteModal();
-                }
-            });
-        });
-    </script>
 @endsection

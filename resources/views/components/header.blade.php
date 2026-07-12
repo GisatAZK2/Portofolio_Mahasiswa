@@ -79,7 +79,6 @@
                     </svg>
                 </button>
                 @auth
-                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
                     <div x-data="notificationBell({ userId: {{ Auth::id() }}, userRole: '{{ Auth::user()->role }}' })" x-init="init()" class="relative">
                         <button type="button" @click="toggleDropdown" class="relative p-2 bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +128,6 @@
                             </div>
                         </div>
                     </div>
-                    @endif
                 @endauth
             </div>
 
@@ -213,7 +211,7 @@
                 </div>
 
                 @auth
-                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa' || Auth::user()->role === 'dosen' )
                     <div class="ml-1 relative flex-shrink-0" x-data="notificationBell({ userId: {{ Auth::id() }}, userRole: '{{ Auth::user()->role }}' })" x-init="init()">
                         <button type="button" @click="toggleDropdown" class="relative p-2.5 bg-white/70 dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shadow-md transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

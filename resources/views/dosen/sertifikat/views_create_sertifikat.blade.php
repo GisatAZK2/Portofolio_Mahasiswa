@@ -58,7 +58,7 @@
                     </div>
 
                     <!-- Filter Dropdowns -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Filter Angkatan -->
                         <div>
                             <label data-translate="agkt" data-translate-page="dosen_stk_add" for="angkatan-filter"
@@ -71,23 +71,6 @@
                                 @foreach($angkatans as $angk)
                                     <option value="{{ $angk->id }}" {{ ($angkatan ?? '') == $angk->id ? 'selected' : '' }}>
                                         {{ $angk->nama_angkatan }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Filter Jurusan -->
-                        <div>
-                            <label data-translate="jrs" data-translate-page="dosen_stk_add" for="jurusan-filter"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Jurusan
-                            </label>
-                            <select name="jurusan" id="jurusan-filter"
-                                class="w-full px-4 py-3 border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 outline-none transition">
-                                <option data-translate="all_jrs" data-translate-page="dosen_stk_add" value="">Semua Jurusan</option>
-                                @foreach($jurusans as $jrs)
-                                    <option value="{{ $jrs->id }}" {{ ($jurusan ?? '') == $jrs->id ? 'selected' : '' }}>
-                                        {{ $jrs->nama_jurusan }}
                                     </option>
                                 @endforeach
                             </select>
@@ -117,7 +100,7 @@
                             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition">
                             Reset Filter
                         </a>
-                        <button data-translate="trp_filter" data-translate-page="dosen_stk_add" type="button" onclick="applyFilters()"
+                        <button data-translate="trp_filter" data-translate-page="dosen_stk_add" type="button" id="apply-filters-btn"
                             class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                             Terapkan Filter
                         </button>
@@ -140,7 +123,7 @@
                                     </svg>
                                     <span class="text-green-800 font-medium" id="selected-user-name"></span>
                                 </div>
-                                <button type="button" onclick="clearSelectedUser()"
+                                <button type="button" id="clear-selected-user-btn"
                                     class="text-green-600 hover:text-green-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -185,13 +168,14 @@
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($users as $user)
 
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
-                                        onclick="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                    <tr class="user-row hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+                                        data-user-id="{{ $user->id }}"
+                                        data-user-name="{{ $user->nama_mahasiswa }}">
                                         <td class="px-6 py-4">
                                             <input type="radio" name="user_radio" value="{{ $user->id }}"
+                                                id="user-radio-{{ $user->id }}"
                                                 class="user-radio w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                                {{ old('user_id') == $user->id ? 'checked' : '' }}
-                                                onchange="selectUser({{ $user->id }}, '{{ $user->nama_mahasiswa }}')">
+                                                {{ old('user_id') == $user->id ? 'checked' : '' }}>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
                                             {{ $user->nama_mahasiswa }}
@@ -385,225 +369,6 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script>
-        // ── Permanent toggle ────────────────────────────────────────────────
-        const permanentCheckbox    = document.getElementById('permanent');
-        const expiredDateContainer = document.getElementById('expired-date-container');
-        const expiredDateInput     = document.getElementById('expired_date');
-
-        function updateExpiredDateState() {
-            if (permanentCheckbox.checked) {
-                expiredDateContainer.style.display = 'none';
-                expiredDateInput.required           = false;
-                expiredDateInput.value              = '';
-            } else {
-                expiredDateContainer.style.display = 'block';
-                expiredDateInput.required           = true;
-            }
-        }
-
-        if (permanentCheckbox) {
-            permanentCheckbox.addEventListener('change', updateExpiredDateState);
-            updateExpiredDateState(); // run on page load
-        }
-
-        // ── Date validation (expired_date must be after tanggal_terbit) ───────
-        const tanggalTerbitInput = document.getElementById('tanggal_terbit');
-
-        function updateMinExpiredDate() {
-            if (tanggalTerbitInput.value) {
-                // Set minimum date untuk expired_date ke hari setelah tanggal_terbit
-                const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
-                const minDate = new Date(terbitDate);
-                minDate.setDate(minDate.getDate() + 1);
-                
-                expiredDateInput.min = minDate.toISOString().split('T')[0];
-                
-                // Jika expired_date sudah dipilih dan lebih awal dari tanggal_terbit, kosongkan
-                if (expiredDateInput.value) {
-                    const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
-                    if (expiredDate <= terbitDate) {
-                        expiredDateInput.value = '';
-                    }
-                }
-            }
-        }
-
-        function validateExpiredDate() {
-            if (!expiredDateInput.value || !tanggalTerbitInput.value) return;
-            
-            const terbitDate = new Date(tanggalTerbitInput.value + 'T00:00:00');
-            const expiredDate = new Date(expiredDateInput.value + 'T00:00:00');
-            
-            if (expiredDate <= terbitDate) {
-                expiredDateInput.value = '';
-                alert('Tanggal expired harus setelah tanggal terbit');
-            }
-        }
-
-        if (tanggalTerbitInput) {
-            tanggalTerbitInput.addEventListener('change', updateMinExpiredDate);
-            // Validasi saat halaman dimuat
-            updateMinExpiredDate();
-        }
-
-        if (expiredDateInput) {
-            expiredDateInput.addEventListener('change', validateExpiredDate);
-        }
-
-        // Function to apply filters
-        function applyFilters() {
-            const search = document.getElementById('search-input').value;
-            const angkatan = document.getElementById('angkatan-filter').value;
-            const jurusan = document.getElementById('jurusan-filter').value;
-            const keahlian = document.getElementById('keahlian-filter').value;
-
-            const url = new URL(window.location.href);
-            url.searchParams.set('search', search);
-            url.searchParams.set('angkatan', angkatan);
-            url.searchParams.set('jurusan', jurusan);
-            url.searchParams.set('keahlian', keahlian);
-
-            window.location.href = url.toString();
-        }
-
-        // Function to select user
-        function selectUser(userId, userName) {
-            // Update hidden input
-            document.getElementById('selected-user-id').value = userId;
-
-            // Update radio buttons
-            document.querySelectorAll('.user-radio').forEach(radio => {
-                radio.checked = (radio.value == userId);
-            });
-
-            // Update display
-            const display = document.getElementById('selected-user-display');
-            const nameSpan = document.getElementById('selected-user-name');
-
-            if (userId) {
-                nameSpan.textContent = 'Dipilih: ' + userName;
-                display.classList.remove('hidden');
-            } else {
-                display.classList.add('hidden');
-            }
-        }
-
-        // Function to clear selected user
-        function clearSelectedUser() {
-            document.getElementById('selected-user-id').value = '';
-            document.querySelectorAll('.user-radio').forEach(radio => {
-                radio.checked = false;
-            });
-            document.getElementById('selected-user-display').classList.add('hidden');
-        }
-
-        // Function to update file label and preview
-        function updateFileLabel(input) {
-            const fileName = input.files[0]?.name;
-            const fileNameElement = document.getElementById('file-name');
-            const previewContainer = document.getElementById('image-preview-container');
-            const previewImage = document.getElementById('image-preview');
-
-            if (fileName) {
-                fileNameElement.textContent = fileName;
-
-                // Preview image
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        previewImage.src = e.target.result;
-                        previewContainer.classList.remove('hidden');
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
-            } else {
-                fileNameElement.textContent = 'PNG, JPG, GIF up to 5MB';
-                previewContainer.classList.add('hidden');
-                previewImage.src = '#';
-            }
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            // Check if there's an old selected user
-            const oldUserId = document.getElementById('selected-user-id').value;
-            if (oldUserId) {
-                const selectedRadio = document.querySelector(`.user-radio[value="${oldUserId}"]`);
-                if (selectedRadio) {
-                    const row = selectedRadio.closest('tr');
-                    const userName = row.querySelector('td:nth-child(2)').textContent.trim();
-                    selectUser(oldUserId, userName);
-                }
-            }
-
-            // Setup drag and drop
-            const dropZone = document.querySelector('.border-dashed');
-            const fileInput = document.getElementById('link_sertifikat');
-
-            if (dropZone && fileInput) {
-                // Prevent default drag behaviors
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, preventDefaults, false);
-                    document.body.addEventListener(eventName, preventDefaults, false);
-                });
-
-                // Highlight drop zone when dragging over it
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, highlight, false);
-                });
-
-                ['dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, unhighlight, false);
-                });
-
-                // Handle dropped files
-                dropZone.addEventListener('drop', handleDrop, false);
-            }
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            function highlight() {
-                dropZone.classList.add('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20');
-            }
-
-            function unhighlight() {
-                dropZone.classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20');
-            }
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-
-                if (files && files.length > 0) {
-                    fileInput.files = files;
-                    updateFileLabel(fileInput);
-
-                    // Trigger change event
-                    const event = new Event('change', { bubbles: true });
-                    fileInput.dispatchEvent(event);
-                }
-            }
-
-            // Enter key for search
-            const searchInput = document.getElementById('search-input');
-            if (searchInput) {
-                searchInput.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        applyFilters();
-                    }
-                });
-            }
-        });
-    </script>
-
     <!-- CSS Tambahan -->
     <style>
         .border-dashed {
@@ -669,7 +434,7 @@
         /* Table row hover effect */
         tbody tr {
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         tbody tr:hover {
@@ -678,6 +443,16 @@
 
         .dark tbody tr:hover {
             background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Selected row highlight */
+        tbody tr.user-row-selected {
+            background-color: rgba(99, 102, 241, 0.1);
+            box-shadow: inset 3px 0 0 0 #4f46e5;
+        }
+
+        .dark tbody tr.user-row-selected {
+            background-color: rgba(99, 102, 241, 0.18);
         }
 
         /* Pagination styling */
@@ -725,10 +500,4 @@
         }
     </style>
 
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.dosen_add_sertifikat");
-        });
-    </script>
 @endsection

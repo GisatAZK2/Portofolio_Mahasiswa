@@ -1,0 +1,12 @@
+import './bootstrap';
+import './dosen/index.js';
+import './dosen/learning-corner.js';
+import './dosen/project.js';
+import './dosen/daftar-mahasiswa.js';
+import './dosen/sertifikat.js';
+import './dosen/sertifikat-create.js';
+import './dosen/sertifikat-edit.js';
+import './dosen/project-create.js';
+import './dosen/project-edit.js';
+import './dosen/add-user.js';
+import './dosen/dosen-edit-user.js';

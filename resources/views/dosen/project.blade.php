@@ -3,6 +3,9 @@
 @section('title', 'Project Mahasiswa - Dosen')
 
 @section('content')
+    @if(session('clear_local_storage'))
+        <div id="clear-local-storage" data-key="admin_project_selected_users" class="hidden"></div>
+    @endif
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-6 px-3 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
 
@@ -310,115 +313,4 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script>
-        // SINGLE DELETE - Modal SweetAlert2
-        async function handleSingleDelete(button, projectId) {
-            event.preventDefault();
-            
-            const confirmed = await showConfirm();
-            
-            if (confirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                
-                const form = document.createElement('form');
-                form.method = 'POST';
-                
-                const locale = document.querySelector('html').getAttribute('lang') || 'id';
-                form.action = `/${locale}/dosen/manageProject/DeleteProject?id=${projectId}`;
-                
-                const csrf = document.createElement('input');
-                csrf.type = 'hidden';
-                csrf.name = '_token';
-                csrf.value = '{{ csrf_token() }}';
-                
-                const method = document.createElement('input');
-                method.type = 'hidden';
-                method.name = '_method';
-                method.value = 'DELETE';
-                
-                form.appendChild(csrf);
-                form.appendChild(method);
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        // BULK DELETE
-        async function confirmBulkDeleteProjects() {
-            const checkedCheckboxes = document.querySelectorAll('.project-checkbox:checked');
-            const ids = Array.from(checkedCheckboxes).map(cb => cb.dataset.projectId);
-
-            if (ids.length === 0) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Tidak ada yang dipilih',
-                    text: 'Pilih minimal satu project terlebih dahulu.',
-                    confirmButtonColor: '#4f46e5'
-                });
-                return;
-            }
-
-            const confirmed = await showConfirm();
-            if (confirmed) {
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Mohon tunggu',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                
-                document.getElementById('selectedProjectIds').value = ids.join(',');
-                document.getElementById('bulkDeleteForm').submit();
-            }
-        }
-
-        // Update selected count
-        function updateSelectionState() {
-            const checkedCount = document.querySelectorAll('.project-checkbox:checked').length;
-            const selectedCountEl = document.getElementById('selectedCount');
-            if (selectedCountEl) {
-                selectedCountEl.textContent = checkedCount;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.project-checkbox');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateSelectionState);
-            });
-
-            const selectAll = document.getElementById('selectAllCheckbox');
-            if (selectAll) {
-                selectAll.addEventListener('change', function () {
-                    checkboxes.forEach(cb => {
-                        if (!cb.disabled) cb.checked = this.checked;
-                    });
-                    updateSelectionState();
-                });
-            }
-
-            updateSelectionState();
-        });
-        
-    </script>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof showPageInfo === 'function') {
-                showPageInfo("popup.dosen_projects");
-            }
-        });
-    </script>
 @endsection

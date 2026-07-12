@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/alert.js',
                 'resources/js/translate.js',
                 'resources/js/admin.js',
+                'resources/js/dosen.js',
             ],
             refresh: true,
         }),

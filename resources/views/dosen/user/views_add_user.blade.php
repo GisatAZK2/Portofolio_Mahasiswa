@@ -91,7 +91,7 @@
 
     {{-- ===== MAIN FORM ===== --}}
     <div class="daw-form-card">
-        <form method="POST" action="{{ route('dosen.users.StoreUser') }}" enctype="multipart/form-data" id="dosenUserForm">
+        <form method="POST" action="{{ route('dosen.users.StoreUser') }}" enctype="multipart/form-data" id="dosenUserForm" data-import-excel-route="{{ route('dosen.users.importExcel') }}">
             @csrf
             <input type="hidden" name="registration_type" id="registrationType" value="simple">
 

@@ -118,39 +118,4 @@
         }
     </style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
-
-                    const confirmed = await showConfirmAlert({
-                        title: 'Hapus Entri Learning Corner?',
-                        text: 'Catatan ini akan dihapus permanen dan tidak bisa dikembalikan.',
-                        icon: 'warning',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal',
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                    });
-
-                    if (confirmed) {
-                        showLoading('Menghapus catatan...');
-                        this.closest('form').submit();
-                    }
-                });
-            });
-
-            @if (session('success'))
-                showSuccessAlert('{{ session('success') }}');
-            @endif
-        });
-    </script>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.dosen_learning_corner");
-         });
-     </script>
 @endsection

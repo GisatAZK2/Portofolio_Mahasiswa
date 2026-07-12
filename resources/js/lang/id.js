@@ -753,6 +753,22 @@ export const id = {
         upd_stk: 'Update Sertifikat'
     },
 
+    dosen_edit_user: {
+        edit_user_title: 'Edit User',
+        nm_lgkp_placeholder: 'Masukkan nama lengkap',
+        nim: 'NIM',
+        nim_placeholder: 'Masukkan NIM mahasiswa',
+        tanggal_lahir: 'Tanggal Lahir',
+        pw_section: 'Password',
+        pw_placeholder: 'Kosongkan jika tidak diubah',
+        pw_hint_title: 'Syarat Password:',
+        pw_hint_min: 'Minimal 8 karakter',
+        pw_hint_upper: 'Harus ada huruf besar (A-Z)',
+        pw_hint_nospace: 'Tidak boleh ada spasi',
+        pw_confirm_placeholder: 'Konfirmasi password baru',
+        curr_photo: 'Foto Saat Ini'
+    },
+
     stk_admin_edit: {
         ttl_edit: 'Edit Sertifikat',
         back: 'Kembali',
@@ -780,6 +796,8 @@ export const id = {
         show: 'Menampilkan',
         from: 'dari',
         user: 'pengguna',
+        btn_search : 'Cari',
+        search_label_list_mhs : 'Pencarian',
         admin_dashboard_title: 'Dashboard Admin',
         admin_dashboard_desc: 'Ringkasan aktivitas sistem dan statistik utama.',
         button_add_user: 'Tambah User',

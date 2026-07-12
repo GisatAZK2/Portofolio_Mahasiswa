@@ -289,7 +289,7 @@
                                             class="w-full pl-9 pr-10 py-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition @error('password') border-red-400 bg-red-50 dark:bg-red-900/20 @enderror"
                                             data-translate-placeholder="pw_placeholder" data-translate-page="dosen_edit_user"
                                             placeholder="Kosongkan jika tidak diubah">
-                                        <button type="button" onclick="togglePassword('password', 'eyeIcon1')"
+                                        <button type="button" data-toggle-password="password" data-toggle-icon="eyeIcon1"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
                                             <i id="eyeIcon1" class="fas fa-eye text-sm"></i>
                                         </button>
@@ -342,7 +342,7 @@
                                             class="w-full pl-9 pr-10 py-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                                             data-translate-placeholder="pw_confirm_placeholder" data-translate-page="dosen_edit_user"
                                             placeholder="Konfirmasi password baru">
-                                        <button type="button" onclick="togglePassword('password_confirmation', 'eyeIcon2')"
+                                        <button type="button" data-toggle-password="password_confirmation" data-toggle-icon="eyeIcon2"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
                                             <i id="eyeIcon2" class="fas fa-eye text-sm"></i>
                                         </button>

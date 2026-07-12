@@ -12,7 +12,7 @@
                 </p>
             </div>
             <div class="flex gap-3">
-                <button type="button" id="bulkDeleteBtn"
+                <button type="button" id="dosenBulkDeleteBtn"
                     class="inline-flex items-center px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled>
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,7 +20,7 @@
                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                     <span data-translate="del_sel" data-translate-page="dosen_stk">Hapus Terpilih</span> (<span
-                        id="selectedCount">0</span>)
+                        id="dosenSelectedCount">0</span>)
                 </button>
                 <a href="{{ route('dosen.sertifikat.create') }}"
                     class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-md">
@@ -32,10 +32,9 @@
             </div>
         </div>
 
-        {{-- Filter Section --}}
         <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-8 border border-gray-100 dark:border-gray-800">
             <form action="{{ route('dosen.sertifikat.index') }}" method="GET" id="filterForm">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {{-- Search Input --}}
                     <div class="lg:col-span-2">
                         <label data-translate="srch" data-translate-page="dosen_stk"
@@ -68,23 +67,6 @@
                             @foreach($angkatans as $angkatanItem)
                                 <option value="{{ $angkatanItem->id }}" {{ $angkatan == $angkatanItem->id ? 'selected' : '' }}>
                                     {{ $angkatanItem->nama_angkatan }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- Jurusan Filter --}}
-                    <div>
-                        <label data-translate="jrs" data-translate-page="dosen_stk"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Jurusan
-                        </label>
-                        <select name="jurusan"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                            <option data-translate="all_jrs" data-translate-page="dosen_stk" value="">Semua Jurusan</option>
-                            @foreach($jurusans as $jurusanItem)
-                                <option value="{{ $jurusanItem->id_jurusan }}" {{ $jurusan == $jurusanItem->id_jurusan ? 'selected' : '' }}>
-                                    {{ $jurusanItem->nama_jurusan }}
                                 </option>
                             @endforeach
                         </select>
@@ -145,7 +127,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <label class="flex items-center space-x-2">
-                            <input type="checkbox" id="selectAllCheckbox"
+                            <input type="checkbox" id="dosenSelectAllCheckbox"
                                 class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="sel_all"
                                 data-translate-page="dosen_stk">Pilih Semua</span>
@@ -160,7 +142,7 @@
                     </div>
                     <span class="text-sm text-gray-500 dark:text-gray-400">
                         <span data-translate="total_pick" data-translate-page="dosen_stk">Total dipilih:</span> <span
-                            id="totalSelected">0</span>
+                            id="dosenTotalSelected">0</span>
                     </span>
                 </div>
             </div>
@@ -189,10 +171,10 @@
                 @endif
             </div>
         @else
-            <form id="bulkDeleteForm" action="{{ route('dosen.sertifikat.bulk-destroy') }}" method="POST" style="display: none;">
+            <form id="dosenBulkDeleteForm" action="{{ route('dosen.sertifikat.bulk-destroy') }}" method="POST" style="display: none;">
                 @csrf
                 @method('DELETE')
-                <input type="hidden" name="selected_ids" id="selectedIdsInput" value="">
+                <input type="hidden" name="selected_ids" id="dosenSelectedIdsInput" value="">
             </form>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -202,7 +184,7 @@
                             <!-- Selection Checkbox -->
                             <div class="absolute top-4 left-4 z-20">
                                 <input type="checkbox" name="certificate_ids[]" value="{{ $entry->id }}"
-                                    class="certificate-checkbox w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
+                                    class="dosenCertificateCheckbox w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800">
                             </div>
 
                             <!-- Header dengan ikon sertifikat dan status badge -->
@@ -482,289 +464,6 @@
         @endif
     @endforeach
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ============== BULK DELETE FUNCTIONALITY ==============
-            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-            const certificateCheckboxes = document.querySelectorAll('.certificate-checkbox');
-            const certificateCards = document.querySelectorAll('.certificate-card');
-            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-            const selectedCount = document.getElementById('selectedCount');
-            const totalSelected = document.getElementById('totalSelected');
-            const selectedIdsInput = document.getElementById('selectedIdsInput');
-            const bulkDeleteForm = document.getElementById('bulkDeleteForm');
-
-            // Function to update card border based on checkbox state
-            function updateCardBorder(checkbox) {
-                const card = checkbox.closest('.certificate-card');
-                if (checkbox.checked) {
-                    card.classList.add('border-red-500', 'border-4');
-                    card.classList.remove('border-2');
-                } else {
-                    card.classList.remove('border-red-500', 'border-4');
-                    card.classList.add('border-2');
-                }
-            }
-
-            function updateSelectedCount() {
-                const checked = document.querySelectorAll('.certificate-checkbox:checked');
-                const count = checked.length;
-
-                if (selectedCount) selectedCount.textContent = count;
-                if (totalSelected) totalSelected.textContent = count;
-
-                if (bulkDeleteBtn) {
-                    bulkDeleteBtn.disabled = count === 0;
-                }
-
-                // Update selected IDs input
-                if (selectedIdsInput) {
-                    const ids = Array.from(checked).map(cb => cb.value);
-                    selectedIdsInput.value = JSON.stringify(ids);
-                }
-
-                // Update select all checkbox state
-                if (selectAllCheckbox) {
-                    if (count === certificateCheckboxes.length) {
-                        selectAllCheckbox.checked = true;
-                        selectAllCheckbox.indeterminate = false;
-                    } else if (count === 0) {
-                        selectAllCheckbox.checked = false;
-                        selectAllCheckbox.indeterminate = false;
-                    } else {
-                        selectAllCheckbox.indeterminate = true;
-                    }
-                }
-            }
-
-            // Select all functionality
-            if (selectAllCheckbox) {
-                selectAllCheckbox.addEventListener('change', function () {
-                    certificateCheckboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
-                        updateCardBorder(checkbox);
-                    });
-                    updateSelectedCount();
-                });
-            }
-
-            // Individual checkbox change
-            certificateCheckboxes.forEach(checkbox => {
-                // Set initial border
-                updateCardBorder(checkbox);
-
-                checkbox.addEventListener('change', function () {
-                    updateCardBorder(this);
-                    updateSelectedCount();
-                });
-            });
-
-            // Bulk delete button click
-            if (bulkDeleteBtn) {
-                bulkDeleteBtn.addEventListener('click', async function (e) {
-                    e.preventDefault();
-
-                    const checkedCount = document.querySelectorAll('.certificate-checkbox:checked').length;
-
-                    if (checkedCount === 0) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Tidak Ada Data Dipilih',
-                            text: 'Silakan pilih sertifikat yang ingin dihapus.',
-                            confirmButtonColor: '#3b82f6'
-                        });
-                        return;
-                    }
-
-                    const confirmed = await Swal.fire({
-                        title: 'Hapus Sertifikat Terpilih?',
-                        text: `${checkedCount} sertifikat akan dihapus permanen dan tidak bisa dikembalikan.`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                        confirmButtonText: 'Ya, Hapus Semua',
-                        cancelButtonText: 'Batal',
-                        reverseButtons: true
-                    });
-
-                    if (confirmed.isConfirmed) {
-                        Swal.fire({
-                            title: 'Menghapus...',
-                            text: 'Mohon tunggu sebentar',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        try {
-                            const formData = new FormData();
-                            const ids = Array.from(
-                                document.querySelectorAll('.certificate-checkbox:checked')
-                            ).map(cb => cb.value);
-
-                            formData.append('_method', 'DELETE');
-                            formData.append('_token', '{{ csrf_token() }}');
-
-                            ids.forEach(id => {
-                                formData.append('selected_ids[]', id);
-                            });
-
-                            const response = await fetch('{{ route("dosen.sertifikat.bulk-destroy") }}', {
-                                method: 'POST',
-                                body: formData
-                            });
-
-                            const result = await response.json();
-
-                            if (result.success) {
-                                await Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: result.message,
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
-                                window.location.reload();
-                            } else {
-                                throw new Error(result.message);
-                            }
-                        } catch (error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: error.message || 'Terjadi kesalahan saat menghapus data.',
-                                confirmButtonColor: '#dc2626'
-                            });
-                        }
-                    }
-                });
-            }
-
-            // ============== INDIVIDUAL DELETE FUNCTIONALITY ==============
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
-
-                    const confirmed = await Swal.fire({
-                        title: 'Hapus Sertifikat?',
-                        text: 'Sertifikat ini akan dihapus permanen dan tidak bisa dikembalikan.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc2626',
-                        cancelButtonColor: '#6b7280',
-                        confirmButtonText: 'Ya, Hapus',
-                        cancelButtonText: 'Batal',
-                        reverseButtons: true
-                    });
-
-                    if (confirmed.isConfirmed) {
-                        Swal.fire({
-                            title: 'Menghapus...',
-                            text: 'Mohon tunggu sebentar',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        this.closest('form').submit();
-                    }
-                });
-            });
-
-            // ============== APPROVE FUNCTIONALITY ==============
-            document.querySelectorAll('.approve-btn').forEach(button => {
-                button.addEventListener('click', async function (e) {
-                    e.preventDefault();
-
-                    const confirmed = await Swal.fire({
-                        title: 'Terima Sertifikat?',
-                        text: 'Sertifikat akan diterima dan status akan menjadi "Di Terima".',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#10b981',
-                        cancelButtonColor: '#6b7280',
-                        confirmButtonText: 'Ya, Terima',
-                        cancelButtonText: 'Batal',
-                        reverseButtons: true
-                    });
-
-                    if (confirmed.isConfirmed) {
-                        Swal.fire({
-                            title: 'Memproses...',
-                            text: 'Mohon tunggu sebentar',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        this.closest('form').submit();
-                    }
-                });
-            });
-
-            // ============== REJECT MODAL FUNCTIONALITY ==============
-            document.querySelectorAll('.reject-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    const id = this.dataset.id;
-                    document.getElementById(`rejectModal-${id}`).style.display = 'block';
-                });
-            });
-
-            document.querySelectorAll('.cancel-reject').forEach(button => {
-                button.addEventListener('click', function () {
-                    this.closest('.fixed').style.display = 'none';
-                });
-            });
-
-            // Close modal when clicking outside
-            window.addEventListener('click', function (e) {
-                if (e.target.classList.contains('fixed')) {
-                    e.target.style.display = 'none';
-                }
-            });
-
-            // ============== SWEET ALERT MESSAGES ==============
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            @endif
-
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: '{{ session('error') }}',
-                    confirmButtonColor: '#dc2626'
-                });
-            @endif
-
-            @if (session('info'))
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Informasi',
-                    text: '{{ session('info') }}',
-                    confirmButtonColor: '#3b82f6'
-                });
-            @endif
-
-            // Initial count update
-            updateSelectedCount();
-        });
-    </script>
-
     <style>
         .line-clamp-2 {
             display: -webkit-box;
@@ -773,13 +472,12 @@
             overflow: hidden;
         }
 
-        #selectAllCheckbox:indeterminate {
+        #dosenSelectAllCheckbox:indeterminate {
             background-color: #4f46e5;
             border-color: #4f46e5;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath stroke='white' d='M0 2h4'/%3E%3C/svg%3E");
         }
 
-        /* Transisi untuk border card */
         .certificate-card {
             transition: all 0.2s ease-in-out;
         }
@@ -788,11 +486,4 @@
             box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
         }
     </style>
-
-    <!-- Page Info -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showPageInfo("popup.dosen_certificates");
-        });
-    </script>
 @endsection
