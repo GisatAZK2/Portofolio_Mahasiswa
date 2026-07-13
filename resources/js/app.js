@@ -179,6 +179,9 @@ window.runPageInitializers = function () {
         if (typeof initDarkMode === 'function') initDarkMode();
         window.checkSessionAlerts?.();
         window.runPageInitializers?.();
+        // Lompat ke section pendidikan/pengalaman jika baru saja
+        // melakukan CRUD di section tersebut (lihat portfolio.js).
+        window.scrollToPendingSection?.();
         // Language dropdown sync
         const langSelect = document.getElementById('languageSelect');
         if (langSelect) langSelect.value = localStorage.getItem('lang') || 'id';

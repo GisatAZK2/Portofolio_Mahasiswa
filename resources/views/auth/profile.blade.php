@@ -514,7 +514,7 @@
                     </form>
 
                     {{-- PENDIDIKAN SECTION --}}
-                    <section id="education-section" class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
+                    <section id="education-section" class="scroll-mt-24 mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -578,7 +578,7 @@
                     </section>
 
                     {{-- PENGALAMAN KERJA SECTION --}}
-                    <section id="experience-section" class="mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
+                    <section id="experience-section" class="scroll-mt-24 mt-8 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 md:p-8">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-8 h-8 mr-2 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

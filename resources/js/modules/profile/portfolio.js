@@ -14,6 +14,29 @@ window.updateUrlParam = function (key, value) {
     window.history.replaceState({}, '', url.toString());
 };
 
+// ==========================================
+// SCROLL-BACK-TO-SECTION HELPER
+// Dipakai sebelum reload/redirect setelah CRUD pendidikan/pengalaman,
+// supaya user langsung diarahkan kembali ke section terkait.
+// ==========================================
+window.markScrollTarget = function (sectionId) {
+    try { sessionStorage.setItem('portfolioScrollSection', sectionId); } catch (e) { /* ignore */ }
+};
+
+window.scrollToPendingSection = function () {
+    let target;
+    try { target = sessionStorage.getItem('portfolioScrollSection'); } catch (e) { return; }
+    if (!target) return;
+    try { sessionStorage.removeItem('portfolioScrollSection'); } catch (e) { /* ignore */ }
+    const el = document.getElementById(target);
+    if (!el) return;
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+    });
+};
+
 window.toYMD = function (dateStr) {
     if (!dateStr) return '';
     const s = String(dateStr).trim();
@@ -157,6 +180,7 @@ window.handlePengalamanSubmit = async function (event) {
         const result = await response.json();
         if (response.ok && result.success) {
             window.closePengalamanModal();
+            window.markScrollTarget('experience-section');
             window.showSuccessAlert?.('Pengalaman kerja berhasil ditambahkan!');
             setTimeout(() => window.location.reload(), 1500);
         } else {
@@ -334,6 +358,7 @@ window.savePendidikanEdit = async function () {
         const json = await response.json();
         if (json.success) {
             window.closeDetailPendidikan();
+            window.markScrollTarget('education-section');
             window.showSuccessAlert?.('Pendidikan Berhasil diperbarui!');
             setTimeout(() => window.location.reload(), 1800);
         } else {
@@ -351,7 +376,7 @@ window.confirmDeletePendidikan = async function () {
     try {
         const res = await fetch(`/${locale}/pendidikan/destroy?id=${id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } });
         const json = await res.json();
-        if (json.success) { window.closeDetailPendidikan(); window.showSuccessAlert?.('Pendidikan Berhasil dihapus!'); setTimeout(() => window.location.reload(), 1800); }
+        if (json.success) { window.closeDetailPendidikan(); window.markScrollTarget('education-section'); window.showSuccessAlert?.('Pendidikan Berhasil dihapus!'); setTimeout(() => window.location.reload(), 1800); }
         else { window.showErrorAlert?.(json.message || 'Gagal menghapus.'); }
     } catch (e) { window.showErrorAlert?.('Terjadi kesalahan jaringan.'); }
 };
@@ -455,7 +480,7 @@ window.savePengalamanEdit = async function () {
             method: 'POST', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString()
         });
         const json = await res.json();
-        if (json.success) { window.closeDetailPengalaman(); window.showSuccessAlert?.('Pengalaman Berhasil diperbarui!'); setTimeout(() => window.location.reload(), 1800); }
+        if (json.success) { window.closeDetailPengalaman(); window.markScrollTarget('experience-section'); window.showSuccessAlert?.('Pengalaman Berhasil diperbarui!'); setTimeout(() => window.location.reload(), 1800); }
         else { window.showErrorAlert?.(json.errors ? Object.values(json.errors).flat().join(', ') : (json.message || 'Gagal menyimpan perubahan.')); }
     } catch (e) { window.showErrorAlert?.('Terjadi kesalahan jaringan.'); }
 };
@@ -469,7 +494,7 @@ window.confirmDeletePengalaman = async function () {
     try {
         const res = await fetch(`/${locale}/pengalaman-kerja/destroy?id=${id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } });
         const json = await res.json();
-        if (json.success) { window.closeDetailPengalaman(); window.showSuccessAlert?.('Pengalaman Berhasil dihapus!'); setTimeout(() => window.location.reload(), 1800); }
+        if (json.success) { window.closeDetailPengalaman(); window.markScrollTarget('experience-section'); window.showSuccessAlert?.('Pengalaman Berhasil dihapus!'); setTimeout(() => window.location.reload(), 1800); }
         else { window.showErrorAlert?.(json.message || 'Gagal menghapus.'); }
     } catch (e) { window.showErrorAlert?.('Terjadi kesalahan jaringan.'); }
 };
@@ -655,6 +680,13 @@ window.submitCustomKeahlian = async function () {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Form tambah pendidikan submit native (bukan AJAX) -> tandai target scroll
+    // sebelum browser redirect, supaya setelah reload halaman langsung
+    // lompat ke education-section.
+    document.getElementById('form-pendidikan')?.addEventListener('submit', function () {
+        window.markScrollTarget('education-section');
+    });
+
     const customInput = document.getElementById('custom-keahlian-input');
     if (customInput) {
         customInput.addEventListener('keypress', function (e) {
