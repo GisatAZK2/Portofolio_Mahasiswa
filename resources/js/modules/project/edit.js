@@ -541,10 +541,21 @@
             alert('Owner tidak dapat dihapus dari project.');
             return;
         }
+
+        const affectedTaskItems = Array.from(document.querySelectorAll('.task-item')).filter(taskItem => {
+            const input = taskItem.querySelector('input[name$="[user_id]"], select[name$="[user_id]"]');
+            return input && input.value && String(input.value) === String(userId);
+        });
+
         if (selectedUsers.leader && String(selectedUsers.leader.id) === String(userId)) {
             selectedUsers.leader = null;
         }
         selectedUsers.members = selectedUsers.members.filter(m => String(m.id) !== String(userId));
+
+        
+        affectedTaskItems.forEach(taskItem => taskItem.remove());
+        if (!document.querySelectorAll('.task-item').length) addTaskRow();
+
         updateFormInputs();
         renderSelectedUsers();
         updateTaskUserOptions();
