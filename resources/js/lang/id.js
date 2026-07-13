@@ -362,6 +362,7 @@ export const id = {
         change_thumbnail: 'Ganti Thumbnail',
         remove_thumbnail: 'Hapus Thumbnail',
         cancel: 'Batal',
+        update_post: 'Perbarui Postingan',
     },
 
     msh_lrn_add: {

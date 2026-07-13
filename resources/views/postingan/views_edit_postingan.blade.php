@@ -87,21 +87,21 @@
 
                     <!-- Dynamic Items Section -->
                     <div class="border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                        <div id="items-container" 
-                             data-item-count="{{ count($existingItems ?? []) }}"
-                             data-is-create="false" 
-                             class="divide-y divide-gray-100 dark:divide-gray-700">
-
-                            @php
-                                $existingItems = [];
-                                if (is_array($postingan->content)) {
-                                    foreach ($postingan->content as $item) {
-                                        if (isset($item['type']) && !in_array($item['type'], ['title', 'description', 'game_thumbnail'])) {
-                                            $existingItems[] = $item;
-                                        }
+                        @php
+                            $existingItems = [];
+                            if (is_array($postingan->content)) {
+                                foreach ($postingan->content as $item) {
+                                    if (isset($item['type']) && !in_array($item['type'], ['title', 'description', 'game_thumbnail'])) {
+                                        $existingItems[] = $item;
                                     }
                                 }
-                            @endphp
+                            }
+                        @endphp
+
+                        <div id="items-container" 
+                             data-item-count="{{ count($existingItems) }}"
+                             data-is-create="false" 
+                             class="divide-y divide-gray-100 dark:divide-gray-700">
 
                             @foreach ($existingItems as $index => $item)
                                 <div class="item p-5 bg-white dark:bg-gray-800 relative group" data-index="{{ $index }}">

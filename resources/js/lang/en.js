@@ -362,6 +362,7 @@ export const en = {
     change_thumbnail: 'Change Thumbnail',
     remove_thumbnail: 'Remove Thumbnail',
     cancel: 'Cancel',
+    update_post: 'Update Post',
   },
   msh_project_task: {
     add_task: 'Add Task',
