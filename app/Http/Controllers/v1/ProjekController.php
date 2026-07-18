@@ -392,6 +392,12 @@ class ProjekController extends Controller
 
         ]);
 
+        if ($this->isDuplicateProjectName($request->nama_project)) {
+            return back()
+                ->withInput()
+                ->withErrors(['nama_project' => "Nama project \"{$request->nama_project}\" sudah digunakan. Silakan gunakan nama lain."]);
+        }
+
         $content = array_filter($request->only([
             'nama_project',
             'judul',
@@ -742,6 +748,12 @@ if (Project::where('project_fingerprint', $fingerprint)->exists()) {
             'tasks.*.name_task' => 'sometimes|nullable|string',
             'tasks.*.is_done'   => 'sometimes|boolean',
         ]);
+
+        if ($this->isDuplicateProjectName($request->nama_project, (int) $project->id)) {
+            return back()
+                ->withInput()
+                ->withErrors(['nama_project' => "Nama project \"{$request->nama_project}\" sudah digunakan. Silakan gunakan nama lain."]);
+        }
 
         // Prepare content array
         $content = [
@@ -1105,6 +1117,45 @@ if ($duplicateProject) {
             'statusText',
             'statusColor'
         ));
+    }
+
+    /**
+     * Cek apakah nama project sudah dipakai (oleh akun sendiri ataupun akun lain).
+     * Dipakai untuk validasi real-time saat mengisi form create/edit project.
+     */
+    protected function isDuplicateProjectName(string $name, ?int $excludeId = null): bool
+    {
+        $normalized = strtolower(trim($name));
+        if ($normalized === '') {
+            return false;
+        }
+
+        return Project::query()
+            ->whereRaw(
+                "LOWER(TRIM(JSON_UNQUOTE(JSON_EXTRACT(isi_content, '$.nama_project')))) = ?",
+                [$normalized]
+            )
+            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->exists();
+    }
+
+    public function checkDuplicateName(Request $request)
+    {
+        $name = trim((string) $request->input('nama_project', ''));
+        $excludeId = $request->input('exclude_id');
+
+        if ($name === '') {
+            return response()->json(['is_duplicate' => false, 'message' => '']);
+        }
+
+        $isDuplicate = $this->isDuplicateProjectName($name, $excludeId ? (int) $excludeId : null);
+
+        return response()->json([
+            'is_duplicate' => $isDuplicate,
+            'message' => $isDuplicate
+                ? "Nama project \"{$name}\" sudah digunakan. Silakan gunakan nama lain."
+                : '',
+        ]);
     }
 
     public function checkDuplicate(Request $request)

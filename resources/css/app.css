@@ -2416,3 +2416,13 @@ textarea:focus {
 [data-translate].translated {
     opacity: 1;
 }
+
+/*
+ * SweetAlert2 harus selalu tampil di atas modal apapun di aplikasi ini
+ * (termasuk modal pendidikan/pengalaman kerja di halaman profil yang
+ * memakai z-index sangat tinggi), supaya modal konfirmasi hapus tidak
+ * tertimpa/ketutup oleh modal yang sedang terbuka di belakangnya.
+ */
+.swal2-container {
+    z-index: 2147483000 !important;
+}

@@ -59,7 +59,8 @@
                  data-existing-tasks='@json($existingTasks)'
                  data-project-id="{{ $project->id }}"
                  data-leader-id="{{ optional($project->leader)->id ?? '' }}"
-                 data-member-ids='@json($project->members->pluck('id')->toArray())'>
+                 data-member-ids='@json($project->members->pluck('id')->toArray())'
+                 data-check-duplicate-name-url="{{ route('project.checkDuplicateName') }}">
             </div>
 
             <!-- Form -->
@@ -124,12 +125,20 @@
                 <!-- Nama Project -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"><span data-translate="nama_project" data-translate-page="project_edit"></span> <span class="text-red-500">*</span></label>
-                    <input type="text" name="nama_project" value="{{ old('nama_project', $project->isi_content['nama_project'] ?? '') }}" required
+                    <input type="text" id="nama_project" name="nama_project" value="{{ old('nama_project', $project->isi_content['nama_project'] ?? '') }}" required
                         class="w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition @error('nama_project') border-red-500 @enderror"
                         placeholder="Contoh: Website Portfolio Pribadi" data-translate-placeholder="nama_project_placeholder" data-translate-page="project_edit">
                     @error('nama_project')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
+                    <div id="duplicate-warning" class="hidden mt-2 p-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-300 rounded-r-xl">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            </svg>
+                            <p id="duplicate-warning-text" class="text-sm font-medium"></p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Deskripsi -->
@@ -213,8 +222,8 @@
                     <div class="flex-1"></div>
                     <a href="{{ route('project.index') }}"
                        class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-center w-full sm:w-auto" data-translate="cancel" data-translate-page="project_edit"></a>
-                    <button type="submit"
-                        class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto" data-translate="update_project" data-translate-page="project_edit"></button>
+                    <button type="submit" id="submit-btn"
+                        class="px-8 py-3.5 bg-indigo-600 text-white font-medium rounded-2xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-md w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed" data-translate="update_project" data-translate-page="project_edit"></button>
                 </div>
             </form>
         </div>

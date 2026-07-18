@@ -149,6 +149,7 @@ Route::prefix('{locale}')
             Route::put('/projectUser/update', [ProjekController::class, 'update'])->name('project.update');
             Route::delete('/projectUser/delete', [ProjekController::class, 'destroy'])->name('project.destroy');
             Route::post('/projectUser/check-duplicate', [ProjekController::class, 'checkDuplicate'])->name('project.checkDuplicate');
+            Route::post('/projectUser/check-duplicate-name', [ProjekController::class, 'checkDuplicateName'])->name('project.checkDuplicateName');
 
             // CRUD Sertifikat
             Route::resource('sertifikat', SertifikatController::class)->only([

@@ -35,7 +35,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     <span data-translate="nama_project" data-translate-page="project_create"></span> <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="nama_project" value="{{ old('nama_project') }}" required
+                <input type="text" id="nama_project" name="nama_project" value="{{ old('nama_project') }}" required
                     class="w-full pl-4 py-3 text-sm border border-gray-300/80 dark:border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm @error('nama_project') border-red-500 @enderror"
                     placeholder="Contoh: Website Portfolio Pribadi" data-translate-placeholder="nama_project_placeholder" data-translate-page="project_create">
                 @error('nama_project')
@@ -43,7 +43,7 @@
                 @enderror
             </div>
 
-            <div id="duplicate-warning" class="hidden p-4 bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 text-yellow-800 dark:text-yellow-300 rounded-r-xl">
+            <div id="duplicate-warning" class="hidden p-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-300 rounded-r-xl">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -262,7 +262,7 @@
 
             <div class="flex justify-end pt-4">
                 <button type="submit" id="submit-btn"
-                    class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition shadow-md">
+                    class="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
                     <span data-translate="save_project" data-translate-page="project_create">Simpan Project</span>
                 </button>
             </div>
@@ -276,6 +276,7 @@
          data-route-create="{{ route('project.create') }}"
          data-is-retry="{{ $errors->any() ? 'true' : 'false' }}"
         data-check-duplicate-url="{{ route('project.checkDuplicate') }}"
+        data-check-duplicate-name-url="{{ route('project.checkDuplicateName') }}"
          data-translate-page="project_create"
          style="display:none;">
     </div>

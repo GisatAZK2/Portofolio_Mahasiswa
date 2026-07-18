@@ -759,6 +759,86 @@
     window.getAllowedTaskUsers = getAllowedTaskUsers;
     window.attachRoleSelectEvents = attachRoleSelectEvents;
 
+    // ----- Duplicate project name checker -----
+    let duplicateNameCheckTimer = null;
+    let isDuplicateProjectName = false;
+
+    function setSubmitDisabled(disabled) {
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) submitBtn.disabled = disabled;
+    }
+
+    function showDuplicateNameWarning(message) {
+        const warning = document.getElementById('duplicate-warning');
+        const warningText = document.getElementById('duplicate-warning-text');
+        if (warningText) warningText.textContent = message;
+        if (warning) warning.classList.remove('hidden');
+        const nameInput = document.getElementById('nama_project');
+        if (nameInput) nameInput.classList.add('border-red-500');
+    }
+
+    function hideDuplicateNameWarning() {
+        const warning = document.getElementById('duplicate-warning');
+        if (warning) warning.classList.add('hidden');
+        const nameInput = document.getElementById('nama_project');
+        if (nameInput) nameInput.classList.remove('border-red-500');
+    }
+
+    function checkDuplicateProjectName(name) {
+        const checkUrl = document.getElementById('project-edit-data')?.dataset.checkDuplicateNameUrl || '';
+        if (!checkUrl || !name.trim()) {
+            isDuplicateProjectName = false;
+            hideDuplicateNameWarning();
+            setSubmitDisabled(false);
+            return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        fetch(checkUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ nama_project: name, exclude_id: projectData?.projectId || null })
+        })
+            .then(res => res.json())
+            .then(data => {
+                isDuplicateProjectName = !!data.is_duplicate;
+                if (isDuplicateProjectName) {
+                    showDuplicateNameWarning(data.message || 'Nama project ini sudah digunakan.');
+                } else {
+                    hideDuplicateNameWarning();
+                }
+                setSubmitDisabled(isDuplicateProjectName);
+            })
+            .catch(() => {
+                isDuplicateProjectName = false;
+                hideDuplicateNameWarning();
+                setSubmitDisabled(false);
+            });
+    }
+
+    function setupDuplicateNameCheck() {
+        const nameInput = document.getElementById('nama_project');
+        if (!nameInput) return;
+
+        nameInput.addEventListener('input', function () {
+            clearTimeout(duplicateNameCheckTimer);
+            const value = this.value;
+            duplicateNameCheckTimer = setTimeout(() => checkDuplicateProjectName(value), 400);
+        });
+
+        document.getElementById('projectForm')?.addEventListener('submit', function (e) {
+            if (isDuplicateProjectName) {
+                e.preventDefault();
+            }
+        });
+    }
+
     // ----- auto-init when DOM ready -----
     document.addEventListener('DOMContentLoaded', function () {
         const container = document.getElementById('project-edit-data');
@@ -798,6 +878,7 @@
 
         setupDateValidation();
         setupModalFilters();
+        setupDuplicateNameCheck();
     });
 })();
 

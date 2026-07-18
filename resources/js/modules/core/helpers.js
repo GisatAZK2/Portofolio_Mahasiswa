@@ -53,6 +53,10 @@ export function buildLocaleUrl(lang) {
         segs.shift();
     }
     url.pathname = '/' + [lang].concat(segs).join('/');
+    // `locale` query param diprioritaskan lebih tinggi daripada segmen URL
+    // oleh SetLocale middleware, jadi harus dibuang supaya tidak menimpa
+    // balik pilihan bahasa yang baru saja dipilih user.
+    url.searchParams.delete('locale');
     return url.toString();
 }
 

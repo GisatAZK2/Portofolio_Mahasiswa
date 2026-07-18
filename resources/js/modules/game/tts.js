@@ -1670,21 +1670,12 @@ window.toggleGuestDarkMode = function () {
     window.toggleDarkMode();
 }
 
-window.changeLanguageMobile = function (locale) {
-    const url = new URL(window.location.href);
-    const segments = url.pathname.split('/');
-    const langs = ['id', 'en'];
-    if (langs.includes(segments[1])) {
-        segments[1] = locale;
-    } else {
-        segments.splice(1, 0, locale);
-    }
-    url.pathname = segments.join('/');
-    window.location.href = url.toString();
-}
-window.changeGuestLanguage = function (locale) {
-    window.changeLanguageMobile(locale);
-}
+// NOTE: window.changeLanguageMobile & window.changeGuestLanguage sudah
+// didefinisikan di modules/core/helpers.js (dimuat lebih awal di app.js).
+// Jangan didefinisikan ulang di sini — definisi lama di file ini tidak
+// menghapus query string `locale` dan tidak menyimpan pilihan bahasa ke
+// cookie/localStorage sebelum redirect, sehingga selector bahasa di mobile
+// navigation kadang balik lagi ke /id.
 
 /* Swipe to close */
 document.addEventListener('DOMContentLoaded', () => {

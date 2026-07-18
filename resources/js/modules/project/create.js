@@ -13,6 +13,7 @@
         const oldTasks = JSON.parse(dataEl.dataset.oldTasks || '[]');
         const routeCreate = dataEl.dataset.routeCreate || '';
         const isRetry = dataEl.dataset.isRetry === 'true';
+        const checkDuplicateNameUrl = dataEl.dataset.checkDuplicateNameUrl || '';
 
         // ------------------------------------------------------------------
         // Semua fungsi dan state di-bungkus dalam scope agar tidak global
@@ -597,8 +598,91 @@
             });
         }
 
+        // ----- Duplicate project name checker -----
+        let duplicateNameCheckTimer = null;
+        let isDuplicateProjectName = false;
+
+        function setSubmitDisabled(disabled) {
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) submitBtn.disabled = disabled;
+        }
+
+        function showDuplicateNameWarning(message) {
+            const warning = document.getElementById('duplicate-warning');
+            const warningText = document.getElementById('duplicate-warning-text');
+            if (warningText) warningText.textContent = message;
+            if (warning) warning.classList.remove('hidden');
+            const nameInput = document.getElementById('nama_project');
+            if (nameInput) nameInput.classList.add('border-red-500');
+        }
+
+        function hideDuplicateNameWarning() {
+            const warning = document.getElementById('duplicate-warning');
+            if (warning) warning.classList.add('hidden');
+            const nameInput = document.getElementById('nama_project');
+            if (nameInput) nameInput.classList.remove('border-red-500');
+        }
+
+        function checkDuplicateProjectName(name) {
+            if (!checkDuplicateNameUrl || !name.trim()) {
+                isDuplicateProjectName = false;
+                hideDuplicateNameWarning();
+                setSubmitDisabled(false);
+                return;
+            }
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+            fetch(checkDuplicateNameUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ nama_project: name })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    isDuplicateProjectName = !!data.is_duplicate;
+                    if (isDuplicateProjectName) {
+                        showDuplicateNameWarning(data.message || 'Nama project ini sudah digunakan.');
+                    } else {
+                        hideDuplicateNameWarning();
+                    }
+                    setSubmitDisabled(isDuplicateProjectName);
+                })
+                .catch(() => {
+                    // Kalau gagal cek (jaringan dsb), jangan blok user - biarkan validasi server yang final.
+                    isDuplicateProjectName = false;
+                    hideDuplicateNameWarning();
+                    setSubmitDisabled(false);
+                });
+        }
+
+        function setupDuplicateNameCheck() {
+            const nameInput = document.getElementById('nama_project');
+            if (!nameInput) return;
+
+            nameInput.addEventListener('input', function () {
+                clearTimeout(duplicateNameCheckTimer);
+                const value = this.value;
+                duplicateNameCheckTimer = setTimeout(() => checkDuplicateProjectName(value), 400);
+            });
+
+            // Cek nilai awal (misal hasil restore dari validasi gagal sebelumnya)
+            if (nameInput.value.trim()) {
+                checkDuplicateProjectName(nameInput.value);
+            }
+        }
+
         // ----- Form submit -----
-        function onSubmitProjectForm() {
+        function onSubmitProjectForm(e) {
+            if (isDuplicateProjectName) {
+                e.preventDefault();
+                return;
+            }
             if (currentUser) selectedUsers.owner = currentUser;
             if (selectedUsers.owner && !selectedUsers.leader && selectedUsers.members.length > 0) {
                 selectedUsers.leader = selectedUsers.owner;
@@ -655,6 +739,7 @@
         renderSelectedUsers();
         setupModalFilters();
         setupDateValidation();
+        setupDuplicateNameCheck();
         updateTaskSectionVisibility();
         updateSelectedUsersBadge();
         initializeTaskRows(oldTasks);
