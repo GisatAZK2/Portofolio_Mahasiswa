@@ -31,6 +31,16 @@ window.showConfirmAlert = showConfirm;
 window.Alpine = Alpine;
 
 // ==========================================
+// SIDEBAR ACCORDION STORE
+// ==========================================
+// Satu sumber kebenaran untuk grup menu sidebar yang sedang terbuka.
+// Membuka satu grup otomatis menutup grup lain (perilaku accordion),
+// dan setiap grup mem-reset state ini via x-init saat halaman baru
+// dimuat (lihat resources/views/components/sidebar.blade.php) supaya
+// tidak ada state basi yang terbawa antar navigasi Turbo.
+Alpine.store('sidebarAccordion', { active: null });
+
+// ==========================================
 // CORE
 // ==========================================
 import './modules/core/helpers.js';

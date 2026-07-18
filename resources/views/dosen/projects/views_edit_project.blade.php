@@ -300,6 +300,7 @@
         data-dosen-attrs="{{ json_encode($dosenAttrs) }}"
         data-project-id="{{ $project->id }}"
         data-existing-tasks="{{ json_encode($existingTasks) }}"
+        data-check-duplicate-name-url="{{ route('dosen.projects.checkDuplicateName') }}"
     ></div>
 
 @endsection

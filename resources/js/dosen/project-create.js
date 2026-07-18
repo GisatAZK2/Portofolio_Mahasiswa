@@ -4,6 +4,7 @@ function initDosenProjectCreatePage() {
 
     const allUsers = JSON.parse(dataEl.dataset.users || '[]');
     const oldTasks = JSON.parse(dataEl.dataset.oldTasks || '[]');
+    const checkDuplicateNameUrl = dataEl.dataset.checkDuplicateNameUrl || '';
 
     let selectedUsers = { owner: null, leader: null, members: [] };
     let taskIndex = 0;
@@ -380,6 +381,10 @@ function initDosenProjectCreatePage() {
         form.addEventListener('submit', () => {
             updateFormInputs();
         });
+    }
+
+    if (typeof window.setupProjectDuplicateNameCheck === 'function') {
+        window.setupProjectDuplicateNameCheck({ checkUrl: checkDuplicateNameUrl });
     }
 
     if (typeof window.showPageInfo === 'function') {

@@ -9,6 +9,11 @@
  */
 
 // ==========================================
+// SHARED: Cek duplikat nama project (create & edit)
+// ==========================================
+import './shared/project-duplicate-check.js';
+
+// ==========================================
 // ADMIN: KELOLA USER (daftar-mahasiswa)
 // ==========================================
 import './admin/manage-users.js';

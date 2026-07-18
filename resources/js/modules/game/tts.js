@@ -459,6 +459,7 @@ window.initAdminProjectCreate = function () {
     const oldTasks    = JSON.parse(container.dataset.oldTasks || '[]');
     const fetchUrl    = container.dataset.fetchUrl   || '';
     const hasOldData  = container.dataset.hasOldData === 'true';
+    const checkDuplicateNameUrl = container.dataset.checkDuplicateNameUrl || '';
     const storageKey  = 'admin_project_selected_users';
 
     let selectedUsers = { owner: null, leader: null, members: [] };
@@ -984,6 +985,10 @@ window.initAdminProjectCreate = function () {
         document.getElementById('projectForm')
                 ?.addEventListener('submit', onSubmitProjectForm);
 
+        if (typeof window.setupProjectDuplicateNameCheck === 'function') {
+            window.setupProjectDuplicateNameCheck({ checkUrl: checkDuplicateNameUrl });
+        }
+
         if (sessionStorage.getItem('admin_project_modal_open') === '1') {
             openUserModal();
         }
@@ -1000,6 +1005,8 @@ window.initAdminProjectEditPage = function (container) {
     const initialLeader  = container.dataset.leaderId  || '';
     const initialMembers = container.dataset.memberIds || '';   // comma-separated
     const fetchUrl       = container.dataset.fetchUrl;          // route admin.projects.details
+    const checkDuplicateNameUrl = container.dataset.checkDuplicateNameUrl || '';
+    const projectId       = container.dataset.projectId || null;
 
     const userSelectionStorageKey = 'admin_project_edit_selected_users';
 
@@ -1571,6 +1578,13 @@ window.initAdminProjectEditPage = function (container) {
 
     document.getElementById('projectForm')?.addEventListener('submit', onSubmitProjectForm);
     setupDateValidation();
+
+    if (typeof window.setupProjectDuplicateNameCheck === 'function') {
+        window.setupProjectDuplicateNameCheck({
+            checkUrl: checkDuplicateNameUrl,
+            excludeId: projectId ? parseInt(projectId, 10) : null,
+        });
+    }
 
     if (sessionStorage.getItem('admin_project_edit_modal_open') === '1') {
         window.openUserModal();

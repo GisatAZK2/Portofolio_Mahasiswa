@@ -71,6 +71,7 @@
                 data-has-old-data="{{ $hasOldData }}"
                 data-fetch-url="{{ route('admin.projects.details', ['id' => $project->id]) }}"
                 data-project-id="{{ $project->id }}"
+                data-check-duplicate-name-url="{{ route('admin.projects.checkDuplicateName') }}"
             ></div>
 
             <!-- Form -->

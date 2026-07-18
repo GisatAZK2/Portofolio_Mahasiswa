@@ -59,6 +59,7 @@
         .app-layout {
             display: flex;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
         }
 
@@ -67,6 +68,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             min-width: 0;
         }

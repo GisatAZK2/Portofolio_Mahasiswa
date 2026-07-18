@@ -12,6 +12,7 @@
         data-current-angkatan="{{ $angkatan ?? '' }}"
         data-current-jurusan="{{ $jurusan ?? '' }}"
         data-current-keahlian="{{ $keahlian ?? '' }}"
+        data-check-duplicate-name-url="{{ route('admin.projects.checkDuplicateName') }}"
     ></div>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950" data-page-info="popup.admin_add_projects">
         <div class="p-4 md:p-8 max-w-7xl mx-auto">

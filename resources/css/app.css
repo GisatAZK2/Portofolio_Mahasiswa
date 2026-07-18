@@ -182,6 +182,12 @@ html {
         top: 0;
         left: 0;
         height: 100vh;
+        /* 100vh di banyak browser mobile dihitung dari viewport "penuh" tanpa
+           memperhitungkan address bar, sehingga footer sidebar (Pengaturan &
+           Logout) bisa tenggelam di bawah area yang benar-benar terlihat.
+           100dvh mengikuti tinggi viewport yang sebenarnya terlihat saat ini,
+           dan akan menimpa baris di atas pada browser yang mendukungnya. */
+        height: 100dvh;
     }
 
     main {

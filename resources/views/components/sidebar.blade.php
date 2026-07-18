@@ -85,7 +85,7 @@ if (Auth::check()) {
     </div>
 
     {{-- ======================== NAV ======================== --}}
-    <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden scrollbar-thin">
+    <nav x-data x-init="$store.sidebarAccordion.active = null" class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden scrollbar-thin">
 
         {{-- ---------- SECTION: UTAMA ---------- --}}
         <p class="sb-section-label" data-translate="utama"></p>
@@ -129,18 +129,18 @@ if (Auth::check()) {
                 <p class="sb-section-label mt-4" data-translate="manajemen_data">Manajemen Data</p>
 
                 {{-- Users --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.users.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_users' }" x-init="if ({{ request()->routeIs('admin.users.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.users.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_users">Manajemen Users</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.users.index') }}" class="sb-sub {{ request()->routeIs('admin.users.index') ? 'sb-sub-active' : '' }}">
@@ -160,18 +160,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Angkatan --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.angkatan.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_angkatan' }" x-init="if ({{ request()->routeIs('admin.angkatan.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.angkatan.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_angkatan">Manajemen Angkatan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.angkatan.index') }}" class="sb-sub {{ request()->routeIs('admin.angkatan.index') ? 'sb-sub-active' : '' }}">
@@ -190,18 +190,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Prodi --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.prodi.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_prodi' }" x-init="if ({{ request()->routeIs('admin.prodi.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.prodi.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_prodi">Manajemen Prodi</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.prodi.index') }}" class="sb-sub {{ request()->routeIs('admin.prodi.index') ? 'sb-sub-active' : '' }}">
@@ -220,18 +220,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Keahlian --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.keahlian.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_keahlian' }" x-init="if ({{ request()->routeIs('admin.keahlian.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.keahlian.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_keahlian">Manajemen Keahlian</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.keahlian.index') }}" class="sb-sub {{ request()->routeIs('admin.keahlian.index') ? 'sb-sub-active' : '' }}">
@@ -253,18 +253,18 @@ if (Auth::check()) {
                 <p class="sb-section-label mt-4" data-translate="konten"></p>
 
                 {{-- Projects --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.projects.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_projects' }" x-init="if ({{ request()->routeIs('admin.projects.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.projects.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_projects">Manajemen Project</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.projects.index') }}" class="sb-sub {{ request()->routeIs('admin.projects.index') ? 'sb-sub-active' : '' }}">
@@ -283,18 +283,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Sertifikat --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.sertifikat.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_sertifikat' }" x-init="if ({{ request()->routeIs('admin.sertifikat.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.sertifikat.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><circle cx="12" cy="14" r="2"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_sertifikat">Manajemen Sertifikat</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.sertifikat.index') }}" class="sb-sub {{ request()->routeIs('admin.sertifikat.index') ? 'sb-sub-active' : '' }}">
@@ -313,18 +313,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Notifikasi --}}
-                <div x-data="{ open: {{ request()->routeIs('admin.notifications.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'admin_notifications' }" x-init="if ({{ request()->routeIs('admin.notifications.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('admin.notifications.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="manajemen_notifikasi">Manajemen Notifikasi</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('admin.notifications.index') }}" class="sb-sub {{ request()->routeIs('admin.notifications.index') ? 'sb-sub-active' : '' }}">
@@ -343,18 +343,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Postingan --}}
-                <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'postingan' }" x-init="if ({{ request()->routeIs('postingan.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('postingan.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="postingan">Postingan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('postingan.index') }}" class="sb-sub {{ request()->routeIs('postingan.index') ? 'sb-sub-active' : '' }}">
@@ -392,18 +392,18 @@ if (Auth::check()) {
                 <p class="sb-section-label mt-4" data-translate="bimingan"></p>
 
                 {{-- Mahasiswa Bimbingan --}}
-                <div x-data="{ open: {{ request()->routeIs('dosen.users.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'dosen_users' }" x-init="if ({{ request()->routeIs('dosen.users.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('dosen.users.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="mhs_bbg">Mahasiswa Bimbingan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('dosen.users.index') }}" class="sb-sub {{ request()->routeIs('dosen.users.index') ? 'sb-sub-active' : '' }}">
@@ -422,18 +422,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Projects Bimbingan --}}
-                <div x-data="{ open: {{ request()->routeIs('dosen.projects.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'dosen_projects' }" x-init="if ({{ request()->routeIs('dosen.projects.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('dosen.projects.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="pjt_bbbg">Projects Bimbingan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('dosen.projects.index') }}" class="sb-sub {{ request()->routeIs('dosen.projects.index') ? 'sb-sub-active' : '' }}">
@@ -452,18 +452,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Sertifikat Bimbingan --}}
-                <div x-data="{ open: {{ request()->routeIs('dosen.sertifikat.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'dosen_sertifikat' }" x-init="if ({{ request()->routeIs('dosen.sertifikat.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('dosen.sertifikat.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><circle cx="12" cy="14" r="2"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="stk_bbg">Sertifikat Bimbingan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('dosen.sertifikat.index') }}" class="sb-sub {{ request()->routeIs('dosen.sertifikat.index') ? 'sb-sub-active' : '' }}">
@@ -483,18 +483,18 @@ if (Auth::check()) {
 
                 {{-- Postingan --}}
                 <p class="sb-section-label mt-4" data-translate="konten"></p>
-                <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'postingan_2' }" x-init="if ({{ request()->routeIs('postingan.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('postingan.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="postingan">Postingan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('postingan.index') }}" class="sb-sub {{ request()->routeIs('postingan.index') ? 'sb-sub-active' : '' }}">
@@ -523,18 +523,18 @@ if (Auth::check()) {
                 <p class="sb-section-label mt-4" data-translate="akademik"></p>
 
                 {{-- Project --}}
-                <div x-data="{ open: {{ request()->routeIs('project.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'project' }" x-init="if ({{ request()->routeIs('project.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('project.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="project_mahasiswa">Project</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('project.index') }}" class="sb-sub {{ request()->routeIs('project.index') ? 'sb-sub-active' : '' }}">
@@ -553,18 +553,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Sertifikat --}}
-                <div x-data="{ open: {{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'sertifikat' }" x-init="if ({{ request()->routeIs('sertifikat.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('sertifikat.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><circle cx="12" cy="14" r="2"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="sertifikat_mahasiswa">Sertifikat</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('sertifikat.index') }}" class="sb-sub {{ request()->routeIs('sertifikat.index') ? 'sb-sub-active' : '' }}">
@@ -583,18 +583,18 @@ if (Auth::check()) {
                 </div>
 
                 {{-- Postingan --}}
-                <div x-data="{ open: {{ request()->routeIs('postingan.*') ? 'true' : 'false' }} }">
-                    <button @click="open = !open"
+                <div x-data="{ groupId: 'postingan_3' }" x-init="if ({{ request()->routeIs('postingan.*') ? 'true' : 'false' }}) $store.sidebarAccordion.active = groupId">
+                    <button @click="$store.sidebarAccordion.active = ($store.sidebarAccordion.active === groupId ? null : groupId)"
                         class="sb-item w-full {{ request()->routeIs('postingan.*') ? 'sb-active' : '' }}">
                         <svg class="sb-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
                         </svg>
                         <span class="flex-1 text-left" data-translate="postingan">Postingan</span>
-                        <svg :class="open ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg :class="$store.sidebarAccordion.active === groupId ? 'rotate-180' : ''" class="sb-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                    <div x-cloak x-show="$store.sidebarAccordion.active === groupId" x-transition:enter="transition ease-out duration-150"
                          x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                          class="sb-sub-group">
                         <a href="{{ route('postingan.index') }}" class="sb-sub {{ request()->routeIs('postingan.index') ? 'sb-sub-active' : '' }}">

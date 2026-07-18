@@ -4,6 +4,7 @@
     <div id="dosen-project-create-data"
         data-users="{{ json_encode($allUsers) }}"
         data-old-tasks="{{ json_encode(old('tasks', [])) }}"
+        data-check-duplicate-name-url="{{ route('dosen.projects.checkDuplicateName') }}"
     ></div>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div class="p-4 md:p-8 max-w-7xl mx-auto">

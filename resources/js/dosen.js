@@ -1,4 +1,5 @@
 import './bootstrap';
+import './shared/project-duplicate-check.js';
 import './dosen/index.js';
 import './dosen/learning-corner.js';
 import './dosen/project.js';

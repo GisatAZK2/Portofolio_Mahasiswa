@@ -6,6 +6,7 @@ function initDosenProjectEditPage() {
     const dosenAttrs = JSON.parse(dataEl.dataset.dosenAttrs || '{}');
     const projectId = dataEl.dataset.projectId || null;
     const existingTasks = JSON.parse(dataEl.dataset.existingTasks || '[]');
+    const checkDuplicateNameUrl = dataEl.dataset.checkDuplicateNameUrl || '';
 
     let selectedUsers = { owner: null, leader: null, members: [] };
     let taskIndex = 0;
@@ -379,6 +380,13 @@ function initDosenProjectEditPage() {
     if (existingTasks && existingTasks.length > 0) {
         existingTasks.forEach(task => {
             if (task.user_id || task.name_task) window.addTaskRow(task);
+        });
+    }
+
+    if (typeof window.setupProjectDuplicateNameCheck === 'function') {
+        window.setupProjectDuplicateNameCheck({
+            checkUrl: checkDuplicateNameUrl,
+            excludeId: projectId ? parseInt(projectId, 10) : null,
         });
     }
 

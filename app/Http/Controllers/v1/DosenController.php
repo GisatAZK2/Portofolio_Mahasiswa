@@ -1394,6 +1394,48 @@ public function EditProjects(Request $request)
     ));
 }
 
+    /**
+     * Cek apakah nama_project sudah dipakai project lain (case-insensitive, trimmed).
+     * $excludeId dipakai saat update supaya project itu sendiri tidak dianggap duplikat.
+     */
+    protected function isDuplicateProjectName(string $name, ?int $excludeId = null): bool
+    {
+        $normalized = strtolower(trim($name));
+        if ($normalized === '') {
+            return false;
+        }
+
+        return Project::query()
+            ->whereRaw(
+                "LOWER(TRIM(JSON_UNQUOTE(JSON_EXTRACT(isi_content, '$.nama_project')))) = ?",
+                [$normalized]
+            )
+            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->exists();
+    }
+
+    // Endpoint AJAX untuk cek duplikat nama project secara real-time dari form dosen
+    public function checkDuplicateName(Request $request)
+    {
+        $this->authorizeAccess();
+
+        $name = trim((string) $request->input('nama_project', ''));
+        $excludeId = $request->input('exclude_id');
+
+        if ($name === '') {
+            return response()->json(['is_duplicate' => false, 'message' => '']);
+        }
+
+        $isDuplicate = $this->isDuplicateProjectName($name, $excludeId ? (int) $excludeId : null);
+
+        return response()->json([
+            'is_duplicate' => $isDuplicate,
+            'message' => $isDuplicate
+                ? "Nama project \"{$name}\" sudah digunakan. Silakan gunakan nama lain."
+                : '',
+        ]);
+    }
+
     public function StoreProject(Request $request)
     {
         $this->authorizeAccess();
@@ -1450,6 +1492,12 @@ public function EditProjects(Request $request)
                     return back()->withInput()->withErrors(['members' => 'Beberapa anggota tidak valid atau tidak dalam cakupan Anda.']);
                 }
             }
+        }
+
+        if ($this->isDuplicateProjectName($request->nama_project)) {
+            return back()
+                ->withInput()
+                ->withErrors(['nama_project' => "Nama project \"{$request->nama_project}\" sudah digunakan. Silakan gunakan nama lain."]);
         }
 
         // Siapkan content sebagai JSON
@@ -1542,6 +1590,12 @@ public function EditProjects(Request $request)
             'tasks.*.user_id' => 'required_with:tasks|exists:users,id',
             'tasks.*.name_task' => 'required_with:tasks|string|max:255'
         ]);
+
+        if ($this->isDuplicateProjectName($request->nama_project, (int) $project->id)) {
+            return back()
+                ->withInput()
+                ->withErrors(['nama_project' => "Nama project \"{$request->nama_project}\" sudah digunakan. Silakan gunakan nama lain."]);
+        }
 
         // Prepare content array
         $content = [

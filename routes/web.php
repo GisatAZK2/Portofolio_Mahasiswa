@@ -252,6 +252,7 @@ Route::prefix('{locale}')
                 Route::put('/EditProject', [AdminController::class, 'UpdateProject'])->name('update');
                 Route::delete('/DeleteProject', [AdminController::class, 'DestroyProject'])->name('delete');
                 Route::delete('/bulk-destroy', [AdminController::class, 'bulkDestroyProject'])->name('bulk-delete');
+                Route::post('/check-duplicate-name', [AdminController::class, 'checkDuplicateName'])->name('checkDuplicateName');
             });
 
             Route::prefix('manageNotifications')->name('notifications.')->group(function () {
@@ -302,6 +303,7 @@ Route::prefix('{locale}')
                 Route::put('/EditProject', [DosenController::class, 'UpdateProject'])->name('update');
                 Route::delete('/DeleteProject', [DosenController::class, 'DestroyProject'])->name('delete');
                 Route::delete('/bulk-destroy', [DosenController::class, 'bulkDestroyProject'])->name('bulk-delete');
+                Route::post('/check-duplicate-name', [DosenController::class, 'checkDuplicateName'])->name('checkDuplicateName');
             });
         });
 
